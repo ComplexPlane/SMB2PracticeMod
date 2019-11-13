@@ -1,22 +1,43 @@
-# Code created by PistonMiner and Zephiles
+# ApeSphere REL Loader
+# Based on the TTYD-Practice-Codes REL loader written by PistonMiner and Zephiles
 
-# 8006FE38 - Address to hook for this code
+# 80006d10 - Address to hook for this code
+# This is after mkb2.main_loop.rel is loaded and linked, but before its prolog runs
 
-# Initialize static values used for addresses
-lis r31,0x8000
-lis r30,0x8003
-lis r29,0x8029
-lis r28,0x802B
+# TODO load from slot B
+# TODO investigate card fast mode?
 
-li r27,0 # Used to check if a REL file is loaded or not
+# TODO restart register usage from r31 and reorder?
+# TODO consistent capitalization?
+# TODO consistent blrl/bctr?
+
+# Register assignments
+# r27: REL prolog pointer, also used to check whether a REL was loaded successfully
+# r26: CardFileInfo struct buffer, allocated on heap
+# r25: REL module size, rounded up to multiple of 0x200 bytes
+# r24: Card file buffer allocated on heap; 0x200 bytes
+# r23: CARDMount work area, allocated on heap
+# r22: REL module region, allocated on arena
+# r21: REL BSS buffer
+# r20: Original arena low pointer
+
+li r27,0 # Empty initial value for REL prolog pointer
+
+# Save original arena low pointer
+lis r3,0x8000
+ori r3,r3,0xd590 # OSGetArenaLo
+mtctr r3
+bctrl
+mr r20,r3 # Save address for later
 
 # Check if a Memory Card is present
 # To avoid an infinite loop, only check for a memory card a set amount of times
-lis r26,0x000F
-ori r26,r26,0x4240 # Check 1,000,000 times
+lis r6,0x000F
+ori r6,r6,0x4240 # Check 1,000,000 times
 
 checkForMemoryCardLoop:
-subi r3,r28,0xA6C # CARDProbeEx
+lis r3,0x8002
+ori r3,r3,0x611c # CARDProbeEx
 mtlr r3
 li r3,0 # Memory Card Slot A
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
@@ -26,7 +47,7 @@ cmpwi r3,-1 # CARD_RESULT_BUSY
 bne- exitCheckForMemoryCardLoop
 
 # Exit if the limit has been reached
-subic. r26,r26,1
+subic. r6,r6,1
 bgt+ checkForMemoryCardLoop
 b exit
 
@@ -34,45 +55,51 @@ exitCheckForMemoryCardLoop:
 cmpwi r3,0 # Check if something went wrong
 bne- exit
 
+# Allocate memory for the CARDMountAsync work area
+li r3,0xa # Can't load 0xa000 directly as it would be interpreted as negative
+rlwinm r3,r3,24,0,31 # r3 == 0xa000
+bl allocateOnHeap
+mr r23,r3 # Save address for later
+
 # Mount the Memory Card
-subi r3,r28,0x364 # CARDMountAsync
+lis r3,0x8002
+ori r3,r3,0x67b0 # CARDMountAsync
 mtlr r3
 li r3,0 # Memory Card Slot A
-lwz r4,0x1B98(r13)
-lwz r4,0x4(r4) # Pointer to the Work Area
+mr r4,r23 # Pointer to the card Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- exit
+bne- freeCardWorkArea
 
 # Allocate memory for CardFileInfo
-li r4,20
-bl allocateMemory
-
-# Backup the returned address to be used for later
-mr r26,r3
+li r3,20
+bl allocateOnHeap
+mr r26,r3 # Backup address for later
 
 # Open the file
-ori r3,r28,0x0BDC # CARDOpen
+lis r3,0x8002
+ori r3,r3,0x74fc # CARDOpen
 mtlr r3
 li r3,0 # Memory Card Slot A
-ori r4,r31,0x40DC # File Name
+lis r4,0x8008
+ori r4,r4,0x1651 # File Name ("rel", points to end of pre-existing "mkb2.main_loop.rel")
 mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
 bne- freeCardFileInfo
 
+# Allocate small card file buffer (not for entire file)
 # Allocate 0x200 bytes of memory, as the read size must be in multiples of 0x200 bytes
-li r4,0x200 # Bytes to allocate
-bl allocateMemory
-
-# Backup the returned address to be used for later
-mr r24,r3
+li r3,0x200 # Bytes to allocate
+bl allocateOnHeap
+mr r24,r3 # Backup address for later
 
 # Read from the Card
-ori r3,r28,0x138C # CARDReadAsync
+lis r3,0x8002
+ori r3,r3,0x7cb4 # CARDReadAsync
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
 mr r4,r24 # Pointer to the File Buffer
@@ -82,74 +109,79 @@ li r7,0 # Read Callback function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- freeCurrentMemoryArea
+bne- freeCardFileBuffer
 
-# Get the file size and adjust it to be in multiples of 0x200 bytes
-lwz r25,0x40(r24) # File Size
+# Get the REL module size and adjust it to be in multiples of 0x200 bytes
+lwz r25,0x40(r24) # Module Size
 addi r25,r25,511
 rlwinm r25,r25,0,0,22
 
-# Free the 0x200 bytes from earlier
-mr r4,r24
-bl freeMemory
-
-# Allocate more bytes based on the adjusted file size
-mr r4,r25
-bl allocateMemory
-
-# Backup the returned address to be used for later
-mr r24,r3
+# Allocate buffer for the REL based on the adjusted module size
+mr r3,r25
+bl allocateOnArena
+mr r22,r3 # Backup for later
 
 # Read the REL Area of the file
-ori r3,r28,0x138C # CARDReadAsync
+lis r3,0x8002
+ori r3,r3,0x7cb4 # CARDReadAsync
 mtlr r3
 mr r3,r26 # Pointer to CardFileInfo
-mr r4,r24 # Pointer to the File Buffer
-mr r5,r25 # Adjusted File Size
+mr r4,r22 # Pointer to the REL Module Buffer
+mr r5,r25 # Adjusted REL Module Size
 li r6,0x2200 # Offset in the file to start reading from
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- freeCurrentMemoryArea
+bne- restoreArena
 
 # Get the BSS Area size and allocate memory for it
-lwz r4,0x20(r24)
-bl allocateMemory
-
-# Backup the returned address to be used for later
-mr r25,r3
+lwz r3,0x20(r22)
+bl allocateOnArena
+mr r21,r3 # Backup for later
 
 # Link the functions in the REL
-ori r3,r29,0xA8E4 # OSLink
+lis r3,0x8001
+ori r3,r3,0x0730 # OSLink
 mtlr r3
-mr r3,r24 # Pointer to the Module
-mr r4,r25 # Pointer to the BSS Area
+mr r3,r22 # Pointer to the REL module buffer
+mr r4,r21 # Pointer to the BSS Area
 blrl
 cmpwi r3,1 # Check if something went wrong
-bne- freeRemainingMemory
-
-# Store the BSS Area and the Module
-stw r25,0x414C(r31) # Pointer to the BSS Area
-stw r24,0x4150(r31) # Pointer to the Module
+bne- unlinkRel
 
 # Get the REL Prolog Pointer
-lwz r27,0x34(r24)
+lwz r27,0x34(r22)
 
-# Done, so close and unmount the card
-b closeCard
+# Done, so begin freeing memory and unmounting card
+# We don't call CARDClose() on our file because this function seemingly does
+# not appear in SMB2. Since ths function is never called by the game, it must
+# not be _that_ big of a deal to unmount the card without closing the file.
+b freeCardFileBuffer
 
-# Function definitions, error handling, etc.
-freeMemory:
-ori r3,r30,0x00C4 # __memFree
-mtctr r3
-li r3,0 # Heap to use
+# 
+# Common functions
+#
+
+freeToHeap:
+lis r4,0x8000
+ori r4,r4,0xa7bc # OSFree
+mtctr r4
 bctr
 
-allocateMemory:
-ori r3,r30,0x00F0 # __memAlloc
-mtctr r3
-li r3,0 # Heap to use
+allocateOnHeap:
+lis r4,0x8000
+ori r4,r4,0xa794 # OSAlloc
+mtctr r4
+bctr
+
+allocateOnArena:
+lis r4,0x8000
+ori r4,r4,0xd5a8 # OSAllocFromArenaLow
+mtctr r4
+addi r3,r3,31
+rlwinm r3,r3,0,0,26 # Amount to allocate, rounded up to multiple of 32 bytes
+li r4,32 # Alignment
 bctr
 
 finishAsyncFunction:
@@ -158,7 +190,8 @@ bnelr-
 mflr r14
 
 finishAsyncFunctionLoop:
-subi r3,r28,0x38BC # CARDGetResultCode
+lis r3,0x8002
+ori r3,r3,0x33e4 # CARDGetResultCode
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
@@ -167,35 +200,51 @@ beq+ finishAsyncFunctionLoop
 mtlr r14
 blr
 
-freeRemainingMemory:
-ori r3,r29,0xAB40 # OSUnlink
+#
+# Error handling branch points
+#
+
+# Unlink the REL if it failed to link
+unlinkRel:
+lis r3,0x8001
+ori r3,r3,0x0b8c # OSUnlink
 mtlr r3
-mr r3,r24 # Pointer to the Module
+mr r3,r22 # Pointer to the Module
 blrl
 
-# Free the BSS Area and the File Buffer
-mr r4,r25 # Pointer to the BSS Area
-bl freeMemory
+# Restore the arena low pointer, as we won't be using the space allocated for the rel module/BSS
+restoreArena:
+lis r3,0x8000
+ori r3,r3,0xd5a0 # OSSetArenaLo
+mtctr r3
+mr r3,r20
+bctrl
 
-freeCurrentMemoryArea:
-mr r4,r24 # Pointer to the File Buffer or the 0x200 Bytes Buffer
-bl freeMemory
+#
+# Finalization before returning to hook point
+#
 
-closeCard:
-ori r3,r28,0x0CF8 # CARDClose
-mtlr r3
-mr r3,r26 # Pointer to CardFileInfo
-blrl
+# Free card file buffer
+freeCardFileBuffer:
+mr r3,r24 # Pointer to the 0x200 Bytes Buffer
+bl freeToHeap
 
+# Free CardFileInfo
 freeCardFileInfo:
-mr r4,r26
-bl freeMemory
+mr r3,r26
+bl freeToHeap
 
 # Unmount the Memory Card
-subi r3,r28,0x128 # CARDUnmount
+lis r3,0x8002
+ori r3,r3,0x69ec # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
+
+# Free the card Work Area
+freeCardWorkArea:
+mr r4,r23
+bl freeToHeap
 
 # Run the REL Prolog if the load was successful
 cmpwi r27,0
@@ -204,5 +253,6 @@ mtlr r27
 blrl
 
 exit:
-# Add back in the overwritten instruction
-li r3,0
+mtctr r12
+
+# vim:ft=asm
