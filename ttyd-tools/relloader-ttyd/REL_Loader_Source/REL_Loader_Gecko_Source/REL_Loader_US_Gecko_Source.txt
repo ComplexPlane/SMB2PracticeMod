@@ -27,6 +27,11 @@ lis r3,0
 ori r3,r3,0xa220
 stwux r1,r3,r1
 
+# Write "rel" string (file name) to stack
+lis r3,0x7265
+ori r3,r3,0x6c00
+stw r3,0x8(r1)
+
 li r27,0 # Empty initial value for REL prolog pointer
 
 # Save original arena low pointer
@@ -85,8 +90,7 @@ lis r3,0x8002
 ori r3,r3,0x74fc # CARDOpen
 mtlr r3
 li r3,0 # Memory Card Slot A
-lis r4,0x8008
-ori r4,r4,0x1651 # File Name ("rel", points to end of pre-existing "mkb2.main_loop.rel")
+addi r4,r1,0x8 # File Name ("rel" on stack)
 mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
