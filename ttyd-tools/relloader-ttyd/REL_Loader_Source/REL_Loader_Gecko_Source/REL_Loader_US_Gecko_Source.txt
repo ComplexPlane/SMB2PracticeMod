@@ -4,6 +4,7 @@
 # 80006d10 - Address to hook for this code
 # This is after mkb2.main_loop.rel is loaded and linked, but before its prolog runs
 
+# TODO deal with having no heap
 # TODO load from slot B
 # TODO investigate card fast mode?
 
@@ -20,6 +21,11 @@
 # r22: REL module region, allocated on arena
 # r21: REL BSS buffer
 # r20: Original arena low pointer
+
+# Make stack frame
+lis r3,0
+ori r3,r3,0xa220
+stwux r1,r3,r1
 
 li r27,0 # Empty initial value for REL prolog pointer
 
@@ -56,10 +62,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- exit
 
 # Allocate memory for the CARDMountAsync work area
-li r3,0xa # Can't load 0xa000 directly as it would be interpreted as negative
-rlwinm r3,r3,24,0,31 # r3 == 0xa000
-bl allocateOnHeap
-mr r23,r3 # Save address for later
+addi r23,r1,0x220 # CARDMountAsync buffer on stack
 
 # Mount the Memory Card
 lis r3,0x8002
@@ -72,12 +75,10 @@ li r6,0 # Attach Callback function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- freeCardWorkArea
+bne- exit
 
 # Allocate memory for CardFileInfo
-li r3,20
-bl allocateOnHeap
-mr r26,r3 # Backup address for later
+addi r26,r1,0x20c
 
 # Open the file
 lis r3,0x8002
@@ -89,13 +90,11 @@ ori r4,r4,0x1651 # File Name ("rel", points to end of pre-existing "mkb2.main_lo
 mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
-bne- freeCardFileInfo
+bne- exit
 
 # Allocate small card file buffer (not for entire file)
 # Allocate 0x200 bytes of memory, as the read size must be in multiples of 0x200 bytes
-li r3,0x200 # Bytes to allocate
-bl allocateOnHeap
-mr r24,r3 # Backup address for later
+addi r24,r1,0xc
 
 # Read from the Card
 lis r3,0x8002
@@ -109,7 +108,7 @@ li r7,0 # Read Callback function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- freeCardFileBuffer
+bne- exit
 
 # Get the REL module size and adjust it to be in multiples of 0x200 bytes
 lwz r25,0x40(r24) # Module Size
@@ -163,18 +162,6 @@ b freeCardFileBuffer
 # Common functions
 #
 
-freeToHeap:
-lis r4,0x8000
-ori r4,r4,0xa7bc # OSFree
-mtctr r4
-bctr
-
-allocateOnHeap:
-lis r4,0x8000
-ori r4,r4,0xa794 # OSAlloc
-mtctr r4
-bctr
-
 allocateOnArena:
 lis r4,0x8000
 ori r4,r4,0xd5a8 # OSAllocFromArenaLow
@@ -224,27 +211,12 @@ bctrl
 # Finalization before returning to hook point
 #
 
-# Free card file buffer
-freeCardFileBuffer:
-mr r3,r24 # Pointer to the 0x200 Bytes Buffer
-bl freeToHeap
-
-# Free CardFileInfo
-freeCardFileInfo:
-mr r3,r26
-bl freeToHeap
-
 # Unmount the Memory Card
 lis r3,0x8002
 ori r3,r3,0x69ec # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
-
-# Free the card Work Area
-freeCardWorkArea:
-mr r4,r23
-bl freeToHeap
 
 # Run the REL Prolog if the load was successful
 cmpwi r27,0
@@ -253,6 +225,8 @@ mtlr r27
 blrl
 
 exit:
+lwz r1,0x0(r1)
+
 mtctr r12
 
 # vim:ft=asm
