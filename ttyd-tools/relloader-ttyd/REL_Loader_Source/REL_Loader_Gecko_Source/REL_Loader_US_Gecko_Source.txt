@@ -11,28 +11,45 @@
 # TODO restart register usage from r31 and reorder?
 # TODO consistent capitalization?
 # TODO consistent blrl/bctr?
+# TODO recomment some things, related to stack usage for example
+# TODO include stack layout in comments in this file?
+# TODO initialize register assignments to pointers on stack in one place?
 
-# Register assignments
-# r27: REL prolog pointer, also used to check whether a REL was loaded successfully
-# r26: CardFileInfo struct buffer, allocated on heap
+# Stack Layout
+# | Size                   | Offset | Size   | Alignment |
+# | ---------------------- | ------ | ------ | --------- |
+# | CARDMount work area    | 0x220  | 0xa000 | 32        |
+# | Small card file buffer | 0x20   | 0x200  | 32        |
+# | CardFileInfo           | 0xc    | 0x14   |           |
+# | "rel" string           | 0x8    | 0x4    |           |
+# | LR Save                | 0x4    | 0x4    |           |
+# | SP Save                | 0x0    | 0x4    |           |
+
+# Register Assignments
+# r26: CardFileInfo struct buffer, allocated on stack
 # r25: REL module size, rounded up to multiple of 0x200 bytes
-# r24: Card file buffer allocated on heap; 0x200 bytes
-# r23: CARDMount work area, allocated on heap
+# r24: Card file buffer, allocated on stack
+# r23: CARDMount work area, allocated on stack
 # r22: REL module region, allocated on arena
-# r21: REL BSS buffer
+# r21: REL BSS buffer, allocated on arena
 # r20: Original arena low pointer
+# r19: Pointer to "rel" on stack
 
 # Make stack frame
-lis r3,0
-ori r3,r3,0xa220
-stwux r1,r3,r1
+lis r3,0xffff
+ori r3,r3,0x5de0 # -0xa220
+stwux r1,r1,r3
+
+# Initialize stack buffer pointers
+addi r23,r1,0x220 # CARDMount work area
+addi r24,r1,0x20 # Small card file buffer
+addi r26,r1,0xc # CardFileInfo
+addi r19,r1,0x8 # "rel"
 
 # Write "rel" string (file name) to stack
 lis r3,0x7265
 ori r3,r3,0x6c00
-stw r3,0x8(r1)
-
-li r27,0 # Empty initial value for REL prolog pointer
+stw r3,0x0(r19)
 
 # Save original arena low pointer
 lis r3,0x8000
@@ -66,9 +83,6 @@ exitCheckForMemoryCardLoop:
 cmpwi r3,0 # Check if something went wrong
 bne- exit
 
-# Allocate memory for the CARDMountAsync work area
-addi r23,r1,0x220 # CARDMountAsync buffer on stack
-
 # Mount the Memory Card
 lis r3,0x8002
 ori r3,r3,0x67b0 # CARDMountAsync
@@ -82,23 +96,16 @@ bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- exit
 
-# Allocate memory for CardFileInfo
-addi r26,r1,0x20c
-
 # Open the file
 lis r3,0x8002
 ori r3,r3,0x74fc # CARDOpen
 mtlr r3
 li r3,0 # Memory Card Slot A
-addi r4,r1,0x8 # File Name ("rel" on stack)
+mr r4,r19 # File Name ("rel" on stack)
 mr r5,r26 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
-bne- exit
-
-# Allocate small card file buffer (not for entire file)
-# Allocate 0x200 bytes of memory, as the read size must be in multiples of 0x200 bytes
-addi r24,r1,0xc
+bne- unmountMemoryCard
 
 # Read from the Card
 lis r3,0x8002
@@ -112,7 +119,7 @@ li r7,0 # Read Callback function (Want to avoid using, so NULL)
 blrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
-bne- exit
+bne- unmountMemoryCard
 
 # Get the REL module size and adjust it to be in multiples of 0x200 bytes
 lwz r25,0x40(r24) # Module Size
@@ -153,14 +160,15 @@ blrl
 cmpwi r3,1 # Check if something went wrong
 bne- unlinkRel
 
-# Get the REL Prolog Pointer
-lwz r27,0x34(r22)
+# Run rel prolog
+lwz r3,0x34(r22) # Get the REL Prolog Pointer
+cmpwi r3,0
+beq- unlinkRel
+mtlr r3
+blrl
 
-# Done, so begin freeing memory and unmounting card
-# We don't call CARDClose() on our file because this function seemingly does
-# not appear in SMB2. Since ths function is never called by the game, it must
-# not be _that_ big of a deal to unmount the card without closing the file.
-b freeCardFileBuffer
+# Begin cleaning up
+b unmountMemoryCard
 
 # 
 # Common functions
@@ -203,7 +211,7 @@ mtlr r3
 mr r3,r22 # Pointer to the Module
 blrl
 
-# Restore the arena low pointer, as we won't be using the space allocated for the rel module/BSS
+# Restore the arena low pointer if we cannot load the REL
 restoreArena:
 lis r3,0x8000
 ori r3,r3,0xd5a0 # OSSetArenaLo
@@ -212,25 +220,25 @@ mr r3,r20
 bctrl
 
 #
-# Finalization before returning to hook point
+# Cleanup and exit
 #
 
-# Unmount the Memory Card
+# Unmount the Memory card
+# We don't call CARDClose() on our file because this function seemingly does
+# not appear in SMB2. Since ths function is never called by the game, it must
+# not be _that_ big of a deal to unmount the card without closing the file.
+# Run the REL Prolog if the load was successful
+unmountMemoryCard:
 lis r3,0x8002
 ori r3,r3,0x69ec # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
 blrl
 
-# Run the REL Prolog if the load was successful
-cmpwi r27,0
-beq- exit
-mtlr r27
-blrl
-
+# Restore stack pointer
 exit:
 lwz r1,0x0(r1)
 
-mtctr r12
+mtctr r12 # Instruction which the hook replaced
 
 # vim:ft=asm
