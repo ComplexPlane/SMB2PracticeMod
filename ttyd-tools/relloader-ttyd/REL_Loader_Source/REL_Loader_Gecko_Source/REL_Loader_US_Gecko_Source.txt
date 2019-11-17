@@ -4,10 +4,6 @@
 # 80006d10 - Address to hook for this code
 # This is after mkb2.main_loop.rel is loaded and linked, but before its prolog runs
 
-# TODO consistent blrl/bctr?
-# TODO consistent capitalization?
-# TODO recomment some things, related to stack usage for example
-
 # Stack Layout
 # No heap is available, so we use the stack for temporary space
 # | Size                   | Offset | Size   | Alignment |
@@ -29,7 +25,7 @@
 # r25: REL module region, allocated on arena
 # r24: REL BSS buffer, allocated on arena
 # r23: Original arena low pointer
-# r22: Pointer to "rel" on stack
+# r22: Pointer to "rel" filename on stack
 # r21: Place for finishAsyncFunction to save LR temporarily
 
 # Save r12 from hook point
@@ -61,7 +57,7 @@ mtctr r3
 bctrl
 mr r23,r3 # Save address for later
 
-# Check if a Memory Card is present
+# Check if a memory card is present
 # To avoid an infinite loop, only check for a memory card a set amount of times
 lis r6,0x000F
 ori r6,r6,0x4240 # Check 1,000,000 times
@@ -70,9 +66,9 @@ checkForMemoryCardLoop:
 lis r3,0x8002
 ori r3,r3,0x611c # CARDProbeEx
 mtctr r3
-li r3,1 # Memory Card Slot B
-li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
-li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
+li r3,1 # Memory card slot B
+li r4,0 # Pointer to the memory size (not needed, so NULL)
+li r5,0 # Pointer to the sector size (not needed, so NULL)
 bctrl
 cmpwi r3,-1 # CARD_RESULT_BUSY
 bne- exitCheckForMemoryCardLoop
@@ -86,14 +82,14 @@ exitCheckForMemoryCardLoop:
 cmpwi r3,0 # Check if something went wrong
 bne- exit
 
-# Mount the Memory Card
+# Mount the memory card
 lis r3,0x8002
 ori r3,r3,0x67b0 # CARDMountAsync
 mtctr r3
-li r3,1 # Memory Card Slot B
-mr r4,r26 # Pointer to the card Work Area
-li r5,0 # Detach Callback function (Want to avoid using, so NULL)
-li r6,0 # Attach Callback function (Want to avoid using, so NULL)
+li r3,1 # Memory card slot B
+mr r4,r26 # Pointer to the card work area
+li r5,0 # Detach callback function (want to avoid using, so NULL)
+li r6,0 # Attach Callback function (want to avoid using, so NULL)
 bctrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
@@ -103,29 +99,29 @@ bne- exit
 lis r3,0x8002
 ori r3,r3,0x74fc # CARDOpen
 mtctr r3
-li r3,1 # Memory Card Slot B
-mr r4,r22 # File Name ("rel" on stack)
+li r3,1 # Memory card slot B
+mr r4,r22 # File name ("rel" on stack)
 mr r5,r29 # Pointer to CardFileInfo
 bctrl
 cmpwi r3,0 # Check if something went wrong
 bne- unmountMemoryCard
 
-# Read from the Card
+# Read from the card
 lis r3,0x8002
 ori r3,r3,0x7cb4 # CARDReadAsync
 mtctr r3
 mr r3,r29 # Pointer to CardFileInfo
-mr r4,r27 # Pointer to the File Buffer
+mr r4,r27 # Pointer to the file buffer
 li r5,0x200 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
-li r7,0 # Read Callback function (Want to avoid using, so NULL)
+li r7,0 # Read callback function (want to avoid using, so NULL)
 bctrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- unmountMemoryCard
 
 # Get the REL module size and adjust it to be in multiples of 0x200 bytes
-lwz r28,0x40(r27) # Module Size
+lwz r28,0x40(r27) # Module size
 addi r28,r28,511
 rlwinm r28,r28,0,0,22
 
@@ -134,21 +130,21 @@ mr r3,r28
 bl allocateOnArena
 mr r25,r3 # Backup for later
 
-# Read the REL Area of the file
+# Read the REL area of the file
 lis r3,0x8002
 ori r3,r3,0x7cb4 # CARDReadAsync
 mtctr r3
 mr r3,r29 # Pointer to CardFileInfo
-mr r4,r25 # Pointer to the REL Module Buffer
-mr r5,r28 # Adjusted REL Module Size
+mr r4,r25 # Pointer to the REL module buffer
+mr r5,r28 # Adjusted REL module size
 li r6,0x2200 # Offset in the file to start reading from
-li r7,0 # Read Callback Function (Want to avoid using, so NULL)
+li r7,0 # Read callback function (want to avoid using, so NULL)
 bctrl
 bl finishAsyncFunction
 cmpwi r3,0 # Check if something went wrong
 bne- restoreArena
 
-# Get the BSS Area size and allocate memory for it
+# Get the BSS area size and allocate memory for it
 lwz r3,0x20(r25)
 bl allocateOnArena
 mr r24,r3 # Backup for later
@@ -164,12 +160,12 @@ lis r3,0x8001
 ori r3,r3,0x0730 # OSLink
 mtctr r3
 mr r3,r25 # Pointer to the REL module buffer
-mr r4,r24 # Pointer to the BSS Area
+mr r4,r24 # Pointer to the BSS area
 bctrl
 cmpwi r3,1 # Check if something went wrong
 bne- unlinkRel
 
-lwz r3,0x34(r25) # Get the REL Prolog Pointer
+lwz r3,0x34(r25) # Get the REL prolog pointer
 cmpwi r3,0
 beq- unlinkRel # If it's 0 for some reason, unlinkRel
 mr r30,r3 # Store REL prolog pointer
@@ -199,7 +195,7 @@ finishAsyncFunctionLoop:
 lis r3,0x8002
 ori r3,r3,0x33e4 # CARDGetResultCode
 mtctr r3
-li r3,1 # Memory Card Slot B
+li r3,1 # Memory card slot B
 bctrl
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
@@ -215,7 +211,7 @@ unlinkRel:
 lis r3,0x8001
 ori r3,r3,0x0b8c # OSUnlink
 mtctr r3
-mr r3,r25 # Pointer to the Module
+mr r3,r25 # Pointer to the module
 bctrl
 
 # Restore the arena low pointer if we cannot load the REL
@@ -239,10 +235,10 @@ unmountMemoryCard:
 lis r3,0x8002
 ori r3,r3,0x69ec # CARDUnmount
 mtctr r3
-li r3,1 # Memory Card Slot B
+li r3,1 # Memory card slot B
 bctrl
 
-# Run the REL Prolog if the load was successful
+# Run the REL prolog if the load was successful
 cmpwi r30,0
 beq- exit
 mtctr r30
