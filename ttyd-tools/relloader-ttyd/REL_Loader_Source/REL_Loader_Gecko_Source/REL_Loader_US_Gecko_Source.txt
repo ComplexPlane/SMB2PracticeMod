@@ -26,6 +26,7 @@
 # | SP Save                | 0x0    | 0x4    |           |
 
 # Register Assignments
+# r27: REL prolog pointer, initially 0. Keeps track of whether a REL is loaded or not
 # r26: CardFileInfo struct buffer, allocated on stack
 # r25: REL module size, rounded up to multiple of 0x200 bytes
 # r24: Card file buffer, allocated on stack
@@ -34,6 +35,9 @@
 # r21: REL BSS buffer, allocated on arena
 # r20: Original arena low pointer
 # r19: Pointer to "rel" on stack
+
+# Used to check if a REL file is loaded or not
+li r27,0
 
 # Make stack frame
 lis r3,0xffff
@@ -166,14 +170,12 @@ blrl
 cmpwi r3,1 # Check if something went wrong
 bne- unlinkRel
 
-# Run rel prolog
 lwz r3,0x34(r22) # Get the REL Prolog Pointer
 cmpwi r3,0
-beq- unlinkRel
-mtlr r3
-blrl
+beq- unlinkRel # If it's 0 for some reason, unlinkRel
+mr r27,r3 # Store REL prolog pointer
 
-# Begin cleaning up
+# Done loading REL, so unmount memory card, run prolog, and exit
 b unmountMemoryCard
 
 # 
@@ -226,19 +228,25 @@ mr r3,r20
 bctrl
 
 #
-# Cleanup and exit
+# Unmount memory card, run REL prolog, and exit
 #
 
 # Unmount the Memory card
+#
 # We don't call CARDClose() on our file because this function seemingly does
 # not appear in SMB2. Since ths function is never called by the game, it must
 # not be _that_ big of a deal to unmount the card without closing the file.
-# Run the REL Prolog if the load was successful
 unmountMemoryCard:
 lis r3,0x8002
 ori r3,r3,0x69ec # CARDUnmount
 mtlr r3
 li r3,0 # Memory Card Slot A
+blrl
+
+# Run the REL Prolog if the load was successful
+cmpwi r27,0
+beq- exit
+mtlr r27
 blrl
 
 # Restore stack pointer
