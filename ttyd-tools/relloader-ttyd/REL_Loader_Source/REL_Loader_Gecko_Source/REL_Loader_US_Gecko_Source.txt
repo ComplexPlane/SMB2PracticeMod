@@ -4,9 +4,7 @@
 # 80006d10 - Address to hook for this code
 # This is after mkb2.main_loop.rel is loaded and linked, but before its prolog runs
 
-# TODO deal with having no heap
 # TODO load from slot B
-# TODO investigate card fast mode?
 
 # TODO restart register usage from r31 and reorder?
 # TODO consistent capitalization?
@@ -75,7 +73,7 @@ checkForMemoryCardLoop:
 lis r3,0x8002
 ori r3,r3,0x611c # CARDProbeEx
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
 blrl
@@ -95,7 +93,7 @@ bne- exit
 lis r3,0x8002
 ori r3,r3,0x67b0 # CARDMountAsync
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 mr r4,r23 # Pointer to the card Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
@@ -108,7 +106,7 @@ bne- exit
 lis r3,0x8002
 ori r3,r3,0x74fc # CARDOpen
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 mr r4,r19 # File Name ("rel" on stack)
 mr r5,r26 # Pointer to CardFileInfo
 blrl
@@ -204,7 +202,7 @@ finishAsyncFunctionLoop:
 lis r3,0x8002
 ori r3,r3,0x33e4 # CARDGetResultCode
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 blrl
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
@@ -244,7 +242,7 @@ unmountMemoryCard:
 lis r3,0x8002
 ori r3,r3,0x69ec # CARDUnmount
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 blrl
 
 # Run the REL Prolog if the load was successful
