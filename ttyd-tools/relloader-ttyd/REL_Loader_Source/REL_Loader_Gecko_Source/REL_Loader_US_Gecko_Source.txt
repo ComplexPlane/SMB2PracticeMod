@@ -150,6 +150,12 @@ lwz r3,0x20(r22)
 bl allocateOnArena
 mr r21,r3 # Backup for later
 
+# Overwrite the REL version from 3 to 2.
+# elf2rel produces RELs with version 3, but SMB2 only accepts rels with version < 3
+# TODO support v2 in elf2rel?
+li r3,0x2
+stw r3,0x1c(r22)
+
 # Link the functions in the REL
 lis r3,0x8001
 ori r3,r3,0x0730 # OSLink
