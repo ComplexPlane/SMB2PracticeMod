@@ -4,8 +4,6 @@
 # 80006d10 - Address to hook for this code
 # This is after mkb2.main_loop.rel is loaded and linked, but before its prolog runs
 
-# TODO load from slot B
-
 # TODO restart register usage from r31 and reorder?
 # TODO consistent capitalization?
 # TODO consistent blrl/bctr?
@@ -14,6 +12,7 @@
 # TODO initialize register assignments to pointers on stack in one place?
 
 # Stack Layout
+# No heap is available, so we use the stack for temporary space
 # | Size                   | Offset | Size   | Alignment |
 # | ---------------------- | ------ | ------ | --------- |
 # | CARDMount work area    | 0x220  | 0xa000 | 32        |
@@ -24,22 +23,22 @@
 # | SP Save                | 0x0    | 0x4    |           |
 
 # Register Assignments
-# r28: Used to preserve r12 from hook point, which is the prolog function of the main_loop rel
-# r27: REL prolog pointer, initially 0. Keeps track of whether a REL is loaded or not
-# r26: CardFileInfo struct buffer, allocated on stack
-# r25: REL module size, rounded up to multiple of 0x200 bytes
-# r24: Card file buffer, allocated on stack
-# r23: CARDMount work area, allocated on stack
-# r22: REL module region, allocated on arena
-# r21: REL BSS buffer, allocated on arena
-# r20: Original arena low pointer
-# r19: Pointer to "rel" on stack
+# r31: Used to preserve r12 from hook point, which is the prolog function of the main_loop rel
+# r30: REL prolog pointer, initially 0. Keeps track of whether a REL is loaded or not
+# r29: CardFileInfo struct buffer, allocated on stack
+# r28: REL module size, rounded up to multiple of 0x200 bytes
+# r27: Card file buffer, allocated on stack
+# r26: CARDMount work area, allocated on stack
+# r25: REL module region, allocated on arena
+# r24: REL BSS buffer, allocated on arena
+# r23: Original arena low pointer
+# r22: Pointer to "rel" on stack
 
 # Save r12 from hook point
-mr r28,r12
+mr r31,r12
 
 # Used to check if a REL file is loaded or not
-li r27,0
+li r30,0
 
 # Make stack frame
 lis r3,0xffff
@@ -47,22 +46,22 @@ ori r3,r3,0x5de0 # -0xa220
 stwux r1,r1,r3
 
 # Initialize stack buffer pointers
-addi r23,r1,0x220 # CARDMount work area
-addi r24,r1,0x20 # Small card file buffer
-addi r26,r1,0xc # CardFileInfo
-addi r19,r1,0x8 # "rel"
+addi r26,r1,0x220 # CARDMount work area
+addi r27,r1,0x20 # Small card file buffer
+addi r29,r1,0xc # CardFileInfo
+addi r22,r1,0x8 # "rel"
 
 # Write "rel" string (file name) to stack
 lis r3,0x7265
 ori r3,r3,0x6c00
-stw r3,0x0(r19)
+stw r3,0x0(r22)
 
 # Save original arena low pointer
 lis r3,0x8000
 ori r3,r3,0xd590 # OSGetArenaLo
 mtctr r3
 bctrl
-mr r20,r3 # Save address for later
+mr r23,r3 # Save address for later
 
 # Check if a Memory Card is present
 # To avoid an infinite loop, only check for a memory card a set amount of times
@@ -94,7 +93,7 @@ lis r3,0x8002
 ori r3,r3,0x67b0 # CARDMountAsync
 mtlr r3
 li r3,1 # Memory Card Slot B
-mr r4,r23 # Pointer to the card Work Area
+mr r4,r26 # Pointer to the card Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
 blrl
@@ -107,8 +106,8 @@ lis r3,0x8002
 ori r3,r3,0x74fc # CARDOpen
 mtlr r3
 li r3,1 # Memory Card Slot B
-mr r4,r19 # File Name ("rel" on stack)
-mr r5,r26 # Pointer to CardFileInfo
+mr r4,r22 # File Name ("rel" on stack)
+mr r5,r29 # Pointer to CardFileInfo
 blrl
 cmpwi r3,0 # Check if something went wrong
 bne- unmountMemoryCard
@@ -117,8 +116,8 @@ bne- unmountMemoryCard
 lis r3,0x8002
 ori r3,r3,0x7cb4 # CARDReadAsync
 mtlr r3
-mr r3,r26 # Pointer to CardFileInfo
-mr r4,r24 # Pointer to the File Buffer
+mr r3,r29 # Pointer to CardFileInfo
+mr r4,r27 # Pointer to the File Buffer
 li r5,0x200 # Amount of bytes to read
 li r6,0x2000 # Offset in the file to start reading from
 li r7,0 # Read Callback function (Want to avoid using, so NULL)
@@ -128,22 +127,22 @@ cmpwi r3,0 # Check if something went wrong
 bne- unmountMemoryCard
 
 # Get the REL module size and adjust it to be in multiples of 0x200 bytes
-lwz r25,0x40(r24) # Module Size
-addi r25,r25,511
-rlwinm r25,r25,0,0,22
+lwz r28,0x40(r27) # Module Size
+addi r28,r28,511
+rlwinm r28,r28,0,0,22
 
 # Allocate buffer for the REL based on the adjusted module size
-mr r3,r25
+mr r3,r28
 bl allocateOnArena
-mr r22,r3 # Backup for later
+mr r25,r3 # Backup for later
 
 # Read the REL Area of the file
 lis r3,0x8002
 ori r3,r3,0x7cb4 # CARDReadAsync
 mtlr r3
-mr r3,r26 # Pointer to CardFileInfo
-mr r4,r22 # Pointer to the REL Module Buffer
-mr r5,r25 # Adjusted REL Module Size
+mr r3,r29 # Pointer to CardFileInfo
+mr r4,r25 # Pointer to the REL Module Buffer
+mr r5,r28 # Adjusted REL Module Size
 li r6,0x2200 # Offset in the file to start reading from
 li r7,0 # Read Callback Function (Want to avoid using, so NULL)
 blrl
@@ -152,30 +151,30 @@ cmpwi r3,0 # Check if something went wrong
 bne- restoreArena
 
 # Get the BSS Area size and allocate memory for it
-lwz r3,0x20(r22)
+lwz r3,0x20(r25)
 bl allocateOnArena
-mr r21,r3 # Backup for later
+mr r24,r3 # Backup for later
 
 # Overwrite the REL version from 3 to 2.
 # elf2rel produces RELs with version 3, but SMB2 only accepts rels with version < 3
 # TODO support v2 in elf2rel?
 li r3,0x2
-stw r3,0x1c(r22)
+stw r3,0x1c(r25)
 
 # Link the functions in the REL
 lis r3,0x8001
 ori r3,r3,0x0730 # OSLink
 mtlr r3
-mr r3,r22 # Pointer to the REL module buffer
-mr r4,r21 # Pointer to the BSS Area
+mr r3,r25 # Pointer to the REL module buffer
+mr r4,r24 # Pointer to the BSS Area
 blrl
 cmpwi r3,1 # Check if something went wrong
 bne- unlinkRel
 
-lwz r3,0x34(r22) # Get the REL Prolog Pointer
+lwz r3,0x34(r25) # Get the REL Prolog Pointer
 cmpwi r3,0
 beq- unlinkRel # If it's 0 for some reason, unlinkRel
-mr r27,r3 # Store REL prolog pointer
+mr r30,r3 # Store REL prolog pointer
 
 # Done loading REL, so unmount memory card, run prolog, and exit
 b unmountMemoryCard
@@ -218,7 +217,7 @@ unlinkRel:
 lis r3,0x8001
 ori r3,r3,0x0b8c # OSUnlink
 mtlr r3
-mr r3,r22 # Pointer to the Module
+mr r3,r25 # Pointer to the Module
 blrl
 
 # Restore the arena low pointer if we cannot load the REL
@@ -226,7 +225,7 @@ restoreArena:
 lis r3,0x8000
 ori r3,r3,0xd5a0 # OSSetArenaLo
 mtctr r3
-mr r3,r20
+mr r3,r23
 bctrl
 
 #
@@ -246,9 +245,9 @@ li r3,1 # Memory Card Slot B
 blrl
 
 # Run the REL Prolog if the load was successful
-cmpwi r27,0
+cmpwi r30,0
 beq- exit
-mtlr r27
+mtlr r30
 blrl
 
 # Restore stack pointer
@@ -257,6 +256,6 @@ lwz r1,0x0(r1)
 
 # Restore intruction replaced by hook
 # Original instruction was: mtctr r12
-mtctr r28
+mtctr r31
 
 # vim:ft=asm
