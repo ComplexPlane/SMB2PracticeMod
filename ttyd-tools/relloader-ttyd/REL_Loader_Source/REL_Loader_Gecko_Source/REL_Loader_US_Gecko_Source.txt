@@ -26,6 +26,7 @@
 # | SP Save                | 0x0    | 0x4    |           |
 
 # Register Assignments
+# r28: Used to preserve r12 from hook point, which is the prolog function of the main_loop rel
 # r27: REL prolog pointer, initially 0. Keeps track of whether a REL is loaded or not
 # r26: CardFileInfo struct buffer, allocated on stack
 # r25: REL module size, rounded up to multiple of 0x200 bytes
@@ -35,6 +36,9 @@
 # r21: REL BSS buffer, allocated on arena
 # r20: Original arena low pointer
 # r19: Pointer to "rel" on stack
+
+# Save r12 from hook point
+mr r28,r12
 
 # Used to check if a REL file is loaded or not
 li r27,0
@@ -253,6 +257,8 @@ blrl
 exit:
 lwz r1,0x0(r1)
 
-mtctr r12 # Instruction which the hook replaced
+# Restore intruction replaced by hook
+# Original instruction was: mtctr r12
+mtctr r28
 
 # vim:ft=asm
