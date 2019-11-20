@@ -1,0 +1,2382 @@
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 rel.o
+ .data          0x0000000000000000        0x0 rel.o
+ .bss           0x0000000000000000        0x0 rel.o
+ .text          0x0000000000000000        0x0 wrappers.o
+ .data          0x0000000000000000        0x0 wrappers.o
+ .bss           0x0000000000000000        0x0 wrappers.o
+ .text          0x0000000000000000        0x0 global.o
+ .data          0x0000000000000000        0x0 global.o
+ .bss           0x0000000000000000        0x0 global.o
+ .text          0x0000000000000000        0x0 codes.o
+ .data          0x0000000000000000        0x0 codes.o
+ .bss           0x0000000000000000        0x0 codes.o
+ .text          0x0000000000000000        0x0 patch.o
+ .data          0x0000000000000000        0x0 patch.o
+ .bss           0x0000000000000000        0x0 patch.o
+ .text._ZN3mod5patch21writeStandardBranchesEPvPFvvES3_
+                0x0000000000000000       0x3c patch.o
+ .text          0x0000000000000000        0x0 memorywatch.o
+ .data          0x0000000000000000        0x0 memorywatch.o
+ .bss           0x0000000000000000        0x0 memorywatch.o
+ .text          0x0000000000000000        0x0 cxx.o
+ .data          0x0000000000000000        0x0 cxx.o
+ .bss           0x0000000000000000        0x0 cxx.o
+ .text._ZdaPvj  0x0000000000000000        0xc cxx.o
+ .text          0x0000000000000000        0x0 menufunctions.o
+ .data          0x0000000000000000        0x0 menufunctions.o
+ .bss           0x0000000000000000        0x0 menufunctions.o
+ .text._ZN3mod20getDigitBeingChangedEii
+                0x0000000000000000       0x44 menufunctions.o
+ .text._ZN3mod5getGWEj
+                0x0000000000000000       0x2c menufunctions.o
+ .text._ZN3mod12getPartyNameEN4ttyd5party12PartyMembersE
+                0x0000000000000000       0x28 menufunctions.o
+ .text          0x0000000000000000        0x0 draw.o
+ .data          0x0000000000000000        0x0 draw.o
+ .bss           0x0000000000000000        0x0 draw.o
+ .text._ZN3mod20getOnOffTextAndColorEbPPKcPj
+                0x0000000000000000       0x3c draw.o
+ .text._ZN3mod20getYesNoTextAndColorEbPPKcPj
+                0x0000000000000000       0x3c draw.o
+ .text._ZN3mod20getSelectedTextColorEb
+                0x0000000000000000       0x1c draw.o
+ .text._ZN3mod32drawSingleLineFromStringAndValueEiiPKci
+                0x0000000000000000       0x6c draw.o
+ .rodata._ZN3mod32drawSingleLineFromStringAndValueEiiPKci.str1.1
+                0x0000000000000000        0x5 draw.o
+ .text          0x0000000000000000        0x0 memcard.o
+ .data          0x0000000000000000        0x0 memcard.o
+ .bss           0x0000000000000000        0x0 memcard.o
+ .text          0x0000000000000000        0x0 mod.o
+ .data          0x0000000000000000        0x0 mod.o
+ .bss           0x0000000000000000        0x0 mod.o
+ .text          0x0000000000000000        0x0 menu.o
+ .data          0x0000000000000000        0x0 menu.o
+ .bss           0x0000000000000000        0x0 menu.o
+ .text          0x0000000000000000        0x0 main.o
+ .data          0x0000000000000000        0x0 main.o
+ .bss           0x0000000000000000        0x0 main.o
+ .text          0x0000000000000000        0x0 commonfunctions.o
+ .data          0x0000000000000000        0x0 commonfunctions.o
+ .bss           0x0000000000000000        0x0 commonfunctions.o
+ .data          0x0000000000000000        0x0 DisplayMegaHammerBadgesInBattleMenu.o
+ .bss           0x0000000000000000        0x0 DisplayMegaHammerBadgesInBattleMenu.o
+ .data          0x0000000000000000        0x0 FixBlooperCrash2.o
+ .bss           0x0000000000000000        0x0 FixBlooperCrash2.o
+ .data          0x0000000000000000        0x0 DisableDPadOptionsDisplay.o
+ .bss           0x0000000000000000        0x0 DisableDPadOptionsDisplay.o
+ .data          0x0000000000000000        0x0 ReplaceJumpFallAnim.o
+ .bss           0x0000000000000000        0x0 ReplaceJumpFallAnim.o
+ .data          0x0000000000000000        0x0 FixEvtMapBlendSetFlagPartnerCrash.o
+ .bss           0x0000000000000000        0x0 FixEvtMapBlendSetFlagPartnerCrash.o
+ .data          0x0000000000000000        0x0 PreventTextboxOptionSelection.o
+ .bss           0x0000000000000000        0x0 PreventTextboxOptionSelection.o
+ .data          0x0000000000000000        0x0 FallThroughMostObjectsStandard.o
+ .bss           0x0000000000000000        0x0 FallThroughMostObjectsStandard.o
+ .data          0x0000000000000000        0x0 FallThroughMostObjectsBowser.o
+ .bss           0x0000000000000000        0x0 FallThroughMostObjectsBowser.o
+ .data          0x0000000000000000        0x0 ForceNPCItemDrop.o
+ .bss           0x0000000000000000        0x0 ForceNPCItemDrop.o
+ .data          0x0000000000000000        0x0 DisplayMegaJumpBadgeInBattleMenu.o
+ .bss           0x0000000000000000        0x0 DisplayMegaJumpBadgeInBattleMenu.o
+ .data          0x0000000000000000        0x0 FixBlooperCrash1.o
+ .bss           0x0000000000000000        0x0 FixBlooperCrash1.o
+ .data          0x0000000000000000        0x0 AllowRunningFromBattles.o
+ .bss           0x0000000000000000        0x0 AllowRunningFromBattles.o
+ .data          0x0000000000000000        0x0 FixEvtMapBlendSetFlagFollowerCrash.o
+ .bss           0x0000000000000000        0x0 FixEvtMapBlendSetFlagFollowerCrash.o
+ .data          0x0000000000000000        0x0 restgpr_x.o
+ .bss           0x0000000000000000        0x0 restgpr_x.o
+ .data          0x0000000000000000        0x0 restfpr_x.o
+ .bss           0x0000000000000000        0x0 restfpr_x.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000080003100                . = 0x80003100
+
+.init
+ *crt0.o(*.init)
+ *(.init)
+
+.plt
+ *(.plt)
+
+.interp
+ *(.interp)
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*)
+
+.rela.text
+ *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*)
+
+.rela.rodata
+ *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+
+.rel.data
+ *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+
+.rela.data
+ *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+
+.rel.tdata
+ *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*)
+
+.rela.tdata
+ *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+
+.rel.tbss
+ *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*)
+
+.rela.tbss
+ *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rela.got1
+ *(.rela.got1)
+
+.rela.got2
+ *(.rela.got2)
+
+.rel.sdata
+ *(.rel.sdata .rel.sdata.* .rel.gnu.linkonce.s.*)
+
+.rela.sdata
+ *(.rela.sdata .rela.sdata.* .rela.gnu.linkonce.s.*)
+
+.rel.sbss
+ *(.rel.sbss .rel.sbss.* .rel.gnu.linkonce.sb.*)
+
+.rela.sbss
+ *(.rela.sbss .rela.sbss.* .rel.gnu.linkonce.sb.*)
+
+.rel.sdata2
+ *(.rel.sdata2 .rel.sdata2.* .rel.gnu.linkonce.s2.*)
+
+.rela.sdata2
+ *(.rela.sdata2 .rela.sdata2.* .rela.gnu.linkonce.s2.*)
+
+.rel.sbss2
+ *(.rel.sbss2 .rel.sbss2.* .rel.gnu.linkonce.sb2.*)
+
+.rela.sbss2
+ *(.rela.sbss2 .rela.sbss2.* .rela.gnu.linkonce.sb2.*)
+
+.rel.bss
+ *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*)
+
+.rela.bss
+ *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x0000000080003100     0xf800
+ *(.text)
+ .text          0x0000000080003100       0x40 DisplayMegaHammerBadgesInBattleMenu.o
+                0x0000000080003100                StartDisplayMegaHammerBadgesBattleMenu
+ .text          0x0000000080003140       0x60 FixBlooperCrash2.o
+                0x0000000080003140                StartFixBlooperCrash2
+ .text          0x00000000800031a0       0x38 DisableDPadOptionsDisplay.o
+                0x00000000800031a0                StartDisableDPadOptionsDisplay
+ .text          0x00000000800031d8       0x38 ReplaceJumpFallAnim.o
+                0x00000000800031d8                StartReplaceJumpFallAnim
+ .text          0x0000000080003210       0x24 FixEvtMapBlendSetFlagPartnerCrash.o
+                0x0000000080003210                StartFixEvtMapBlendSetFlagPartnerCrash
+ .text          0x0000000080003234       0x10 PreventTextboxOptionSelection.o
+                0x0000000080003234                StartPreventTextboxSelection
+ .text          0x0000000080003244       0x24 FallThroughMostObjectsStandard.o
+                0x0000000080003244                StartFallThroughMostObjectsStandard
+ .text          0x0000000080003268       0x24 FallThroughMostObjectsBowser.o
+                0x0000000080003268                StartFallThroughMostObjectsBowser
+ .text          0x000000008000328c       0x34 ForceNPCItemDrop.o
+                0x000000008000328c                StartForceNPCItemDrop
+ .text          0x00000000800032c0       0x40 DisplayMegaJumpBadgeInBattleMenu.o
+                0x00000000800032c0                StartDisplayMegaJumpBadgeBattleMenu
+ .text          0x0000000080003300        0x8 FixBlooperCrash1.o
+                0x0000000080003300                StartFixBlooperCrash1
+ .text          0x0000000080003308       0x24 AllowRunningFromBattles.o
+                0x0000000080003308                StartAllowRunningFromBattles
+ .text          0x000000008000332c       0x24 FixEvtMapBlendSetFlagFollowerCrash.o
+                0x000000008000332c                StartFixEvtMapBlendSetFlagFollowerCrash
+ .text          0x0000000080003350       0x58 restgpr_x.o
+                0x0000000080003350                _restgpr_14_x
+                0x0000000080003354                _restgpr_15_x
+                0x0000000080003358                _restgpr_16_x
+                0x000000008000335c                _restgpr_17_x
+                0x0000000080003360                _restgpr_18_x
+                0x0000000080003364                _restgpr_19_x
+                0x0000000080003368                _restgpr_20_x
+                0x000000008000336c                _restgpr_21_x
+                0x0000000080003370                _restgpr_22_x
+                0x0000000080003374                _restgpr_23_x
+                0x0000000080003378                _restgpr_24_x
+                0x000000008000337c                _restgpr_25_x
+                0x0000000080003380                _restgpr_26_x
+                0x0000000080003384                _restgpr_27_x
+                0x0000000080003388                _restgpr_28_x
+                0x000000008000338c                _restgpr_29_x
+                0x0000000080003390                _restgpr_30_x
+                0x0000000080003394                _restgpr_31_x
+ .text          0x00000000800033a8       0x58 restfpr_x.o
+                0x00000000800033a8                _restfpr_14_x
+                0x00000000800033ac                _restfpr_15_x
+                0x00000000800033b0                _restfpr_16_x
+                0x00000000800033b4                _restfpr_17_x
+                0x00000000800033b8                _restfpr_18_x
+                0x00000000800033bc                _restfpr_19_x
+                0x00000000800033c0                _restfpr_20_x
+                0x00000000800033c4                _restfpr_21_x
+                0x00000000800033c8                _restfpr_22_x
+                0x00000000800033cc                _restfpr_23_x
+                0x00000000800033d0                _restfpr_24_x
+                0x00000000800033d4                _restfpr_25_x
+                0x00000000800033d8                _restfpr_26_x
+                0x00000000800033dc                _restfpr_27_x
+                0x00000000800033e0                _restfpr_28_x
+                0x00000000800033e4                _restfpr_29_x
+                0x00000000800033e8                _restfpr_30_x
+                0x00000000800033ec                _restfpr_31_x
+ *(.text.*)
+ .text._prolog  0x0000000080003400       0x5c rel.o
+                0x0000000080003400                _prolog
+ .text._epilog  0x000000008000345c       0x4c rel.o
+                0x000000008000345c                _epilog
+ .text._unresolved
+                0x00000000800034a8        0x4 rel.o
+                0x00000000800034a8                _unresolved
+ .text.__wrap_sprintf
+                0x00000000800034ac       0x80 wrappers.o
+                0x00000000800034ac                __wrap_sprintf
+ .text.__wrap_strcmp
+                0x000000008000352c        0x4 wrappers.o
+                0x000000008000352c                __wrap_strcmp
+ .text.__wrap_strncmp
+                0x0000000080003530        0x4 wrappers.o
+                0x0000000080003530                __wrap_strncmp
+ .text.__wrap_strcpy
+                0x0000000080003534        0x4 wrappers.o
+                0x0000000080003534                __wrap_strcpy
+ .text.__wrap_strncpy
+                0x0000000080003538        0x4 wrappers.o
+                0x0000000080003538                __wrap_strncpy
+ .text.__wrap_strcat
+                0x000000008000353c        0x4 wrappers.o
+                0x000000008000353c                __wrap_strcat
+ .text.__wrap_strlen
+                0x0000000080003540        0x4 wrappers.o
+                0x0000000080003540                __wrap_strlen
+ .text.__wrap_memcpy
+                0x0000000080003544        0x4 wrappers.o
+                0x0000000080003544                __wrap_memcpy
+ .text.__wrap_memset
+                0x0000000080003548        0x4 wrappers.o
+                0x0000000080003548                __wrap_memset
+ .text.__wrap_sysMsec2Frame
+                0x000000008000354c        0x4 wrappers.o
+                0x000000008000354c                __wrap_sysMsec2Frame
+ .text.__wrap_keyGetButton
+                0x0000000080003550        0x4 wrappers.o
+                0x0000000080003550                __wrap_keyGetButton
+ .text.__wrap_keyGetButtonTrg
+                0x0000000080003554        0x4 wrappers.o
+                0x0000000080003554                __wrap_keyGetButtonTrg
+ .text.__wrap_seqGetSeq
+                0x0000000080003558        0x4 wrappers.o
+                0x0000000080003558                __wrap_seqGetSeq
+ .text.__wrap_seqGetNextSeq
+                0x000000008000355c        0x4 wrappers.o
+                0x000000008000355c                __wrap_seqGetNextSeq
+ .text.__wrap_swByteGet
+                0x0000000080003560        0x4 wrappers.o
+                0x0000000080003560                __wrap_swByteGet
+ .text.__wrap_swByteSet
+                0x0000000080003564        0x4 wrappers.o
+                0x0000000080003564                __wrap_swByteSet
+ .text.__wrap_swClear
+                0x0000000080003568        0x4 wrappers.o
+                0x0000000080003568                __wrap_swClear
+ .text.__wrap_swSet
+                0x000000008000356c        0x4 wrappers.o
+                0x000000008000356c                __wrap_swSet
+ .text.__wrap_marioStGetSystemLevel
+                0x0000000080003570        0x4 wrappers.o
+                0x0000000080003570                __wrap_marioStGetSystemLevel
+ .text.__wrap_marioStSystemLevel
+                0x0000000080003574        0x4 wrappers.o
+                0x0000000080003574                __wrap_marioStSystemLevel
+ .text.__wrap_marioGetPartyId
+                0x0000000080003578        0x4 wrappers.o
+                0x0000000080003578                __wrap_marioGetPartyId
+ .text.__wrap_marioGetExtraPartyId
+                0x000000008000357c        0x4 wrappers.o
+                0x000000008000357c                __wrap_marioGetExtraPartyId
+ .text.__wrap_marioGetPtr
+                0x0000000080003580        0x4 wrappers.o
+                0x0000000080003580                __wrap_marioGetPtr
+ .text.__wrap_partyGetPtr
+                0x0000000080003584        0x4 wrappers.o
+                0x0000000080003584                __wrap_partyGetPtr
+ .text.__wrap_pouchGetPtr
+                0x0000000080003588        0x4 wrappers.o
+                0x0000000080003588                __wrap_pouchGetPtr
+ .text.__wrap_btlGetScreenPoint
+                0x000000008000358c        0x4 wrappers.o
+                0x000000008000358c                __wrap_btlGetScreenPoint
+ .text.__wrap_evtGetWork
+                0x0000000080003590        0x4 wrappers.o
+                0x0000000080003590                __wrap_evtGetWork
+ .text.__wrap_eventStgNum
+                0x0000000080003594        0x4 wrappers.o
+                0x0000000080003594                __wrap_eventStgNum
+ .text.__wrap_eventStgDtPtr
+                0x0000000080003598        0x4 wrappers.o
+                0x0000000080003598                __wrap_eventStgDtPtr
+ .text.__wrap_winGetPtr
+                0x000000008000359c        0x4 wrappers.o
+                0x000000008000359c                __wrap_winGetPtr
+ .text.__wrap_winOpenEnable
+                0x00000000800035a0        0x4 wrappers.o
+                0x00000000800035a0                __wrap_winOpenEnable
+ .text.__wrap_CARDClose
+                0x00000000800035a4        0x4 wrappers.o
+                0x00000000800035a4                __wrap_CARDClose
+ .text.__wrap_DCFlushRange
+                0x00000000800035a8        0x4 wrappers.o
+                0x00000000800035a8                __wrap_DCFlushRange
+ .text.__wrap_ICInvalidateRange
+                0x00000000800035ac        0x4 wrappers.o
+                0x00000000800035ac                __wrap_ICInvalidateRange
+ .text.__wrap___udivdi3
+                0x00000000800035b0        0x4 wrappers.o
+                0x00000000800035b0                __wrap___udivdi3
+ .text.__wrap___umoddi3
+                0x00000000800035b4        0x4 wrappers.o
+                0x00000000800035b4                __wrap___umoddi3
+ .text._ZN3mod18setInitialSettingsEv
+                0x00000000800035b8       0xbc global.o
+                0x00000000800035b8                _ZN3mod18setInitialSettingsEv
+ .text._ZN3mod12initMenuVarsEv
+                0x0000000080003674      0x25c global.o
+                0x0000000080003674                _ZN3mod12initMenuVarsEv
+ .text.startup._GLOBAL__sub_I__ZN3mod13VersionNumberE
+                0x00000000800038d0      0x104 global.o
+ .text._ZZN3mod3Mod19performBattleChecksEvENKUlhE_clEh.isra.0
+                0x00000000800039d4       0x30 codes.o
+ .text._ZN3mod3Mod14disableBattlesEjPv
+                0x0000000080003a04       0x90 codes.o
+                0x0000000080003a04                _ZN3mod3Mod14disableBattlesEjPv
+ .text.allowRunningFromBattles
+                0x0000000080003a94       0x20 codes.o
+                0x0000000080003a94                allowRunningFromBattles
+ .text.forceNPCItemDrop
+                0x0000000080003ab4       0x24 codes.o
+                0x0000000080003ab4                forceNPCItemDrop
+ .text.fallThroughMostObjects
+                0x0000000080003ad8       0x5c codes.o
+                0x0000000080003ad8                fallThroughMostObjects
+ .text._ZN3mod3Mod19performBattleChecksEv
+                0x0000000080003b34       0xd4 codes.o
+                0x0000000080003b34                _ZN3mod3Mod19performBattleChecksEv
+ .text._ZN3mod22walkThroughMostObjectsEv
+                0x0000000080003c08       0x98 codes.o
+                0x0000000080003c08                _ZN3mod22walkThroughMostObjectsEv
+ .text._ZN3mod28saveMarioAndPartnerPositionsEv
+                0x0000000080003ca0       0xc4 codes.o
+                0x0000000080003ca0                _ZN3mod28saveMarioAndPartnerPositionsEv
+ .text._ZN3mod28loadMarioAndPartnerPositionsEv
+                0x0000000080003d64       0xc4 codes.o
+                0x0000000080003d64                _ZN3mod28loadMarioAndPartnerPositionsEv
+ .text._ZN3mod12saveAnywhereEv
+                0x0000000080003e28      0x104 codes.o
+                0x0000000080003e28                _ZN3mod12saveAnywhereEv
+ .text._ZN3mod14setTextStorageEv
+                0x0000000080003f2c       0x54 codes.o
+                0x0000000080003f2c                _ZN3mod14setTextStorageEv
+ .text._ZN3mod22setTimeStopTextStorageEv
+                0x0000000080003f80       0x54 codes.o
+                0x0000000080003f80                _ZN3mod22setTimeStopTextStorageEv
+ .text._ZN3mod12speedUpMarioEv
+                0x0000000080003fd4      0x108 codes.o
+                0x0000000080003fd4                _ZN3mod12speedUpMarioEv
+ .text._ZN3mod3Mod17infiniteItemUsageEsj
+                0x00000000800040dc       0x98 codes.o
+                0x00000000800040dc                _ZN3mod3Mod17infiniteItemUsageEsj
+ .text._ZN3mod33checkIfSystemLevelShouldBeLoweredEv
+                0x0000000080004174       0x64 codes.o
+                0x0000000080004174                _ZN3mod33checkIfSystemLevelShouldBeLoweredEv
+ .text._ZN3mod14reloadRoomMainEv
+                0x00000000800041d8       0xf8 codes.o
+                0x00000000800041d8                _ZN3mod14reloadRoomMainEv
+ .text._ZN3mod10reloadRoomEv
+                0x00000000800042d0       0xac codes.o
+                0x00000000800042d0                _ZN3mod10reloadRoomEv
+ .text._ZN3mod8levitateEv
+                0x000000008000437c       0x50 codes.o
+                0x000000008000437c                _ZN3mod8levitateEv
+ .text._ZN3mod16lockMarioHPToMaxEv
+                0x00000000800043cc       0x4c codes.o
+                0x00000000800043cc                _ZN3mod16lockMarioHPToMaxEv
+ .text._ZN3mod12bobberyEarlyEv
+                0x0000000080004418       0xf0 codes.o
+                0x0000000080004418                _ZN3mod12bobberyEarlyEv
+ .text._ZN3mod9spawnItemEv
+                0x0000000080004508      0x1dc codes.o
+                0x0000000080004508                _ZN3mod9spawnItemEv
+ .text._ZN3mod31checkIfAreaFlagsShouldBeClearedEv
+                0x00000000800046e4       0x88 codes.o
+                0x00000000800046e4                _ZN3mod31checkIfAreaFlagsShouldBeClearedEv
+ .text._ZN3mod9lockFlagsEv
+                0x000000008000476c       0xe0 codes.o
+                0x000000008000476c                _ZN3mod9lockFlagsEv
+ .text._ZN3mod26displaySequenceInPauseMenuEv
+                0x000000008000484c       0x60 codes.o
+                0x000000008000484c                _ZN3mod26displaySequenceInPauseMenuEv
+ .text._ZN3mod20displayOnScreenTimerEv
+                0x00000000800048ac       0x8c codes.o
+                0x00000000800048ac                _ZN3mod20displayOnScreenTimerEv
+ .text._ZN3mod19displayFrameCounterEv
+                0x0000000080004938       0x88 codes.o
+                0x0000000080004938                _ZN3mod19displayFrameCounterEv
+ .text._ZN3mod32displayMarioCoordinatesBoolCheckEv
+                0x00000000800049c0       0x1c codes.o
+                0x00000000800049c0                _ZN3mod32displayMarioCoordinatesBoolCheckEv
+ .text._ZN3mod19displayMarioSpeedXZEv
+                0x00000000800049dc       0x1c codes.o
+                0x00000000800049dc                _ZN3mod19displayMarioSpeedXZEv
+ .text._ZN3mod25displayJumpStorageDetailsEv
+                0x00000000800049f8       0x90 codes.o
+                0x00000000800049f8                _ZN3mod25displayJumpStorageDetailsEv
+ .text._ZN3mod19displayButtonInputsEv
+                0x0000000080004a88       0x1c codes.o
+                0x0000000080004a88                _ZN3mod19displayButtonInputsEv
+ .text._ZN3mod17displayStickAngleEv
+                0x0000000080004aa4       0x38 codes.o
+                0x0000000080004aa4                _ZN3mod17displayStickAngleEv
+ .text._ZN3mod20displayMemoryWatchesEv
+                0x0000000080004adc       0x5c codes.o
+                0x0000000080004adc                _ZN3mod20displayMemoryWatchesEv
+ .text._ZN3mod23displayYoshiSkipDetailsEv
+                0x0000000080004b38       0xe8 codes.o
+                0x0000000080004b38                _ZN3mod23displayYoshiSkipDetailsEv
+ .text._ZN3mod24displayPalaceSkipDetailsEv
+                0x0000000080004c20       0xdc codes.o
+                0x0000000080004c20                _ZN3mod24displayPalaceSkipDetailsEv
+ .text._ZN3mod29displayBlimpTicketSkipDetailsEv
+                0x0000000080004cfc      0x118 codes.o
+                0x0000000080004cfc                _ZN3mod29displayBlimpTicketSkipDetailsEv
+ .text._ZN3mod3Mod17preventMenuSoundsEijjj
+                0x0000000080004e14       0x44 codes.o
+                0x0000000080004e14                _ZN3mod3Mod17preventMenuSoundsEijjj
+ .text._ZN3mod3Mod31displayActionCommandsTimingHookEPvPN4ttyd11battle_unit12AttackParamsE
+                0x0000000080004e58      0x1a0 codes.o
+                0x0000000080004e58                _ZN3mod3Mod31displayActionCommandsTimingHookEPvPN4ttyd11battle_unit12AttackParamsE
+ .text._ZN3mod27displayActionCommandsTimingEv
+                0x0000000080004ff8       0x1c codes.o
+                0x0000000080004ff8                _ZN3mod27displayActionCommandsTimingEv
+ .text._ZN3mod9warpToMapEj
+                0x0000000080005014      0x224 codes.o
+                0x0000000080005014                _ZN3mod9warpToMapEj
+ .text._ZN3mod16warpToMapByEventEi
+                0x0000000080005238       0x94 codes.o
+                0x0000000080005238                _ZN3mod16warpToMapByEventEi
+ .text._ZN3mod17warpToMapByStringEPKc
+                0x00000000800052cc       0x40 codes.o
+                0x00000000800052cc                _ZN3mod17warpToMapByStringEPKc
+ .text._ZN3mod3Mod20setIndexWarpEntranceEPvj
+                0x000000008000530c       0xe0 codes.o
+                0x000000008000530c                _ZN3mod3Mod20setIndexWarpEntranceEPvj
+ .text._ZN3mod5patch17clear_DC_IC_CacheEPvj
+                0x00000000800053ec       0x3c patch.o
+                0x00000000800053ec                _ZN3mod5patch17clear_DC_IC_CacheEPvj
+ .text._ZN3mod5patch15writeBranchMainEPvS1_j
+                0x0000000080005428       0x18 patch.o
+                0x0000000080005428                _ZN3mod5patch15writeBranchMainEPvS1_j
+ .text._ZN3mod5patch11writeBranchEPvS1_
+                0x0000000080005440        0x8 patch.o
+                0x0000000080005440                _ZN3mod5patch11writeBranchEPvS1_
+ .text._ZN3mod5patch13writeBranchLREPvS1_
+                0x0000000080005448        0xc patch.o
+                0x0000000080005448                _ZN3mod5patch13writeBranchLREPvS1_
+ .text._ZN3mod17getEmptyWatchSlotEv
+                0x0000000080005454       0x34 memorywatch.o
+                0x0000000080005454                _ZN3mod17getEmptyWatchSlotEv
+ .text._ZN3mod25getAddressStringNoLetterPEi
+                0x0000000080005488       0x48 memorywatch.o
+                0x0000000080005488                _ZN3mod25getAddressStringNoLetterPEi
+ .text._ZN3mod16getAddressStringEi
+                0x00000000800054d0       0x68 memorywatch.o
+                0x00000000800054d0                _ZN3mod16getAddressStringEi
+ .text._ZN3mod14addMemoryWatchEi
+                0x0000000080005538       0x40 memorywatch.o
+                0x0000000080005538                _ZN3mod14addMemoryWatchEi
+ .text._ZN3mod11deleteWatchEi
+                0x0000000080005578       0xd4 memorywatch.o
+                0x0000000080005578                _ZN3mod11deleteWatchEi
+ .text._ZN3mod14duplicateWatchEii
+                0x000000008000564c       0x20 memorywatch.o
+                0x000000008000564c                _ZN3mod14duplicateWatchEii
+ .text._ZN3mod14fixBaseAddressEiPv
+                0x000000008000566c       0x88 memorywatch.o
+                0x000000008000566c                _ZN3mod14fixBaseAddressEiPv
+ .text._ZN3mod27getAddressStringFromOffsetsEij
+                0x00000000800056f4       0xc8 memorywatch.o
+                0x00000000800056f4                _ZN3mod27getAddressStringFromOffsetsEij
+ .text._ZN3mod14getValueStringEi
+                0x00000000800057bc      0x26c memorywatch.o
+                0x00000000800057bc                _ZN3mod14getValueStringEi
+ .text._ZN3mod29adjustWatchTempValueAndBoundsEiji
+                0x0000000080005a28       0x88 memorywatch.o
+                0x0000000080005a28                _ZN3mod29adjustWatchTempValueAndBoundsEiji
+ .text._ZN3mod24adjustWatchValueControlsEi
+                0x0000000080005ab0      0x1b4 memorywatch.o
+                0x0000000080005ab0                _ZN3mod24adjustWatchValueControlsEi
+ .text._Znwj    0x0000000080005c64        0xc cxx.o
+                0x0000000080005c64                _Znwj
+ .text._Znaj    0x0000000080005c70        0x4 cxx.o
+                0x0000000080005c70                _Znaj
+ .text._ZdlPv   0x0000000080005c74        0xc cxx.o
+                0x0000000080005c74                _ZdlPv
+ .text._ZdaPv   0x0000000080005c80        0x4 cxx.o
+                0x0000000080005c80                _ZdaPv
+ .text._ZdlPvj  0x0000000080005c84        0xc cxx.o
+                0x0000000080005c84                _ZdlPvj
+ .text._ZN3mod18closeSecondaryMenuEv
+                0x0000000080005c90       0x24 menufunctions.o
+                0x0000000080005c90                _ZN3mod18closeSecondaryMenuEv
+ .text._ZN3mod13enterNextMenuEjj
+                0x0000000080005cb4       0x44 menufunctions.o
+                0x0000000080005cb4                _ZN3mod13enterNextMenuEjj
+ .text._ZN3mod17enterPreviousMenuEv
+                0x0000000080005cf8       0x44 menufunctions.o
+                0x0000000080005cf8                _ZN3mod17enterPreviousMenuEv
+ .text._ZN3mod9resetMenuEv
+                0x0000000080005d3c       0x28 menufunctions.o
+                0x0000000080005d3c                _ZN3mod9resetMenuEv
+ .text._ZN3mod15resetMenuToRootEv
+                0x0000000080005d64       0x58 menufunctions.o
+                0x0000000080005d64                _ZN3mod15resetMenuToRootEv
+ .text._ZN3mod26resetAndCloseSecondaryMenuEv
+                0x0000000080005dbc       0x18 menufunctions.o
+                0x0000000080005dbc                _ZN3mod26resetAndCloseSecondaryMenuEv
+ .text._ZN3mod28resetImportantItemsPauseMenuEv
+                0x0000000080005dd4       0x50 menufunctions.o
+                0x0000000080005dd4                _ZN3mod28resetImportantItemsPauseMenuEv
+ .text._ZN3mod21resetPartnerPauseMenuEv
+                0x0000000080005e24       0x48 menufunctions.o
+                0x0000000080005e24                _ZN3mod21resetPartnerPauseMenuEv
+ .text._ZN3mod22recheckUpgradesBattlesEi
+                0x0000000080005e6c       0x4c menufunctions.o
+                0x0000000080005e6c                _ZN3mod22recheckUpgradesBattlesEi
+ .text._ZN3mod16raiseSystemLevelEv
+                0x0000000080005eb8       0x40 menufunctions.o
+                0x0000000080005eb8                _ZN3mod16raiseSystemLevelEv
+ .text._ZN3mod16lowerSystemLevelEv
+                0x0000000080005ef8       0x48 menufunctions.o
+                0x0000000080005ef8                _ZN3mod16lowerSystemLevelEv
+ .text._ZN3mod9closeMenuEv
+                0x0000000080005f40       0x34 menufunctions.o
+                0x0000000080005f40                _ZN3mod9closeMenuEv
+ .text._ZN3mod24lockFlagsMenuBackUpFlagsEj
+                0x0000000080005f74      0x144 menufunctions.o
+                0x0000000080005f74                _ZN3mod24lockFlagsMenuBackUpFlagsEj
+ .text._ZN3mod23lockFlagsMenuSetNewAreaEj
+                0x00000000800060b8       0x98 menufunctions.o
+                0x00000000800060b8                _ZN3mod23lockFlagsMenuSetNewAreaEj
+ .text._ZN3mod32lockFlagsMenuGetAreaLockedStringEj
+                0x0000000080006150       0x24 menufunctions.o
+                0x0000000080006150                _ZN3mod32lockFlagsMenuGetAreaLockedStringEj
+ .text._ZN3mod11getItemNameEs
+                0x0000000080006174       0x18 menufunctions.o
+                0x0000000080006174                _ZN3mod11getItemNameEs
+ .text._ZN3mod22getPouchAddressAndSizeEPj
+                0x000000008000618c       0x60 menufunctions.o
+                0x000000008000618c                _ZN3mod22getPouchAddressAndSizeEPj
+ .text._ZN3mod18getFreeSlotPointerEv
+                0x00000000800061ec       0x64 menufunctions.o
+                0x00000000800061ec                _ZN3mod18getFreeSlotPointerEv
+ .text._ZN3mod13getTotalItemsEv
+                0x0000000080006250       0x68 menufunctions.o
+                0x0000000080006250                _ZN3mod13getTotalItemsEv
+ .text._ZN3mod23checkForItemsOnNextPageEj
+                0x00000000800062b8       0x6c menufunctions.o
+                0x00000000800062b8                _ZN3mod23checkForItemsOnNextPageEj
+ .text._ZN3mod40correctInventoryCurrentMenuOptionAndPageEj
+                0x0000000080006324       0x80 menufunctions.o
+                0x0000000080006324                _ZN3mod40correctInventoryCurrentMenuOptionAndPageEj
+ .text._ZN3mod24adjustMenuItemBoundsMainEiii
+                0x00000000800063a4       0x4c menufunctions.o
+                0x00000000800063a4                _ZN3mod24adjustMenuItemBoundsMainEiii
+ .text._ZN3mod24getMarioStatsValueOffsetEj
+                0x00000000800063f0       0x28 menufunctions.o
+                0x00000000800063f0                _ZN3mod24getMarioStatsValueOffsetEj
+ .text._ZN3mod18setMarioStatsValueEj
+                0x0000000080006418      0x108 menufunctions.o
+                0x0000000080006418                _ZN3mod18setMarioStatsValueEj
+ .text._ZN3mod20setBattlesActorValueEj
+                0x0000000080006520       0xcc menufunctions.o
+                0x0000000080006520                _ZN3mod20setBattlesActorValueEj
+ .text._ZN3mod26setBattlesActorStatusValueEj
+                0x00000000800065ec       0x6c menufunctions.o
+                0x00000000800065ec                _ZN3mod26setBattlesActorStatusValueEj
+ .text._ZN3mod29getSelectedOptionPartnerValueEv
+                0x0000000080006658       0x3c menufunctions.o
+                0x0000000080006658                _ZN3mod29getSelectedOptionPartnerValueEv
+ .text._ZN3mod24getPartnerEnabledAddressEv
+                0x0000000080006694       0x2c menufunctions.o
+                0x0000000080006694                _ZN3mod24getPartnerEnabledAddressEv
+ .text._ZN3mod20setPartnerStatsValueEj
+                0x00000000800066c0       0x84 menufunctions.o
+                0x00000000800066c0                _ZN3mod20setPartnerStatsValueEj
+ .text._ZN3mod25checkIfPartnerOutSelectedEv
+                0x0000000080006744       0x48 menufunctions.o
+                0x0000000080006744                _ZN3mod25checkIfPartnerOutSelectedEv
+ .text._ZN3mod27partnerMenuRemoveOrBringOutEPv
+                0x000000008000678c       0x90 menufunctions.o
+                0x000000008000678c                _ZN3mod27partnerMenuRemoveOrBringOutEPv
+ .text._ZN3mod15setAddByIdValueEPv
+                0x000000008000681c       0x30 menufunctions.o
+                0x000000008000681c                _ZN3mod15setAddByIdValueEPv
+ .text._ZN3mod20duplicateCurrentItemEPv
+                0x000000008000684c       0x48 menufunctions.o
+                0x000000008000684c                _ZN3mod20duplicateCurrentItemEPv
+ .text._ZN3mod10deleteItemEv
+                0x0000000080006894       0x94 menufunctions.o
+                0x0000000080006894                _ZN3mod10deleteItemEv
+ .text._ZN3mod11resolveFadeEj
+                0x0000000080006928      0x158 menufunctions.o
+                0x0000000080006928                _ZN3mod11resolveFadeEj
+ .text._ZN3mod5setGWEjj
+                0x0000000080006a80       0x30 menufunctions.o
+                0x0000000080006a80                _ZN3mod5setGWEjj
+ .text._ZN3mod5getGFEj
+                0x0000000080006ab0       0x38 menufunctions.o
+                0x0000000080006ab0                _ZN3mod5getGFEj
+ .text._ZN3mod5setGFEj
+                0x0000000080006ae8       0x40 menufunctions.o
+                0x0000000080006ae8                _ZN3mod5setGFEj
+ .text._ZN3mod18getGlobalFlagValueEjj
+                0x0000000080006b28       0xa4 menufunctions.o
+                0x0000000080006b28                _ZN3mod18getGlobalFlagValueEjj
+ .text._ZN3mod19cheatClearAreaFlagsEj
+                0x0000000080006bcc      0x37c menufunctions.o
+                0x0000000080006bcc                _ZN3mod19cheatClearAreaFlagsEj
+ .text._ZN3mod15getMapFromIndexEi
+                0x0000000080006f48       0x7c menufunctions.o
+                0x0000000080006f48                _ZN3mod15getMapFromIndexEi
+ .text._ZN3mod11getMapIndexEv
+                0x0000000080006fc4       0x44 menufunctions.o
+                0x0000000080006fc4                _ZN3mod11getMapIndexEv
+ .text._ZN3mod19getTotalStageEventsEv
+                0x0000000080007008       0x4c menufunctions.o
+                0x0000000080007008                _ZN3mod19getTotalStageEventsEv
+ .text._ZN3mod22getUpperAndLowerBoundsEPij
+                0x0000000080007054      0x30c menufunctions.o
+                0x0000000080007054                _ZN3mod22getUpperAndLowerBoundsEPij
+ .text._ZN3mod30getHighestAdjustableValueDigitEj
+                0x0000000080007360       0x70 menufunctions.o
+                0x0000000080007360                _ZN3mod30getHighestAdjustableValueDigitEj
+ .text._ZN3mod23setAdjustableValueToMaxEj
+                0x00000000800073d0       0x34 menufunctions.o
+                0x00000000800073d0                _ZN3mod23setAdjustableValueToMaxEj
+ .text._ZN3mod23setAdjustableValueToMinEj
+                0x0000000080007404       0x34 menufunctions.o
+                0x0000000080007404                _ZN3mod23setAdjustableValueToMinEj
+ .text._ZN3mod20adjustMenuItemBoundsEij
+                0x0000000080007438       0xbc menufunctions.o
+                0x0000000080007438                _ZN3mod20adjustMenuItemBoundsEij
+ .text._ZN3mod18adjustAddByIdValueEij
+                0x00000000800074f4       0x58 menufunctions.o
+                0x00000000800074f4                _ZN3mod18adjustAddByIdValueEij
+ .text._ZN3mod17setAddByIconValueEPv
+                0x000000008000754c       0x48 menufunctions.o
+                0x000000008000754c                _ZN3mod17setAddByIconValueEPv
+ .text._ZN3mod10changeItemEv
+                0x0000000080007594       0x7c menufunctions.o
+                0x0000000080007594                _ZN3mod10changeItemEv
+ .text._ZN3mod20indexToStageAndEventEiPi
+                0x0000000080007610       0x8c menufunctions.o
+                0x0000000080007610                _ZN3mod20indexToStageAndEventEiPi
+ .text._ZN3mod26checkForValidStageAndEventEii
+                0x000000008000769c       0x54 menufunctions.o
+                0x000000008000769c                _ZN3mod26checkForValidStageAndEventEii
+ .text._ZN3mod15getGsw0ForEventEii
+                0x00000000800076f0       0xb0 menufunctions.o
+                0x00000000800076f0                _ZN3mod15getGsw0ForEventEii
+ .text._ZN3mod15getEventDetailsEiPNS_24WarpByEventDetailsStructE
+                0x00000000800077a0       0xe8 menufunctions.o
+                0x00000000800077a0                _ZN3mod15getEventDetailsEiPNS_24WarpByEventDetailsStructE
+ .text._ZN3mod15initStageEventsEv
+                0x0000000080007888      0x32c menufunctions.o
+                0x0000000080007888                _ZN3mod15initStageEventsEv
+ .text._ZN3mod24getSequenceStageAndEventEPPKcj
+                0x0000000080007bb4       0xa4 menufunctions.o
+                0x0000000080007bb4                _ZN3mod24getSequenceStageAndEventEPPKcj
+ .text._ZN3mod13getStickAngleEPi
+                0x0000000080007c58       0xdc menufunctions.o
+                0x0000000080007c58                _ZN3mod13getStickAngleEPi
+ .text._ZN3mod19getStickAngleStringEPc
+                0x0000000080007d34       0x64 menufunctions.o
+                0x0000000080007d34                _ZN3mod19getStickAngleStringEPc
+ .text._ZN3mod13getTimeStringEPcx
+                0x0000000080007d98      0x128 menufunctions.o
+                0x0000000080007d98                _ZN3mod13getTimeStringEPcx
+ .text._ZN3mod23updateOnScreenTimerVarsEv
+                0x0000000080007ec0       0xb0 menufunctions.o
+                0x0000000080007ec0                _ZN3mod23updateOnScreenTimerVarsEv
+ .text._ZN3mod17getButtonsPressedEPhj
+                0x0000000080007f70       0x44 menufunctions.o
+                0x0000000080007f70                _ZN3mod17getButtonsPressedEPhj
+ .text._ZN3mod23createButtonStringArrayEPhPcj
+                0x0000000080007fb4       0xd4 menufunctions.o
+                0x0000000080007fb4                _ZN3mod23createButtonStringArrayEPhPcj
+ .text._ZN3mod29incrementCheatsBButtonCounterEj
+                0x0000000080008088       0x78 menufunctions.o
+                0x0000000080008088                _ZN3mod29incrementCheatsBButtonCounterEj
+ .text._ZN3mod17cheatsManageTimerEj
+                0x0000000080008100       0xac menufunctions.o
+                0x0000000080008100                _ZN3mod17cheatsManageTimerEj
+ .text._ZN3mod17checkForDPADInputEv
+                0x00000000800081ac       0x48 menufunctions.o
+                0x00000000800081ac                _ZN3mod17checkForDPADInputEv
+ .text._ZN3mod27checkForClosingErrorMessageEv
+                0x00000000800081f4       0x58 menufunctions.o
+                0x00000000800081f4                _ZN3mod27checkForClosingErrorMessageEv
+ .text._ZN3mod21checkErrorMessageReqsEv
+                0x000000008000824c       0x4c menufunctions.o
+                0x000000008000824c                _ZN3mod21checkErrorMessageReqsEv
+ .text._ZN3mod22checkButtonSingleFrameEv
+                0x0000000080008298       0x64 menufunctions.o
+                0x0000000080008298                _ZN3mod22checkButtonSingleFrameEv
+ .text._ZN3mod29adjustableValueButtonControlsEj
+                0x00000000800082fc      0x424 menufunctions.o
+                0x00000000800082fc                _ZN3mod29adjustableValueButtonControlsEj
+ .text._ZN3mod39memoryChangeWatchPositionButtonControlsEv
+                0x0000000080008720      0x1cc menufunctions.o
+                0x0000000080008720                _ZN3mod39memoryChangeWatchPositionButtonControlsEv
+ .text._ZN3mod38adjustIndexWarpCurrentMapEntrancesPageEj
+                0x00000000800088ec       0x70 menufunctions.o
+                0x00000000800088ec                _ZN3mod38adjustIndexWarpCurrentMapEntrancesPageEj
+ .text._ZN3mod27adjustMenuSelectionVerticalEjRhS0_jjjb
+                0x000000008000895c      0x328 menufunctions.o
+                0x000000008000895c                _ZN3mod27adjustMenuSelectionVerticalEjRhS0_jjjb
+ .text._ZN3mod31memoryAddressTypeButtonControlsEv
+                0x0000000080008c84       0xe8 menufunctions.o
+                0x0000000080008c84                _ZN3mod31memoryAddressTypeButtonControlsEv
+ .text._ZN3mod31marioSpecialMovesButtonControlsEv
+                0x0000000080008d6c       0xc4 menufunctions.o
+                0x0000000080008d6c                _ZN3mod31marioSpecialMovesButtonControlsEv
+ .text._ZN3mod37partnerChangeYoshiColorButtonControlsEv
+                0x0000000080008e30       0xc0 menufunctions.o
+                0x0000000080008e30                _ZN3mod37partnerChangeYoshiColorButtonControlsEv
+ .text._ZN3mod30followersOptionsButtonControlsEv
+                0x0000000080008ef0       0xc4 menufunctions.o
+                0x0000000080008ef0                _ZN3mod30followersOptionsButtonControlsEv
+ .text._ZN3mod20default_DPAD_ActionsEj
+                0x0000000080008fb4       0x3c menufunctions.o
+                0x0000000080008fb4                _ZN3mod20default_DPAD_ActionsEj
+ .text._ZN3mod20adjustMenuNoPageEditEj
+                0x0000000080008ff0       0x60 menufunctions.o
+                0x0000000080008ff0                _ZN3mod20adjustMenuNoPageEditEj
+ .text._ZN3mod33adjustCheatsResolveFadesSelectionEj
+                0x0000000080009050       0x44 menufunctions.o
+                0x0000000080009050                _ZN3mod33adjustCheatsResolveFadesSelectionEj
+ .text._ZN3mod31adjustCheatsManageFlagsMainMenuEj
+                0x0000000080009094       0x78 menufunctions.o
+                0x0000000080009094                _ZN3mod31adjustCheatsManageFlagsMainMenuEj
+ .text._ZN3mod33adjustCheatClearAreaFlagSelectionEj
+                0x000000008000910c       0x2c menufunctions.o
+                0x000000008000910c                _ZN3mod33adjustCheatClearAreaFlagSelectionEj
+ .text._ZN3mod25adjustMarioStatsSelectionEj
+                0x0000000080009138       0x2c menufunctions.o
+                0x0000000080009138                _ZN3mod25adjustMarioStatsSelectionEj
+ .text._ZN3mod27adjustPartnerStatsSelectionEj
+                0x0000000080009164       0x64 menufunctions.o
+                0x0000000080009164                _ZN3mod27adjustPartnerStatsSelectionEj
+ .text._ZN3mod26adjustMemoryWatchSelectionEj
+                0x00000000800091c8       0x48 menufunctions.o
+                0x00000000800091c8                _ZN3mod26adjustMemoryWatchSelectionEj
+ .text._ZN3mod43adjustMemoryChangeAddressOrPointerSelectionEj
+                0x0000000080009210       0x60 menufunctions.o
+                0x0000000080009210                _ZN3mod43adjustMemoryChangeAddressOrPointerSelectionEj
+ .text._ZN3mod27adjustBattlesActorSelectionEj
+                0x0000000080009270      0x10c menufunctions.o
+                0x0000000080009270                _ZN3mod27adjustBattlesActorSelectionEj
+ .text._ZN3mod28adjustBattlesStatusSelectionEj
+                0x000000008000937c       0x24 menufunctions.o
+                0x000000008000937c                _ZN3mod28adjustBattlesStatusSelectionEj
+ .text._ZN3mod20adjustWarpsSelectionEj
+                0x00000000800093a0       0x2c menufunctions.o
+                0x00000000800093a0                _ZN3mod20adjustWarpsSelectionEj
+ .text._ZN3mod29adjustMenuSelectionHorizontalEjRhS0_jjjb
+                0x00000000800093cc      0x1ac menufunctions.o
+                0x00000000800093cc                _ZN3mod29adjustMenuSelectionHorizontalEjRhS0_jjjb
+ .text._ZN3mod23addByIconButtonControlsEj
+                0x0000000080009578       0xfc menufunctions.o
+                0x0000000080009578                _ZN3mod23addByIconButtonControlsEj
+ .text._ZN3mod28adjustMenuSelectionInventoryEj
+                0x0000000080009674       0x84 menufunctions.o
+                0x0000000080009674                _ZN3mod28adjustMenuSelectionInventoryEj
+ .text._ZZN3mod24drawFunctionOnDebugLayerEPFvvEENUlN4ttyd7dispdrv8CameraIdEPvE_4_FUNES4_S5_
+                0x00000000800096f8        0x8 draw.o
+ .text._ZZN3mod19drawCheatsLockFlagsEvENKUlPcS0_bE_clES0_S0_b.isra.2.part.3
+                0x0000000080009700       0x78 draw.o
+ .text._ZZN3mod21drawFunctionOn2DLayerEPFvvEENUlN4ttyd7dispdrv8CameraIdEPvE_4_FUNES4_S5_
+                0x0000000080009778        0x8 draw.o
+ .text.disableDPadOptionsDisplay
+                0x0000000080009780       0x1c draw.o
+                0x0000000080009780                disableDPadOptionsDisplay
+ .text._ZN3mod24drawFunctionOnDebugLayerEPFvvE
+                0x000000008000979c       0x20 draw.o
+                0x000000008000979c                _ZN3mod24drawFunctionOnDebugLayerEPFvvE
+ .text._ZN3mod21drawFunctionOn2DLayerEPFvvE
+                0x00000000800097bc       0x20 draw.o
+                0x00000000800097bc                _ZN3mod21drawFunctionOn2DLayerEPFvvE
+ .text._ZN3mod10drawWindowEjiiiii
+                0x00000000800097dc       0xb0 draw.o
+                0x00000000800097dc                _ZN3mod10drawWindowEjiiiii
+ .text._ZN3mod14drawMenuWindowEv
+                0x000000008000988c       0x1c draw.o
+                0x000000008000988c                _ZN3mod14drawMenuWindowEv
+ .text._ZN3mod8drawIconEPisf
+                0x00000000800098a8       0x9c draw.o
+                0x00000000800098a8                _ZN3mod8drawIconEPisf
+ .text._ZN3mod16drawIconFromItemEPisf
+                0x0000000080009944       0x94 draw.o
+                0x0000000080009944                _ZN3mod16drawIconFromItemEPisf
+ .text._ZN3mod16getNextLineIndexEPc
+                0x00000000800099d8       0x38 draw.o
+                0x00000000800099d8                _ZN3mod16getNextLineIndexEPc
+ .text._ZN3mod19drawStringMultilineEffPKcf
+                0x0000000080009a10       0xe4 draw.o
+                0x0000000080009a10                _ZN3mod19drawStringMultilineEffPKcf
+ .text._ZN3mod8drawTextEPKciihjf
+                0x0000000080009af4       0xc4 draw.o
+                0x0000000080009af4                _ZN3mod8drawTextEPKciihjf
+ .text._ZN3mod15getMessageWidthEPKcf
+                0x0000000080009bb8       0x74 draw.o
+                0x0000000080009bb8                _ZN3mod15getMessageWidthEPKcf
+ .text._ZN3mod18drawTextWithWindowEPKciihjfijf
+                0x0000000080009c2c       0xb4 draw.o
+                0x0000000080009c2c                _ZN3mod18drawTextWithWindowEPKciihjfijf
+ .text._ZN3mod16drawSingleColumnEijjb
+                0x0000000080009ce0       0xe0 draw.o
+                0x0000000080009ce0                _ZN3mod16drawSingleColumnEijjb
+ .text._ZN3mod20drawSingleColumnMainEv
+                0x0000000080009dc0       0x28 draw.o
+                0x0000000080009dc0                _ZN3mod20drawSingleColumnMainEv
+ .text._ZN3mod30drawSingleColumnSelectedOptionEv
+                0x0000000080009de8       0x28 draw.o
+                0x0000000080009de8                _ZN3mod30drawSingleColumnSelectedOptionEv
+ .text._ZN3mod27drawMultipleColumnsVerticalEiijjjjjbjPPKc
+                0x0000000080009e10       0xe4 draw.o
+                0x0000000080009e10                _ZN3mod27drawMultipleColumnsVerticalEiijjjjjbjPPKc
+ .text._ZN3mod19drawItemIconsColumnEjjjiijf
+                0x0000000080009ef4       0xbc draw.o
+                0x0000000080009ef4                _ZN3mod19drawItemIconsColumnEjjjiijf
+ .text._ZN3mod18drawItemTextColumnEjjjiijhf
+                0x0000000080009fb0       0xdc draw.o
+                0x0000000080009fb0                _ZN3mod18drawItemTextColumnEjjjiijhf
+ .text._ZN3mod31drawInventoryIconAndTextColumnsEv
+                0x000000008000a08c      0x15c draw.o
+                0x000000008000a08c                _ZN3mod31drawInventoryIconAndTextColumnsEv
+ .text._ZN3mod28drawMarioSpecialMovesOptionsEv
+                0x000000008000a1e8      0x180 draw.o
+                0x000000008000a1e8                _ZN3mod28drawMarioSpecialMovesOptionsEv
+ .text._ZN3mod20drawFollowersOptionsEv
+                0x000000008000a368       0xc4 draw.o
+                0x000000008000a368                _ZN3mod20drawFollowersOptionsEv
+ .text._ZN3mod14drawMarioStatsEv
+                0x000000008000a42c      0x264 draw.o
+                0x000000008000a42c                _ZN3mod14drawMarioStatsEv
+ .text._ZN3mod16drawPartnerStatsEv
+                0x000000008000a690      0x2e4 draw.o
+                0x000000008000a690                _ZN3mod16drawPartnerStatsEv
+ .text._ZN3mod34drawPartnerChangeYoshiColorOptionsEv
+                0x000000008000a974       0xc4 draw.o
+                0x000000008000a974                _ZN3mod34drawPartnerChangeYoshiColorOptionsEv
+ .text._ZN3mod21drawBattlesActorStatsEv
+                0x000000008000aa38      0x144 draw.o
+                0x000000008000aa38                _ZN3mod21drawBattlesActorStatsEv
+ .text._ZN3mod25drawBattlesActorsHeldItemEv
+                0x000000008000ab7c       0xd4 draw.o
+                0x000000008000ab7c                _ZN3mod25drawBattlesActorsHeldItemEv
+ .text._ZN3mod22drawCurrentFollowerOutEv
+                0x000000008000ac50       0x9c draw.o
+                0x000000008000ac50                _ZN3mod22drawCurrentFollowerOutEv
+ .text._ZN3mod20drawMemoryModifyListEv
+                0x000000008000acec      0x230 draw.o
+                0x000000008000acec                _ZN3mod20drawMemoryModifyListEv
+ .text._ZN3mod18drawMemoryTypeListEv
+                0x000000008000af1c       0xc4 draw.o
+                0x000000008000af1c                _ZN3mod18drawMemoryTypeListEv
+ .text._ZN3mod29drawMemoryChangeWatchPositionEv
+                0x000000008000afe0       0xcc draw.o
+                0x000000008000afe0                _ZN3mod29drawMemoryChangeWatchPositionEv
+ .text._ZN3mod38drawMemoryWatchChangeAddressListWindowEi
+                0x000000008000b0ac       0x20 draw.o
+                0x000000008000b0ac                _ZN3mod38drawMemoryWatchChangeAddressListWindowEi
+ .text._ZN3mod27drawMemoryChangeAddressListEv
+                0x000000008000b0cc      0x214 draw.o
+                0x000000008000b0cc                _ZN3mod27drawMemoryChangeAddressListEv
+ .text._ZN3mod21drawBattlesActorsListEv
+                0x000000008000b2e0       0xec draw.o
+                0x000000008000b2e0                _ZN3mod21drawBattlesActorsListEv
+ .text._ZN3mod23drawBattlesStatusesListEv
+                0x000000008000b3cc      0x1e8 draw.o
+                0x000000008000b3cc                _ZN3mod23drawBattlesStatusesListEv
+ .text._ZN3mod15drawErrorWindowEPKciii
+                0x000000008000b5b4       0x28 draw.o
+                0x000000008000b5b4                _ZN3mod15drawErrorWindowEPKciii
+ .text._ZN3mod24drawErrorWindowAutoWidthEPKcii
+                0x000000008000b5dc       0xb8 draw.o
+                0x000000008000b5dc                _ZN3mod24drawErrorWindowAutoWidthEPKcii
+ .text._ZN3mod26drawPartnerFollowerMessageEib
+                0x000000008000b694       0x88 draw.o
+                0x000000008000b694                _ZN3mod26drawPartnerFollowerMessageEib
+ .text._ZN3mod27drawNotInBattleErrorMessageEv
+                0x000000008000b71c       0x4c draw.o
+                0x000000008000b71c                _ZN3mod27drawNotInBattleErrorMessageEv
+ .text._ZN3mod23drawResolveFadesMessageEv
+                0x000000008000b768       0xac draw.o
+                0x000000008000b768                _ZN3mod23drawResolveFadesMessageEv
+ .text._ZN3mod21drawWarpsErrorMessageEi
+                0x000000008000b814       0x50 draw.o
+                0x000000008000b814                _ZN3mod21drawWarpsErrorMessageEi
+ .text._ZN3mod22drawConfirmationWindowEPKc
+                0x000000008000b864      0x120 draw.o
+                0x000000008000b864                _ZN3mod22drawConfirmationWindowEPKc
+ .text._ZN3mod23drawSingleLineFromArrayEiiiPPKc
+                0x000000008000b984       0x28 draw.o
+                0x000000008000b984                _ZN3mod23drawSingleLineFromArrayEiiiPPKc
+ .text._ZN3mod32drawSingleLineFromStringAndArrayEiiiPKcPS1_
+                0x000000008000b9ac       0x7c draw.o
+                0x000000008000b9ac                _ZN3mod32drawSingleLineFromStringAndArrayEiiiPKcPS1_
+ .text._ZN3mod30drawMemoryWatchAdjustableValueEj
+                0x000000008000ba28      0x1c0 draw.o
+                0x000000008000ba28                _ZN3mod30drawMemoryWatchAdjustableValueEj
+ .text._ZN3mod17drawAddByIconMainEj
+                0x000000008000bbe8      0x154 draw.o
+                0x000000008000bbe8                _ZN3mod17drawAddByIconMainEj
+ .text._ZN3mod13drawAddByIconEj
+                0x000000008000bd3c       0x5c draw.o
+                0x000000008000bd3c                _ZN3mod13drawAddByIconEj
+ .text._ZN3mod17drawVersionNumberEii
+                0x000000008000bd98       0x24 draw.o
+                0x000000008000bd98                _ZN3mod17drawVersionNumberEii
+ .text._ZN3mod14drawPageNumberEiij
+                0x000000008000bdbc       0x70 draw.o
+                0x000000008000bdbc                _ZN3mod14drawPageNumberEiij
+ .text._ZN3mod17drawMemoryWatchesEv
+                0x000000008000be2c      0x1b4 draw.o
+                0x000000008000be2c                _ZN3mod17drawMemoryWatchesEv
+ .text._ZN3mod15drawBoolOnOrOffEbPKci
+                0x000000008000bfe0       0x8c draw.o
+                0x000000008000bfe0                _ZN3mod15drawBoolOnOrOffEbPKci
+ .text._ZN3mod24drawCheatsChangeSequenceEv
+                0x000000008000c06c       0xd8 draw.o
+                0x000000008000c06c                _ZN3mod24drawCheatsChangeSequenceEv
+ .text._ZN3mod14drawCheatsBoolEi
+                0x000000008000c144       0x30 draw.o
+                0x000000008000c144                _ZN3mod14drawCheatsBoolEi
+ .text._ZN3mod15drawButtonComboEjiPKc
+                0x000000008000c174       0x90 draw.o
+                0x000000008000c174                _ZN3mod15drawButtonComboEjiPKc
+ .text._ZN3mod21drawChangeButtonComboEPt
+                0x000000008000c204      0x1b4 draw.o
+                0x000000008000c204                _ZN3mod21drawChangeButtonComboEPt
+ .text._ZN3mod24drawCheatsForcedDropItemEv
+                0x000000008000c3b8       0x98 draw.o
+                0x000000008000c3b8                _ZN3mod24drawCheatsForcedDropItemEv
+ .text._ZN3mod22drawCheatsResolveFadesEv
+                0x000000008000c450      0x148 draw.o
+                0x000000008000c450                _ZN3mod22drawCheatsResolveFadesEv
+ .text._ZN3mod19drawCheatsLockFlagsEv
+                0x000000008000c598      0x1a4 draw.o
+                0x000000008000c598                _ZN3mod19drawCheatsLockFlagsEv
+ .text._ZN3mod25drawCheatsManageFlagsMainEj
+                0x000000008000c73c      0x2c0 draw.o
+                0x000000008000c73c                _ZN3mod25drawCheatsManageFlagsMainEj
+ .text._ZN3mod19drawCheatsClearAreaEv
+                0x000000008000c9fc       0xbc draw.o
+                0x000000008000c9fc                _ZN3mod19drawCheatsClearAreaEv
+ .text._ZN3mod16drawWarpsOptionsEv
+                0x000000008000cab8       0xa0 draw.o
+                0x000000008000cab8                _ZN3mod16drawWarpsOptionsEv
+ .text._ZN3mod16drawEventDetailsEiii
+                0x000000008000cb58      0x1b0 draw.o
+                0x000000008000cb58                _ZN3mod16drawEventDetailsEiii
+ .text._ZN3mod19drawAdjustableValueEbj
+                0x000000008000cd08      0x3ac draw.o
+                0x000000008000cd08                _ZN3mod19drawAdjustableValueEbj
+ .text._ZN3mod28drawAdjustableValueSpawnItemEv
+                0x000000008000d0b4        0xc draw.o
+                0x000000008000d0b4                _ZN3mod28drawAdjustableValueSpawnItemEv
+ .text._ZN3mod11drawAddByIdEj
+                0x000000008000d0c0       0x60 draw.o
+                0x000000008000d0c0                _ZN3mod11drawAddByIdEj
+ .text._ZN3mod26drawWarpByEventMenuDetailsEv
+                0x000000008000d120       0xec draw.o
+                0x000000008000d120                _ZN3mod26drawWarpByEventMenuDetailsEv
+ .text._ZN3mod27drawWarpIndexMapAndEntranceEv
+                0x000000008000d20c      0x118 draw.o
+                0x000000008000d20c                _ZN3mod27drawWarpIndexMapAndEntranceEv
+ .text._ZN3mod25drawWarpIndexEntranceListEv
+                0x000000008000d324      0x200 draw.o
+                0x000000008000d324                _ZN3mod25drawWarpIndexEntranceListEv
+ .text._ZN3mod29drawOnScreenTimerButtonCombosEPt
+                0x000000008000d524       0x5c draw.o
+                0x000000008000d524                _ZN3mod29drawOnScreenTimerButtonCombosEPt
+ .text._ZN3mod23drawSequenceInPauseMenuEv
+                0x000000008000d580       0xac draw.o
+                0x000000008000d580                _ZN3mod23drawSequenceInPauseMenuEv
+ .text._ZN3mod17drawOnScreenTimerEv
+                0x000000008000d62c       0xa0 draw.o
+                0x000000008000d62c                _ZN3mod17drawOnScreenTimerEv
+ .text._ZN3mod16drawFrameCounterEv
+                0x000000008000d6cc      0x10c draw.o
+                0x000000008000d6cc                _ZN3mod16drawFrameCounterEv
+ .text._ZN3mod20drawMarioCoordinatesEv
+                0x000000008000d7d8       0x88 draw.o
+                0x000000008000d7d8                _ZN3mod20drawMarioCoordinatesEv
+ .text._ZN3mod16drawMarioSpeedXZEv
+                0x000000008000d860       0xac draw.o
+                0x000000008000d860                _ZN3mod16drawMarioSpeedXZEv
+ .text._ZN3mod22drawJumpStorageDetailsEv
+                0x000000008000d90c       0xb4 draw.o
+                0x000000008000d90c                _ZN3mod22drawJumpStorageDetailsEv
+ .text._ZN3mod16drawButtonInputsEv
+                0x000000008000d9c0       0xac draw.o
+                0x000000008000d9c0                _ZN3mod16drawButtonInputsEv
+ .text._ZN3mod14drawStickAngleEv
+                0x000000008000da6c       0xa8 draw.o
+                0x000000008000da6c                _ZN3mod14drawStickAngleEv
+ .text._ZN3mod28drawMemoryWatchesOnOverworldEv
+                0x000000008000db14       0x9c draw.o
+                0x000000008000db14                _ZN3mod28drawMemoryWatchesOnOverworldEv
+ .text._ZN3mod20drawYoshiSkipDetailsEv
+                0x000000008000dbb0       0xc0 draw.o
+                0x000000008000dbb0                _ZN3mod20drawYoshiSkipDetailsEv
+ .text._ZN3mod21drawPalaceSkipDetailsEv
+                0x000000008000dc70      0x178 draw.o
+                0x000000008000dc70                _ZN3mod21drawPalaceSkipDetailsEv
+ .text._ZN3mod26drawBlimpTicketSkipDetailsEv
+                0x000000008000dde8       0xdc draw.o
+                0x000000008000dde8                _ZN3mod26drawBlimpTicketSkipDetailsEv
+ .text._ZN3mod24drawActionCommandsTimingEv
+                0x000000008000dec4      0x1c4 draw.o
+                0x000000008000dec4                _ZN3mod24drawActionCommandsTimingEv
+ .text._ZN3mod23drawSettingsCurrentWorkEv
+                0x000000008000e088       0x90 draw.o
+                0x000000008000e088                _ZN3mod23drawSettingsCurrentWorkEv
+ .text._ZN3mod19drawHeapArrayErrorsEv
+                0x000000008000e118       0x54 draw.o
+                0x000000008000e118                _ZN3mod19drawHeapArrayErrorsEv
+ .text._ZN3mod19drawTitleScreenInfoEv
+                0x000000008000e16c       0x80 draw.o
+                0x000000008000e16c                _ZN3mod19drawTitleScreenInfoEv
+ .text._ZN3mod24drawFileSelectScreenInfoEv
+                0x000000008000e1ec       0x58 draw.o
+                0x000000008000e1ec                _ZN3mod24drawFileSelectScreenInfoEv
+ .text._ZN3mod3Mod21drawArtAttackHitboxesEN4ttyd7dispdrv8CameraIdE
+                0x000000008000e244      0x248 draw.o
+                0x000000008000e244                _ZN3mod3Mod21drawArtAttackHitboxesEN4ttyd7dispdrv8CameraIdE
+ .text._ZN3mod19finishAsyncFunctionEi
+                0x000000008000e48c       0x34 memcard.o
+                0x000000008000e48c                _ZN3mod19finishAsyncFunctionEi
+ .text._ZN3mod18checkForMemoryCardEv
+                0x000000008000e4c0       0x40 memcard.o
+                0x000000008000e4c0                _ZN3mod18checkForMemoryCardEv
+ .text._ZN3mod9mountCardEv
+                0x000000008000e500       0x38 memcard.o
+                0x000000008000e500                _ZN3mod9mountCardEv
+ .text._ZN3mod11unmountCardEv
+                0x000000008000e538        0x8 memcard.o
+                0x000000008000e538                _ZN3mod11unmountCardEv
+ .text._ZN3mod16openFileFromCardEPKcPN2gc4card12CARDFileInfoE
+                0x000000008000e540       0x10 memcard.o
+                0x000000008000e540                _ZN3mod16openFileFromCardEPKcPN2gc4card12CARDFileInfoE
+ .text._ZN3mod17closeFileFromCardEPN2gc4card12CARDFileInfoE
+                0x000000008000e550        0x4 memcard.o
+                0x000000008000e550                _ZN3mod17closeFileFromCardEPN2gc4card12CARDFileInfoE
+ .text._ZN3mod16createFileOnCardEPKcjPN2gc4card12CARDFileInfoE
+                0x000000008000e554       0x34 memcard.o
+                0x000000008000e554                _ZN3mod16createFileOnCardEPKcjPN2gc4card12CARDFileInfoE
+ .text._ZN3mod18readFromFileOnCardEPN2gc4card12CARDFileInfoEPvii
+                0x000000008000e588       0x24 memcard.o
+                0x000000008000e588                _ZN3mod18readFromFileOnCardEPN2gc4card12CARDFileInfoEPvii
+ .text._ZN3mod17writeToFileOnCardEPN2gc4card12CARDFileInfoEPvii
+                0x000000008000e5ac       0x24 memcard.o
+                0x000000008000e5ac                _ZN3mod17writeToFileOnCardEPN2gc4card12CARDFileInfoEPvii
+ .text._ZN3mod16deleteFileOnCardEPKc
+                0x000000008000e5d0        0xc memcard.o
+                0x000000008000e5d0                _ZN3mod16deleteFileOnCardEPKc
+ .text._ZN3mod13getFileStatusEiPN2gc4card8CARDStatE
+                0x000000008000e5dc       0x10 memcard.o
+                0x000000008000e5dc                _ZN3mod13getFileStatusEiPN2gc4card8CARDStatE
+ .text._ZN3mod13setFileStatusEiPN2gc4card8CARDStatE
+                0x000000008000e5ec       0x30 memcard.o
+                0x000000008000e5ec                _ZN3mod13setFileStatusEiPN2gc4card8CARDStatE
+ .text._ZN3mod18createSettingsFileEPN2gc4card12CARDFileInfoE
+                0x000000008000e61c      0x144 memcard.o
+                0x000000008000e61c                _ZN3mod18createSettingsFileEPN2gc4card12CARDFileInfoE
+ .text._ZN3mod12saveSettingsEv
+                0x000000008000e760      0x1f0 memcard.o
+                0x000000008000e760                _ZN3mod12saveSettingsEv
+ .text._ZN3mod12loadSettingsEv
+                0x000000008000e950      0x1e8 memcard.o
+                0x000000008000e950                _ZN3mod12loadSettingsEv
+ .text._ZZN3mod3Mod4initEvENUlvE13_4_FUNEv
+                0x000000008000eb38        0x4 mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE_4_FUNEv
+                0x000000008000eb3c        0xc mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE0_4_FUNEv
+                0x000000008000eb48        0xc mod.o
+ .text._ZZN3mod3Mod4initEvENUlPvE1_4_FUNES1_
+                0x000000008000eb54       0x10 mod.o
+ .text._ZZN3mod3Mod4initEvENUlsjE2_4_FUNEsj
+                0x000000008000eb64       0x14 mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE3_4_FUNEv
+                0x000000008000eb78        0xc mod.o
+ .text._ZZN3mod3Mod4initEvENUlijjjE4_4_FUNEijjj
+                0x000000008000eb84       0x1c mod.o
+ .text._ZZN3mod3Mod4initEvENUlPKcE5_4_FUNES2_
+                0x000000008000eba0       0x10 mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE6_4_FUNEv
+                0x000000008000ebb0        0xc mod.o
+ .text._ZZN3mod3Mod4initEvENUlPvjE7_4_FUNES1_j
+                0x000000008000ebbc       0x14 mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE8_4_FUNEv
+                0x000000008000ebd0        0xc mod.o
+ .text._ZZN3mod3Mod4initEvENUlPN2gc8OSModule12OSModuleInfoEPvE9_4_FUNES4_S5_
+                0x000000008000ebdc       0x14 mod.o
+ .text._ZZN3mod3Mod4initEvENUljPvE10_4_FUNEjS1_
+                0x000000008000ebf0       0x14 mod.o
+ .text._ZZN3mod3Mod4initEvENUlN4ttyd7dispdrv8CameraIdEE11_4_FUNES3_
+                0x000000008000ec04       0x10 mod.o
+ .text._ZZN3mod3Mod4initEvENUlPvPN4ttyd11battle_unit12AttackParamsEE12_4_FUNES1_S5_
+                0x000000008000ec14       0x14 mod.o
+ .text._ZZN3mod3Mod4initEvENUlvE14_4_FUNEv
+                0x000000008000ec28        0x4 mod.o
+ .text._ZN3mod3ModC2Ev
+                0x000000008000ec2c       0x40 mod.o
+                0x000000008000ec2c                _ZN3mod3ModC1Ev
+                0x000000008000ec2c                _ZN3mod3ModC2Ev
+ .text._ZN3mod3Mod4initEv
+                0x000000008000ec6c      0x47c mod.o
+                0x000000008000ec6c                _ZN3mod3Mod4initEv
+ .text.startup._ZN3mod4mainEv
+                0x000000008000f0e8       0x38 mod.o
+                0x000000008000f0e8                _ZN3mod4mainEv
+ .text._ZN3mod8drawMenuEv
+                0x000000008000f120      0x970 menu.o
+                0x000000008000f120                _ZN3mod8drawMenuEv
+ .text._ZN3mod15menuCheckButtonEv
+                0x000000008000fa90     0x1c2c menu.o
+                0x000000008000fa90                _ZN3mod15menuCheckButtonEv
+ .text._ZN3mod19enableOrDisableMenuEv
+                0x00000000800116bc       0xd0 menu.o
+                0x00000000800116bc                _ZN3mod19enableOrDisableMenuEv
+ .text.fixRoomProblems
+                0x000000008001178c       0xd4 main.o
+                0x000000008001178c                fixRoomProblems
+ .text._ZN3mod26preventPouchInitMemoryLeakEjj
+                0x0000000080011860       0x54 main.o
+                0x0000000080011860                _ZN3mod26preventPouchInitMemoryLeakEjj
+ .text.displayMegaJumpBadgeInMenu
+                0x00000000800118b4       0x38 main.o
+                0x00000000800118b4                displayMegaJumpBadgeInMenu
+ .text.displayMegaHammerBadgesInMenu
+                0x00000000800118ec       0x48 main.o
+                0x00000000800118ec                displayMegaHammerBadgesInMenu
+ .text.fixBlooperCrash1
+                0x0000000080011934       0x38 main.o
+                0x0000000080011934                fixBlooperCrash1
+ .text.preventTextboxOptionSelection
+                0x000000008001196c       0x70 main.o
+                0x000000008001196c                preventTextboxOptionSelection
+ .text.fixEvtMapBlendSetFlagPartnerCrash
+                0x00000000800119dc       0x40 main.o
+                0x00000000800119dc                fixEvtMapBlendSetFlagPartnerCrash
+ .text.fixEvtMapBlendSetFlagFollowerCrash
+                0x0000000080011a1c       0x40 main.o
+                0x0000000080011a1c                fixEvtMapBlendSetFlagFollowerCrash
+ .text.replaceJumpFallAnim
+                0x0000000080011a5c       0xd0 main.o
+                0x0000000080011a5c                replaceJumpFallAnim
+ .text._ZN3mod41displayTitleScreenAndFileSelectScreenInfoEv
+                0x0000000080011b2c       0x84 main.o
+                0x0000000080011b2c                _ZN3mod41displayTitleScreenAndFileSelectScreenInfoEv
+ .text._ZN3mod3Mod23pauseMenuPreventUnpauseEPv
+                0x0000000080011bb0       0x58 main.o
+                0x0000000080011bb0                _ZN3mod3Mod23pauseMenuPreventUnpauseEPv
+ .text._ZN3mod3Mod23performPreBattleActionsEv
+                0x0000000080011c08       0x88 main.o
+                0x0000000080011c08                _ZN3mod3Mod23performPreBattleActionsEv
+ .text._ZN3mod3Mod16getCustomMessageEPKc
+                0x0000000080011c90       0xc0 main.o
+                0x0000000080011c90                _ZN3mod3Mod16getCustomMessageEPKc
+ .text._ZN3mod3Mod19pauseArtAttackTimerEv
+                0x0000000080011d50       0x78 main.o
+                0x0000000080011d50                _ZN3mod3Mod19pauseArtAttackTimerEv
+ .text._ZN3mod3Mod13fixMarioKeyOnEv
+                0x0000000080011dc8       0x4c main.o
+                0x0000000080011dc8                _ZN3mod3Mod13fixMarioKeyOnEv
+ .text._ZN3mod3Mod17performRelPatchesEPN2gc8OSModule12OSModuleInfoEPv
+                0x0000000080011e14       0x78 main.o
+                0x0000000080011e14                _ZN3mod3Mod17performRelPatchesEPN2gc8OSModule12OSModuleInfoEPv
+ .text._ZN3mod18addTextToHeapArrayEPc
+                0x0000000080011e8c       0x68 main.o
+                0x0000000080011e8c                _ZN3mod18addTextToHeapArrayEPc
+ .text._ZN3mod10checkHeapsEv
+                0x0000000080011ef4      0x188 main.o
+                0x0000000080011ef4                _ZN3mod10checkHeapsEv
+ .text._ZN3mod21initAddressOverwritesEv
+                0x000000008001207c      0x208 main.o
+                0x000000008001207c                _ZN3mod21initAddressOverwritesEv
+ .text._ZN3mod3Mod3runEv
+                0x0000000080012284      0x148 main.o
+                0x0000000080012284                _ZN3mod3Mod3runEv
+ .text.checkButtonCombo
+                0x00000000800123cc       0x44 commonfunctions.o
+                0x00000000800123cc                checkButtonCombo
+ .text.checkButtonComboEveryFrame
+                0x0000000080012410       0x34 commonfunctions.o
+                0x0000000080012410                checkButtonComboEveryFrame
+ .text.checkForSpecificSeq
+                0x0000000080012444       0x44 commonfunctions.o
+                0x0000000080012444                checkForSpecificSeq
+ .text.getCurrentRelModuleInfo
+                0x0000000080012488       0x10 commonfunctions.o
+                0x0000000080012488                getCurrentRelModuleInfo
+ .text.checkIfInGame
+                0x0000000080012498       0x58 commonfunctions.o
+                0x0000000080012498                checkIfInGame
+ .text.getBattleWorkPointer
+                0x00000000800124f0        0xc commonfunctions.o
+                0x00000000800124f0                getBattleWorkPointer
+ .text.getMarioBattlePointer
+                0x00000000800124fc       0x1c commonfunctions.o
+                0x00000000800124fc                getMarioBattlePointer
+ .text.getPartnerBattlePointer
+                0x0000000080012518       0x40 commonfunctions.o
+                0x0000000080012518                getPartnerBattlePointer
+ .text.getActorPointer
+                0x0000000080012558       0x20 commonfunctions.o
+                0x0000000080012558                getActorPointer
+ .text.getNPCFieldWorkPointer
+                0x0000000080012578       0x44 commonfunctions.o
+                0x0000000080012578                getNPCFieldWorkPointer
+ .text.secondsToFrames
+                0x00000000800125bc        0x8 commonfunctions.o
+                0x00000000800125bc                secondsToFrames
+ .text.getSequencePosition
+                0x00000000800125c4        0x8 commonfunctions.o
+                0x00000000800125c4                getSequencePosition
+ .text.setSequencePosition
+                0x00000000800125cc        0xc commonfunctions.o
+                0x00000000800125cc                setSequencePosition
+ .text.setNextMap
+                0x00000000800125d8       0x48 commonfunctions.o
+                0x00000000800125d8                setNextMap
+ .text.setNextBero
+                0x0000000080012620       0x10 commonfunctions.o
+                0x0000000080012620                setNextBero
+ .text.compareStrings
+                0x0000000080012630       0x28 commonfunctions.o
+                0x0000000080012630                compareStrings
+ .text.compareStringsSize
+                0x0000000080012658       0x28 commonfunctions.o
+                0x0000000080012658                compareStringsSize
+ .text.compareStringToNextMap
+                0x0000000080012680        0xc commonfunctions.o
+                0x0000000080012680                compareStringToNextMap
+ .text.setSeqMapChange
+                0x000000008001268c       0x10 commonfunctions.o
+                0x000000008001268c                setSeqMapChange
+ .text.clearMemory
+                0x000000008001269c        0xc commonfunctions.o
+                0x000000008001269c                clearMemory
+ .text.getPartnerPointer
+                0x00000000800126a8       0x20 commonfunctions.o
+                0x00000000800126a8                getPartnerPointer
+ .text.getFollowerPointer
+                0x00000000800126c8       0x20 commonfunctions.o
+                0x00000000800126c8                getFollowerPointer
+ .text.removePartnerFromOverworld
+                0x00000000800126e8       0x20 commonfunctions.o
+                0x00000000800126e8                removePartnerFromOverworld
+ .text.removeFollowerFromOverworld
+                0x0000000080012708       0x20 commonfunctions.o
+                0x0000000080012708                removeFollowerFromOverworld
+ .text.getCurrentYoshiColorId
+                0x0000000080012728        0x8 commonfunctions.o
+                0x0000000080012728                getCurrentYoshiColorId
+ .text.setNewYoshiColorId
+                0x0000000080012730       0x14 commonfunctions.o
+                0x0000000080012730                setNewYoshiColorId
+ .text.spawnPartnerOrFollower
+                0x0000000080012744       0x3c commonfunctions.o
+                0x0000000080012744                spawnPartnerOrFollower
+ .text.checkIfBadgeEquipped
+                0x0000000080012780       0x28 commonfunctions.o
+                0x0000000080012780                checkIfBadgeEquipped
+ .text.checkIfHaveItem
+                0x00000000800127a8       0x28 commonfunctions.o
+                0x00000000800127a8                checkIfHaveItem
+ .text.recheckJumpAndHammerLevels
+                0x00000000800127d0       0x20 commonfunctions.o
+                0x00000000800127d0                recheckJumpAndHammerLevels
+ .text.getCurrentPitFloor
+                0x00000000800127f0       0x28 commonfunctions.o
+                0x00000000800127f0                getCurrentPitFloor
+ .text.getCurrentFPS
+                0x0000000080012818       0x10 commonfunctions.o
+                0x0000000080012818                getCurrentFPS
+ .text.clearGSWFsRange
+                0x0000000080012828       0x38 commonfunctions.o
+                0x0000000080012828                clearGSWFsRange
+ .text.checkIfPointerIsValid
+                0x0000000080012860       0x20 commonfunctions.o
+                0x0000000080012860                checkIfPointerIsValid
+ .text.getLastPointerFromPath
+                0x0000000080012880       0x64 commonfunctions.o
+                0x0000000080012880                getLastPointerFromPath
+ *(.gnu.warning)
+ *(.gnu.linkonce.t.*)
+                0x0000000080012900                . = ALIGN (0x20)
+ *fill*         0x00000000800128e4       0x1c 00000000
+
+.fini           0x0000000080012900        0x0
+ *(.fini)
+                0x0000000080012900                . = ALIGN (0x20)
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+
+.rodata         0x0000000080012900     0x3343
+ *(.rodata)
+ *(.rodata.*)
+ .rodata._GLOBAL__sub_I__ZN3mod13VersionNumberE.str1.1
+                0x0000000080012900       0x2e global.o
+ *fill*         0x000000008001292e        0x2 
+ .rodata._ZN3mod18ButtonInputDisplayE
+                0x0000000080012930        0xc global.o
+                0x0000000080012930                _ZN3mod18ButtonInputDisplayE
+ .rodata.str1.1
+                0x000000008001293c     0x1c90 global.o
+ .rodata._ZN3mod9warpToMapEj
+                0x00000000800145cc       0x64 codes.o
+ .rodata._ZN3mod12bobberyEarlyEv.cst4
+                0x0000000080014630        0x8 codes.o
+ .rodata._ZN3mod12bobberyEarlyEv.str1.1
+                0x0000000080014638        0x7 codes.o
+ *fill*         0x000000008001463f        0x1 
+ .rodata._ZN3mod12speedUpMarioEv.cst4
+                0x0000000080014640        0x4 codes.o
+ .rodata._ZN3mod16warpToMapByEventEi.str1.1
+                0x0000000080014644        0x1 codes.o
+ *fill*         0x0000000080014645        0x3 
+ .rodata._ZN3mod29displayBlimpTicketSkipDetailsEv.cst4
+                0x0000000080014648        0x4 codes.o
+ .rodata._ZN3mod9spawnItemEv.cst4
+                0x000000008001464c        0x8 codes.o
+ .rodata._ZN3mod9spawnItemEv.str1.1
+                0x0000000080014654        0x9 codes.o
+ .rodata._ZN3mod9warpToMapEj.str1.1
+                0x000000008001465d       0xee codes.o
+ *fill*         0x000000008001474b        0x1 
+ .rodata._ZN3mod14getValueStringEi
+                0x000000008001474c       0x30 memorywatch.o
+ .rodata._ZN3mod24adjustWatchValueControlsEi
+                0x000000008001477c       0x24 memorywatch.o
+ .rodata._ZN3mod14getValueStringEi.str1.1
+                0x00000000800147a0       0x42 memorywatch.o
+ .rodata._ZN3mod16getAddressStringEi.str1.1
+                0x00000000800147e2        0xd memorywatch.o
+ .rodata._ZN3mod25getAddressStringNoLetterPEi.str1.1
+                0x00000000800147ef        0x7 memorywatch.o
+ .rodata._ZN3mod27getAddressStringFromOffsetsEij.str1.1
+                0x00000000800147f6        0x4 memorywatch.o
+ *fill*         0x00000000800147fa        0x2 
+ .rodata._ZN3mod18setMarioStatsValueEj
+                0x00000000800147fc       0x34 menufunctions.o
+ .rodata._ZN3mod20setBattlesActorValueEj
+                0x0000000080014830       0x14 menufunctions.o
+ .rodata._ZN3mod11resolveFadeEj
+                0x0000000080014844       0xf8 menufunctions.o
+ .rodata._ZN3mod18getGlobalFlagValueEjj
+                0x000000008001493c       0x18 menufunctions.o
+ .rodata._ZN3mod19cheatClearAreaFlagsEj
+                0x0000000080014954       0x58 menufunctions.o
+ .rodata._ZN3mod22getUpperAndLowerBoundsEPij
+                0x00000000800149ac       0x5c menufunctions.o
+ .rodata._ZN3mod29adjustableValueButtonControlsEj
+                0x0000000080014a08       0xa4 menufunctions.o
+ .rodata._ZN3mod39memoryChangeWatchPositionButtonControlsEv
+                0x0000000080014aac       0x24 menufunctions.o
+ .rodata.CSWTCH.91
+                0x0000000080014ad0        0x8 menufunctions.o
+ .rodata.CSWTCH.92
+                0x0000000080014ad8        0x4 menufunctions.o
+ .rodata.CSWTCH.93
+                0x0000000080014adc       0x22 menufunctions.o
+ *fill*         0x0000000080014afe        0x2 
+ .rodata.CSWTCH.94
+                0x0000000080014b00        0x7 menufunctions.o
+ *fill*         0x0000000080014b07        0x1 
+ .rodata.CSWTCH.95
+                0x0000000080014b08       0x50 menufunctions.o
+ .rodata.CSWTCH.96
+                0x0000000080014b58       0x30 menufunctions.o
+ .rodata._ZN3mod12getPartyNameEN4ttyd5party12PartyMembersE.str1.1
+                0x0000000080014b88        0x1 menufunctions.o
+ *fill*         0x0000000080014b89        0x3 
+ .rodata._ZN3mod13getStickAngleEPi.cst4
+                0x0000000080014b8c       0x10 menufunctions.o
+ *fill*         0x0000000080014b9c        0x4 
+ .rodata._ZN3mod13getStickAngleEPi.cst8
+                0x0000000080014ba0        0x8 menufunctions.o
+ .rodata._ZN3mod13getTimeStringEPcx.str1.1
+                0x0000000080014ba8       0x29 menufunctions.o
+ .rodata._ZN3mod15getMapFromIndexEi.str1.1
+                0x0000000080014bd1        0xd menufunctions.o
+ .rodata._ZN3mod19getStickAngleStringEPc.str1.1
+                0x0000000080014bde       0x15 menufunctions.o
+ .rodata._ZN3mod23createButtonStringArrayEPhPcj.str1.1
+                0x0000000080014bf3        0x6 menufunctions.o
+ *fill*         0x0000000080014bf9        0x1 
+ .rodata._ZZN3mod15initStageEventsEvE12BadgesToGive
+                0x0000000080014bfa        0x8 menufunctions.o
+ .rodata._ZZN3mod19cheatClearAreaFlagsEjE12FlagsToClear
+                0x0000000080014c02       0x14 menufunctions.o
+ .rodata.str1.1
+                0x0000000080014c16      0x11a menufunctions.o
+ .rodata._ZN3mod20drawMemoryModifyListEv
+                0x0000000080014d30       0x14 draw.o
+ .rodata.CSWTCH.151
+                0x0000000080014d44       0x1c draw.o
+ .rodata.CSWTCH.152
+                0x0000000080014d60       0x18 draw.o
+ .rodata.CSWTCH.153
+                0x0000000080014d78       0x14 draw.o
+ .rodata.CSWTCH.154
+                0x0000000080014d8c        0x5 draw.o
+ *fill*         0x0000000080014d91        0x3 
+ .rodata._ZN3mod10drawWindowEjiiiii.cst4
+                0x0000000080014d94        0x4 draw.o
+ .rodata._ZN3mod13drawAddByIconEj.str1.1
+                0x0000000080014d98       0x21 draw.o
+ *fill*         0x0000000080014db9        0x3 
+ .rodata._ZN3mod14drawMarioStatsEv.cst4
+                0x0000000080014dbc        0x4 draw.o
+ .rodata._ZN3mod14drawMarioStatsEv.str1.1
+                0x0000000080014dc0        0x3 draw.o
+ .rodata._ZN3mod14drawPageNumberEiij.str1.1
+                0x0000000080014dc3        0x8 draw.o
+ .rodata._ZN3mod14drawStickAngleEv.str1.1
+                0x0000000080014dcb        0xf draw.o
+ *fill*         0x0000000080014dda        0x6 
+ .rodata._ZN3mod15getMessageWidthEPKcf.cst8
+                0x0000000080014de0        0x8 draw.o
+ .rodata._ZN3mod16drawButtonInputsEv.str1.1
+                0x0000000080014de8        0x3 draw.o
+ .rodata._ZN3mod16drawEventDetailsEiii.str1.1
+                0x0000000080014deb       0x37 draw.o
+ .rodata._ZN3mod16drawFrameCounterEv.str1.1
+                0x0000000080014e22       0x14 draw.o
+ .rodata._ZN3mod16drawMarioSpeedXZEv.str1.1
+                0x0000000080014e36       0x11 draw.o
+ .rodata._ZN3mod16drawPartnerStatsEv.str1.1
+                0x0000000080014e47       0x47 draw.o
+ *fill*         0x0000000080014e8e        0x2 
+ .rodata._ZN3mod16drawSingleColumnEijjb.cst4
+                0x0000000080014e90        0x4 draw.o
+ .rodata._ZN3mod17drawMemoryWatchesEv.str1.1
+                0x0000000080014e94        0x8 draw.o
+ .rodata._ZN3mod19drawAdjustableValueEbj.str1.1
+                0x0000000080014e9c       0xc2 draw.o
+ .rodata._ZN3mod19drawCheatsClearAreaEv.str1.1
+                0x0000000080014f5e        0xf draw.o
+ .rodata._ZN3mod19drawCheatsLockFlagsEv.str1.1
+                0x0000000080014f6d       0x3d draw.o
+ *fill*         0x0000000080014faa        0x2 
+ .rodata._ZN3mod19drawItemIconsColumnEjjjiijf.cst4
+                0x0000000080014fac        0x8 draw.o
+ .rodata._ZN3mod19drawStringMultilineEffPKcf.cst4
+                0x0000000080014fb4        0x8 draw.o
+ .rodata._ZN3mod19drawTitleScreenInfoEv.str1.1
+                0x0000000080014fbc       0x26 draw.o
+ .rodata._ZN3mod20drawFollowersOptionsEv.str1.1
+                0x0000000080014fe2       0x25 draw.o
+ .rodata._ZN3mod20drawMarioCoordinatesEv.str1.1
+                0x0000000080015007       0x19 draw.o
+ .rodata._ZN3mod20drawMemoryModifyListEv.str1.1
+                0x0000000080015020        0xd draw.o
+ .rodata._ZN3mod20drawYoshiSkipDetailsEv.str1.1
+                0x000000008001502d       0x17 draw.o
+ .rodata._ZN3mod20getOnOffTextAndColorEbPPKcPj.str1.1
+                0x0000000080015044        0x7 draw.o
+ .rodata._ZN3mod20getYesNoTextAndColorEbPPKcPj.str1.1
+                0x000000008001504b        0x7 draw.o
+ .rodata._ZN3mod21drawBattlesActorStatsEv.str1.1
+                0x0000000080015052       0x12 draw.o
+ .rodata._ZN3mod21drawBattlesActorsListEv.str1.1
+                0x0000000080015064       0x16 draw.o
+ .rodata._ZN3mod21drawChangeButtonComboEPt.str1.1
+                0x000000008001507a       0x96 draw.o
+ .rodata._ZN3mod21drawPalaceSkipDetailsEv.str1.1
+                0x0000000080015110       0x2e draw.o
+ .rodata._ZN3mod21drawWarpsErrorMessageEi.str1.1
+                0x000000008001513e       0x55 draw.o
+ .rodata._ZN3mod22drawCheatsResolveFadesEv.str1.1
+                0x0000000080015193       0x32 draw.o
+ *fill*         0x00000000800151c5        0x3 
+ .rodata._ZN3mod22drawConfirmationWindowEPKc.cst4
+                0x00000000800151c8        0x4 draw.o
+ .rodata._ZN3mod22drawCurrentFollowerOutEv.str1.1
+                0x00000000800151cc       0x1e draw.o
+ .rodata._ZN3mod22drawJumpStorageDetailsEv.str1.1
+                0x00000000800151ea        0xf draw.o
+ .rodata._ZN3mod23drawBattlesStatusesListEv.str1.1
+                0x00000000800151f9        0x5 draw.o
+ .rodata._ZN3mod23drawResolveFadesMessageEv.str1.1
+                0x00000000800151fe       0x7e draw.o
+ .rodata._ZN3mod23drawSequenceInPauseMenuEv.str1.1
+                0x000000008001527c        0x9 draw.o
+ *fill*         0x0000000080015285        0x3 
+ .rodata._ZN3mod24drawActionCommandsTimingEv.cst4
+                0x0000000080015288        0x4 draw.o
+ .rodata._ZN3mod24drawActionCommandsTimingEv.str1.1
+                0x000000008001528c       0x72 draw.o
+ .rodata._ZN3mod24drawCheatsChangeSequenceEv.str1.1
+                0x00000000800152fe       0x24 draw.o
+ .rodata._ZN3mod24drawCheatsForcedDropItemEv.str1.1
+                0x0000000080015322        0xd draw.o
+ .rodata._ZN3mod24drawFileSelectScreenInfoEv.str1.1
+                0x000000008001532f       0x76 draw.o
+ *fill*         0x00000000800153a5        0x3 
+ .rodata._ZN3mod24drawFunctionOnDebugLayerEPFvvE.cst4
+                0x00000000800153a8        0x4 draw.o
+ .rodata._ZN3mod25drawBattlesActorsHeldItemEv.str1.1
+                0x00000000800153ac       0x17 draw.o
+ .rodata._ZN3mod25drawCheatsManageFlagsMainEj.str1.1
+                0x00000000800153c3       0x50 draw.o
+ .rodata._ZN3mod25drawWarpIndexEntranceListEv.str1.1
+                0x0000000080015413       0x8d draw.o
+ .rodata._ZN3mod26drawBlimpTicketSkipDetailsEv.str1.1
+                0x00000000800154a0       0x1f draw.o
+ .rodata._ZN3mod26drawPartnerFollowerMessageEib.str1.1
+                0x00000000800154bf       0x6c draw.o
+ .rodata._ZN3mod26drawWarpByEventMenuDetailsEv.str1.1
+                0x000000008001552b       0x38 draw.o
+ .rodata._ZN3mod27drawMemoryChangeAddressListEv.str1.1
+                0x0000000080015563       0x28 draw.o
+ .rodata._ZN3mod27drawNotInBattleErrorMessageEv.str1.1
+                0x000000008001558b       0x31 draw.o
+ .rodata._ZN3mod27drawWarpIndexMapAndEntranceEv.str1.1
+                0x00000000800155bc       0x3c draw.o
+ .rodata._ZN3mod28drawMarioSpecialMovesOptionsEv.str1.1
+                0x00000000800155f8       0x29 draw.o
+ *fill*         0x0000000080015621        0x3 
+ .rodata._ZN3mod29drawMemoryChangeWatchPositionEv.cst4
+                0x0000000080015624        0x8 draw.o
+ .rodata._ZN3mod29drawMemoryChangeWatchPositionEv.str1.1
+                0x000000008001562c       0x75 draw.o
+ *fill*         0x00000000800156a1        0x3 
+ .rodata._ZN3mod30drawMemoryWatchAdjustableValueEj.cst4
+                0x00000000800156a4        0x4 draw.o
+ .rodata._ZN3mod30drawMemoryWatchAdjustableValueEj.str1.1
+                0x00000000800156a8       0x81 draw.o
+ .rodata._ZN3mod32drawSingleLineFromStringAndArrayEiiiPKcPS1_.str1.1
+                0x0000000080015729        0x5 draw.o
+ *fill*         0x000000008001572e        0x2 
+ .rodata._ZN3mod3Mod21drawArtAttackHitboxesEN4ttyd7dispdrv8CameraIdE.cst4
+                0x0000000080015730        0x8 draw.o
+ .rodata.str1.1
+                0x0000000080015738       0x68 draw.o
+ .rodata._ZN3mod12saveSettingsEv.str1.1
+                0x00000000800157a0        0xc memcard.o
+ .rodata._ZN3mod8drawMenuEv
+                0x00000000800157ac       0x90 menu.o
+ .rodata._ZN3mod15menuCheckButtonEv
+                0x000000008001583c      0x170 menu.o
+ .rodata.CSWTCH.41
+                0x00000000800159ac       0x17 menu.o
+ .rodata._ZN3mod8drawMenuEv.str1.1
+                0x00000000800159c3      0x120 menu.o
+ .rodata._ZN3mod10checkHeapsEv.str1.1
+                0x0000000080015ae3       0x42 main.o
+ *fill*         0x0000000080015b25        0x3 
+ .rodata._ZN3mod21initAddressOverwritesEv.cst4
+                0x0000000080015b28        0x4 main.o
+ .rodata._ZN3mod3Mod16getCustomMessageEPKc.str1.1
+                0x0000000080015b2c       0xcd main.o
+ .rodata._ZN3mod3Mod17performRelPatchesEPN2gc8OSModule12OSModuleInfoEPv.str1.1
+                0x0000000080015bf9        0x7 main.o
+ .rodata.fixRoomProblems.str1.1
+                0x0000000080015c00       0x1e main.o
+ .rodata.preventTextboxOptionSelection.str1.1
+                0x0000000080015c1e       0x19 main.o
+ .rodata.replaceJumpFallAnim.str1.1
+                0x0000000080015c37        0xc main.o
+ *(.gnu.linkonce.r.*)
+
+.rodata1
+ *(.rodata1)
+
+.sdata2         0x0000000080015c43        0x0
+                [!provide]                        PROVIDE (_SDA2_BASE_ = .)
+ *(.sdata2)
+ *(.sdata2.*)
+ *(.gnu.linkonce.s2.*)
+
+.sbss2
+ *(.sbss2)
+ *(.sbss2.*)
+ *(.gnu.linkonce.sb2.*)
+                0x0000000080015c44                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+
+.preinit_array
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+                [!provide]                        PROVIDE (__init_array_start = .)
+
+.init_array
+ *(.init_array)
+                [!provide]                        PROVIDE (__init_array_end = .)
+                [!provide]                        PROVIDE (__fini_array_start = .)
+
+.fini_array
+ *(.fini_array)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.data           0x0000000080015c44      0x91c
+ *(.data)
+ *(.data.*)
+ .data._ZN3mod10StatsLinesE
+                0x0000000080015c44        0xc global.o
+                0x0000000080015c44                _ZN3mod10StatsLinesE
+ .data._ZN3mod11CheatsLinesE
+                0x0000000080015c50       0x60 global.o
+                0x0000000080015c50                _ZN3mod11CheatsLinesE
+ .data._ZN3mod11CheatsOrderE
+                0x0000000080015cb0       0x18 global.o
+                0x0000000080015cb0                _ZN3mod11CheatsOrderE
+ .data._ZN3mod11MemoryLinesE
+                0x0000000080015cc8       0x10 global.o
+                0x0000000080015cc8                _ZN3mod11MemoryLinesE
+ .data._ZN3mod13DisplaysLinesE
+                0x0000000080015cd8       0x34 global.o
+                0x0000000080015cd8                _ZN3mod13DisplaysLinesE
+ .data._ZN3mod13DisplaysOrderE
+                0x0000000080015d0c        0xd global.o
+                0x0000000080015d0c                _ZN3mod13DisplaysOrderE
+ *fill*         0x0000000080015d19        0x3 
+ .data._ZN3mod13SettingsLinesE
+                0x0000000080015d1c        0x8 global.o
+                0x0000000080015d1c                _ZN3mod13SettingsLinesE
+ .data._ZN3mod13VersionNumberE
+                0x0000000080015d24        0x4 global.o
+                0x0000000080015d24                _ZN3mod13VersionNumberE
+ .data._ZN3mod14InventoryLinesE
+                0x0000000080015d28       0x10 global.o
+                0x0000000080015d28                _ZN3mod14InventoryLinesE
+ .data._ZN3mod14WarpEventLinesE
+                0x0000000080015d38       0x10 global.o
+                0x0000000080015d38                _ZN3mod14WarpEventLinesE
+ .data._ZN3mod14WarpIndexLinesE
+                0x0000000080015d48       0x10 global.o
+                0x0000000080015d48                _ZN3mod14WarpIndexLinesE
+ .data._ZN3mod15MemoryTypeLinesE
+                0x0000000080015d58       0x30 global.o
+                0x0000000080015d58                _ZN3mod15MemoryTypeLinesE
+ .data._ZN3mod15StatsMarioIconsE
+                0x0000000080015d88       0x22 global.o
+                0x0000000080015d88                _ZN3mod15StatsMarioIconsE
+ *fill*         0x0000000080015daa        0x2 
+ .data._ZN3mod16WarpDescriptionsE
+                0x0000000080015dac       0x64 global.o
+                0x0000000080015dac                _ZN3mod16WarpDescriptionsE
+ .data._ZN3mod16WarpDestinationsE
+                0x0000000080015e10       0x64 global.o
+                0x0000000080015e10                _ZN3mod16WarpDestinationsE
+ .data._ZN3mod17MemoryModifyLinesE
+                0x0000000080015e74       0x14 global.o
+                0x0000000080015e74                _ZN3mod17MemoryModifyLinesE
+ .data._ZN3mod17StatsPartnerLinesE
+                0x0000000080015e88       0x1c global.o
+                0x0000000080015e88                _ZN3mod17StatsPartnerLinesE
+ .data._ZN3mod18BattlesActorsLinesE
+                0x0000000080015ea4      0x398 global.o
+                0x0000000080015ea4                _ZN3mod18BattlesActorsLinesE
+ .data._ZN3mod18StatsFollowerLinesE
+                0x000000008001623c        0x8 global.o
+                0x000000008001623c                _ZN3mod18StatsFollowerLinesE
+ .data._ZN3mod19MemoryTypeLinesSizeE
+                0x0000000080016244        0x1 global.o
+                0x0000000080016244                _ZN3mod19MemoryTypeLinesSizeE
+ *fill*         0x0000000080016245        0x1 
+ .data._ZN3mod20BattlesStatusesIconsE
+                0x0000000080016246       0x36 global.o
+                0x0000000080016246                _ZN3mod20BattlesStatusesIconsE
+ .data._ZN3mod20BattlesStatusesLinesE
+                0x000000008001627c       0x6c global.o
+                0x000000008001627c                _ZN3mod20BattlesStatusesLinesE
+ .data._ZN3mod20CheatsClearAreaFlagsE
+                0x00000000800162e8        0x8 global.o
+                0x00000000800162e8                _ZN3mod20CheatsClearAreaFlagsE
+ .data._ZN3mod20InventoryOptionLinesE
+                0x00000000800162f0       0x18 global.o
+                0x00000000800162f0                _ZN3mod20InventoryOptionLinesE
+ .data._ZN3mod20OnScreenTimerOptionsE
+                0x0000000080016308        0x8 global.o
+                0x0000000080016308                _ZN3mod20OnScreenTimerOptionsE
+ .data._ZN3mod20WarpDestinationsSizeE
+                0x0000000080016310        0x1 global.o
+                0x0000000080016310                _ZN3mod20WarpDestinationsSizeE
+ .data._ZN3mod21MemoryModifyLinesSizeE
+                0x0000000080016311        0x1 global.o
+                0x0000000080016311                _ZN3mod21MemoryModifyLinesSizeE
+ *fill*         0x0000000080016312        0x2 
+ .data._ZN3mod22CheatsLockFlagsOptionsE
+                0x0000000080016314       0x20 global.o
+                0x0000000080016314                _ZN3mod22CheatsLockFlagsOptionsE
+ .data._ZN3mod22StatsMarioOptionsLinesE
+                0x0000000080016334       0x44 global.o
+                0x0000000080016334                _ZN3mod22StatsMarioOptionsLinesE
+ .data._ZN3mod24BattlesCurrentActorLinesE
+                0x0000000080016378       0x1c global.o
+                0x0000000080016378                _ZN3mod24BattlesCurrentActorLinesE
+ .data._ZN3mod24BattlesCurrentActorStatsE
+                0x0000000080016394       0x10 global.o
+                0x0000000080016394                _ZN3mod24BattlesCurrentActorStatsE
+ .data._ZN3mod24BattlesStatusesLinesSizeE
+                0x00000000800163a4        0x1 global.o
+                0x00000000800163a4                _ZN3mod24BattlesStatusesLinesSizeE
+ *fill*         0x00000000800163a5        0x3 
+ .data._ZN3mod24CheatsManageFlagsOptionsE
+                0x00000000800163a8       0x18 global.o
+                0x00000000800163a8                _ZN3mod24CheatsManageFlagsOptionsE
+ .data._ZN3mod24MemoryChangeAddressLinesE
+                0x00000000800163c0        0xc global.o
+                0x00000000800163c0                _ZN3mod24MemoryChangeAddressLinesE
+ .data._ZN3mod24OnScreenTimerOptionsSizeE
+                0x00000000800163cc        0x1 global.o
+                0x00000000800163cc                _ZN3mod24OnScreenTimerOptionsSizeE
+ *fill*         0x00000000800163cd        0x3 
+ .data._ZN3mod24StatsPartnerOptionsLinesE
+                0x00000000800163d0       0x10 global.o
+                0x00000000800163d0                _ZN3mod24StatsPartnerOptionsLinesE
+ .data._ZN3mod25CheatsClearAreaFlagsAreasE
+                0x00000000800163e0       0x58 global.o
+                0x00000000800163e0                _ZN3mod25CheatsClearAreaFlagsAreasE
+ .data._ZN3mod25OnScreenTimerOptionsLinesE
+                0x0000000080016438        0xc global.o
+                0x0000000080016438                _ZN3mod25OnScreenTimerOptionsLinesE
+ .data._ZN3mod25StatsFollowerOptionsLinesE
+                0x0000000080016444       0x14 global.o
+                0x0000000080016444                _ZN3mod25StatsFollowerOptionsLinesE
+ .data._ZN3mod26CheatsStandardOptionsLinesE
+                0x0000000080016458        0x8 global.o
+                0x0000000080016458                _ZN3mod26CheatsStandardOptionsLinesE
+ .data._ZN3mod26StatsMarioOptionsLinesSizeE
+                0x0000000080016460        0x1 global.o
+                0x0000000080016460                _ZN3mod26StatsMarioOptionsLinesSizeE
+ *fill*         0x0000000080016461        0x3 
+ .data._ZN3mod27StatsYoshiColorOptionsLinesE
+                0x0000000080016464       0x1c global.o
+                0x0000000080016464                _ZN3mod27StatsYoshiColorOptionsLinesE
+ .data._ZN3mod28BattlesCurrentActorStatsSizeE
+                0x0000000080016480        0x1 global.o
+                0x0000000080016480                _ZN3mod28BattlesCurrentActorStatsSizeE
+ .data._ZN3mod28StatsPartnerOptionsLinesSizeE
+                0x0000000080016481        0x1 global.o
+                0x0000000080016481                _ZN3mod28StatsPartnerOptionsLinesSizeE
+ .data._ZN3mod29CheatsClearAreaFlagsAreasSizeE
+                0x0000000080016482        0x1 global.o
+                0x0000000080016482                _ZN3mod29CheatsClearAreaFlagsAreasSizeE
+ *fill*         0x0000000080016483        0x1 
+ .data._ZN3mod29MarioStatsSpecialMovesOptionsE
+                0x0000000080016484       0x20 global.o
+                0x0000000080016484                _ZN3mod29MarioStatsSpecialMovesOptionsE
+ .data._ZN3mod29StatsFollowerOptionsLinesSizeE
+                0x00000000800164a4        0x1 global.o
+                0x00000000800164a4                _ZN3mod29StatsFollowerOptionsLinesSizeE
+ *fill*         0x00000000800164a5        0x3 
+ .data._ZN3mod30CheatsManageGlobalFlagsOptionsE
+                0x00000000800164a8        0x4 global.o
+                0x00000000800164a8                _ZN3mod30CheatsManageGlobalFlagsOptionsE
+ .data._ZN3mod30CheatsManageGlobalWordsOptionsE
+                0x00000000800164ac        0x8 global.o
+                0x00000000800164ac                _ZN3mod30CheatsManageGlobalWordsOptionsE
+ .data._ZN3mod31CheatsForceItemDropOptionsLinesE
+                0x00000000800164b4        0x8 global.o
+                0x00000000800164b4                _ZN3mod31CheatsForceItemDropOptionsLinesE
+ .data._ZN3mod31CheatsNoButtonComboOptionsLinesE
+                0x00000000800164bc        0x4 global.o
+                0x00000000800164bc                _ZN3mod31CheatsNoButtonComboOptionsLinesE
+ .data._ZN3mod31StatsYoshiColorOptionsLinesSizeE
+                0x00000000800164c0        0x1 global.o
+                0x00000000800164c0                _ZN3mod31StatsYoshiColorOptionsLinesSizeE
+ *fill*         0x00000000800164c1        0x3 
+ .data._ZN3mod32CheatsChangeSequenceOptionsLinesE
+                0x00000000800164c4        0x4 global.o
+                0x00000000800164c4                _ZN3mod32CheatsChangeSequenceOptionsLinesE
+ .data._ZN3mod33MarioStatsSpecialMovesOptionsSizeE
+                0x00000000800164c8        0x1 global.o
+                0x00000000800164c8                _ZN3mod33MarioStatsSpecialMovesOptionsSizeE
+ *fill*         0x00000000800164c9        0x3 
+ .data._ZN3mod34CheatsClearAreaFlagsAreasFullNamesE
+                0x00000000800164cc       0x58 global.o
+                0x00000000800164cc                _ZN3mod34CheatsClearAreaFlagsAreasFullNamesE
+ .data._ZN3mod34CheatsManageGlobalFlagsOptionsSizeE
+                0x0000000080016524        0x1 global.o
+                0x0000000080016524                _ZN3mod34CheatsManageGlobalFlagsOptionsSizeE
+ .data._ZN3mod34CheatsManageGlobalWordsOptionsSizeE
+                0x0000000080016525        0x1 global.o
+                0x0000000080016525                _ZN3mod34CheatsManageGlobalWordsOptionsSizeE
+ *fill*         0x0000000080016526        0x2 
+ .data._ZN3mod9RootLinesE
+                0x0000000080016528       0x20 global.o
+                0x0000000080016528                _ZN3mod9RootLinesE
+ .data._ZN3mod9WarpLinesE
+                0x0000000080016548        0xc global.o
+                0x0000000080016548                _ZN3mod9WarpLinesE
+ *(.gnu.linkonce.d.*)
+                0x0000000080016560                . = ALIGN (0x20)
+ *fill*         0x0000000080016554        0xc 
+
+.data1
+ *(.data1)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.eh_frame       0x0000000080016560     0x3798
+ *(.eh_frame)
+ .eh_frame      0x0000000080016560       0x78 rel.o
+ .eh_frame      0x00000000800165d8      0x2f0 wrappers.o
+ .eh_frame      0x00000000800168c8       0x5c global.o
+ .eh_frame      0x0000000080016924      0x65c codes.o
+ .eh_frame      0x0000000080016f80       0x78 patch.o
+                                         0xa0 (size before relaxing)
+ .eh_frame      0x0000000080016ff8      0x19c memorywatch.o
+ .eh_frame      0x0000000080017194       0x78 cxx.o
+                                         0x8c (size before relaxing)
+ .eh_frame      0x000000008001720c      0xd58 menufunctions.o
+                                        0xda4 (size before relaxing)
+ .eh_frame      0x0000000080017f64     0x1074 draw.o
+                                       0x10dc (size before relaxing)
+ .eh_frame      0x0000000080018fd8      0x1e0 memcard.o
+ .eh_frame      0x00000000800191b8      0x1b8 mod.o
+ .eh_frame      0x0000000080019370      0x234 menu.o
+ .eh_frame      0x00000000800195a4      0x368 main.o
+ .eh_frame      0x000000008001990c      0x3ec commonfunctions.o
+
+.gcc_except_table
+ *(.gcc_except_table)
+
+.fixup
+ *(.fixup)
+
+.got1
+ *(.got1)
+
+.got2
+ *(.got2)
+
+.dynamic
+ *(.dynamic)
+
+.ctors          0x0000000080019cf8        0x8
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ .ctors         0x0000000080019cf8        0x4 global.o
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+                0x0000000080019d00                . = ALIGN (0x20)
+ *fill*         0x0000000080019cfc        0x4 
+
+.dtors          0x0000000080019d00        0x0
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+                0x0000000080019d00                . = ALIGN (0x20)
+
+.jcr
+ *(.jcr)
+
+.got
+ *(.got.plt)
+ *(.got)
+
+.sdata          0x0000000080019d00        0x0
+                [!provide]                        PROVIDE (_SDA_BASE_ = .)
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+                0x0000000080019d00                . = ALIGN (0x20)
+                0x0000000080019d00                _edata = .
+                [!provide]                        PROVIDE (edata = .)
+
+.sbss           0x0000000080019d00        0x0
+                0x0000000080019d00                __sbss_start = .
+                [!provide]                        PROVIDE (__sbss_start = .)
+                [!provide]                        PROVIDE (___sbss_start = .)
+ *(.dynsbss)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+ *(.scommon)
+                [!provide]                        PROVIDE (__sbss_end = .)
+                [!provide]                        PROVIDE (___sbss_end = .)
+                0x0000000080019d00                . = ALIGN (0x20)
+                0x0000000080019d00                __sbss_end = .
+
+.bss            0x0000000080019d00     0x1400
+                0x0000000080019d00                __bss_start = .
+                [!provide]                        PROVIDE (__bss_start = .)
+ *(.dynbss)
+ *(.bss)
+ *(.bss.*)
+ .bss._ZN3mod10HeapBufferE
+                0x0000000080019d00      0x200 global.o
+                0x0000000080019d00                _ZN3mod10HeapBufferE
+ .bss._ZN3mod10PalaceSkipE
+                0x0000000080019f00        0xc global.o
+                0x0000000080019f00                _ZN3mod10PalaceSkipE
+ .bss._ZN3mod10ReloadRoomE
+                0x0000000080019f0c       0x2a global.o
+                0x0000000080019f0c                _ZN3mod10ReloadRoomE
+ *fill*         0x0000000080019f36        0x2 
+ .bss._ZN3mod11ManageFlagsE
+                0x0000000080019f38        0x8 global.o
+                0x0000000080019f38                _ZN3mod11ManageFlagsE
+ .bss._ZN3mod11MemoryWatchE
+                0x0000000080019f40      0xd20 global.o
+                0x0000000080019f40                _ZN3mod11MemoryWatchE
+ .bss._ZN3mod11WarpByEventE
+                0x000000008001ac60        0x8 global.o
+                0x000000008001ac60                _ZN3mod11WarpByEventE
+ .bss._ZN3mod11WarpByIndexE
+                0x000000008001ac68       0x88 global.o
+                0x000000008001ac68                _ZN3mod11WarpByIndexE
+ .bss._ZN3mod12FrameCounterE
+                0x000000008001acf0        0xc global.o
+                0x000000008001acf0                _ZN3mod12FrameCounterE
+ .bss._ZN3mod12MenuSettingsE
+                0x000000008001acfc       0x10 global.o
+                0x000000008001acfc                _ZN3mod12MenuSettingsE
+ .bss._ZN3mod12SaveAnywhereE
+                0x000000008001ad0c        0x8 global.o
+                0x000000008001ad0c                _ZN3mod12SaveAnywhereE
+ .bss._ZN3mod12SpeedUpMarioE
+                0x000000008001ad14        0xc global.o
+                0x000000008001ad14                _ZN3mod12SpeedUpMarioE
+ .bss._ZN3mod13DisplayBufferE
+                0x000000008001ad20      0x100 global.o
+                0x000000008001ad20                _ZN3mod13DisplayBufferE
+ .bss._ZN3mod13OnScreenTimerE
+                0x000000008001ae20       0x18 global.o
+                0x000000008001ae20                _ZN3mod13OnScreenTimerE
+ .bss._ZN3mod14ClearAreaFlagsE
+                0x000000008001ae38        0x3 global.o
+                0x000000008001ae38                _ZN3mod14ClearAreaFlagsE
+ *fill*         0x000000008001ae3b        0x1 
+ .bss._ZN3mod15BlimpTicketSkipE
+                0x000000008001ae3c       0x10 global.o
+                0x000000008001ae3c                _ZN3mod15BlimpTicketSkipE
+ .bss._ZN3mod17PrevMenuAndOptionE
+                0x000000008001ae4c       0x3d global.o
+                0x000000008001ae4c                _ZN3mod17PrevMenuAndOptionE
+ *fill*         0x000000008001ae89        0x1 
+ .bss._ZN3mod19AdjustableValueMenuE
+                0x000000008001ae8a        0x4 global.o
+                0x000000008001ae8a                _ZN3mod19AdjustableValueMenuE
+ *fill*         0x000000008001ae8e        0x2 
+ .bss._ZN3mod19MemoryWatchPositionE
+                0x000000008001ae90        0xc global.o
+                0x000000008001ae90                _ZN3mod19MemoryWatchPositionE
+ .bss._ZN3mod20CheatsDisplayButtonsE
+                0x000000008001ae9c       0x1d global.o
+                0x000000008001ae9c                _ZN3mod20CheatsDisplayButtonsE
+ .bss._ZN3mod20ClearCacheForBattlesE
+                0x000000008001aeb9        0x2 global.o
+                0x000000008001aeb9                _ZN3mod20ClearCacheForBattlesE
+ *fill*         0x000000008001aebb        0x1 
+ .bss._ZN3mod21DisplayActionCommandsE
+                0x000000008001aebc        0x6 global.o
+                0x000000008001aebc                _ZN3mod21DisplayActionCommandsE
+ *fill*         0x000000008001aec2        0x2 
+ .bss._ZN3mod21MarioPartnerPositionsE
+                0x000000008001aec4       0x38 global.o
+                0x000000008001aec4                _ZN3mod21MarioPartnerPositionsE
+ .bss._ZN3mod30MemoryWatchAdjustableValueMenuE
+                0x000000008001aefc        0x4 global.o
+                0x000000008001aefc                _ZN3mod30MemoryWatchAdjustableValueMenuE
+ .bss._ZN3mod4MenuE
+                0x000000008001af00       0xf0 global.o
+                0x000000008001af00                _ZN3mod4MenuE
+ .bss._ZN3mod5CheatE
+                0x000000008001aff0       0x60 global.o
+                0x000000008001aff0                _ZN3mod5CheatE
+ .bss._ZN3mod7MenuVarE
+                0x000000008001b050       0x24 global.o
+                0x000000008001b050                _ZN3mod7MenuVarE
+ .bss._ZN3mod8DisplaysE
+                0x000000008001b074        0xd global.o
+                0x000000008001b074                _ZN3mod8DisplaysE
+ *fill*         0x000000008001b081        0x3 
+ .bss._ZN3mod9LockFlagsE
+                0x000000008001b084       0x54 global.o
+                0x000000008001b084                _ZN3mod9LockFlagsE
+ .bss._ZN3mod9SpawnItemE
+                0x000000008001b0d8        0x8 global.o
+                0x000000008001b0d8                _ZN3mod9SpawnItemE
+ .bss._ZN3mod9YoshiSkipE
+                0x000000008001b0e0        0xc global.o
+                0x000000008001b0e0                _ZN3mod9YoshiSkipE
+ .bss._ZN3mod4gModE
+                0x000000008001b0ec        0x4 mod.o
+                0x000000008001b0ec                _ZN3mod4gModE
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+                0x000000008001b100                . = ALIGN (0x20)
+ *fill*         0x000000008001b0f0       0x10 
+                [!provide]                        PROVIDE (__bss_end = .)
+                0x000000008001b100                __bss_end = .
+                0x000000008001b100                _end = .
+                [!provide]                        PROVIDE (end = .)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000      0x1ea
+ *(.comment)
+ .comment       0x0000000000000000       0x23 rel.o
+ .comment       0x0000000000000023       0x23 wrappers.o
+ .comment       0x0000000000000046       0x23 global.o
+ .comment       0x0000000000000069       0x23 codes.o
+ .comment       0x000000000000008c       0x23 patch.o
+ .comment       0x00000000000000af       0x23 memorywatch.o
+ .comment       0x00000000000000d2       0x23 cxx.o
+ .comment       0x00000000000000f5       0x23 menufunctions.o
+ .comment       0x0000000000000118       0x23 draw.o
+ .comment       0x000000000000013b       0x23 memcard.o
+ .comment       0x000000000000015e       0x23 mod.o
+ .comment       0x0000000000000181       0x23 menu.o
+ .comment       0x00000000000001a4       0x23 main.o
+ .comment       0x00000000000001c7       0x23 commonfunctions.o
+
+.gnu.attributes
+                0x0000000000000000       0x10
+ .gnu.attributes
+                0x0000000000000000       0x10 wrappers.o
+ .gnu.attributes
+                0x0000000000000010       0x10 codes.o
+ .gnu.attributes
+                0x0000000000000020       0x10 memorywatch.o
+ .gnu.attributes
+                0x0000000000000030       0x10 menufunctions.o
+ .gnu.attributes
+                0x0000000000000040       0x10 draw.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000      0xd40
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x30 rel.o
+ .debug_aranges
+                0x0000000000000030      0x138 wrappers.o
+ .debug_aranges
+                0x0000000000000168       0x30 global.o
+ .debug_aranges
+                0x0000000000000198      0x168 codes.o
+ .debug_aranges
+                0x0000000000000300       0x40 patch.o
+ .debug_aranges
+                0x0000000000000340       0x70 memorywatch.o
+ .debug_aranges
+                0x00000000000003b0       0x30 cxx.o
+ .debug_aranges
+                0x00000000000003e0      0x310 menufunctions.o
+ .debug_aranges
+                0x00000000000006f0      0x300 draw.o
+ .debug_aranges
+                0x00000000000009f0       0x90 memcard.o
+ .debug_aranges
+                0x0000000000000a80       0xa8 mod.o
+ .debug_aranges
+                0x0000000000000b28       0x30 menu.o
+ .debug_aranges
+                0x0000000000000b58       0xb8 main.o
+ .debug_aranges
+                0x0000000000000c10      0x130 commonfunctions.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000    0x41070
+ *(.debug_info)
+ .debug_info    0x0000000000000000       0xf3 rel.o
+ .debug_info    0x00000000000000f3     0x2bb3 wrappers.o
+ .debug_info    0x0000000000002ca6     0x2602 global.o
+ .debug_info    0x00000000000052a8     0x634b codes.o
+ .debug_info    0x000000000000b5f3      0x5dd patch.o
+ .debug_info    0x000000000000bbd0     0x38a2 memorywatch.o
+ .debug_info    0x000000000000f472      0x615 cxx.o
+ .debug_info    0x000000000000fa87     0xefb0 menufunctions.o
+ .debug_info    0x000000000001ea37     0xe689 draw.o
+ .debug_info    0x000000000002d0c0     0x3772 memcard.o
+ .debug_info    0x0000000000030832     0x3bc0 mod.o
+ .debug_info    0x00000000000343f2     0x54e1 menu.o
+ .debug_info    0x00000000000398d3     0x5941 main.o
+ .debug_info    0x000000000003f214     0x1e5c commonfunctions.o
+
+.debug_abbrev   0x0000000000000000     0x464e
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000       0xcc rel.o
+ .debug_abbrev  0x00000000000000cc      0x445 wrappers.o
+ .debug_abbrev  0x0000000000000511      0x315 global.o
+ .debug_abbrev  0x0000000000000826      0x794 codes.o
+ .debug_abbrev  0x0000000000000fba      0x1a0 patch.o
+ .debug_abbrev  0x000000000000115a      0x54b memorywatch.o
+ .debug_abbrev  0x00000000000016a5      0x25d cxx.o
+ .debug_abbrev  0x0000000000001902      0x99a menufunctions.o
+ .debug_abbrev  0x000000000000229c      0x929 draw.o
+ .debug_abbrev  0x0000000000002bc5      0x4f2 memcard.o
+ .debug_abbrev  0x00000000000030b7      0x528 mod.o
+ .debug_abbrev  0x00000000000035df      0x44d menu.o
+ .debug_abbrev  0x0000000000003a2c      0x69a main.o
+ .debug_abbrev  0x00000000000040c6      0x588 commonfunctions.o
+
+.debug_line     0x0000000000000000    0x11df2
+ *(.debug_line)
+ .debug_line    0x0000000000000000      0x160 rel.o
+ .debug_line    0x0000000000000160      0x735 wrappers.o
+ .debug_line    0x0000000000000895      0x781 global.o
+ .debug_line    0x0000000000001016     0x1ba1 codes.o
+ .debug_line    0x0000000000002bb7      0x295 patch.o
+ .debug_line    0x0000000000002e4c      0xb40 memorywatch.o
+ .debug_line    0x000000000000398c      0x232 cxx.o
+ .debug_line    0x0000000000003bbe     0x4086 menufunctions.o
+ .debug_line    0x0000000000007c44     0x495c draw.o
+ .debug_line    0x000000000000c5a0      0xb39 memcard.o
+ .debug_line    0x000000000000d0d9      0x7fa mod.o
+ .debug_line    0x000000000000d8d3     0x2c93 menu.o
+ .debug_line    0x0000000000010566      0xea5 main.o
+ .debug_line    0x000000000001140b      0x9e7 commonfunctions.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x0000000000000000    0x33ed8
+ *(.debug_str)
+ .debug_str     0x0000000000000000      0x1c4 rel.o
+ .debug_str     0x00000000000001c4     0x1750 wrappers.o
+ .debug_str     0x0000000000001914     0x2ab8 global.o
+ .debug_str     0x00000000000043cc     0x57f0 codes.o
+ .debug_str     0x0000000000009bbc      0x492 patch.o
+ .debug_str     0x000000000000a04e     0x2e76 memorywatch.o
+ .debug_str     0x000000000000cec4      0x529 cxx.o
+ .debug_str     0x000000000000d3ed     0xd9b1 menufunctions.o
+ .debug_str     0x000000000001ad9e     0x817b draw.o
+ .debug_str     0x0000000000022f19     0x2c61 memcard.o
+ .debug_str     0x0000000000025b7a     0x2d7e mod.o
+ .debug_str     0x00000000000288f8     0x5206 menu.o
+ .debug_str     0x000000000002dafe     0x54ee main.o
+ .debug_str     0x0000000000032fec      0xeec commonfunctions.o
+
+.debug_loc      0x0000000000000000    0x15b34
+ *(.debug_loc)
+ .debug_loc     0x0000000000000000       0x62 rel.o
+ .debug_loc     0x0000000000000062      0x668 wrappers.o
+ .debug_loc     0x00000000000006ca      0x151 global.o
+ .debug_loc     0x000000000000081b     0x1289 codes.o
+ .debug_loc     0x0000000000001aa4      0x33e patch.o
+ .debug_loc     0x0000000000001de2      0x8df memorywatch.o
+ .debug_loc     0x00000000000026c1       0xbb cxx.o
+ .debug_loc     0x000000000000277c     0x5c21 menufunctions.o
+ .debug_loc     0x000000000000839d     0x7e99 draw.o
+ .debug_loc     0x0000000000010236      0xc61 memcard.o
+ .debug_loc     0x0000000000010e97      0x49c mod.o
+ .debug_loc     0x0000000000011333     0x34f5 menu.o
+ .debug_loc     0x0000000000014828      0xb22 main.o
+ .debug_loc     0x000000000001534a      0x7ea commonfunctions.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+                0x0000000000000000                __isIPL = 0x0
+                0x000000008003b100                __stack_addr = ((((__bss_start + SIZEOF (.bss)) + 0x20000) + 0x7) & 0xfffffffffffffff8)
+                0x000000008001b100                __stack_end = (__bss_start + SIZEOF (.bss))
+                0x000000008003f100                __intrstack_addr = (__stack_addr + 0x4000)
+                0x000000008003b100                __intrstack_end = __stack_addr
+                0x000000008003f100                __Arena1Lo = ((__intrstack_addr + 0x1f) & 0xffffffffffffffe0)
+                0x00000000817feff0                __Arena1Hi = 0x817feff0
+                0x00000000817ff000                __gxregs = ((__Arena1Hi + 0x1f) & 0xffffffffffffffe0)
+                [!provide]                        PROVIDE (__stack = 0x817feff0)
+                [!provide]                        PROVIDE (__isIPL = __isIPL)
+                [!provide]                        PROVIDE (__stack_addr = __stack_addr)
+                [!provide]                        PROVIDE (__stack_end = __stack_end)
+                [!provide]                        PROVIDE (__intrstack_addr = __intrstack_addr)
+                [!provide]                        PROVIDE (__intrstack_end = __intrstack_end)
+                [!provide]                        PROVIDE (__Arena1Lo = __Arena1Lo)
+                [!provide]                        PROVIDE (__Arena1Hi = __Arena1Hi)
+                [!provide]                        PROVIDE (__gxregs = __gxregs)
+LOAD /home/alex/doc/projects/romhack/util/TTYD-Practice-Codes/ttyd-tools/rel/source/cxx.ld
+                0x0000000080019cf8                _ctors_start = ADDR (.ctors)
+                0x0000000080019d00                _ctors_end = (_ctors_start + SIZEOF (.ctors))
+                0x0000000080019d00                _dtors_start = ADDR (.dtors)
+                0x0000000080019d00                _dtors_end = (_dtors_start + SIZEOF (.dtors))
+LOAD rel.o
+LOAD wrappers.o
+LOAD global.o
+LOAD codes.o
+LOAD patch.o
+LOAD memorywatch.o
+LOAD cxx.o
+LOAD menufunctions.o
+LOAD draw.o
+LOAD memcard.o
+LOAD mod.o
+LOAD menu.o
+LOAD main.o
+LOAD commonfunctions.o
+LOAD DisplayMegaHammerBadgesInBattleMenu.o
+LOAD FixBlooperCrash2.o
+LOAD DisableDPadOptionsDisplay.o
+LOAD ReplaceJumpFallAnim.o
+LOAD FixEvtMapBlendSetFlagPartnerCrash.o
+LOAD PreventTextboxOptionSelection.o
+LOAD FallThroughMostObjectsStandard.o
+LOAD FallThroughMostObjectsBowser.o
+LOAD ForceNPCItemDrop.o
+LOAD DisplayMegaJumpBadgeInBattleMenu.o
+LOAD FixBlooperCrash1.o
+LOAD AllowRunningFromBattles.o
+LOAD FixEvtMapBlendSetFlagFollowerCrash.o
+LOAD restgpr_x.o
+LOAD restfpr_x.o
+OUTPUT(/home/alex/doc/projects/romhack/util/TTYD-Practice-Codes/ttyd-tools/rel/rel.us.elf elf32-powerpc)
+
+.debug_ranges   0x0000000000000000     0x2cb8
+ .debug_ranges  0x0000000000000000       0x50 rel.o
+ .debug_ranges  0x0000000000000050      0x128 wrappers.o
+ .debug_ranges  0x0000000000000178       0x50 global.o
+ .debug_ranges  0x00000000000001c8      0x2f0 codes.o
+ .debug_ranges  0x00000000000004b8       0x30 patch.o
+ .debug_ranges  0x00000000000004e8      0x118 memorywatch.o
+ .debug_ranges  0x0000000000000600       0x20 cxx.o
+ .debug_ranges  0x0000000000000620      0xaa8 menufunctions.o
+ .debug_ranges  0x00000000000010c8     0x1398 draw.o
+ .debug_ranges  0x0000000000002460      0x160 memcard.o
+ .debug_ranges  0x00000000000025c0       0xc0 mod.o
+ .debug_ranges  0x0000000000002680      0x378 menu.o
+ .debug_ranges  0x00000000000029f8      0x170 main.o
+ .debug_ranges  0x0000000000002b68      0x150 commonfunctions.o
