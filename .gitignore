@@ -263,4 +263,8 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Build artifacts
 /build/
+/ApeSphere.rel
+/ApeSphere.gci
+/ApeSphere.elf
