@@ -20,31 +20,14 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ifeq ($(VERSION),)
-all: us jp eu
-us:
-	@$(MAKE) --no-print-directory VERSION=us
-jp:
-	@$(MAKE) --no-print-directory VERSION=jp
-eu:
-	@$(MAKE) --no-print-directory VERSION=eu
-
-clean:
-	@$(MAKE) --no-print-directory clean_target VERSION=us
-	@$(MAKE) --no-print-directory clean_target VERSION=jp
-	@$(MAKE) --no-print-directory clean_target VERSION=eu
-
-.PHONY: all clean us jp eu
-else
-
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
 # BUILD is the directory where object files & intermediate files will be placed
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR)).$(VERSION)
-BUILD		:=	build.$(VERSION)
+TARGET		:=	$(notdir $(CURDIR))
+BUILD		:=	build
 SOURCES		:=	src $(wildcard src/*)
 DATA		:=	data
 INCLUDES	:=	src/include
@@ -55,7 +38,8 @@ INCLUDES	:=	src/include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror $(MACHDEP) $(INCLUDE)
+# TODO remove TTYD_US define
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror $(MACHDEP) $(INCLUDE) -DTTYD_US
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++17 $(CFLAGS)
 
 FUNCWRAPS	= -Wl,--wrap,sprintf -Wl,--wrap,strcmp -Wl,--wrap,strncmp -Wl,--wrap,strcpy -Wl,--wrap,strncpy -Wl,--wrap,strcat -Wl,--wrap,strlen -Wl,--wrap,memcpy -Wl,--wrap,memset -Wl,--wrap,sysMsec2Frame -Wl,--wrap,keyGetButton -Wl,--wrap,keyGetButtonTrg -Wl,--wrap,seqGetSeq -Wl,--wrap,seqGetNextSeq -Wl,--wrap,swByteGet -Wl,--wrap,swByteSet -Wl,--wrap,swClear -Wl,--wrap,swSet -Wl,--wrap,marioStGetSystemLevel -Wl,--wrap,marioStSystemLevel -Wl,--wrap,marioGetPartyId -Wl,--wrap,marioGetExtraPartyId -Wl,--wrap,marioGetPtr -Wl,--wrap,partyGetPtr -Wl,--wrap,pouchGetPtr -Wl,--wrap,btlGetScreenPoint -Wl,--wrap,evtGetWork -Wl,--wrap,eventStgNum -Wl,--wrap,eventStgDtPtr -Wl,--wrap,winGetPtr -Wl,--wrap,winOpenEnable -Wl,--wrap,CARDClose -Wl,--wrap,DCFlushRange -Wl,--wrap,ICInvalidateRange -Wl,--wrap,__udivdi3 -Wl,--wrap,__umoddi3
@@ -63,23 +47,8 @@ FUNCWRAPS	= -Wl,--wrap,sprintf -Wl,--wrap,strcmp -Wl,--wrap,strncmp -Wl,--wrap,s
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map $(FUNCWRAPS)
 
 # Platform options
-ifeq ($(VERSION),us)
-	CFLAGS += -DTTYD_US
-	ASFLAGS += -DTTYD_US
-	GAMECODE = "G8ME"
-	PRINTVER = "US"
-else ifeq ($(VERSION),jp)
-	CFLAGS += -DTTYD_JP
-	ASFLAGS += -DTTYD_JP
-	GAMECODE = "G8MJ"
-	PRINTVER = "JP"
-else ifeq ($(VERSION),eu)
-	CFLAGS += -DTTYD_EU
-	ASFLAGS += -DTTYD_EU
-	GAMECODE = "G8MP"
-	PRINTVER = "EU"
-endif
-
+GAMECODE = "G8ME"
+PRINTVER = "US"
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
@@ -134,17 +103,9 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/src/include/ttyd.$(VERSION).lst
-ifeq ($(VERSION),us)
-	export BANNERFILE	:= $(CURDIR)/src/images/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/src/images/icon_us.raw
-else ifeq ($(VERSION),jp)
-	export BANNERFILE	:= $(CURDIR)/src/images/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/src/images/icon_jp.raw
-else ifeq ($(VERSION),eu)
-	export BANNERFILE	:= $(CURDIR)/src/images/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/src/images/icon_eu.raw
-endif
+export MAPFILE		:= $(CURDIR)/src/include/ttyd.us.lst
+export BANNERFILE	:= $(CURDIR)/src/images/banner_us.raw
+export ICONFILE		:= $(CURDIR)/src/images/icon_us.raw
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
@@ -170,8 +131,8 @@ $(BUILD):
 
 #---------------------------------------------------------------------------------
 # TODO clean elf2rel build
-clean_target:
-	@echo clean ... $(VERSION)
+clean:
+	@echo Cleaning...
 	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
 
 #---------------------------------------------------------------------------------
@@ -221,7 +182,5 @@ elf2rel:
 
 .PHONY: elf2rel
 
-#---------------------------------------------------------------------------------
-endif
 #---------------------------------------------------------------------------------
 endif
