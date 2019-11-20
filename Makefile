@@ -7,14 +7,7 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-ifeq ($(strip $(TTYDTOOLS)),)
-$(error "Please set TTYDTOOLS in your environment. export TTYDTOOLS=<path to>ttyd-tools")
-endif
-
 include $(DEVKITPPC)/gamecube_rules
-
-export ELF2REL	:=	$(TTYDTOOLS)/bin/elf2rel
-export GCIPACK	:=	python $(TTYDTOOLS)/gcipack/gcipack.py
 
 ifeq ($(VERSION),)
 all: us jp eu
@@ -41,9 +34,9 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR)).$(VERSION)
 BUILD		:=	build.$(VERSION)
-SOURCES		:=	source $(wildcard source/*)
+SOURCES		:=	src $(wildcard src/*)
 DATA		:=	data
-INCLUDES	:=	include
+INCLUDES	:=	src/include
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -130,16 +123,16 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/include/ttyd.$(VERSION).lst
+export MAPFILE		:= $(CURDIR)/src/include/ttyd.$(VERSION).lst
 ifeq ($(VERSION),us)
-	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
+	export BANNERFILE	:= $(CURDIR)/src/images/banner_us.raw
+	export ICONFILE		:= $(CURDIR)/src/images/icon_us.raw
 else ifeq ($(VERSION),jp)
-	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
+	export BANNERFILE	:= $(CURDIR)/src/images/banner_jp.raw
+	export ICONFILE		:= $(CURDIR)/src/images/icon_jp.raw
 else ifeq ($(VERSION),eu)
-	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
+	export BANNERFILE	:= $(CURDIR)/src/images/banner_eu.raw
+	export ICONFILE		:= $(CURDIR)/src/images/icon_eu.raw
 endif
 
 #---------------------------------------------------------------------------------
@@ -171,6 +164,10 @@ clean_target:
 
 #---------------------------------------------------------------------------------
 else
+
+TTYDTOOLS := $(CURDIR)/../dep/ttyd-tools/ttyd-tools
+ELF2REL	:=	$(TTYDTOOLS)/elf2rel/build/elf2rel
+GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
