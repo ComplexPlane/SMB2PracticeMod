@@ -68,7 +68,14 @@ LIBDIRS	:=
 # rules for different file extensions
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
+
 #---------------------------------------------------------------------------------
+# tool paths
+#---------------------------------------------------------------------------------
+export TTYDTOOLS := $(CURDIR)/dep/ttyd-tools/ttyd-tools
+export ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
+export ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
+export GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 
@@ -122,26 +129,29 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 			-L$(LIBOGC_LIB)
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
-.PHONY: $(BUILD) clean_target
 
 #---------------------------------------------------------------------------------
-$(BUILD):
+$(BUILD): elf2rel
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
+# For now, run this phony target every time to build elf2rel
+elf2rel:
+	@echo "Compiling elf2rel..."
+	mkdir -p $(ELF2REL_BUILD)
+	cd $(ELF2REL_BUILD) && cmake ..
+	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
+
 #---------------------------------------------------------------------------------
-# TODO clean elf2rel build
 clean:
 	@echo Cleaning...
-	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
+	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci $(ELF2REL_BUILD)
 
 #---------------------------------------------------------------------------------
-else
 
-TTYDTOOLS := $(CURDIR)/../dep/ttyd-tools/ttyd-tools
-ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
-ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
-GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
+.PHONY: $(BUILD) clean elf2rel
+
+else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
@@ -155,7 +165,7 @@ $(OUTPUT).elf: $(LDFILES) $(OFILES)
 $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
-%.rel: %.elf elf2rel
+%.rel: %.elf
 	@echo output ... $(notdir $@)
 	@$(ELF2REL) $< -s $(MAPFILE)
 	
@@ -163,13 +173,6 @@ $(OFILES_SOURCES) : $(HFILES)
 	@echo packing ... $(notdir $@)
 	@$(GCIPACK) $< "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
 
-# For now, run this phony target every time to build elf2rel
-elf2rel:
-	@echo "Compiling elf2rel..."
-	mkdir -p $(ELF2REL_BUILD)
-	cd $(ELF2REL_BUILD) && cmake ..
-	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
-	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
 #---------------------------------------------------------------------------------
@@ -179,8 +182,6 @@ elf2rel:
 	$(bin2o)
 
 -include $(DEPENDS)
-
-.PHONY: elf2rel
 
 #---------------------------------------------------------------------------------
 endif
