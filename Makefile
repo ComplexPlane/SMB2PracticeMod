@@ -9,6 +9,17 @@ endif
 
 include $(DEVKITPPC)/gamecube_rules
 
+# Unexport some compiler vars exported by devkitppc as they interfere
+# when we build elf2rel, which uses the system compiler
+unexport AS
+unexport CC
+unexport CXX
+unexport AR
+unexport OBJCOPY
+unexport STRIP
+unexport NM
+unexport RANLIB
+
 ifeq ($(VERSION),)
 all: us jp eu
 us:
@@ -158,6 +169,7 @@ $(BUILD):
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
+# TODO clean elf2rel build
 clean_target:
 	@echo clean ... $(VERSION)
 	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
@@ -166,7 +178,8 @@ clean_target:
 else
 
 TTYDTOOLS := $(CURDIR)/../dep/ttyd-tools/ttyd-tools
-ELF2REL	:=	$(TTYDTOOLS)/elf2rel/build/elf2rel
+ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
+ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
 GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
 DEPENDS	:=	$(OFILES:.o=.d)
@@ -181,13 +194,20 @@ $(OUTPUT).elf: $(LDFILES) $(OFILES)
 $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
-%.rel: %.elf
+%.rel: %.elf elf2rel
 	@echo output ... $(notdir $@)
 	@$(ELF2REL) $< -s $(MAPFILE)
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
 	@$(GCIPACK) $< "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+
+# For now, run this phony target every time to build elf2rel
+elf2rel:
+	@echo "Compiling elf2rel..."
+	mkdir -p $(ELF2REL_BUILD)
+	cd $(ELF2REL_BUILD) && cmake ..
+	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
@@ -198,6 +218,8 @@ $(OFILES_SOURCES) : $(HFILES)
 	$(bin2o)
 
 -include $(DEPENDS)
+
+.PHONY: elf2rel
 
 #---------------------------------------------------------------------------------
 endif
