@@ -145,8 +145,6 @@ INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(dir)) \
 LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 			-L$(LIBOGC_LIB)
 
-OUTPUT	:=	$(CURDIR)/$(TARGET)
-
 #---------------------------------------------------------------------------------
 
 ################
@@ -156,6 +154,8 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
+all: $(OUTPUT).gci
+
 $(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
 	@echo packing ... $(notdir $@)
 	@$(GCIPACK) $(OUTPUT).rel "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
