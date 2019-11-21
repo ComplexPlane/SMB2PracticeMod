@@ -1,8 +1,27 @@
 #---------------------------------------------------------------------------------
+# Change directory into build dir
+#---------------------------------------------------------------------------------
+
+# If we're in the repository root
+ifeq ($(wildcard Makefile),Makefile)
+
+all: %
+%:
+	mkdir -p $(CURDIR)/build
+	$(MAKE) $(MAKECMDGOALS) -C $(CURDIR)/build -f $(CURDIR)/Makefile
+
+.PHONY: all
+
+# If we're in the build dir
+else
+
+#---------------------------------------------------------------------------------
+# Set up DevKitPPC
+#---------------------------------------------------------------------------------
+
 # Clear the implicit built in rules
-#---------------------------------------------------------------------------------
 .SUFFIXES:
-#---------------------------------------------------------------------------------
+
 ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
@@ -26,11 +45,11 @@ unexport RANLIB
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR))
-BUILD		:=	build
-SOURCES		:=	src $(wildcard src/*)
+ROOT		:=	$(abspath $(CURDIR)/..)
+TARGET		:=	$(notdir $(ROOT))
+SOURCES		:=	$(ROOT)/src $(wildcard $(ROOT)/src/*)
 DATA		:=	data
-INCLUDES	:=	src/include
+INCLUDES	:=	$(ROOT)/src/include
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -67,22 +86,20 @@ LIBDIRS	:=
 # no real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
 #---------------------------------------------------------------------------------
-ifneq ($(BUILD),$(notdir $(CURDIR)))
 
 #---------------------------------------------------------------------------------
 # tool paths
 #---------------------------------------------------------------------------------
-export TTYDTOOLS := $(CURDIR)/dep/ttyd-tools/ttyd-tools
-export ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
-export ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
-export GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
+TTYDTOOLS := $(ROOT)/dep/ttyd-tools/ttyd-tools
+ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
+ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
+GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
+OUTPUT	:=	$(ROOT)/$(TARGET)
 
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+VPATH	:=	$(SOURCES) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
 
-export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
 #---------------------------------------------------------------------------------
 # automatically build a list of object files for our project
@@ -102,40 +119,57 @@ else
 	export LD	:=	$(CXX)
 endif
 
-export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
-export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
-export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
+OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
+OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
+OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
-export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
+HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
-export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/src/include/ttyd.us.lst
-export BANNERFILE	:= $(CURDIR)/src/images/banner_us.raw
-export ICONFILE		:= $(CURDIR)/src/images/icon_us.raw
+LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
+MAPFILE		:= $(ROOT)/src/include/ttyd.us.lst
+BANNERFILE	:= $(ROOT)/src/images/banner_us.raw
+ICONFILE		:= $(ROOT)/src/images/icon_us.raw
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
 #---------------------------------------------------------------------------------
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(dir)) \
 			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR)/$(BUILD) \
+			-I$(CURDIR) \
 			-I$(LIBOGC_INC)
 
 #---------------------------------------------------------------------------------
 # build a list of library paths
 #---------------------------------------------------------------------------------
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
+LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
 			-L$(LIBOGC_LIB)
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
+OUTPUT	:=	$(CURDIR)/$(TARGET)
 
 #---------------------------------------------------------------------------------
-$(BUILD): elf2rel
-	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
-# For now, run this phony target every time to build elf2rel
+################
+
+DEPENDS	:=	$(OFILES:.o=.d)
+
+#---------------------------------------------------------------------------------
+# main targets
+#---------------------------------------------------------------------------------
+$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
+	@echo packing ... $(notdir $@)
+	@$(GCIPACK) $(OUTPUT).rel "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+
+# REL linking
+$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) elf2rel
+	@echo output ... $(notdir $@)
+	$(ELF2REL) $(OUTPUT).elf -s $(MAPFILE)
+
+$(OUTPUT).elf: $(LDFILES) $(OFILES)
+
+$(OFILES_SOURCES) : $(HFILES)
+
+# For now, make elf2rel a phony target
 elf2rel:
 	@echo "Compiling elf2rel..."
 	mkdir -p $(ELF2REL_BUILD)
@@ -145,33 +179,7 @@ elf2rel:
 #---------------------------------------------------------------------------------
 clean:
 	@echo Cleaning...
-	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci $(ELF2REL_BUILD)
-
-#---------------------------------------------------------------------------------
-
-.PHONY: $(BUILD) clean elf2rel
-
-else
-
-DEPENDS	:=	$(OFILES:.o=.d)
-
-#---------------------------------------------------------------------------------
-# main targets
-#---------------------------------------------------------------------------------
-$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
-$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE)
-$(OUTPUT).elf: $(LDFILES) $(OFILES)
-
-$(OFILES_SOURCES) : $(HFILES)
-
-# REL linking
-%.rel: %.elf
-	@echo output ... $(notdir $@)
-	@$(ELF2REL) $< -s $(MAPFILE)
-	
-%.gci: %.rel
-	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@rm -fr $(CURDIR) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci $(ELF2REL_BUILD)
 
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
@@ -183,5 +191,6 @@ $(OFILES_SOURCES) : $(HFILES)
 
 -include $(DEPENDS)
 
-#---------------------------------------------------------------------------------
+.PHONY: clean elf2rel
+
 endif
