@@ -251,5 +251,3 @@ lwz r1,0x0(r1)
 # Restore intruction replaced by hook
 # Original instruction was: mtctr r12
 mtctr r31
-
-# vim:ft=asm
