@@ -45,120 +45,110 @@ unexport RANLIB
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-ROOT		:=	$(abspath $(CURDIR)/..)
-TARGET		:=	$(notdir $(ROOT))
-SOURCES		:=	$(ROOT)/src $(wildcard $(ROOT)/src/*)
-DATA		:=	data
-INCLUDES	:=	$(ROOT)/src/include
+ROOT := $(abspath $(CURDIR)/..)
+TARGET := $(notdir $(ROOT))
+SOURCES := $(ROOT)/src $(wildcard $(ROOT)/src/*)
+DATA := data
+INCLUDES := $(ROOT)/src/include
 
 #---------------------------------------------------------------------------------
-# options for code generation
-#---------------------------------------------------------------------------------
-
-MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
-
-# TODO remove TTYD_US define
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror $(MACHDEP) $(INCLUDE) -DTTYD_US
-CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++17 $(CFLAGS)
-
-FUNCWRAPS	= -Wl,--wrap,sprintf -Wl,--wrap,strcmp -Wl,--wrap,strncmp -Wl,--wrap,strcpy -Wl,--wrap,strncpy -Wl,--wrap,strcat -Wl,--wrap,strlen -Wl,--wrap,memcpy -Wl,--wrap,memset -Wl,--wrap,sysMsec2Frame -Wl,--wrap,keyGetButton -Wl,--wrap,keyGetButtonTrg -Wl,--wrap,seqGetSeq -Wl,--wrap,seqGetNextSeq -Wl,--wrap,swByteGet -Wl,--wrap,swByteSet -Wl,--wrap,swClear -Wl,--wrap,swSet -Wl,--wrap,marioStGetSystemLevel -Wl,--wrap,marioStSystemLevel -Wl,--wrap,marioGetPartyId -Wl,--wrap,marioGetExtraPartyId -Wl,--wrap,marioGetPtr -Wl,--wrap,partyGetPtr -Wl,--wrap,pouchGetPtr -Wl,--wrap,btlGetScreenPoint -Wl,--wrap,evtGetWork -Wl,--wrap,eventStgNum -Wl,--wrap,eventStgDtPtr -Wl,--wrap,winGetPtr -Wl,--wrap,winOpenEnable -Wl,--wrap,CARDClose -Wl,--wrap,DCFlushRange -Wl,--wrap,ICInvalidateRange -Wl,--wrap,__udivdi3 -Wl,--wrap,__umoddi3
-
-LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map $(FUNCWRAPS)
-
-# Platform options
-GAMECODE = "G8ME"
-PRINTVER = "US"
-
-#---------------------------------------------------------------------------------
-# any extra libraries we wish to link with the project
-#---------------------------------------------------------------------------------
-# Temporarily remove the math library to avoid conflicts
-# LIBS	:= -lm
-LIBS	:= 
-
-#---------------------------------------------------------------------------------
-# list of directories containing libraries, this must be the top level containing
-# include and lib
-#---------------------------------------------------------------------------------
-LIBDIRS	:=
-
-#---------------------------------------------------------------------------------
-# no real need to edit anything past this point unless you need to add additional
-# rules for different file extensions
-#---------------------------------------------------------------------------------
-
-#---------------------------------------------------------------------------------
-# tool paths
+# Tool paths
 #---------------------------------------------------------------------------------
 TTYDTOOLS := $(ROOT)/dep/ttyd-tools/ttyd-tools
 ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
-ELF2REL	:=	$(ELF2REL_BUILD)/elf2rel
-GCIPACK	:=	/usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
-
-OUTPUT	:=	$(ROOT)/$(TARGET)
-
-VPATH	:=	$(SOURCES) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
-
-DEPSDIR	:=	$(CURDIR)/$(BUILD)
+ELF2REL := $(ELF2REL_BUILD)/elf2rel
+GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
 #---------------------------------------------------------------------------------
-# automatically build a list of object files for our project
+# Build a list of include paths
 #---------------------------------------------------------------------------------
-CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
-BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+INCLUDE := $(foreach dir,$(INCLUDES),-I$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR) \
+			-I$(LIBOGC_INC)
 
 #---------------------------------------------------------------------------------
-# use CXX for linking C++ projects, CC for standard C
+# Build a list of library paths
 #---------------------------------------------------------------------------------
+LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
+			-L$(LIBOGC_LIB)
+
+#---------------------------------------------------------------------------------
+# Options for code generation
+#---------------------------------------------------------------------------------
+
+MACHDEP := -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
+
+# TODO remove TTYD_US define
+CFLAGS := -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Werror $(MACHDEP) $(INCLUDE) -DTTYD_US
+CXXFLAGS := -fno-exceptions -fno-rtti -std=gnu++17 $(CFLAGS)
+
+FUNCWRAPS := -Wl,--wrap,sprintf -Wl,--wrap,strcmp -Wl,--wrap,strncmp -Wl,--wrap,strcpy -Wl,--wrap,strncpy -Wl,--wrap,strcat -Wl,--wrap,strlen -Wl,--wrap,memcpy -Wl,--wrap,memset -Wl,--wrap,sysMsec2Frame -Wl,--wrap,keyGetButton -Wl,--wrap,keyGetButtonTrg -Wl,--wrap,seqGetSeq -Wl,--wrap,seqGetNextSeq -Wl,--wrap,swByteGet -Wl,--wrap,swByteSet -Wl,--wrap,swClear -Wl,--wrap,swSet -Wl,--wrap,marioStGetSystemLevel -Wl,--wrap,marioStSystemLevel -Wl,--wrap,marioGetPartyId -Wl,--wrap,marioGetExtraPartyId -Wl,--wrap,marioGetPtr -Wl,--wrap,partyGetPtr -Wl,--wrap,pouchGetPtr -Wl,--wrap,btlGetScreenPoint -Wl,--wrap,evtGetWork -Wl,--wrap,eventStgNum -Wl,--wrap,eventStgDtPtr -Wl,--wrap,winGetPtr -Wl,--wrap,winOpenEnable -Wl,--wrap,CARDClose -Wl,--wrap,DCFlushRange -Wl,--wrap,ICInvalidateRange -Wl,--wrap,__udivdi3 -Wl,--wrap,__umoddi3
+
+LDFLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map $(FUNCWRAPS)
+
+# Use CXX for linking C++ projects, CC for standard C
 ifeq ($(strip $(CPPFILES)),)
-	export LD	:=	$(CC)
+	export LD := $(CC)
 else
-	export LD	:=	$(CXX)
+	export LD := $(CXX)
 endif
 
-OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
+#---------------------------------------------------------------------------------
+# Any extra libraries we wish to link with the project
+#---------------------------------------------------------------------------------
+# Temporarily remove the math library to avoid conflicts
+# LIBS := -lm
+LIBS := 
+
+#---------------------------------------------------------------------------------
+# List of directories containing libraries, this must be the top level containing
+# include and lib
+#---------------------------------------------------------------------------------
+LIBDIRS :=
+
+#---------------------------------------------------------------------------------
+# No real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#---------------------------------------------------------------------------------
+
+OUTPUT := $(ROOT)/$(TARGET)
+
+VPATH := $(SOURCES) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
+DEPSDIR := $(CURDIR)/$(BUILD)
+
+#---------------------------------------------------------------------------------
+# Automatically build a list of object files for our project
+#---------------------------------------------------------------------------------
+CFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+sFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+SFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
+BINFILES := $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+
+OFILES_BIN := $(addsuffix .o,$(BINFILES))
 OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
 OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
 HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
-LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-MAPFILE		:= $(ROOT)/src/include/ttyd.us.lst
-BANNERFILE	:= $(ROOT)/src/images/banner_us.raw
-ICONFILE		:= $(ROOT)/src/images/icon_us.raw
+LDFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
+MAPFILE := $(ROOT)/src/include/ttyd.us.lst
+BANNERFILE := $(ROOT)/src/images/banner_us.raw
+ICONFILE := $(ROOT)/src/images/icon_us.raw
+
+DEPENDS := $(OFILES:.o=.d)
 
 #---------------------------------------------------------------------------------
-# build a list of include paths
-#---------------------------------------------------------------------------------
-INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(dir)) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR) \
-			-I$(LIBOGC_INC)
-
-#---------------------------------------------------------------------------------
-# build a list of library paths
-#---------------------------------------------------------------------------------
-LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-			-L$(LIBOGC_LIB)
-
-#---------------------------------------------------------------------------------
-
-################
-
-DEPENDS	:=	$(OFILES:.o=.d)
-
-#---------------------------------------------------------------------------------
-# main targets
+# Targets
 #---------------------------------------------------------------------------------
 all: $(OUTPUT).gci
 
 $(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
 	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $(OUTPUT).rel "rel" "Paper Mario" "Practice Codes ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@$(GCIPACK) $(OUTPUT).rel "rel" "Paper Mario" "Practice Codes" $(BANNERFILE) $(ICONFILE) "GM2E"
 
 # REL linking
 $(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) elf2rel
@@ -176,18 +166,9 @@ elf2rel:
 	cd $(ELF2REL_BUILD) && cmake ..
 	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 
-#---------------------------------------------------------------------------------
 clean:
 	@echo Cleaning...
 	@rm -fr $(CURDIR) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci $(ELF2REL_BUILD)
-
-#---------------------------------------------------------------------------------
-# This rule links in binary data with the .jpg extension
-#---------------------------------------------------------------------------------
-%.jpg.o	%_jpg.h :	%.jpg
-#---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	$(bin2o)
 
 -include $(DEPENDS)
 
