@@ -47,12 +47,12 @@ unexport RANLIB
 #---------------------------------------------------------------------------------
 ROOT := $(abspath $(CURDIR)/..)
 TARGET := $(notdir $(ROOT))
-SOURCES := $(ROOT)/rel $(wildcard $(ROOT)/rel/*)
+SOURCES := $(ROOT)/rel $(wildcard $(ROOT)/rel/*) $(ROOT)/dep/tinyalloc
 DATA := data
-INCLUDES := $(ROOT)/rel/include
+INCLUDES := $(ROOT)/rel/include $(ROOT)/dep/tinyalloc
 
 #---------------------------------------------------------------------------------
-# Tool paths
+# Tool/dependency paths
 #---------------------------------------------------------------------------------
 TTYDTOOLS := $(ROOT)/dep/ttyd-tools/ttyd-tools
 ELF2REL_BUILD := $(TTYDTOOLS)/elf2rel/build
@@ -63,15 +63,9 @@ GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 # Build a list of include paths
 #---------------------------------------------------------------------------------
 INCLUDE := $(foreach dir,$(INCLUDES),-I$(dir)) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(ROOT)/dep \
 			-I$(CURDIR) \
 			-I$(LIBOGC_INC)
-
-#---------------------------------------------------------------------------------
-# Build a list of library paths
-#---------------------------------------------------------------------------------
-LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-			-L$(LIBOGC_LIB)
 
 #---------------------------------------------------------------------------------
 # Options for code generation
@@ -102,19 +96,14 @@ endif
 LIBS := 
 
 #---------------------------------------------------------------------------------
-# List of directories containing libraries, this must be the top level containing
-# include and lib
-#---------------------------------------------------------------------------------
-LIBDIRS :=
-
-#---------------------------------------------------------------------------------
 # No real need to edit anything past this point unless you need to add additional
 # rules for different file extensions
 #---------------------------------------------------------------------------------
 
 OUTPUT := $(ROOT)/$(TARGET)
 
-VPATH := $(SOURCES) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
+VPATH := $(SOURCES) \
+	$(foreach dir,$(DATA),$(CURDIR)/$(dir))
 
 DEPSDIR := $(CURDIR)/$(BUILD)
 
