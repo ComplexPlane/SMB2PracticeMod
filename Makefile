@@ -47,9 +47,9 @@ unexport RANLIB
 #---------------------------------------------------------------------------------
 ROOT := $(abspath $(CURDIR)/..)
 TARGET := $(notdir $(ROOT))
-SOURCES := $(ROOT)/src $(wildcard $(ROOT)/src/*)
+SOURCES := $(ROOT)/rel $(wildcard $(ROOT)/rel/*)
 DATA := data
-INCLUDES := $(ROOT)/src/include
+INCLUDES := $(ROOT)/rel/include
 
 #---------------------------------------------------------------------------------
 # Tool paths
@@ -135,9 +135,9 @@ HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 LDFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-MAPFILE := $(ROOT)/src/include/ttyd.us.lst
-BANNERFILE := $(ROOT)/src/images/banner_us.raw
-ICONFILE := $(ROOT)/src/images/icon_us.raw
+MAPFILE := $(ROOT)/rel/include/ttyd.us.lst
+BANNERFILE := $(ROOT)/image/banner_us.raw
+ICONFILE := $(ROOT)/image/icon_us.raw
 
 DEPENDS := $(OFILES:.o=.d)
 
