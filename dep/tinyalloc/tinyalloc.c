@@ -112,7 +112,7 @@ static void compact() {
 }
 #endif
 
-bool ta_init(const void *base, const void *limit, const size_t heap_blocks, const size_t split_thresh, const size_t alignment) {
+bool ta_init(void *base, void *limit, size_t heap_blocks, size_t split_thresh, size_t alignment) {
     heap = (Heap *)base;
     heap_limit = limit;
     heap_split_thresh = split_thresh;
@@ -163,7 +163,7 @@ static Block *alloc_block(size_t num) {
     size_t top  = heap->top;
     num         = (num + heap_alignment - 1) & -heap_alignment;
     while (ptr != NULL) {
-        const int is_top = ((size_t)ptr->addr + ptr->size >= top) && ((size_t)ptr->addr + num <= heap_limit);
+        const int is_top = ((size_t)ptr->addr + ptr->size >= top) && (ptr->addr + num <= heap_limit);
         if (is_top || ptr->size >= num) {
             if (prev != NULL) {
                 prev->next = ptr->next;
@@ -202,7 +202,7 @@ static Block *alloc_block(size_t num) {
     // no matching free blocks
     // see if any other blocks available
     size_t new_top = top + num;
-    if (heap->fresh != NULL && new_top <= heap_limit) {
+    if (heap->fresh != NULL && (void *)new_top <= heap_limit) {
         ptr         = heap->fresh;
         heap->fresh = ptr->next;
         ptr->addr   = (void *)top;
