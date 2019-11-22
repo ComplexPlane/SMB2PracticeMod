@@ -49,7 +49,7 @@ ROOT := $(abspath $(CURDIR)/..)
 TARGET := $(notdir $(ROOT))
 SOURCES := $(ROOT)/rel $(wildcard $(ROOT)/rel/*) $(ROOT)/dep/tinyalloc
 DATA := data
-INCLUDES := $(ROOT)/rel/include $(ROOT)/dep/tinyalloc
+INCLUDES := $(ROOT)/rel/include $(ROOT)/dep
 
 #---------------------------------------------------------------------------------
 # Tool/dependency paths
@@ -63,7 +63,6 @@ GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 # Build a list of include paths
 #---------------------------------------------------------------------------------
 INCLUDE := $(foreach dir,$(INCLUDES),-I$(dir)) \
-			-I$(ROOT)/dep \
 			-I$(CURDIR) \
 			-I$(LIBOGC_INC)
 
