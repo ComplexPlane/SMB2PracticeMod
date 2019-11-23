@@ -1,0 +1,24 @@
+// __mem.c
+800033A8:memset
+80003494:memcpy
+
+// OSAlloc.c
+8000D4BC:DLInsert
+
+// OSArena.c
+8000DB40:OSGetArenaHi
+8000DB48:OSGetArenaLo
+8000DB50:OSSetArenaHi
+8000DB58:OSSetArenaLo
+8000DB60:OSAllocFromArenaLo
+
+// OSCache.c
+8000DE80:DCFlushRange
+8000DF38:ICInvalidateRange
+
+// OSError.c
+8000EBBC:OSReport
+
+// OSLink.c
+80010F48:OSLink
+800113DC:OSUnlink

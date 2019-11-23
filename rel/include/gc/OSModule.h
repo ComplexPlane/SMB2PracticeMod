@@ -18,14 +18,8 @@ struct OSModuleInfo
 
 extern "C" {
 
-// OSNotifyLink
-// OSNotifyUnlink
-// Relocate
-// Link
 bool OSLink(OSModuleInfo *newModule, void *bss);
-// Undo
-// OSUnlink
-// __OSModuleInit
+bool OSUnlink(OSModuleInfo *oldModule);
 
 }
 
