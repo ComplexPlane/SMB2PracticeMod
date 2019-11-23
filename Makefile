@@ -215,7 +215,7 @@ $(OFILES_SOURCES) : $(HFILES)
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "Test File ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "ApeSphere ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
