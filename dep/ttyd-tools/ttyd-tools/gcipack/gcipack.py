@@ -41,7 +41,7 @@ paddingBuffer = ctypes.create_string_buffer(paddingLength)
 # Create header
 headerBuffer = ctypes.create_string_buffer(0x40)
 struct.pack_into("4s",  headerBuffer,  0x00, sys.argv[7].encode()) # game code
-struct.pack_into(">H",  headerBuffer,  0x04, 0x3031)		# maker code
+struct.pack_into(">H",  headerBuffer,  0x04, 0x3850)		# maker code
 struct.pack_into(">B",  headerBuffer,  0x06, 0xFF)			# unused
 struct.pack_into(">B",  headerBuffer,  0x07, 2)				# banner flags (RGB5A3)
 struct.pack_into("32s", headerBuffer,  0x08, sys.argv[2].encode())	# filename
