@@ -8,8 +8,7 @@ namespace mod {
 
 Mod *gMod = nullptr;
 
-void main()
-{
+void main() {
 	// Create the heap to use with a size of 0x15000 bytes
 	heap::makeHeap(0x15000);
 	
@@ -17,13 +16,11 @@ void main()
 	mod->init();
 }
 
-Mod::Mod()
-{
+Mod::Mod() {
 	
 }
 
-void Mod::init()
-{
+void Mod::init() {
 	performAssemblyPatches();
 	
 	gMod = this;

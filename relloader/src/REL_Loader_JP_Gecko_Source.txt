@@ -1,8 +1,8 @@
-# 80006d08 - Address to hook for this code
+# 80006cdc - Address to hook for this code
 
 # Make sure mkb2.main_game.rel was the REL file that was just loaded
-lwz r3,0(r31) # Module
-lwz r3,0(r3) # Module Id
+lwz r3,0(r31) # Pointer to the Main Loop's Module
+lwz r3,0(r3) # Pointer to the Main Loop's Module Id
 cmpwi r3,0x1
 bne+ exit
 
@@ -20,7 +20,7 @@ lis r26,0x000f
 ori r26,r26,0x4240 # Check 1,000,000 times
 
 checkForMemoryCardLoop:
-ori r3,r30,0x611c # CARDProbeEx
+ori r3,r30,0x5e14 # CARDProbeEx
 mtctr r3
 li r3,0 # Memory card slot A
 li r4,0 # Pointer to the memory size (not needed, so NULL)
@@ -38,7 +38,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- exit
 
 # Back up the current Arena Low
-lwz r25,-0x7f50(r13) # Arena Low
+lwz r25,-0x7f58(r13) # Arena Low
 
 # Allocate memory for the CARDMount work area, CardFileInfo, 
 # and the initial 0x200 bytes for reading from the memory card
@@ -49,7 +49,7 @@ bl allocateFromArenaLow
 mr r26,r3
 
 # Mount the Memory Card
-ori r3,r30,0x67b0 # CARDMountAsync
+ori r3,r30,0x64a8 # CARDMountAsync
 mtctr r3
 li r3,0 # Memory Card Slot A
 addi r4,r26,0x220 # Pointer to the Work Area
@@ -61,7 +61,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- freeMemory
 
 # Open the file
-ori r3,r30,0x74fc # CARDOpen
+ori r3,r30,0x71f4 # CARDOpen
 mtctr r3
 li r3,0 # Memory Card Slot A
 ori r4,r28,0x44c0 # File Name
@@ -71,7 +71,7 @@ cmpwi r3,0 # Check if something went wrong
 bne- unmountCard
 
 # Read from the Card
-ori r3,r30,0x7cb4 # CARDReadAsync
+ori r3,r30,0x79ac # CARDReadAsync
 mtctr r3
 addi r3,r26,0 # Pointer to CardFileInfo
 addi r4,r26,0x20 # Pointer to the File Buffer
@@ -88,11 +88,11 @@ lwz r24,0x60(r26) # File Size
 addi r24,r24,511
 rlwinm r24,r24,0,0,22
 
-# Get the main loop's Relocation Data location
-lwz r23,0(r31) # Module
-lwz r23,0x24(r23) # Relocation Data
+# Get the pointer to the Main Loop's Relocation Data location
+lwz r23,0(r31) # Pointer to the Main Loop's Module
+lwz r23,0x24(r23) # Pointer to the Main Loop's Relocation Data
 
-# Round the Relocation Data address up to the nearest multiple of 0x20 bytes
+# Round the pointer to the Relocation Data up to the nearest multiple of 0x20 bytes
 addi r23,r23,31
 rlwinm r23,r23,0,0,26
 
@@ -104,7 +104,7 @@ bl allocateFromMainLoopRelocMemory
 mr r22,r3
 
 # Read the REL Area of the file
-ori r3,r30,0x7cb4 # CARDReadAsync
+ori r3,r30,0x79ac # CARDReadAsync
 mtctr r3
 addi r3,r26,0 # Pointer to CardFileInfo
 mr r4,r22 # Pointer to the File Buffer
@@ -124,7 +124,7 @@ bl allocateFromMainLoopRelocMemory
 mr r21,r3
 
 # Link the functions in the REL
-ori r3,r29,0x730 # OSLink
+ori r3,r29,0x6f4 # OSLink
 mtctr r3
 mr r3,r22 # Pointer to the Module
 mr r4,r21 # Pointer to the BSS Area
@@ -132,11 +132,13 @@ bctrl
 cmpwi r3,1 # Check if something went wrong
 bne- callOSUnlink
 
-# Store the Main Loop Module, the Relocation Data size, the next
-# free spot in Relocation Data, the BSS Area, and the REL Module
-lwz r3,0(r31) # Module
+# Store the Main Loop's Module, the Main Loop BSS Area, the Main Loop's Relocation Data
+# size, the next free spot in Relocation Data, the BSS Area, and the REL Module
+lwz r3,0(r31) # Pointer to the Main Loop's Module
+stw r3,0x4524(r28)
+lwz r3,0x4(r31) # Pointer to the Main Loop's BSS Area
 stw r3,0x4528(r28)
-stw r23,0x452c(r28) # Relocation Data
+stw r23,0x452c(r28) # Pointer to the Main Loop's Relocation Data
 stw r21,0x4530(r28) # Pointer to the BSS Area
 stw r22,0x4534(r28) # Pointer to the Module
 
@@ -155,9 +157,9 @@ stmw %r30,0x8(%sp)
 addi r4,r3,31
 rlwinm r4,r4,0,0,26 # Round the size up to the nearest multiple of 0x20 bytes
 mr r31,r4 # Size
-mr r3,r23 # Pointer to Relocation Data
+mr r3,r23 # Pointer to the Main Loop's Relocation Data
 
-# Set the next free spot in the Relocation Data
+# Set the next free spot in the Main Loop's Relocation Data
 add r23,r23,r4
 
 clearAndFlushMemory:
@@ -169,7 +171,7 @@ mr r5,r31 # Size
 bctrl
 
 # Flush the memory
-ori r3,r28,0xd8cc # DCFlushRange
+ori r3,r28,0xd94c # DCFlushRange
 mtctr r3
 mr r3,r30 # Dest
 mr r4,r31 # Size
@@ -188,7 +190,7 @@ mflr %r0
 stw %r0,0x14(%sp)
 stmw %r30,0x8(%sp)
 
-ori r4,r28,0xd5a8 # OSAllocFromArenaLow
+ori r4,r28,0xd628 # OSAllocFromArenaLow
 mtctr r4
 addi r3,r3,31
 rlwinm r3,r3,0,0,26 # Round the size up to the nearest multiple of 0x20 bytes
@@ -205,7 +207,7 @@ bnelr-
 mflr r14
 
 finishAsyncFunctionLoop:
-ori r3,r30,0x33e4 # CARDGetResultCode
+ori r3,r30,0x30dc # CARDGetResultCode
 mtctr r3
 li r3,0 # Memory Card Slot A
 bctrl
@@ -221,7 +223,7 @@ stwu sp,-0x18(sp)
 stw r31,0x14(sp)
 mr r31,r3
 
-ori r3,r30,0x32c8 # __CARDGetControlBlock
+ori r3,r30,0x2fc0 # __CARDGetControlBlock
 mtctr r3
 addi r4,sp,0xc
 lwz r3,0(r31)
@@ -232,7 +234,7 @@ bge- noProblemsFound
 b exitCloseCard
 
 noProblemsFound:
-ori r3,r30,0x3380 # __CARDPutControlBlock
+ori r3,r30,0x3078 # __CARDPutControlBlock
 mtctr r3
 li r0,-1
 stw r0,0(r31)
@@ -248,7 +250,7 @@ mtlr r0
 blr
 
 callOSUnlink:
-ori r3,r29,0xb8c # OSUnlink
+ori r3,r29,0xb50 # OSUnlink
 mtctr r3
 mr r3,r22 # Pointer to the Module
 bctrl
@@ -258,14 +260,14 @@ addi r3,r26,0 # Pointer to CardFileInfo
 bl CARDClose
 
 unmountCard:
-ori r3,r30,0x69ec # CARDUnmount
+ori r3,r30,0x66e4 # CARDUnmount
 mtctr r3
 li r3,0 # Memory Card Slot A
 bctrl
 
 freeMemory:
 # Restore the Arena Low
-stw r25,-0x7f50(r13) # Arena Low
+stw r25,-0x7f58(r13) # Arena Low
 
 # Run the REL Prolog if the load was successful
 cmpwi r27,0
@@ -275,4 +277,4 @@ bctrl
 
 exit:
 # Restore the overwritten instruction
-lwz r3,0(r31) # Module
+lwz r3,0(r31) # Pointer to the Main Loop's Module
