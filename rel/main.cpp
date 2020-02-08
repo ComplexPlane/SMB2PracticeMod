@@ -2,6 +2,7 @@
 #include "patch.h"
 #include "assembly.h"
 #include "heap.h"
+#include "pad.h"
 
 #include <gc/OSModule.h>
 #include <gc/OSAlloc.h>
@@ -50,11 +51,7 @@ void Mod::performAssemblyPatches()
 	since it reports every frame, and thus clutters the console */
 #ifdef SMB2_US
 	// Only needs to be applied to the US version
-	uint32_t *Address = reinterpret_cast<uint32_t *>(0x80033E9C);
-	*Address = 0x60000000; // nop
-	
-	// Clear the cache for the address
-	patch::clear_DC_IC_Cache(Address, sizeof(uint32_t));
+	patch::writeNop(reinterpret_cast<void *>(0x80033E9C));
 #endif
 }
 
@@ -79,9 +76,16 @@ void run()
 {
 	// Make sure there are no issues with the heap
 	heap::checkHeap();
-	
+
 	// Make sure debug mode is enabled
-	enableDebugMode();
+	// enableDebugMode();
+
+	gc::OSError::OSReport("Poopes\n");
+
+	if (pad::buttonPressed(pad::PAD_BUTTON_Z))
+	{
+		gc::OSError::OSReport("Z button was pressed!\n");
+	}
 }
 
 }

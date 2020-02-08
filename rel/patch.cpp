@@ -45,4 +45,10 @@ void writeBranchMain(void *ptr, void *destination, uint32_t branch)
 	clear_DC_IC_Cache(ptr, sizeof(uint32_t));
 }
 
+void writeNop(void *ptr)
+{
+	*reinterpret_cast<uint32_t *>(ptr) = 0x60000000; // nop
+	clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+}
+
 }
