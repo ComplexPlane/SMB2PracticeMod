@@ -44,6 +44,7 @@ void destroyHeap();
 void *allocFromMainLoopRelocMemory(uint32_t size);
 void *allocFromHeap(uint32_t size);
 bool freeToHeap(void *ptr);
+void checkHeap();
 
 extern HeapDataStruct HeapData;
 

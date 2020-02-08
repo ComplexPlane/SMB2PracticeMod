@@ -58,54 +58,6 @@ void Mod::performAssemblyPatches()
 #endif
 }
 
-void checkHeap()
-{
-	gc::OSAlloc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
-	bool valid = true;
-	
-	gc::OSAlloc::ChunkInfo *currentChunk = nullptr;
-	gc::OSAlloc::ChunkInfo *prevChunk = nullptr;
-	for (currentChunk = tempHeap->firstUsed; currentChunk; currentChunk = currentChunk->next)
-	{
-		// Check pointer sanity
-		auto checkIfPointerIsValid = [](void *ptr)
-		{
-			uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
-			return (ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000);
-		};
-		
-		if (!checkIfPointerIsValid(currentChunk))
-		{
-			valid = false;
-			break;
-		}
-		
-		// Sanity check size
-		if (currentChunk->size >= 0x1800000)
-		{
-			valid = false;
-			break;
-		}
-
-		// Check linked list integrity
-		if (prevChunk != currentChunk->prev)
-		{
-			valid = false;
-			break;
-		}
-
-		prevChunk = currentChunk;
-	}
-	
-	if (!valid)
-	{
-		// Print the error message to the console
-		gc::OSError::OSReport(
-		"Heap corrupt at 0x%08" PRIx32 "\n", 
-		reinterpret_cast<uint32_t>(currentChunk));
-	}
-}
-
 void enableDebugMode()
 {
 #ifdef MKB2_US
@@ -126,7 +78,7 @@ void enableDebugMode()
 void run()
 {
 	// Make sure there are no issues with the heap
-	checkHeap();
+	heap::checkHeap();
 	
 	// Make sure debug mode is enabled
 	enableDebugMode();
