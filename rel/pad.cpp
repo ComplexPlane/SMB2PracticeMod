@@ -5,19 +5,19 @@
 namespace mod::pad {
 
 bool buttonPressed(uint16_t button) {
-    bool downThisFrame = *mkb::PAD_BUTTON_BITFIELD & (button << 16);
-    bool downLastFrame = *mkb::PAD_BUTTON_BITFIELD & button;
+    bool downThisFrame = mkb::padButtonBitfield & (button << 16);
+    bool downLastFrame = mkb::padButtonBitfield & button;
     return downThisFrame && !downLastFrame;
 }
 
 bool buttonReleased(uint16_t button) {
-    bool downThisFrame = *mkb::PAD_BUTTON_BITFIELD & (button << 16);
-    bool downLastFrame = *mkb::PAD_BUTTON_BITFIELD & button;
+    bool downThisFrame = mkb::padButtonBitfield & (button << 16);
+    bool downLastFrame = mkb::padButtonBitfield & button;
     return !downThisFrame && downLastFrame;
 }
 
 bool buttonDown(uint16_t button) {
-    return *mkb::PAD_BUTTON_BITFIELD & (button << 16);
+    return mkb::padButtonBitfield & (button << 16);
 }
 
 bool buttonChordPressed(uint16_t btn1, uint16_t btn2) {

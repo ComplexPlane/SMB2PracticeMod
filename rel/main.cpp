@@ -3,16 +3,15 @@
 #include "assembly.h"
 #include "heap.h"
 #include "pad.h"
+#include "global.h"
 
-#include <gc/OSModule.h>
-#include <gc/OSAlloc.h>
-#include <gc/OSError.h>
+#include <gc/os.h>
 
 #include <cinttypes>
 
 namespace mod {
 
-bool Mod::performRelPatches(gc::OSModule::OSModuleInfo *newModule, void *bss)
+bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 {
 	// Call the original function immediately, as the REL file should be linked before applying patches
 	const bool Result = mPFN_OSLink_trampoline(newModule, bss);
@@ -78,10 +77,11 @@ void run()
 	// heap::checkHeap();
 
 	// Make sure debug mode is enabled
-	// enableDebugMode();
+	enableDebugMode();
 
 	if (pad::buttonChordPressed(pad::PAD_BUTTON_L, pad::PAD_BUTTON_X)) {
-		gc::OSError::OSReport("Button chord pressed!\n");
+		gc::OSReport("Draw function toggled\n");
+		global::unknownDrawFunc1Enabled = !global::unknownDrawFunc1Enabled;
 	}
 }
 

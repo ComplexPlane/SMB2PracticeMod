@@ -1,8 +1,10 @@
 #include "mod.h"
 #include "heap.h"
 #include "patch.h"
+#include "global.h"
 
-#include <gc/OSModule.h>
+#include <gc/os.h>
+#include <mkb/mkb.h>
 
 namespace mod {
 
@@ -24,14 +26,22 @@ void Mod::init() {
 	performAssemblyPatches();
 	
 	gMod = this;
-	
-	/*
-	mPFN_OSLink_trampoline = patch::hookFunction(
-		gc::OSModule::OSLink, [](gc::OSModule::OSModuleInfo *newModule, void *bss)
-	{
-		return gMod->performRelPatches(newModule, bss);
-	});
-	*/
+
+	// global::unknownDrawFunc1_trampoline = patch::hookFunction(
+	// 	mkb::unknownDrawFunc1, 
+	// 	[](double param1, double param2, double param3, double param4)
+	// {
+	// 	gc::OSReport("Poopes\n");
+	// 	if (global::unknownDrawFunc1Enabled)
+	// 	{
+	// 		global::unknownDrawFunc1_trampoline(param1, param2, param3, param4);
+	// 		gc::OSReport("udf1 enabled:  %d %d %d %d\n", param1, param2, param3, param4);
+	// 	} 
+	// 	else
+	// 	{
+	// 		gc::OSReport("udf1 disabled: %d %d %d %d\n", param1, param2, param3, param4);
+	// 	}
+	// });
 }
 
 }

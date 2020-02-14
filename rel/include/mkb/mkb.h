@@ -1,6 +1,14 @@
+#pragma once
+
 namespace mkb {
 
-const uint32_t *PAD_BUTTON_BITFIELD = reinterpret_cast<uint32_t *>(0x8014530C);
-const uint32_t *PAD_ANALOG_BITFIELD = reinterpret_cast<uint32_t *>(0x80145300);
+extern "C" {
+
+extern uint32_t padButtonBitfield;
+extern uint32_t padAnalogBitfield;
+
+void unknownDrawFunc1(double param1, double param2, double param3, double param4);
+
+}
 
 }

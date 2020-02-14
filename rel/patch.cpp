@@ -1,6 +1,6 @@
 #include "patch.h"
 
-#include <gc/OSCache.h>
+#include <gc/os.h>
 
 #include <cstdint>
 
@@ -8,8 +8,8 @@ namespace mod::patch {
 
 void clear_DC_IC_Cache(void *ptr, uint32_t size)
 {
-	gc::OSCache::DCFlushRange(ptr, size);
-	gc::OSCache::ICInvalidateRange(ptr, size);
+	gc::DCFlushRange(ptr, size);
+	gc::ICInvalidateRange(ptr, size);
 }
 
 void writeStandardBranches(void *address, void functionStart(), void functionBranchBack())

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/OSAlloc.h>
+#include <gc/os.h>
 
 #include <cstdint>
 
@@ -8,7 +8,7 @@ namespace heap {
 
 struct CustomHeapStruct
 {
-	gc::OSAlloc::HeapInfo *HeapArray;
+	gc::HeapInfo *HeapArray;
 	void *ArenaStart;
 	void *ArenaEnd;
 };
@@ -32,9 +32,9 @@ struct HeapDataStruct
 	}
 };
 
-gc::OSAlloc::ChunkInfo *extractChunk(gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk);
-gc::OSAlloc::ChunkInfo *addChunkToFront(gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk);
-gc::OSAlloc::ChunkInfo *findChunkInList(gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk);
+gc::ChunkInfo *extractChunk(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+gc::ChunkInfo *addChunkToFront(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+gc::ChunkInfo *findChunkInList(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
 void *clearAndFlushMemory(void *start, uint32_t size);
 void *initMemAllocServices(uint32_t size);
 void *initAlloc(void *arenaStart, void *arenaEnd);

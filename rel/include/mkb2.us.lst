@@ -22,3 +22,10 @@
 // OSLink.c
 80010730:OSLink
 80010B8C:OSUnlink
+
+// Random stuff
+802AF5EC:unknownDrawFunc1
+
+// PAD
+8014530C:padButtonBitfield
+80145300:padAnalogBitfield

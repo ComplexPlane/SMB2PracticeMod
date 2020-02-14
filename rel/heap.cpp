@@ -1,9 +1,6 @@
 #include "heap.h"
 
-#include <gc/OSAlloc.h>
-#include <gc/OSCache.h>
-#include <gc/OSArena.h>
-#include <gc/OSError.h>
+#include <gc/os.h>
 
 #include <cstring>
 #include <cinttypes>
@@ -12,8 +9,8 @@ namespace heap {
 
 struct HeapDataStruct HeapData;
 
-gc::OSAlloc::ChunkInfo *extractChunk(
-	gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk)
+gc::ChunkInfo *extractChunk(
+	gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
 	if (chunk->next)
 	{
@@ -31,8 +28,8 @@ gc::OSAlloc::ChunkInfo *extractChunk(
 	}
 }
 
-gc::OSAlloc::ChunkInfo *addChunkToFront(
-	gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk)
+gc::ChunkInfo *addChunkToFront(
+	gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
 	chunk->next = list;
 	chunk->prev = nullptr;
@@ -45,8 +42,8 @@ gc::OSAlloc::ChunkInfo *addChunkToFront(
 	return chunk;
 }
 
-gc::OSAlloc::ChunkInfo *findChunkInList(
-	gc::OSAlloc::ChunkInfo *list, gc::OSAlloc::ChunkInfo *chunk)
+gc::ChunkInfo *findChunkInList(
+	gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
 	for (; list; list = list->next)
 	{
@@ -64,7 +61,7 @@ void *clearAndFlushMemory(void *start, uint32_t size)
 	memset(start, 0, size);
 	
 	// Flush the memory
-	gc::OSCache::DCFlushRange(start, size);
+	gc::DCFlushRange(start, size);
 	
 	// Return the address
 	return start;
@@ -98,7 +95,7 @@ void *initAlloc(void *arenaStart, void *arenaEnd)
 	
 	// Put the heap array at the start of the arena
 	CustomHeapStruct *tempCustomHeap = HeapData.CustomHeap;
-	gc::OSAlloc::HeapInfo *tempHeapInfo = reinterpret_cast<gc::OSAlloc::HeapInfo *>(arenaStart);
+	gc::HeapInfo *tempHeapInfo = reinterpret_cast<gc::HeapInfo *>(arenaStart);
 	tempCustomHeap->HeapArray = tempHeapInfo;
 	
 	// Initialize the members of the heap array
@@ -106,7 +103,7 @@ void *initAlloc(void *arenaStart, void *arenaEnd)
 	tempHeapInfo->firstUsed = nullptr;
 	
 	const uint32_t Alignment = 0x20;
-	uint32_t ArraySize = sizeof(gc::OSAlloc::HeapInfo);
+	uint32_t ArraySize = sizeof(gc::HeapInfo);
 	
 	// Adjust arenaStart to be at the nearest reasonable location
 	// Gets rounded up to the nearest multiple of 0x20 bytes
@@ -133,7 +130,7 @@ void makeHeap(uint32_t size)
 	void *HeapArrayStart = initMemAllocServices(size);
 	
 	// Remove the total heap info size and then round down to the nearest multiple of 0x20 bytes
-	uint32_t ArraySize = sizeof(gc::OSAlloc::HeapInfo);
+	uint32_t ArraySize = sizeof(gc::HeapInfo);
 	size = (size - ArraySize) & ~(Alignment - 1);
 	
 	// Set the end address
@@ -154,10 +151,10 @@ void createHeap(void *start, void *end)
 	StartRaw = (StartRaw + Alignment - 1) & ~(Alignment - 1);
 	EndRaw &= ~(Alignment - 1);
 	
-	gc::OSAlloc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
+	gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
 	int32_t Size = EndRaw - StartRaw;
 	
-	gc::OSAlloc::ChunkInfo *tempChunk = reinterpret_cast<gc::OSAlloc::ChunkInfo *>(StartRaw);
+	gc::ChunkInfo *tempChunk = reinterpret_cast<gc::ChunkInfo *>(StartRaw);
 	tempChunk->prev = nullptr;
 	tempChunk->next = nullptr;
 	tempChunk->size = Size;
@@ -168,7 +165,7 @@ void createHeap(void *start, void *end)
 
 void destroyHeap()
 {
-	gc::OSAlloc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
+	gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
 	Info->firstFree = nullptr;
 	Info->firstUsed = nullptr;
 }
@@ -192,11 +189,11 @@ void *allocFromHeap(uint32_t size)
 {
 	// Enlarge size to the smallest possible chunk size
 	const uint32_t Alignment = 0x20;
-	uint32_t NewSize = size + ((sizeof(gc::OSAlloc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1));
+	uint32_t NewSize = size + ((sizeof(gc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1));
 	NewSize = (NewSize + Alignment - 1) & ~(Alignment - 1);
 	
-	gc::OSAlloc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
-	gc::OSAlloc::ChunkInfo *tempChunk = nullptr;
+	gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
+	gc::ChunkInfo *tempChunk = nullptr;
 	
 	// Find a memory area large enough
 	for (tempChunk = Info->firstFree; tempChunk; tempChunk = tempChunk->next)
@@ -215,7 +212,7 @@ void *allocFromHeap(uint32_t size)
 	
 	int32_t LeftoverSize = tempChunk->size - static_cast<int32_t>(NewSize);
 	
-	int32_t MinSize = ((sizeof(gc::OSAlloc::ChunkInfo) + 
+	int32_t MinSize = ((sizeof(gc::ChunkInfo) + 
 		Alignment - 1) & ~(Alignment - 1)) + Alignment;
 	
 	// Check if the current chunk can be split into two pieces
@@ -230,7 +227,7 @@ void *allocFromHeap(uint32_t size)
 		tempChunk->size = static_cast<int32_t>(NewSize);
 		
 		// Create a new chunk
-		gc::OSAlloc::ChunkInfo *NewChunk = reinterpret_cast<gc::OSAlloc::ChunkInfo *>(
+		gc::ChunkInfo *NewChunk = reinterpret_cast<gc::ChunkInfo *>(
 			reinterpret_cast<uint32_t>(tempChunk) + NewSize);
 		
 		NewChunk->size = LeftoverSize;
@@ -258,7 +255,7 @@ void *allocFromHeap(uint32_t size)
 	
 	// Add the header size to the chunk
 	void *AllocatedMemory = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(tempChunk) + 
-		((sizeof(gc::OSAlloc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1)));
+		((sizeof(gc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1)));
 	
 	// Clear and flush the memory and then return it
 	return clearAndFlushMemory(AllocatedMemory, size);
@@ -269,12 +266,12 @@ bool freeToHeap(void *ptr)
 	const uint32_t Alignment = 0x20;
 	uint32_t PtrRaw = reinterpret_cast<uint32_t>(ptr);
 	
-	uint32_t HeaderSize = (sizeof(gc::OSAlloc::ChunkInfo) + 
+	uint32_t HeaderSize = (sizeof(gc::ChunkInfo) + 
 		Alignment - 1) & ~(Alignment - 1);
 	
 	// Remove the header size from ptr, as the value stored in the list does not include it
-	gc::OSAlloc::ChunkInfo *tempChunk = reinterpret_cast<gc::OSAlloc::ChunkInfo *>(PtrRaw - HeaderSize);
-	gc::OSAlloc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
+	gc::ChunkInfo *tempChunk = reinterpret_cast<gc::ChunkInfo *>(PtrRaw - HeaderSize);
+	gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
 	
 	// Make sure ptr is actually allocated
 	if (!findChunkInList(Info->firstUsed, tempChunk))
@@ -286,17 +283,17 @@ bool freeToHeap(void *ptr)
 	Info->firstUsed = extractChunk(Info->firstUsed, tempChunk);
 	
 	// Add in sorted order to the free list
-	Info->firstFree = gc::OSAlloc::DLInsert(Info->firstFree, tempChunk);
+	Info->firstFree = gc::DLInsert(Info->firstFree, tempChunk);
 	return true;
 }
 
 void checkHeap()
 {
-	gc::OSAlloc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
+	gc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
 	bool valid = true;
 	
-	gc::OSAlloc::ChunkInfo *currentChunk = nullptr;
-	gc::OSAlloc::ChunkInfo *prevChunk = nullptr;
+	gc::ChunkInfo *currentChunk = nullptr;
+	gc::ChunkInfo *prevChunk = nullptr;
 	for (currentChunk = tempHeap->firstUsed; currentChunk; currentChunk = currentChunk->next)
 	{
 		// Check pointer sanity
@@ -332,7 +329,7 @@ void checkHeap()
 	if (!valid)
 	{
 		// Print the error message to the console
-		gc::OSError::OSReport(
+		gc::OSReport(
 		"Heap corrupt at 0x%08" PRIx32 "\n", 
 		reinterpret_cast<uint32_t>(currentChunk));
 	}

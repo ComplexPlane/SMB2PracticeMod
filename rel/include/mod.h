@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/OSModule.h>
+#include <gc/os.h>
 
 #include <cstdint>
 
@@ -13,11 +13,11 @@ public:
 	void init();
 
 private:
-	bool performRelPatches(gc::OSModule::OSModuleInfo *, void *);
+	bool performRelPatches(gc::OSModuleInfo *, void *);
 	void performAssemblyPatches();
 	
 private:
-	bool (*mPFN_OSLink_trampoline)(gc::OSModule::OSModuleInfo *, void *) = nullptr;
+	bool (*mPFN_OSLink_trampoline)(gc::OSModuleInfo *, void *) = nullptr;
 };
 
 }
