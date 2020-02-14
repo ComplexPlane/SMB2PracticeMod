@@ -1,16 +1,27 @@
 #include "pad.h"
 
+#include <mkb/mkb.h>
+
 namespace mod::pad {
 
-static uint32_t getButtonBitfield() {
-    return *reinterpret_cast<uint32_t *>(0x8014530C);
+bool buttonPressed(uint16_t button) {
+    bool downThisFrame = *mkb::PAD_BUTTON_BITFIELD & (button << 16);
+    bool downLastFrame = *mkb::PAD_BUTTON_BITFIELD & button;
+    return downThisFrame && !downLastFrame;
 }
 
-bool buttonPressed(uint16_t button) {
-    uint32_t buttonBitfield = getButtonBitfield();
-    bool downThisFrame = buttonBitfield & (button << 16);
-    bool upLastFrame = ~buttonBitfield & button;
-    return downThisFrame && upLastFrame;
+bool buttonReleased(uint16_t button) {
+    bool downThisFrame = *mkb::PAD_BUTTON_BITFIELD & (button << 16);
+    bool downLastFrame = *mkb::PAD_BUTTON_BITFIELD & button;
+    return !downThisFrame && downLastFrame;
+}
+
+bool buttonDown(uint16_t button) {
+    return *mkb::PAD_BUTTON_BITFIELD & (button << 16);
+}
+
+bool buttonChordPressed(uint16_t btn1, uint16_t btn2) {
+    return buttonDown(btn1) && buttonPressed(btn2);
 }
 
 }

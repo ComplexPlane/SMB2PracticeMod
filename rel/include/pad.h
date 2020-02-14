@@ -38,5 +38,6 @@ enum PadButton {
 bool buttonPressed(uint16_t button);
 bool buttonReleased(uint16_t button);
 bool buttonDown(uint16_t button);
+bool buttonChordPressed(uint16_t btn1, uint16_t btn2);
 
 }

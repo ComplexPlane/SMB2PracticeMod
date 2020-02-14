@@ -75,16 +75,13 @@ void enableDebugMode()
 void run()
 {
 	// Make sure there are no issues with the heap
-	heap::checkHeap();
+	// heap::checkHeap();
 
 	// Make sure debug mode is enabled
 	// enableDebugMode();
 
-	gc::OSError::OSReport("Poopes\n");
-
-	if (pad::buttonPressed(pad::PAD_BUTTON_Z))
-	{
-		gc::OSError::OSReport("Z button was pressed!\n");
+	if (pad::buttonChordPressed(pad::PAD_BUTTON_L, pad::PAD_BUTTON_X)) {
+		gc::OSError::OSReport("Button chord pressed!\n");
 	}
 }
 
