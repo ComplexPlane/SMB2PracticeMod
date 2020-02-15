@@ -4,11 +4,23 @@
 
 namespace mod::patch {
 
+class NopToggle {
+public:
+	void init(void *dest, uint16_t combo1, uint16_t combo2);
+	void update();
+
+private:
+	void *m_dest;
+	uint32_t m_instr;
+	uint16_t m_combo1, m_combo2;
+};
+
 void clear_DC_IC_Cache(void *ptr, uint32_t size);
 void writeStandardBranches(void *address, void functionStart(), void functionBranchBack());
 void writeBranch(void *ptr, void *destination);
 void writeBranchBL(void *ptr, void *destination);
 void writeBranchMain(void *ptr, void *destination, uint32_t branch);
+void writeNop(void *ptr);
 
 template<typename Func, typename Dest>
 Func hookFunction(Func function, Dest destination)

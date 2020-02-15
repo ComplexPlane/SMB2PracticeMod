@@ -32,6 +32,23 @@ bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 	}
 }
 
+void enableDebugMode()
+{
+#ifdef MKB2_US
+	uint32_t Offset = 0x6FB90;
+#elif defined MKB2_JP
+	uint32_t Offset = 0x29898;
+#elif defined MKB2_EU
+	uint32_t Offset = 0x29938;
+#endif
+	
+	/* Should check to see if this value ever gets cleared. 
+		If not, then the value should only be set once */
+	*reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(
+		heap::HeapData.MainLoopBSSLocation) + Offset) |= 
+		((1 << 0) | (1 << 1)); // Turn on the 0 and 1 bits
+}
+
 void Mod::performAssemblyPatches()
 {
 #ifdef MKB2_US
@@ -54,35 +71,9 @@ void Mod::performAssemblyPatches()
 #endif
 }
 
-void enableDebugMode()
-{
-#ifdef MKB2_US
-	uint32_t Offset = 0x6FB90;
-#elif defined MKB2_JP
-	uint32_t Offset = 0x29898;
-#elif defined MKB2_EU
-	uint32_t Offset = 0x29938;
-#endif
-	
-	/* Should check to see if this value ever gets cleared. 
-		If not, then the value should only be set once */
-	*reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(
-		heap::HeapData.MainLoopBSSLocation) + Offset) |= 
-		((1 << 0) | (1 << 1)); // Turn on the 0 and 1 bits
-}
-
 void run()
 {
-	// Make sure there are no issues with the heap
-	// heap::checkHeap();
-
-	// Make sure debug mode is enabled
 	enableDebugMode();
-
-	if (pad::buttonChordPressed(pad::PAD_BUTTON_L, pad::PAD_BUTTON_X)) {
-		gc::OSReport("Draw function toggled\n");
-		global::unknownDrawFunc1Enabled = !global::unknownDrawFunc1Enabled;
-	}
 }
 
 }

@@ -2,6 +2,7 @@
 #include "heap.h"
 #include "patch.h"
 #include "global.h"
+#include "pad.h"
 
 #include <gc/os.h>
 #include <mkb/mkb.h>
@@ -22,26 +23,31 @@ Mod::Mod() {
 	
 }
 
+
 void Mod::init() {
 	performAssemblyPatches();
 	
 	gMod = this;
 
-	// global::unknownDrawFunc1_trampoline = patch::hookFunction(
-	// 	mkb::unknownDrawFunc1, 
-	// 	[](double param1, double param2, double param3, double param4)
-	// {
-	// 	gc::OSReport("Poopes\n");
-	// 	if (global::unknownDrawFunc1Enabled)
-	// 	{
-	// 		global::unknownDrawFunc1_trampoline(param1, param2, param3, param4);
-	// 		gc::OSReport("udf1 enabled:  %d %d %d %d\n", param1, param2, param3, param4);
-	// 	} 
-	// 	else
-	// 	{
-	// 		gc::OSReport("udf1 disabled: %d %d %d %d\n", param1, param2, param3, param4);
-	// 	}
-	// });
+	// Nop the conditional that guards `drawDebugText`, enabling it even when debug mode is disabled
+	patch::writeNop(reinterpret_cast<void *>(0x80299f54));
+
+	global::tetris.init();
+
+	global::drawDebugText_trampoline = patch::hookFunction(
+		mkb::drawDebugText, 
+		[]()
+	{
+		// Drawing hook for UI elements.
+		// Gets run at the start of smb2's function which draws debug text windows,
+		// which is called at the end of smb2's function which draws the UI in general.
+
+		// gc::OSReport("Before drawDebugText()\n");
+		global::tetris.update();
+
+		global::drawDebugText_trampoline();
+		// gc::OSReport("After drawDebugText()\n");
+	});
 }
 
 }

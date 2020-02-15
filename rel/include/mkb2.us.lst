@@ -1,6 +1,7 @@
-// __mem.c
+// stdlib
 800033A8:memset
 8000519C:memcpy
+800723b4:strlen
 
 // OSAlloc.c
 8000CF04:DLInsert
@@ -23,9 +24,18 @@
 80010730:OSLink
 80010B8C:OSUnlink
 
-// Random stuff
-802AF5EC:unknownDrawFunc1
+// GX
+8002fe74:GXSetTevColor
+
+// Drawing
+802AD048:drawDebugText
+802AF5EC:drawDebugTextBg
+802aeac0:drawDebugTextCharEn
+803E47B8:debugTextBgColor
 
 // PAD
 8014530C:padButtonBitfield
 80145300:padAnalogBitfield
+
+// GX wrappers
+80008d24:GXSetZModeIfDifferent

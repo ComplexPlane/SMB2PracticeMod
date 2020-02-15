@@ -1,8 +1,12 @@
 #pragma once
 
-namespace global {
+#include "patch.h"
+#include "tetris.h"
 
-extern void (*unknownDrawFunc1_trampoline)(double param1, double param2, double param3, double param4);
-extern bool unknownDrawFunc1Enabled;
+namespace mod::global {
+
+extern void (*drawDebugText_trampoline)();
+
+extern Tetris tetris;
 
 }

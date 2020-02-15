@@ -1,10 +1,27 @@
 #include "patch.h"
+#include "pad.h"
 
 #include <gc/os.h>
 
 #include <cstdint>
 
 namespace mod::patch {
+
+void NopToggle::init(void *dest, uint16_t combo1, uint16_t combo2) {
+	m_dest = dest;
+	m_instr = 0x60000000;
+	m_combo1 = combo1;
+	m_combo2 = combo2;
+}
+
+void NopToggle::update() {
+	if (pad::buttonChordPressed(m_combo1, m_combo2)) {
+		uint32_t tmp = *reinterpret_cast<uint32_t *>(m_dest);
+		*reinterpret_cast<uint32_t *>(m_dest) = m_instr;
+		m_instr = tmp;
+		clear_DC_IC_Cache(m_dest, sizeof(uint32_t));
+	}
+}
 
 void clear_DC_IC_Cache(void *ptr, uint32_t size)
 {

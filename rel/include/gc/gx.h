@@ -975,4 +975,10 @@ enum GXZTexOp {
     GX_ZT_REPLACE=2
 };
 
+extern "C" {
+
+void GXSetTevColor(GXTevRegID id, GXColor color);
+
+}
+
 }
