@@ -23,7 +23,7 @@ void Tetris::init() {
 }
 
 void Tetris::update() {
-    if (pad::buttonChordPressed(pad::PAD_BUTTON_L, pad::PAD_BUTTON_X)) {
+    if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X)) {
         switch (m_state) {
             case State::HIDDEN:
                 m_state = State::DROPPING;
