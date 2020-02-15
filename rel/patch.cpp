@@ -1,5 +1,6 @@
 #include "patch.h"
 #include "pad.h"
+#include "global.h"
 
 #include <gc/os.h>
 

@@ -2,6 +2,7 @@
 800033A8:memset
 8000519C:memcpy
 800723b4:strlen
+80071f90:rand
 
 // OSAlloc.c
 8000CF04:DLInsert
@@ -25,7 +26,9 @@
 80010B8C:OSUnlink
 
 // GX
+CC008000:GXWGFifo
 8002fe74:GXSetTevColor
+8002cb2c:GXBegin
 
 // Drawing
 802AD048:drawDebugText
@@ -39,3 +42,4 @@
 
 // GX wrappers
 80008d24:GXSetZModeIfDifferent
+80007f44:GXLoadTexObjIfDifferent

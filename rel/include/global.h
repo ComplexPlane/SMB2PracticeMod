@@ -2,6 +2,7 @@
 
 #include "patch.h"
 #include "tetris.h"
+#include "pad.h"
 
 namespace mod::global {
 

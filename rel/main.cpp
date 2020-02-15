@@ -73,7 +73,7 @@ void Mod::performAssemblyPatches()
 
 void run()
 {
-	enableDebugMode();
+	// enableDebugMode();
 }
 
 }
