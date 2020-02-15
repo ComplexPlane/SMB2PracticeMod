@@ -43,3 +43,23 @@ CC008000:GXWGFifo
 // GX wrappers
 80008d24:GXSetZModeIfDifferent
 80007f44:GXLoadTexObjIfDifferent
+
+// runtime register stuff
+8006b24c:_savefpr_14
+8006b250:_savefpr_15
+8006b254:_savefpr_16
+8006b258:_savefpr_17
+8006b25C:_savefpr_18
+8006b260:_savefpr_19
+8006b264:_savefpr_20
+8006b268:_savefpr_21
+8006b26C:_savefpr_22
+8006b270:_savefpr_23
+8006b274:_savefpr_24
+8006b278:_savefpr_25
+8006b27C:_savefpr_26
+8006b280:_savefpr_27
+8006b284:_savefpr_28
+8006b288:_savefpr_29
+8006b28c:_savefpr_30
+8006b290:_savefpr_31
