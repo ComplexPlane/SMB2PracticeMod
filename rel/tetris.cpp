@@ -10,6 +10,9 @@
 #include <cstring>
 #include <cstdlib>
 
+static constexpr int NUM_TETRADS = 7;
+static constexpr int NUM_CELL_TYPES = 8;
+
 static constexpr char BOXCHAR_RT = '\x11';
 static constexpr char BOXCHAR_UT = '\x12';
 static constexpr char BOXCHAR_DT = '\x13';
@@ -26,7 +29,20 @@ static constexpr char BOXCHAR_LARROW = '\x1d';
 static constexpr char BOXCHAR_UARROW = '\x1e';
 static constexpr char BOXCHAR_DARROW = '\x1f';
 
-constexpr int CHAR_WIDTH = 0xc;
+static constexpr int CHAR_WIDTH = 0xc;
+
+static constexpr uint8_t CELL_ALPHA = 0xc0;
+
+static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
+    {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
+    {0xef, 0xa0, 0x00, CELL_ALPHA}, // L
+    {0x00, 0x02, 0xec, CELL_ALPHA}, // J
+    {0xef, 0xf0, 0x03, CELL_ALPHA}, // O
+    {0x02, 0xef, 0x00, CELL_ALPHA}, // S
+    {0xa0, 0x00, 0xf1, CELL_ALPHA}, // T
+    {0xf0, 0x01, 0x00, CELL_ALPHA}, // Z
+    {0x00, 0x00, 0x00, CELL_ALPHA}  // Black for nothing?
+};
 
 namespace mod {
 
@@ -73,26 +89,13 @@ Tetris::Tetrad Tetris::getRandomTetrad() {
 
 void Tetris::draw() {
     mkb::GXSetZModeIfDifferent(gc::GX_TRUE, gc::GX_LESS, gc::GX_FALSE);
+
     // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
     gc::GXColor tev1Color = {0, 0, 0, 0};
     gc::GXSetTevColor(gc::GX_TEVREG1, tev1Color);
 
-    drawAsciiWindow(100, 100, 20, 20);
-
-    // for (int x = 0; x < BOARD_WIDTH; x++) {
-    //     for (int y = 0; y < BOARD_HEIGHT; y++) {
-    //         float drawX1 = x * 18;
-    //         float drawX2 = drawX1 + 17;
-    //         float drawY1 = (BOARD_HEIGHT - y - 1) * 18;
-    //         float drawY2 = drawY1 + 17;
-
-    //         Cell cell = m_board[x][y];
-    //         if (cell != Cell::EMPTY) {
-    //             gc::GXColor color = CELL_COLORS[static_cast<uint8_t>(cell)];
-    //             drawRect(drawX1, drawY1, drawX2, drawY2, color);
-    //         }
-    //     }
-    // }
+    drawAsciiWindow(87, 8, 30, 36);
+    drawGrid();
 }
 
 void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color) {
@@ -102,18 +105,39 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_DR, color);
     mkb::drawDebugTextCharEn(xpos, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_DL, color);
 
-    // Draw top and bottom
+    constexpr int X_VDIV = 16;
+    constexpr int Y_HDIV = 20;
+
+    // Draw horizontal lines
     for (int i = 1; i < xchars - 1; i++) {
         int x = xpos + i * CHAR_WIDTH;
-        mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_HBAR, color);
-        mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_HBAR, color);
+        if (i != X_VDIV) {
+            mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_HBAR, color);
+            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_HBAR, color);
+        } else {
+            mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_DT, color);
+            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_UT, color);
+        }
+
+        if (i > X_VDIV) {
+            mkb::drawDebugTextCharEn(x, ypos + Y_HDIV * CHAR_WIDTH, BOXCHAR_HBAR, color);
+        }
     }
 
-    // Draw left and right
+    // Draw vertical lines
     for (int i = 1; i < ychars - 1; i++) {
         int y = ypos + i * CHAR_WIDTH;
         mkb::drawDebugTextCharEn(xpos, y, BOXCHAR_VBAR, color);
-        mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+
+        if (i == Y_HDIV) {
+            mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
+            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_LT, color);
+        } else {
+            mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+        }
+
+
     }
 }
 
@@ -150,7 +174,35 @@ void Tetris::drawAsciiWindow(int x, int y, int widthChars, int heightChars) {
     float endy = (y + heightChars * CHAR_WIDTH) * YSCALE - MARGIN;
 
     drawRect(startx, starty, endx, endy, {0x00, 0x00, 0x00, 0x80});
-    drawAsciiRect(x, y, widthChars, heightChars, 0xff);
+    drawAsciiRect(x, y, widthChars, heightChars, 0b01001110);
+}
+
+void Tetris::drawGrid() {
+    constexpr int DRAWX_START = 100;
+    constexpr int DRAWY_START = 25;
+
+    for (int x = 0; x < BOARD_WIDTH; x++) {
+        for (int y = 0; y < BOARD_HEIGHT; y++) {
+            float drawX1 = DRAWX_START + x * 18;
+            float drawX2 = drawX1 + 17;
+            float drawY1 = DRAWY_START + (BOARD_HEIGHT - y - 1) * 18;
+            float drawY2 = drawY1 + 17;
+
+            Cell cell = m_board[x][y];
+            if (cell != Cell::EMPTY) {
+                gc::GXColor color = CELL_COLORS[static_cast<uint8_t>(cell)];
+                drawRect(drawX1, drawY1, drawX2, drawY2, color);
+            }
+        }
+    }
+}
+
+void Tetris::drawTextPalette() {
+    for (char c = 0; c != 0x80; c++) {
+        int x = c % 16 * CHAR_WIDTH;
+        int y = c / 16 * CHAR_WIDTH;
+        mkb::drawDebugTextCharEn(x, y, c, c * 2);
+    }
 }
 
 }
