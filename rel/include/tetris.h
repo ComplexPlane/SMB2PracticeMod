@@ -46,7 +46,9 @@ private:
     Tetrad getRandomTetrad();
 
     void draw();
+    void drawAsciiRect(int x, int y, int widthChars, int heightChars, uint8_t color);
     void drawRect(float x1, float y1, float x2, float y2, gc::GXColor color);
+    void drawAsciiWindow(int x, int y, int widthChars, int heightChars);
 };
 
 }
