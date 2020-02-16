@@ -14,9 +14,10 @@ public:
 private:
     static constexpr int BOARD_WIDTH = 10;
     static constexpr int BOARD_HEIGHT = 24;
+    static constexpr int TETRAD_QUEUE_LEN = 5;
 
-    enum class Tetrad { I, L, J, O, S, T, Z };
-    enum class Cell : uint8_t { I, L, J, O, S, T, Z, EMPTY };
+    enum class Tetrad { I, J, L, O, S, T, Z };
+    enum class Cell : uint8_t { I, J, L, O, S, T, Z, EMPTY };
 
     enum class State {
         HIDDEN,
@@ -32,8 +33,12 @@ private:
     int m_score;
     int m_highScore;
 
-    Cell getRandomCell();
-    Tetrad getRandomTetrad();
+    Tetrad m_tetradQueue[TETRAD_QUEUE_LEN];
+
+    Cell genRandomCell();
+    Tetrad genRandomTetrad();
+
+    Tetrad popTetradQueue();
 
     void draw();
     void drawAsciiRect(int x, int y, int widthChars, int heightChars, uint8_t color);
@@ -43,6 +48,8 @@ private:
     void drawTextPalette();
     void drawInfoText();
     void drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...);
+    void drawTetrad(int x, int y, Tetrad tetrad, int rotation);
+    void drawTetradQueue();
 };
 
 }

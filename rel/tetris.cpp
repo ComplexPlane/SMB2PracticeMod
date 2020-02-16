@@ -13,7 +13,12 @@
 #include <cstdarg>
 
 static constexpr int NUM_TETRADS = 7;
-static constexpr int NUM_CELL_TYPES = 8;
+static constexpr int NUM_CELL_TYPES = 9;
+static constexpr int NUM_TETRAD_ROTATIONS = 4;
+
+static constexpr int CELL_WIDTH = 17;
+static constexpr int CELL_PAD = 1;
+static constexpr uint8_t CELL_ALPHA = 0xff;
 
 static constexpr char BOXCHAR_RT = '\x11';
 static constexpr char BOXCHAR_UT = '\x12';
@@ -30,20 +35,40 @@ static constexpr char BOXCHAR_RARROW = '\x1c';
 static constexpr char BOXCHAR_LARROW = '\x1d';
 static constexpr char BOXCHAR_UARROW = '\x1e';
 static constexpr char BOXCHAR_DARROW = '\x1f';
-
 static constexpr int CHAR_WIDTH = 0xc;
-
-static constexpr uint8_t CELL_ALPHA = 0xff;
 
 static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
-    {0xef, 0xa0, 0x00, CELL_ALPHA}, // L
     {0x00, 0x02, 0xec, CELL_ALPHA}, // J
+    {0xef, 0xa0, 0x00, CELL_ALPHA}, // L
     {0xef, 0xf0, 0x03, CELL_ALPHA}, // O
     {0x02, 0xef, 0x00, CELL_ALPHA}, // S
     {0xa0, 0x00, 0xf1, CELL_ALPHA}, // T
     {0xf0, 0x01, 0x00, CELL_ALPHA}, // Z
-    {0x00, 0x00, 0x00, CELL_ALPHA}  // Black for nothing?
+    {0x00, 0x00, 0x00, CELL_ALPHA},  // Empty (black for nothing?)
+};
+
+// Each uint16_t is a bitfield representing the occupancy of a 4x4 tetrad bounding box
+const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
+    {0b0000111100000000, 0b0010001000100010, 0b0000000011110000, 0b0100010001000100}, // I
+    {0b1000111000000000, 0b0110010001000000, 0b0000111000100000, 0b0100010011000000}, // J
+    {0b0010111000000000, 0b0100010001100000, 0b0000111010000000, 0b1100010001000000}, // L
+    {0b0110011000000000, 0b0110011000000000, 0b0110011000000000, 0b0110011000000000}, // O
+    {0b0110110000000000, 0b0100011000100000, 0b0000011011000000, 0b1000110001000000}, // O
+    {0b0100111000000000, 0b0100011001000000, 0b0000111001000000, 0b0100110001000000}, // T
+    {0b1100011000000000, 0b0010011001000000, 0b0000110001100000, 0b0100110010000000}, // Z
+};
+
+// How to "nudge" tetrad in rotation 0 to draw with tetrad "centered"
+// Used to draw tetrad queue
+const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
+    {0, -0.5}, // I
+    {0.5, -1}, // J
+    {0.5, -1}, // L
+    {0, -1}, // O
+    {0.5, -1}, // S
+    {0.5, -1}, // T
+    {0.5, -1}, // Z
 };
 
 namespace mod {
@@ -55,8 +80,12 @@ void Tetris::init() {
 
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
-            m_board[x][y] = getRandomCell();
+            m_board[x][y] = genRandomCell();
         }
+    }
+
+    for (int i = 0; i < TETRAD_QUEUE_LEN; i++) {
+        m_tetradQueue[i] = genRandomTetrad();
     }
 }
 
@@ -83,12 +112,24 @@ void Tetris::update() {
     }
 }
 
-Tetris::Cell Tetris::getRandomCell() {
+Tetris::Cell Tetris::genRandomCell() {
     return static_cast<Cell>(rand() % NUM_CELL_TYPES);
 }
 
-Tetris::Tetrad Tetris::getRandomTetrad() {
+Tetris::Tetrad Tetris::genRandomTetrad() {
     return static_cast<Tetrad>(rand() % NUM_TETRADS);
+}
+
+Tetris::Tetrad Tetris::popTetradQueue() {
+    Tetrad ret = m_tetradQueue[0];
+    
+    // Could treat it like a ring buffer instead, but eh
+    for (int i = 0; i < TETRAD_QUEUE_LEN - 1; i++) {
+        m_tetradQueue[i] = m_tetradQueue[i + 1];
+    }
+    m_tetradQueue[TETRAD_QUEUE_LEN - 1] = genRandomTetrad();
+
+    return ret;
 }
 
 void Tetris::draw() {
@@ -101,6 +142,7 @@ void Tetris::draw() {
     drawAsciiWindow();
     drawGrid();
     drawInfoText();
+    drawTetradQueue();
 }
 
 void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color) {
@@ -141,8 +183,6 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
             mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
             mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
         }
-
-
     }
 }
 
@@ -192,10 +232,10 @@ void Tetris::drawGrid() {
 
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
-            float drawX1 = DRAWX_START + x * 18;
-            float drawX2 = drawX1 + 17;
-            float drawY1 = DRAWY_START + (BOARD_HEIGHT - y - 1) * 18;
-            float drawY2 = drawY1 + 17;
+            float drawX1 = DRAWX_START + x * (CELL_WIDTH + CELL_PAD);
+            float drawX2 = drawX1 + CELL_WIDTH;
+            float drawY1 = DRAWY_START + (BOARD_HEIGHT - y - 1) * (CELL_WIDTH + CELL_PAD);
+            float drawY2 = drawY1 + CELL_WIDTH;
 
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY) {
@@ -224,7 +264,7 @@ void Tetris::drawInfoText() {
     drawDebugTextPrintf(STARTX, STARTY + 50, 0b01110111, "HIGH SCORE");
     drawDebugTextPrintf(STARTX, STARTY + 50 + 16, 0xff, "%d", m_highScore);
 
-    drawDebugTextPrintf(429, 283, 0b11100011, "NEXT");
+    drawDebugTextPrintf(429, 22, 0b11100011, "NEXT");
 }
 
 void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...) {
@@ -240,6 +280,39 @@ void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format
 
     for (int i = 0; buf[i] != '\0'; i++) {
         mkb::drawDebugTextCharEn(x + i * CHAR_WIDTH, y, buf[i], color);
+    }
+}
+
+void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation) {
+    uint8_t tet = static_cast<uint8_t>(tetrad);
+    gc::GXColor color = CELL_COLORS[tet];
+
+    for (int cellx = 0; cellx < 4; cellx++) {
+        for (int celly = 0; celly < 4; celly++) {
+            bool occupied = TETRAD_ROTATIONS[tet][rotation] & (1 << 15 >> (celly * 4 + cellx));
+            if (occupied) {
+                float x1 = x + cellx * (CELL_WIDTH + CELL_PAD);
+                float y1 = y + celly * (CELL_WIDTH + CELL_PAD);
+
+                float x2 = x1 + CELL_WIDTH;
+                float y2 = y1 + CELL_WIDTH;
+
+                drawRect(x1, y1, x2, y2, color);
+            }
+        }
+    }
+}
+
+void Tetris::drawTetradQueue() {
+    constexpr int STARTX = 370;
+    constexpr int STARTY = 32;
+    constexpr int STEP = 55;
+
+    for (int i = 0; i < TETRAD_QUEUE_LEN; i++) {
+        uint8_t tet = static_cast<uint8_t>(m_tetradQueue[i]);
+        int drawx = STARTX + TETRAD_CENTER_NUDGE[tet][0] * (CELL_WIDTH + CELL_PAD);
+        int drawy = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
+        drawTetrad(drawx, drawy, static_cast<Tetrad>(tet), 0);
     }
 }
 
