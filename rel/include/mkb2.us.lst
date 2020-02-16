@@ -3,6 +3,7 @@
 8000519C:memcpy
 800723b4:strlen
 80071f90:rand
+8006fed0:vsprintf
 
 // OSAlloc.c
 8000CF04:DLInsert
