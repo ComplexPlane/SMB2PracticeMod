@@ -89,12 +89,19 @@ void Tetris::init() {
         m_tetradQueue[i] = genRandomTetrad();
     }
 
-    transitionToDropping();
+    // Initialize dropping state
+    m_state = State::DROPPING;
+    m_droppingTetrad = popTetradQueue();
+    m_droppingTetradX = 3;
+    m_droppingTetradY = 19;
+    m_droppingTetradRot = 0;
+    m_stateTimer = 60;
 }
 
 void Tetris::update() {
     if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X)) {
         m_hidden = !m_hidden;
+        if (!m_hidden) return; // Come back next frame when your inputs won't be reused
     }
 
     if (!m_hidden) {
@@ -115,6 +122,37 @@ void Tetris::update() {
 }
 
 void Tetris::handleDroppingState() {
+    int newTetradX = m_droppingTetradX;
+    int newTetradY = m_droppingTetradY;
+    int newTetradRot = m_droppingTetradRot;
+
+    bool movedDown = false;
+    bool rotated = false;
+
+    if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT)) {
+        newTetradX--;
+    } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT)) {
+        newTetradX++;
+    } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN)) {
+        newTetradY--;
+        movedDown = true;
+    }
+
+    if (pad::buttonPressed(pad::PAD_BUTTON_Y)) {
+        newTetradRot = (newTetradRot + 3) % 4;
+        rotated = true;
+    } else if (pad::buttonPressed(pad::PAD_BUTTON_X)) {
+        newTetradRot = (newTetradRot + 1) % 4;
+        rotated = true;
+    }
+
+    if (!tetradIntersectsGrid(m_droppingTetrad, newTetradX, newTetradY, newTetradRot)) {
+        m_droppingTetradX = newTetradX;
+        m_droppingTetradY = newTetradY;
+        m_droppingTetradRot = newTetradRot;
+    } else if (movedDown && !rotated) {
+        transitionDroppingToDropping();
+    } // else disallow the movement (sorry no wall kicks or anything rn)
 }
 
 void Tetris::handleRowclearState() {
@@ -125,14 +163,35 @@ void Tetris::handleGameoverState() {
 
 }
 
-void Tetris::transitionToDropping() {
-    m_state = State::DROPPING;
-    m_stateTimer = 60;
+void Tetris::transitionDroppingToDropping() {
+    uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
+    Cell cell = static_cast<Cell>(m_droppingTetrad);
+
+    // Place blocks of dropping tetrad into grid
+    for (int localX = 0; localX < 4; localX++) {
+        for (int localY = 0; localY < 4; localY++) {
+            bool occupied = TETRAD_ROTATIONS[tet][m_droppingTetradRot] & (1 << 15 >> (localY * 4 + localX));
+            if (occupied) {
+                int gridX = m_droppingTetradX + localX;
+                int gridY = m_droppingTetradY + localY;
+                m_board[gridX][gridY] = cell;
+            }
+        }
+    }
 
     m_droppingTetrad = popTetradQueue();
-    m_droppingTetradRotation = 0;
     m_droppingTetradX = 3;
     m_droppingTetradY = 19;
+    m_droppingTetradRot = 0;
+    m_stateTimer = 60;
+
+    if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot)) {
+        transitionDroppingToGameover();
+    }
+}
+
+void Tetris::transitionDroppingToGameover() {
+    m_state = State::GAMEOVER;
 }
 
 Tetris::Cell Tetris::genRandomCell() {
@@ -340,7 +399,7 @@ void Tetris::drawTetradQueue() {
 
 void Tetris::drawDroppingTetrad() {
     uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
-    uint16_t rot = TETRAD_ROTATIONS[tet][m_droppingTetradRotation];
+    uint16_t rot = TETRAD_ROTATIONS[tet][m_droppingTetradRot];
     gc::GXColor color = CELL_COLORS[tet];
     gc::GXColor previewColor = {color.r, color.g, color.b, 0x40};
 
@@ -351,7 +410,7 @@ void Tetris::drawDroppingTetrad() {
         m_droppingTetrad, 
         m_droppingTetradX, 
         m_droppingTetradY, 
-        m_droppingTetradRotation);
+        m_droppingTetradRot);
 
     for (int cellx = 0; cellx < 4; cellx++) {
         for (int celly = 0; celly < 4; celly++) {

@@ -37,8 +37,8 @@ private:
     Tetrad m_tetradQueue[TETRAD_QUEUE_LEN];
 
     Tetrad m_droppingTetrad;
-    int m_droppingTetradRotation;
-    // Current dropping tetrad position of bottom left of 4x4 bbox
+    int m_droppingTetradRot;
+    // Current dropping tetrad position of bottom-left of 4x4 bbox
     int m_droppingTetradX;
     int m_droppingTetradY;
 
@@ -46,7 +46,8 @@ private:
     void handleRowclearState();
     void handleGameoverState();
 
-    void transitionToDropping();
+    void transitionDroppingToDropping();
+    void transitionDroppingToGameover();
 
     Cell genRandomCell();
     Tetrad genRandomTetrad();
