@@ -2,6 +2,7 @@
 Row flashing / clearing
 Increasing timing rate
 Score
+Input repeat
 */
 
 #include "tetris.h"
@@ -42,6 +43,8 @@ static constexpr char BOXCHAR_LARROW = '\x1d';
 static constexpr char BOXCHAR_UARROW = '\x1e';
 static constexpr char BOXCHAR_DARROW = '\x1f';
 static constexpr int CHAR_WIDTH = 0xc;
+
+static constexpr int ROW_FLASH_PERIOD = 4;
 
 static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
@@ -228,7 +231,7 @@ void Tetris::transitionFromDropping() {
 
 void Tetris::transitionDroppingToRowclear() {
     m_state = State::ROWCLEAR;
-    m_stateTimer = 60;
+    m_stateTimer = 30;
 }
 
 void Tetris::transitionDroppingToGameover() {
@@ -367,11 +370,25 @@ void Tetris::drawAsciiWindow() {
 }
 
 void Tetris::drawGrid() {
-    for (int x = 0; x < BOARD_WIDTH; x++) {
-        for (int y = 0; y < BOARD_HEIGHT; y++) {
+    for (int y = 0; y < BOARD_HEIGHT; y++) {
+        bool rowFull = isRowFull(y);
+
+        for (int x = 0; x < BOARD_WIDTH; x++) {
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY) {
-                gc::GXColor color = CELL_COLORS[static_cast<uint8_t>(cell)];
+                gc::GXColor color = {};
+
+                if (m_state == State::ROWCLEAR && rowFull) {
+                    if (m_stateTimer % ROW_FLASH_PERIOD < (ROW_FLASH_PERIOD / 2)) {
+                        color = {0x00, 0x00, 0x00, 0x00};
+                    } else {
+                        color = {0xff, 0xff, 0xff, 0xff};
+                    }
+
+                } else {
+                    color = CELL_COLORS[static_cast<uint8_t>(cell)];
+                }
+
                 drawGridCell(x, y, color);
             }
         }
