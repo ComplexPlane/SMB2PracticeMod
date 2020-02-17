@@ -33,6 +33,8 @@ private:
     int m_score;
     int m_highScore;
 
+    int m_currentDropPeriod;
+
     Cell m_board[BOARD_WIDTH][BOARD_HEIGHT];
     Tetrad m_tetradQueue[TETRAD_QUEUE_LEN];
 

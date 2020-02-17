@@ -1,8 +1,8 @@
 /* TODO:
-Row flashing / clearing
-Increasing timing rate
 Score
 Input repeat
+Gameover
+Non shit RNG
 */
 
 #include "tetris.h"
@@ -46,6 +46,9 @@ static constexpr int CHAR_WIDTH = 0xc;
 
 static constexpr int ROW_FLASH_PERIOD = 4;
 
+static constexpr int INITIAL_DROP_PERIOD = 60;
+static constexpr int MIN_DROP_PERIOD = 20;
+
 static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
     {0x00, 0x02, 0xec, CELL_ALPHA}, // J
@@ -87,6 +90,8 @@ void Tetris::init() {
 
     m_score = 0;
     m_highScore = 1000;
+
+    m_currentDropPeriod = INITIAL_DROP_PERIOD;
 
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
@@ -131,7 +136,7 @@ void Tetris::handleDroppingState() {
             transitionFromDropping();
         } else {
             m_droppingTetradY--;
-            m_stateTimer = 60;
+            m_stateTimer = m_currentDropPeriod;
         }
     }
 
@@ -195,6 +200,8 @@ void Tetris::handleRowclearState() {
             }
         }
 
+        m_currentDropPeriod -= emptyRows;
+        if (m_currentDropPeriod < MIN_DROP_PERIOD) m_currentDropPeriod = MIN_DROP_PERIOD;
         tryTransitionToDropping();
     }
 }
@@ -244,7 +251,7 @@ void Tetris::tryTransitionToDropping() {
     m_droppingTetradX = 3;
     m_droppingTetradY = 19;
     m_droppingTetradRot = 0;
-    m_stateTimer = 60;
+    m_stateTimer = m_currentDropPeriod;
 
     if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot)) {
         transitionDroppingToGameover();
