@@ -1,3 +1,9 @@
+/* TODO:
+Row flashing / clearing
+Increasing timing rate
+Score
+*/
+
 #include "tetris.h"
 
 #include <gc/gx.h>
@@ -89,13 +95,7 @@ void Tetris::init() {
         m_tetradQueue[i] = genRandomTetrad();
     }
 
-    // Initialize dropping state
-    m_state = State::DROPPING;
-    m_droppingTetrad = popTetradQueue();
-    m_droppingTetradX = 3;
-    m_droppingTetradY = 19;
-    m_droppingTetradRot = 0;
-    m_stateTimer = 60;
+    tryTransitionToDropping();
 }
 
 void Tetris::update() {
@@ -125,7 +125,7 @@ void Tetris::handleDroppingState() {
     m_stateTimer--;
     if (m_stateTimer == 0) {
         if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY - 1, m_droppingTetradRot)) {
-            transitionDroppingToDropping();
+            transitionFromDropping();
         } else {
             m_droppingTetradY--;
             m_stateTimer = 60;
@@ -139,7 +139,7 @@ void Tetris::handleDroppingState() {
             m_droppingTetradY, 
             m_droppingTetradRot);
         m_droppingTetradY = lowY;
-        transitionDroppingToDropping();
+        transitionFromDropping();
 
     } else {
         int newTetradX = m_droppingTetradX;
@@ -171,20 +171,36 @@ void Tetris::handleDroppingState() {
             m_droppingTetradY = newTetradY;
             m_droppingTetradRot = newTetradRot;
         } else if (movedDown && !rotated) {
-            transitionDroppingToDropping();
+            transitionFromDropping();
         } // else disallow the movement (sorry no wall kicks or anything rn)
     }
 }
 
 void Tetris::handleRowclearState() {
+    m_stateTimer--;
+    if (m_stateTimer == 0) {
 
+        // Delete full rows from board
+        int emptyRows = 0;
+        for (int y = 0; y < BOARD_HEIGHT; y++) {
+            if (isRowFull(y)) {
+                emptyRows++;
+            } else {
+                for (int x = 0; x < BOARD_WIDTH; x++) {
+                    m_board[x][y - emptyRows] = m_board[x][y];
+                }
+            }
+        }
+
+        tryTransitionToDropping();
+    }
 }
 
 void Tetris::handleGameoverState() {
 
 }
 
-void Tetris::transitionDroppingToDropping() {
+void Tetris::transitionFromDropping() {
     uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
     Cell cell = static_cast<Cell>(m_droppingTetrad);
 
@@ -200,6 +216,27 @@ void Tetris::transitionDroppingToDropping() {
         }
     }
 
+    for (int y = 0; y < BOARD_HEIGHT; y++) {
+        if (isRowFull(y)) {
+            transitionDroppingToRowclear();
+            return;
+        }
+    }
+
+    tryTransitionToDropping();
+}
+
+void Tetris::transitionDroppingToRowclear() {
+    m_state = State::ROWCLEAR;
+    m_stateTimer = 60;
+}
+
+void Tetris::transitionDroppingToGameover() {
+    m_state = State::GAMEOVER;
+}
+
+void Tetris::tryTransitionToDropping() {
+    m_state = State::DROPPING;
     m_droppingTetrad = popTetradQueue();
     m_droppingTetradX = 3;
     m_droppingTetradY = 19;
@@ -209,10 +246,6 @@ void Tetris::transitionDroppingToDropping() {
     if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot)) {
         transitionDroppingToGameover();
     }
-}
-
-void Tetris::transitionDroppingToGameover() {
-    m_state = State::GAMEOVER;
 }
 
 Tetris::Cell Tetris::genRandomCell() {
@@ -497,6 +530,16 @@ bool Tetris::tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int r
 int Tetris::findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation) {
     while (!tetradIntersectsGrid(tetrad, tetradX, tetradY, rotation)) tetradY--;
     return tetradY + 1;
+}
+
+bool Tetris::isRowFull(int y) {
+    for (int x = 0; x < BOARD_WIDTH; x++) {
+        if (m_board[x][y] == Cell::EMPTY) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 }

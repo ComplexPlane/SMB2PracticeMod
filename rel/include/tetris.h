@@ -46,8 +46,10 @@ private:
     void handleRowclearState();
     void handleGameoverState();
 
-    void transitionDroppingToDropping();
+    void transitionFromDropping();
+    void transitionDroppingToRowclear();
     void transitionDroppingToGameover();
+    void tryTransitionToDropping();
 
     Cell genRandomCell();
     Tetrad genRandomTetrad();
@@ -69,6 +71,7 @@ private:
 
     bool tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int rotation);
     int findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation);
+    bool isRowFull(int y);
 };
 
 }
