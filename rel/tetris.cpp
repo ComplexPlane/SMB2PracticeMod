@@ -128,6 +128,9 @@ void Tetris::handleGameoverState() {
 void Tetris::transitionToDropping() {
     m_state = State::DROPPING;
     m_stateTimer = 60;
+
+    m_droppingTetrad = popTetradQueue();
+    m_droppingTetradRotation = 0;
     m_droppingTetradX = 3;
     m_droppingTetradY = 19;
 }
@@ -336,7 +339,39 @@ void Tetris::drawTetradQueue() {
 }
 
 void Tetris::drawDroppingTetrad() {
+    uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
+    uint16_t rot = TETRAD_ROTATIONS[tet][m_droppingTetradRotation];
+    gc::GXColor color = CELL_COLORS[tet];
+    gc::GXColor previewColor = {color.r, color.g, color.b, 0x40};
 
+    // Draw drop preview
+    // TODO deduplicate?
+
+    int lowY = findLowestPossibleTetradY(
+        m_droppingTetrad, 
+        m_droppingTetradX, 
+        m_droppingTetradY, 
+        m_droppingTetradRotation);
+
+    for (int cellx = 0; cellx < 4; cellx++) {
+        for (int celly = 0; celly < 4; celly++) {
+            bool occupied = rot & (1 << 15 >> (celly * 4 + cellx));
+            if (occupied) {
+                drawGridCell(m_droppingTetradX + cellx, lowY + celly, previewColor);
+            }
+        }
+    }
+
+    // Draw actual tetrad (draw second so we draw over the preview if necessary...
+    // a little hacky but it's probably fine)
+    for (int cellx = 0; cellx < 4; cellx++) {
+        for (int celly = 0; celly < 4; celly++) {
+            bool occupied = rot & (1 << 15 >> (celly * 4 + cellx));
+            if (occupied) {
+                drawGridCell(m_droppingTetradX + cellx, m_droppingTetradY + celly, color);
+            }
+        }
+    }
 }
 
 void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color) {
@@ -349,6 +384,39 @@ void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color) {
     float drawY2 = drawY1 + CELL_WIDTH;
 
     drawRect(drawX1, drawY1, drawX2, drawY2, color);
+}
+
+// Also detects if tetrad is out-of-bounds
+bool Tetris::tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int rotation) {
+    uint8_t tet = static_cast<uint8_t>(tetrad);
+    uint16_t rot = TETRAD_ROTATIONS[tet][rotation];
+
+    for (int localX = 0; localX < 4; localX++) {
+        for (int localY = 0; localY < 4; localY++) {
+            bool tetradOccupied = rot & (1 << 15 >> (localY * 4 + localX));
+
+            if (tetradOccupied) {
+                int cellX = tetradX + localX;
+                int cellY = tetradY + localY;
+
+                // Detect out-of-bounds tetrad
+                if (cellX < 0 || cellX >= BOARD_WIDTH || cellY < 0 || cellY >= BOARD_HEIGHT) {
+                    return true;
+                }
+
+                bool boardOccupied = m_board[cellX][cellY] != Cell::EMPTY;
+                if (tetradOccupied && boardOccupied) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+// Undefined if tetrad is already intersecting grid or out-of-bounds
+int Tetris::findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation) {
+    while (!tetradIntersectsGrid(tetrad, tetradX, tetradY, rotation)) tetradY--;
+    return tetradY + 1;
 }
 
 }
