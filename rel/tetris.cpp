@@ -50,13 +50,13 @@ static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
 
 // Each uint16_t is a bitfield representing the occupancy of a 4x4 tetrad bounding box
 const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
-    {0b0000111100000000, 0b0010001000100010, 0b0000000011110000, 0b0100010001000100}, // I
-    {0b1000111000000000, 0b0110010001000000, 0b0000111000100000, 0b0100010011000000}, // J
-    {0b0010111000000000, 0b0100010001100000, 0b0000111010000000, 0b1100010001000000}, // L
-    {0b0110011000000000, 0b0110011000000000, 0b0110011000000000, 0b0110011000000000}, // O
-    {0b0110110000000000, 0b0100011000100000, 0b0000011011000000, 0b1000110001000000}, // O
-    {0b0100111000000000, 0b0100011001000000, 0b0000111001000000, 0b0100110001000000}, // T
-    {0b1100011000000000, 0b0010011001000000, 0b0000110001100000, 0b0100110010000000}, // Z
+    {0b0000000011110000, 0b0010001000100010, 0b0000111100000000, 0b0100010001000100}, // I
+    {0b0000000011101000, 0b0000010001000110, 0b0000001011100000, 0b0000110001000100}, // J
+    {0b0000000011100010, 0b0000011001000100, 0b0000100011100000, 0b0000010001001100}, // L
+    {0b0000000001100110, 0b0000000001100110, 0b0000000001100110, 0b0000000001100110}, // O
+    {0b0000000011000110, 0b0000001001100100, 0b0000110001100000, 0b0000010011001000}, // S
+    {0b0000000011100100, 0b0000010001100100, 0b0000010011100000, 0b0000010011000100}, // T
+    {0b0000000001101100, 0b0000010001100010, 0b0000011011000000, 0b0000100011000100}, // Z
 };
 
 // How to "nudge" tetrad in rotation 0 to draw with tetrad "centered"
@@ -74,42 +74,62 @@ const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
 namespace mod {
 
 void Tetris::init() {
-    m_state = State::HIDDEN;
+    m_hidden = true;
+
     m_score = 0;
     m_highScore = 1000;
 
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
-            m_board[x][y] = genRandomCell();
+            m_board[x][y] = Cell::EMPTY;
         }
     }
 
     for (int i = 0; i < TETRAD_QUEUE_LEN; i++) {
         m_tetradQueue[i] = genRandomTetrad();
     }
+
+    transitionToDropping();
 }
 
 void Tetris::update() {
     if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X)) {
-        switch (m_state) {
-            case State::HIDDEN:
-                m_state = State::DROPPING;
-                break;
+        m_hidden = !m_hidden;
+    }
 
-            default:
-                m_state = State::HIDDEN;
+    if (!m_hidden) {
+        switch (m_state) {
+            case State::DROPPING:
+                handleDroppingState();
+                break;
+            case State::ROWCLEAR:
+                handleRowclearState();
+                break;
+            case State::GAMEOVER:
+                handleGameoverState();
                 break;
         }
-    }
 
-    switch (m_state) {
-        case State::HIDDEN:
-            break;
-        
-        default:
-            draw();
-            break;
+        draw();
     }
+}
+
+void Tetris::handleDroppingState() {
+}
+
+void Tetris::handleRowclearState() {
+
+}
+
+void Tetris::handleGameoverState() {
+
+}
+
+void Tetris::transitionToDropping() {
+    m_state = State::DROPPING;
+    m_stateTimer = 60;
+    m_droppingTetradX = 3;
+    m_droppingTetradY = 19;
 }
 
 Tetris::Cell Tetris::genRandomCell() {
@@ -143,6 +163,10 @@ void Tetris::draw() {
     drawGrid();
     drawInfoText();
     drawTetradQueue();
+
+    if (m_state == State::DROPPING) {
+        drawDroppingTetrad();
+    }
 }
 
 void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color) {
@@ -227,20 +251,12 @@ void Tetris::drawAsciiWindow() {
 }
 
 void Tetris::drawGrid() {
-    constexpr int DRAWX_START = 143;
-    constexpr int DRAWY_START = 25;
-
     for (int x = 0; x < BOARD_WIDTH; x++) {
         for (int y = 0; y < BOARD_HEIGHT; y++) {
-            float drawX1 = DRAWX_START + x * (CELL_WIDTH + CELL_PAD);
-            float drawX2 = drawX1 + CELL_WIDTH;
-            float drawY1 = DRAWY_START + (BOARD_HEIGHT - y - 1) * (CELL_WIDTH + CELL_PAD);
-            float drawY2 = drawY1 + CELL_WIDTH;
-
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY) {
                 gc::GXColor color = CELL_COLORS[static_cast<uint8_t>(cell)];
-                drawRect(drawX1, drawY1, drawX2, drawY2, color);
+                drawGridCell(x, y, color);
             }
         }
     }
@@ -287,12 +303,15 @@ void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation) {
     uint8_t tet = static_cast<uint8_t>(tetrad);
     gc::GXColor color = CELL_COLORS[tet];
 
+    // Note that the effectice "cell y" when indexing the tetrad rotation
+    // is in the wrong direction, but is flipped again when
+    // rendered due to the screen having a flipped y compared to the grid space
     for (int cellx = 0; cellx < 4; cellx++) {
         for (int celly = 0; celly < 4; celly++) {
             bool occupied = TETRAD_ROTATIONS[tet][rotation] & (1 << 15 >> (celly * 4 + cellx));
             if (occupied) {
                 float x1 = x + cellx * (CELL_WIDTH + CELL_PAD);
-                float y1 = y + celly * (CELL_WIDTH + CELL_PAD);
+                float y1 = y + (3 - celly) * (CELL_WIDTH + CELL_PAD);
 
                 float x2 = x1 + CELL_WIDTH;
                 float y2 = y1 + CELL_WIDTH;
@@ -314,6 +333,22 @@ void Tetris::drawTetradQueue() {
         int drawy = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
         drawTetrad(drawx, drawy, static_cast<Tetrad>(tet), 0);
     }
+}
+
+void Tetris::drawDroppingTetrad() {
+
+}
+
+void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color) {
+    constexpr int DRAWX_START = 143;
+    constexpr int DRAWY_START = 25;
+
+    float drawX1 = DRAWX_START + cellx * (CELL_WIDTH + CELL_PAD);
+    float drawX2 = drawX1 + CELL_WIDTH;
+    float drawY1 = DRAWY_START + (BOARD_HEIGHT - celly - 1) * (CELL_WIDTH + CELL_PAD);
+    float drawY2 = drawY1 + CELL_WIDTH;
+
+    drawRect(drawX1, drawY1, drawX2, drawY2, color);
 }
 
 }

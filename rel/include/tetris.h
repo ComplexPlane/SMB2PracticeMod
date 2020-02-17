@@ -19,21 +19,33 @@ private:
     enum class Tetrad { I, J, L, O, S, T, Z };
     enum class Cell : uint8_t { I, J, L, O, S, T, Z, EMPTY };
 
+    // Game state and hidden state not mututally exclusive
     enum class State {
-        HIDDEN,
-        PAUSED,
         DROPPING,
         ROWCLEAR,
         GAMEOVER,
     };
+    bool m_hidden;
 
     State m_state;
-    Cell m_board[BOARD_WIDTH][BOARD_HEIGHT];
+    int m_stateTimer;
 
     int m_score;
     int m_highScore;
 
+    Cell m_board[BOARD_WIDTH][BOARD_HEIGHT];
     Tetrad m_tetradQueue[TETRAD_QUEUE_LEN];
+
+    Tetrad m_droppingTetrad;
+    // Current dropping tetrad position of bottom left of 4x4 bbox
+    int m_droppingTetradX;
+    int m_droppingTetradY;
+
+    void handleDroppingState();
+    void handleRowclearState();
+    void handleGameoverState();
+
+    void transitionToDropping();
 
     Cell genRandomCell();
     Tetrad genRandomTetrad();
@@ -50,6 +62,8 @@ private:
     void drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...);
     void drawTetrad(int x, int y, Tetrad tetrad, int rotation);
     void drawTetradQueue();
+    void drawDroppingTetrad();
+    void drawGridCell(int cellx, int celly, gc::GXColor color);
 };
 
 }
