@@ -16,8 +16,8 @@ static constexpr int NUM_TETRADS = 7;
 static constexpr int NUM_CELL_TYPES = 9;
 static constexpr int NUM_TETRAD_ROTATIONS = 4;
 
-static constexpr int CELL_WIDTH = 17;
-static constexpr int CELL_PAD = 1;
+static constexpr int CELL_WIDTH = 16;
+static constexpr int CELL_PAD = 2;
 static constexpr uint8_t CELL_ALPHA = 0xff;
 
 static constexpr char BOXCHAR_RT = '\x11';
@@ -122,37 +122,58 @@ void Tetris::update() {
 }
 
 void Tetris::handleDroppingState() {
-    int newTetradX = m_droppingTetradX;
-    int newTetradY = m_droppingTetradY;
-    int newTetradRot = m_droppingTetradRot;
-
-    bool movedDown = false;
-    bool rotated = false;
-
-    if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT)) {
-        newTetradX--;
-    } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT)) {
-        newTetradX++;
-    } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN)) {
-        newTetradY--;
-        movedDown = true;
+    m_stateTimer--;
+    if (m_stateTimer == 0) {
+        if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY - 1, m_droppingTetradRot)) {
+            transitionDroppingToDropping();
+        } else {
+            m_droppingTetradY--;
+            m_stateTimer = 60;
+        }
     }
 
-    if (pad::buttonPressed(pad::PAD_BUTTON_Y)) {
-        newTetradRot = (newTetradRot + 3) % 4;
-        rotated = true;
-    } else if (pad::buttonPressed(pad::PAD_BUTTON_X)) {
-        newTetradRot = (newTetradRot + 1) % 4;
-        rotated = true;
-    }
-
-    if (!tetradIntersectsGrid(m_droppingTetrad, newTetradX, newTetradY, newTetradRot)) {
-        m_droppingTetradX = newTetradX;
-        m_droppingTetradY = newTetradY;
-        m_droppingTetradRot = newTetradRot;
-    } else if (movedDown && !rotated) {
+    if (pad::buttonPressed(pad::PAD_BUTTON_B)) {
+        int lowY = findLowestPossibleTetradY(
+            m_droppingTetrad, 
+            m_droppingTetradX, 
+            m_droppingTetradY, 
+            m_droppingTetradRot);
+        m_droppingTetradY = lowY;
         transitionDroppingToDropping();
-    } // else disallow the movement (sorry no wall kicks or anything rn)
+
+    } else {
+        int newTetradX = m_droppingTetradX;
+        int newTetradY = m_droppingTetradY;
+        int newTetradRot = m_droppingTetradRot;
+
+        bool movedDown = false;
+        bool rotated = false;
+
+        if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT)) {
+            newTetradX--;
+        } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT)) {
+            newTetradX++;
+        } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN)) {
+            newTetradY--;
+            movedDown = true;
+        }
+
+        if (pad::buttonPressed(pad::PAD_BUTTON_Y)) {
+            newTetradRot = (newTetradRot + 3) % 4;
+            rotated = true;
+        } else if (pad::buttonPressed(pad::PAD_BUTTON_X)) {
+            newTetradRot = (newTetradRot + 1) % 4;
+            rotated = true;
+        }
+
+        if (!tetradIntersectsGrid(m_droppingTetrad, newTetradX, newTetradY, newTetradRot)) {
+            m_droppingTetradX = newTetradX;
+            m_droppingTetradY = newTetradY;
+            m_droppingTetradRot = newTetradRot;
+        } else if (movedDown && !rotated) {
+            transitionDroppingToDropping();
+        } // else disallow the movement (sorry no wall kicks or anything rn)
+    }
 }
 
 void Tetris::handleRowclearState() {
