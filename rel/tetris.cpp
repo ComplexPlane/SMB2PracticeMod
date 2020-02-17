@@ -89,7 +89,7 @@ void Tetris::init() {
     m_hidden = true;
 
     m_score = 0;
-    m_highScore = 1000;
+    m_highScore = 0;
 
     m_currentDropPeriod = INITIAL_DROP_PERIOD;
 
@@ -200,8 +200,15 @@ void Tetris::handleRowclearState() {
             }
         }
 
+        // Add points to score
+        for (int i = 0; i < emptyRows; i++) {
+            m_score += 100 + 50 * i;
+        }
+
+        // Increase drop rate
         m_currentDropPeriod -= emptyRows;
         if (m_currentDropPeriod < MIN_DROP_PERIOD) m_currentDropPeriod = MIN_DROP_PERIOD;
+
         tryTransitionToDropping();
     }
 }
