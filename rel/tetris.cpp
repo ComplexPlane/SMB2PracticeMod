@@ -20,7 +20,7 @@ Non shit RNG
 #include <cstdarg>
 
 static constexpr int NUM_TETRADS = 7;
-static constexpr int NUM_CELL_TYPES = 9;
+static constexpr int NUM_CELL_TYPES = 8;
 static constexpr int NUM_TETRAD_ROTATIONS = 4;
 
 static constexpr int CELL_WIDTH = 16;
