@@ -31,6 +31,14 @@ CC008000:GXWGFifo
 8002fe74:GXSetTevColor
 8002cb2c:GXBegin
 
+// DVD
+800187a0:DVDOpen
+80018438:DVDConvertPathToEntrynum
+8001872c:DVDFastOpen
+80018c04:DVDChangeDir
+80018e90:DVDOpenDir
+800189ec:DVDConvertEntrynumToPath
+
 // Drawing
 802AD048:drawDebugText
 802AF5EC:drawDebugTextBg
