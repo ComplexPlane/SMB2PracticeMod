@@ -48,49 +48,6 @@ void Mod::init() {
 		global::drawDebugText_trampoline();
 		// gc::OSReport("After drawDebugText()\n");
 	});
-
-	global::DVDOpen_trampoline = patch::hookFunction(
-		gc::DVDOpen,
-		[](char *fileName, gc::DVDFileInfo *fileInfo)
-	{
-		gc::OSReport("DVDOpen(\"%s\", ...)\n", fileName);
-		return global::DVDOpen_trampoline(fileName, fileInfo);
-	});
-
-	global::DVDConvertPathToEntrynum_trampoline = patch::hookFunction(
-		gc::DVDConvertPathToEntrynum,
-		[](char *fileName)
-	{
-		gc::OSReport("DVDConvertPathToEntrynum(\"%s\", ...)\n", fileName);
-		return global::DVDConvertPathToEntrynum_trampoline(fileName);
-	});
-
-	global::DVDFastOpen_trampoline = patch::hookFunction(
-		gc::DVDFastOpen,
-		[](int32_t entrynum, gc::DVDFileInfo *fileInfo)
-	{
-		char entrynumPath[128];
-		gc::DVDConvertEntrynumToPath(entrynum, entrynumPath, sizeof(entrynumPath));
-		gc::OSReport("DVDFastOpen(0x%08x, ...) -> path = \"%s\"\n", entrynum, entrynumPath);
-
-		return global::DVDFastOpen_trampoline(entrynum, fileInfo);
-	});
-
-	global::DVDChangeDir_trampoline = patch::hookFunction(
-		gc::DVDChangeDir,
-		[](char *dirName)
-	{
-		gc::OSReport("DVDChangeDir(\"%s\")\n", dirName);
-		global::DVDChangeDir_trampoline(dirName);
-	});
-
-	global::DVDOpenDir_trampoline = patch::hookFunction(
-		gc::DVDOpenDir,
-		[](char *dirName, gc::DVDDir *dir)
-	{
-		gc::OSReport("DVDOpenDir(\"%s\", ...)\n", dirName);
-		return global::DVDOpenDir_trampoline(dirName, dir);
-	});
 }
 
 }
