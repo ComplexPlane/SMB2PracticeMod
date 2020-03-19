@@ -45,7 +45,6 @@ static constexpr char BOXCHAR_DARROW = '\x1f';
 static constexpr int CHAR_WIDTH = 0xc;
 
 static constexpr int ROW_FLASH_PERIOD = 4;
-
 static constexpr int INITIAL_DROP_PERIOD = 60;
 static constexpr int MIN_DROP_PERIOD = 20;
 
@@ -61,7 +60,7 @@ static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
 };
 
 // Each uint16_t is a bitfield representing the occupancy of a 4x4 tetrad bounding box
-const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
+static const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
     {0b0000000011110000, 0b0010001000100010, 0b0000111100000000, 0b0100010001000100}, // I
     {0b0000000011101000, 0b0000010001000110, 0b0000001011100000, 0b0000110001000100}, // J
     {0b0000000011100010, 0b0000011001000100, 0b0000100011100000, 0b0000010001001100}, // L
@@ -73,7 +72,7 @@ const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
 
 // How to "nudge" tetrad in rotation 0 to draw with tetrad "centered"
 // Used to draw tetrad queue
-const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
+static const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
     {0, -0.5}, // I
     {0.5, -1}, // J
     {0.5, -1}, // L
