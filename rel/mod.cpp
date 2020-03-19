@@ -57,14 +57,6 @@ void Mod::init() {
 		return global::DVDOpen_trampoline(fileName, fileInfo);
 	});
 
-	global::DVDConvertPathToEntrynum_trampoline = patch::hookFunction(
-		gc::DVDConvertPathToEntrynum,
-		[](char *fileName)
-	{
-		gc::OSReport("DVDConvertPathToEntrynum(\"%s\", ...)\n", fileName);
-		return global::DVDConvertPathToEntrynum_trampoline(fileName);
-	});
-
 	global::DVDFastOpen_trampoline = patch::hookFunction(
 		gc::DVDFastOpen,
 		[](int32_t entrynum, gc::DVDFileInfo *fileInfo)
