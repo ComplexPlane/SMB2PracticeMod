@@ -268,3 +268,6 @@ __pycache__/
 /ApeSphere.*.rel
 /ApeSphere.*.gci
 /ApeSphere.*.elf
+
+/.vscode/
+/cmake-build-debug/
