@@ -9,18 +9,6 @@ include_directories(rel/include/mkb)
 
 add_executable(ApeSphere
         rel/assembly/MainLoopAssembly.s
-        rel/include/gc/dvd.h
-        rel/include/gc/gx.h
-        rel/include/gc/os.h
-        rel/include/gc/ppc.h
-        rel/include/mkb/mkb.h
-        rel/include/assembly.h
-        rel/include/global.h
-        rel/include/heap.h
-        rel/include/mod.h
-        rel/include/pad.h
-        rel/include/patch.h
-        rel/include/tetris.h
         rel/runtime/restfpr_x.s
         rel/runtime/restgpr_x.s
         rel/cxx.cpp
