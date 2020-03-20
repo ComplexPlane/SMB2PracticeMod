@@ -39,6 +39,15 @@ CC008000:GXWGFifo
 80018e90:DVDOpenDir
 800189ec:DVDConvertEntrynumToPath
 
+// Heap
+8000cfb0:OSAllocFromHeap
+8000d228:OSCheckHeap
+8000d1a8:OSCreateHeap
+8000d214:OSDestroyHeap
+8000d0ac:OSFreeToHeap
+8000d138:OSInitAlloc
+8000d128:OSSetCurrentHeap
+
 // Drawing
 802AD048:drawDebugText
 802AF5EC:drawDebugTextBg

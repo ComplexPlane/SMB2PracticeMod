@@ -18,6 +18,8 @@ struct HeapInfo
 	ChunkInfo *firstUsed;
 } __attribute__((__packed__));
 
+typedef int OSHeapHandle;
+
 struct OSModuleInfo
 {
 	uint32_t id;
@@ -46,6 +48,13 @@ void OSReport(const char *msg, ...);
 
 bool OSLink(OSModuleInfo *newModule, void *bss);
 bool OSUnlink(OSModuleInfo *oldModule);
+
+void *OSAllocFromHeap(OSHeapHandle heap, uint32_t size);
+OSHeapHandle OSCreateHeap(void *start, void *end);
+void OSDestroyHeap(OSHeapHandle heap);
+void OSFreeToHeap(OSHeapHandle heap, void *ptr);
+void *OSInitAlloc(void *arenaStart, void *arenaEnd, int maxHeaps);
+OSHeapHandle OSSetCurrentHeap(OSHeapHandle heap);
 
 }
 

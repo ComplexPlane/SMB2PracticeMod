@@ -5,6 +5,9 @@
 #include "pad.h"
 
 #include <gc/dvd.h>
+#include <gc/os.h>
+
+#include <cstdint>
 
 namespace mod::global {
 
@@ -15,6 +18,13 @@ extern int32_t (*DVDConvertPathToEntrynum_trampoline)(char *filename);
 extern bool (*DVDFastOpen_trampoline)(int32_t entrynum, gc::DVDFileInfo *fileInfo);
 extern void (*DVDChangeDir_trampoline)(char *dirName);
 extern bool (*DVDOpenDir_trampoline)(char *dirName, gc::DVDDir *dir);
+
+extern void *(*OSAllocFromHeap_trampoline)(gc::OSHeapHandle heap, uint32_t size);
+extern gc::OSHeapHandle (*OSCreateHeap_trampoline)(void *start, void *end);
+extern void (*OSDestroyHeap_trampoline)(gc::OSHeapHandle heap);
+extern void (*OSFreeToHeap_trampoline)(gc::OSHeapHandle heap, void *ptr);
+extern void *(*OSInitAlloc_trampoline)(void *arenaStart, void *arenaEnd, int maxHeaps);
+extern gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle);
 
 extern Tetris tetris;
 
