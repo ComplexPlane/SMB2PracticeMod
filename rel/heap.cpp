@@ -12,8 +12,7 @@ struct HeapDataStruct HeapData;
 gc::ChunkInfo *extractChunk(
 	gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
-	if (chunk->next)
-	{
+	if (chunk->next) {
 		chunk->next->prev = chunk->prev;
 	}
 	

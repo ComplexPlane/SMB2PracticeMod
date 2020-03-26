@@ -20,6 +20,7 @@ void writeStandardBranches(void *address, void functionStart(), void functionBra
 void writeBranch(void *ptr, void *destination);
 void writeBranchBL(void *ptr, void *destination);
 void writeBranchMain(void *ptr, void *destination, uint32_t branch);
+void writeWord(void *ptr, uint32_t data);
 void writeNop(void *ptr);
 
 template<typename Func, typename Dest>

@@ -26,6 +26,10 @@
 80010730:OSLink
 80010B8C:OSUnlink
 
+// OS time
+800135cc:OSGetTime
+800135e4:OSGetTick
+
 // GX
 CC008000:GXWGFifo
 8002fe74:GXSetTevColor

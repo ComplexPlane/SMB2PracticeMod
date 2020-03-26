@@ -63,10 +63,15 @@ void writeBranchMain(void *ptr, void *destination, uint32_t branch)
 	clear_DC_IC_Cache(ptr, sizeof(uint32_t));
 }
 
+void writeWord(void *ptr, uint32_t data)
+{
+  *reinterpret_cast<uint32_t *>(ptr) = data;
+  clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+}
+
 void writeNop(void *ptr)
 {
-	*reinterpret_cast<uint32_t *>(ptr) = 0x60000000; // nop
-	clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+  writeWord(ptr, 0x60000000);
 }
 
 }

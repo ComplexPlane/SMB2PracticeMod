@@ -4,6 +4,9 @@
 
 namespace gc {
 
+typedef int64_t OSTime;
+typedef uint32_t OSTick;
+
 struct ChunkInfo
 {
 	ChunkInfo *prev;
@@ -33,6 +36,9 @@ struct OSModuleInfo
 } __attribute__((__packed__));
 
 extern "C" {
+
+OSTime OSGetTime();
+OSTick OSGetTick();
 
 ChunkInfo *DLInsert(ChunkInfo *list, ChunkInfo *chunk);
 
