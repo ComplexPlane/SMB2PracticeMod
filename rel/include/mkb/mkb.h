@@ -13,7 +13,7 @@ struct GraphicsInfo { /* Is this the right size for the struct? maybe? -Crafted 
   void *framebuffer2;
   uint32_t frameCount;
   uint32_t activeFramebufferIndex; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
-  struct GXFifoObj *fifos[2];
+  gc::GXFifoObj *fifos[2];
 };
 
 extern "C" {

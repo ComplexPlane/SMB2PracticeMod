@@ -7,8 +7,7 @@ Non shit RNG
 
 #include "tetris.h"
 
-#include <gc/gx.h>
-#include <gc/os.h>
+#include <gc/gc.h>
 #include <mkb/mkb.h>
 
 #include "pad.h"

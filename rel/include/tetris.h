@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/gx.h>
+#include <gc/gc.h>
 
 #include <cstdint>
 

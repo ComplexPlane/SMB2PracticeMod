@@ -977,6 +977,10 @@ enum GXZTexOp {
     GX_ZT_REPLACE=2
 };
 
+struct GXFifoObj {
+  uint8_t pad[128];
+};
+
 extern "C" {
 
 extern volatile PPCWGPipe GXWGFifo;

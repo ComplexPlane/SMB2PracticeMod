@@ -4,8 +4,7 @@
 #include "tetris.h"
 #include "pad.h"
 
-#include <gc/dvd.h>
-#include <gc/os.h>
+#include <gc/gc.h>
 
 #include <cstdint>
 

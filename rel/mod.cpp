@@ -4,8 +4,7 @@
 #include "global.h"
 #include "pad.h"
 
-#include <gc/os.h>
-#include <gc/dvd.h>
+#include <gc/gc.h>
 #include <mkb/mkb.h>
 
 #include <cstdint>

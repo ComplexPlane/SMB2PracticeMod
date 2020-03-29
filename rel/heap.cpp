@@ -1,6 +1,6 @@
 #include "heap.h"
 
-#include <gc/os.h>
+#include <gc/gc.h>
 
 #include <cstring>
 #include <cinttypes>
