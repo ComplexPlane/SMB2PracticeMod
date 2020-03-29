@@ -983,6 +983,7 @@ extern volatile PPCWGPipe GXWGFifo;
 
 void GXSetTevColor(GXTevRegID id, GXColor color);
 void GXBegin(GXPrimitive type, GXVtxFmt vtxfmt, uint16_t nverts);
+void GXCopyDisp(void *dest, GXBool clear);
 
 }
 

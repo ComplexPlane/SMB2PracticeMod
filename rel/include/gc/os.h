@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 
 namespace gc {
 
@@ -61,6 +62,9 @@ void OSDestroyHeap(OSHeapHandle heap);
 void OSFreeToHeap(OSHeapHandle heap, void *ptr);
 void *OSInitAlloc(void *arenaStart, void *arenaEnd, int maxHeaps);
 OSHeapHandle OSSetCurrentHeap(OSHeapHandle heap);
+
+bool OSDisableInterrupts();
+bool OSRestoreInterrupts(bool enable);
 
 }
 

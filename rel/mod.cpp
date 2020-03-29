@@ -124,6 +124,18 @@ void Mod::init() {
 //        gc::OSReport("[mod] OSSetCurrentHeap(%d)\n", heap);
 //        return global::OSSetCurrentHeap_trampoline(heap);
 //      });
+
+  // Move GXCopyDisp call to top of gxFinishFrame function
+//  global::gxFinishFrame_trampoline = patch::hookFunction(
+//      mkb::gxFinishFrame,
+//      []() {
+//        gc::GXCopyDisp(mkb::graphicsInfo->activeFramebuffer, gc::GX_TRUE);
+//        global::gxFinishFrame_trampoline();
+//      });
+//  patch::writeNop(reinterpret_cast<void *>(0x800649f8));
+
+//  patch::writeBranch(reinterpret_cast<void *>(0x80064cd0), reinterpret_cast<void *>(0x80064cf0));
+//  patch::writeBranchBL(reinterpret_cast<void *>(0x80064cf4), reinterpret_cast<void *>(getLockedCache));
 }
 
 }

@@ -20,6 +20,10 @@ void (*OSFreeToHeap_trampoline)(gc::OSHeapHandle heap, void *ptr) = nullptr;
 void *(*OSInitAlloc_trampoline)(void *arenaStart, void *arenaEnd, int maxHeaps) = nullptr;
 gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle) = nullptr;
 
+void (*gxFinishFrame_trampoline)() = nullptr;
+
 Tetris tetris;
+
+uint8_t lockedCacheSave[0x4000];
 
 }

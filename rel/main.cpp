@@ -6,8 +6,10 @@
 #include "global.h"
 
 #include <gc/os.h>
+#include <mkb/mkb.h>
 
 #include <cinttypes>
+#include <cstring>
 
 namespace mod {
 
@@ -73,7 +75,28 @@ void Mod::performAssemblyPatches()
 
 void run()
 {
-	// enableDebugMode();
+  if (pad::buttonPressed(pad::PAD_BUTTON_Z))
+  {
+    bool enable = gc::OSDisableInterrupts();
+
+    memcpy(global::lockedCacheSave, reinterpret_cast<void *>(0xE0000000), sizeof(global::lockedCacheSave));
+
+    gc::OSRestoreInterrupts(enable);
+
+    while (true);
+  }
+
+  if (pad::buttonPressed(pad::PAD_BUTTON_X))
+  {
+    bool enable = gc::OSDisableInterrupts();
+
+    memcpy(reinterpret_cast<void *>(0xE0000000), global::lockedCacheSave, sizeof(global::lockedCacheSave));
+    memset(reinterpret_cast<void *>(0xE00001E0), 0xff, 0xca0); // Reset previous gx settings
+
+    gc::OSRestoreInterrupts(enable);
+
+    while (true);
+  }
 }
 
 }
