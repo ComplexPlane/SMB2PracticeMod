@@ -18,7 +18,7 @@ CC008000:GXWGFifo
 802AF5EC:drawDebugTextBg
 802aeac0:drawDebugTextCharEn
 803E47B8:debugTextBgColor
-80064970:gxFinishFrame
+80064970:gxStartNewFrame
 80199318:graphicsInfo
 
 // PAD
@@ -225,6 +225,11 @@ CC008000:GXWGFifo
 8001e9ec:PADSetSpec
 8001f12c:PADSetAnalogMode
 8001f394:PADSetSamplingCallback
+
+// ARQ
+80020b34:ARQInit
+80020b9c:ARQPostRequest
+80020cf8:ARQSetChunkSize
 
 // CARD
 800231f4:CARDInit

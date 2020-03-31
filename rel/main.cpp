@@ -34,7 +34,7 @@ bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 	}
 }
 
-void enableDebugMode()
+static void enableDebugMode()
 {
 #ifdef MKB2_US
 	uint32_t Offset = 0x6FB90;
@@ -73,6 +73,72 @@ void Mod::performAssemblyPatches()
 #endif
 }
 
+static void resetGXFifos()
+{
+  static gc::GXFifoObj tmpFifoObj = {};
+
+  auto *fifoBuf1 = reinterpret_cast<void *>(0x815d5b80);
+  auto *fifoBuf2 = reinterpret_cast<void *>(0x814d5b80);
+  constexpr uint32_t FIFO_BUF_SIZE = 0x100000;
+
+  gc::GXFifoObj *gpFifoObj = gc::GXGetGPFifo();
+  gc::GXFifoObj *cpuFifoObj = gc::GXGetCPUFifo();
+  void *gpFifoBuf = nullptr; // The FIFO buffer of the GXFifoObj the GP is currently attached to
+  void *cpuFifoBuf = nullptr; // The FIFO buffer of the GXFifoObj the CPU is currently attached to
+
+  if (mkb::graphicsInfo->fifos[0] == gpFifoObj)
+  {
+    gpFifoBuf = fifoBuf1;
+    cpuFifoBuf = fifoBuf2;
+  }
+  else
+  {
+    gpFifoBuf = fifoBuf2;
+    cpuFifoBuf = fifoBuf1;
+  }
+
+  //
+  // Reset the GP FIFO
+  //
+
+  // Wait until GP has finished reading all commands from currently attached FIFO
+  gc::GXBool throwAway = gc::GX_FALSE, readIdle = gc::GX_FALSE;
+  while (!readIdle)
+  {
+    gc::GXGetGPStatus(&throwAway, &throwAway, &readIdle, &throwAway, &throwAway);
+  }
+
+  // Point temporary fifo obj to gp fifo buffer
+  tmpFifoObj = {};
+  gc::GXInitFifoBase(&tmpFifoObj, gpFifoBuf, FIFO_BUF_SIZE);
+  gc::GXInitFifoPtrs(&tmpFifoObj, gpFifoBuf, gpFifoBuf);
+
+  // Attach temporary fifo obj to GP
+  gc::GXSetGPFifo(&tmpFifoObj);
+
+  // Reset the fifo obj the GPU was attached to, then reattach it
+  *gpFifoObj = {};
+  gc::GXInitFifoBase(gpFifoObj, gpFifoBuf, FIFO_BUF_SIZE);
+  gc::GXInitFifoPtrs(gpFifoObj, gpFifoBuf, gpFifoBuf);
+  gc::GXSetGPFifo(gpFifoObj);
+
+  //
+  // Reset the CPU FIFO
+  //
+
+  gc::GXSaveCPUFifo(cpuFifoObj); // Make sure there aren't any cached pending commands that need to be flushed to the CPU FIFO buffer
+
+  tmpFifoObj = {};
+  gc::GXInitFifoBase(&tmpFifoObj, cpuFifoBuf, FIFO_BUF_SIZE);
+  gc::GXInitFifoPtrs(&tmpFifoObj, cpuFifoBuf, cpuFifoBuf);
+  gc::GXSetCPUFifo(&tmpFifoObj);
+
+  *cpuFifoObj = {};
+  gc::GXInitFifoBase(cpuFifoObj, cpuFifoBuf, FIFO_BUF_SIZE);
+  gc::GXInitFifoPtrs(cpuFifoObj, cpuFifoBuf, cpuFifoBuf);
+  gc::GXSetCPUFifo(cpuFifoObj);
+}
+
 void run()
 {
   if (pad::buttonPressed(pad::PAD_BUTTON_Z))
@@ -88,14 +154,16 @@ void run()
 
   if (pad::buttonPressed(pad::PAD_BUTTON_X))
   {
-    bool enable = gc::OSDisableInterrupts();
-
-    memcpy(reinterpret_cast<void *>(0xE0000000), global::lockedCacheSave, sizeof(global::lockedCacheSave));
+//    bool enable = gc::OSDisableInterrupts();
+//
+//    memcpy(reinterpret_cast<void *>(0xE0000000), global::lockedCacheSave, sizeof(global::lockedCacheSave));
     memset(reinterpret_cast<void *>(0xE00001E0), 0xff, 0xca0); // Reset previous gx settings
+//
+//    gc::OSRestoreInterrupts(enable);
 
-    gc::OSRestoreInterrupts(enable);
+    resetGXFifos();
 
-    while (true);
+//    while (true);
   }
 }
 
