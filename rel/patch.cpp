@@ -51,6 +51,11 @@ void writeBranchBL(void *ptr, void *destination)
 	writeBranchMain(ptr, destination, branch);
 }
 
+void writeBLR(void *ptr)
+{
+  writeWord(ptr, 0x4e800020);
+}
+
 void writeBranchMain(void *ptr, void *destination, uint32_t branch)
 {
 	uint32_t delta = reinterpret_cast<uint32_t>(destination) - reinterpret_cast<uint32_t>(ptr);

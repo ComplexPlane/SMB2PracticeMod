@@ -34,22 +34,22 @@ bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 	}
 }
 
-static void enableDebugMode()
-{
-#ifdef MKB2_US
-	uint32_t Offset = 0x6FB90;
-#elif defined MKB2_JP
-	uint32_t Offset = 0x29898;
-#elif defined MKB2_EU
-	uint32_t Offset = 0x29938;
-#endif
-	
-	/* Should check to see if this value ever gets cleared. 
-		If not, then the value should only be set once */
-	*reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(
-		heap::HeapData.MainLoopBSSLocation) + Offset) |= 
-		((1 << 0) | (1 << 1)); // Turn on the 0 and 1 bits
-}
+//static void enableDebugMode()
+//{
+//#ifdef MKB2_US
+//	uint32_t Offset = 0x6FB90;
+//#elif defined MKB2_JP
+//	uint32_t Offset = 0x29898;
+//#elif defined MKB2_EU
+//	uint32_t Offset = 0x29938;
+//#endif
+//
+//	/* Should check to see if this value ever gets cleared.
+//		If not, then the value should only be set once */
+//	*reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(
+//		heap::HeapData.MainLoopBSSLocation) + Offset) |=
+//		((1 << 0) | (1 << 1)); // Turn on the 0 and 1 bits
+//}
 
 void Mod::performAssemblyPatches()
 {
@@ -139,32 +139,47 @@ static void resetGXFifos()
   gc::GXSetCPUFifo(cpuFifoObj);
 }
 
+static uint8_t magicRegion1[224];
+static uint8_t magicRegion2[112];
+static uint8_t magicRegion3[28];
+static uint16_t mkbTimer;
+
 void run()
 {
-  if (pad::buttonPressed(pad::PAD_BUTTON_Z))
-  {
-    bool enable = gc::OSDisableInterrupts();
-
-    memcpy(global::lockedCacheSave, reinterpret_cast<void *>(0xE0000000), sizeof(global::lockedCacheSave));
-
-    gc::OSRestoreInterrupts(enable);
-
-    while (true);
-  }
-
-  if (pad::buttonPressed(pad::PAD_BUTTON_X))
-  {
-//    bool enable = gc::OSDisableInterrupts();
+//  if (pad::buttonPressed(pad::PAD_BUTTON_Z))
+//  {
+//    memcpy(magicRegion1, reinterpret_cast<void *>(0x8054E03C), sizeof(magicRegion1));
+//    memcpy(magicRegion2, reinterpret_cast<void *>(0x805BC974), sizeof(magicRegion2));
+//    memcpy(magicRegion3, reinterpret_cast<void *>(0x805BD82E), sizeof(magicRegion3));
+//    mkbTimer = *reinterpret_cast<uint16_t *>(0x80553974);
 //
+////    bool enable = gc::OSDisableInterrupts();
+//
+//    memcpy(global::lockedCacheSave, reinterpret_cast<void *>(0xE0000000), sizeof(global::lockedCacheSave));
+//
+////    gc::OSRestoreInterrupts(enable);
+//
+////    while (true);
+//  }
+//
+//  if (pad::buttonPressed(pad::PAD_BUTTON_X))
+//  {
+//    memcpy(reinterpret_cast<void *>(0x8054E03C), magicRegion1, sizeof(magicRegion1));
+//    memcpy(reinterpret_cast<void *>(0x805BC974), magicRegion2, sizeof(magicRegion2));
+//    memcpy(reinterpret_cast<void *>(0x805BD82E), magicRegion3, sizeof(magicRegion3));
+//    *reinterpret_cast<uint16_t *>(0x80553974) = mkbTimer;
+//
+////    bool enable = gc::OSDisableInterrupts();
+////
 //    memcpy(reinterpret_cast<void *>(0xE0000000), global::lockedCacheSave, sizeof(global::lockedCacheSave));
-    memset(reinterpret_cast<void *>(0xE00001E0), 0xff, 0xca0); // Reset previous gx settings
+//    memset(reinterpret_cast<void *>(0xE00001E0), 0xff, 0xca0); // Reset previous gx settings
+////
+////    gc::OSRestoreInterrupts(enable);
 //
-//    gc::OSRestoreInterrupts(enable);
-
-    resetGXFifos();
-
-//    while (true);
-  }
+////    resetGXFifos();
+//
+////    while (true);
+//  }
 }
 
 }

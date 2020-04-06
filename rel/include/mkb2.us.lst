@@ -29,6 +29,11 @@ CC008000:GXWGFifo
 80008d24:GXSetZModeIfDifferent
 80007f44:GXLoadTexObjIfDifferent
 
+// Events
+0x8029d6b0:eventActivateSound
+0x8029d79c:eventTickSound
+0x8029da38:eventDeactivateSound
+
 // runtime register stuff
 8006b24c:_savefpr_14
 8006b250:_savefpr_15

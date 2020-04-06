@@ -25,6 +25,11 @@ Mod::Mod() {
 
 }
 
+//static const char *getSoundErrStrWithNewline()
+//{
+//  return "SOUND_%s_###_at_%s\n";
+//}
+
 void Mod::init() {
   performAssemblyPatches();
 
@@ -88,13 +93,13 @@ void Mod::init() {
 //    return OSAllocFromHeap_trampoline(heap, size);
 //  });
 
-//  global::OSCreateHeap_trampoline = patch::hookFunction(
-//      gc::OSCreateHeap,
-//      [](void *start, void *end) {
-//        gc::OSHeapHandle ret = global::OSCreateHeap_trampoline(start, end);
-//        gc::OSReport("[mod] OSCreateHeap(0x%08x, 0x%08x) -> %d\n", start, end, ret);
-//        return ret;
-//      });
+  global::OSCreateHeap_trampoline = patch::hookFunction(
+      gc::OSCreateHeap,
+      [](void *start, void *end) {
+        gc::OSHeapHandle ret = global::OSCreateHeap_trampoline(start, end);
+        gc::OSReport("[mod] OSCreateHeap(0x%08x, 0x%08x) -> %d\n", start, end, ret);
+        return ret;
+      });
 //
 //  global::OSDestroyHeap_trampoline = patch::hookFunction(
 //      gc::OSDestroyHeap,
@@ -110,12 +115,12 @@ void Mod::init() {
 //        global::OSFreeToHeap_trampoline(heap, ptr);
 //      });
 
-//  global::OSInitAlloc_trampoline = patch::hookFunction(
-//      gc::OSInitAlloc,
-//      [](void *arenaStart, void *arenaEnd, int maxHeaps) {
-//        gc::OSReport("[mod] OSInitAlloc(0x%08x, 0x%08x, %d)\n", arenaStart, arenaEnd, maxHeaps);
-//        return global::OSInitAlloc_trampoline(arenaStart, arenaEnd, maxHeaps);
-//      });
+  global::OSInitAlloc_trampoline = patch::hookFunction(
+      gc::OSInitAlloc,
+      [](void *arenaStart, void *arenaEnd, int maxHeaps) {
+        gc::OSReport("[mod] OSInitAlloc(0x%08x, 0x%08x, %d)\n", arenaStart, arenaEnd, maxHeaps);
+        return global::OSInitAlloc_trampoline(arenaStart, arenaEnd, maxHeaps);
+      });
 
 //  global::OSSetCurrentHeap_trampoline = patch::hookFunction(
 //      gc::OSSetCurrentHeap,
@@ -136,7 +141,13 @@ void Mod::init() {
 //  patch::writeBranch(reinterpret_cast<void *>(0x80064cd0), reinterpret_cast<void *>(0x80064cf0));
 //  patch::writeBranchBL(reinterpret_cast<void *>(0x80064cf4), reinterpret_cast<void *>(getLockedCache));
 
-  gc::OSReport("[mod] lockedCacheSave: 0x%08X\n", global::lockedCacheSave);
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
+  gc::OSReport("[mod] Are you memeing?\n");
 }
 
 }

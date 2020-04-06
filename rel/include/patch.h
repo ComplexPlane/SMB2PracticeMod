@@ -19,6 +19,7 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size);
 void writeStandardBranches(void *address, void functionStart(), void functionBranchBack());
 void writeBranch(void *ptr, void *destination);
 void writeBranchBL(void *ptr, void *destination);
+void writeBLR(void *ptr);
 void writeBranchMain(void *ptr, void *destination, uint32_t branch);
 void writeWord(void *ptr, uint32_t data);
 void writeNop(void *ptr);

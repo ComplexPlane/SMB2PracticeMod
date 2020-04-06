@@ -31,6 +31,10 @@ void drawDebugTextCharEn(uint32_t x, uint32_t y, char ch, uint32_t color);
 void GXSetZModeIfDifferent(gc::GXBool compare_enable, gc::GXCompare func, gc::GXBool update_enable);
 void GXLoadTexObjIfDifferent(gc::GXTexObj* obj, gc::GXTexMapID id);
 
+void eventActivateSound();
+void eventTickSound();
+void eventDeactivateSound();
+
 }
 
 }
