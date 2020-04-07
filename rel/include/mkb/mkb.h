@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gc/gc.h>
+#include <mkb/dip.h>
 
 #include <cstdint>
 

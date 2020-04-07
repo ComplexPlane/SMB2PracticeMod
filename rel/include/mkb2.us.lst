@@ -30,9 +30,12 @@ CC008000:GXWGFifo
 80007f44:GXLoadTexObjIfDifferent
 
 // Events
-0x8029d6b0:eventActivateSound
-0x8029d79c:eventTickSound
-0x8029da38:eventDeactivateSound
+8029d6b0:eventActivateSound
+8029d79c:eventTickSound
+8029da38:eventDeactivateSound
+
+// DIP switches
+805bc470:dipSwitches
 
 // runtime register stuff
 8006b24c:_savefpr_14

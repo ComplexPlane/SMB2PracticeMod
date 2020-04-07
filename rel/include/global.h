@@ -27,6 +27,11 @@ extern gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle);
 
 extern void (*gxFinishFrame_trampoline)();
 
+extern void (*OSSetArenaLo_trampoline)(void *newLo);
+extern void (*OSSetArenaHi_trampoline)(void *newHi);
+extern void *(*OSAllocFromArenaLo_trampoline)(uint32_t size, uint32_t align);
+extern void *(*OSAllocFromArenaHi_trampoline)(uint32_t size, uint32_t align);
+
 extern Tetris tetris;
 
 extern uint8_t lockedCacheSave[0x4000];

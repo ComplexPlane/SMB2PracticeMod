@@ -41,6 +41,14 @@ bool OSUnlink(OSModuleInfo *oldModule);
 bool OSDisableInterrupts();
 bool OSRestoreInterrupts(bool enable);
 
+void *OSGetArenaHi();
+void *OSGetArenaLo();
+void OSSetArenaHi(void *newHi);
+void OSSetArenaLo(void *newLo);
+
+void *OSAllocFromArenaLo(uint32_t size, uint32_t align);
+void *OSAllocFromArenaHi(uint32_t size, uint32_t align);
+
 }
 
 }

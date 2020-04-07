@@ -66,7 +66,7 @@ void Mod::init() {
 //      [](int32_t entrynum, gc::DVDFileInfo *fileInfo) {
 //        char entrynumPath[128];
 //        gc::DVDConvertEntrynumToPath(entrynum, entrynumPath, sizeof(entrynumPath));
-//        gc::OSReport("[mod] DVDFastOpen(0x%08x, ...) -> path = \"%s\"\n", entrynum, entrynumPath);
+//        gc::OSReport("[mod] DVDFastOpen(0x%08X, ...) -> path = \"%s\"\n", entrynum, entrynumPath);
 //
 //        return global::DVDFastOpen_trampoline(entrynum, fileInfo);
 //      });
@@ -84,44 +84,48 @@ void Mod::init() {
 //        gc::OSReport("[mod] DVDOpenDir(\"%s\", ...)\n", dirName);
 //        return global::DVDOpenDir_trampoline(dirName, dir);
 //      });
-
-//  OSAllocFromHeap_trampoline = patch::hookFunction(
+//
+//  global::OSAllocFromHeap_trampoline = patch::hookFunction(
 //    gc::OSAllocFromHeap,
 //    [&](gc::OSHeapHandle heap, uint32_t size)
 //  {
-//    gc::OSReport("[mod] OSAllocFromHeap(0x%08x, %d)\n", heap, size);
-//    return OSAllocFromHeap_trampoline(heap, size);
+//    gc::OSReport("[mod] OSAllocFromHeap(0x%08X, %d)\n", heap, size);
+//    return global::OSAllocFromHeap_trampoline(heap, size);
 //  });
 
   global::OSCreateHeap_trampoline = patch::hookFunction(
       gc::OSCreateHeap,
       [](void *start, void *end) {
         gc::OSHeapHandle ret = global::OSCreateHeap_trampoline(start, end);
-        gc::OSReport("[mod] OSCreateHeap(0x%08x, 0x%08x) -> %d\n", start, end, ret);
+        gc::OSReport("[mod] OSCreateHeap(0x%08X, 0x%08X) -> %d (size 0x%08X)\n",
+            start,
+            end,
+            ret,
+            reinterpret_cast<uint32_t>(end) - reinterpret_cast<uint32_t>(start));
         return ret;
       });
-//
-//  global::OSDestroyHeap_trampoline = patch::hookFunction(
-//      gc::OSDestroyHeap,
-//      [](gc::OSHeapHandle heap) {
-//        gc::OSReport("[mod] OSDestroyHeap(%d)\n", heap);
-//        global::OSDestroyHeap_trampoline(heap);
-//      });
 
+  global::OSDestroyHeap_trampoline = patch::hookFunction(
+      gc::OSDestroyHeap,
+      [](gc::OSHeapHandle heap) {
+        gc::OSReport("[mod] OSDestroyHeap(%d)\n", heap);
+        global::OSDestroyHeap_trampoline(heap);
+      });
+//
 //  global::OSFreeToHeap_trampoline = patch::hookFunction(
 //      gc::OSFreeToHeap,
 //      [](gc::OSHeapHandle heap, void *ptr) {
-//        gc::OSReport("[mod] OSFreeToHeap(%d, 0x%08x)\n", heap, ptr);
+//        gc::OSReport("[mod] OSFreeToHeap(%d, 0x%08X)\n", heap, ptr);
 //        global::OSFreeToHeap_trampoline(heap, ptr);
 //      });
-
+//
   global::OSInitAlloc_trampoline = patch::hookFunction(
       gc::OSInitAlloc,
       [](void *arenaStart, void *arenaEnd, int maxHeaps) {
-        gc::OSReport("[mod] OSInitAlloc(0x%08x, 0x%08x, %d)\n", arenaStart, arenaEnd, maxHeaps);
+        gc::OSReport("[mod] OSInitAlloc(0x%08X, 0x%08X, %d)\n", arenaStart, arenaEnd, maxHeaps);
         return global::OSInitAlloc_trampoline(arenaStart, arenaEnd, maxHeaps);
       });
-
+//
 //  global::OSSetCurrentHeap_trampoline = patch::hookFunction(
 //      gc::OSSetCurrentHeap,
 //      [](gc::OSHeapHandle heap) {
@@ -141,13 +145,35 @@ void Mod::init() {
 //  patch::writeBranch(reinterpret_cast<void *>(0x80064cd0), reinterpret_cast<void *>(0x80064cf0));
 //  patch::writeBranchBL(reinterpret_cast<void *>(0x80064cf4), reinterpret_cast<void *>(getLockedCache));
 
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
-  gc::OSReport("[mod] Are you memeing?\n");
+  global::OSSetArenaLo_trampoline = patch::hookFunction(
+      gc::OSSetArenaLo,
+      [](void *newLo) {
+        gc::OSReport("[mod] OSSetArenaLo(0x%08X)\n", newLo);
+        global::OSSetArenaLo_trampoline(newLo);
+      });
+
+  global::OSSetArenaHi_trampoline = patch::hookFunction(
+      gc::OSSetArenaHi,
+      [](void *newHi) {
+        gc::OSReport("[mod] OSSetArenaHi(0x%08X)\n", newHi);
+        global::OSSetArenaHi_trampoline(newHi);
+      });
+
+  global::OSAllocFromArenaLo_trampoline = patch::hookFunction(
+      gc::OSAllocFromArenaLo,
+      [](uint32_t size, uint32_t align) {
+        void *ret = global::OSAllocFromArenaLo_trampoline(size, align);
+        gc::OSReport("[mod] OSAllocFromArenaLo(0x%08X, 0x%08X) -> 0x%08X\n", size, align, ret);
+        return ret;
+      });
+
+  global::OSAllocFromArenaHi_trampoline = patch::hookFunction(
+      gc::OSAllocFromArenaHi,
+      [](uint32_t size, uint32_t align) {
+        void *ret = global::OSAllocFromArenaHi_trampoline(size, align);
+        gc::OSReport("[mod] OSAllocFromArenaHi(0x%08X, 0x%08X) -> 0x%08X\n", size, align, ret);
+        return ret;
+      });
 }
 
 }

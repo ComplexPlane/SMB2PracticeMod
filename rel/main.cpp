@@ -34,23 +34,6 @@ bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 	}
 }
 
-//static void enableDebugMode()
-//{
-//#ifdef MKB2_US
-//	uint32_t Offset = 0x6FB90;
-//#elif defined MKB2_JP
-//	uint32_t Offset = 0x29898;
-//#elif defined MKB2_EU
-//	uint32_t Offset = 0x29938;
-//#endif
-//
-//	/* Should check to see if this value ever gets cleared.
-//		If not, then the value should only be set once */
-//	*reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(
-//		heap::HeapData.MainLoopBSSLocation) + Offset) |=
-//		((1 << 0) | (1 << 1)); // Turn on the 0 and 1 bits
-//}
-
 void Mod::performAssemblyPatches()
 {
 #ifdef MKB2_US
@@ -146,6 +129,9 @@ static uint16_t mkbTimer;
 
 void run()
 {
+  // Enable debug mode (appears to need to be called every frame)
+  mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+
 //  if (pad::buttonPressed(pad::PAD_BUTTON_Z))
 //  {
 //    memcpy(magicRegion1, reinterpret_cast<void *>(0x8054E03C), sizeof(magicRegion1));
