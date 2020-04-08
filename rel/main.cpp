@@ -148,9 +148,8 @@ void run()
 ////    while (true);
 //  }
 //
-  if (pad::buttonPressed(pad::PAD_BUTTON_X))
-  {
-    resetGXFifos();
+//  if (pad::buttonPressed(pad::PAD_BUTTON_X))
+//  {
 //    memcpy(reinterpret_cast<void *>(0x8054E03C), magicRegion1, sizeof(magicRegion1));
 //    memcpy(reinterpret_cast<void *>(0x805BC974), magicRegion2, sizeof(magicRegion2));
 //    memcpy(reinterpret_cast<void *>(0x805BD82E), magicRegion3, sizeof(magicRegion3));
@@ -166,7 +165,7 @@ void run()
 //    resetGXFifos();
 
 //    while (true);
-  }
+//  }
 }
 
 }

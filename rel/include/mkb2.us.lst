@@ -46,7 +46,7 @@ CC008000:GXWGFifo
 8054dc24:bgHeapSize
 8054dc28:charHeapSize
 8054dc2c:replayHeapSize
-8054dc2c:gSomethingWithGameHeaps
+8054dc18:gSomethingWithGameHeaps
 
 // Misc
 805bc470:dipSwitches
