@@ -3,6 +3,7 @@
 #include "patch.h"
 #include "global.h"
 #include "pad.h"
+#include "bigmem.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -33,12 +34,15 @@ Mod::Mod() {
 void Mod::init() {
   performAssemblyPatches();
 
+  gc::OSReport("[mod] ApeSphere loaded\n");
+
   gMod = this;
 
   // Nop the conditional that guards `drawDebugText`, enabling it even when debug mode is disabled
   patch::writeNop(reinterpret_cast<void *>(0x80299f54));
 
-  global::tetris.init();
+//  global::tetris.init();
+//  bigmem::init();
 
   global::drawDebugText_trampoline = patch::hookFunction(
       mkb::drawDebugText,
@@ -48,7 +52,7 @@ void Mod::init() {
         // which is called at the end of smb2's function which draws the UI in general.
 
         // gc::OSReport("Before drawDebugText()\n");
-        global::tetris.update();
+//        global::tetris.update();
 
         global::drawDebugText_trampoline();
         // gc::OSReport("After drawDebugText()\n");
@@ -148,14 +152,16 @@ void Mod::init() {
   global::OSSetArenaLo_trampoline = patch::hookFunction(
       gc::OSSetArenaLo,
       [](void *newLo) {
-        gc::OSReport("[mod] OSSetArenaLo(0x%08X)\n", newLo);
+        void *oldLo = gc::OSGetArenaLo();
+        gc::OSReport("[mod] OSSetArenaLo(0x%08X) (old: 0x%08X)\n", newLo, oldLo);
         global::OSSetArenaLo_trampoline(newLo);
       });
 
   global::OSSetArenaHi_trampoline = patch::hookFunction(
       gc::OSSetArenaHi,
       [](void *newHi) {
-        gc::OSReport("[mod] OSSetArenaHi(0x%08X)\n", newHi);
+        void *oldHi = gc::OSGetArenaHi();
+        gc::OSReport("[mod] OSSetArenaHi(0x%08X) (old: 0x%08X)\n", newHi, oldHi);
         global::OSSetArenaHi_trampoline(newHi);
       });
 
@@ -174,6 +180,24 @@ void Mod::init() {
         gc::OSReport("[mod] OSAllocFromArenaHi(0x%08X, 0x%08X) -> 0x%08X\n", size, align, ret);
         return ret;
       });
+
+//  global::createGameHeaps_trampoline = patch::hookFunction(
+//      mkb::createGameHeaps,
+//      [](int param1) {
+//        if (param1 == 0)
+//        {
+//          gc::OSReport("[mod] Begin createGameHeaps bigmem override\n");
+//          bigmem::createGameHeapsUsingExtraMem();
+//          gc::OSReport("[mod] End createGameHeaps bigmem override\n");
+//        }
+//        else
+//        {
+//          gc::OSReport("[mod] Begin createGameHeaps(0x%08X)\n", param1);
+//          global::createGameHeaps_trampoline(param1);
+//          gc::OSReport("[mod] End createGameHeaps(0x%08X)\n", param1);
+//        }
+//      });
+
 }
 
 }

@@ -22,8 +22,11 @@ extern uint32_t padButtonBitfield;
 extern uint32_t padAnalogBitfield;
 
 extern gc::GXColor debugTextBgColor;
-
 extern GraphicsInfo *graphicsInfo;
+
+extern gc::OSHeapHandle mainHeap, stageHeap, bgHeap, charHeap, replayHeap;
+extern uint32_t mainHeapSize, stageHeapSize, bgHeapSize, charHeapSize, replayHeapSize;
+extern uint32_t gSomethingWithGameHeaps;
 
 void drawDebugText();
 void drawDebugTextBg(double x1, double y1, double x2, double y2);
@@ -35,6 +38,9 @@ void GXLoadTexObjIfDifferent(gc::GXTexObj* obj, gc::GXTexMapID id);
 void eventActivateSound();
 void eventTickSound();
 void eventDeactivateSound();
+
+void createGameHeaps(int param1);
+
 
 }
 

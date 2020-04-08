@@ -148,24 +148,25 @@ void run()
 ////    while (true);
 //  }
 //
-//  if (pad::buttonPressed(pad::PAD_BUTTON_X))
-//  {
+  if (pad::buttonPressed(pad::PAD_BUTTON_X))
+  {
+    resetGXFifos();
 //    memcpy(reinterpret_cast<void *>(0x8054E03C), magicRegion1, sizeof(magicRegion1));
 //    memcpy(reinterpret_cast<void *>(0x805BC974), magicRegion2, sizeof(magicRegion2));
 //    memcpy(reinterpret_cast<void *>(0x805BD82E), magicRegion3, sizeof(magicRegion3));
 //    *reinterpret_cast<uint16_t *>(0x80553974) = mkbTimer;
+
+//    bool enable = gc::OSDisableInterrupts();
 //
-////    bool enable = gc::OSDisableInterrupts();
-////
 //    memcpy(reinterpret_cast<void *>(0xE0000000), global::lockedCacheSave, sizeof(global::lockedCacheSave));
 //    memset(reinterpret_cast<void *>(0xE00001E0), 0xff, 0xca0); // Reset previous gx settings
-////
-////    gc::OSRestoreInterrupts(enable);
 //
-////    resetGXFifos();
-//
-////    while (true);
-//  }
+//    gc::OSRestoreInterrupts(enable);
+
+//    resetGXFifos();
+
+//    while (true);
+  }
 }
 
 }

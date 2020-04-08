@@ -5,8 +5,6 @@
 
 namespace mod::global {
 
-void (*drawDebugText_trampoline)() = nullptr;
-
 bool (*DVDOpen_trampoline)(char *fileName, gc::DVDFileInfo *fileInfo) = nullptr;
 int32_t (*DVDConvertPathToEntrynum_trampoline)(char *filename) = nullptr;
 bool (*DVDFastOpen_trampoline)(int32_t entrynum, gc::DVDFileInfo *fileInfo) = nullptr;
@@ -20,12 +18,14 @@ void (*OSFreeToHeap_trampoline)(gc::OSHeapHandle heap, void *ptr) = nullptr;
 void *(*OSInitAlloc_trampoline)(void *arenaStart, void *arenaEnd, int maxHeaps) = nullptr;
 gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle) = nullptr;
 
-void (*gxFinishFrame_trampoline)() = nullptr;
-
 void (*OSSetArenaLo_trampoline)(void *newLo) = nullptr;
 void (*OSSetArenaHi_trampoline)(void *newHi) = nullptr;
 void *(*OSAllocFromArenaLo_trampoline)(uint32_t size, uint32_t align) = nullptr;
 void *(*OSAllocFromArenaHi_trampoline)(uint32_t size, uint32_t align) = nullptr;
+
+void (*drawDebugText_trampoline)() = nullptr;
+void (*gxFinishFrame_trampoline)() = nullptr;
+void (*createGameHeaps_trampoline)(int param1) = nullptr;
 
 Tetris tetris;
 

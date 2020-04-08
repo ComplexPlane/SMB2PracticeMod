@@ -19,4 +19,4 @@ add_executable(ApeSphere
         rel/pad.cpp
         rel/patch.cpp
         rel/rel.cpp
-        rel/tetris.cpp rel/include/gc/gc.h rel/include/gc/osheap.h rel/include/gc/gxstruct.h rel/include/gc/gxenum.h rel/include/mkb/dip.h)
+        rel/tetris.cpp rel/include/gc/gc.h rel/include/gc/osheap.h rel/include/gc/gxstruct.h rel/include/gc/gxenum.h rel/include/mkb/dip.h rel/bigmem.cpp rel/bigmem.h rel/include/gc/osassert.h)

@@ -10,7 +10,6 @@
 
 namespace mod::global {
 
-extern void (*drawDebugText_trampoline)();
 
 extern bool (*DVDOpen_trampoline)(char *fileName, gc::DVDFileInfo *fileInfo);
 extern int32_t (*DVDConvertPathToEntrynum_trampoline)(char *filename);
@@ -25,12 +24,15 @@ extern void (*OSFreeToHeap_trampoline)(gc::OSHeapHandle heap, void *ptr);
 extern void *(*OSInitAlloc_trampoline)(void *arenaStart, void *arenaEnd, int maxHeaps);
 extern gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle);
 
-extern void (*gxFinishFrame_trampoline)();
 
 extern void (*OSSetArenaLo_trampoline)(void *newLo);
 extern void (*OSSetArenaHi_trampoline)(void *newHi);
 extern void *(*OSAllocFromArenaLo_trampoline)(uint32_t size, uint32_t align);
 extern void *(*OSAllocFromArenaHi_trampoline)(uint32_t size, uint32_t align);
+
+extern void (*drawDebugText_trampoline)();
+extern void (*gxFinishFrame_trampoline)();
+extern void (*createGameHeaps_trampoline)(int param1);
 
 extern Tetris tetris;
 

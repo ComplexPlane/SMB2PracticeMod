@@ -27,6 +27,7 @@ void OSDestroyHeap(OSHeapHandle heap);
 void OSFreeToHeap(OSHeapHandle heap, void *ptr);
 void *OSInitAlloc(void *arenaStart, void *arenaEnd, int maxHeaps);
 OSHeapHandle OSSetCurrentHeap(OSHeapHandle heap);
+long OSCheckHeap(OSHeapHandle heap);
 
 }
 
