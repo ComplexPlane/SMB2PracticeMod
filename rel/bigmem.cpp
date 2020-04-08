@@ -27,7 +27,7 @@ static constexpr uint32_t REPLAY_HEAP_SIZE = 0x00028020;
 // Allocated in the new memory space
 static constexpr uint32_t STAGE_HEAP_SIZE = 0x02600000; // 38 MiB
 static constexpr uint32_t BG_HEAP_SIZE = 0x02600000; // 38 MiB
-static constexpr uint32_t FIFO_SIZE = 0x00e00000; // 14 MiB
+static constexpr uint32_t FIFO_SIZE = 14642560; // Little less than 14 MiB
 
 static uint32_t bigArenaLo;
 static uint32_t bigArenaHi;
@@ -116,13 +116,6 @@ void init()
 {
   // Zero the extramem
   std::memset(reinterpret_cast<void *>(EXTRAMEM_START), 0, EXTRAMEM_SIZE);
-
-//  bool enabled = gc::OSDisableInterrupts();
-//  resetGXFifos();
-//  gc::OSRestoreInterrupts(enabled);
-
-//  bigArenaLo = EXTRAMEM_START;
-//  bigArenaHi = EXTRAMEM_END;
 
 //  stageHeapStart = allocFromExtraMemLo(STAGE_HEAP_SIZE);
 //  bgHeapStart = allocFromExtraMemLo(BG_HEAP_SIZE);
