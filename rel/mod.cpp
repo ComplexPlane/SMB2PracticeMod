@@ -9,6 +9,7 @@
 #include <mkb/mkb.h>
 
 #include <cstdint>
+#include <cstring>
 
 namespace mod {
 
@@ -42,7 +43,7 @@ void Mod::init() {
   patch::writeNop(reinterpret_cast<void *>(0x80299f54));
 
 //  global::tetris.init();
-//  bigmem::init();
+  bigmem::init();
 
   global::drawDebugText_trampoline = patch::hookFunction(
       mkb::drawDebugText,
@@ -181,22 +182,22 @@ void Mod::init() {
         return ret;
       });
 
-//  global::createGameHeaps_trampoline = patch::hookFunction(
-//      mkb::createGameHeaps,
-//      [](int param1) {
-//        if (param1 == 0)
-//        {
-//          gc::OSReport("[mod] Begin createGameHeaps bigmem override\n");
-//          bigmem::createGameHeapsUsingExtraMem();
-//          gc::OSReport("[mod] End createGameHeaps bigmem override\n");
-//        }
-//        else
-//        {
-//          gc::OSReport("[mod] Begin createGameHeaps(0x%08X)\n", param1);
-//          global::createGameHeaps_trampoline(param1);
-//          gc::OSReport("[mod] End createGameHeaps(0x%08X)\n", param1);
-//        }
-//      });
+  global::createGameHeaps_trampoline = patch::hookFunction(
+      mkb::createGameHeaps,
+      [](int param1) {
+        if (param1 == 0)
+        {
+          gc::OSReport("[mod] Begin createGameHeaps bigmem override\n");
+          bigmem::createGameHeapsUsingExtraMem();
+          gc::OSReport("[mod] End createGameHeaps bigmem override\n");
+        }
+        else
+        {
+          gc::OSReport("[mod] Begin createGameHeaps(0x%08X)\n", param1);
+          global::createGameHeaps_trampoline(param1);
+          gc::OSReport("[mod] End createGameHeaps(0x%08X)\n", param1);
+        }
+      });
 
 }
 

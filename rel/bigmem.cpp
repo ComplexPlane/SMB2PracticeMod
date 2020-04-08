@@ -7,7 +7,10 @@
 namespace bigmem {
 
 // The additional memory Dolphin emulator is allocating to the game, above the game's actual arena
-static constexpr uint32_t EXTRAMEM_START = 0x817edb20;
+// Starts after the IPL code, and ends... less than 104 MiB later. Exactly 104 MiB later causes
+// weird loading errors, potentially overwriting internal dolphin buffers?
+// Perhaps I don't understand how much additional memory is actually meant to be allocated to the game...
+static constexpr uint32_t EXTRAMEM_START = 0x81800000;
 static constexpr uint32_t EXTRAMEM_END = 0x87fedb20;
 static constexpr uint32_t EXTRAMEM_SIZE = EXTRAMEM_END - EXTRAMEM_START;
 
@@ -15,7 +18,6 @@ static constexpr uint32_t EXTRAMEM_SIZE = EXTRAMEM_END - EXTRAMEM_START;
 static constexpr uint32_t MAIN_HEAP_SIZE = 0x001E6DE0;
 static constexpr uint32_t CHAR_HEAP_SIZE = 0x00480020;
 static constexpr uint32_t REPLAY_HEAP_SIZE = 0x00028020;
-
 
 // Original sizes
 //static constexpr uint32_t STAGE_HEAP_SIZE = 0x00320020;
@@ -112,7 +114,7 @@ static void resetGXFifos()
 
 void init()
 {
-//  // Zero the extramem just to be safe
+  // Zero the extramem
   std::memset(reinterpret_cast<void *>(EXTRAMEM_START), 0, EXTRAMEM_SIZE);
 
 //  bool enabled = gc::OSDisableInterrupts();
@@ -131,7 +133,6 @@ void init()
 
 void createGameHeapsUsingExtraMem()
 {
-
   bigArenaLo = EXTRAMEM_START;
   bigArenaHi = EXTRAMEM_END;
 
