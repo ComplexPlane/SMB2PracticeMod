@@ -1,9 +1,9 @@
 #function $filename 0xa6a5c
-0x41706553              % ApeS
-0x70686572              % pher
-0x652E7573              % e.us
+0x6D6B6232              % mkb2
 0x2E72656C              % .rel
-0x00000000              % \0\0\0\0
+0x5F73616D              % _sam
+0x706C652E              % ple.
+0x72656C00              % rel\0
 
 #function $injection 0x2ae8
 0x480a2a58              % bl $relLoader
