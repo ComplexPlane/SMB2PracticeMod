@@ -27,11 +27,6 @@ Mod::Mod() {
 
 }
 
-//static const char *getSoundErrStrWithNewline()
-//{
-//  return "SOUND_%s_###_at_%s\n";
-//}
-
 void Mod::init() {
   performAssemblyPatches();
 
@@ -52,11 +47,9 @@ void Mod::init() {
         // Gets run at the start of smb2's function which draws debug text windows,
         // which is called at the end of smb2's function which draws the UI in general.
 
-        // gc::OSReport("Before drawDebugText()\n");
 //        global::tetris.update();
 
         global::drawDebugText_trampoline();
-        // gc::OSReport("After drawDebugText()\n");
       });
 
 //  global::DVDOpen_trampoline = patch::hookFunction(

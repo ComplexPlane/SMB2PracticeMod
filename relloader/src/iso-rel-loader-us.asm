@@ -170,3 +170,103 @@ ori r9, r28, 0x6d0c     % this is done because the call stack doesn't behave lik
 0x7d2803a6              % mtspr LR, r9
 blr
 
+#function $memOverrideHook 0x148
+bl $memOverride
+
+#function $memOverride after $relLoader
+
+% Initialize some common constants
+lis r3,0x0180 % Original memory size
+lis r4,0x817e
+ori r4,r4,0xdb80 % Original arena hi
+lis r5,0x817e
+ori r5,r5,0xbb80 % Original DVD BI2 location
+lis r10,0x8180 % Debugger monitor location
+lis r6,0x8000 % Base for early memory addresses
+
+% Rewrite physical memory size
+stw r3,0x28(r6)
+
+% Rewrite arena hi
+stw r4,0x34(r6)
+
+% Rewrite fst location
+stw r4,0x38(r6)
+
+% Rewrite debug monitor location
+stw r10,0xec(r6)
+
+% Rewrite console simulated memory size
+stw r3,0xf0(r6)
+
+% Rewrite DVD BI2 location
+stw r5,0xf4(r6)
+
+% Rewrite some values in apploader
+lis r7,0x8120
+ori r7,r7,0x1490
+stw r4,0x0(r7)
+
+lis r7,0x8120
+ori r7,r7,0x1480
+lis r11,0x0001
+ori r11,r11,0xe000
+stw r11,0x0(r7)
+lis r11,0x0016
+ori r11,r11,0x0c00
+stw r11,0x4(r7)
+
+% Rewrite some value in IPL
+lis r7,0x8130
+ori r7,r7,0000
+stw r4,0x4(r7)
+lis r11,0x0016
+ori r11,r11,0x0c00
+stw r11,0xc(r7)
+
+% Copy IPL memory to original 24-MiB location
+% Not going to call memcpy() or anything because there isn't exactly a stack set up yet
+lis r7,0x817e
+ori r7,r7,0xbb90 % Destination
+lis r8,0x87fe
+ori r8,r8,0xbb90 % Source
+lis r9,0x1
+ori r9,r9,0x4470 % Size
+
+.memcpyLoopStart
+
+cmpwi r9,0
+beq .memcpyLoopEnd
+
+lwz r10,0x0(r8)
+stw r10,0x0(r7)
+addi r8,r8,4
+addi r7,r7,4
+subi r9,r9,4
+b .memcpyLoopStart
+
+.memcpyLoopEnd
+
+% Zero the hi-mem IPL code, potentially unnecessary
+li r7,0x0 % Zero value
+lis r8,0x87fe
+ori r8,r8,0xbb90 % Destination
+lis r9,0x1
+ori r9,r9,0x4470 % Size
+
+.zeroLoopStart
+
+cmpwi r9,0
+beq .zeroLoopEnd
+
+stw r7,0x0(r8)
+addi r8,r8,4
+subi r9,r9,4
+b .zeroLoopStart
+
+.zeroLoopEnd
+
+% Run the overwritten instruction
+li r0,-0x1
+
+blr
