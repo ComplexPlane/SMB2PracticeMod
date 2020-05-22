@@ -10,17 +10,18 @@ typedef uint32_t OSTick;
 
 struct OSModuleInfo
 {
-	uint32_t id;
-	OSModuleInfo *next;
-	OSModuleInfo *prev;
-	uint32_t numSections;
-	uint32_t sectionInfoOffset;
-	uint32_t nameOffset;
-	uint32_t nameSize;
-	uint32_t version;
+    uint32_t id;
+    OSModuleInfo *next;
+    OSModuleInfo *prev;
+    uint32_t numSections;
+    uint32_t sectionInfoOffset;
+    uint32_t nameOffset;
+    uint32_t nameSize;
+    uint32_t version;
 } __attribute__((__packed__));
 
 inline uint32_t OSRoundUp32B(uint32_t x) { return (x + 32 - 1) & ~(32 - 1); }
+
 inline uint32_t OSRoundDown32B(uint32_t x) { return x & ~(32 - 1); }
 
 extern "C" {

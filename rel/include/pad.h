@@ -4,7 +4,8 @@
 
 namespace pad {
 
-enum PadButton {
+enum PadButton
+{
     PAD_BUTTON_DPAD_LEFT = 0x0001,
     PAD_BUTTON_DPAD_RIGHT = 0x0002,
     PAD_BUTTON_DPAD_DOWN = 0x0004,

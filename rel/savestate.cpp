@@ -4,7 +4,8 @@ namespace savestate {
 
 void init() {}
 
-void update() {
+void update()
+{
 
 }
 

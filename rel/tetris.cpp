@@ -72,16 +72,17 @@ static const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
 // How to "nudge" tetrad in rotation 0 to draw with tetrad "centered"
 // Used to draw tetrad queue
 static const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
-    {0, -0.5}, // I
+    {0,   -0.5}, // I
     {0.5, -1}, // J
     {0.5, -1}, // L
-    {0, -1}, // O
+    {0,   -1}, // O
     {0.5, -1}, // S
     {0.5, -1}, // T
     {0.5, -1}, // Z
 };
 
-void Tetris::init() {
+void Tetris::init()
+{
     m_hidden = true;
 
     m_score = 0;
@@ -89,27 +90,34 @@ void Tetris::init() {
 
     m_currentDropPeriod = INITIAL_DROP_PERIOD;
 
-    for (int x = 0; x < BOARD_WIDTH; x++) {
-        for (int y = 0; y < BOARD_HEIGHT; y++) {
+    for (int x = 0; x < BOARD_WIDTH; x++)
+    {
+        for (int y = 0; y < BOARD_HEIGHT; y++)
+        {
             m_board[x][y] = Cell::EMPTY;
         }
     }
 
-    for (int i = 0; i < TETRAD_QUEUE_LEN; i++) {
+    for (int i = 0; i < TETRAD_QUEUE_LEN; i++)
+    {
         m_tetradQueue[i] = genRandomTetrad();
     }
 
     tryTransitionToDropping();
 }
 
-void Tetris::update() {
-    if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X)) {
+void Tetris::update()
+{
+    if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X))
+    {
         m_hidden = !m_hidden;
         if (!m_hidden) return; // Come back next frame when your inputs won't be reused
     }
 
-    if (!m_hidden) {
-        switch (m_state) {
+    if (!m_hidden)
+    {
+        switch (m_state)
+        {
             case State::DROPPING:
                 handleDroppingState();
                 break;
@@ -125,27 +133,35 @@ void Tetris::update() {
     }
 }
 
-void Tetris::handleDroppingState() {
+void Tetris::handleDroppingState()
+{
     m_stateTimer--;
-    if (m_stateTimer == 0) {
-        if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY - 1, m_droppingTetradRot)) {
+    if (m_stateTimer == 0)
+    {
+        if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY - 1, m_droppingTetradRot))
+        {
             transitionFromDropping();
-        } else {
+        }
+        else
+        {
             m_droppingTetradY--;
             m_stateTimer = m_currentDropPeriod;
         }
     }
 
-    if (pad::buttonPressed(pad::PAD_BUTTON_B)) {
+    if (pad::buttonPressed(pad::PAD_BUTTON_B))
+    {
         int lowY = findLowestPossibleTetradY(
-            m_droppingTetrad, 
-            m_droppingTetradX, 
-            m_droppingTetradY, 
+            m_droppingTetrad,
+            m_droppingTetradX,
+            m_droppingTetradY,
             m_droppingTetradRot);
         m_droppingTetradY = lowY;
         transitionFromDropping();
 
-    } else {
+    }
+    else
+    {
         int newTetradX = m_droppingTetradX;
         int newTetradY = m_droppingTetradY;
         int newTetradRot = m_droppingTetradRot;
@@ -153,51 +169,70 @@ void Tetris::handleDroppingState() {
         bool movedDown = false;
         bool rotated = false;
 
-        if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT)) {
+        if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT))
+        {
             newTetradX--;
-        } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT)) {
+        }
+        else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT))
+        {
             newTetradX++;
-        } else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN)) {
+        }
+        else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN))
+        {
             newTetradY--;
             movedDown = true;
         }
 
-        if (pad::buttonPressed(pad::PAD_BUTTON_Y)) {
+        if (pad::buttonPressed(pad::PAD_BUTTON_Y))
+        {
             newTetradRot = (newTetradRot + 3) % 4;
             rotated = true;
-        } else if (pad::buttonPressed(pad::PAD_BUTTON_X)) {
+        }
+        else if (pad::buttonPressed(pad::PAD_BUTTON_X))
+        {
             newTetradRot = (newTetradRot + 1) % 4;
             rotated = true;
         }
 
-        if (!tetradIntersectsGrid(m_droppingTetrad, newTetradX, newTetradY, newTetradRot)) {
+        if (!tetradIntersectsGrid(m_droppingTetrad, newTetradX, newTetradY, newTetradRot))
+        {
             m_droppingTetradX = newTetradX;
             m_droppingTetradY = newTetradY;
             m_droppingTetradRot = newTetradRot;
-        } else if (movedDown && !rotated) {
+        }
+        else if (movedDown && !rotated)
+        {
             transitionFromDropping();
         } // else disallow the movement (sorry no wall kicks or anything rn)
     }
 }
 
-void Tetris::handleRowclearState() {
+void Tetris::handleRowclearState()
+{
     m_stateTimer--;
-    if (m_stateTimer == 0) {
+    if (m_stateTimer == 0)
+    {
 
         // Delete full rows from board
         int emptyRows = 0;
-        for (int y = 0; y < BOARD_HEIGHT; y++) {
-            if (isRowFull(y)) {
+        for (int y = 0; y < BOARD_HEIGHT; y++)
+        {
+            if (isRowFull(y))
+            {
                 emptyRows++;
-            } else {
-                for (int x = 0; x < BOARD_WIDTH; x++) {
+            }
+            else
+            {
+                for (int x = 0; x < BOARD_WIDTH; x++)
+                {
                     m_board[x][y - emptyRows] = m_board[x][y];
                 }
             }
         }
 
         // Add points to score
-        for (int i = 0; i < emptyRows; i++) {
+        for (int i = 0; i < emptyRows; i++)
+        {
             m_score += 100 + 50 * i;
         }
 
@@ -209,19 +244,24 @@ void Tetris::handleRowclearState() {
     }
 }
 
-void Tetris::handleGameoverState() {
+void Tetris::handleGameoverState()
+{
 
 }
 
-void Tetris::transitionFromDropping() {
+void Tetris::transitionFromDropping()
+{
     uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
     Cell cell = static_cast<Cell>(m_droppingTetrad);
 
     // Place blocks of dropping tetrad into grid
-    for (int localX = 0; localX < 4; localX++) {
-        for (int localY = 0; localY < 4; localY++) {
+    for (int localX = 0; localX < 4; localX++)
+    {
+        for (int localY = 0; localY < 4; localY++)
+        {
             bool occupied = TETRAD_ROTATIONS[tet][m_droppingTetradRot] & (1 << 15 >> (localY * 4 + localX));
-            if (occupied) {
+            if (occupied)
+            {
                 int gridX = m_droppingTetradX + localX;
                 int gridY = m_droppingTetradY + localY;
                 m_board[gridX][gridY] = cell;
@@ -229,8 +269,10 @@ void Tetris::transitionFromDropping() {
         }
     }
 
-    for (int y = 0; y < BOARD_HEIGHT; y++) {
-        if (isRowFull(y)) {
+    for (int y = 0; y < BOARD_HEIGHT; y++)
+    {
+        if (isRowFull(y))
+        {
             transitionDroppingToRowclear();
             return;
         }
@@ -239,16 +281,19 @@ void Tetris::transitionFromDropping() {
     tryTransitionToDropping();
 }
 
-void Tetris::transitionDroppingToRowclear() {
+void Tetris::transitionDroppingToRowclear()
+{
     m_state = State::ROWCLEAR;
     m_stateTimer = 30;
 }
 
-void Tetris::transitionDroppingToGameover() {
+void Tetris::transitionDroppingToGameover()
+{
     m_state = State::GAMEOVER;
 }
 
-void Tetris::tryTransitionToDropping() {
+void Tetris::tryTransitionToDropping()
+{
     m_state = State::DROPPING;
     m_droppingTetrad = popTetradQueue();
     m_droppingTetradX = 3;
@@ -256,24 +301,29 @@ void Tetris::tryTransitionToDropping() {
     m_droppingTetradRot = 0;
     m_stateTimer = m_currentDropPeriod;
 
-    if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot)) {
+    if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot))
+    {
         transitionDroppingToGameover();
     }
 }
 
-Tetris::Cell Tetris::genRandomCell() {
+Tetris::Cell Tetris::genRandomCell()
+{
     return static_cast<Cell>(rand() % NUM_CELL_TYPES);
 }
 
-Tetris::Tetrad Tetris::genRandomTetrad() {
+Tetris::Tetrad Tetris::genRandomTetrad()
+{
     return static_cast<Tetrad>(rand() % NUM_TETRADS);
 }
 
-Tetris::Tetrad Tetris::popTetradQueue() {
+Tetris::Tetrad Tetris::popTetradQueue()
+{
     Tetrad ret = m_tetradQueue[0];
-    
+
     // Could treat it like a ring buffer instead, but eh
-    for (int i = 0; i < TETRAD_QUEUE_LEN - 1; i++) {
+    for (int i = 0; i < TETRAD_QUEUE_LEN - 1; i++)
+    {
         m_tetradQueue[i] = m_tetradQueue[i + 1];
     }
     m_tetradQueue[TETRAD_QUEUE_LEN - 1] = genRandomTetrad();
@@ -281,7 +331,8 @@ Tetris::Tetrad Tetris::popTetradQueue() {
     return ret;
 }
 
-void Tetris::draw() {
+void Tetris::draw()
+{
     mkb::GXSetZModeIfDifferent(gc::GX_TRUE, gc::GX_LESS, gc::GX_FALSE);
 
     // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
@@ -293,12 +344,14 @@ void Tetris::draw() {
     drawInfoText();
     drawTetradQueue();
 
-    if (m_state == State::DROPPING) {
+    if (m_state == State::DROPPING)
+    {
         drawDroppingTetrad();
     }
 }
 
-void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color) {
+void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color)
+{
     // Draw corners
     mkb::drawDebugTextCharEn(xpos, ypos, BOXCHAR_UL, color);
     mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, ypos, BOXCHAR_UR, color);
@@ -309,30 +362,39 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     constexpr int Y_HDIV = 24;
 
     // Draw horizontal lines
-    for (int i = 1; i < xchars - 1; i++) {
+    for (int i = 1; i < xchars - 1; i++)
+    {
         int x = xpos + i * CHAR_WIDTH;
-        if (i != X_VDIV) {
+        if (i != X_VDIV)
+        {
             mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_HBAR, color);
             mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_HBAR, color);
-        } else {
+        }
+        else
+        {
             mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_DT, color);
             mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_UT, color);
         }
 
-        if (i > X_VDIV) {
+        if (i > X_VDIV)
+        {
             mkb::drawDebugTextCharEn(x, ypos + Y_HDIV * CHAR_WIDTH, BOXCHAR_HBAR, color);
         }
     }
 
     // Draw vertical lines
-    for (int i = 1; i < ychars - 1; i++) {
+    for (int i = 1; i < ychars - 1; i++)
+    {
         int y = ypos + i * CHAR_WIDTH;
         mkb::drawDebugTextCharEn(xpos, y, BOXCHAR_VBAR, color);
 
-        if (i == Y_HDIV) {
+        if (i == Y_HDIV)
+        {
             mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
             mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_LT, color);
-        } else {
+        }
+        else
+        {
             mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
             mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
         }
@@ -340,7 +402,8 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-void Tetris::drawRect(float x1, float y1, float x2, float y2, gc::GXColor color) {
+void Tetris::drawRect(float x1, float y1, float x2, float y2, gc::GXColor color)
+{
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     gc::GXTexObj *texObj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
     mkb::GXLoadTexObjIfDifferent(texObj, gc::GX_TEXMAP0);
@@ -361,7 +424,8 @@ void Tetris::drawRect(float x1, float y1, float x2, float y2, gc::GXColor color)
     gc::GXTexCoord2f32(0, 1);
 }
 
-void Tetris::drawAsciiWindow() {
+void Tetris::drawAsciiWindow()
+{
     constexpr int X = 130;
     constexpr int Y = 8;
     constexpr int WIDTH_CHARS = 30;
@@ -379,23 +443,33 @@ void Tetris::drawAsciiWindow() {
     drawAsciiRect(X, Y, WIDTH_CHARS, HEIGHT_CHARS, 0b01001110);
 }
 
-void Tetris::drawGrid() {
-    for (int y = 0; y < BOARD_HEIGHT; y++) {
+void Tetris::drawGrid()
+{
+    for (int y = 0; y < BOARD_HEIGHT; y++)
+    {
         bool rowFull = isRowFull(y);
 
-        for (int x = 0; x < BOARD_WIDTH; x++) {
+        for (int x = 0; x < BOARD_WIDTH; x++)
+        {
             Cell cell = m_board[x][y];
-            if (cell != Cell::EMPTY) {
+            if (cell != Cell::EMPTY)
+            {
                 gc::GXColor color = {};
 
-                if (m_state == State::ROWCLEAR && rowFull) {
-                    if (m_stateTimer % ROW_FLASH_PERIOD < (ROW_FLASH_PERIOD / 2)) {
+                if (m_state == State::ROWCLEAR && rowFull)
+                {
+                    if (m_stateTimer % ROW_FLASH_PERIOD < (ROW_FLASH_PERIOD / 2))
+                    {
                         color = {0x00, 0x00, 0x00, 0x00};
-                    } else {
+                    }
+                    else
+                    {
                         color = {0xff, 0xff, 0xff, 0xff};
                     }
 
-                } else {
+                }
+                else
+                {
                     color = CELL_COLORS[static_cast<uint8_t>(cell)];
                 }
 
@@ -405,15 +479,18 @@ void Tetris::drawGrid() {
     }
 }
 
-void Tetris::drawTextPalette() {
-    for (char c = 0; c != 0x80; c++) {
+void Tetris::drawTextPalette()
+{
+    for (char c = 0; c != 0x80; c++)
+    {
         int x = c % 16 * CHAR_WIDTH;
         int y = c / 16 * CHAR_WIDTH;
         mkb::drawDebugTextCharEn(x, y, c, c * 2);
     }
 }
 
-void Tetris::drawInfoText() {
+void Tetris::drawInfoText()
+{
     constexpr int STARTX = 335;
     constexpr int STARTY = 310;
 
@@ -426,7 +503,8 @@ void Tetris::drawInfoText() {
     drawDebugTextPrintf(429, 22, 0b11100011, "NEXT");
 }
 
-void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...) {
+void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...)
+{
     va_list args;
     va_start(args, format);
 
@@ -437,22 +515,27 @@ void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format
 
     va_end(args);
 
-    for (int i = 0; buf[i] != '\0'; i++) {
+    for (int i = 0; buf[i] != '\0'; i++)
+    {
         mkb::drawDebugTextCharEn(x + i * CHAR_WIDTH, y, buf[i], color);
     }
 }
 
-void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation) {
+void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)
+{
     uint8_t tet = static_cast<uint8_t>(tetrad);
     gc::GXColor color = CELL_COLORS[tet];
 
     // Note that the effectice "cell y" when indexing the tetrad rotation
     // is in the wrong direction, but is flipped again when
     // rendered due to the screen having a flipped y compared to the grid space
-    for (int cellx = 0; cellx < 4; cellx++) {
-        for (int celly = 0; celly < 4; celly++) {
+    for (int cellx = 0; cellx < 4; cellx++)
+    {
+        for (int celly = 0; celly < 4; celly++)
+        {
             bool occupied = TETRAD_ROTATIONS[tet][rotation] & (1 << 15 >> (celly * 4 + cellx));
-            if (occupied) {
+            if (occupied)
+            {
                 float x1 = x + cellx * (CELL_WIDTH + CELL_PAD);
                 float y1 = y + (3 - celly) * (CELL_WIDTH + CELL_PAD);
 
@@ -465,12 +548,14 @@ void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation) {
     }
 }
 
-void Tetris::drawTetradQueue() {
+void Tetris::drawTetradQueue()
+{
     constexpr int STARTX = 370;
     constexpr int STARTY = 32;
     constexpr int STEP = 55;
 
-    for (int i = 0; i < TETRAD_QUEUE_LEN; i++) {
+    for (int i = 0; i < TETRAD_QUEUE_LEN; i++)
+    {
         uint8_t tet = static_cast<uint8_t>(m_tetradQueue[i]);
         int drawx = STARTX + TETRAD_CENTER_NUDGE[tet][0] * (CELL_WIDTH + CELL_PAD);
         int drawy = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
@@ -478,7 +563,8 @@ void Tetris::drawTetradQueue() {
     }
 }
 
-void Tetris::drawDroppingTetrad() {
+void Tetris::drawDroppingTetrad()
+{
     uint8_t tet = static_cast<uint8_t>(m_droppingTetrad);
     uint16_t rot = TETRAD_ROTATIONS[tet][m_droppingTetradRot];
     gc::GXColor color = CELL_COLORS[tet];
@@ -488,15 +574,18 @@ void Tetris::drawDroppingTetrad() {
     // TODO deduplicate?
 
     int lowY = findLowestPossibleTetradY(
-        m_droppingTetrad, 
-        m_droppingTetradX, 
-        m_droppingTetradY, 
+        m_droppingTetrad,
+        m_droppingTetradX,
+        m_droppingTetradY,
         m_droppingTetradRot);
 
-    for (int cellx = 0; cellx < 4; cellx++) {
-        for (int celly = 0; celly < 4; celly++) {
+    for (int cellx = 0; cellx < 4; cellx++)
+    {
+        for (int celly = 0; celly < 4; celly++)
+        {
             bool occupied = rot & (1 << 15 >> (celly * 4 + cellx));
-            if (occupied) {
+            if (occupied)
+            {
                 drawGridCell(m_droppingTetradX + cellx, lowY + celly, previewColor);
             }
         }
@@ -504,17 +593,21 @@ void Tetris::drawDroppingTetrad() {
 
     // Draw actual tetrad (draw second so we draw over the preview if necessary...
     // a little hacky but it's probably fine)
-    for (int cellx = 0; cellx < 4; cellx++) {
-        for (int celly = 0; celly < 4; celly++) {
+    for (int cellx = 0; cellx < 4; cellx++)
+    {
+        for (int celly = 0; celly < 4; celly++)
+        {
             bool occupied = rot & (1 << 15 >> (celly * 4 + cellx));
-            if (occupied) {
+            if (occupied)
+            {
                 drawGridCell(m_droppingTetradX + cellx, m_droppingTetradY + celly, color);
             }
         }
     }
 }
 
-void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color) {
+void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color)
+{
     constexpr int DRAWX_START = 143;
     constexpr int DRAWY_START = 25;
 
@@ -527,20 +620,25 @@ void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color) {
 }
 
 // Also detects if tetrad is out-of-bounds
-bool Tetris::tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int rotation) {
+bool Tetris::tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int rotation)
+{
     uint8_t tet = static_cast<uint8_t>(tetrad);
     uint16_t rot = TETRAD_ROTATIONS[tet][rotation];
 
-    for (int localX = 0; localX < 4; localX++) {
-        for (int localY = 0; localY < 4; localY++) {
+    for (int localX = 0; localX < 4; localX++)
+    {
+        for (int localY = 0; localY < 4; localY++)
+        {
             bool tetradOccupied = rot & (1 << 15 >> (localY * 4 + localX));
 
-            if (tetradOccupied) {
+            if (tetradOccupied)
+            {
                 int cellX = tetradX + localX;
                 int cellY = tetradY + localY;
 
                 // Detect out-of-bounds tetrad
-                if (cellX < 0 || cellX >= BOARD_WIDTH || cellY < 0 || cellY >= BOARD_HEIGHT) {
+                if (cellX < 0 || cellX >= BOARD_WIDTH || cellY < 0 || cellY >= BOARD_HEIGHT)
+                {
                     return true;
                 }
 
@@ -554,14 +652,18 @@ bool Tetris::tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int r
 }
 
 // Undefined if tetrad is already intersecting grid or out-of-bounds
-int Tetris::findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation) {
+int Tetris::findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation)
+{
     while (!tetradIntersectsGrid(tetrad, tetradX, tetradY, rotation)) tetradY--;
     return tetradY + 1;
 }
 
-bool Tetris::isRowFull(int y) {
-    for (int x = 0; x < BOARD_WIDTH; x++) {
-        if (m_board[x][y] == Cell::EMPTY) {
+bool Tetris::isRowFull(int y)
+{
+    for (int x = 0; x < BOARD_WIDTH; x++)
+    {
+        if (m_board[x][y] == Cell::EMPTY)
+        {
             return false;
         }
     }

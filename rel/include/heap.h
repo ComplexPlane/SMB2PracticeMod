@@ -21,7 +21,7 @@ struct HeapDataStruct
 	void *CustomRelBSSAreaStart;
 	void *MainLoopRelLocation;
 	void *MainLoopBSSLocation;
-	
+
 	HeapDataStruct()
 	{
 		RelocationDataArena = *reinterpret_cast<uint32_t **>(0x8000452C);
