@@ -4,8 +4,6 @@
 
 #include <cstdint>
 
-namespace mod {
-
 class Tetris {
 public:
     void init();
@@ -75,5 +73,3 @@ private:
     int findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation);
     bool isRowFull(int y);
 };
-
-}

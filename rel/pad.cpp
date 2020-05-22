@@ -2,7 +2,7 @@
 
 #include <mkb/mkb.h>
 
-namespace mod::pad {
+namespace pad {
 
 bool buttonPressed(uint16_t button) {
     bool downThisFrame = mkb::padButtonBitfield & (button << 16);

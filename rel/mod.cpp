@@ -2,7 +2,6 @@
 #include "heap.h"
 #include "patch.h"
 #include "global.h"
-#include "pad.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>

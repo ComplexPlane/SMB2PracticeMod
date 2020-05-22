@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace mod::global {
+namespace global {
 
 
 extern bool (*DVDOpen_trampoline)(char *fileName, gc::DVDFileInfo *fileInfo);

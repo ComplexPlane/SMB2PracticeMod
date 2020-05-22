@@ -81,8 +81,6 @@ static const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
     {0.5, -1}, // Z
 };
 
-namespace mod {
-
 void Tetris::init() {
     m_hidden = true;
 
@@ -569,6 +567,4 @@ bool Tetris::isRowFull(int y) {
     }
 
     return true;
-}
-
 }

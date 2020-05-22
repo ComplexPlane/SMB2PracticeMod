@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace mod::pad {
+namespace pad {
 
 enum PadButton {
     PAD_BUTTON_DPAD_LEFT = 0x0001,

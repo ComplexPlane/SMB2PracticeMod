@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace mod::patch {
+namespace patch {
 
 class NopToggle {
 public:
