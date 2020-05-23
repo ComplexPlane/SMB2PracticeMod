@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 project(ApeSphere)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+
+# Specify 32-bit processor for better linting
+set(CMAKE_C_FLAGS -m32)
+set(CMAKE_CXX_FLAGS -m32)
 
 include_directories(rel/include)
 include_directories(rel/include/gc)
@@ -20,4 +24,4 @@ add_executable(ApeSphere
         rel/patch.cpp
         rel/rel.cpp
         rel/savestate.cpp
-        rel/tetris.cpp)
+        rel/tetris.cpp rel/include/mkb/stagedef.h rel/include/mkb/vec.h)
