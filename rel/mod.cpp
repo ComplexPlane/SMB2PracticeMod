@@ -2,6 +2,7 @@
 #include "heap.h"
 #include "patch.h"
 #include "global.h"
+#include "savestate.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -39,6 +40,7 @@ void Mod::init()
     patch::writeNop(reinterpret_cast<void *>(0x80299f54));
 
     global::tetris.init();
+    savestate::init();
 
     global::drawDebugText_trampoline = patch::hookFunction(
         mkb::drawDebugText,

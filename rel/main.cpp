@@ -4,6 +4,7 @@
 #include "heap.h"
 #include "pad.h"
 #include "global.h"
+#include "savestate.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -60,6 +61,8 @@ void run()
 {
     // Enable debug mode (appears to need to be called every frame)
     mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+
+    savestate::update();
 }
 
 }

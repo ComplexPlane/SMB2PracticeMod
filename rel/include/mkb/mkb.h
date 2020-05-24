@@ -33,6 +33,8 @@ extern gc::OSHeapHandle mainHeap, stageHeap, bgHeap, charHeap, replayHeap;
 extern uint32_t mainHeapSize, stageHeapSize, bgHeapSize, charHeapSize, replayHeapSize;
 extern uint32_t gSomethingWithGameHeaps;
 
+extern uint16_t stageTimer;
+
 void drawDebugText();
 void drawDebugTextBg(double x1, double y1, double x2, double y2);
 void drawDebugTextCharEn(uint32_t x, uint32_t y, char ch, uint32_t color);

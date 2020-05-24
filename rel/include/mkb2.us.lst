@@ -53,6 +53,7 @@ CC008000:GXWGFifo
 805bc9a0:balls
 805bd980:stagedef
 805bd97c:itemGroupAnimStates
+80553974:stageTimer
 
 // runtime register stuff
 8006b24c:_savefpr_14
