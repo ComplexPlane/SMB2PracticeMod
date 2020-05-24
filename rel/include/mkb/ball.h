@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mkb/mathtypes.h>
+
 namespace mkb {
 
 enum Status
@@ -23,9 +25,9 @@ struct Ball
     uint8_t status; /* Actually called just "STAT" in the debug menu */
     uint8_t unk_0x1[2];
     uint8_t gPhysicsStateFlags; /* Something to do with physics state (Crashes the game if set wrong) (8 bit bitmask) */
-    struct Vec3f pos;
-    struct Vec3f prev_pos;
-    struct Vec3f vel; /* Velocity/speed */
+    Vec3f pos;
+    Vec3f prevPos;
+    Vec3f vel; /* Velocity/speed */
     uint16_t gSomeRot;
     uint16_t gSomeRot2;
     uint16_t gSomeRot3;
