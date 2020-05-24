@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mkb/vec.h"
+#include "mkb/mathtypes.h"
 
 #include <cstdint>
 

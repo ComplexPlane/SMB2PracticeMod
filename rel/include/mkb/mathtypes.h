@@ -30,4 +30,15 @@ struct Vec3s
     int16_t z;
 };
 
+typedef float Mtx[3][4];
+typedef float Mtx44[4][4];
+
+struct Quat
+{
+    float x;
+    float y;
+    float z;
+    float w;
+};
+
 }

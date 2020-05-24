@@ -24,4 +24,4 @@ add_executable(ApeSphere
         rel/patch.cpp
         rel/rel.cpp
         rel/savestate.cpp
-        rel/tetris.cpp rel/include/mkb/stagedef.h rel/include/mkb/vec.h)
+        rel/tetris.cpp rel/include/mkb/stagedef.h rel/include/mkb/mathtypes.h rel/include/mkb/stage.h rel/include/mkb/ball.h)
