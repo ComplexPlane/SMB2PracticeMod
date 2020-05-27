@@ -17,6 +17,7 @@ struct State
     uint8_t somePhysicsRegion[0x1c];
     mkb::Quat charaRotation;
     mkb::ItemGroupAnimState itemGroupAnimStates[MAX_ITEM_GROUPS];
+    mkb::Banana bananas[256]; // Save all state of all bananas for now
 };
 
 static bool s_stateExists;
@@ -39,12 +40,16 @@ void update()
 
         ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEM_GROUPS, "Too many item groups to savestate");
 
+        memcpy(s_state.bananas, mkb::bananas, sizeof(s_state.bananas));
+
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
             s_state.itemGroupAnimStates[i] = mkb::itemGroupAnimStates[i];
         }
     }
-    else if (pad::buttonDown(pad::PAD_BUTTON_Y) && s_stateExists)
+    else if (
+        (pad::buttonDown(pad::PAD_BUTTON_Y) && s_stateExists)
+        || (pad::buttonDown(pad::PAD_BUTTON_X) && !pad::buttonPressed(pad::PAD_BUTTON_X)))
     {
         // Load savestate
 
@@ -54,9 +59,11 @@ void update()
         memcpy(reinterpret_cast<void *>(0x805BD830), s_state.somePhysicsRegion, sizeof(s_state.somePhysicsRegion));
         mkb::balls[0].ape->charaRotation = s_state.charaRotation;
 
+        memcpy(mkb::bananas, s_state.bananas, sizeof(s_state.bananas));
+
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
-             mkb::itemGroupAnimStates[i] = s_state.itemGroupAnimStates[i];
+            mkb::itemGroupAnimStates[i] = s_state.itemGroupAnimStates[i];
         }
     }
 }
