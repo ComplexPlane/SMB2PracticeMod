@@ -12,7 +12,8 @@ void _unresolved();
 
 }
 
-namespace mod {
+namespace mod
+{
 
 extern void main();
 

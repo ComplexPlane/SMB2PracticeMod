@@ -1,6 +1,7 @@
 #pragma once
 
-namespace gc {
+namespace gc
+{
 
 enum GXAlphaOp
 {

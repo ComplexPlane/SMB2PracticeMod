@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace gc {
+namespace gc
+{
 
 struct DVDFileInfo;
 struct DVDDir;

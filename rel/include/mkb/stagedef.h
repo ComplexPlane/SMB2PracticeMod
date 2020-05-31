@@ -4,7 +4,8 @@
 
 #include <cstdint>
 
-namespace mkb {
+namespace mkb
+{
 
 typedef uint16_t *StagedefCollisionGridTriIndices;
 typedef StagedefCollisionGridTriIndices StagedefCollisionGridTilesTriIndices;

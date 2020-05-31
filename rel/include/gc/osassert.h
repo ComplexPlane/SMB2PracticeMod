@@ -10,7 +10,8 @@
     (void) ((exp) ||                                            \
             (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
 
-namespace gc {
+namespace gc
+{
 
 extern "C" {
 

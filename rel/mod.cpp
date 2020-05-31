@@ -10,7 +10,8 @@
 #include <cstdint>
 #include <cstring>
 
-namespace mod {
+namespace mod
+{
 
 Mod *gMod = nullptr;
 

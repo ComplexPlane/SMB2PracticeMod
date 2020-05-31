@@ -12,7 +12,8 @@
 #include <cinttypes>
 #include <cstring>
 
-namespace mod {
+namespace mod
+{
 
 bool Mod::performRelPatches(gc::OSModuleInfo *newModule, void *bss)
 {

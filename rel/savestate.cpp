@@ -4,7 +4,8 @@
 
 #include <cstring>
 
-namespace savestate {
+namespace savestate
+{
 
 // Fixed max, for now
 static constexpr int MAX_ITEM_GROUPS = 50;

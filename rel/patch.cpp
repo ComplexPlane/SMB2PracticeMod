@@ -6,7 +6,8 @@
 
 #include <cstdint>
 
-namespace patch {
+namespace patch
+{
 
 void NopToggle::init(void *dest, uint16_t combo1, uint16_t combo2)
 {

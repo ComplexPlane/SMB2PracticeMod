@@ -6,7 +6,8 @@
 
 #include <cstdint>
 
-namespace gc {
+namespace gc
+{
 
 typedef uint8_t GXBool;
 

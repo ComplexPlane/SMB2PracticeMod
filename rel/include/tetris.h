@@ -4,7 +4,8 @@
 
 #include <cstdint>
 
-class Tetris {
+class Tetris
+{
 public:
     void init();
     void update();
@@ -14,11 +15,18 @@ private:
     static constexpr int BOARD_HEIGHT = 24;
     static constexpr int TETRAD_QUEUE_LEN = 5;
 
-    enum class Tetrad { I, J, L, O, S, T, Z };
-    enum class Cell : uint8_t { I, J, L, O, S, T, Z, EMPTY };
+    enum class Tetrad
+    {
+        I, J, L, O, S, T, Z
+    };
+    enum class Cell : uint8_t
+    {
+        I, J, L, O, S, T, Z, EMPTY
+    };
 
     // Game state and hidden state not mututally exclusive
-    enum class State {
+    enum class State
+    {
         DROPPING,
         ROWCLEAR,
         GAMEOVER,

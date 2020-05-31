@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace mod {
+namespace mod
+{
 
 extern "C" {
 

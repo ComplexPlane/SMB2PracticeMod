@@ -8,7 +8,8 @@
 
 #include <cstdint>
 
-namespace global {
+namespace global
+{
 
 extern bool (*DVDOpen_trampoline)(char *fileName, gc::DVDFileInfo *fileInfo);
 extern int32_t (*DVDConvertPathToEntrynum_trampoline)(char *filename);

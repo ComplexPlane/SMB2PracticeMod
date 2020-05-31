@@ -4,7 +4,8 @@
 
 #include <cstdint>
 
-namespace mod {
+namespace mod
+{
 
 class Mod
 {

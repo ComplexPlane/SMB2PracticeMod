@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace patch {
+namespace patch
+{
 
 class NopToggle
 {

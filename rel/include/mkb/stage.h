@@ -2,7 +2,8 @@
 
 #include <gc/gc.h>
 
-namespace mkb {
+namespace mkb
+{
 
 struct ItemGroupAnimState
 {

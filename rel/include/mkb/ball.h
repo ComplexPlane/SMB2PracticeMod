@@ -2,7 +2,8 @@
 
 #include <mkb/mathtypes.h>
 
-namespace mkb {
+namespace mkb
+{
 
 enum Status
 {

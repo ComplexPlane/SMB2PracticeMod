@@ -3,7 +3,8 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace gc {
+namespace gc
+{
 
 typedef int64_t OSTime;
 typedef uint32_t OSTick;

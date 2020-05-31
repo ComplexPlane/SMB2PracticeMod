@@ -4,7 +4,8 @@
 
 #include <cstdint>
 
-namespace gc {
+namespace gc
+{
 
 struct GXColor
 { /* A generic color structure used by various GX API functions. */

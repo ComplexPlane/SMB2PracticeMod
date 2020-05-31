@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace mkb {
+namespace mkb
+{
 
 struct Vec2f
 {

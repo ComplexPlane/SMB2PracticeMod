@@ -1,6 +1,7 @@
 #pragma once
 
-namespace savestate {
+namespace savestate
+{
 
 void init();
 void update();

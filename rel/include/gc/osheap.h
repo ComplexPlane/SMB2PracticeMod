@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace gc {
+namespace gc
+{
 
 struct ChunkInfo
 {

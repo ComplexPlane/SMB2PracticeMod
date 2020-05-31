@@ -2,7 +2,8 @@
 
 #include <mkb/mkb.h>
 
-namespace pad {
+namespace pad
+{
 
 bool buttonPressed(uint16_t button)
 {

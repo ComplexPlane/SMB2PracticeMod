@@ -2,7 +2,8 @@
 
 #include <cstdint>
 
-namespace pad {
+namespace pad
+{
 
 enum PadButton
 {

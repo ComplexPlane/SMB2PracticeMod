@@ -9,7 +9,8 @@
 
 #include <cstdint>
 
-namespace mkb {
+namespace mkb
+{
 
 struct GraphicsInfo
 {

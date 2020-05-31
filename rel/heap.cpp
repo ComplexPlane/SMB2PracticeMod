@@ -5,7 +5,8 @@
 #include <cstring>
 #include <cinttypes>
 
-namespace heap {
+namespace heap
+{
 
 struct HeapDataStruct HeapData;
 
