@@ -6,6 +6,10 @@
 #include <mkb/stagedef.h>
 #include <mkb/stage.h>
 #include <mkb/ball.h>
+#include <mkb/tickable.h>
+#include <mkb/item.h>
+#include <mkb/effect.h>
+#include <mkb/stobj.h>
 
 #include <cstdint>
 

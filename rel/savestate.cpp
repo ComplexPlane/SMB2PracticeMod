@@ -17,7 +17,7 @@ struct State
     uint8_t ballRegion[0x5c];
     uint8_t somePhysicsRegion[0x1c];
     mkb::Quat charaRotation;
-    mkb::ItemGroupAnimState itemGroupAnimStates[MAX_ITEM_GROUPS];
+    mkb::Itemgroup itemGroupAnimStates[MAX_ITEM_GROUPS];
     mkb::Banana bananas[256]; // Save all state of all bananas for now
 };
 
