@@ -3,8 +3,7 @@
 #include <mkb/tickable.h>
 #include <cstdint>
 
-namespace mkb
-{
+namespace mkb {
 
 enum EffectType
 { /* Abbreviated "ET" in the game */
@@ -14,22 +13,24 @@ enum EffectType
     EFFECT_HOLDING_BANANA = 3,
     EFFECT_LEVITATE = 4,
     EFFECT_COLISTAR_PARTICLE = 5,
-    EFFECT_GET_NAMEENT_CODE = 16,
+    EFFECT_BGWAT_BUBBLE_BASE = 6,
+    EFFECT_BGWAT_BUBBLE = 7,
     EFFECT_METEO = 8,
     EFFECT_METEO_FIX = 9,
     EFFECT_COLIFLASH = 10,
     EFFECT_BNS_STG_STAR = 11,
-    EFFECT_NAMEENT_CODE = 15,
-    EFFECT_BANANA_DROP = 20,
-    EFFECT_BGBTMFIRE_PTCL = 22,
-    EFFECT_BGEND_WATER = 21,
-    EFFECT_BGMST_GEN_CLOUD = 13,
-    EFFECT_BGMST_WATER = 17,
-    EFFECT_BGSTM_RAINRIPPLE = 14,
-    EFFECT_BGWAT_BUBBLE = 7,
-    EFFECT_BGWAT_BUBBLE_BASE = 6,
     EFFECT_BNS_STG_STAR_TAIL = 12,
+    EFFECT_BGMST_GEN_CLOUD = 13,
+    EFFECT_BGSTM_RAINRIPPLE = 14,
+    EFFECT_NAMEENT_CODE = 15,
+    EFFECT_GET_NAMEENT_CODE = 16,
+    EFFECT_BGMST_WATER = 17,
     EFFECT_COMMENDFRAG = 18,
+    EFFECT_ENDING_BALLFRAG = 19,
+    EFFECT_BANANA_DROP = 20,
+    EFFECT_BGEND_WATER = 21,
+    EFFECT_BGBTMFIRE_PTCL = 22,
+    EFFECT_PIYO = 23,
     EFFECT_DUMMY1 = 24,
     EFFECT_DUMMY2 = 25,
     EFFECT_DUMMY3 = 26,
@@ -45,8 +46,6 @@ enum EffectType
     EFFECT_DUMMYD = 36,
     EFFECT_DUMMYE = 37,
     EFFECT_DUMMYF = 38,
-    EFFECT_ENDING_BALLFRAG = 19,
-    EFFECT_PIYO = 23,
     EFFECT_TMP001 = 39,
     EFFECT_TMP002 = 40,
     EFFECT_TMP003 = 41,
@@ -87,12 +86,14 @@ struct Effect
     uint16_t id;
     uint8_t unk_0x4[4];
     uint16_t type;
-    uint8_t unk_0xa;
+    uint8_t unk_0xa[166];
 };
+
+static_assert(sizeof(Effect) == 176);
 
 extern "C"
 {
-extern Effect[512] effects;
+extern Effect effects[512];
 extern TickableListMeta effectListMeta;
 }
 

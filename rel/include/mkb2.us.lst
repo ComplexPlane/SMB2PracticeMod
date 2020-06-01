@@ -48,13 +48,22 @@ CC008000:GXWGFifo
 8054dc2c:replayHeapSize
 8054dc18:gSomethingWithGameHeaps
 
+// Tickable
+805d4d4c:items
+805e0154:stageObjects
+805e90ac:sprites
+805be7e4:effects
+805bc490:itemListMeta
+805bc4a0:stobjListMeta
+805bc4b0:spriteListMeta
+805bc4c0:effectListMeta
+
 // Misc
 805bc470:dipSwitches
 805bc9a0:balls
 805bd980:stagedef
-805bd97c:itemGroupAnimStates
+805bd97c:itemgroups
 80553974:stageTimer
-805d4d4c:bananas
 
 // runtime register stuff
 8006b24c:_savefpr_14

@@ -17,8 +17,8 @@ struct State
     uint8_t ballRegion[0x5c];
     uint8_t somePhysicsRegion[0x1c];
     mkb::Quat charaRotation;
-    mkb::Itemgroup itemGroupAnimStates[MAX_ITEM_GROUPS];
-    mkb::Banana bananas[256]; // Save all state of all bananas for now
+    mkb::Itemgroup itemgroups[MAX_ITEM_GROUPS];
+    mkb::Item items[256]; // Save all state of all items for now
 };
 
 static bool s_stateExists;
@@ -41,11 +41,11 @@ void update()
 
         ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEM_GROUPS, "Too many item groups to savestate");
 
-        memcpy(s_state.bananas, mkb::bananas, sizeof(s_state.bananas));
+        memcpy(s_state.items, mkb::items, sizeof(s_state.items));
 
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
-            s_state.itemGroupAnimStates[i] = mkb::itemGroupAnimStates[i];
+            s_state.itemgroups[i] = mkb::itemgroups[i];
         }
     }
     else if (
@@ -60,11 +60,20 @@ void update()
         memcpy(reinterpret_cast<void *>(0x805BD830), s_state.somePhysicsRegion, sizeof(s_state.somePhysicsRegion));
         mkb::balls[0].ape->charaRotation = s_state.charaRotation;
 
-        memcpy(mkb::bananas, s_state.bananas, sizeof(s_state.bananas));
+        memcpy(mkb::items, s_state.items, sizeof(s_state.items));
 
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
-            mkb::itemGroupAnimStates[i] = s_state.itemGroupAnimStates[i];
+            mkb::itemgroups[i] = s_state.itemgroups[i];
+        }
+
+        // Destruct current spark effects so we don't see big sparks generated when changing position by a large amount
+        for (uint32_t i = 0; i < mkb::effectListMeta.upperBound; i++)
+        {
+            if (mkb::effectListMeta.statusList[i] && mkb::effects[i].type == mkb::EFFECT_COLI_PARTICLE)
+            {
+                mkb::effectListMeta.statusList[i] = 0;
+            }
         }
     }
 }

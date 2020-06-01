@@ -26,7 +26,7 @@ extern "C" {
 extern StagedefFileHeader *stagedef;
 
 // An array of item group / collision header animation states for the currently-loaded stage
-extern Itemgroup *itemGroupAnimStates;
+extern Itemgroup *itemgroups;
 
 }
 
