@@ -4,8 +4,7 @@
 
 #include <cstring>
 
-namespace savestate
-{
+namespace savestate {
 
 // Fixed max, for now
 static constexpr int MAX_ITEM_GROUPS = 50;
@@ -49,8 +48,9 @@ void update()
         }
     }
     else if (
-        (pad::buttonDown(pad::PAD_BUTTON_Y) && s_stateExists)
-        || (pad::buttonDown(pad::PAD_BUTTON_X) && !pad::buttonPressed(pad::PAD_BUTTON_X)))
+        s_stateExists && (
+            (pad::buttonDown(pad::PAD_BUTTON_Y)
+             || (pad::buttonDown(pad::PAD_BUTTON_X) && !pad::buttonPressed(pad::PAD_BUTTON_X)))))
     {
         // Load savestate
 
@@ -70,9 +70,16 @@ void update()
         // Destruct current spark effects so we don't see big sparks generated when changing position by a large amount
         for (uint32_t i = 0; i < mkb::effectListMeta.upperBound; i++)
         {
-            if (mkb::effectListMeta.statusList[i] && mkb::effects[i].type == mkb::EFFECT_COLI_PARTICLE)
+            if (mkb::effectListMeta.statusList[i])
             {
-                mkb::effectListMeta.statusList[i] = 0;
+                switch (mkb::effects[i].type)
+                {
+                    case mkb::EFFECT_COLI_PARTICLE:
+                    case mkb::EFFECT_HOLDING_BANANA:
+                    case mkb::EFFECT_GET_BANANA: {
+                        mkb::effectListMeta.statusList[i] = 0;
+                    }
+                }
             }
         }
     }
