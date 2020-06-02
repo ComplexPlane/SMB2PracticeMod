@@ -10,6 +10,7 @@
 #include <mkb/item.h>
 #include <mkb/effect.h>
 #include <mkb/stobj.h>
+#include <mkb/mode.h>
 
 #include <cstdint>
 

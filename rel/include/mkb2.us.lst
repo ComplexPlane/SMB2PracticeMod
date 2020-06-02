@@ -58,6 +58,13 @@ CC008000:GXWGFifo
 805bc4b0:spriteListMeta
 805bc4c0:effectListMeta
 
+// Mode
+8054dc30:mainMode
+8054dc34:subMode
+8054dc38:mainModeRequest
+8054dc3c:subModeRequest
+8054dc68:mainGameMode
+
 // Misc
 805bc470:dipSwitches
 805bc9a0:balls

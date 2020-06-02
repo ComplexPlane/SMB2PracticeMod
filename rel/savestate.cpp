@@ -27,6 +27,15 @@ void init() {}
 
 void update()
 {
+    // Must be in main game
+    if (mkb::mainMode != mkb::MD_GAME) return;
+
+    // Must be in practice mode
+    if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
+
+    // For now, the stage timer must be running
+    if (mkb::subMode != mkb::SMD_GAME_PLAY_MAIN) return;
+
     if (pad::buttonPressed(pad::PAD_BUTTON_X))
     {
         // Create savestate
