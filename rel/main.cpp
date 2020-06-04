@@ -61,7 +61,7 @@ void Mod::performAssemblyPatches()
 void run()
 {
     // Enable debug mode (appears to need to be called every frame)
-    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+//    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
     savestate::update();
 }

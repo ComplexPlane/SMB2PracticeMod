@@ -7,16 +7,18 @@
 namespace savestate {
 
 // Fixed max, for now
-static constexpr int MAX_ITEM_GROUPS = 50;
+static constexpr int MAX_ITEMGROUPS = 50;
 
 struct State
 {
     uint16_t stageTimer;
     uint8_t cameraRegion[0xe0];
     uint8_t ballRegion[0x5c];
+    uint32_t someBallBitfield;
     uint8_t somePhysicsRegion[0x1c];
     mkb::Quat charaRotation;
-    mkb::Itemgroup itemgroups[MAX_ITEM_GROUPS];
+    uint8_t charaAnimType;
+    mkb::Itemgroup itemgroups[MAX_ITEMGROUPS];
     mkb::Item items[256]; // Save all state of all items for now
 };
 
@@ -44,10 +46,12 @@ void update()
         s_state.stageTimer = mkb::stageTimer;
         memcpy(s_state.cameraRegion, reinterpret_cast<void *>(0x8054E03C), sizeof(s_state.cameraRegion));
         memcpy(s_state.ballRegion, reinterpret_cast<void *>(0x805bc9a0), sizeof(s_state.ballRegion));
+        s_state.someBallBitfield = mkb::balls[0].someBitfield;
         memcpy(s_state.somePhysicsRegion, reinterpret_cast<void *>(0x805BD830), sizeof(s_state.somePhysicsRegion));
         s_state.charaRotation = mkb::balls[0].ape->charaRotation;
+        s_state.charaAnimType = mkb::balls[0].ape->charaAnimType;
 
-        ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEM_GROUPS, "Too many item groups to savestate");
+        ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS, "Too many itemgroups to savestate");
 
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
 
@@ -66,8 +70,10 @@ void update()
         mkb::stageTimer = s_state.stageTimer;
         memcpy(reinterpret_cast<void *>(0x8054E03C), s_state.cameraRegion, sizeof(s_state.cameraRegion));
         memcpy(reinterpret_cast<void *>(0x805bc9a0), s_state.ballRegion, sizeof(s_state.ballRegion));
+        mkb::balls[0].someBitfield = s_state.someBallBitfield;
         memcpy(reinterpret_cast<void *>(0x805BD830), s_state.somePhysicsRegion, sizeof(s_state.somePhysicsRegion));
         mkb::balls[0].ape->charaRotation = s_state.charaRotation;
+        mkb::balls[0].ape->charaAnimType = s_state.charaAnimType;
 
         memcpy(mkb::items, s_state.items, sizeof(s_state.items));
 

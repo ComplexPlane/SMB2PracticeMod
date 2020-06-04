@@ -43,23 +43,27 @@ struct Ball
     uint32_t score;
     uint32_t levelStopwatch;
     uint8_t unk_0x84[24];
-    uint8_t gIntflag_0x9c; /* Created by retype action */
+    /* Some more flags related to ball state?
+     * The lowest-order bit may represent "is ball touching the ground" and I believe if affects the physics */
+    uint32_t someBitfield;
     uint8_t unk_0xa0[100];
     struct Ape *ape;
     uint8_t unk_0x108[46];
     int16_t gSomethingTimer; /* Created by retype action */
     uint8_t unk_0x138[120];
-};
+} __attribute__((__packed__));
 
 static_assert(sizeof(Ball) == 0x1b0);
 
 struct Ape
 {
     // More fields are known, I'm just being lazy with defining them for now
-    uint8_t unk_0x0[648];
+    uint8_t unk_0x0[0x86];
+    uint8_t charaAnimType;
+    uint8_t unk_0x69[513];
     Quat charaRotation;
     uint8_t unk_0x298[88];
-};
+} __attribute__((__packed__));
 
 static_assert(sizeof(Ape) == 0x2f0);
 
