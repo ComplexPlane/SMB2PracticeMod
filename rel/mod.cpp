@@ -3,6 +3,7 @@
 #include "patch.h"
 #include "global.h"
 #include "savestate.h"
+#include "titlescreen.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -42,6 +43,7 @@ void Mod::init()
 
     global::tetris.init();
     savestate::init();
+    titlescreen::init();
 
     global::drawDebugText_trampoline = patch::hookFunction(
         mkb::drawDebugText,

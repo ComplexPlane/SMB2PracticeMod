@@ -8,6 +8,8 @@ namespace mod
 extern "C" {
 
 // Assembly overwrite functions
+void CustomTitleScreenTextColor();
+
 // main.cpp
 void StartMainLoopAssembly();
 

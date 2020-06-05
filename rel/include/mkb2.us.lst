@@ -9,6 +9,7 @@
 800723b4:strlen
 80071f90:rand
 8006fed0:vsprintf
+800722fc:strcpy
 
 // GX
 CC008000:GXWGFifo
