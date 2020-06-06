@@ -10,7 +10,7 @@ namespace savestate
 {
 
 // Fixed max, for now
-static constexpr int MAX_ITEMGROUPS = 50;
+static constexpr int MAX_ITEMGROUPS = 100;
 
 struct State
 {
