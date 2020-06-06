@@ -11,9 +11,9 @@ static constexpr int MAX_ITEMGROUPS = 50;
 
 struct State
 {
+    mkb::Ball ball;
     uint16_t stageTimer;
     uint8_t cameraRegion[0xe0];
-    uint8_t ballRegion[0x5c];
     uint32_t someBallBitfield;
     uint8_t somePhysicsRegion[0x1c];
     mkb::Quat charaRotation;
@@ -108,9 +108,10 @@ void update()
         // Create savestate
         s_stateExists = true;
 
+
+        s_state.ball = mkb::balls[0];
         s_state.stageTimer = mkb::stageTimer;
         memcpy(s_state.cameraRegion, reinterpret_cast<void *>(0x8054E03C), sizeof(s_state.cameraRegion));
-        memcpy(s_state.ballRegion, reinterpret_cast<void *>(0x805bc9a0), sizeof(s_state.ballRegion));
         s_state.someBallBitfield = mkb::balls[0].someBitfield;
         memcpy(s_state.somePhysicsRegion, reinterpret_cast<void *>(0x805BD830), sizeof(s_state.somePhysicsRegion));
         s_state.charaRotation = mkb::balls[0].ape->charaRotation;
@@ -134,9 +135,9 @@ void update()
     {
         // Load savestate
 
+        mkb::balls[0] = s_state.ball;
         mkb::stageTimer = s_state.stageTimer;
         memcpy(reinterpret_cast<void *>(0x8054E03C), s_state.cameraRegion, sizeof(s_state.cameraRegion));
-        memcpy(reinterpret_cast<void *>(0x805bc9a0), s_state.ballRegion, sizeof(s_state.ballRegion));
         mkb::balls[0].someBitfield = s_state.someBallBitfield;
         memcpy(reinterpret_cast<void *>(0x805BD830), s_state.somePhysicsRegion, sizeof(s_state.somePhysicsRegion));
         mkb::balls[0].ape->charaRotation = s_state.charaRotation;
