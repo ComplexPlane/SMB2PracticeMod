@@ -1,10 +1,13 @@
 #include "savestate.h"
 #include "pad.h"
+#include "log.h"
+
 #include <mkb/mkb.h>
 
 #include <cstring>
 
-namespace savestate {
+namespace savestate
+{
 
 // Fixed max, for now
 static constexpr int MAX_ITEMGROUPS = 50;
@@ -27,7 +30,7 @@ struct State
     uint8_t pauseMenuState[56];
     uint32_t pauseMenuBitfield;
     mkb::Sprite pauseMenuSprite;
-    uint8_t pauseMenuTickableStatus; // If a pause menu sprite exists, this is the status in the sprite tickable list
+    uint8_t pauseMenuSpriteStatus; // If a pause menu sprite exists, this is the status in the sprite tickable list
 };
 
 static bool s_stateExists;
@@ -40,7 +43,7 @@ static void savePauseState()
     memcpy(s_state.pauseMenuState, reinterpret_cast<void *>(0x8054DCA8), 56);
     s_state.pauseMenuBitfield = *reinterpret_cast<uint32_t *>(0x805BC474);
 
-    s_state.pauseMenuTickableStatus = 0;
+    s_state.pauseMenuSpriteStatus = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
     for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)
@@ -51,7 +54,7 @@ static void savePauseState()
         // TODO declare and link the actual pause menu disp function instead of using a pointer value
         if (reinterpret_cast<uint32_t>(sprite.dispFunc) == 0x8032a4bc)
         {
-            s_state.pauseMenuTickableStatus = mkb::spriteListMeta.statusList[i];
+            s_state.pauseMenuSpriteStatus = mkb::spriteListMeta.statusList[i];
             s_state.pauseMenuSprite = sprite;
 
             break;
@@ -64,7 +67,7 @@ static void loadPauseState()
     // Copy the pause menu sprite into a new sprite slot
     // Only do this if the game isn't currently paused, and the game was paused in the savestate
     bool pausedNow = *reinterpret_cast<uint32_t *>(0x805BC474) & 8; // TODO actually give this a name
-    bool pausedInState = s_state.pauseMenuTickableStatus != 0;
+    bool pausedInState = s_state.pauseMenuSpriteStatus != 0;
 
     if (pausedNow && !pausedInState)
     {
@@ -89,7 +92,7 @@ static void loadPauseState()
         memcpy(reinterpret_cast<void *>(0x8054DCA8), s_state.pauseMenuState, 56);
 
         // Allocate a new pause menu sprite
-        int i = mkb::tickableListAllocElem(&mkb::spriteListMeta, s_state.pauseMenuTickableStatus);
+        int i = mkb::tickableListAllocElem(&mkb::spriteListMeta, s_state.pauseMenuSpriteStatus);
         mkb::sprites[i] = s_state.pauseMenuSprite;
     }
 }
@@ -110,7 +113,6 @@ void update()
         // Create savestate
         s_stateExists = true;
 
-
         s_state.ball = mkb::balls[0];
         s_state.stageTimer = mkb::stageTimer;
         memcpy(s_state.cameraRegion, reinterpret_cast<void *>(0x8054E03C), sizeof(s_state.cameraRegion));
@@ -119,7 +121,8 @@ void update()
         s_state.charaRotation = mkb::balls[0].ape->charaRotation;
         s_state.charaAnimType = mkb::balls[0].ape->charaAnimType;
 
-        ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS, "Too many itemgroups to savestate");
+        MOD_ASSERT_MSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS,
+                       "Too many itemgroups to savestate");
 
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
         s_state.itemListMeta = mkb::itemListMeta;
@@ -147,8 +150,6 @@ void update()
         mkb::balls[0].ape->charaRotation = s_state.charaRotation;
         mkb::balls[0].ape->charaAnimType = s_state.charaAnimType;
 
-        memcpy(mkb::items, s_state.items, sizeof(s_state.items));
-
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
             mkb::itemgroups[i] = s_state.itemgroups[i];
@@ -167,7 +168,8 @@ void update()
                 {
                     case mkb::EFFECT_COLI_PARTICLE:
                     case mkb::EFFECT_HOLDING_BANANA:
-                    case mkb::EFFECT_GET_BANANA: {
+                    case mkb::EFFECT_GET_BANANA:
+                    {
                         mkb::effectListMeta.statusList[i] = 0;
                     }
                 }
