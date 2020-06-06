@@ -9,6 +9,7 @@
 800723b4:strlen
 80071f90:rand
 8006fed0:vsprintf
+800722fc:strcpy
 
 // GX
 CC008000:GXWGFifo
@@ -57,6 +58,7 @@ CC008000:GXWGFifo
 805bc4a0:stobjListMeta
 805bc4b0:spriteListMeta
 805bc4c0:effectListMeta
+802b0990:tickableListAllocElem
 
 // Mode
 8054dc30:mainMode

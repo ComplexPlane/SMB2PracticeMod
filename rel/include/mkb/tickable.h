@@ -13,4 +13,11 @@ struct TickableListMeta
     uint8_t *statusList;
 };
 
+extern "C"
+{
+
+int tickableListAllocElem(TickableListMeta *meta, uint8_t status);
+
+}
+
 }

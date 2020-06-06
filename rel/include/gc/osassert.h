@@ -1,6 +1,8 @@
 #pragma once
 
 // Necessary to use macros here so file information is accurate
+// Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore assertions
+// Prefer to use MOD_ASSERT and friends instead
 
 #define ASSERT(exp)                                             \
     (void) ((exp) ||                                            \

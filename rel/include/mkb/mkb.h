@@ -11,6 +11,7 @@
 #include <mkb/effect.h>
 #include <mkb/stobj.h>
 #include <mkb/mode.h>
+#include <mkb/sprite.h>
 
 #include <cstdint>
 

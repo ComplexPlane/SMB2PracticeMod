@@ -5,6 +5,8 @@
 
 namespace mkb {
 
+constexpr int MAX_EFFECTS = 512;
+
 enum EffectType
 { /* Abbreviated "ET" in the game */
     EFFECT_PAPERFRAG = 0,
@@ -93,7 +95,7 @@ static_assert(sizeof(Effect) == 176);
 
 extern "C"
 {
-extern Effect effects[512];
+extern Effect effects[MAX_EFFECTS];
 extern TickableListMeta effectListMeta;
 }
 

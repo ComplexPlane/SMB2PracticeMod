@@ -3,6 +3,8 @@
 namespace mkb
 {
 
+constexpr int MAX_STAGE_OBJECTS = 256;
+
 enum StageObjectType
 {
     STOBJ_BUMPER = 0,
@@ -32,7 +34,7 @@ static_assert(sizeof(StageObject) == 204);
 
 extern "C"
 {
-extern StageObject stageObjects[256];
+extern StageObject stageObjects[MAX_STAGE_OBJECTS];
 extern TickableListMeta stobjListMeta;
 }
 
