@@ -60,7 +60,9 @@ struct Ape
     // More fields are known, I'm just being lazy with defining them for now
     uint8_t unk_0x0[0x86];
     uint8_t charaAnimType;
-    uint8_t unk_0x69[513];
+    uint8_t unk_0x69[449];
+    uint32_t flag1;
+    uint8_t unk_0x24c[60];
     Quat charaRotation;
     uint8_t unk_0x298[88];
 } __attribute__((__packed__));
@@ -70,6 +72,7 @@ static_assert(sizeof(Ape) == 0x2f0);
 extern "C" {
 
 extern Ball balls[8];
+extern uint32_t ballMode;
 
 }
 

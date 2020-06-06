@@ -71,6 +71,7 @@ CC008000:GXWGFifo
 805bd980:stagedef
 805bd97c:itemgroups
 80553974:stageTimer
+80553970:ballMode
 
 // runtime register stuff
 8006b24c:_savefpr_14
