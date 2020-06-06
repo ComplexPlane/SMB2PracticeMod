@@ -52,7 +52,6 @@ static void savePauseState()
             s_state.pauseMenuTickableStatus = mkb::spriteListMeta.statusList[i];
             s_state.pauseMenuSprite = sprite;
 
-            gc::OSReport("[mod] sprite status list: 0x%08X\n", mkb::spriteListMeta.statusList);
             break;
         }
     }
@@ -65,12 +64,8 @@ static void loadPauseState()
     bool pausedNow = *reinterpret_cast<uint32_t *>(0x805BC474) & 8; // TODO actually give this a name
     bool pausedInState = s_state.pauseMenuTickableStatus != 0;
 
-    gc::OSReport("[mod] pausedNow: %d, pausedInState: %d\n", pausedNow, pausedInState);
-
     if (pausedNow && !pausedInState)
     {
-        gc::OSReport("[mod] Looking for pause menu sprite to destroy\n");
-
         // Restore pause menu bitfield that should "unlock" the game
         *reinterpret_cast<uint32_t *>(0x805BC474) = s_state.pauseMenuBitfield;
 
@@ -81,7 +76,6 @@ static void loadPauseState()
 
             if (reinterpret_cast<uint32_t>(mkb::sprites[i].dispFunc) == 0x8032a4bc)
             {
-                gc::OSReport("[mod] Found pause menu sprite to destroy\n");
                 mkb::spriteListMeta.statusList[i] = 0;
                 break;
             }
@@ -95,7 +89,6 @@ static void loadPauseState()
         // Allocate a new pause menu sprite
         int i = mkb::tickableListAllocElem(&mkb::spriteListMeta, s_state.pauseMenuTickableStatus);
         mkb::sprites[i] = s_state.pauseMenuSprite;
-        gc::OSReport("[mod] Allocated new pause menu sprite\n");
     }
 }
 

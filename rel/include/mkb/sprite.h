@@ -85,7 +85,7 @@ struct Sprite
     float field_0x98;
     float field_0x9c;
     char text[48]; /* If this sprite displays text, this is what it shows, otherwise this is usually just an identifier name */
-} __attribute__((__packed__));;
+} __attribute__((__packed__));
 
 static_assert(sizeof(Sprite) == 208);
 
