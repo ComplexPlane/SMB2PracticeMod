@@ -6,6 +6,8 @@
 namespace mkb
 {
 
+constexpr int MAX_ITEMS = 256;
+
 enum ItemType
 {
     ITEM_COIN = 0,
@@ -45,7 +47,7 @@ static_assert(sizeof(Item) == 180);
 
 extern "C"
 {
-extern Item items[256];
+extern Item items[MAX_ITEMS];
 extern TickableListMeta itemListMeta;
 }
 

@@ -19,7 +19,9 @@ struct State
     mkb::Quat charaRotation;
     uint8_t charaAnimType;
     mkb::Itemgroup itemgroups[MAX_ITEMGROUPS];
-    mkb::Item items[256]; // Save all state of all items for now
+    mkb::Item items[mkb::MAX_ITEMS]; // Save all state of all items for now
+    mkb::TickableListMeta itemListMeta;
+    uint8_t itemStatusList[mkb::MAX_ITEMS];
 
     // Pause menu state
     uint8_t pauseMenuState[56];
@@ -120,6 +122,8 @@ void update()
         ASSERTMSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS, "Too many itemgroups to savestate");
 
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
+        s_state.itemListMeta = mkb::itemListMeta;
+        memcpy(s_state.itemStatusList, mkb::itemListMeta.statusList, sizeof(s_state.itemStatusList));
 
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
@@ -149,6 +153,10 @@ void update()
         {
             mkb::itemgroups[i] = s_state.itemgroups[i];
         }
+
+        memcpy(mkb::items, s_state.items, sizeof(s_state.items));
+        mkb::itemListMeta = s_state.itemListMeta;
+        memcpy(mkb::itemListMeta.statusList, s_state.itemStatusList, sizeof(s_state.itemStatusList));
 
         // Destruct current spark effects so we don't see big sparks generated when changing position by a large amount
         for (uint32_t i = 0; i < mkb::effectListMeta.upperBound; i++)

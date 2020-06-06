@@ -8,6 +8,8 @@
 namespace mkb
 {
 
+constexpr int MAX_SPRITES = 80;
+
 typedef void (*SpriteFunc)(struct Sprite *sprite);
 
 struct Sprite
@@ -91,7 +93,7 @@ static_assert(sizeof(Sprite) == 208);
 
 extern "C"
 {
-extern Sprite sprites[80];
+extern Sprite sprites[MAX_SPRITES];
 extern TickableListMeta spriteListMeta;
 }
 
