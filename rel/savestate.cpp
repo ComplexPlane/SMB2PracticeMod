@@ -110,14 +110,15 @@ void update()
     // Must be in practice mode
     if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
 
-    // TODO handle SMB_GAME_GOAL_INIT
     if (mkb::subMode != mkb::SMD_GAME_PLAY_MAIN
+        && mkb::subMode != mkb::SMD_GAME_GOAL_INIT
         && mkb::subMode != mkb::SMD_GAME_GOAL_MAIN)
     {
         return;
     }
 
-    if (pad::buttonPressed(pad::PAD_BUTTON_X))
+    // Only allow creating state while the timer is running
+    if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
     {
         // Create savestate
         s_stateExists = true;
