@@ -269,7 +269,7 @@ __pycache__/
 /ApeSphere.*.gci
 /ApeSphere.*.elf
 
-/.vscode/
+.vscode/
 /cmake-build-debug/
 
 /go.sh
