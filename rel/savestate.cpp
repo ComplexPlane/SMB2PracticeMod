@@ -221,6 +221,21 @@ void update()
         mkb::ballMode = s_state.ballMode;
         mkb::balls[0].ape->flag1 = s_state.apeFlag1;
 
+        // Clear post-goal sprites
+        for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)
+        {
+            if (mkb::spriteListMeta.statusList[i] == 0) continue;
+
+            auto spriteDispFunc = mkb::sprites[i].dispFunc;
+            bool postGoalSprite = (
+                spriteDispFunc == mkb::goalSpriteDisp
+                || spriteDispFunc == mkb::clearScoreSpriteDisp
+                || spriteDispFunc == mkb::warpBonusSpriteDisp
+                || spriteDispFunc == mkb::timeBonusSpriteDisp
+                || spriteDispFunc == mkb::stageScoreSpriteDisp);
+            if (postGoalSprite) mkb::spriteListMeta.statusList[i] = 0;
+        }
+
         loadPauseState();
     }
 }
