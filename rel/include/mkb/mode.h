@@ -313,6 +313,7 @@ extern int subMode;
 extern int mainModeRequest;
 extern int subModeRequest;
 extern int mainGameMode;
+extern int subModeFrameCounter;
 }
 
 }

@@ -110,11 +110,38 @@ void update()
     // Must be in practice mode
     if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
 
-    if (mkb::subMode != mkb::SMD_GAME_PLAY_MAIN
-        && mkb::subMode != mkb::SMD_GAME_GOAL_INIT
-        && mkb::subMode != mkb::SMD_GAME_GOAL_MAIN)
+    switch (mkb::subMode)
     {
-        return;
+        case mkb::SMD_GAME_PLAY_MAIN:
+        case mkb::SMD_GAME_GOAL_INIT:
+        case mkb::SMD_GAME_GOAL_MAIN:
+        case mkb::SMD_GAME_RINGOUT_INIT:
+        case mkb::SMD_GAME_RINGOUT_MAIN:
+        case mkb::SMD_GAME_TIMEOVER_INIT:
+        case mkb::SMD_GAME_TIMEOVER_MAIN:
+            break;
+        default:
+            return;
+    }
+
+    // Prevent replays from playing in goal and fallout submodes by locking initial submode frame counter
+    switch (mkb::subMode)
+    {
+        case mkb::SMD_GAME_GOAL_MAIN:
+        {
+            mkb::subModeFrameCounter = 360;
+            break;
+        }
+        case mkb::SMD_GAME_RINGOUT_MAIN:
+        {
+            mkb::subModeFrameCounter = 270;
+            break;
+        }
+        case mkb::SMD_GAME_TIMEOVER_MAIN:
+        {
+            mkb::subModeFrameCounter = 120;
+            break;
+        }
     }
 
     // Only allow creating state while the timer is running
