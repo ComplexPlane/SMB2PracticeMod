@@ -26,6 +26,7 @@ struct State
 
     uint32_t ballMode;
     uint32_t apeFlag1;
+    uint16_t mysteryStandstillFrameCounter;
 
     mkb::Item items[mkb::MAX_ITEMS]; // Save all state of all items for now
     mkb::TickableListMeta itemListMeta;
@@ -216,6 +217,7 @@ void update()
 
         s_state.ballMode = mkb::ballMode;
         s_state.apeFlag1 = mkb::balls[0].ape->flag1;
+        s_state.mysteryStandstillFrameCounter = mkb::mysteryStandstillFrameCounter;
 
         savePauseState();
         saveGoalState();
@@ -263,6 +265,7 @@ void update()
 
         mkb::ballMode = s_state.ballMode;
         mkb::balls[0].ape->flag1 = s_state.apeFlag1;
+        mkb::mysteryStandstillFrameCounter = s_state.mysteryStandstillFrameCounter;
 
         // Clear post-goal sprites
         for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)

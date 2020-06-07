@@ -73,6 +73,7 @@ extern "C" {
 
 extern Ball balls[8];
 extern uint32_t ballMode;
+extern uint16_t mysteryStandstillFrameCounter;
 
 }
 
