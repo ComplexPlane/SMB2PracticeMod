@@ -100,6 +100,8 @@ void clearScoreSpriteDisp(Sprite *sprite);
 void warpBonusSpriteDisp(Sprite *sprite);
 void timeBonusSpriteDisp(Sprite *sprite);
 void stageScoreSpriteDisp(Sprite *sprite);
+void falloutSpriteTick(uint8_t *status, Sprite *sprite);
+void bonusFinishSpriteTick(uint8_t *status, Sprite *sprite);
 }
 
 }

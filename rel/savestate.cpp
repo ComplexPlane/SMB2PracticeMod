@@ -226,13 +226,15 @@ void update()
         {
             if (mkb::spriteListMeta.statusList[i] == 0) continue;
 
-            auto spriteDispFunc = mkb::sprites[i].dispFunc;
+            mkb::Sprite *sprite = &mkb::sprites[i];
             bool postGoalSprite = (
-                spriteDispFunc == mkb::goalSpriteDisp
-                || spriteDispFunc == mkb::clearScoreSpriteDisp
-                || spriteDispFunc == mkb::warpBonusSpriteDisp
-                || spriteDispFunc == mkb::timeBonusSpriteDisp
-                || spriteDispFunc == mkb::stageScoreSpriteDisp);
+                sprite->dispFunc == mkb::goalSpriteDisp
+                || sprite->dispFunc == mkb::clearScoreSpriteDisp
+                || sprite->dispFunc == mkb::warpBonusSpriteDisp
+                || sprite->dispFunc == mkb::timeBonusSpriteDisp
+                || sprite->dispFunc == mkb::stageScoreSpriteDisp
+                || sprite->tickFunc == mkb::falloutSpriteTick
+                || sprite->tickFunc == mkb::bonusFinishSpriteTick);
             if (postGoalSprite) mkb::spriteListMeta.statusList[i] = 0;
         }
 
