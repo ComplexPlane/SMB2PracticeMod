@@ -46,8 +46,7 @@ void Mod::init()
     titlescreen::init();
 
     global::drawDebugText_trampoline = patch::hookFunction(
-        mkb::drawDebugText,
-        []()
+        mkb::drawDebugText, []()
         {
             // Drawing hook for UI elements.
             // Gets run at the start of smb2's function which draws debug text windows,

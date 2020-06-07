@@ -60,6 +60,14 @@ CC008000:GXWGFifo
 805bc4c0:effectListMeta
 802b0990:tickableListAllocElem
 
+// Sprite
+803311dc:clearScoreSpriteDisp
+80331488:warpBonusSpriteDisp
+80331714:timeBonusSpriteDisp
+803319a0:stageScoreSpriteDisp
+8032a4bc:pauseMenuSpriteDisp
+8032e134:goalSpriteDisp
+
 // Mode
 8054dc30:mainMode
 8054dc34:subMode

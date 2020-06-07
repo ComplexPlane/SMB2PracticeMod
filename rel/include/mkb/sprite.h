@@ -10,8 +10,6 @@ namespace mkb
 
 constexpr int MAX_SPRITES = 80;
 
-typedef void (*SpriteFunc)(struct Sprite *sprite);
-
 struct Sprite
 {
     uint8_t visible; /* Whether it's visible or not? */
@@ -44,9 +42,9 @@ struct Sprite
     uint8_t field_0x2a;
     uint8_t field_0x2b;
     struct SpriteTex *tex;
-    SpriteFunc destFunc;
-    SpriteFunc tickFunc;
-    SpriteFunc dispFunc;
+    void (*destFunc)(Sprite *sprite);
+    void (*tickFunc)(uint8_t *status, Sprite *sprite);
+    void (*dispFunc)(Sprite *sprite);
     uint16_t field_0x3c;
     uint8_t field_0x3e;
     uint8_t field_0x3f;
@@ -95,6 +93,13 @@ extern "C"
 {
 extern Sprite sprites[MAX_SPRITES];
 extern TickableListMeta spriteListMeta;
+
+void pauseMenuSpriteDisp(Sprite *sprite);
+void goalSpriteDisp(Sprite *sprite);
+void clearScoreSpriteDisp(Sprite *sprite);
+void warpBonusSpriteDisp(Sprite *sprite);
+void timeBonusSpriteDisp(Sprite *sprite);
+void stageScoreSpriteDisp(Sprite *sprite);
 }
 
 }
