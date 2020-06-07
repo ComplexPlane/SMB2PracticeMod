@@ -36,6 +36,11 @@ struct State
     uint32_t pauseMenuBitfield;
     mkb::Sprite pauseMenuSprite;
     uint8_t pauseMenuSpriteStatus; // If a pause menu sprite exists, this is the status in the sprite tickable list
+
+    // Goals
+    mkb::GoalTape goalTapes[mkb::MAX_GOALS];
+    mkb::GoalBag goalBags[mkb::MAX_GOALS];
+    mkb::StageObject goalStobjs[mkb::MAX_GOALS * 2]; // For both goaltape and goalbag stobjs
 };
 
 static bool s_stateExists;
@@ -99,6 +104,43 @@ static void loadPauseState()
         // Allocate a new pause menu sprite
         int i = mkb::tickableListAllocElem(&mkb::spriteListMeta, s_state.pauseMenuSpriteStatus);
         mkb::sprites[i] = s_state.pauseMenuSprite;
+    }
+}
+
+static void saveGoalState()
+{
+    memcpy(s_state.goalTapes, mkb::goalTapes, sizeof(s_state.goalTapes));
+    memcpy(s_state.goalBags, mkb::goalBags, sizeof(s_state.goalBags));
+
+    uint32_t goalStobjIdx = 0;
+    for (uint32_t stobjIdx = 0; goalStobjIdx < mkb::stagedef->goalCount * 2; stobjIdx++)
+    {
+        if (mkb::stobjListMeta.statusList[stobjIdx] == 0) continue;
+
+        mkb::StageObject *stobj = &mkb::stageObjects[stobjIdx];
+        if (stobj->type == mkb::STOBJ_GOALBAG || stobj->type == mkb::STOBJ_GOALTAPE)
+        {
+            s_state.goalStobjs[goalStobjIdx++] = *stobj;
+        }
+    }
+}
+
+static void loadGoalState()
+{
+    memcpy(mkb::goalTapes, s_state.goalTapes, sizeof(s_state.goalTapes));
+    memcpy(mkb::goalBags, s_state.goalBags, sizeof(s_state.goalBags));
+
+    // Replace existing goaltape and goalbag stobjs with the ones we saved
+    uint32_t goalStobjIdx = 0;
+    for (uint32_t stobjIdx = 0; goalStobjIdx < mkb::stagedef->goalCount * 2; stobjIdx++)
+    {
+        if (mkb::stobjListMeta.statusList[stobjIdx] == 0) continue;
+
+        mkb::StageObject *stobj = &mkb::stageObjects[stobjIdx];
+        if (stobj->type == mkb::STOBJ_GOALBAG || stobj->type == mkb::STOBJ_GOALTAPE)
+        {
+            *stobj = s_state.goalStobjs[goalStobjIdx++];
+        }
     }
 }
 
@@ -176,6 +218,7 @@ void update()
         s_state.apeFlag1 = mkb::balls[0].ape->flag1;
 
         savePauseState();
+        saveGoalState();
     }
     else if (
         s_stateExists && (
@@ -239,6 +282,7 @@ void update()
         }
 
         loadPauseState();
+        loadGoalState();
     }
 }
 

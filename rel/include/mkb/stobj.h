@@ -4,6 +4,7 @@ namespace mkb
 {
 
 constexpr int MAX_STAGE_OBJECTS = 256;
+constexpr int MAX_GOALS = 16;
 
 enum StageObjectType
 {
@@ -32,10 +33,28 @@ struct StageObject
 
 static_assert(sizeof(StageObject) == 204);
 
+// Extra data associated with goaltape stage objects
+struct GoalTape
+{
+    uint8_t unk_0x0[408];
+};
+
+static_assert(sizeof(GoalTape) == 408);
+
+// Extra data associated with party ball stage objects
+struct GoalBag
+{
+    uint8_t unk_0x0[40];
+};
+
+static_assert(sizeof(GoalBag) == 40);
+
 extern "C"
 {
 extern StageObject stageObjects[MAX_STAGE_OBJECTS];
 extern TickableListMeta stobjListMeta;
+extern GoalTape goalTapes[MAX_GOALS];
+extern GoalBag goalBags[MAX_GOALS];
 }
 
 }

@@ -59,6 +59,8 @@ CC008000:GXWGFifo
 805bc4b0:spriteListMeta
 805bc4c0:effectListMeta
 802b0990:tickableListAllocElem
+805e7458:goalTapes
+805e8dd8:goalBags
 
 // Sprite
 803311dc:clearScoreSpriteDisp
