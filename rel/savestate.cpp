@@ -129,7 +129,8 @@ void update()
     {
         case mkb::SMD_GAME_GOAL_MAIN:
         {
-            mkb::subModeFrameCounter = 360;
+            // Just prevent the timer from running out completely, so that the GOAL sound plays
+            if (mkb::subModeFrameCounter == 1) mkb::subModeFrameCounter = 2;
             break;
         }
         case mkb::SMD_GAME_RINGOUT_MAIN:
