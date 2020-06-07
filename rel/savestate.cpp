@@ -1,6 +1,7 @@
 #include "savestate.h"
 #include "pad.h"
 #include "log.h"
+#include "patch.h"
 
 #include <mkb/mkb.h>
 
@@ -47,7 +48,23 @@ struct State
 static bool s_stateExists;
 static State s_state;
 
-void init() {}
+static void (*s_setMinimapMode_trampoline)(uint32_t mode);
+
+void init()
+{
+    // Hook setMinimapMode() to prevent the minimap from being hidden on goal/fallout
+    // This way the minimap is unaffected when loading savestates after goal/fallout
+    s_setMinimapMode_trampoline = patch::hookFunction(
+        mkb::setMinimapMode, [](uint32_t mode)
+        {
+            if (!(mkb::mainMode == mkb::MD_GAME
+                && mkb::mainGameMode == mkb::MGM_PRACTICE
+                && mode == mkb::MINIMAP_SHRINK))
+            {
+                s_setMinimapMode_trampoline(mode);
+            }
+        });
+}
 
 static void savePauseState()
 {

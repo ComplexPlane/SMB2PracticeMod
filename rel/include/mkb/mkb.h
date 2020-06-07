@@ -12,6 +12,7 @@
 #include <mkb/stobj.h>
 #include <mkb/mode.h>
 #include <mkb/sprite.h>
+#include <mkb/minimap.h>
 
 #include <cstdint>
 

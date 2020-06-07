@@ -79,6 +79,7 @@ CC008000:GXWGFifo
 8054dc3c:subModeRequest
 8054dc68:mainGameMode
 8054dc40:subModeFrameCounter
+8033b70c:setMinimapMode
 
 // Misc
 805bc470:dipSwitches
