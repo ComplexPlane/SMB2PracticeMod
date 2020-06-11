@@ -48,7 +48,7 @@ static_assert(sizeof(Item) == 180);
 extern "C"
 {
 extern Item items[MAX_ITEMS];
-extern TickableListMeta itemListMeta;
+extern TickableListInfo itemListInfo;
 }
 
 }
