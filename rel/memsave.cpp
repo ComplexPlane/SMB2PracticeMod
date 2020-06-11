@@ -20,11 +20,6 @@ MemSave::~MemSave()
     clear();
 }
 
-void MemSave::enterPreallocMode()
-{
-    clear();
-}
-
 bool MemSave::enterSaveStateMode()
 {
     m_saveBuf = new uint8_t[m_saveBufIdx];
@@ -67,6 +62,14 @@ void MemSave::loadState()
         memcpy(m_regions[i].ptr, &m_saveBuf[bufPos], m_regions[i].size);
         bufPos += m_regions[i].size;
     }
+}
+
+void MemSave::printStats()
+{
+    gc::OSReport("[mod] Memsave total size: %d bytes\n", m_saveBufLen + m_regionsLen * sizeof(RegionInfo));
+    gc::OSReport("[mod] Memsave save buffer size: %d bytes\n", m_saveBufLen);
+    gc::OSReport("[mod] Memsave region metadata size: %d bytes\n", m_regionsLen * sizeof(RegionInfo));
+    gc::OSReport("[mod] Memsave region count: %d\n", m_regionsLen);
 }
 
 void MemSave::clear()

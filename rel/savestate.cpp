@@ -2,6 +2,7 @@
 #include "pad.h"
 #include "log.h"
 #include "patch.h"
+#include "memsave.h"
 
 #include <mkb/mkb.h>
 
@@ -88,8 +89,7 @@ static void savePauseState()
         if (mkb::spriteListInfo.statusList[i] == 0) continue;
 
         mkb::Sprite &sprite = mkb::sprites[i];
-        // TODO declare and link the actual pause menu disp function instead of using a pointer value
-        if (reinterpret_cast<uint32_t>(sprite.dispFunc) == 0x8032a4bc)
+        if (sprite.dispFunc == mkb::pauseMenuSpriteDisp)
         {
             s_state.pauseMenuSpriteStatus = mkb::spriteListInfo.statusList[i];
             s_state.pauseMenuSprite = sprite;

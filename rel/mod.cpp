@@ -18,8 +18,8 @@ Mod *gMod = nullptr;
 
 void main()
 {
-    // Create the heap to use with a size of 0x15000 bytes
-    heap::makeHeap(0x15000);
+    // Create the heap to use with a size of 0x40000 bytes (256 KiB) for now
+    heap::makeHeap(0x40000);
 
     Mod *mod = new Mod();
     mod->init();
