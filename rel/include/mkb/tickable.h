@@ -5,7 +5,7 @@
 namespace mkb
 {
 
-struct TickableListMeta
+struct TickableListInfo
 {
     uint32_t len;
     uint32_t lowFreeIdx;
@@ -16,7 +16,7 @@ struct TickableListMeta
 extern "C"
 {
 
-int tickableListAllocElem(TickableListMeta *meta, uint8_t status);
+int tickableListAllocElem(TickableListInfo *info, uint8_t status);
 
 }
 

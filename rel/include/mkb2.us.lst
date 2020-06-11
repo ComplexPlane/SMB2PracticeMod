@@ -54,10 +54,10 @@ CC008000:GXWGFifo
 805e0154:stageObjects
 805e90ac:sprites
 805be7e4:effects
-805bc490:itemListMeta
-805bc4a0:stobjListMeta
-805bc4b0:spriteListMeta
-805bc4c0:effectListMeta
+805bc490:itemListInfo
+805bc4a0:stobjListInfo
+805bc4b0:spriteListInfo
+805bc4c0:effectListInfo
 802b0990:tickableListAllocElem
 805e7458:goalTapes
 805e8dd8:goalBags

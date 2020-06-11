@@ -13,6 +13,13 @@ namespace savestate
 // Fixed max, for now
 static constexpr int MAX_ITEMGROUPS = 100;
 
+struct SeesawSave
+{
+    float rot;
+    float rotCopy;
+    uint8_t unk[4];
+};
+
 struct State
 {
     uint32_t subMode;
@@ -24,13 +31,15 @@ struct State
     mkb::Quat charaRotation;
     uint8_t charaAnimType;
     mkb::Itemgroup itemgroups[MAX_ITEMGROUPS];
+    SeesawSave seesaws[MAX_ITEMGROUPS];
+    mkb::StageObject stageObjects[mkb::MAX_STAGE_OBJECTS];
 
     uint32_t ballMode;
     uint32_t apeFlag1;
     uint16_t mysteryStandstillFrameCounter;
 
     mkb::Item items[mkb::MAX_ITEMS]; // Save all state of all items for now
-    mkb::TickableListMeta itemListMeta;
+    mkb::TickableListInfo itemListInfo;
     uint8_t itemStatusList[mkb::MAX_ITEMS];
 
     // Pause menu state
@@ -74,15 +83,15 @@ static void savePauseState()
     s_state.pauseMenuSpriteStatus = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
-    for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
     {
-        if (mkb::spriteListMeta.statusList[i] == 0) continue;
+        if (mkb::spriteListInfo.statusList[i] == 0) continue;
 
         mkb::Sprite &sprite = mkb::sprites[i];
         // TODO declare and link the actual pause menu disp function instead of using a pointer value
         if (reinterpret_cast<uint32_t>(sprite.dispFunc) == 0x8032a4bc)
         {
-            s_state.pauseMenuSpriteStatus = mkb::spriteListMeta.statusList[i];
+            s_state.pauseMenuSpriteStatus = mkb::spriteListInfo.statusList[i];
             s_state.pauseMenuSprite = sprite;
 
             break;
@@ -103,13 +112,13 @@ static void loadPauseState()
         *reinterpret_cast<uint32_t *>(0x805BC474) = s_state.pauseMenuBitfield;
 
         // Destroy the pause menu sprite that currently exists
-        for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)
+        for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
         {
-            if (mkb::spriteListMeta.statusList[i] == 0) continue;
+            if (mkb::spriteListInfo.statusList[i] == 0) continue;
 
             if (reinterpret_cast<uint32_t>(mkb::sprites[i].dispFunc) == 0x8032a4bc)
             {
-                mkb::spriteListMeta.statusList[i] = 0;
+                mkb::spriteListInfo.statusList[i] = 0;
                 break;
             }
         }
@@ -120,7 +129,7 @@ static void loadPauseState()
         memcpy(reinterpret_cast<void *>(0x8054DCA8), s_state.pauseMenuState, 56);
 
         // Allocate a new pause menu sprite
-        int i = mkb::tickableListAllocElem(&mkb::spriteListMeta, s_state.pauseMenuSpriteStatus);
+        int i = mkb::tickableListAllocElem(&mkb::spriteListInfo, s_state.pauseMenuSpriteStatus);
         mkb::sprites[i] = s_state.pauseMenuSprite;
     }
 }
@@ -133,7 +142,7 @@ static void saveGoalState()
     uint32_t goalStobjIdx = 0;
     for (uint32_t stobjIdx = 0; goalStobjIdx < mkb::stagedef->goalCount * 2; stobjIdx++)
     {
-        if (mkb::stobjListMeta.statusList[stobjIdx] == 0) continue;
+        if (mkb::stobjListInfo.statusList[stobjIdx] == 0) continue;
 
         mkb::StageObject *stobj = &mkb::stageObjects[stobjIdx];
         if (stobj->type == mkb::STOBJ_GOALBAG || stobj->type == mkb::STOBJ_GOALTAPE)
@@ -152,12 +161,36 @@ static void loadGoalState()
     uint32_t goalStobjIdx = 0;
     for (uint32_t stobjIdx = 0; goalStobjIdx < mkb::stagedef->goalCount * 2; stobjIdx++)
     {
-        if (mkb::stobjListMeta.statusList[stobjIdx] == 0) continue;
+        if (mkb::stobjListInfo.statusList[stobjIdx] == 0) continue;
 
         mkb::StageObject *stobj = &mkb::stageObjects[stobjIdx];
         if (stobj->type == mkb::STOBJ_GOALBAG || stobj->type == mkb::STOBJ_GOALTAPE)
         {
             *stobj = s_state.goalStobjs[goalStobjIdx++];
+        }
+    }
+}
+
+static void saveSeesawState()
+{
+    int seesawIdx = 0;
+    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    {
+        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        {
+            memcpy(&s_state.seesaws[seesawIdx++], mkb::itemgroups[i].seesawInfo->state, sizeof(SeesawSave));
+        }
+    }
+}
+
+static void loadSeesawState()
+{
+    int seesawIdx = 0;
+    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    {
+        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        {
+            memcpy(mkb::itemgroups[i].seesawInfo->state, &s_state.seesaws[seesawIdx++], sizeof(SeesawSave));
         }
     }
 }
@@ -208,6 +241,9 @@ void update()
     // Only allow creating state while the timer is running
     if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
     {
+        MOD_ASSERT_MSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS,
+                       "Too many itemgroups to savestate");
+
         // Create savestate
         s_stateExists = true;
 
@@ -220,12 +256,10 @@ void update()
         s_state.charaRotation = mkb::balls[0].ape->charaRotation;
         s_state.charaAnimType = mkb::balls[0].ape->charaAnimType;
 
-        MOD_ASSERT_MSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS,
-                       "Too many itemgroups to savestate");
-
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
-        s_state.itemListMeta = mkb::itemListMeta;
-        memcpy(s_state.itemStatusList, mkb::itemListMeta.statusList, sizeof(s_state.itemStatusList));
+        s_state.itemListInfo = mkb::itemListInfo;
+        memcpy(s_state.itemStatusList, mkb::itemListInfo.statusList, sizeof(s_state.itemStatusList));
+        memcpy(s_state.stageObjects, mkb::stageObjects, sizeof(s_state.stageObjects));
 
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
@@ -238,6 +272,9 @@ void update()
 
         savePauseState();
         saveGoalState();
+        saveSeesawState();
+
+        gc::OSReport("[mod] Saved state with size %d bytes\n", sizeof(State));
     }
     else if (
         s_stateExists && (
@@ -261,13 +298,14 @@ void update()
         }
 
         memcpy(mkb::items, s_state.items, sizeof(s_state.items));
-        mkb::itemListMeta = s_state.itemListMeta;
-        memcpy(mkb::itemListMeta.statusList, s_state.itemStatusList, sizeof(s_state.itemStatusList));
+        mkb::itemListInfo = s_state.itemListInfo;
+        memcpy(mkb::itemListInfo.statusList, s_state.itemStatusList, sizeof(s_state.itemStatusList));
+        memcpy(mkb::stageObjects, s_state.stageObjects, sizeof(s_state.stageObjects));
 
         // Destruct current spark effects so we don't see big sparks generated when changing position by a large amount
-        for (uint32_t i = 0; i < mkb::effectListMeta.upperBound; i++)
+        for (uint32_t i = 0; i < mkb::effectListInfo.upperBound; i++)
         {
-            if (mkb::effectListMeta.statusList[i] == 0) continue;
+            if (mkb::effectListInfo.statusList[i] == 0) continue;
 
             switch (mkb::effects[i].type)
             {
@@ -275,7 +313,7 @@ void update()
                 case mkb::EFFECT_HOLDING_BANANA:
                 case mkb::EFFECT_GET_BANANA:
                 {
-                    mkb::effectListMeta.statusList[i] = 0;
+                    mkb::effectListInfo.statusList[i] = 0;
                 }
             }
         }
@@ -285,9 +323,9 @@ void update()
         mkb::mysteryStandstillFrameCounter = s_state.mysteryStandstillFrameCounter;
 
         // Clear post-goal sprites
-        for (uint32_t i = 0; i < mkb::spriteListMeta.upperBound; i++)
+        for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
         {
-            if (mkb::spriteListMeta.statusList[i] == 0) continue;
+            if (mkb::spriteListInfo.statusList[i] == 0) continue;
 
             mkb::Sprite *sprite = &mkb::sprites[i];
             bool postGoalSprite = (
@@ -298,11 +336,12 @@ void update()
                 || sprite->dispFunc == mkb::stageScoreSpriteDisp
                 || sprite->tickFunc == mkb::falloutSpriteTick
                 || sprite->tickFunc == mkb::bonusFinishSpriteTick);
-            if (postGoalSprite) mkb::spriteListMeta.statusList[i] = 0;
+            if (postGoalSprite) mkb::spriteListInfo.statusList[i] = 0;
         }
 
         loadPauseState();
         loadGoalState();
+        loadSeesawState();
     }
 }
 

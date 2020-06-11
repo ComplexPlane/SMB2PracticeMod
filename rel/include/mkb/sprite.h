@@ -92,7 +92,7 @@ static_assert(sizeof(Sprite) == 208);
 extern "C"
 {
 extern Sprite sprites[MAX_SPRITES];
-extern TickableListMeta spriteListMeta;
+extern TickableListInfo spriteListInfo;
 
 void pauseMenuSpriteDisp(Sprite *sprite);
 void goalSpriteDisp(Sprite *sprite);

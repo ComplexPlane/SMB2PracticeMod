@@ -96,7 +96,7 @@ static_assert(sizeof(Effect) == 176);
 extern "C"
 {
 extern Effect effects[MAX_EFFECTS];
-extern TickableListMeta effectListMeta;
+extern TickableListInfo effectListInfo;
 }
 
 }
