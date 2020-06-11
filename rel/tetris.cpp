@@ -12,7 +12,6 @@ Non shit RNG
 
 #include "pad.h"
 #include "global.h"
-#include "draw.h"
 
 #include <cstring>
 #include <cstdio>
@@ -42,6 +41,7 @@ static constexpr char BOXCHAR_RARROW = '\x1c';
 static constexpr char BOXCHAR_LARROW = '\x1d';
 static constexpr char BOXCHAR_UARROW = '\x1e';
 static constexpr char BOXCHAR_DARROW = '\x1f';
+static constexpr int CHAR_WIDTH = 0xc;
 
 static constexpr int ROW_FLASH_PERIOD = 4;
 static constexpr int INITIAL_DROP_PERIOD = 60;
@@ -401,6 +401,29 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     }
 }
 
+// Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
+void Tetris::drawRect(float x1, float y1, float x2, float y2, gc::GXColor color)
+{
+    // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
+    gc::GXTexObj *texObj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObjIfDifferent(texObj, gc::GX_TEXMAP0);
+
+    // Specify the color of the rectangle
+    gc::GXSetTevColor(gc::GX_TEVREG0, color);
+
+    float z = -1.0f / 128.0f;
+
+    gc::GXBegin(gc::GX_QUADS, gc::GX_VTXFMT7, 4);
+    gc::GXPosition3f32(x1, y1, z);
+    gc::GXTexCoord2f32(0, 0);
+    gc::GXPosition3f32(x2, y1, z);
+    gc::GXTexCoord2f32(1, 0);
+    gc::GXPosition3f32(x2, y2, z);
+    gc::GXTexCoord2f32(1, 1);
+    gc::GXPosition3f32(x1, y2, z);
+    gc::GXTexCoord2f32(0, 1);
+}
+
 void Tetris::drawAsciiWindow()
 {
     constexpr int X = 130;
@@ -456,6 +479,15 @@ void Tetris::drawGrid()
     }
 }
 
+void Tetris::drawTextPalette()
+{
+    for (char c = 0; c != 0x80; c++)
+    {
+        int x = c % 16 * CHAR_WIDTH;
+        int y = c / 16 * CHAR_WIDTH;
+        mkb::drawDebugTextCharEn(x, y, c, c * 2);
+    }
+}
 
 void Tetris::drawInfoText()
 {
@@ -469,6 +501,24 @@ void Tetris::drawInfoText()
     drawDebugTextPrintf(STARTX, STARTY + 50 + 16, 0xff, "%d", m_highScore);
 
     drawDebugTextPrintf(429, 22, 0b11100011, "NEXT");
+}
+
+void Tetris::drawDebugTextPrintf(int x, int y, uint8_t color, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    // Shouldn't be able to print a string to the screen longer than this
+    // Be careful not to overflow! MKB2 doesn't have vsnprintf
+    static char buf[80];
+    vsprintf(buf, format, args);
+
+    va_end(args);
+
+    for (int i = 0; buf[i] != '\0'; i++)
+    {
+        mkb::drawDebugTextCharEn(x + i * CHAR_WIDTH, y, buf[i], color);
+    }
 }
 
 void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)
