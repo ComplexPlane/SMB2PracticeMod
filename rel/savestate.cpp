@@ -32,6 +32,7 @@ struct State
     uint8_t charaAnimType;
     mkb::Itemgroup itemgroups[MAX_ITEMGROUPS];
     SeesawSave seesaws[MAX_ITEMGROUPS];
+    mkb::StageObject stageObjects[mkb::MAX_STAGE_OBJECTS];
 
     uint32_t ballMode;
     uint32_t apeFlag1;
@@ -173,7 +174,7 @@ static void loadGoalState()
 static void saveSeesawState()
 {
     int seesawIdx = 0;
-    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
     {
         if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
         {
@@ -185,7 +186,7 @@ static void saveSeesawState()
 static void loadSeesawState()
 {
     int seesawIdx = 0;
-    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
     {
         if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
         {
@@ -258,6 +259,7 @@ void update()
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
         s_state.itemListMeta = mkb::itemListMeta;
         memcpy(s_state.itemStatusList, mkb::itemListMeta.statusList, sizeof(s_state.itemStatusList));
+        memcpy(s_state.stageObjects, mkb::stageObjects, sizeof(s_state.stageObjects));
 
         for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
         {
@@ -271,6 +273,8 @@ void update()
         savePauseState();
         saveGoalState();
         saveSeesawState();
+
+        gc::OSReport("[mod] Saved state with size %d bytes\n", sizeof(State));
     }
     else if (
         s_stateExists && (
@@ -296,6 +300,7 @@ void update()
         memcpy(mkb::items, s_state.items, sizeof(s_state.items));
         mkb::itemListMeta = s_state.itemListMeta;
         memcpy(mkb::itemListMeta.statusList, s_state.itemStatusList, sizeof(s_state.itemStatusList));
+        memcpy(mkb::stageObjects, s_state.stageObjects, sizeof(s_state.stageObjects));
 
         // Destruct current spark effects so we don't see big sparks generated when changing position by a large amount
         for (uint32_t i = 0; i < mkb::effectListMeta.upperBound; i++)

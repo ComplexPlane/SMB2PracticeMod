@@ -3,7 +3,7 @@
 namespace mkb
 {
 
-constexpr int MAX_STAGE_OBJECTS = 256;
+constexpr int MAX_STAGE_OBJECTS = 144;
 constexpr int MAX_GOALS = 16;
 
 enum StageObjectType
