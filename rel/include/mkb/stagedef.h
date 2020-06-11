@@ -163,6 +163,13 @@ struct StagedefBanana
 
 static_assert(sizeof(StagedefBanana) == 0x10);
 
+enum StagedefAnimType
+{
+    ANIM_LOOP,
+    ANIM_ONCE,
+    ANIM_SEESAW,
+};
+
 enum PlaybackState
 {
     PLAYBACK_BACKWARD = 2,

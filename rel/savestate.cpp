@@ -13,6 +13,13 @@ namespace savestate
 // Fixed max, for now
 static constexpr int MAX_ITEMGROUPS = 100;
 
+struct SeesawSave
+{
+    float rot;
+    float rotCopy;
+    uint8_t unk[4];
+};
+
 struct State
 {
     uint32_t subMode;
@@ -24,6 +31,7 @@ struct State
     mkb::Quat charaRotation;
     uint8_t charaAnimType;
     mkb::Itemgroup itemgroups[MAX_ITEMGROUPS];
+    SeesawSave seesaws[MAX_ITEMGROUPS];
 
     uint32_t ballMode;
     uint32_t apeFlag1;
@@ -162,6 +170,30 @@ static void loadGoalState()
     }
 }
 
+static void saveSeesawState()
+{
+    int seesawIdx = 0;
+    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    {
+        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        {
+            memcpy(&s_state.seesaws[seesawIdx++], mkb::itemgroups[i].seesawInfo->state, sizeof(SeesawSave));
+        }
+    }
+}
+
+static void loadSeesawState()
+{
+    int seesawIdx = 0;
+    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    {
+        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        {
+            memcpy(mkb::itemgroups[i].seesawInfo->state, &s_state.seesaws[seesawIdx++], sizeof(SeesawSave));
+        }
+    }
+}
+
 void update()
 {
     // Must be in main game
@@ -208,6 +240,9 @@ void update()
     // Only allow creating state while the timer is running
     if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
     {
+        MOD_ASSERT_MSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS,
+                       "Too many itemgroups to savestate");
+
         // Create savestate
         s_stateExists = true;
 
@@ -219,9 +254,6 @@ void update()
         memcpy(s_state.somePhysicsRegion, reinterpret_cast<void *>(0x805BD830), sizeof(s_state.somePhysicsRegion));
         s_state.charaRotation = mkb::balls[0].ape->charaRotation;
         s_state.charaAnimType = mkb::balls[0].ape->charaAnimType;
-
-        MOD_ASSERT_MSG(mkb::stagedef->collisionHeaderCount <= MAX_ITEMGROUPS,
-                       "Too many itemgroups to savestate");
 
         memcpy(s_state.items, mkb::items, sizeof(s_state.items));
         s_state.itemListMeta = mkb::itemListMeta;
@@ -238,6 +270,7 @@ void update()
 
         savePauseState();
         saveGoalState();
+        saveSeesawState();
     }
     else if (
         s_stateExists && (
@@ -303,6 +336,7 @@ void update()
 
         loadPauseState();
         loadGoalState();
+        loadSeesawState();
     }
 }
 
