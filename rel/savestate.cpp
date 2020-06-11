@@ -11,8 +11,7 @@
 namespace savestate
 {
 
-// Fixed max, for now
-static constexpr int MAX_ITEMGROUPS = 100;
+static memsave::MemSave s_memSave;
 
 struct SeesawSave
 {
@@ -74,6 +73,13 @@ void init()
                 s_setMinimapMode_trampoline(mode);
             }
         });
+}
+
+static void savePauseState(memsave::MemSave *memSave)
+{
+    // Save pause menu-related state
+    memSave->saveRegion(reinterpret_cast<void *>(0x8054DCA8), 56);
+    memSave->saveRegion(reinterpret_cast<void *>(0x805BC474), sizeof(uint32_t)); // Bitfield
 }
 
 static void savePauseState()
