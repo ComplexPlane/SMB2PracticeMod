@@ -15,6 +15,7 @@ namespace savestate
 struct SaveState
 {
     bool active;
+    int stageId;
     memstore::MemStore memStore;
     uint8_t pauseMenuSpriteStatus;
     mkb::Sprite pauseMenuSprite;
@@ -236,6 +237,7 @@ void tick()
     if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
     {
         s_state.active = true;
+        s_state.stageId = mkb::currentStageId;
         s_state.memStore.enterPreallocMode();
         passOverRegions(&s_state.memStore);
         MOD_ASSERT(s_state.memStore.enterSaveMode());
@@ -245,14 +247,13 @@ void tick()
 
         gc::OSReport("[mod] Saved state:\n");
         s_state.memStore.printStats();
-
         size_t freeHeapSpace = heap::getFreeSpace();
         gc::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
     }
     else if (
-        s_state.active && (
+        s_state.active && s_state.stageId == mkb::currentStageId && (
             (pad::buttonDown(pad::PAD_BUTTON_Y)
              || (pad::buttonDown(pad::PAD_BUTTON_X)
                  && !pad::buttonPressed(pad::PAD_BUTTON_X)))))
