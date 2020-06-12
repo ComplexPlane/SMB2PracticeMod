@@ -52,6 +52,46 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(&mkb::ballMode, sizeof(mkb::ballMode));
     memStore->doRegion(&mkb::balls[0].ape->flag1, sizeof(mkb::balls[0].ape->flag1));
     memStore->doRegion(&mkb::mysteryStandstillFrameCounter, sizeof(mkb::mysteryStandstillFrameCounter));
+
+    // Itemgroups
+    memStore->doRegion(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->collisionHeaderCount);
+
+    // Bananas
+    memStore->doRegion(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->bananaCount);
+
+    // Goal tape, party ball, and button stage objects
+    for (int i = 0; i < mkb::stobjListInfo.upperBound; i++)
+    {
+        if (mkb::stobjListInfo.statusList[i] == 0) continue;
+
+        switch (mkb::stageObjects[i].type)
+        {
+            case mkb::STOBJ_GOALTAPE:
+            case mkb::STOBJ_GOALBAG:
+            case mkb::STOBJ_BUTTON:
+            {
+                memStore->doRegion(&mkb::stageObjects[i], sizeof(mkb::stageObjects[i]));
+                break;
+            }
+        }
+    }
+
+    // Seesaws
+    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    {
+        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        {
+            memStore->doRegion(&mkb::itemgroups[i].seesawInfo->state, 12);
+        }
+    }
+
+    // Goal tape and party ball-specific extra data
+    memStore->doRegion(mkb::goalTapes, sizeof(mkb::GoalTape) * mkb::stagedef->goalCount);
+    memStore->doRegion(mkb::goalBags, sizeof(mkb::GoalBag) * mkb::stagedef->goalCount);
+
+    // Pause menu
+    memStore->doRegion(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
+    memStore->doRegion(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
 }
 
 void update()
@@ -117,9 +157,6 @@ void update()
     {
         s_state.memStore.enterLoadMode();
         passOverRegions(&s_state.memStore);
-
-        gc::OSReport("[mod] Loaded state:\n");
-        s_state.memStore.printStats();
     }
 }
 
