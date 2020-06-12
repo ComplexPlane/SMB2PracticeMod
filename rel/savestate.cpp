@@ -15,6 +15,8 @@ struct SaveState
 {
     bool active;
     memstore::MemStore memStore;
+    uint8_t pauseMenuSpriteStatus;
+    mkb::Sprite pauseMenuSprite;
 };
 
 static SaveState s_state = {};
@@ -94,6 +96,96 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
 }
 
+static void handlePauseMenuSave(SaveState *state)
+{
+    state->pauseMenuSpriteStatus = 0;
+
+    // Look for an active sprite that has the same dest func pointer as the pause menu sprite
+    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    {
+        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+
+        mkb::Sprite &sprite = mkb::sprites[i];
+        if (sprite.dispFunc == mkb::pauseMenuSpriteDisp)
+        {
+            state->pauseMenuSpriteStatus = mkb::spriteListInfo.statusList[i];
+            state->pauseMenuSprite = sprite;
+
+            break;
+        }
+    }
+}
+
+static void handlePauseMenuLoad(SaveState *state)
+{
+    bool pausedNow = *reinterpret_cast<uint32_t *>(0x805BC474) & 8; // TODO actually give this a name
+    bool pausedInState = state->pauseMenuSpriteStatus != 0;
+
+    if (pausedNow && !pausedInState)
+    {
+        // Destroy the pause menu sprite that currently exists
+        for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+        {
+            if (mkb::spriteListInfo.statusList[i] == 0) continue;
+
+            if (reinterpret_cast<uint32_t>(mkb::sprites[i].dispFunc) == 0x8032a4bc)
+            {
+                mkb::spriteListInfo.statusList[i] = 0;
+                break;
+            }
+        }
+    }
+    else if (!pausedNow && pausedInState)
+    {
+        // Allocate a new pause menu sprite
+        int i = mkb::tickableListAllocElem(&mkb::spriteListInfo, state->pauseMenuSpriteStatus);
+        mkb::sprites[i] = state->pauseMenuSprite;
+    }
+}
+
+static void clearPostGoalSprites()
+{
+    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    {
+        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+
+        mkb::Sprite *sprite = &mkb::sprites[i];
+        bool postGoalSprite = (
+            sprite->dispFunc == mkb::goalSpriteDisp
+            || sprite->dispFunc == mkb::clearScoreSpriteDisp
+            || sprite->dispFunc == mkb::warpBonusSpriteDisp
+            || sprite->dispFunc == mkb::timeBonusSpriteDisp
+            || sprite->dispFunc == mkb::stageScoreSpriteDisp
+            || sprite->tickFunc == mkb::falloutSpriteTick
+            || sprite->tickFunc == mkb::bonusFinishSpriteTick);
+        if (postGoalSprite) mkb::spriteListInfo.statusList[i] = 0;
+    }
+}
+
+static void preventReplays()
+{
+    // Prevent replays from playing in goal and fallout submodes by locking initial submode frame counter
+    switch (mkb::subMode)
+    {
+        case mkb::SMD_GAME_GOAL_MAIN:
+        {
+            // Just prevent the timer from running out completely, so that the GOAL sound plays
+            if (mkb::subModeFrameCounter == 1) mkb::subModeFrameCounter = 2;
+            break;
+        }
+        case mkb::SMD_GAME_RINGOUT_MAIN:
+        {
+            mkb::subModeFrameCounter = 270;
+            break;
+        }
+        case mkb::SMD_GAME_TIMEOVER_MAIN:
+        {
+            mkb::subModeFrameCounter = 120;
+            break;
+        }
+    }
+}
+
 void update()
 {
     // Must be in main game
@@ -116,26 +208,7 @@ void update()
             return;
     }
 
-    // Prevent replays from playing in goal and fallout submodes by locking initial submode frame counter
-    switch (mkb::subMode)
-    {
-        case mkb::SMD_GAME_GOAL_MAIN:
-        {
-            // Just prevent the timer from running out completely, so that the GOAL sound plays
-            if (mkb::subModeFrameCounter == 1) mkb::subModeFrameCounter = 2;
-            break;
-        }
-        case mkb::SMD_GAME_RINGOUT_MAIN:
-        {
-            mkb::subModeFrameCounter = 270;
-            break;
-        }
-        case mkb::SMD_GAME_TIMEOVER_MAIN:
-        {
-            mkb::subModeFrameCounter = 120;
-            break;
-        }
-    }
+    preventReplays();
 
     // Only allow creating state while the timer is running
     if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
@@ -146,6 +219,8 @@ void update()
         MOD_ASSERT(s_state.memStore.enterSaveMode());
         passOverRegions(&s_state.memStore);
 
+        handlePauseMenuSave(&s_state);
+
         gc::OSReport("[mod] Saved state:\n");
         s_state.memStore.printStats();
     }
@@ -155,8 +230,13 @@ void update()
              || (pad::buttonDown(pad::PAD_BUTTON_X)
                  && !pad::buttonPressed(pad::PAD_BUTTON_X)))))
     {
+        // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
+        handlePauseMenuLoad(&s_state);
+
         s_state.memStore.enterLoadMode();
         passOverRegions(&s_state.memStore);
+
+        clearPostGoalSprites();
     }
 }
 
