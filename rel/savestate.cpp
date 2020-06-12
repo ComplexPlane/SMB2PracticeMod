@@ -3,6 +3,7 @@
 #include "log.h"
 #include "patch.h"
 #include "memstore.h"
+#include "heap.h"
 
 #include <mkb/mkb.h>
 
@@ -244,6 +245,11 @@ void update()
 
         gc::OSReport("[mod] Saved state:\n");
         s_state.memStore.printStats();
+
+        size_t freeHeapSpace = heap::getFreeSpace();
+        gc::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
+        gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
+        gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
     }
     else if (
         s_state.active && (

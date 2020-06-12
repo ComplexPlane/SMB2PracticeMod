@@ -8,9 +8,6 @@
 #include <gc/gc.h>
 #include <mkb/mkb.h>
 
-#include <cstdint>
-#include <cstring>
-
 namespace mod
 {
 
@@ -18,8 +15,7 @@ Mod *gMod = nullptr;
 
 void main()
 {
-    // Create the heap to use with a size of 0x40000 bytes (256 KiB) for now
-    heap::makeHeap(0x40000);
+    heap::init();
 
     Mod *mod = new Mod();
     mod->init();

@@ -10,6 +10,11 @@ namespace heap
 
 struct HeapDataStruct HeapData;
 
+void init()
+{
+    makeHeap(HEAP_SIZE);
+}
+
 gc::ChunkInfo *extractChunk(
     gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
@@ -286,6 +291,19 @@ bool freeToHeap(void *ptr)
     // Add in sorted order to the free list
     Info->firstFree = gc::DLInsert(Info->firstFree, tempChunk);
     return true;
+}
+
+size_t getFreeSpace()
+{
+    size_t space = 0;
+    gc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
+
+    for (gc::ChunkInfo *chunk = tempHeap->firstFree; chunk; chunk = chunk->next)
+    {
+        space += chunk->size - 32; // Don't count the ChunkInfo
+    }
+
+    return space;
 }
 
 void checkHeap()

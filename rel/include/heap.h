@@ -7,6 +7,9 @@
 namespace heap
 {
 
+// 0x40000 bytes (256 KiB) for now
+constexpr size_t HEAP_SIZE = 0x40000;
+
 struct CustomHeapStruct
 {
     gc::HeapInfo *HeapArray;
@@ -33,6 +36,7 @@ struct HeapDataStruct
     }
 };
 
+void init();
 gc::ChunkInfo *extractChunk(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
 gc::ChunkInfo *addChunkToFront(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
 gc::ChunkInfo *findChunkInList(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
@@ -46,6 +50,7 @@ void *allocFromMainLoopRelocMemory(uint32_t size);
 void *allocFromHeap(uint32_t size);
 bool freeToHeap(void *ptr);
 void checkHeap();
+size_t getFreeSpace();
 
 extern HeapDataStruct HeapData;
 
