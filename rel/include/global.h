@@ -35,6 +35,4 @@ extern void (*createGameHeaps_trampoline)(int param1);
 
 extern Tetris tetris;
 
-extern uint8_t lockedCacheSave[0x4000];
-
 }

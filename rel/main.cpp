@@ -64,20 +64,6 @@ void run()
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
     savestate::update();
-
-    if (pad::buttonPressed(pad::PAD_BUTTON_Z))
-    {
-        constexpr size_t LOCKED_CACHE_SIZE = 16 * 1024 * 1024; // 16kb
-        for (size_t i = 0; i < LOCKED_CACHE_SIZE; i += 16)
-        {
-            gc::OSReport("0x%08X   ");
-            for (size_t j = 0; j < 16; j++)
-            {
-                gc::OSReport("%02X ", *reinterpret_cast<uint8_t *>(i * 16 + j));
-            }
-            gc::OSReport("\n");
-        }
-    }
 }
 
 }

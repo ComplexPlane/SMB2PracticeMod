@@ -30,6 +30,4 @@ void (*createGameHeaps_trampoline)(int param1) = nullptr;
 
 Tetris tetris;
 
-uint8_t lockedCacheSave[0x4000];
-
 }
