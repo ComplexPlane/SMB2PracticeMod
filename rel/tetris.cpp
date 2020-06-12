@@ -351,7 +351,8 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     // Draw corners
     mkb::drawDebugTextCharEn(xpos, ypos, BOXCHAR_UL, color);
     mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos, BOXCHAR_UR, color);
-    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DR, color);
+    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH,
+                             BOXCHAR_DR, color);
     mkb::drawDebugTextCharEn(xpos, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DL, color);
 
     constexpr int X_VDIV = 16;
@@ -452,19 +453,33 @@ void Tetris::drawGrid()
     }
 }
 
-
 void Tetris::drawInfoText()
 {
     constexpr int STARTX = 335;
     constexpr int STARTY = 310;
 
-    draw::debugText(STARTX, STARTY, 0b00101111, "SCORE");
-    draw::debugText(STARTX, STARTY + 16, 0xff, "%d", m_score);
+    draw::debugText(
+        STARTX, STARTY,
+        {0x00, 0xc0, 0xff, 0xff},
+        "SCORE");
+    draw::debugText(
+        STARTX, STARTY + 16,
+        {0xff, 0xff, 0xff, 0xff},
+        "%d", m_score);
 
-    draw::debugText(STARTX, STARTY + 50, 0b01110111, "HIGH SCORE");
-    draw::debugText(STARTX, STARTY + 50 + 16, 0xff, "%d", m_highScore);
+    draw::debugText(
+        STARTX, STARTY + 50,
+        {0x40, 0xff, 0xc0, 0xff},
+        "HIGH SCORE");
+    draw::debugText(
+        STARTX, STARTY + 50 + 16,
+        {0xff, 0xff, 0xff, 0xff},
+        "%d", m_highScore);
 
-    draw::debugText(429, 22, 0b11100011, "NEXT");
+    draw::debugText(
+        429, 22,
+        {0xff, 0xc0, 0x00, 0xff},
+        "NEXT");
 }
 
 void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)

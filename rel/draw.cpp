@@ -18,6 +18,9 @@ void init()
 
 void disp()
 {
+    debugText(50, 50,
+              {0xff, 0x00, 0x00, 0xff},
+              "You aren't allowed to do such a thing...");
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
