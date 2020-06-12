@@ -62,7 +62,7 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->bananaCount);
 
     // Goal tape, party ball, and button stage objects
-    for (int i = 0; i < mkb::stobjListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::stobjListInfo.upperBound; i++)
     {
         if (mkb::stobjListInfo.statusList[i] == 0) continue;
 
@@ -79,7 +79,7 @@ static void passOverRegions(memstore::MemStore *memStore)
     }
 
     // Seesaws
-    for (int i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
     {
         if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
         {
@@ -143,7 +143,7 @@ static void handlePauseMenuLoad(SaveState *state)
     }
 }
 
-static void clearPostGoalSprites()
+static void destructPostGoalSprites()
 {
     for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
     {
@@ -159,6 +159,27 @@ static void clearPostGoalSprites()
             || sprite->tickFunc == mkb::falloutSpriteTick
             || sprite->tickFunc == mkb::bonusFinishSpriteTick);
         if (postGoalSprite) mkb::spriteListInfo.statusList[i] = 0;
+    }
+}
+
+static void destructDistractingEffects()
+{
+    // Destruct current spark effects so we don't see big sparks
+    // generated when changing position by a large amount.
+    // Also destruct banana grabbing effects
+    for (uint32_t i = 0; i < mkb::effectListInfo.upperBound; i++)
+    {
+        if (mkb::effectListInfo.statusList[i] == 0) continue;
+
+        switch (mkb::effects[i].type)
+        {
+            case mkb::EFFECT_COLI_PARTICLE:
+            case mkb::EFFECT_HOLDING_BANANA:
+            case mkb::EFFECT_GET_BANANA:
+            {
+                mkb::effectListInfo.statusList[i] = 0;
+            }
+        }
     }
 }
 
@@ -236,7 +257,8 @@ void update()
         s_state.memStore.enterLoadMode();
         passOverRegions(&s_state.memStore);
 
-        clearPostGoalSprites();
+        destructPostGoalSprites();
+        destructDistractingEffects();
     }
 }
 
