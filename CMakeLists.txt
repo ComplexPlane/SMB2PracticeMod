@@ -26,4 +26,6 @@ add_executable(ApeSphere
         rel/tetris.cpp
         rel/titlescreen.cpp
         rel/memstore.cpp
-        rel/savestate.cpp rel/scratch.cpp rel/include/scratch.h)
+        rel/savestate.cpp
+        rel/draw.cpp
+        rel/scratch.cpp rel/assembly.cpp)

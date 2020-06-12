@@ -3,6 +3,7 @@
 #include "heap.h"
 #include "savestate.h"
 #include "tetris.h"
+#include "draw.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -43,10 +44,10 @@ void init()
 {
     gc::OSReport("[mod] ApeSphere loaded\n");
 
-    // TODO don't use heap when hooking functions
-    heap::init();
     performAssemblyPatches();
 
+    heap::init();
+    draw::init();
     Tetris::getInstance().init();
     savestate::init();
     titlescreen::init();
@@ -59,6 +60,7 @@ void init()
             // which is called at the end of smb2's function which draws the UI in general.
 
             Tetris::getInstance().disp();
+            draw::disp();
 
             s_drawDebugText_trampoline();
         });

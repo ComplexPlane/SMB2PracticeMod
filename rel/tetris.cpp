@@ -13,10 +13,7 @@ Non shit RNG
 #include "pad.h"
 #include "draw.h"
 
-#include <cstring>
-#include <cstdio>
 #include <cstdlib>
-#include <cstdarg>
 
 static constexpr int NUM_TETRADS = 7;
 static constexpr int NUM_CELL_TYPES = 8;
@@ -353,9 +350,9 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
 {
     // Draw corners
     mkb::drawDebugTextCharEn(xpos, ypos, BOXCHAR_UL, color);
-    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, ypos, BOXCHAR_UR, color);
-    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_DR, color);
-    mkb::drawDebugTextCharEn(xpos, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_DL, color);
+    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos, BOXCHAR_UR, color);
+    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DR, color);
+    mkb::drawDebugTextCharEn(xpos, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DL, color);
 
     constexpr int X_VDIV = 16;
     constexpr int Y_HDIV = 24;
@@ -363,39 +360,39 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     // Draw horizontal lines
     for (int i = 1; i < xchars - 1; i++)
     {
-        int x = xpos + i * CHAR_WIDTH;
+        int x = xpos + i * draw::DEBUG_CHAR_WIDTH;
         if (i != X_VDIV)
         {
             mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_HBAR, color);
-            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_HBAR, color);
+            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
         }
         else
         {
             mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_DT, color);
-            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * CHAR_WIDTH, BOXCHAR_UT, color);
+            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_UT, color);
         }
 
         if (i > X_VDIV)
         {
-            mkb::drawDebugTextCharEn(x, ypos + Y_HDIV * CHAR_WIDTH, BOXCHAR_HBAR, color);
+            mkb::drawDebugTextCharEn(x, ypos + Y_HDIV * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
         }
     }
 
     // Draw vertical lines
     for (int i = 1; i < ychars - 1; i++)
     {
-        int y = ypos + i * CHAR_WIDTH;
+        int y = ypos + i * draw::DEBUG_CHAR_WIDTH;
         mkb::drawDebugTextCharEn(xpos, y, BOXCHAR_VBAR, color);
 
         if (i == Y_HDIV)
         {
-            mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
-            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_LT, color);
+            mkb::drawDebugTextCharEn(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
+            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_LT, color);
         }
         else
         {
-            mkb::drawDebugTextCharEn(xpos + X_VDIV * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
-            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+            mkb::drawDebugTextCharEn(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
         }
     }
 }
@@ -412,10 +409,10 @@ void Tetris::drawAsciiWindow()
     float startx = X + MARGIN;
     float starty = Y * YSCALE + MARGIN;
 
-    float endx = X + WIDTH_CHARS * CHAR_WIDTH - MARGIN;
-    float endy = (Y + HEIGHT_CHARS * CHAR_WIDTH) * YSCALE - MARGIN;
+    float endx = X + WIDTH_CHARS * draw::DEBUG_CHAR_WIDTH - MARGIN;
+    float endy = (Y + HEIGHT_CHARS * draw::DEBUG_CHAR_WIDTH) * YSCALE - MARGIN;
 
-    drawRect(startx, starty, endx, endy, {0x00, 0x00, 0x00, 0x80});
+    draw::rect(startx, starty, endx, endy, {0x00, 0x00, 0x00, 0x80});
     drawAsciiRect(X, Y, WIDTH_CHARS, HEIGHT_CHARS, 0b01001110);
 }
 
@@ -461,13 +458,13 @@ void Tetris::drawInfoText()
     constexpr int STARTX = 335;
     constexpr int STARTY = 310;
 
-    drawDebugTextPrintf(STARTX, STARTY, 0b00101111, "SCORE");
-    drawDebugTextPrintf(STARTX, STARTY + 16, 0xff, "%d", m_score);
+    draw::debugText(STARTX, STARTY, 0b00101111, "SCORE");
+    draw::debugText(STARTX, STARTY + 16, 0xff, "%d", m_score);
 
-    drawDebugTextPrintf(STARTX, STARTY + 50, 0b01110111, "HIGH SCORE");
-    drawDebugTextPrintf(STARTX, STARTY + 50 + 16, 0xff, "%d", m_highScore);
+    draw::debugText(STARTX, STARTY + 50, 0b01110111, "HIGH SCORE");
+    draw::debugText(STARTX, STARTY + 50 + 16, 0xff, "%d", m_highScore);
 
-    drawDebugTextPrintf(429, 22, 0b11100011, "NEXT");
+    draw::debugText(429, 22, 0b11100011, "NEXT");
 }
 
 void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)
@@ -491,7 +488,7 @@ void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)
                 float x2 = x1 + CELL_WIDTH;
                 float y2 = y1 + CELL_WIDTH;
 
-                drawRect(x1, y1, x2, y2, color);
+                draw::rect(x1, y1, x2, y2, color);
             }
         }
     }
@@ -565,7 +562,7 @@ void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color)
     float drawY1 = DRAWY_START + (BOARD_HEIGHT - celly - 1) * (CELL_WIDTH + CELL_PAD);
     float drawY2 = drawY1 + CELL_WIDTH;
 
-    drawRect(drawX1, drawY1, drawX2, drawY2, color);
+    draw::rect(drawX1, drawY1, drawX2, drawY2, color);
 }
 
 // Also detects if tetrad is out-of-bounds
