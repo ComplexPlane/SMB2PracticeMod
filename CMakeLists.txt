@@ -23,5 +23,8 @@ add_executable(ApeSphere
         rel/pad.cpp
         rel/patch.cpp
         rel/rel.cpp
-        rel/savestate.cpp
-        rel/tetris.cpp rel/include/mkb/stagedef.h rel/include/mkb/mathtypes.h rel/include/mkb/stage.h rel/include/mkb/ball.h rel/include/mkb/tickable.h rel/include/mkb/item.h rel/include/mkb/effect.h rel/include/mkb/stobj.h rel/include/mkb/mode.h rel/titlescreen.cpp rel/include/titlescreen.h rel/include/mkb/sprite.h rel/include/log.h rel/include/mkb/minimap.h rel/include/draw.h rel/draw.cpp rel/include/memsave.h rel/memsave.cpp)
+        rel/savestateold.cpp
+        rel/tetris.cpp
+        rel/titlescreen.cpp
+        rel/memstore.cpp
+        rel/savestate.cpp)

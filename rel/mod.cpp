@@ -2,7 +2,7 @@
 #include "heap.h"
 #include "patch.h"
 #include "global.h"
-#include "savestate.h"
+#include "savestateold.h"
 #include "titlescreen.h"
 
 #include <gc/gc.h>

@@ -4,7 +4,7 @@
 #include "heap.h"
 #include "pad.h"
 #include "global.h"
-#include "savestate.h"
+#include "savestateold.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
