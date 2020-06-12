@@ -18,7 +18,6 @@ add_executable(ApeSphere
         rel/runtime/restfpr_x.s
         rel/runtime/restgpr_x.s
         rel/cxx.cpp
-        rel/global.cpp
         rel/heap.cpp
         rel/main.cpp
         rel/pad.cpp
@@ -27,4 +26,4 @@ add_executable(ApeSphere
         rel/tetris.cpp
         rel/titlescreen.cpp
         rel/memstore.cpp
-        rel/savestate.cpp)
+        rel/savestate.cpp rel/scratch.cpp rel/include/scratch.h)

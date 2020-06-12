@@ -1,9 +1,7 @@
 #pragma once
 
-namespace savestate
+namespace scratch
 {
-
 void init();
 void tick();
-
 }

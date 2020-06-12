@@ -11,7 +11,6 @@ Non shit RNG
 #include <mkb/mkb.h>
 
 #include "pad.h"
-#include "global.h"
 
 #include <cstring>
 #include <cstdio>
@@ -106,7 +105,7 @@ void Tetris::init()
     tryTransitionToDropping();
 }
 
-void Tetris::update()
+void Tetris::disp()
 {
     if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X))
     {
@@ -669,4 +668,10 @@ bool Tetris::isRowFull(int y)
     }
 
     return true;
+}
+
+Tetris &Tetris::getInstance()
+{
+    static Tetris tetris;
+    return tetris;
 }

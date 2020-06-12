@@ -1,8 +1,8 @@
 #include "patch.h"
 #include "assembly.h"
 #include "heap.h"
-#include "global.h"
 #include "savestate.h"
+#include "tetris.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -11,6 +11,8 @@
 
 namespace main
 {
+
+static void (*s_drawDebugText_trampoline)();
 
 static void performAssemblyPatches()
 {
@@ -45,20 +47,20 @@ void init()
     heap::init();
     performAssemblyPatches();
 
-    global::tetris.init();
+    Tetris::getInstance().init();
     savestate::init();
     titlescreen::init();
 
-    global::drawDebugText_trampoline = patch::hookFunction(
+    s_drawDebugText_trampoline = patch::hookFunction(
         mkb::drawDebugText, []()
         {
             // Drawing hook for UI elements.
             // Gets run at the start of smb2's function which draws debug text windows,
             // which is called at the end of smb2's function which draws the UI in general.
 
-            global::tetris.update();
+            Tetris::getInstance().disp();
 
-            global::drawDebugText_trampoline();
+            s_drawDebugText_trampoline();
         });
 }
 
@@ -67,7 +69,7 @@ void tick()
     // Enable debug mode (appears to need to be called every frame)
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
-    savestate::update();
+    savestate::tick();
 }
 
 }

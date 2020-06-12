@@ -7,8 +7,9 @@
 class Tetris
 {
 public:
+    static Tetris& getInstance();
     void init();
-    void update();
+    void disp();
 
 private:
     static constexpr int BOARD_WIDTH = 10;

@@ -208,7 +208,7 @@ static void preventReplays()
     }
 }
 
-void update()
+void tick()
 {
     // Must be in main game
     if (mkb::mainMode != mkb::MD_GAME) return;
