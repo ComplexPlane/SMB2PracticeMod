@@ -4,27 +4,20 @@
 #include <gc/gc.h>
 
 #include <cstdint>
+#include <log.h>
 
 namespace patch
 {
 
-void NopToggle::init(void *dest, uint16_t combo1, uint16_t combo2)
-{
-    m_dest = dest;
-    m_instr = 0x60000000;
-    m_combo1 = combo1;
-    m_combo2 = combo2;
-}
+static constexpr size_t MAX_TRAMPOLINES = 16;
 
-void NopToggle::update()
+static uint32_t s_trampolinePool[MAX_TRAMPOLINES][2];
+static size_t nextTrampolineIdx;
+
+uint32_t *newTrampoline()
 {
-    if (pad::buttonChordPressed(m_combo1, m_combo2))
-    {
-        uint32_t tmp = *reinterpret_cast<uint32_t *>(m_dest);
-        *reinterpret_cast<uint32_t *>(m_dest) = m_instr;
-        m_instr = tmp;
-        clear_DC_IC_Cache(m_dest, sizeof(uint32_t));
-    }
+    MOD_ASSERT(nextTrampolineIdx < MAX_TRAMPOLINES);
+    return s_trampolinePool[nextTrampolineIdx++];
 }
 
 void clear_DC_IC_Cache(void *ptr, uint32_t size)
@@ -32,15 +25,6 @@ void clear_DC_IC_Cache(void *ptr, uint32_t size)
     gc::DCFlushRange(ptr, size);
     gc::ICInvalidateRange(ptr, size);
 }
-
-//void writeStandardBranches(void *address, void functionStart(), void functionBranchBack())
-//{
-//	void *BranchBackAddress = reinterpret_cast<void *>(
-//		reinterpret_cast<uint32_t>(address) + 0x4);
-//
-//	writeBranch(address, reinterpret_cast<void *>(functionStart));
-//	writeBranch(reinterpret_cast<void *>(functionBranchBack), BranchBackAddress);
-//}
 
 void writeBranch(void *ptr, void *destination)
 {

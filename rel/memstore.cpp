@@ -77,7 +77,7 @@ void MemStore::doRegion(void *ptr, uint32_t size)
 
 void MemStore::printStats() const
 {
-    gc::OSReport("[mode] MemStore total size: %d bytes\n", m_saveBufLen);
+    gc::OSReport("[mod] MemStore total size: %d bytes\n", m_saveBufLen);
 }
 
 }
