@@ -12,10 +12,10 @@ void _unresolved();
 
 }
 
-namespace mod
+namespace main
 {
 
-extern void main();
+extern void init();
 
 }
 
@@ -27,8 +27,8 @@ void _prolog()
         (*ctor)();
     }
 
-    // Run mod main
-    mod::main();
+    // Run mod init function
+    main::init();
 }
 
 void _epilog()

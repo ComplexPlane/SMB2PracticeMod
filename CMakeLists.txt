@@ -11,6 +11,8 @@ include_directories(rel/include)
 include_directories(rel/include/gc)
 include_directories(rel/include/mkb)
 
+add_definitions(-DMKB2_US)
+
 add_executable(ApeSphere
         rel/assembly/MainLoopAssembly.s
         rel/runtime/restfpr_x.s
@@ -19,11 +21,9 @@ add_executable(ApeSphere
         rel/global.cpp
         rel/heap.cpp
         rel/main.cpp
-        rel/mod.cpp
         rel/pad.cpp
         rel/patch.cpp
         rel/rel.cpp
-        rel/savestateold.cpp
         rel/tetris.cpp
         rel/titlescreen.cpp
         rel/memstore.cpp

@@ -14,7 +14,7 @@ void init()
 {
     strcpy(reinterpret_cast<char *>(0x8047f4ec), text);
     patch::writeBranch(reinterpret_cast<void *>(0x8032ad0c),
-                       reinterpret_cast<void *>(mod::CustomTitleScreenTextColor));
+                       reinterpret_cast<void *>(main::CustomTitleScreenTextColor));
 }
 
 void update() {}

@@ -7,7 +7,7 @@ stw r0, 0x14(sp)
 stw r31, 0xC(sp)
 mr r31, r3
 
-bl run
+bl tick
 
 mr r3, r31
 lwz r31, 0xC(sp)

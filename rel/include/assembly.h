@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace mod
+namespace main
 {
 
 extern "C" {
@@ -15,7 +15,7 @@ void StartMainLoopAssembly();
 
 // Functions accessed by assembly overwrites
 // main.cpp
-void run();
+void tick();
 
 }
 
