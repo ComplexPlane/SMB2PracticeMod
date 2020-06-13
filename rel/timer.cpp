@@ -20,6 +20,16 @@ void init()
 
 void tick() {}
 
+static void convertFrameTime(int frames, int *sec, int *centiSec)
+{
+    if (sec) *sec = frames / 60;
+    if (centiSec)
+    {
+        *centiSec = (frames % 60) * 100 / 60;
+        if (*centiSec < 0) *centiSec = -*centiSec;
+    }
+}
+
 // Need to do logic in disp() so that we can know the game state _after_ the frame has been process
 void disp()
 {
@@ -39,15 +49,21 @@ void disp()
     else if ((mkb::ballMode & 0x8u) == 0)
     {
         s_rtaTimer -= s_retraceCount - s_prevRetraceCount;
-        if (s_rtaTimer < 0) s_rtaTimer = 0;
+//        if (s_rtaTimer < 0) s_rtaTimer = 0;
     }
 
-    int sec = s_rtaTimer / 60;
-    int centiSec = (s_rtaTimer % 60) * 100 / 60;
+    int sec = 0, centiSec = 0;
+    convertFrameTime(s_rtaTimer, &sec, &centiSec);
     draw::debugText(
-        380, 30,
+        380, 34,
         {0xff, 0xff, 0xff, 0xff},
-        "RTA: %02d.%02d", sec, centiSec);
+        "RTA:   %02d.%02d", sec, centiSec);
+
+    convertFrameTime(mkb::stageTimer - s_rtaTimer, &sec, &centiSec);
+    draw::debugText(
+        380, 50,
+        {0xff, 0xff, 0xff, 0xff},
+        "PAUSE: %02d.%02d", sec, centiSec);
 }
 
 }
