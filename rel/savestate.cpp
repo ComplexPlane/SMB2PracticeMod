@@ -25,6 +25,8 @@ struct SaveState
 static SaveState s_states[8];
 static int s_activeStateSlot;
 
+static bool s_createdStateLastFrame;
+
 static void (*s_setMinimapMode_trampoline)(uint32_t mode);
 
 void init()
@@ -223,7 +225,7 @@ void tick()
     if (cStickDir != pad::DIR_NONE)
     {
         s_activeStateSlot = cStickDir;
-        draw::notify(draw::NotifyColor::WHITE, "Savestate Slot %d Selected", cStickDir + 1);
+        draw::notify(draw::NotifyColor::WHITE, "Slot %d Selected", cStickDir + 1);
     }
     auto &state = s_states[s_activeStateSlot];
 
@@ -259,6 +261,7 @@ void tick()
                 return;
             }
         }
+        s_createdStateLastFrame = true;
         state.active = true;
         state.stageId = mkb::currentStageId;
         state.memStore.enterPreallocMode();
@@ -275,13 +278,13 @@ void tick()
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
 
-        draw::notify(draw::NotifyColor::BLUE, "Savestate Slot %d Saved", s_activeStateSlot + 1);
+        draw::notify(draw::NotifyColor::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
     }
     else if (
         state.active && state.stageId == mkb::currentStageId && (
             (pad::buttonDown(pad::BUTTON_Y)
              || (pad::buttonDown(pad::BUTTON_X)
-                 && !pad::buttonPressed(pad::BUTTON_X)))))
+                 && s_createdStateLastFrame))))
     {
         // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
         handlePauseMenuLoad(&state);
@@ -291,6 +294,15 @@ void tick()
 
         destructPostGoalSprites();
         destructDistractingEffects();
+
+        if (!s_createdStateLastFrame)
+        {
+            draw::notify(draw::NotifyColor::BLUE, "Slot %d Loaded", s_activeStateSlot + 1);
+        }
+    }
+    else
+    {
+        s_createdStateLastFrame = false;
     }
 }
 
