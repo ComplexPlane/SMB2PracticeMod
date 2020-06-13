@@ -12,7 +12,7 @@ enum MainMode
     MD_OPTION = 5,
     MD_AUTHOR = 6,
     MD_EXOPT = 7,
-    MD_INVALID = 0xffffffff
+    MD_INVALID = -1,
 };
 
 // TODO sort?
@@ -283,7 +283,7 @@ enum SubMode
     SMD_EXOPT_DMY6 = 262,
     SMD_EXOPT_DMY7 = 263,
     SMD_EXOPT_BOTTOM = 264,
-    SMD_INVALID = 0xffffffff,
+    SMD_INVALID = -1,
 };
 
 enum MainGameMode

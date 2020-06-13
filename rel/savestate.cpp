@@ -221,6 +221,7 @@ void tick()
     // Must be in practice mode
     if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
 
+    // Allow changing the savestate slot as long as the above conditions are at least met
     int cStickDir = pad::getCStickDir();
     if (cStickDir != pad::DIR_NONE)
     {
@@ -245,21 +246,12 @@ void tick()
 
     preventReplays();
 
-    // Only allow creating state while the timer is running
     if (pad::buttonPressed(pad::BUTTON_X))
     {
-        switch (mkb::subMode)
+        if (mkb::subMode != mkb::SMD_GAME_PLAY_MAIN || mkb::subModeRequest != mkb::SMD_INVALID)
         {
-            case mkb::SMD_GAME_GOAL_INIT:
-            case mkb::SMD_GAME_GOAL_MAIN:
-            case mkb::SMD_GAME_RINGOUT_INIT:
-            case mkb::SMD_GAME_RINGOUT_MAIN:
-            case mkb::SMD_GAME_TIMEOVER_INIT:
-            case mkb::SMD_GAME_TIMEOVER_MAIN:
-            {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
-                return;
-            }
+            draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
+            return;
         }
         s_createdStateLastFrame = true;
         state.active = true;
