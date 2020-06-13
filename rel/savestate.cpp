@@ -273,11 +273,21 @@ void tick()
         draw::notify(draw::NotifyColor::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
     }
     else if (
-        state.active && state.stageId == mkb::currentStageId && (
-            (pad::buttonDown(pad::BUTTON_Y)
-             || (pad::buttonDown(pad::BUTTON_X)
-                 && s_createdStateLastFrame))))
+        pad::buttonDown(pad::BUTTON_Y)
+        || (pad::buttonDown(pad::BUTTON_X)
+            && s_createdStateLastFrame))
     {
+        if (!state.active)
+        {
+            draw::notify(draw::NotifyColor::RED, "Slot %d Empty", s_activeStateSlot + 1);
+            return;
+        }
+        if (state.stageId != mkb::currentStageId)
+        {
+            draw::notify(draw::NotifyColor::RED, "Slot %d Wrong Stage", s_activeStateSlot + 1);
+            return;
+        }
+
         // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
         handlePauseMenuLoad(&state);
 

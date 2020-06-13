@@ -57,6 +57,7 @@ extern StagedefFileHeader *stagedef;
 extern Itemgroup *itemgroups;
 
 extern int currentStageId;
+extern uint16_t stageTimeLimit;
 
 }
 

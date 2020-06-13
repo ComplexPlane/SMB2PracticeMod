@@ -4,6 +4,7 @@
 #include "savestate.h"
 #include "tetris.h"
 #include "draw.h"
+#include "timer.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -51,6 +52,7 @@ void init()
     Tetris::getInstance().init();
     savestate::init();
     titlescreen::init();
+    timer::init();
 
     s_drawDebugText_trampoline = patch::hookFunction(
         mkb::drawDebugText, []()
@@ -62,6 +64,7 @@ void init()
             draw::preDraw();
             draw::disp();
             Tetris::getInstance().disp();
+            timer::disp();
 
             s_drawDebugText_trampoline();
         });
@@ -73,6 +76,7 @@ void tick()
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
     savestate::tick();
+    timer::tick();
 }
 
 }

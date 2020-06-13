@@ -25,7 +25,8 @@ inline uint32_t OSRoundUp32B(uint32_t x) { return (x + 32 - 1) & ~(32 - 1); }
 
 inline uint32_t OSRoundDown32B(uint32_t x) { return x & ~(32 - 1); }
 
-extern "C" {
+extern "C"
+{
 
 OSTime OSGetTime();
 OSTick OSGetTick();

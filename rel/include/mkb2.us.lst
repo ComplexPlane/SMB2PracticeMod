@@ -90,6 +90,7 @@ CC008000:GXWGFifo
 80553970:ballMode
 8054edc8:mysteryStandstillFrameCounter
 80473114:currentStageId
+80553976:stageTimeLimit
 
 // runtime register stuff
 8006b24c:_savefpr_14
