@@ -22,7 +22,8 @@ struct SaveState
     mkb::Sprite pauseMenuSprite;
 };
 
-static SaveState s_state = {};
+static SaveState s_states[8];
+static int s_activeStateSlot;
 
 static void (*s_setMinimapMode_trampoline)(uint32_t mode);
 
@@ -221,8 +222,10 @@ void tick()
     int cStickDir = pad::getCStickDir();
     if (cStickDir != pad::DIR_NONE)
     {
+        s_activeStateSlot = cStickDir;
         draw::notify(draw::NotifyColor::WHITE, "Savestate Slot %d Selected", cStickDir + 1);
     }
+    auto &state = s_states[s_activeStateSlot];
 
     switch (mkb::subMode)
     {
@@ -256,35 +259,35 @@ void tick()
                 return;
             }
         }
-        s_state.active = true;
-        s_state.stageId = mkb::currentStageId;
-        s_state.memStore.enterPreallocMode();
-        passOverRegions(&s_state.memStore);
-        MOD_ASSERT(s_state.memStore.enterSaveMode());
-        passOverRegions(&s_state.memStore);
+        state.active = true;
+        state.stageId = mkb::currentStageId;
+        state.memStore.enterPreallocMode();
+        passOverRegions(&state.memStore);
+        MOD_ASSERT(state.memStore.enterSaveMode());
+        passOverRegions(&state.memStore);
 
-        handlePauseMenuSave(&s_state);
+        handlePauseMenuSave(&state);
 
         gc::OSReport("[mod] Saved state:\n");
-        s_state.memStore.printStats();
+        state.memStore.printStats();
         size_t freeHeapSpace = heap::getFreeSpace();
         gc::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
 
-        draw::notify(draw::NotifyColor::BLUE, "Savestate Slot 1 Saved");
+        draw::notify(draw::NotifyColor::BLUE, "Savestate Slot %d Saved", s_activeStateSlot + 1);
     }
     else if (
-        s_state.active && s_state.stageId == mkb::currentStageId && (
+        state.active && state.stageId == mkb::currentStageId && (
             (pad::buttonDown(pad::BUTTON_Y)
              || (pad::buttonDown(pad::BUTTON_X)
                  && !pad::buttonPressed(pad::BUTTON_X)))))
     {
         // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
-        handlePauseMenuLoad(&s_state);
+        handlePauseMenuLoad(&state);
 
-        s_state.memStore.enterLoadMode();
-        passOverRegions(&s_state.memStore);
+        state.memStore.enterLoadMode();
+        passOverRegions(&state.memStore);
 
         destructPostGoalSprites();
         destructDistractingEffects();
