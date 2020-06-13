@@ -12,6 +12,7 @@ enum class NotifyColor
     WHITE,
     RED,
     ORANGE,
+    BLUE,
 };
 
 // Call once during mod initialization

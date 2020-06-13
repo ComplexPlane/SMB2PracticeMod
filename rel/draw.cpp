@@ -116,6 +116,11 @@ void disp()
             color = {0xfd, 0xac, 0x68, 0xff};
             break;
         }
+        case NotifyColor::BLUE:
+        {
+            color = {0x9d, 0xe3, 0xff, 0xff};
+            break;
+        }
     }
 
     if (s_notifyFrameCounter > 40)

@@ -104,7 +104,7 @@ void Tetris::init()
 
 void Tetris::disp()
 {
-    if (pad::buttonChordPressed(pad::PAD_BUTTON_LTRIG, pad::PAD_BUTTON_X))
+    if (pad::buttonChordPressed(pad::BUTTON_LTRIG, pad::BUTTON_X))
     {
         m_hidden = !m_hidden;
         if (!m_hidden) return; // Come back next frame when your inputs won't be reused
@@ -145,7 +145,7 @@ void Tetris::handleDroppingState()
         }
     }
 
-    if (pad::buttonPressed(pad::PAD_BUTTON_B))
+    if (pad::buttonPressed(pad::BUTTON_B))
     {
         int lowY = findLowestPossibleTetradY(
             m_droppingTetrad,
@@ -165,26 +165,26 @@ void Tetris::handleDroppingState()
         bool movedDown = false;
         bool rotated = false;
 
-        if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_LEFT))
+        if (pad::buttonPressed(pad::BUTTON_DPAD_LEFT))
         {
             newTetradX--;
         }
-        else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_RIGHT))
+        else if (pad::buttonPressed(pad::BUTTON_DPAD_RIGHT))
         {
             newTetradX++;
         }
-        else if (pad::buttonPressed(pad::PAD_BUTTON_DPAD_DOWN))
+        else if (pad::buttonPressed(pad::BUTTON_DPAD_DOWN))
         {
             newTetradY--;
             movedDown = true;
         }
 
-        if (pad::buttonPressed(pad::PAD_BUTTON_Y))
+        if (pad::buttonPressed(pad::BUTTON_Y))
         {
             newTetradRot = (newTetradRot + 3) % 4;
             rotated = true;
         }
-        else if (pad::buttonPressed(pad::PAD_BUTTON_X))
+        else if (pad::buttonPressed(pad::BUTTON_X))
         {
             newTetradRot = (newTetradRot + 1) % 4;
             rotated = true;

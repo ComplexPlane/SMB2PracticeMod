@@ -218,6 +218,12 @@ void tick()
     // Must be in practice mode
     if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
 
+    int cStickDir = pad::getCStickDir();
+    if (cStickDir != pad::DIR_NONE)
+    {
+        draw::notify(draw::NotifyColor::WHITE, "Savestate Slot %d Selected", cStickDir + 1);
+    }
+
     switch (mkb::subMode)
     {
         case mkb::SMD_GAME_PLAY_MAIN:
@@ -235,7 +241,7 @@ void tick()
     preventReplays();
 
     // Only allow creating state while the timer is running
-    if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
+    if (pad::buttonPressed(pad::BUTTON_X))
     {
         switch (mkb::subMode)
         {
@@ -266,13 +272,13 @@ void tick()
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
 
-        draw::notify(draw::NotifyColor::WHITE, "Savestate Slot 1 Saved");
+        draw::notify(draw::NotifyColor::BLUE, "Savestate Slot 1 Saved");
     }
     else if (
         s_state.active && s_state.stageId == mkb::currentStageId && (
-            (pad::buttonDown(pad::PAD_BUTTON_Y)
-             || (pad::buttonDown(pad::PAD_BUTTON_X)
-                 && !pad::buttonPressed(pad::PAD_BUTTON_X)))))
+            (pad::buttonDown(pad::BUTTON_Y)
+             || (pad::buttonDown(pad::BUTTON_X)
+                 && !pad::buttonPressed(pad::BUTTON_X)))))
     {
         // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
         handlePauseMenuLoad(&s_state);
