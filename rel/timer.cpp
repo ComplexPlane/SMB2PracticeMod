@@ -17,8 +17,14 @@ void init()
     s_retraceCount = gc::VIGetRetraceCount();
 }
 
-void tick()
+
+void tick() {}
+
+// Need to do logic in disp() so that we can know the game state _after_ the frame has been process
+void disp()
 {
+    if (mkb::mainMode != mkb::MD_GAME) return;
+
     s_prevRetraceCount = s_retraceCount;
     s_retraceCount = gc::VIGetRetraceCount();
 
@@ -28,27 +34,20 @@ void tick()
     {
         s_rtaTimer = mkb::stageTimeLimit;
     }
-    else if ((mkb::subModeRequest == mkb::SMD_GAME_PLAY_INIT
-             || mkb::subMode == mkb::SMD_GAME_PLAY_INIT
-             || mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
-             && mkb::subModeRequest != mkb::SMD_GAME_RINGOUT_INIT
-             && mkb::subModeRequest != mkb::SMD_GAME_GOAL_INIT)
+    // This flag seems to correspond to when the timer should be running...
+    // See 0x802974bc in memory
+    else if ((mkb::ballMode & 0x8u) == 0)
     {
         s_rtaTimer -= s_retraceCount - s_prevRetraceCount;
         if (s_rtaTimer < 0) s_rtaTimer = 0;
     }
-}
-
-void disp()
-{
-    if (mkb::mainMode != mkb::MD_GAME) return;
 
     int sec = s_rtaTimer / 60;
     int centiSec = (s_rtaTimer % 60) * 100 / 60;
     draw::debugText(
-        150, 150,
+        380, 30,
         {0xff, 0xff, 0xff, 0xff},
-        "RTA: %03d.%02d", sec, centiSec);
+        "RTA: %02d.%02d", sec, centiSec);
 }
 
 }
