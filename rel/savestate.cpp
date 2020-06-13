@@ -4,6 +4,7 @@
 #include "patch.h"
 #include "memstore.h"
 #include "heap.h"
+#include "draw.h"
 
 #include <mkb/mkb.h>
 
@@ -236,6 +237,19 @@ void tick()
     // Only allow creating state while the timer is running
     if (pad::buttonPressed(pad::PAD_BUTTON_X) && mkb::subMode == mkb::SMD_GAME_PLAY_MAIN)
     {
+        switch (mkb::subMode)
+        {
+            case mkb::SMD_GAME_GOAL_INIT:
+            case mkb::SMD_GAME_GOAL_MAIN:
+            case mkb::SMD_GAME_RINGOUT_INIT:
+            case mkb::SMD_GAME_RINGOUT_MAIN:
+            case mkb::SMD_GAME_TIMEOVER_INIT:
+            case mkb::SMD_GAME_TIMEOVER_MAIN:
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
+                return;
+            }
+        }
         s_state.active = true;
         s_state.stageId = mkb::currentStageId;
         s_state.memStore.enterPreallocMode();
@@ -251,6 +265,8 @@ void tick()
         gc::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
+
+        draw::notify(draw::NotifyColor::WHITE, "Savestate Slot 1 Saved");
     }
     else if (
         s_state.active && s_state.stageId == mkb::currentStageId && (

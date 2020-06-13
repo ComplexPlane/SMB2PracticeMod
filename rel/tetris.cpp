@@ -329,12 +329,6 @@ Tetris::Tetrad Tetris::popTetradQueue()
 
 void Tetris::draw()
 {
-    mkb::GXSetZModeIfDifferent(gc::GX_TRUE, gc::GX_LESS, gc::GX_FALSE);
-
-    // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
-    gc::GXColor tev1Color = {0, 0, 0, 0};
-    gc::GXSetTevColor(gc::GX_TEVREG1, tev1Color);
-
     drawAsciiWindow();
     drawGrid();
     drawInfoText();

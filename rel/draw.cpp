@@ -6,9 +6,14 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
 
 namespace draw
 {
+
+static char s_notifyMsgBuf[80];
+static int s_notifyFrameCounter;
+static NotifyColor s_notifyColor;
 
 void init()
 {
@@ -16,11 +21,13 @@ void init()
                        reinterpret_cast<void *>(main::FullDebugTextColor));
 }
 
-void disp()
+void preDraw()
 {
-    debugText(50, 50,
-              {0xff, 0x00, 0x00, 0xff},
-              "You aren't allowed to do such a thing...");
+    mkb::GXSetZModeIfDifferent(gc::GX_TRUE, gc::GX_LESS, gc::GX_FALSE);
+
+    // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
+    gc::GXColor tev1Color = {0, 0, 0, 0};
+    gc::GXSetTevColor(gc::GX_TEVREG1, tev1Color);
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
@@ -56,6 +63,20 @@ void debugTextPalette()
     }
 }
 
+static void debugTextBuf(int x, int y, gc::GXColor color, const char *buf)
+{
+    main::debugTextColor = color;
+    for (int i = 0; buf[i] != '\0'; i++)
+    {
+        // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
+        if (buf[i] != ' ')
+        {
+            mkb::drawDebugTextCharEn(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
+        }
+    }
+    main::debugTextColor = {};
+}
+
 void debugText(int x, int y, gc::GXColor color, const char *format, ...)
 {
     va_list args;
@@ -68,12 +89,54 @@ void debugText(int x, int y, gc::GXColor color, const char *format, ...)
 
     va_end(args);
 
-    main::debugTextColor = color;
-    for (int i = 0; buf[i] != '\0'; i++)
+    debugTextBuf(x, y, color, buf);
+}
+
+void disp()
+{
+    int notifyLen = strlen(s_notifyMsgBuf);
+    int drawX = 640 - notifyLen * DEBUG_CHAR_WIDTH - 12;
+    int drawY = 426;
+
+    gc::GXColor color = {};
+    switch (s_notifyColor)
     {
-        mkb::drawDebugTextCharEn(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
+        case NotifyColor::WHITE:
+        {
+            color = {0xff, 0xff, 0xff, 0xff};
+            break;
+        }
+        case NotifyColor::RED:
+        {
+            color = {0xfd, 0x68, 0x75, 0xff};
+            break;
+        }
+        case NotifyColor::ORANGE:
+        {
+            color = {0xfd, 0xac, 0x68, 0xff};
+            break;
+        }
     }
-    main::debugTextColor = {};
+
+    if (s_notifyFrameCounter > 40)
+    {
+        color.a = 0xff - (s_notifyFrameCounter - 40) * 0xff / 20;
+    }
+    debugText(drawX, drawY, color, s_notifyMsgBuf);
+
+    s_notifyFrameCounter++;
+    if (s_notifyFrameCounter > 60) s_notifyFrameCounter = 60;
+}
+
+void notify(NotifyColor color, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vsprintf(s_notifyMsgBuf, format, args);
+    va_end(args);
+
+    s_notifyFrameCounter = 0;
+    s_notifyColor = color;
 }
 
 }

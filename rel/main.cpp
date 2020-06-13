@@ -59,8 +59,9 @@ void init()
             // Gets run at the start of smb2's function which draws debug text windows,
             // which is called at the end of smb2's function which draws the UI in general.
 
-            Tetris::getInstance().disp();
+            draw::preDraw();
             draw::disp();
+            Tetris::getInstance().disp();
 
             s_drawDebugText_trampoline();
         });
