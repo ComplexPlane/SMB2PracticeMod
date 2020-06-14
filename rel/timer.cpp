@@ -35,10 +35,25 @@ void disp()
 {
     if (mkb::mainMode != mkb::MD_GAME) return;
 
+    switch (mkb::subMode)
+    {
+        case mkb::SMD_GAME_READY_INIT:
+        case mkb::SMD_GAME_READY_MAIN:
+        case mkb::SMD_GAME_PLAY_INIT:
+        case mkb::SMD_GAME_PLAY_MAIN:
+        case mkb::SMD_GAME_GOAL_INIT:
+        case mkb::SMD_GAME_GOAL_MAIN:
+        case mkb::SMD_GAME_RINGOUT_INIT:
+        case mkb::SMD_GAME_RINGOUT_MAIN:
+        case mkb::SMD_GAME_TIMEOVER_INIT:
+        case mkb::SMD_GAME_TIMEOVER_MAIN:
+            break;
+        default:
+            return;
+    }
+
     s_prevRetraceCount = s_retraceCount;
     s_retraceCount = gc::VIGetRetraceCount();
-
-    if (mkb::mainMode != mkb::MD_GAME) return;
 
     if (mkb::subMode == mkb::SMD_GAME_READY_INIT)
     {
