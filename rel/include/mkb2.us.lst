@@ -86,6 +86,8 @@ CC008000:GXWGFifo
 809800ec:dataSelectMenuState
 809800ed:storyFileSelectState
 809800ee:selectedStoryFileIdx
+80918130:continueSavedGameText
+80918190:startGameFromBeginningText
 
 // Misc
 805bc470:dipSwitches

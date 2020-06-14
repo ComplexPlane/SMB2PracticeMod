@@ -46,6 +46,8 @@ extern StoryModeSaveFile storyModeSaveFiles[3];
 extern uint8_t dataSelectMenuState;
 extern uint8_t storyFileSelectState;
 extern uint8_t selectedStoryFileIdx;
+extern char continueSavedGameText[40];
+extern char startGameFromBeginningText[36];
 }
 
 }

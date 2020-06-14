@@ -12,10 +12,7 @@ namespace iw
 static uint32_t s_animCounter;
 static const char *s_animStrs[4] = {"/", "-", "\\", " |"};
 
-void init()
-{
-
-}
+void init() {}
 
 static void handleIWSelection()
 {
@@ -67,6 +64,13 @@ void tick()
 {
     if (mkb::mainMode != mkb::MD_GAME) return;
     if (mkb::mainGameMode != mkb::MGM_STORY) return;
+
+    if (mkb::subMode == mkb::SMD_GAME_SCENARIO_INIT)
+    {
+        const char *msg = "Up/Down to Change World.";
+        strcpy(mkb::continueSavedGameText, msg);
+        strcpy(mkb::startGameFromBeginningText, msg);
+    }
 
     handleIWSelection();
     setSaveFileTitles();
