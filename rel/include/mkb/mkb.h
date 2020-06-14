@@ -13,6 +13,7 @@
 #include <mkb/mode.h>
 #include <mkb/sprite.h>
 #include <mkb/minimap.h>
+#include <mkb/story.h>
 
 #include <cstdint>
 

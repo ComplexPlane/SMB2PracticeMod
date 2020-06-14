@@ -5,6 +5,7 @@
 #include "tetris.h"
 #include "draw.h"
 #include "timer.h"
+#include "iw.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
@@ -53,6 +54,7 @@ void init()
     savestate::init();
     titlescreen::init();
     timer::init();
+    iw::init();
 
     s_drawDebugText_trampoline = patch::hookFunction(
         mkb::drawDebugText, []()
@@ -77,6 +79,7 @@ void tick()
 
     savestate::tick();
     timer::tick();
+    iw::tick();
 }
 
 }

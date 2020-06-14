@@ -53,5 +53,8 @@ bool buttonReleased(uint16_t button);
 bool buttonDown(uint16_t button);
 bool buttonChordPressed(uint16_t btn1, uint16_t btn2);
 int getCStickDir();
+bool analogPressed(uint16_t analogRegion);
+bool analogReleased(uint16_t analogRegion);
+bool analogDown(uint16_t analogRegion);
 
 }

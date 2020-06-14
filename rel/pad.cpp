@@ -47,4 +47,23 @@ int getCStickDir()
     else return DIR_NONE;
 }
 
+bool analogPressed(uint16_t analogRegion)
+{
+    bool downThisFrame = mkb::padAnalogBitfield & (analogRegion << 16);
+    bool downLastFrame = mkb::padAnalogBitfield & analogRegion;
+    return downThisFrame && !downLastFrame;
+}
+
+bool analogReleased(uint16_t analogRegion)
+{
+    bool downThisFrame = mkb::padAnalogBitfield & (analogRegion << 16);
+    bool downLastFrame = mkb::padAnalogBitfield & analogRegion;
+    return !downThisFrame && downLastFrame;
+}
+
+bool analogDown(uint16_t analogRegion)
+{
+    return mkb::padAnalogBitfield & (analogRegion << 16);
+}
+
 }

@@ -28,4 +28,4 @@ add_executable(ApeSphere
         rel/memstore.cpp
         rel/savestate.cpp
         rel/draw.cpp
-        rel/scratch.cpp rel/assembly.cpp rel/timer.cpp rel/include/timer.h rel/include/gc/vi.h)
+        rel/scratch.cpp rel/assembly.cpp rel/timer.cpp rel/include/timer.h rel/include/gc/vi.h rel/include/mkb/story.h rel/include/iw.h rel/iw.cpp)

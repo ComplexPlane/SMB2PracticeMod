@@ -9,6 +9,7 @@
 800723b4:strlen
 80071f90:rand
 8006fed0:vsprintf
+8006fdf0:sprintf
 800722fc:strcpy
 
 // GX
@@ -81,6 +82,11 @@ CC008000:GXWGFifo
 8054dc40:subModeFrameCounter
 8033b70c:setMinimapMode
 
+// Main Game (only valid when maingame.rel is loaded)
+809800ec:dataSelectMenuState
+809800ed:storyFileSelectState
+809800ee:selectedStoryFileIdx
+
 // Misc
 805bc470:dipSwitches
 805bc9a0:balls
@@ -91,6 +97,7 @@ CC008000:GXWGFifo
 8054edc8:mysteryStandstillFrameCounter
 80473114:currentStageId
 80553976:stageTimeLimit
+8061cc60:storyModeSaveFiles
 
 // runtime register stuff
 8006b24c:_savefpr_14
