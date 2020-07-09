@@ -80,6 +80,8 @@ static void updateKonami()
 void tick()
 {
     updateKonami();
+
+    gc::OSReport("konami progress: %d\n", s_konamiProgress);
 }
 
 bool buttonPressed(uint16_t button)

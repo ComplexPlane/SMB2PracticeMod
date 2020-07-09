@@ -32,6 +32,7 @@ private:
         ROWCLEAR,
         GAMEOVER,
     };
+    bool m_everShown;
     bool m_hidden;
 
     State m_state;

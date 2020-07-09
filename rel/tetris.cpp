@@ -104,9 +104,11 @@ void Tetris::init()
 
 void Tetris::disp()
 {
-    if (pad::konamiPressed())
+    bool toggle = m_everShown ? pad::buttonChordPressed(pad::BUTTON_LTRIG, pad::BUTTON_RTRIG) : pad::konamiPressed();
+    if (toggle)
     {
         m_hidden = !m_hidden;
+        if (!m_hidden) m_everShown = true;
         if (!m_hidden) return; // Come back next frame when your inputs won't be reused
     }
 
@@ -474,6 +476,26 @@ void Tetris::drawInfoText()
         429, 22,
         {0xff, 0xc0, 0x00, 0xff},
         "NEXT");
+
+    draw::debugText(
+        490, 40,
+        {0xff, 0xff, 0xff, 0xff},
+        "DPAD: MOVE");
+
+    draw::debugText(
+        490, 60,
+        {0xff, 0xff, 0xff, 0xff},
+        " X/Y: ROTATE");
+
+    draw::debugText(
+        490, 80,
+        {0xff, 0xff, 0xff, 0xff},
+        "   B: DROP");
+
+    draw::debugText(
+        490, 100,
+        {0xff, 0xff, 0xff, 0xff},
+        " L+R: TOGGLE");
 }
 
 void Tetris::drawTetrad(int x, int y, Tetrad tetrad, int rotation)
