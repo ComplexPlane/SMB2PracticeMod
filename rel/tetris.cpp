@@ -104,7 +104,7 @@ void Tetris::init()
 
 void Tetris::disp()
 {
-    if (pad::buttonChordPressed(pad::BUTTON_LTRIG, pad::BUTTON_X))
+    if (pad::konamiPressed())
     {
         m_hidden = !m_hidden;
         if (!m_hidden) return; // Come back next frame when your inputs won't be reused

@@ -48,6 +48,7 @@ enum Dir
     DIR_NONE = -1,
 };
 
+void tick();
 bool buttonPressed(uint16_t button);
 bool buttonReleased(uint16_t button);
 bool buttonDown(uint16_t button);
@@ -56,5 +57,8 @@ int getCStickDir();
 bool analogPressed(uint16_t analogRegion);
 bool analogReleased(uint16_t analogRegion);
 bool analogDown(uint16_t analogRegion);
+bool dirDown(uint16_t dir); // Only works for cardinal directions
+bool dirPressed(uint16_t dir); // Only works for cardinal directions
+bool konamiPressed();
 
 }

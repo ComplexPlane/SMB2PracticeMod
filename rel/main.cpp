@@ -11,6 +11,7 @@
 #include <mkb/mkb.h>
 
 #include <titlescreen.h>
+#include <pad.h>
 
 namespace main
 {
@@ -77,6 +78,7 @@ void tick()
     // Enable debug mode (appears to need to be called every frame)
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
+    pad::tick();
     savestate::tick();
     timer::tick();
     iw::tick();
