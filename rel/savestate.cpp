@@ -230,27 +230,33 @@ void tick()
     }
     auto &state = s_states[s_activeStateSlot];
 
-    switch (mkb::subMode)
-    {
-        case mkb::SMD_GAME_PLAY_MAIN:
-        case mkb::SMD_GAME_GOAL_INIT:
-        case mkb::SMD_GAME_GOAL_MAIN:
-        case mkb::SMD_GAME_RINGOUT_INIT:
-        case mkb::SMD_GAME_RINGOUT_MAIN:
-        case mkb::SMD_GAME_TIMEOVER_INIT:
-        case mkb::SMD_GAME_TIMEOVER_MAIN:
-            break;
-        default:
-            return;
-    }
-
     preventReplays();
 
     if (pad::buttonPressed(pad::BUTTON_X))
     {
         if (mkb::subMode != mkb::SMD_GAME_PLAY_MAIN || mkb::subModeRequest != mkb::SMD_INVALID)
         {
-            draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
+            if (mkb::subMode == mkb::SMD_GAME_RINGOUT_INIT || mkb::subMode == mkb::SMD_GAME_RINGOUT_MAIN)
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Fallout");
+            }
+            else if (mkb::subMode == mkb::SMD_GAME_GOAL_INIT || mkb::subMode == mkb::SMD_GAME_GOAL_MAIN)
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Goal");
+            }
+            else if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate During Retry");
+            }
+            else if (mkb::subMode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::subMode == mkb::SMD_GAME_TIMEOVER_MAIN)
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Timeout");
+            }
+            else
+            {
+                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
+            }
+
             return;
         }
         s_createdStateLastFrame = true;
@@ -277,6 +283,11 @@ void tick()
         || (pad::buttonDown(pad::BUTTON_X)
             && s_createdStateLastFrame))
     {
+        if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
+        {
+            draw::notify(draw::NotifyColor::RED, "Cannot Load Savestate During Retry");
+            return;
+        }
         if (!state.active)
         {
             draw::notify(draw::NotifyColor::RED, "Slot %d Empty", s_activeStateSlot + 1);
