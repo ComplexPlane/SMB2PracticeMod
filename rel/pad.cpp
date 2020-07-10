@@ -103,7 +103,7 @@ bool buttonDown(uint16_t button)
 
 bool buttonChordPressed(uint16_t btn1, uint16_t btn2)
 {
-    return buttonDown(btn1) && buttonPressed(btn2);
+    return (buttonDown(btn1) && buttonPressed(btn2)) || (buttonPressed(btn1) && buttonDown(btn2));
 }
 
 int getCStickDir()

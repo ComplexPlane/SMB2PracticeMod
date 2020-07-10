@@ -31,6 +31,7 @@ private:
         DROPPING,
         ROWCLEAR,
         GAMEOVER,
+        NEWGAME,
     };
     bool m_everShown;
     bool m_hidden;
@@ -52,13 +53,16 @@ private:
     int m_droppingTetradX;
     int m_droppingTetradY;
 
+    void newGame();
+
     void handleDroppingState();
     void handleRowclearState();
-    void handleGameoverState();
+    void handleGameOverState();
+    void handleNewGameState();
 
     void transitionFromDropping();
     void transitionDroppingToRowclear();
-    void transitionDroppingToGameover();
+    void transitionDroppingToGameOver();
     void tryTransitionToDropping();
 
     Cell genRandomCell();
@@ -75,6 +79,7 @@ private:
     void drawTetradQueue();
     void drawDroppingTetrad();
     void drawGridCell(int cellx, int celly, gc::GXColor color);
+    void drawGameOverText();
 
     bool tetradIntersectsGrid(Tetrad tetrad, int tetradX, int tetradY, int rotation);
     int findLowestPossibleTetradY(Tetrad tetrad, int tetradX, int tetradY, int rotation);

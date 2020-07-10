@@ -66,8 +66,8 @@ void init()
 
             draw::preDraw();
             draw::disp();
-            Tetris::getInstance().disp();
             timer::disp();
+            Tetris::getInstance().disp();
 
             s_drawDebugText_trampoline();
         });

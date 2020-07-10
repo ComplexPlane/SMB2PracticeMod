@@ -1,5 +1,4 @@
 /* TODO:
-Score
 Input repeat
 Gameover
 Non shit RNG
@@ -80,9 +79,14 @@ static const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
 void Tetris::init()
 {
     m_hidden = true;
-
-    m_score = 0;
+    m_everShown = false;
     m_highScore = 0;
+    newGame();
+}
+
+void Tetris::newGame()
+{
+    m_score = 0;
 
     m_currentDropPeriod = INITIAL_DROP_PERIOD;
 
@@ -123,7 +127,10 @@ void Tetris::disp()
                 handleRowclearState();
                 break;
             case State::GAMEOVER:
-                handleGameoverState();
+                handleGameOverState();
+                break;
+            case State::NEWGAME:
+                handleNewGameState();
                 break;
         }
 
@@ -232,6 +239,7 @@ void Tetris::handleRowclearState()
         for (int i = 0; i < emptyRows; i++)
         {
             m_score += 100 + 50 * i;
+            if (m_score > m_highScore) m_highScore = m_score;
         }
 
         // Increase drop rate
@@ -242,9 +250,28 @@ void Tetris::handleRowclearState()
     }
 }
 
-void Tetris::handleGameoverState()
+void Tetris::transitionDroppingToGameOver()
 {
+    m_state = State::GAMEOVER;
+    m_stateTimer = 120;
+}
 
+void Tetris::handleGameOverState()
+{
+    m_stateTimer--;
+    if (m_stateTimer == 0) m_state = State::NEWGAME;
+}
+
+void Tetris::handleNewGameState()
+{
+    // Run timer continuously
+    m_stateTimer--;
+    if (m_stateTimer < 0) m_stateTimer = 255;
+
+    if (pad::buttonPressed(pad::BUTTON_START))
+    {
+        newGame();
+    }
 }
 
 void Tetris::transitionFromDropping()
@@ -285,11 +312,6 @@ void Tetris::transitionDroppingToRowclear()
     m_stateTimer = 30;
 }
 
-void Tetris::transitionDroppingToGameover()
-{
-    m_state = State::GAMEOVER;
-}
-
 void Tetris::tryTransitionToDropping()
 {
     m_state = State::DROPPING;
@@ -301,7 +323,7 @@ void Tetris::tryTransitionToDropping()
 
     if (tetradIntersectsGrid(m_droppingTetrad, m_droppingTetradX, m_droppingTetradY, m_droppingTetradRot))
     {
-        transitionDroppingToGameover();
+        transitionDroppingToGameOver();
     }
 }
 
@@ -340,6 +362,8 @@ void Tetris::draw()
     {
         drawDroppingTetrad();
     }
+
+    drawGameOverText();
 }
 
 void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color)
@@ -478,22 +502,22 @@ void Tetris::drawInfoText()
         "NEXT");
 
     draw::debugText(
-        490, 40,
+        490, 90,
         {0xff, 0xff, 0xff, 0xff},
         "DPAD: MOVE");
 
     draw::debugText(
-        490, 60,
+        490, 110,
         {0xff, 0xff, 0xff, 0xff},
         " X/Y: ROTATE");
 
     draw::debugText(
-        490, 80,
+        490, 130,
         {0xff, 0xff, 0xff, 0xff},
         "   B: DROP");
 
     draw::debugText(
-        490, 100,
+        490, 150,
         {0xff, 0xff, 0xff, 0xff},
         " L+R: TOGGLE");
 }
@@ -594,6 +618,25 @@ void Tetris::drawGridCell(int cellx, int celly, gc::GXColor color)
     float drawY2 = drawY1 + CELL_WIDTH;
 
     draw::rect(drawX1, drawY1, drawX2, drawY2, color);
+}
+
+void Tetris::drawGameOverText()
+{
+    if ((m_state == State::GAMEOVER || m_state == State::NEWGAME) && m_stateTimer / 3 % 2 == 0)
+    {
+        draw::debugText(
+            260, 220,
+            {0xff, 0x00, 0x00, 0xff},
+            "GAME OVER");
+    }
+
+    if (m_state == State::NEWGAME)
+    {
+        draw::debugText(
+            200, 240,
+            {0xff, 0xff, 0xff, 0xff},
+            "PRESS START TO RETRY");
+    }
 }
 
 // Also detects if tetrad is out-of-bounds
