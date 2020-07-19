@@ -6,12 +6,13 @@
 #include "draw.h"
 #include "timer.h"
 #include "iw.h"
+#include "titlescreen.h"
+#include "pad.h"
 
 #include <gc/gc.h>
 #include <mkb/mkb.h>
 
-#include <titlescreen.h>
-#include <pad.h>
+#include <cstring>
 
 namespace main
 {
@@ -73,11 +74,27 @@ void init()
         });
 }
 
+static void unlockEverything()
+{
+    // Don't yet know how to unlock the staff credits game from a fresh save...
+    mkb::unlockInfo.masterUnlocked = true;
+    mkb::unlockInfo.monkeys = 99;
+    mkb::unlockInfo.staffCreditsGameUnlocked = true;
+    mkb::unlockInfo.playPoints = 99999;
+    mkb::unlockInfo.newestPlayPointRecord = 99999;
+    mkb::unlockInfo.movies = 0x0fff;
+    mkb::unlockInfo.partyGames = 0x0001b600;
+    mkb::unlockInfo.moviesWatched = 0x0fff;
+    memset(mkb::cmUnlockEntries, 0xff, sizeof(mkb::cmUnlockEntries));
+    memset(mkb::storyModeUnlockEntries, 0xff, sizeof(mkb::storyModeUnlockEntries));
+}
+
 void tick()
 {
     // Enable debug mode (appears to need to be called every frame)
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
+    unlockEverything();
     pad::tick();
     savestate::tick();
     timer::tick();

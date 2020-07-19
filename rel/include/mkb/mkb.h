@@ -14,6 +14,7 @@
 #include <mkb/sprite.h>
 #include <mkb/minimap.h>
 #include <mkb/story.h>
+#include <mkb/unlock.h>
 
 #include <cstdint>
 

@@ -101,6 +101,9 @@ CC008000:GXWGFifo
 80473114:currentStageId
 80553976:stageTimeLimit
 8061cc60:storyModeSaveFiles
+8062a294:unlockInfo
+805d48f8:cmUnlockEntries
+805d4d38:storyModeUnlockEntries
 
 // runtime register stuff
 8006b24c:_savefpr_14
