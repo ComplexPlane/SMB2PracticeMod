@@ -272,12 +272,21 @@ void tick()
 
             return;
         }
+
+        // Test that there is enough memory to create state
+        // TODO use a scratch savestate instead of olbliterating whichever slot was currently selected?
+        state.memStore.enterPreallocMode();
+        passOverRegions(&state.memStore);
+        if (!state.memStore.enterSaveMode())
+        {
+            draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate: Out of Memory");
+            state.active = false;
+            return;
+        }
+
         s_createdStateLastFrame = true;
         state.active = true;
         state.stageId = mkb::currentStageId;
-        state.memStore.enterPreallocMode();
-        passOverRegions(&state.memStore);
-        MOD_ASSERT(state.memStore.enterSaveMode());
         passOverRegions(&state.memStore);
 
         handlePauseMenuSave(&state);
