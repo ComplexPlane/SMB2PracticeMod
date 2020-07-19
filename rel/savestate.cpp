@@ -89,7 +89,7 @@ static void passOverRegions(memstore::MemStore *memStore)
     {
         if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
         {
-            memStore->doRegion(&mkb::itemgroups[i].seesawInfo->state, 12);
+            memStore->doRegion(mkb::itemgroups[i].seesawInfo->state, 12);
         }
     }
 
