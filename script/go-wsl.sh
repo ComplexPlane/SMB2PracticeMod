@@ -19,4 +19,5 @@ make us -j$(nproc)
 # cp ApeSphere.us.rel ~/romhack/smb2mut/files/mkb2.rel_sample.rel
 
 echo 'Copying GCI to dolphin emu folder' 
-cp ApeSphere.us.gci /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ A/
+mkdir -p /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
+cp ApeSphere.us.gci /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/

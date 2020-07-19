@@ -22,7 +22,7 @@ ori r26,r26,0x4240 # Check 1,000,000 times
 checkForMemoryCardLoop:
 ori r3,r30,0x611c # CARDProbeEx
 mtctr r3
-li r3,0 # Memory card slot A
+li r3,1 # Memory card slot B
 li r4,0 # Pointer to the memory size (not needed, so NULL)
 li r5,0 # Pointer to the sector size (not needed, so NULL)
 bctrl
@@ -51,7 +51,7 @@ mr r26,r3
 # Mount the Memory Card
 ori r3,r30,0x67b0 # CARDMountAsync
 mtctr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 addi r4,r26,0x220 # Pointer to the Work Area
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
 li r6,0 # Attach Callback function (Want to avoid using, so NULL)
@@ -63,7 +63,7 @@ bne- freeMemory
 # Open the file
 ori r3,r30,0x74fc # CARDOpen
 mtctr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 ori r4,r28,0x44c0 # File Name
 addi r5,r26,0 # Pointer to CardFileInfo
 bctrl
@@ -209,7 +209,7 @@ mflr r14
 finishAsyncFunctionLoop:
 ori r3,r30,0x33e4 # CARDGetResultCode
 mtctr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 bctrl
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
@@ -262,7 +262,7 @@ bl CARDClose
 unmountCard:
 ori r3,r30,0x69ec # CARDUnmount
 mtctr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 bctrl
 
 freeMemory:
