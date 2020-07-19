@@ -100,6 +100,19 @@ static void passOverRegions(memstore::MemStore *memStore)
     // Pause menu
     memStore->doRegion(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
     memStore->doRegion(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
+
+    // Timer ball sprite (it'll probably always be in the same place in the sprite array)
+    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    {
+        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+
+        mkb::Sprite *sprite = &mkb::sprites[i];
+        if (sprite->tickFunc == mkb::timerBallSpriteTick)
+        {
+            memStore->doRegion(sprite, sizeof(*sprite));
+            break;
+        }
+    }
 }
 
 static void handlePauseMenuSave(SaveState *state)
@@ -286,6 +299,11 @@ void tick()
         if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
         {
             draw::notify(draw::NotifyColor::RED, "Cannot Load Savestate During Retry");
+            return;
+        }
+        if (mkb::subMode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::subMode == mkb::SMD_GAME_TIMEOVER_MAIN)
+        {
+            draw::notify(draw::NotifyColor::RED, "Cannot Load Savestate After Timeout");
             return;
         }
         if (!state.active)

@@ -102,6 +102,7 @@ void timeBonusSpriteDisp(Sprite *sprite);
 void stageScoreSpriteDisp(Sprite *sprite);
 void falloutSpriteTick(uint8_t *status, Sprite *sprite);
 void bonusFinishSpriteTick(uint8_t *status, Sprite *sprite);
+void timerBallSpriteTick(uint8_t *status, Sprite *sprite);
 }
 
 }
