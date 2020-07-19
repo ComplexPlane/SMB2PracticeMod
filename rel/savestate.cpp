@@ -76,6 +76,7 @@ static void passOverRegions(memstore::MemStore *memStore)
         {
             case mkb::STOBJ_GOALTAPE:
             case mkb::STOBJ_GOALBAG:
+            case mkb::STOBJ_GOALBAG_EXMASTER:
             case mkb::STOBJ_BUTTON:
             {
                 memStore->doRegion(&mkb::stageObjects[i], sizeof(mkb::stageObjects[i]));
