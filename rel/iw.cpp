@@ -44,7 +44,7 @@ static void handleIWSelection()
     }
 }
 
-static void setSaveFileTitles()
+static void setSaveFileInfo()
 {
     s_animCounter += 1;
 
@@ -56,6 +56,9 @@ static void setSaveFileTitles()
             sprintf(storySave.fileName, "W%02d IW %s",
                     storySave.currentWorld + 1,
                     s_animStrs[s_animCounter / 2 % 4]);
+            storySave.numBeatenStagesInWorld = 0;
+            storySave.score = 0;
+            storySave.playtimeInFrames = 0;
         }
     }
 }
@@ -73,7 +76,7 @@ void tick()
     }
 
     handleIWSelection();
-    setSaveFileTitles();
+    setSaveFileInfo();
 }
 
 }
