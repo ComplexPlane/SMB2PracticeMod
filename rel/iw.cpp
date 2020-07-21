@@ -1,6 +1,6 @@
 #include "iw.h"
-
 #include "pad.h"
+#include "assembly.h"
 
 #include <mkb/mkb.h>
 #include <cstring>
@@ -42,6 +42,8 @@ static void handleIWSelection()
             storySave.currentWorld = dir == +1 ? 0 : 9;
         }
     }
+
+    main::currentlyPlayingIW = storySave.statusFlag;
 }
 
 static void setSaveFileInfo()

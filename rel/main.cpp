@@ -42,6 +42,10 @@ static void performAssemblyPatches()
 
     // Nop the conditional that guards `drawDebugText`, enabling it even when debug mode is disabled
     patch::writeNop(reinterpret_cast<void *>(0x80299f54));
+
+    // IW-related patches
+    patch::writeBranch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(StageSelectMenuHook));
+    patch::writeBranch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(PauseMenuTextHook));
 }
 
 void init()

@@ -23,6 +23,11 @@ void tick();
 // Normally, the debug text drawing function uses a single byte for the color in the form RRGGBBAA
 extern gc::GXColor debugTextColor;
 
+// IwMenu
+extern bool currentlyPlayingIW;
+void StageSelectMenuHook();
+void PauseMenuTextHook();
+
 }
 
 }
