@@ -1,6 +1,8 @@
 .global StageSelectMenuHook
 .global PauseMenuTextHook
 
+.text
+
 StageSelectMenuHook: // Hook at 0x80274804
 stwu r1, -0x38 (r1)
 stw r31, 0x34 (r1)
@@ -194,6 +196,8 @@ li r3, 0
 
 EndIsIWComplete:
 blr
+
+.data
 
 // ------------------------------------------------------------------------------------------
 FINISH_IW_MSG: .ascii "Finish IW"
