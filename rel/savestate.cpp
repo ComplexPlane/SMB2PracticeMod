@@ -55,11 +55,9 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(&mkb::stageTimer, sizeof(mkb::stageTimer));
     memStore->doRegion(reinterpret_cast<void *>(0x8054E03C), 0xe0); // Camera region
     memStore->doRegion(reinterpret_cast<void *>(0x805BD830), 0x1c); // Some physics region
-    memStore->doRegion(&mkb::balls[0].ape->charaRotation, sizeof(mkb::balls[0].ape->charaRotation));
-    memStore->doRegion(&mkb::balls[0].ape->charaAnimType, sizeof(mkb::balls[0].ape->charaAnimType));
     memStore->doRegion(&mkb::ballMode, sizeof(mkb::ballMode));
-    memStore->doRegion(&mkb::balls[0].ape->flag1, sizeof(mkb::balls[0].ape->flag1));
     memStore->doRegion(&mkb::mysteryStandstillFrameCounter, sizeof(mkb::mysteryStandstillFrameCounter));
+    memStore->doRegion(mkb::balls[0].ape, sizeof(*mkb::balls[0].ape)); // Store entire ape struct for now
 
     // Itemgroups
     memStore->doRegion(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->collisionHeaderCount);
