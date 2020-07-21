@@ -108,8 +108,9 @@ void Tetris::newGame()
 
 void Tetris::disp()
 {
-    bool toggle = m_everShown ? pad::buttonChordPressed(pad::BUTTON_LTRIG, pad::BUTTON_RTRIG) : pad::konamiPressed();
-    if (toggle)
+    bool konamiPressed = pad::konamiPressed();
+    bool trigChordPressed = pad::buttonChordPressed(pad::BUTTON_LTRIG, pad::BUTTON_RTRIG);
+    if (konamiPressed || (m_everShown && trigChordPressed))
     {
         m_hidden = !m_hidden;
         if (!m_hidden) m_everShown = true;
