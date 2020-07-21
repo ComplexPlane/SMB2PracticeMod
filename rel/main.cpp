@@ -96,9 +96,9 @@ void tick()
 
     unlockEverything();
     pad::tick();
-    savestate::tick();
     timer::tick();
     iw::tick();
+    savestate::tick();
 }
 
 }

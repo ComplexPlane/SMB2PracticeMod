@@ -5,9 +5,17 @@
 namespace memstore
 {
 
+enum class Mode
+{
+    PREALLOC,
+    SAVE,
+    LOAD,
+};
+
 class MemStore
 {
 public:
+
     MemStore() noexcept;
     ~MemStore();
 
@@ -31,15 +39,9 @@ public:
     void doRegion(void *ptr, uint32_t size);
 
     void printStats() const;
+    Mode getMode() const;
 
 private:
-    enum class Mode
-    {
-        PREALLOC,
-        SAVE,
-        LOAD,
-    };
-
     Mode m_mode;
 
     uint8_t *m_saveBuf;

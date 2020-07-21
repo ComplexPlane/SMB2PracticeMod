@@ -17,7 +17,6 @@ void init()
     s_retraceCount = gc::VIGetRetraceCount();
 }
 
-
 void tick() {}
 
 static void convertFrameTime(int frames, int *sec, int *centiSec)
@@ -79,6 +78,20 @@ void disp()
         380, 50,
         {0xff, 0xff, 0xff, 0xff},
         "PAUSE: %02d.%02d", sec, centiSec);
+}
+
+void saveState(memstore::MemStore *memStore)
+{
+    memStore->doRegion(&s_retraceCount, sizeof(s_retraceCount));
+    memStore->doRegion(&s_prevRetraceCount, sizeof(s_prevRetraceCount));
+    memStore->doRegion(&s_rtaTimer, sizeof(s_rtaTimer));
+    if (memStore->getMode() == memstore::Mode::LOAD)
+    {
+        // This might not be completely consistently correct
+        uint32_t count = gc::VIGetRetraceCount();
+        s_prevRetraceCount = count - 1;
+        s_retraceCount = count - 1;
+    }
 }
 
 }

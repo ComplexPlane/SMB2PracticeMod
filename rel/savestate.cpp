@@ -9,6 +9,7 @@
 #include <mkb/mkb.h>
 
 #include <cstring>
+#include <timer.h>
 
 namespace savestate
 {
@@ -112,6 +113,9 @@ static void passOverRegions(memstore::MemStore *memStore)
             break;
         }
     }
+
+    // RTA timer
+    timer::saveState(memStore);
 }
 
 static void handlePauseMenuSave(SaveState *state)

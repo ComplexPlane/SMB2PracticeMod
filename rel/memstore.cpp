@@ -80,4 +80,9 @@ void MemStore::printStats() const
     gc::OSReport("[mod] MemStore total size: %d bytes\n", m_saveBufLen);
 }
 
+Mode MemStore::getMode() const
+{
+    return m_mode;
+}
+
 }
