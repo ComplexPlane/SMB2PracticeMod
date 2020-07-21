@@ -24,7 +24,7 @@ void tick();
 extern gc::GXColor debugTextColor;
 
 // IwMenu
-extern bool currentlyPlayingIW;
+extern uint32_t currentlyPlayingIW;
 void StageSelectMenuHook();
 void PauseMenuTextHook();
 

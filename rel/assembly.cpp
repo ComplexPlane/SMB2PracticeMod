@@ -4,6 +4,6 @@ namespace main
 {
 
 gc::GXColor debugTextColor = {};
-bool currentlyPlayingIW = false;
+uint32_t currentlyPlayingIW = 0;
 
 }

@@ -79,6 +79,11 @@ void tick()
 
     handleIWSelection();
     setSaveFileInfo();
+
+    if (mkb::dataSelectMenuState == mkb::DSMS_DEFAULT)
+    {
+        main::currentlyPlayingIW = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx].statusFlag;
+    }
 }
 
 }
