@@ -54,7 +54,7 @@ struct Sprite
     int32_t someFrameCount;
     uint32_t field_0x50;
     uint32_t field_0x54;
-    float field_0x58;
+    float lerpValue;
     float field_0x5c;
     uint8_t field_0x60;
     uint8_t field_0x61;
@@ -103,6 +103,8 @@ void stageScoreSpriteDisp(Sprite *sprite);
 void falloutSpriteTick(uint8_t *status, Sprite *sprite);
 void bonusFinishSpriteTick(uint8_t *status, Sprite *sprite);
 void timerBallSpriteTick(uint8_t *status, Sprite *sprite);
+void scoreSpriteTick(uint8_t *status, Sprite *sprite);
+void scoreSpriteDisp(Sprite *sprite);
 }
 
 }

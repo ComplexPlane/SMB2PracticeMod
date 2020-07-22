@@ -73,6 +73,8 @@ CC008000:GXWGFifo
 8032e9a4:falloutSpriteTick
 8032f080:bonusFinishSpriteTick
 80339cec:timerBallSpriteTick
+80339834:scoreSpriteTick
+803399d8:scoreSpriteDisp
 
 // Mode
 8054dc30:mainMode

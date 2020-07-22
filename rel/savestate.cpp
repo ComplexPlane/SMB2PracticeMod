@@ -106,16 +106,20 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
     memStore->doRegion(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
 
-    // Timer ball sprite (it'll probably always be in the same place in the sprite array)
     for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
     {
         if (mkb::spriteListInfo.statusList[i] == 0) continue;
-
         mkb::Sprite *sprite = &mkb::sprites[i];
+
         if (sprite->tickFunc == mkb::timerBallSpriteTick)
         {
+            // Timer ball sprite (it'll probably always be in the same place in the sprite array)
             memStore->doRegion(sprite, sizeof(*sprite));
-            break;
+        }
+        else if (sprite->tickFunc == mkb::scoreSpriteTick)
+        {
+            // Score sprite's lerped score value
+            memStore->doRegion(&sprite->lerpValue, sizeof(sprite->lerpValue));
         }
     }
 
