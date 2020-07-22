@@ -26,6 +26,7 @@ static SaveState s_states[8];
 static int s_activeStateSlot;
 
 static bool s_createdStateLastFrame;
+static bool s_frameAdvanceMode;
 
 static void (*s_setMinimapMode_trampoline)(uint32_t mode);
 
@@ -43,6 +44,11 @@ void init()
                 s_setMinimapMode_trampoline(mode);
             }
         });
+}
+
+static bool isEitherTriggerHeld()
+{
+    return pad::analogDown(pad::AR_LTRIG) || pad::analogDown(pad::AR_RTRIG);
 }
 
 // For all memory regions that involve just saving/loading to the same region...
@@ -230,6 +236,11 @@ static void preventReplays()
 
 void tick()
 {
+    if (!isEitherTriggerHeld())
+    {
+        s_frameAdvanceMode = false;
+    }
+
     // Must be in main game
     if (mkb::mainMode != mkb::MD_GAME) return;
 
@@ -290,6 +301,9 @@ void tick()
 
         handlePauseMenuSave(&state);
 
+        // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
+        s_frameAdvanceMode = isEitherTriggerHeld();
+
         gc::OSReport("[mod] Saved state:\n");
         state.memStore.printStats();
         size_t freeHeapSpace = heap::getFreeSpace();
@@ -297,12 +311,21 @@ void tick()
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
 
-        draw::notify(draw::NotifyColor::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
+        if (s_frameAdvanceMode)
+        {
+            draw::notify(draw::NotifyColor::PURPLE, "Slot %d Frame Advance", s_activeStateSlot + 1);
+        }
+        else
+        {
+            draw::notify(draw::NotifyColor::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
+        }
     }
     else if (
         pad::buttonDown(pad::BUTTON_Y)
         || (pad::buttonDown(pad::BUTTON_X)
-            && s_createdStateLastFrame))
+            && s_createdStateLastFrame)
+        || s_frameAdvanceMode
+        || (isEitherTriggerHeld() && cStickDir != pad::DIR_NONE))
     {
         if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
         {

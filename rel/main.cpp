@@ -99,7 +99,7 @@ static void unlockEverything()
 void tick()
 {
     // Enable debug mode (appears to need to be called every frame)
-    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+//    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
     unlockEverything();
     pad::tick();
