@@ -24,7 +24,6 @@ add_executable(ApeSphere
         rel/patch.cpp
         rel/rel.cpp
         rel/tetris.cpp
-        rel/titlescreen.cpp
         rel/memstore.cpp
         rel/savestate.cpp
         rel/draw.cpp

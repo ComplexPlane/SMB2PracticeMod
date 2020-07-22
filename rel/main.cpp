@@ -6,10 +6,8 @@
 #include "draw.h"
 #include "timer.h"
 #include "iw.h"
-#include "titlescreen.h"
 #include "pad.h"
 
-#include <gc/gc.h>
 #include <mkb/mkb.h>
 
 #include <cstring>
@@ -46,6 +44,11 @@ static void performAssemblyPatches()
     // IW-related patches
     patch::writeBranch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(StageSelectMenuHook));
     patch::writeBranch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(PauseMenuTextHook));
+
+    // Titlescreen patches
+    strcpy(reinterpret_cast<char *>(0x8047f4ec), "APESPHERE PRACTICE MOD");
+    patch::writeBranch(reinterpret_cast<void *>(0x8032ad0c),
+                       reinterpret_cast<void *>(main::CustomTitleScreenTextColor));
 }
 
 void init()
@@ -58,7 +61,6 @@ void init()
     draw::init();
     Tetris::getInstance().init();
     savestate::init();
-    titlescreen::init();
     timer::init();
     iw::init();
 
