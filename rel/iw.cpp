@@ -128,10 +128,31 @@ void disp()
 {
     if (mkb::mainMode != mkb::MD_GAME || mkb::mainGameMode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
 
-    draw::debugText(
-        380, 18,
-        {0xff, 0xff, 0xff, 0xff},
-        "WORLD: %d", s_iwTime);
+    constexpr uint32_t SECOND = 60;
+    constexpr uint32_t MINUTE = SECOND * 60;
+    constexpr uint32_t HOUR = MINUTE * 60;
+
+    constexpr int X = 380;
+    constexpr int Y = 18;
+    const gc::GXColor COLOR = {0xff, 0xff, 0xff, 0xff};
+
+    uint32_t hours = s_iwTime / HOUR;
+    uint32_t minutes = s_iwTime % HOUR / MINUTE;
+    uint32_t seconds = s_iwTime % MINUTE / SECOND;
+    uint32_t centiSeconds = (s_iwTime % SECOND) * 100 / 60;
+
+    if (hours > 0)
+    {
+        draw::debugText(X, Y, COLOR, "IW:  %d:%02d:%02d.%02d", hours, minutes, seconds, centiSeconds);
+    }
+    else if (minutes > 0)
+    {
+        draw::debugText(X, Y, COLOR, "IW:  %02d:%02d.%02d", minutes, seconds, centiSeconds);
+    }
+    else
+    {
+        draw::debugText(X, Y, COLOR, "IW:  %02d.%02d", seconds, centiSeconds);
+    }
 }
 
 }

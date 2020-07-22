@@ -70,13 +70,13 @@ void disp()
     draw::debugText(
         380, 34,
         {0xff, 0xff, 0xff, 0xff},
-        "RTA:   %02d.%02d", sec, centiSec);
+        "RTA: %02d.%02d", sec, centiSec);
 
     convertFrameTime(mkb::stageTimer - s_rtaTimer, &sec, &centiSec);
     draw::debugText(
         380, 50,
         {0xff, 0xff, 0xff, 0xff},
-        "PAUSE: %02d.%02d", sec, centiSec);
+        "PAU: %02d.%02d", sec, centiSec);
 }
 
 void saveState(memstore::MemStore *memStore)
