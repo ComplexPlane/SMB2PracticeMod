@@ -80,9 +80,15 @@ void tick()
     handleIWSelection();
     setSaveFileInfo();
 
-    if (mkb::dataSelectMenuState == mkb::DSMS_DEFAULT)
+    // Maybe not the best way to detect if we're playing an IW but it works
+    if (mkb::subMode == mkb::SMD_GAME_SCENARIO_MAIN)
     {
-        main::currentlyPlayingIW = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx].statusFlag;
+        mkb::StoryModeSaveFile &file = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx];
+        main::currentlyPlayingIW =
+            file.statusFlag
+            && file.fileName[0] == 'W'
+            && file.fileName[4] == 'I'
+            && file.fileName[5] == 'W';
     }
 }
 
