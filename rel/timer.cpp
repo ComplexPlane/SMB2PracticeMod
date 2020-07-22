@@ -2,7 +2,6 @@
 
 #include "draw.h"
 
-#include <gc/gc.h>
 #include <mkb/mkb.h>
 
 namespace timer

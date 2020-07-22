@@ -104,6 +104,7 @@ CC008000:GXWGFifo
 8062a294:unlockInfo
 805d48f8:cmUnlockEntries
 805d4d38:storyModeUnlockEntries
+8054dbbc:currWorld
 
 // runtime register stuff
 8006b24c:_savefpr_14

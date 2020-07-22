@@ -48,6 +48,7 @@ extern uint8_t storyFileSelectState;
 extern uint8_t selectedStoryFileIdx;
 extern char continueSavedGameText[40];
 extern char startGameFromBeginningText[36];
+extern uint16_t currWorld;
 }
 
 }

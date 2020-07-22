@@ -27,6 +27,7 @@ extern gc::GXColor debugTextColor;
 extern uint32_t currentlyPlayingIW;
 void StageSelectMenuHook();
 void PauseMenuTextHook();
+bool IsIWComplete();
 
 }
 

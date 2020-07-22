@@ -5,12 +5,29 @@
 #include <mkb/mkb.h>
 #include <cstring>
 #include <cstdio>
+#include <draw.h>
 
 namespace iw
 {
 
 static uint32_t s_animCounter;
 static const char *s_animStrs[4] = {"/", "-", "\\", " |"};
+
+// IW timer stuff
+static uint32_t s_iwTime;
+static uint32_t s_prevRetraceCount;
+static uint32_t s_bestWorldTimes[10] = {
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+};
 
 void init() {}
 
@@ -65,31 +82,81 @@ static void setSaveFileInfo()
     }
 }
 
+static void handleIWTimer()
+{
+    uint32_t retraceCount = gc::VIGetRetraceCount();
+
+    if (mkb::mainMode != mkb::MD_GAME
+        || mkb::mainGameMode != mkb::MGM_STORY
+        || mkb::dataSelectMenuState != mkb::DSMS_OPEN_DATA)
+    {
+        // We're not actually in the IW, zero the timer
+        s_iwTime = 0;
+    }
+    else if (main::currentlyPlayingIW && !main::IsIWComplete())
+    {
+        // We're in story mode playing an IW and it isn't finished, so increment the IW timer
+        s_iwTime += retraceCount - s_prevRetraceCount;
+    }
+    else
+    {
+        // We're in story mode playing an IW, but we finished it, so don't change the time
+        if (s_iwTime < s_bestWorldTimes[mkb::currWorld])
+        {
+            s_bestWorldTimes[mkb::currWorld] = s_iwTime;
+        }
+    }
+
+    s_prevRetraceCount = retraceCount;
+}
+
 void tick()
 {
-    if (mkb::mainMode != mkb::MD_GAME) return;
-    if (mkb::mainGameMode != mkb::MGM_STORY) return;
-
-    if (mkb::subMode == mkb::SMD_GAME_SCENARIO_INIT)
+    if (mkb::mainMode == mkb::MD_GAME && mkb::mainGameMode == mkb::MGM_STORY)
     {
-        const char *msg = "Up/Down to Change World.";
-        strcpy(mkb::continueSavedGameText, msg);
-        strcpy(mkb::startGameFromBeginningText, msg);
+        if (mkb::subMode == mkb::SMD_GAME_SCENARIO_INIT)
+        {
+            const char *msg = "Up/Down to Change World.";
+            strcpy(mkb::continueSavedGameText, msg);
+            strcpy(mkb::startGameFromBeginningText, msg);
+        }
+
+        handleIWSelection();
+        setSaveFileInfo();
+
+        // Maybe not the best way to detect if we're playing an IW but it works
+        if (mkb::subMode == mkb::SMD_GAME_SCENARIO_MAIN)
+        {
+            mkb::StoryModeSaveFile &file = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx];
+            main::currentlyPlayingIW =
+                file.statusFlag
+                && file.fileName[0] == 'W'
+                && file.fileName[4] == 'I'
+                && file.fileName[5] == 'W';
+        }
     }
 
-    handleIWSelection();
-    setSaveFileInfo();
+    handleIWTimer();
+}
 
-    // Maybe not the best way to detect if we're playing an IW but it works
-    if (mkb::subMode == mkb::SMD_GAME_SCENARIO_MAIN)
+void disp()
+{
+    if (mkb::mainMode != mkb::MD_GAME || mkb::mainGameMode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
+
+    gc::GXColor color = {};
+    if (main::IsIWComplete() && s_iwTime == s_bestWorldTimes[mkb::currWorld])
     {
-        mkb::StoryModeSaveFile &file = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx];
-        main::currentlyPlayingIW =
-            file.statusFlag
-            && file.fileName[0] == 'W'
-            && file.fileName[4] == 'I'
-            && file.fileName[5] == 'W';
+        color = {0xd4, 0xaf, 0x37, 0xff};
     }
+    else
+    {
+        color = {0xff, 0xff, 0xff, 0xff};
+    }
+
+    draw::debugText(
+        380, 18,
+        color,
+        "WORLD: %d", s_iwTime);
 }
 
 }

@@ -1,5 +1,6 @@
 .global StageSelectMenuHook
 .global PauseMenuTextHook
+.global IsIWComplete
 
 .text
 
