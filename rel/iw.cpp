@@ -7,6 +7,10 @@
 #include <cstdio>
 #include <draw.h>
 
+// TODO: track best times per world
+// I tried this before but it seems like there might be a spurious frame where it thinks the IW is completed
+// when beating the second-to-last level, so the fastest time isn't saving correctly.
+
 namespace iw
 {
 
@@ -16,18 +20,6 @@ static const char *s_animStrs[4] = {"/", "-", "\\", " |"};
 // IW timer stuff
 static uint32_t s_iwTime;
 static uint32_t s_prevRetraceCount;
-static uint32_t s_bestWorldTimes[10] = {
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-    0xffffffff,
-};
 
 void init() {}
 
@@ -98,14 +90,7 @@ static void handleIWTimer()
         // We're in story mode playing an IW and it isn't finished, so increment the IW timer
         s_iwTime += retraceCount - s_prevRetraceCount;
     }
-    else
-    {
-        // We're in story mode playing an IW, but we finished it, so don't change the time
-        if (s_iwTime < s_bestWorldTimes[mkb::currWorld])
-        {
-            s_bestWorldTimes[mkb::currWorld] = s_iwTime;
-        }
-    }
+    // Else we're in story mode playing an IW, but we finished it, so don't change the time
 
     s_prevRetraceCount = retraceCount;
 }
@@ -143,19 +128,9 @@ void disp()
 {
     if (mkb::mainMode != mkb::MD_GAME || mkb::mainGameMode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
 
-    gc::GXColor color = {};
-    if (main::IsIWComplete() && s_iwTime == s_bestWorldTimes[mkb::currWorld])
-    {
-        color = {0xd4, 0xaf, 0x37, 0xff};
-    }
-    else
-    {
-        color = {0xff, 0xff, 0xff, 0xff};
-    }
-
     draw::debugText(
         380, 18,
-        color,
+        {0xff, 0xff, 0xff, 0xff},
         "WORLD: %d", s_iwTime);
 }
 

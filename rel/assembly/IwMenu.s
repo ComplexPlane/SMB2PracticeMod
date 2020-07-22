@@ -189,6 +189,16 @@ lbz r4, 0x0 (r3)
 cmpwi r4, 1
 bne No
 
+// Check if we're in the Scenario submode (aka, level select menu is open)
+// Need to check this because the level completion flag carries over to this menu from the previous stage
+lis r3, 0x8054
+ori r3, r3, 0xdc34 // Submode
+lwz r4, 0x0 (r3)
+cmpwi r4, 87
+beq No
+cmpwi r4, 88
+beq No
+
 li r3, 1
 b EndIsIWComplete
 
