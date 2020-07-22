@@ -8,7 +8,6 @@
 
 #include <mkb/mkb.h>
 
-#include <cstring>
 #include <timer.h>
 
 namespace savestate
@@ -234,9 +233,6 @@ void tick()
     // Must be in main game
     if (mkb::mainMode != mkb::MD_GAME) return;
 
-    // Must be in practice mode
-    if (mkb::mainGameMode != mkb::MGM_PRACTICE) return;
-
     // Allow changing the savestate slot as long as the above conditions are at least met
     int cStickDir = pad::getCStickDir();
     if (cStickDir != pad::DIR_NONE)
@@ -277,7 +273,7 @@ void tick()
         }
 
         // Test that there is enough memory to create state
-        // TODO use a scratch savestate instead of olbliterating whichever slot was currently selected?
+        // TODO use a scratch savestate instead of obliterating whichever slot was currently selected?
         state.memStore.enterPreallocMode();
         passOverRegions(&state.memStore);
         if (!state.memStore.enterSaveMode())
