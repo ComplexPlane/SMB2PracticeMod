@@ -253,7 +253,7 @@ void tick()
     if (cStickDir != pad::DIR_NONE)
     {
         s_activeStateSlot = cStickDir;
-        draw::notify(draw::NotifyColor::WHITE, "Slot %d Selected", cStickDir + 1);
+        draw::notify(draw::Color::WHITE, "Slot %d Selected", cStickDir + 1);
     }
     auto &state = s_states[s_activeStateSlot];
 
@@ -265,23 +265,23 @@ void tick()
         {
             if (mkb::subMode == mkb::SMD_GAME_RINGOUT_INIT || mkb::subMode == mkb::SMD_GAME_RINGOUT_MAIN)
             {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Fallout");
+                draw::notify(draw::Color::RED, "Cannot Create Savestate After Fallout");
             }
             else if (mkb::subMode == mkb::SMD_GAME_GOAL_INIT || mkb::subMode == mkb::SMD_GAME_GOAL_MAIN)
             {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Goal");
+                draw::notify(draw::Color::RED, "Cannot Create Savestate After Goal");
             }
             else if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
             {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate During Retry");
+                draw::notify(draw::Color::RED, "Cannot Create Savestate During Retry");
             }
             else if (mkb::subMode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::subMode == mkb::SMD_GAME_TIMEOVER_MAIN)
             {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate After Timeout");
+                draw::notify(draw::Color::RED, "Cannot Create Savestate After Timeout");
             }
             else
             {
-                draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate Here");
+                draw::notify(draw::Color::RED, "Cannot Create Savestate Here");
             }
 
             return;
@@ -293,7 +293,7 @@ void tick()
         passOverRegions(&state.memStore);
         if (!state.memStore.enterSaveMode())
         {
-            draw::notify(draw::NotifyColor::RED, "Cannot Create Savestate: Out of Memory");
+            draw::notify(draw::Color::RED, "Cannot Create Savestate: Out of Memory");
             state.active = false;
             return;
         }
@@ -317,11 +317,11 @@ void tick()
 
         if (s_frameAdvanceMode)
         {
-            draw::notify(draw::NotifyColor::PURPLE, "Slot %d Frame Advance", s_activeStateSlot + 1);
+            draw::notify(draw::Color::PURPLE, "Slot %d Frame Advance", s_activeStateSlot + 1);
         }
         else
         {
-            draw::notify(draw::NotifyColor::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
+            draw::notify(draw::Color::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
         }
     }
     else if (
@@ -333,22 +333,22 @@ void tick()
     {
         if (mkb::subMode == mkb::SMD_GAME_READY_INIT || mkb::subMode == mkb::SMD_GAME_READY_MAIN)
         {
-            draw::notify(draw::NotifyColor::RED, "Cannot Load Savestate During Retry");
+            draw::notify(draw::Color::RED, "Cannot Load Savestate During Retry");
             return;
         }
         if (mkb::subMode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::subMode == mkb::SMD_GAME_TIMEOVER_MAIN)
         {
-            draw::notify(draw::NotifyColor::RED, "Cannot Load Savestate After Timeout");
+            draw::notify(draw::Color::RED, "Cannot Load Savestate After Timeout");
             return;
         }
         if (!state.active)
         {
-            draw::notify(draw::NotifyColor::RED, "Slot %d Empty", s_activeStateSlot + 1);
+            draw::notify(draw::Color::RED, "Slot %d Empty", s_activeStateSlot + 1);
             return;
         }
         if (state.stageId != mkb::currentStageId)
         {
-            draw::notify(draw::NotifyColor::RED, "Slot %d Wrong Stage", s_activeStateSlot + 1);
+            draw::notify(draw::Color::RED, "Slot %d Wrong Stage", s_activeStateSlot + 1);
             return;
         }
 
@@ -363,7 +363,7 @@ void tick()
 
         if (!s_createdStateLastFrame)
         {
-            draw::notify(draw::NotifyColor::BLUE, "Slot %d Loaded", s_activeStateSlot + 1);
+            draw::notify(draw::Color::BLUE, "Slot %d Loaded", s_activeStateSlot + 1);
         }
     }
     else

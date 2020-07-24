@@ -134,7 +134,6 @@ void disp()
 
     constexpr int X = 380;
     constexpr int Y = 18;
-    const gc::GXColor COLOR = {0xff, 0xff, 0xff, 0xff};
 
     uint32_t hours = s_iwTime / HOUR;
     uint32_t minutes = s_iwTime % HOUR / MINUTE;
@@ -143,15 +142,15 @@ void disp()
 
     if (hours > 0)
     {
-        draw::debugText(X, Y, COLOR, "IW:  %d:%02d:%02d.%02d", hours, minutes, seconds, centiSeconds);
+        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %d:%02d:%02d.%02d", hours, minutes, seconds, centiSeconds);
     }
     else if (minutes > 0)
     {
-        draw::debugText(X, Y, COLOR, "IW:  %02d:%02d.%02d", minutes, seconds, centiSeconds);
+        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %02d:%02d.%02d", minutes, seconds, centiSeconds);
     }
     else
     {
-        draw::debugText(X, Y, COLOR, "IW:  %02d.%02d", seconds, centiSeconds);
+        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %02d.%02d", seconds, centiSeconds);
     }
 }
 

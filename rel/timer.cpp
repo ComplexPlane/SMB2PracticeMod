@@ -69,13 +69,13 @@ void disp()
     convertFrameTime(s_rtaTimer, &sec, &centiSec);
     draw::debugText(
         380, 34,
-        {0xff, 0xff, 0xff, 0xff},
+        draw::Color::WHITE,
         "RTA: %02d.%02d", sec, centiSec);
 
     convertFrameTime(mkb::stageTimer - s_rtaTimer, &sec, &centiSec);
     draw::debugText(
         380, 50,
-        {0xff, 0xff, 0xff, 0xff},
+        draw::Color::WHITE,
         "PAU: %02d.%02d", sec, centiSec);
 }
 

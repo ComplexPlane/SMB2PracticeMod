@@ -105,7 +105,6 @@ bool buttonChordPressed(uint16_t btn1, uint16_t btn2)
 {
     return (buttonDown(btn1) && buttonPressed(btn2)) || (buttonPressed(btn1) && buttonDown(btn2));
 }
-
 int getCStickDir()
 {
     bool left = mkb::padAnalogBitfield & (AR_CSTICK_LEFT << 16u);

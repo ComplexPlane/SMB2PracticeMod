@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "iw.h"
 #include "pad.h"
+#include "menu.h"
 
 #include <mkb/mkb.h>
 
@@ -76,6 +77,7 @@ void init()
             timer::disp();
             iw::disp();
             Tetris::getInstance().disp();
+            menu::disp();
 
             s_drawDebugText_trampoline();
         });
@@ -106,6 +108,7 @@ void tick()
     timer::tick();
     iw::tick();
     savestate::tick();
+    menu::tick();
 }
 
 }
