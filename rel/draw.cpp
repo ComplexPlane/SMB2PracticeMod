@@ -13,7 +13,15 @@ namespace draw
 
 static char s_notifyMsgBuf[80];
 static int s_notifyFrameCounter;
-static NotifyColor s_notifyColor;
+static Color s_notifyColor;
+
+static const gc::GXColor COLOR_MAP[] = {
+    {0xff, 0xff, 0xff, 0xff}, // white
+    {0xfd, 0x68, 0x75, 0xff}, // red
+    {0xfd, 0xac, 0x68, 0xff}, // orange
+    {0x9d, 0xe3, 0xff, 0xff}, // blue
+    {0xdf, 0x7f, 0xfa, 0xff}, // purple
+};
 
 void init()
 {
@@ -77,19 +85,29 @@ static void debugTextBuf(int x, int y, gc::GXColor color, const char *buf)
     main::debugTextColor = {};
 }
 
-void debugText(int x, int y, gc::GXColor color, const char *format, ...)
+static void debugTextV(int x, int y, gc::GXColor color, const char *format, va_list args)
 {
-    va_list args;
-    va_start(args, format);
-
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
     vsprintf(buf, format, args);
-
-    va_end(args);
-
     debugTextBuf(x, y, color, buf);
+}
+
+void debugText(int x, int y, gc::GXColor color, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    debugTextV(x, y, color, format, args);
+    va_end(args);
+}
+
+void debugText(int x, int y, Color color, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    debugTextV(x, y, COLOR_MAP[static_cast<int>(color)], format, args);
+    va_end(args);
 }
 
 void disp()
@@ -97,36 +115,7 @@ void disp()
     int notifyLen = strlen(s_notifyMsgBuf);
     int drawX = 640 - notifyLen * DEBUG_CHAR_WIDTH - 12;
     int drawY = 426;
-
-    gc::GXColor color = {};
-    switch (s_notifyColor)
-    {
-        case NotifyColor::WHITE:
-        {
-            color = {0xff, 0xff, 0xff, 0xff};
-            break;
-        }
-        case NotifyColor::RED:
-        {
-            color = {0xfd, 0x68, 0x75, 0xff};
-            break;
-        }
-        case NotifyColor::ORANGE:
-        {
-            color = {0xfd, 0xac, 0x68, 0xff};
-            break;
-        }
-        case NotifyColor::BLUE:
-        {
-            color = {0x9d, 0xe3, 0xff, 0xff};
-            break;
-        }
-        case NotifyColor::PURPLE:
-        {
-            color = {0xdf, 0x7f, 0xfa, 0xff};
-            break;
-        }
-    }
+    gc::GXColor color = COLOR_MAP[static_cast<int>(s_notifyColor)];
 
     if (s_notifyFrameCounter > 40)
     {
@@ -138,7 +127,7 @@ void disp()
     if (s_notifyFrameCounter > 60) s_notifyFrameCounter = 60;
 }
 
-void notify(NotifyColor color, const char *format, ...)
+void notify(Color color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
