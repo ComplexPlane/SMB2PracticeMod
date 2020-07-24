@@ -317,11 +317,11 @@ void tick()
 
         if (s_frameAdvanceMode)
         {
-            draw::notify(draw::Color::PURPLE, "Slot %d Frame Advance", s_activeStateSlot + 1);
+            draw::notify(draw::Color::PINK, "Slot %d Frame Advance", s_activeStateSlot + 1);
         }
         else
         {
-            draw::notify(draw::Color::PURPLE, "Slot %d Saved", s_activeStateSlot + 1);
+            draw::notify(draw::Color::PINK, "Slot %d Saved", s_activeStateSlot + 1);
         }
     }
     else if (

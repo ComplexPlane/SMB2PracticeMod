@@ -13,6 +13,7 @@ enum class Color
     RED,
     ORANGE,
     BLUE,
+    PINK,
     PURPLE,
 };
 
