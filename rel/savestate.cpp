@@ -287,6 +287,12 @@ void tick()
             return;
         }
 
+        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
+        {
+            draw::notify(draw::Color::RED, "Cannot Create Savestate in View Stage");
+            return;
+        }
+
         // Test that there is enough memory to create state
         // TODO use a scratch savestate instead of obliterating whichever slot was currently selected?
         state.memStore.enterPreallocMode();
@@ -349,6 +355,11 @@ void tick()
         if (state.stageId != mkb::currentStageId)
         {
             draw::notify(draw::Color::RED, "Slot %d Wrong Stage", s_activeStateSlot + 1);
+            return;
+        }
+        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
+        {
+            draw::notify(draw::Color::RED, "Cannot Load Savestate in View Stage");
             return;
         }
 
