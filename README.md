@@ -1,6 +1,6 @@
 # :confetti_ball: ApeSphere Practice Mod
 
-A Super Monkey Ball 2 mod for speedrun practice, experimentation, Monkey Ball science, and the greater good! 
+A Super Monkey Ball 2 mod for speedrun practice and general experimentation.
 
 # Quickstart
 
@@ -18,7 +18,7 @@ Thank you to:
 * A revised REL loader which serves as both a Gecko and ISO loader (not yet included)
 * A Super Monkey Ball 1 port of the REL loader (not yet included)
 
-**PistonMiner** for the [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) framework, which provides everything you need to turn C++ into a .GCI savefile which can be loaded into the game at runtime. In addition, thanks very much for the detailed answers to my romhacking-related questions.
+**PistonMiner** for the [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) framework, which provides everything you need to turn C++ into a .GCI savefile which can be loaded into a Gamecube game at runtime. In addition, thanks very much for the detailed answers to my romhacking-related questions.
 
 **CraftedCart** for the substantial contributions to the Monkey Ball 2 decompile project, as well as the many large contributions to the Monkey Ball hacking and custom level scene on the whole.
 
