@@ -1,15 +1,29 @@
-# ApeSphere
+# :confetti_ball: ApeSphere Practice Mod
 
 A Super Monkey Ball 2 mod for speedrun practice, experimentation, Monkey Ball science, and the greater good! 
 
-It is currently in the very early bootstrapping stages and isn't ready to use yet.
+# Quickstart
+
+TODO
 
 # Credits
 
-Thank you very much to the Super Monkey Ball and Paper Mario: TTYD hacking communities for your past work, expertise, contributions, and inspiration. This project wouldn't be possible without your help!
+Thank you to:
 
-Huge shoutouts to the Super Monkey Ball speedrunning scene! Thank you for making it so fun to be a part of, and for inspiring this mod.
+**Zephiles** for the numerous code contributions. These include:
 
-I owe a lot of thanks to Zephiles and PistonMiner, the creators of the [TTYD-Practice-Codes](https://github.com/Zephiles/TTYD-Practice-Codes) and [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) projects respectively upon which this project is heavily based. Thank you very much to Zephiles for writing the new REL loader and heap support as well!
+* The initial [TTYD-Practice-Codes](https://github.com/Zephiles/TTYD-Practice-Codes) framework of which this mod is based on
+* The current REL loader Gecko code
+* A custom heap implementation for the mod
+* A revised REL loader which serves as both a Gecko and ISO loader (not yet included)
+* A Super Monkey Ball 1 port of the REL loader (not yet included)
 
-Thank you to TheBombSquad for writing the ISO version of the REL loader.
+**PistonMiner** for the [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) framework, which provides everything you need to turn C++ into a .GCI savefile which can be loaded into the game at runtime. In addition, thanks very much for the detailed answers to my romhacking-related questions.
+
+**CraftedCart** for the substantial contributions to the Monkey Ball 2 decompile project, as well as the many large contributions to the Monkey Ball hacking and custom level scene on the whole.
+
+**TheBombSquad** for his decompile contributions as well, and for writing the current version of the ISO REL loader.
+
+**Alist and PetresInc** for providing insightful feedback on a pre-release alpha needed before publishing an initial beta version of the mod.
+
+**The Monkey Ball speedrunning scene** for inspiring this mod! Thank you for being so fun to be a part of.
