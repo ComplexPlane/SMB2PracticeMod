@@ -72,9 +72,9 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->bananaCount);
 
     // Goal tape, party ball, and button stage objects
-    for (uint32_t i = 0; i < mkb::stobjListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::stobjPoolInfo.upperBound; i++)
     {
-        if (mkb::stobjListInfo.statusList[i] == 0) continue;
+        if (mkb::stobjPoolInfo.statusList[i] == 0) continue;
 
         switch (mkb::stageObjects[i].type)
         {
@@ -106,9 +106,9 @@ static void passOverRegions(memstore::MemStore *memStore)
     memStore->doRegion(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
     memStore->doRegion(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
 
-    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::spritePoolInfo.upperBound; i++)
     {
-        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+        if (mkb::spritePoolInfo.statusList[i] == 0) continue;
         mkb::Sprite *sprite = &mkb::sprites[i];
 
         if (sprite->tickFunc == mkb::timerBallSpriteTick)
@@ -132,14 +132,14 @@ static void handlePauseMenuSave(SaveState *state)
     state->pauseMenuSpriteStatus = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
-    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::spritePoolInfo.upperBound; i++)
     {
-        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+        if (mkb::spritePoolInfo.statusList[i] == 0) continue;
 
         mkb::Sprite &sprite = mkb::sprites[i];
         if (sprite.dispFunc == mkb::pauseMenuSpriteDisp)
         {
-            state->pauseMenuSpriteStatus = mkb::spriteListInfo.statusList[i];
+            state->pauseMenuSpriteStatus = mkb::spritePoolInfo.statusList[i];
             state->pauseMenuSprite = sprite;
 
             break;
@@ -155,13 +155,13 @@ static void handlePauseMenuLoad(SaveState *state)
     if (pausedNow && !pausedInState)
     {
         // Destroy the pause menu sprite that currently exists
-        for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+        for (uint32_t i = 0; i < mkb::spritePoolInfo.upperBound; i++)
         {
-            if (mkb::spriteListInfo.statusList[i] == 0) continue;
+            if (mkb::spritePoolInfo.statusList[i] == 0) continue;
 
             if (reinterpret_cast<uint32_t>(mkb::sprites[i].dispFunc) == 0x8032a4bc)
             {
-                mkb::spriteListInfo.statusList[i] = 0;
+                mkb::spritePoolInfo.statusList[i] = 0;
                 break;
             }
         }
@@ -169,16 +169,16 @@ static void handlePauseMenuLoad(SaveState *state)
     else if (!pausedNow && pausedInState)
     {
         // Allocate a new pause menu sprite
-        int i = mkb::tickableListAllocElem(&mkb::spriteListInfo, state->pauseMenuSpriteStatus);
+        int i = mkb::poolAlloc(&mkb::spritePoolInfo, state->pauseMenuSpriteStatus);
         mkb::sprites[i] = state->pauseMenuSprite;
     }
 }
 
 static void destructPostGoalSprites()
 {
-    for (uint32_t i = 0; i < mkb::spriteListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::spritePoolInfo.upperBound; i++)
     {
-        if (mkb::spriteListInfo.statusList[i] == 0) continue;
+        if (mkb::spritePoolInfo.statusList[i] == 0) continue;
 
         mkb::Sprite *sprite = &mkb::sprites[i];
         bool postGoalSprite = (
@@ -189,7 +189,7 @@ static void destructPostGoalSprites()
             || sprite->dispFunc == mkb::stageScoreSpriteDisp
             || sprite->tickFunc == mkb::falloutSpriteTick
             || sprite->tickFunc == mkb::bonusFinishSpriteTick);
-        if (postGoalSprite) mkb::spriteListInfo.statusList[i] = 0;
+        if (postGoalSprite) mkb::spritePoolInfo.statusList[i] = 0;
     }
 }
 
@@ -198,9 +198,9 @@ static void destructDistractingEffects()
     // Destruct current spark effects so we don't see big sparks
     // generated when changing position by a large amount.
     // Also destruct banana grabbing effects
-    for (uint32_t i = 0; i < mkb::effectListInfo.upperBound; i++)
+    for (uint32_t i = 0; i < mkb::effectPoolInfo.upperBound; i++)
     {
-        if (mkb::effectListInfo.statusList[i] == 0) continue;
+        if (mkb::effectPoolInfo.statusList[i] == 0) continue;
 
         switch (mkb::effects[i].type)
         {
@@ -208,7 +208,7 @@ static void destructDistractingEffects()
             case mkb::EFFECT_HOLDING_BANANA:
             case mkb::EFFECT_GET_BANANA:
             {
-                mkb::effectListInfo.statusList[i] = 0;
+                mkb::effectPoolInfo.statusList[i] = 0;
             }
         }
     }

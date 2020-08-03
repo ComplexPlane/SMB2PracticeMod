@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mkb/tickable.h>
+#include <mkb/pool.h>
 #include <cstdint>
 
 namespace mkb {
@@ -96,7 +96,7 @@ static_assert(sizeof(Effect) == 176);
 extern "C"
 {
 extern Effect effects[MAX_EFFECTS];
-extern TickableListInfo effectListInfo;
+extern PoolInfo effectPoolInfo;
 }
 
 }

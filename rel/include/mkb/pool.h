@@ -5,7 +5,7 @@
 namespace mkb
 {
 
-struct TickableListInfo
+struct PoolInfo
 {
     uint32_t len;
     uint32_t lowFreeIdx;
@@ -16,7 +16,7 @@ struct TickableListInfo
 extern "C"
 {
 
-int tickableListAllocElem(TickableListInfo *info, uint8_t status);
+int poolAlloc(PoolInfo *info, uint8_t status);
 
 }
 

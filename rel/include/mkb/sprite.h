@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mathtypes.h"
-#include "tickable.h"
+#include "pool.h"
 
 #include <cstdint>
 
@@ -92,7 +92,7 @@ static_assert(sizeof(Sprite) == 208);
 extern "C"
 {
 extern Sprite sprites[MAX_SPRITES];
-extern TickableListInfo spriteListInfo;
+extern PoolInfo spritePoolInfo;
 
 void pauseMenuSpriteDisp(Sprite *sprite);
 void goalSpriteDisp(Sprite *sprite);

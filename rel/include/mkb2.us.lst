@@ -50,16 +50,16 @@ CC008000:GXWGFifo
 8054dc2c:replayHeapSize
 8054dc18:gSomethingWithGameHeaps
 
-// Tickable
+// Object pools
 805d4d4c:items
 805e0154:stageObjects
 805e90ac:sprites
 805be7e4:effects
-805bc490:itemListInfo
-805bc4a0:stobjListInfo
-805bc4b0:spriteListInfo
-805bc4c0:effectListInfo
-802b0990:tickableListAllocElem
+805bc490:itemPoolInfo
+805bc4a0:stobjPoolInfo
+805bc4b0:spritePoolInfo
+805bc4c0:effectPoolInfo
+802b0990:poolAlloc
 805e7458:goalTapes
 805e8dd8:goalBags
 

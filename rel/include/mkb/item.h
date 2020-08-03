@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mkb/tickable.h>
+#include <mkb/pool.h>
 #include <cstdint>
 
 namespace mkb
@@ -48,7 +48,7 @@ static_assert(sizeof(Item) == 180);
 extern "C"
 {
 extern Item items[MAX_ITEMS];
-extern TickableListInfo itemListInfo;
+extern PoolInfo itemPoolInfo;
 }
 
 }
