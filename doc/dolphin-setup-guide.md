@@ -5,8 +5,8 @@
 * Download the file ending in `.gci` from the most recent release (found [here](https://github.com/complexplane/apesphere/releases))
 * Open up Dolphin and go to Config -> Gamecube. Under "Device Settings" for _Slot B_ choose _GCI Folder_.
 * Copy the `.gci` file you downloaded into the appropriate folder, which you may need to create yourself if it doesn't exist
-  * On Windows the folder is `Documents\Dolphin Emulator\GC\USA\Slot B\`
-  * On Linux/macOS the folder is `~/.local/share/dolphin-emu/GC/USA/Slot B/`
+  * On Windows the folder is `Documents\Dolphin Emulator\GC\USA\Card B\`
+  * On Linux/macOS the folder is `~/.local/share/dolphin-emu/GC/USA/Card B/`
 
 ## Set up the Gecko code
 
