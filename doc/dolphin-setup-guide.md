@@ -19,4 +19,4 @@
 
 ## Launch the game
 
-You should be able to launch the game like usual by double-clicking it in the games list.
+You should be able to launch the game like usual by double-clicking it in the games list. If you see "ApeSphere Practice Mode" on the titlescreen, you're good to go, otherwise the mod did not load correctly.
