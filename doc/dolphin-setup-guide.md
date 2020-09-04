@@ -12,11 +12,13 @@
 
 * In Dolphin, under Config -> General, make sure cheats are enabled
 * Copy the contents of `REL_Loader_US_Gecko.txt` to your clipboard, found under the latest release [here](https://github.com/complexplane/apesphere/releases)
+  * Don't copy the first line that starts with `$`
 * Right-click your Super Monkey Ball 2 game in the games list and go to Properties -> Gecko Codes
 * At the bottom click "Add New Code", paste the Gecko code into the "Code" box, then click Save
+  * Make sure the first line that starts with `$` isn't included
   * (For older revisions of Dolphin v5, instead go to Properties -> Edit Config and paste the text code into the Gecko codes section of the "GM28EP.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
 * In the Gecko Codes window, make sure the checkbox next to the Gecko code you just added is checked
 
 ## Launch the game
 
-You should be able to launch the game like usual by double-clicking it in the games list. If you see "ApeSphere Practice Mode" on the titlescreen, you're good to go, otherwise the mod did not load correctly.
+You should be able to launch the game like usual by double-clicking it in the games list. If you see "ApeSphere Practice Mode" on the titlescreen, you're good to go, otherwise the mod did not load correctly. You can use either Card A or Card B for your save data, it doesn't matter.
