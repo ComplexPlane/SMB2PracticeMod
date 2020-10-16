@@ -41,6 +41,8 @@ Thank you to:
 
 **CraftedCart** for their substantial contributions to the Monkey Ball 2 decompile project, as well as the many large contributions to the Monkey Ball hacking and custom level scene on the whole.
 
+**Yoshimaster96** for labelling hundreds of functions and data in Super Monkey Ball 1, many of which were ported to Super Monkey Ball 2.
+
 **TheBombSquad** for their decompile contributions as well, and for writing the current version of the ISO REL loader.
 
 **Alist** and **PetresInc** for providing insightful feedback on a pre-release alpha needed before publishing an initial beta version of the mod.
