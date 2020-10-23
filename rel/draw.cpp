@@ -32,7 +32,7 @@ void init()
 
 void preDraw()
 {
-    mkb::GXSetZModeIfDifferent(gc::GX_TRUE, gc::GX_ALWAYS, gc::GX_FALSE);
+    mkb::GXSetZMode_cached(gc::GX_TRUE, gc::GX_ALWAYS, gc::GX_FALSE);
 
     // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
     gc::GXColor tev1Color = {0, 0, 0, 0};
@@ -44,7 +44,7 @@ void rect(float x1, float y1, float x2, float y2, gc::GXColor color)
 {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     gc::GXTexObj *texObj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
-    mkb::GXLoadTexObjIfDifferent(texObj, gc::GX_TEXMAP0);
+    mkb::GXLoadTexObj_cached(texObj, gc::GX_TEXMAP0);
 
     // Specify the color of the rectangle
     gc::GXSetTevColor(gc::GX_TEVREG0, color);
@@ -68,7 +68,7 @@ void debugTextPalette()
     {
         int x = c % 16 * DEBUG_CHAR_WIDTH;
         int y = c / 16 * DEBUG_CHAR_WIDTH;
-        mkb::drawDebugTextCharEn(x, y, c, c * 2);
+        mkb::draw_debugtext_char_en(x, y, c, c * 2);
     }
 }
 
@@ -80,7 +80,7 @@ static void debugTextBuf(int x, int y, gc::GXColor color, const char *buf)
         // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
         if (buf[i] != ' ')
         {
-            mkb::drawDebugTextCharEn(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
+            mkb::draw_debugtext_char_en(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
         }
     }
     main::debugTextColor = {};

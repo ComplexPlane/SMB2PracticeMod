@@ -84,21 +84,21 @@ void tick()
 
 bool buttonPressed(uint16_t button)
 {
-    bool downThisFrame = mkb::padButtonBitfield & (button << 16u);
-    bool downLastFrame = mkb::padButtonBitfield & button;
+    bool downThisFrame = mkb::filtered_button_inputs_bitfield & (button << 16u);
+    bool downLastFrame = mkb::filtered_button_inputs_bitfield & button;
     return downThisFrame && !downLastFrame;
 }
 
 bool buttonReleased(uint16_t button)
 {
-    bool downThisFrame = mkb::padButtonBitfield & (button << 16u);
-    bool downLastFrame = mkb::padButtonBitfield & button;
+    bool downThisFrame = mkb::filtered_button_inputs_bitfield & (button << 16u);
+    bool downLastFrame = mkb::filtered_button_inputs_bitfield & button;
     return !downThisFrame && downLastFrame;
 }
 
 bool buttonDown(uint16_t button)
 {
-    return mkb::padButtonBitfield & (button << 16);
+    return mkb::filtered_button_inputs_bitfield & (button << 16);
 }
 
 bool buttonChordPressed(uint16_t btn1, uint16_t btn2)
@@ -107,10 +107,10 @@ bool buttonChordPressed(uint16_t btn1, uint16_t btn2)
 }
 int getCStickDir()
 {
-    bool left = mkb::padAnalogBitfield & (AR_CSTICK_LEFT << 16u);
-    bool right = mkb::padAnalogBitfield & (AR_CSTICK_RIGHT << 16u);
-    bool up = mkb::padAnalogBitfield & (AR_CSTICK_UP << 16u);
-    bool down = mkb::padAnalogBitfield & (AR_CSTICK_DOWN << 16u);
+    bool left = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_LEFT << 16u);
+    bool right = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_RIGHT << 16u);
+    bool up = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_UP << 16u);
+    bool down = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_DOWN << 16u);
 
     if (up && left) return DIR_UPLEFT;
     else if (up && right) return DIR_UPRIGHT;
@@ -125,15 +125,15 @@ int getCStickDir()
 
 bool analogPressed(uint16_t analogRegion)
 {
-    bool downThisFrame = mkb::padAnalogBitfield & (analogRegion << 16u);
-    bool downLastFrame = mkb::padAnalogBitfield & analogRegion;
+    bool downThisFrame = mkb::filtered_analog_inputs_bitfield & (analogRegion << 16u);
+    bool downLastFrame = mkb::filtered_analog_inputs_bitfield & analogRegion;
     return downThisFrame && !downLastFrame;
 }
 
 bool analogReleased(uint16_t analogRegion)
 {
-    bool downThisFrame = mkb::padAnalogBitfield & (analogRegion << 16u);
-    bool downLastFrame = mkb::padAnalogBitfield & analogRegion;
+    bool downThisFrame = mkb::filtered_analog_inputs_bitfield & (analogRegion << 16u);
+    bool downLastFrame = mkb::filtered_analog_inputs_bitfield & analogRegion;
     return !downThisFrame && downLastFrame;
 }
 
@@ -193,7 +193,7 @@ bool dirPressed(uint16_t dir)
 
 bool analogDown(uint16_t analogRegion)
 {
-    return mkb::padAnalogBitfield & (analogRegion << 16);
+    return mkb::filtered_analog_inputs_bitfield & (analogRegion << 16);
 }
 
 bool konamiPressed()

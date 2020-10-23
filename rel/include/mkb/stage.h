@@ -56,8 +56,9 @@ extern StagedefFileHeader *stagedef;
 // An array of item group / collision header animation states for the currently-loaded stage
 extern Itemgroup *itemgroups;
 
-extern int currentStageId;
-extern uint16_t stageTimeLimit;
+extern int current_stage_id;
+extern uint16_t stage_time_frames_remaining;
+extern uint16_t stage_time_limit;
 
 }
 

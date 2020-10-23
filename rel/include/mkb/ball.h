@@ -72,8 +72,8 @@ static_assert(sizeof(Ape) == 0x2f0);
 extern "C" {
 
 extern Ball balls[8];
-extern uint32_t ballMode;
-extern uint16_t mysteryStandstillFrameCounter;
+extern uint32_t ball_mode;
+extern uint16_t g_standstill_camera_frame_counter;
 
 }
 

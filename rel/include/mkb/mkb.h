@@ -34,30 +34,22 @@ struct GraphicsInfo
 
 extern "C" {
 
-extern uint32_t padButtonBitfield;
-extern uint32_t padAnalogBitfield;
+extern uint32_t filtered_button_inputs_bitfield;
+extern uint32_t filtered_analog_inputs_bitfield;
 
-extern gc::GXColor debugTextBgColor;
-extern GraphicsInfo *graphicsInfo;
+extern gc::GXColor debug_text_bg_color;
+extern GraphicsInfo *graphics_info;
 
-extern gc::OSHeapHandle mainHeap, stageHeap, bgHeap, charHeap, replayHeap;
-extern uint32_t mainHeapSize, stageHeapSize, bgHeapSize, charHeapSize, replayHeapSize;
-extern uint32_t gSomethingWithGameHeaps;
+extern gc::OSHeapHandle main_heap, stage_heap, bg_heap, char_heap, replay_heap;
+extern uint32_t main_heap_size, stage_heap_size, bg_heap_size, char_heap_size, replay_heap_size;
+extern uint32_t g_something_with_game_heaps;
 
-extern uint16_t stageTimer;
+void draw_debugtext();
+void draw_debugtext_bg(double x1, double y1, double x2, double y2);
+void draw_debugtext_char_en(uint32_t x, uint32_t y, char ch, uint32_t color);
 
-void drawDebugText();
-void drawDebugTextBg(double x1, double y1, double x2, double y2);
-void drawDebugTextCharEn(uint32_t x, uint32_t y, char ch, uint32_t color);
-
-void GXSetZModeIfDifferent(gc::GXBool compare_enable, gc::GXCompare func, gc::GXBool update_enable);
-void GXLoadTexObjIfDifferent(gc::GXTexObj *obj, gc::GXTexMapID id);
-
-void eventActivateSound();
-void eventTickSound();
-void eventDeactivateSound();
-
-void createGameHeaps(int param1);
+void GXSetZMode_cached(gc::GXBool compare_enable, gc::GXCompare func, gc::GXBool update_enable);
+void GXLoadTexObj_cached(gc::GXTexObj *obj, gc::GXTexMapID id);
 
 }
 

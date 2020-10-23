@@ -308,12 +308,12 @@ enum MainGameMode
 
 extern "C"
 {
-extern int mainMode;
-extern int subMode;
-extern int mainModeRequest;
-extern int subModeRequest;
-extern int mainGameMode;
-extern int subModeFrameCounter;
+extern int main_mode;
+extern int sub_mode;
+extern int main_mode_request;
+extern int sub_mode_request;
+extern int main_game_mode;
+extern int sub_mode_frame_counter;
 }
 
 }

@@ -25,8 +25,8 @@ void init() {}
 
 static void handleIWSelection()
 {
-    if (mkb::dataSelectMenuState != mkb::DSMS_DEFAULT) return;
-    if (mkb::storyFileSelectState == 1) return;
+    if (mkb::data_select_menu_state != mkb::DSMS_DEFAULT) return;
+    if (mkb::story_file_select_state == 1) return;
     if (pad::analogDown(pad::AR_LSTICK_LEFT) || pad::analogDown(pad::AR_LSTICK_RIGHT)) return;
     if (pad::buttonDown(pad::BUTTON_DPAD_LEFT) || pad::buttonDown(pad::BUTTON_DPAD_RIGHT)) return;
 
@@ -36,7 +36,7 @@ static void handleIWSelection()
     bool dpadDown = pad::buttonPressed(pad::BUTTON_DPAD_DOWN);
 
     int dir = lstickUp || dpadUp ? +1 : (lstickDown || dpadDown ? -1 : 0);
-    auto &storySave = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx];
+    auto &storySave = mkb::storymode_save_files[mkb::selected_story_file_idx];
     if (storySave.statusFlag)
     {
         int world = storySave.currentWorld + dir;
@@ -61,7 +61,7 @@ static void setSaveFileInfo()
 
     for (int i = 0; i < 3; i++)
     {
-        auto &storySave = mkb::storyModeSaveFiles[i];
+        auto &storySave = mkb::storymode_save_files[i];
         if (storySave.statusFlag)
         {
             sprintf(storySave.fileName, "W%02d IW %s",
@@ -78,9 +78,9 @@ static void handleIWTimer()
 {
     uint32_t retraceCount = gc::VIGetRetraceCount();
 
-    if (mkb::mainMode != mkb::MD_GAME
-        || mkb::mainGameMode != mkb::MGM_STORY
-        || mkb::dataSelectMenuState != mkb::DSMS_OPEN_DATA)
+    if (mkb::main_mode != mkb::MD_GAME
+        || mkb::main_game_mode != mkb::MGM_STORY
+        || mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA)
     {
         // We're not actually in the IW, zero the timer
         s_iwTime = 0;
@@ -97,22 +97,22 @@ static void handleIWTimer()
 
 void tick()
 {
-    if (mkb::mainMode == mkb::MD_GAME && mkb::mainGameMode == mkb::MGM_STORY)
+    if (mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::MGM_STORY)
     {
-        if (mkb::subMode == mkb::SMD_GAME_SCENARIO_INIT)
+        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT)
         {
             const char *msg = "Up/Down to Change World.";
-            strcpy(mkb::continueSavedGameText, msg);
-            strcpy(mkb::startGameFromBeginningText, msg);
+            strcpy(mkb::continue_saved_game_text, msg);
+            strcpy(mkb::start_game_from_beginning_text, msg);
         }
 
         handleIWSelection();
         setSaveFileInfo();
 
         // Maybe not the best way to detect if we're playing an IW but it works
-        if (mkb::subMode == mkb::SMD_GAME_SCENARIO_MAIN)
+        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN)
         {
-            mkb::StoryModeSaveFile &file = mkb::storyModeSaveFiles[mkb::selectedStoryFileIdx];
+            mkb::StoryModeSaveFile &file = mkb::storymode_save_files[mkb::selected_story_file_idx];
             main::currentlyPlayingIW =
                 file.statusFlag
                 && file.fileName[0] == 'W'
@@ -126,7 +126,7 @@ void tick()
 
 void disp()
 {
-    if (mkb::mainMode != mkb::MD_GAME || mkb::mainGameMode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
+    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
 
     constexpr uint32_t SECOND = 60;
     constexpr uint32_t MINUTE = SECOND * 60;

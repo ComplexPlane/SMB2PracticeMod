@@ -16,7 +16,7 @@ enum MinimapMode
 
 extern "C"
 {
-void setMinimapMode(uint32_t mode);
+void set_minimap_mode(uint32_t mode);
 }
 
 }

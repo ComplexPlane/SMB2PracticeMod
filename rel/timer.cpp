@@ -31,9 +31,9 @@ static void convertFrameTime(int frames, int *sec, int *centiSec)
 // Need to do logic in disp() so that we can know the game state _after_ the frame has been process
 void disp()
 {
-    if (mkb::mainMode != mkb::MD_GAME) return;
+    if (mkb::main_mode != mkb::MD_GAME) return;
 
-    switch (mkb::subMode)
+    switch (mkb::sub_mode)
     {
         case mkb::SMD_GAME_READY_INIT:
         case mkb::SMD_GAME_READY_MAIN:
@@ -53,13 +53,13 @@ void disp()
     s_prevRetraceCount = s_retraceCount;
     s_retraceCount = gc::VIGetRetraceCount();
 
-    if (mkb::subMode == mkb::SMD_GAME_READY_INIT)
+    if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT)
     {
-        s_rtaTimer = mkb::stageTimeLimit;
+        s_rtaTimer = mkb::stage_time_limit;
     }
     // This flag seems to correspond to when the timer should be running...
     // See 0x802974bc in memory
-    else if ((mkb::ballMode & 0x8u) == 0)
+    else if ((mkb::ball_mode & 0x8u) == 0)
     {
         s_rtaTimer -= s_retraceCount - s_prevRetraceCount;
 //        if (s_rtaTimer < 0) s_rtaTimer = 0;
@@ -72,7 +72,7 @@ void disp()
         draw::Color::WHITE,
         "RTA: %02d.%02d", sec, centiSec);
 
-    convertFrameTime(mkb::stageTimer - s_rtaTimer, &sec, &centiSec);
+    convertFrameTime(mkb::stage_time_frames_remaining - s_rtaTimer, &sec, &centiSec);
     draw::debugText(
         380, 50,
         draw::Color::WHITE,

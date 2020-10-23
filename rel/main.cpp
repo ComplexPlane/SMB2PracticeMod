@@ -39,7 +39,7 @@ static void performAssemblyPatches()
     patch::writeNop(reinterpret_cast<void *>(0x80033E9C));
 #endif
 
-    // Nop the conditional that guards `drawDebugText`, enabling it even when debug mode is disabled
+    // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is disabled
     patch::writeNop(reinterpret_cast<void *>(0x80299f54));
 
     // IW-related patches
@@ -66,7 +66,7 @@ void init()
     iw::init();
 
     s_drawDebugText_trampoline = patch::hookFunction(
-        mkb::drawDebugText, []()
+        mkb::draw_debugtext, []()
         {
             // Drawing hook for UI elements.
             // Gets run at the start of smb2's function which draws debug text windows,
@@ -86,16 +86,16 @@ void init()
 static void unlockEverything()
 {
     // Don't yet know how to unlock the staff credits game from a fresh save...
-    mkb::unlockInfo.masterUnlocked = true;
-    mkb::unlockInfo.monkeys = 99;
-    mkb::unlockInfo.staffCreditsGameUnlocked = true;
-    mkb::unlockInfo.playPoints = 99999;
-    mkb::unlockInfo.newestPlayPointRecord = 99999;
-    mkb::unlockInfo.movies = 0x0fff;
-    mkb::unlockInfo.partyGames = 0x0001b600;
-    mkb::unlockInfo.moviesWatched = 0x0fff;
-    memset(mkb::cmUnlockEntries, 0xff, sizeof(mkb::cmUnlockEntries));
-    memset(mkb::storyModeUnlockEntries, 0xff, sizeof(mkb::storyModeUnlockEntries));
+    mkb::unlock_info.masterUnlocked = true;
+    mkb::unlock_info.monkeys = 99;
+    mkb::unlock_info.staffCreditsGameUnlocked = true;
+    mkb::unlock_info.playPoints = 99999;
+    mkb::unlock_info.newestPlayPointRecord = 99999;
+    mkb::unlock_info.movies = 0x0fff;
+    mkb::unlock_info.partyGames = 0x0001b600;
+    mkb::unlock_info.moviesWatched = 0x0fff;
+    memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
+    memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
 void tick()

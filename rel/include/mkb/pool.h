@@ -16,7 +16,7 @@ struct PoolInfo
 extern "C"
 {
 
-int poolAlloc(PoolInfo *info, uint8_t status);
+int pool_alloc(PoolInfo *info, uint8_t status);
 
 }
 

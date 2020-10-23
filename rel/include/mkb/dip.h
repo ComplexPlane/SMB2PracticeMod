@@ -44,7 +44,7 @@ enum DipSwitch
 
 extern "C" {
 
-extern uint32_t dipSwitches;
+extern uint32_t dip_switches;
 
 }
 

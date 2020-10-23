@@ -48,7 +48,7 @@ static_assert(sizeof(Item) == 180);
 extern "C"
 {
 extern Item items[MAX_ITEMS];
-extern PoolInfo itemPoolInfo;
+extern PoolInfo item_pool_info;
 }
 
 }

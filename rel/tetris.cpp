@@ -370,11 +370,12 @@ void Tetris::draw()
 void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t color)
 {
     // Draw corners
-    mkb::drawDebugTextCharEn(xpos, ypos, BOXCHAR_UL, color);
-    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos, BOXCHAR_UR, color);
-    mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH,
-                             BOXCHAR_DR, color);
-    mkb::drawDebugTextCharEn(xpos, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DL, color);
+    mkb::draw_debugtext_char_en(xpos, ypos, BOXCHAR_UL, color);
+    mkb::draw_debugtext_char_en(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, ypos, BOXCHAR_UR, color);
+    mkb::draw_debugtext_char_en(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH,
+                                ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH,
+                                BOXCHAR_DR, color);
+    mkb::draw_debugtext_char_en(xpos, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DL, color);
 
     constexpr int X_VDIV = 16;
     constexpr int Y_HDIV = 24;
@@ -385,18 +386,18 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
         int x = xpos + i * draw::DEBUG_CHAR_WIDTH;
         if (i != X_VDIV)
         {
-            mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_HBAR, color);
-            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
+            mkb::draw_debugtext_char_en(x, ypos, BOXCHAR_HBAR, color);
+            mkb::draw_debugtext_char_en(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
         }
         else
         {
-            mkb::drawDebugTextCharEn(x, ypos, BOXCHAR_DT, color);
-            mkb::drawDebugTextCharEn(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_UT, color);
+            mkb::draw_debugtext_char_en(x, ypos, BOXCHAR_DT, color);
+            mkb::draw_debugtext_char_en(x, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_UT, color);
         }
 
         if (i > X_VDIV)
         {
-            mkb::drawDebugTextCharEn(x, ypos + Y_HDIV * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
+            mkb::draw_debugtext_char_en(x, ypos + Y_HDIV * draw::DEBUG_CHAR_WIDTH, BOXCHAR_HBAR, color);
         }
     }
 
@@ -404,17 +405,17 @@ void Tetris::drawAsciiRect(int xpos, int ypos, int xchars, int ychars, uint8_t c
     for (int i = 1; i < ychars - 1; i++)
     {
         int y = ypos + i * draw::DEBUG_CHAR_WIDTH;
-        mkb::drawDebugTextCharEn(xpos, y, BOXCHAR_VBAR, color);
+        mkb::draw_debugtext_char_en(xpos, y, BOXCHAR_VBAR, color);
 
         if (i == Y_HDIV)
         {
-            mkb::drawDebugTextCharEn(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
-            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_LT, color);
+            mkb::draw_debugtext_char_en(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH + 1, y, BOXCHAR_RT, color);
+            mkb::draw_debugtext_char_en(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_LT, color);
         }
         else
         {
-            mkb::drawDebugTextCharEn(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
-            mkb::drawDebugTextCharEn(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+            mkb::draw_debugtext_char_en(xpos + X_VDIV * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
+            mkb::draw_debugtext_char_en(xpos + (xchars - 1) * draw::DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR, color);
         }
     }
 }

@@ -42,13 +42,13 @@ static_assert(sizeof(StoryModeSaveFile) == 132);
 
 extern "C"
 {
-extern StoryModeSaveFile storyModeSaveFiles[3];
-extern uint8_t dataSelectMenuState;
-extern uint8_t storyFileSelectState;
-extern uint8_t selectedStoryFileIdx;
-extern char continueSavedGameText[40];
-extern char startGameFromBeginningText[36];
-extern uint16_t currWorld;
+extern StoryModeSaveFile storymode_save_files[3];
+extern uint8_t data_select_menu_state;
+extern uint8_t story_file_select_state;
+extern uint8_t selected_story_file_idx;
+extern char continue_saved_game_text[40];
+extern char start_game_from_beginning_text[36];
+extern uint16_t curr_world;
 }
 
 }

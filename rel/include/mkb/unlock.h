@@ -27,9 +27,9 @@ static_assert(sizeof(UnlockInfo) == 0x84);
 
 extern "C"
 {
-extern UnlockInfo unlockInfo;
-extern uint8_t cmUnlockEntries[CM_UNLOCK_ENTRIES_SIZE];
-extern uint8_t storyModeUnlockEntries[STORY_MODE_UNLOCK_ENTRIES_SIZE];
+extern UnlockInfo unlock_info;
+extern uint8_t cm_unlock_entries[CM_UNLOCK_ENTRIES_SIZE];
+extern uint8_t storymode_unlock_entries[STORY_MODE_UNLOCK_ENTRIES_SIZE];
 }
 
 }

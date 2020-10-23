@@ -92,19 +92,19 @@ static_assert(sizeof(Sprite) == 208);
 extern "C"
 {
 extern Sprite sprites[MAX_SPRITES];
-extern PoolInfo spritePoolInfo;
+extern PoolInfo sprite_pool_info;
 
-void pauseMenuSpriteDisp(Sprite *sprite);
-void goalSpriteDisp(Sprite *sprite);
-void clearScoreSpriteDisp(Sprite *sprite);
-void warpBonusSpriteDisp(Sprite *sprite);
-void timeBonusSpriteDisp(Sprite *sprite);
-void stageScoreSpriteDisp(Sprite *sprite);
-void falloutSpriteTick(uint8_t *status, Sprite *sprite);
-void bonusFinishSpriteTick(uint8_t *status, Sprite *sprite);
-void timerBallSpriteTick(uint8_t *status, Sprite *sprite);
-void scoreSpriteTick(uint8_t *status, Sprite *sprite);
-void scoreSpriteDisp(Sprite *sprite);
+void sprite_pausemenu_disp(Sprite *sprite);
+void sprite_goal_disp(Sprite *sprite);
+void sprite_clear_score_disp(Sprite *sprite);
+void sprite_warp_bonus_disp(Sprite *sprite);
+void sprite_time_bonus_disp(Sprite *sprite);
+void sprite_stage_score_disp(Sprite *sprite);
+void sprite_fallout_tick(uint8_t *status, Sprite *sprite);
+void sprite_bonus_finish_or_perfect_tick(uint8_t *status, Sprite *sprite);
+void sprite_timer_ball_tick(uint8_t *status, Sprite *sprite);
+void sprite_score_tick(uint8_t *status, Sprite *sprite);
+void sprite_score_disp(Sprite *sprite);
 }
 
 }

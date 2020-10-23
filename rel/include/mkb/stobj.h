@@ -51,10 +51,10 @@ static_assert(sizeof(GoalBag) == 40);
 
 extern "C"
 {
-extern StageObject stageObjects[MAX_STAGE_OBJECTS];
-extern PoolInfo stobjPoolInfo;
-extern GoalTape goalTapes[MAX_GOALS];
-extern GoalBag goalBags[MAX_GOALS];
+extern StageObject stage_objects[MAX_STAGE_OBJECTS];
+extern PoolInfo stobj_pool_info;
+extern GoalTape goaltapes[MAX_GOALS];
+extern GoalBag goalbags[MAX_GOALS];
 }
 
 }
