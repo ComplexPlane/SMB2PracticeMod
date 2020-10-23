@@ -6,7 +6,7 @@ namespace mkb
 constexpr int MAX_STAGE_OBJECTS = 144;
 constexpr int MAX_GOALS = 16;
 
-enum StageObjectType
+enum StobjType
 {
     STOBJ_BUMPER = 0,
     STOBJ_JAMABAR = 1,
@@ -23,7 +23,7 @@ enum StageObjectType
     STOBJ_RETURNGATE = 12
 };
 
-struct StageObject
+struct Stobj
 {
     uint16_t idx;
     uint16_t id;
@@ -31,7 +31,7 @@ struct StageObject
     uint8_t unk_0x6[198];
 };
 
-static_assert(sizeof(StageObject) == 204);
+static_assert(sizeof(Stobj) == 204);
 
 // Extra data associated with goaltape stage objects
 struct GoalTape
@@ -51,7 +51,7 @@ static_assert(sizeof(GoalBag) == 40);
 
 extern "C"
 {
-extern StageObject stage_objects[MAX_STAGE_OBJECTS];
+extern Stobj stobjs[MAX_STAGE_OBJECTS];
 extern PoolInfo stobj_pool_info;
 extern GoalTape goaltapes[MAX_GOALS];
 extern GoalBag goalbags[MAX_GOALS];

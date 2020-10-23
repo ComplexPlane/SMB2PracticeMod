@@ -2,7 +2,6 @@
 
 #include <gc/gc.h>
 #include <mkb/dip.h>
-#include <mkb/mathtypes.h>
 #include <mkb/stagedef.h>
 #include <mkb/stage.h>
 #include <mkb/ball.h>

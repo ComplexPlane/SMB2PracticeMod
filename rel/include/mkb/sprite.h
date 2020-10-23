@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mathtypes.h"
 #include "pool.h"
 
 #include <cstdint>

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mkb/mathtypes.h>
 #include <mkb/pool.h>
 
 namespace mkb
