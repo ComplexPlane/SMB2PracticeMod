@@ -76,14 +76,14 @@ static void passOverRegions(memstore::MemStore *memStore)
     {
         if (mkb::stobj_pool_info.statusList[i] == 0) continue;
 
-        switch (mkb::stage_objects[i].type)
+        switch (mkb::stobjs[i].type)
         {
             case mkb::STOBJ_GOALTAPE:
             case mkb::STOBJ_GOALBAG:
             case mkb::STOBJ_GOALBAG_EXMASTER:
             case mkb::STOBJ_BUTTON:
             {
-                memStore->doRegion(&mkb::stage_objects[i], sizeof(mkb::stage_objects[i]));
+                memStore->doRegion(&mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
         }

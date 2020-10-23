@@ -8558,7 +8558,7 @@
 805D4D48:g_next_item_id
 805D4D4C:items
 805E0150:next_stobj_id
-805E0154:stage_objects
+805E0154:stobjs
 805E7458:goaltapes
 805E8DD8:goalbags
 805E9058:g_some_goalbag1
