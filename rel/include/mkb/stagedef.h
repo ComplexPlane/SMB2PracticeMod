@@ -5,161 +5,11 @@
 namespace mkb
 {
 
-typedef uint16_t *StagedefCollisionGridTriIndices;
-typedef StagedefCollisionGridTriIndices StagedefCollisionGridTilesTriIndices;
-
-struct StagedefAnimHeader
-{
-    uint32_t rotXKeyframeCount;
-    struct StagedefAnimKeyframe *rotXKeyframeList;
-    uint32_t rotYKeyframeCount;
-    struct StagedefAnimKeyframe *rotYKeyframeList;
-    uint32_t rotZKeyframeCount;
-    struct StagedefAnimKeyframe *rotZKeyframeList;
-    uint32_t posXKeyframeCount;
-    struct StagedefAnimKeyframe *posXKeyframeList;
-    uint32_t posYKeyframeCount;
-    struct StagedefAnimKeyframe *posYKeyframeList;
-    uint32_t posZKeyframeCount;
-    struct StagedefAnimKeyframe *posZKeyframeList;
-    uint8_t unk_0x30[16];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefAnimHeader) == 0x40);
-
-struct StagedefAnimKeyframe
-{
-    uint32_t easing;
-    float time;
-    float value;
-    uint8_t unk_0xc[8];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefAnimKeyframe) == 0x14);
-
-struct StagedefBackgroundAnim2Header
-{
-    uint8_t unk_0x0[4];
-    float loopPointSeconds;
-    uint32_t unk1KeyframeCount;
-    struct StagedefAnimKeyframe *unk1KeyframeList;
-    uint32_t unk2KeyframeCount;
-    struct StagedefAnimKeyframe *Unk2KeyframeList;
-    uint32_t rotXKeyframeCount;
-    struct StagedefAnimKeyframe *rotXKeyframeList;
-    uint32_t rotYKeyframeCount;
-    struct StagedefAnimKeyframe *rotYKeyframeList;
-    uint32_t rotZKeyframeCount;
-    struct StagedefAnimKeyframe *rotZKeyframeList;
-    uint32_t posXKeyframeCount;
-    struct StagedefAnimKeyframe *posXKeyframeList;
-    uint32_t posYKeyframeCount;
-    struct StagedefAnimKeyframe *posYKeyframeList;
-    uint32_t posZKeyframeCount;
-    struct StagedefAnimKeyframe *posZKeyframeList;
-    uint32_t unk9KeyframeCount;
-    struct StagedefAnimKeyframe *unk9KeyframeList;
-    uint32_t unk10KeyframeCount;
-    struct StagedefAnimKeyframe *unk10KeyframeList;
-    uint32_t unk11KeyframeCount;
-    struct StagedefAnimKeyframe *unk11KeyframeList;
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefBackgroundAnim2Header) == 0x60);
-
-struct StagedefBackgroundAnimHeader
-{
-    uint8_t unk_0x0[4];
-    float loop_point_seconds;
-    uint8_t unk_0x8[8];
-    uint32_t rotXKeyframeCount;
-    struct StagedefAnimKeyframe *rotXKeyframeList;
-    uint32_t rotYKeyframeCount;
-    struct StagedefAnimKeyframe *rotYKeyframeList;
-    uint32_t rotZKeyframeCount;
-    struct StagedefAnimKeyframe *rotZKeyframeList;
-    uint32_t posXKeyframeCount;
-    struct StagedefAnimKeyframe *posXKeyframeList;
-    uint32_t posYKeyframeCount;
-    struct StagedefAnimKeyframe *posYKeyframeList;
-    uint32_t posZKeyframeCount;
-    struct StagedefAnimKeyframe *posZKeyframeList;
-    uint8_t unk_0x40[16];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefBackgroundAnimHeader) == 0x50);
-
-struct StagedefEffectHeader
-{
-    uint32_t fx1KeyframeCount;
-    struct StagedefEffect1 *fx1KeyframeList;
-    uint32_t fx2KeyframeCount;
-    struct StagedefEffect2 *fx2KeyframeList;
-    struct StagedefTextureScroll *textureScroll;
-    uint8_t unk_0x14[28];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefEffectHeader) == 0x30);
-
-struct StagedefEffect1
-{ /* Likely used for animated textures, such as the silhouettes in Night */
-    uint32_t unk_0x0;
-    uint32_t unk_0x4;
-    uint32_t unk_0x8;
-    uint16_t unk_0x12;
-    uint16_t unk_0x14;
-    uint16_t unk_0x16;
-    uint8_t unk_0x18[2];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefEffect1) == 0x14);
-
-struct StagedefEffect2
-{ /* May be used for the flames in Storm? */
-    float unk_0x0;
-    float unk_0x4;
-    float unk_0x8;
-    uint8_t unk_0xc[4];
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefEffect2) == 0x10);
-
-struct StagedefTextureScroll
-{
-    struct Vec2f speed;
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefTextureScroll) == 0x8);
-
-struct StagedefBackgroundModel
-{
-    uint8_t unk_0x0[4];
-    char *modelName;
-    uint8_t unk_0x8[4];
-    struct Vec3f position;
-    struct Vec3s rotation;
-    uint8_t padding[2];
-    struct Vec3f scale;
-    struct StagedefBackgroundAnimHeader *backgroundAnimHeader;
-    struct StagedefBackgroundAnim2Header *backgroundAnim2Header;
-    struct StagedefEffectHeader *effectHeader;
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefBackgroundModel) == 0x38);
-
 enum BananaType
 {
     BANANA_BUNCH = 1,
     BANANA_SINGLE = 0
 };
-
-struct StagedefBanana
-{
-    struct Vec3f position;
-    enum BananaType type;
-} __attribute__((__packed__));
-
-static_assert(sizeof(StagedefBanana) == 0x10);
 
 enum StagedefAnimType
 {
@@ -177,12 +27,159 @@ enum PlaybackState
     PLAYBACK_PAUSE = 1
 };
 
-struct StagedefStageModelInstance
+struct StagedefAnimHeader
 {
-    struct StagedefStageModelPtrA *stageModelA;
+    u32 rot_x_keyframe_count;
+    struct StagedefAnimKeyframe *rot_x_keyframe_list;
+    u32 rot_y_keyframe_count;
+    struct StagedefAnimKeyframe *rot_y_keyframe_list;
+    u32 rot_z_keyframe_count;
+    struct StagedefAnimKeyframe *rot_z_keyframe_list;
+    u32 pos_x_keyframe_count;
+    struct StagedefAnimKeyframe *pos_x_keyframe_list;
+    u32 pos_y_keyframe_count;
+    struct StagedefAnimKeyframe *pos_y_keyframe_list;
+    u32 pos_z_keyframe_count;
+    struct StagedefAnimKeyframe *pos_z_keyframe_list;
+    u8 unk_0x30[16];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefAnimHeader) == 0x40);
+
+struct StagedefAnimKeyframe
+{
+    u32 easing;
+    f32 time;
+    f32 value;
+    u8 unk_0xc[8];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefAnimKeyframe) == 0x14);
+
+struct StagedefBackgroundAnim2Header
+{
+    u8 unk_0x0[4];
+    f32 loop_point_seconds;
+    u32 unk1_keyframe_count;
+    struct StagedefAnimKeyframe *unk1_keyframe_list;
+    u32 unk2_keyframe_count;
+    struct StagedefAnimKeyframe *unk2_keyframe_list;
+    u32 rot_x_keyframe_count;
+    struct StagedefAnimKeyframe *rot_x_keyframe_list;
+    u32 rot_y_keyframe_count;
+    struct StagedefAnimKeyframe *rot_y_keyframe_list;
+    u32 rot_z_keyframe_count;
+    struct StagedefAnimKeyframe *rot_z_keyframe_list;
+    u32 pos_x_keyframe_count;
+    struct StagedefAnimKeyframe *pos_x_keyframe_list;
+    u32 pos_y_keyframe_count;
+    struct StagedefAnimKeyframe *pos_y_keyframe_list;
+    u32 pos_z_keyframe_count;
+    struct StagedefAnimKeyframe *pos_z_keyframe_list;
+    u32 unk9_keyframe_count;
+    struct StagedefAnimKeyframe *unk9_keyframe_list;
+    u32 unk10_keyframe_count;
+    struct StagedefAnimKeyframe *unk10_keyframe_list;
+    u32 unk11_keyframe_count;
+    struct StagedefAnimKeyframe *unk11_keyframe_list;
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefBackgroundAnim2Header) == 0x60);
+
+struct StagedefBackgroundAnimHeader
+{
+    u8 unk_0x0[4];
+    f32 loop_point_seconds;
+    u8 unk_0x8[8];
+    u32 rot_x_keyframe_count;
+    struct StagedefAnimKeyframe *rot_x_keyframe_list;
+    u32 rot_y_keyframe_count;
+    struct StagedefAnimKeyframe *rot_y_keyframe_list;
+    u32 rot_z_keyframe_count;
+    struct StagedefAnimKeyframe *rot_z_keyframe_list;
+    u32 pos_x_keyframe_count;
+    struct StagedefAnimKeyframe *pos_x_keyframe_list;
+    u32 pos_y_keyframe_count;
+    struct StagedefAnimKeyframe *pos_y_keyframe_list;
+    u32 pos_z_keyframe_count;
+    struct StagedefAnimKeyframe *pos_z_keyframe_list;
+    u8 unk_0x40[16];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefBackgroundAnimHeader) == 0x50);
+
+struct StagedefEffectHeader
+{
+    u32 fx1_keyframe_count;
+    struct StagedefEffect1 *fx1_keyframe_list;
+    u32 fx2_keyframe_count;
+    struct StagedefEffect2 *fx2_keyframe_list;
+    struct StagedefTextureScroll *texture_scroll;
+    u8 unk_0x14[28];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefEffectHeader) == 0x30);
+
+struct StagedefEffect1
+{ /* Likely used for animated textures, such as the silhouettes in Night */
+    u32 unk_0x0;
+    u32 unk_0x4;
+    u32 unk_0x8;
+    u16 unk_0x12;
+    u16 unk_0x14;
+    u16 unk_0x16;
+    u8 unk_0x18[2];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefEffect1) == 0x14);
+
+struct StagedefEffect2
+{ /* May be used for the flames in Storm? */
+    f32 unk_0x0;
+    f32 unk_0x4;
+    f32 unk_0x8;
+    u8 unk_0xc[4];
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefEffect2) == 0x10);
+
+struct StagedefTextureScroll
+{
+    struct Vec2f speed;
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefTextureScroll) == 0x8);
+
+struct StagedefBackgroundModel
+{
+    u8 unk_0x0[4];
+    char *model_name;
+    u8 unk_0x8[4];
     struct Vec3f position;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
+    struct Vec3f scale;
+    struct StagedefBackgroundAnimHeader *background_anim_header;
+    struct StagedefBackgroundAnim2Header *background_anim2_header;
+    struct StagedefEffectHeader *effect_header;
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefBackgroundModel) == 0x38);
+
+struct StagedefBanana
+{
+    struct Vec3f position;
+    u32 type;
+} __attribute__((__packed__));
+
+static_assert(sizeof(StagedefBanana) == 0x10);
+
+struct StagedefStageModelInstance
+{
+    struct StagedefStageModelPtrA *stage_model_a;
+    struct Vec3f position;
+    struct Vec3s rotation;
+    u8 padding[2];
     struct Vec3f scale;
 } __attribute__((__packed__));
 
@@ -190,18 +187,18 @@ static_assert(sizeof(StagedefStageModelInstance) == 0x24);
 
 struct StagedefFogAnimHeader
 {
-    uint32_t startDistanceKeyframeCount;
-    struct StagedefAnimKeyframe *startDistanceKeyframeList;
-    uint32_t endDistanceKeyframeCount;
-    struct StagedefAnimKeyframe *endDistanceKeyframeList;
-    uint32_t redKeyframeCount;
-    struct StagedefAnimKeyframe *redKeyframeList;
-    uint32_t greenKeyframeCount;
-    struct StagedefAnimKeyframe *greenKeyframeList;
-    uint32_t blueKeyframeCount;
-    struct StagedefAnimKeyframe *blueKeyframeList;
-    uint32_t unkKeyframeCount;
-    struct StagedefAnimKeyframe *unkKeyframeList;
+    u32 start_distance_keyframe_count;
+    struct StagedefAnimKeyframe *start_distance_keyframe_list;
+    u32 end_distance_keyframe_count;
+    struct StagedefAnimKeyframe *end_distance_keyframe_list;
+    u32 red_keyframe_count;
+    struct StagedefAnimKeyframe *red_keyframe_list;
+    u32 green_keyframe_count;
+    struct StagedefAnimKeyframe *green_keyframe_list;
+    u32 blue_keyframe_count;
+    struct StagedefAnimKeyframe *blue_keyframe_list;
+    u32 unk_keyframe_count;
+    struct StagedefAnimKeyframe *unk_keyframe_list;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefFogAnimHeader) == 0x30);
@@ -210,7 +207,7 @@ struct StagedefConeCollision
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
     struct Vec3f scale;
 } __attribute__((__packed__));
 
@@ -220,7 +217,7 @@ struct StagedefBumper
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
     struct Vec3f scale;
 } __attribute__((__packed__));
 
@@ -228,101 +225,101 @@ static_assert(sizeof(StagedefBumper) == 0x20);
 
 struct StagedefReflectiveStageModel
 {
-    char *modelName;
-    uint8_t unk_0x8[8];
+    char *model_name;
+    u8 unk_0x8[8];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefReflectiveStageModel) == 0xc);
 
 struct StagedefFallout
 {
-    float y;
+    f32 y;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefFallout) == 0x4);
 
 struct StagedefStageModel
 {
-    uint8_t unk_0x0[4];
-    char *modelName;
-    uint8_t unk_0x8[8];
+    u8 unk_0x0[4];
+    char *model_name;
+    u8 unk_0x8[8];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefStageModel) == 0x10);
 
 struct StagedefCollisionHeader
 {
-    struct Vec3f centerOfRotation;
-    struct Vec3s initialRotation;
-    int16_t animLoopTypeAndSeesaw;
-    struct StagedefAnimHeader *animationHeader;
-    struct Vec3f conveyorSpeed;
-    struct StagedefCollisionTri *collisionTriangleList;
-    StagedefCollisionGridTilesTriIndices collisionTriangleListPtr;
-    struct Vec2f collisionGridStart;
-    struct Vec2f collisionGridStep;
-    struct Vec2i collisionGridStepCount;
-    uint32_t goalCount;
-    struct StagedefGoal *goalList;
-    uint32_t bumperCount;
-    struct StagedefBumper *bumperList;
-    uint32_t jamabarCount;
-    struct StagedefJamabar *jamabarList;
-    uint32_t bananaCount;
-    struct StagedefBanana *bananaList;
-    uint32_t coneCollisionObjectCount;
-    struct StagedefConeCollision *coneCollisionObjectList;
-    uint32_t sphereCollisionObjectCount;
-    struct StagedefSphereCollision *sphereCollisionObjectList;
-    uint32_t cylinderCollisionObjectCount;
-    struct StagedefCylinderCollision *cylinderObjectCollisionList;
-    uint32_t falloutVolumeCount;
-    struct StagedefFalloutVolume *falloutVolumeList;
-    uint32_t reflectiveStageModelCount;
-    struct StagedefReflectiveStageModel *reflectiveStageModelList;
-    uint32_t stageModelInstanceCount;
-    struct StagedefStageModelInstance *stageModelInstanceList;
-    uint32_t stageModelBCount;
-    struct StagedefStageModelPtrB *stageModelBList;
-    uint8_t unk_0x9c[8];
-    uint16_t animGroupId; /* For use with switches - Must be non-zero if you want to assign a group ID */
-    uint8_t padding[2];
-    uint32_t switchCount;
-    struct StagedefSwitch *switchList;
-    uint8_t unk_0xb0[4];
+    struct Vec3f origin;
+    struct Vec3s initial_rotation;
+    s16 anim_loop_type_and_seesaw;
+    struct StagedefAnimHeader *animation_header;
+    struct Vec3f conveyor_speed;
+    struct StagedefCollisionTri *collision_triangle_list;
+    u16 **collision_grid_triangle_idx_list_list;
+    struct Vec2f collision_grid_start;
+    struct Vec2f collision_grid_step;
+    struct Vec2i collision_grid_step_count;
+    u32 goal_count;
+    struct StagedefGoal *goal_list;
+    u32 bumper_count;
+    struct StagedefBumper *bumper_list;
+    u32 jamabar_count;
+    struct StagedefJamabar *jamabar_list;
+    u32 banana_count;
+    struct StagedefBanana *banana_list;
+    u32 cone_collision_object_count;
+    struct StagedefConeCollision *cone_collision_object_list;
+    u32 sphere_collision_object_count;
+    struct StagedefSphereCollision *sphere_collision_object_list;
+    u32 cylinder_collision_object_count;
+    struct StagedefCylinderCollision *cylinder_collision_object_list;
+    u32 fallout_volume_count;
+    struct StagedefFalloutVolume *fallout_volume_list;
+    u32 reflective_stage_model_count;
+    struct StagedefReflectiveStageModel *reflective_stage_model_list;
+    u32 stage_model_instance_count;
+    struct StagedefStageModelInstance *stage_model_instance_list;
+    u32 stage_model_b_count;
+    struct StagedefStageModelPtrB *stage_model_b_list;
+    u8 unk_0x9c[8];
+    u16 anim_group_id; /* For use with buttons - Must be non-zero if you want to assign a group ID */
+    u8 padding[2];
+    u32 button_count;
+    struct StagedefButton *button_list;
+    u8 unk_0xb0[4];
     struct StagedefMystery5 *mystery5;
-    float seesawSensitivity; /* Higher is more sensitive, negative makes the seesaw reversed */
-    float seesawFriction; /* Lower is looser */
-    float seesawSpring; /* 0 prevents the seesaw from resetting */
-    uint32_t wormholeCount;
-    struct StagedefWormhole *wormholeList;
-    uint32_t initialPlaybackState; /* Should this be split into 2x padding bytes + PlaybackState enum? */
-    uint8_t unk_0xd0[4];
-    float animLoopPointSeconds;
-    struct StagedefTextureScroll *textureScroll;
-    uint8_t unk_0xdc[960];
+    f32 seesaw_sensitivity; /* Higher is more sensitive, negative makes the seesaw reversed */
+    f32 seesaw_friction; /* Lower is looser */
+    f32 seesaw_spring; /* 0 prevents the seesaw from resetting */
+    u32 wormhole_count;
+    struct stagedef_wormhole *wormhole_list;
+    u32 initial_playback_state; /* Should this be split into 2x padding bytes + PlaybackState enum? */
+    u8 unk_0xd0[4];
+    f32 anim_loop_point_seconds;
+    struct StagedefTextureScroll *texture_scroll;
+    u8 unk_0xdc[960];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefCollisionHeader) == 0x49c);
 
 struct StagedefStageModelPtrA
 {
-    uint8_t unk_0x0[8];
-    struct StagedefStageModel *stageModel;
+    u8 unk_0x0[8];
+    struct StagedefStageModel *stage_model;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefStageModelPtrA) == 0xc);
 
 struct StagedefForegroundModel
 {
-    uint8_t unk_0x0[4]; /* Unknown - typically 0x0000001F, sometimes 0x00000007 or 0x0000000F */
-    char *modelName;
-    uint8_t unk_0x8[4];
+    u8 unk_0x0[4]; /* Unknown - typically 0x0000001F, sometimes 0x00000007 or 0x0000000F */
+    char *model_name;
+    u8 unk_0x8[4];
     Vec3f position;
     Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
     Vec3f scale;
-    uint8_t unk_0x2c[4];
+    u8 unk_0x2c[4];
     struct BackgroundAnim2Header *backgroundAnim2Header;
     void *unk_0x34;
 } __attribute__((__packed__));
@@ -331,18 +328,18 @@ static_assert(sizeof(StagedefForegroundModel) == 0x38);
 
 struct StagedefStageModelPtrB
 {
-    struct StagedefStageModelPtrA *stageModelA;
+    struct StagedefStageModelPtrA *stage_model_a;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefStageModelPtrB) == 0x4);
 
 struct StagedefMystery5
 {
-    uint8_t unk_0x0[4];
-    float unk_0x4;
-    float unk_0x8;
-    float unk_0xc;
-    float unk_0x10;
+    u8 unk_0x0[4];
+    f32 unk_0x4;
+    f32 unk_0x8;
+    f32 unk_0xc;
+    f32 unk_0x10;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefMystery5) == 0x14);
@@ -350,60 +347,60 @@ static_assert(sizeof(StagedefMystery5) == 0x14);
 struct StagedefSphereCollision
 {
     struct Vec3f position;
-    float radius;
-    uint8_t unk_0x10[4]; /* Nullable */
+    f32 radius;
+    u8 unk_0x10[4]; /* Nullable */
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefSphereCollision) == 0x14);
 
 struct StagedefFileHeader
 {
-    uint32_t magicNumberA;
-    uint32_t magicNumberB;
-    uint32_t collisionHeaderCount;
-    struct StagedefCollisionHeader *collisionHeaderList;
+    u32 magic_number_a;
+    u32 magic_number_b;
+    u32 collision_header_count;
+    struct StagedefCollisionHeader *collision_header_list;
     struct StagedefStart *start;
     struct StagedefFallout *fallout;
-    uint32_t goalCount;
-    struct StagedefGoal *goalList;
-    uint32_t bumperCount;
-    struct StagedefBumper *bumperList;
-    uint32_t jamabarCount;
-    struct StagedefJamabar *jamabarList;
-    uint32_t bananaCount;
-    struct StagedefBanana *bananaList;
-    uint32_t coneCollisionObjectCount;
-    struct StagedefConeCollision *coneCollisionObjectList;
-    uint32_t sphereCollisionObjectCount;
-    struct StagedefSphereCollision *sphereCollisionObjectList;
-    uint32_t cylinderCollisionObjectCount;
-    struct StagedefCylinderCollision *cylinderCollisionObjectList;
-    uint32_t falloutVolumeCount;
-    struct StagedefFalloutVolume *falloutVolumeList;
-    uint32_t backgroundModelCount;
-    struct StagedefBackgroundModel *backgroundModelList;
-    uint32_t foregroundModelCount;
-    struct StagedefForegroundModel *foregroundModelList;
-    uint8_t unk_0x68[8];
-    uint32_t reflectiveStageModelCount;
-    struct StagedefReflectiveStageModel *reflectiveStageModelList;
-    uint8_t unk_0x78[12];
-    uint32_t stageModelInstanceCount;
-    struct StagedefStageModelInstance *stageModelInstanceList;
-    uint32_t stageModelACount;
-    struct StagedefStageModelPtrA *stageModelAList;
-    uint32_t stageModelBCount;
-    struct StagedefStageModelPtrB *stageModelBList;
-    uint8_t unk_0x9c[12];
-    uint32_t switchCount;
-    struct StagedefSwitch *switchList;
-    struct StagedefFogAnimHeader *fogAnimationHeader; /* Nullable */
-    uint32_t wormholeCount;
-    struct StagedefWormhole *wormholeList;
+    u32 goal_count;
+    struct StagedefGoal *goal_list;
+    u32 bumper_count;
+    struct StagedefBumper *bumper_list;
+    u32 jamabar_count;
+    struct StagedefJamabar *jamabar_list;
+    u32 banana_count;
+    struct StagedefBanana *banana_list;
+    u32 cone_collision_object_count;
+    struct StagedefConeCollision *cone_collision_object_list;
+    u32 sphere_collision_object_count;
+    struct StagedefSphereCollision *sphere_collision_object_list;
+    u32 cylinder_collision_object_count;
+    struct StagedefCylinderCollision *cylinder_collision_object_list;
+    u32 fallout_volume_count;
+    struct StagedefFalloutVolume *fallout_volume_list;
+    u32 background_model_count;
+    struct StagedefBackgroundModel *background_model_list;
+    u32 foreground_model_count;
+    struct StagedefForegroundModel *foreground_model_list;
+    u8 unk_0x68[8];
+    u32 reflective_stage_model_count;
+    struct StagedefReflectiveStageModel *reflective_stage_model_list;
+    u8 unk_0x78[12];
+    u32 stage_model_instance_count;
+    struct StagedefStageModelInstance *stage_model_instance_list;
+    u32 stage_model_a_count;
+    struct StagedefStageModelPtrA *stage_model_a_list;
+    u32 stage_model_b_count;
+    struct StagedefStageModelPtrB *stage_model_b_list;
+    u8 unk_0x9c[12];
+    u32 button_count;
+    struct StagedefButton *button_list;
+    struct StagedefFogAnimHeader *fog_animation_header; /* Nullable */
+    u32 wormhole_count;
+    struct StagedefWormhole *wormhole_list;
     struct StagedefFog *fog; /* Nullable */
-    uint8_t unk_0xc0[20];
+    u8 unk_0xc0[20];
     struct StagedefMystery3 *mystery3;
-    uint8_t unk_0xd8[1988];
+    u8 unk_0xd8[1988];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefFileHeader) == 0x89c);
@@ -412,7 +409,7 @@ struct StagedefJamabar
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
     struct Vec3f scale;
 } __attribute__((__packed__));
 
@@ -420,10 +417,10 @@ static_assert(sizeof(StagedefJamabar) == 0x20);
 
 struct StagedefMystery3
 {
-    float unk_0x0;
-    float unk_0x4;
-    float unk_0x8;
-    uint8_t unk_0xc[24];
+    f32 unk_0x0;
+    f32 unk_0x4;
+    f32 unk_0x8;
+    u8 unk_0xc[24];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefMystery3) == 0x24);
@@ -433,19 +430,19 @@ struct StagedefFalloutVolume
     struct Vec3f position;
     struct Vec3f size;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefFalloutVolume) == 0x20);
 
 struct StagedefCollisionTri
 {
-    struct Vec3f point1Position;
+    struct Vec3f point1_position;
     struct Vec3f normal;
-    struct Vec3s rotationFromXy;
-    uint8_t padding[2];
-    struct Vec2f point2DeltaPosFromPoint1; /* Before rotation is applied */
-    struct Vec2f point3DeltaPosFromPoint1;
+    struct Vec3s rotation_from_xy;
+    u8 padding[2];
+    struct Vec2f point2_delta_pos_from_point1; /* Before rotation is applied */
+    struct Vec2f point3_delta_pos_from_point1;
     struct Vec2f tangent;
     struct Vec2f bitangent;
 } __attribute__((__packed__));
@@ -456,20 +453,20 @@ struct StagedefGoal
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    int16_t goalFlags;
+    s16 goal_flags;
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefGoal) == 0x14);
 
 struct StagedefWormhole
 {
-    uint8_t field_0x0;
-    uint8_t field_0x1;
-    uint8_t field_0x2;
-    uint8_t field_0x3;
+    u8 field_0x0;
+    u8 field_0x1;
+    u8 field_0x2;
+    u8 field_0x3;
     struct Vec3f positon;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
     struct StagedefWormhole *destination;
 } __attribute__((__packed__));
 
@@ -478,10 +475,10 @@ static_assert(sizeof(StagedefWormhole) == 0x1c);
 struct StagedefCylinderCollision
 {
     struct Vec3f position;
-    float radius;
-    float height;
+    f32 radius;
+    f32 height;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefCylinderCollision) == 0x1c);
@@ -490,30 +487,30 @@ struct StagedefStart
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    uint8_t padding[2];
+    u8 padding[2];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefStart) == 0x14);
 
-struct StagedefSwitch
+struct StagedefButton
 {
     struct Vec3f position;
     struct Vec3s rotation;
-    uint16_t playbackState;
-    uint16_t animGroupId;
-    uint8_t padding[2];
+    u16 playback_state;
+    u16 anim_group_id;
+    u8 padding[2];
 } __attribute__((__packed__));
 
-static_assert(sizeof(StagedefSwitch) == 0x18);
+static_assert(sizeof(StagedefButton) == 0x18);
 
 struct StagedefFog
 {
-    uint8_t type; /* Same as GXFogType */
-    uint8_t padding[3];
-    float fogStartDistance;
-    float fogEndDistance;
+    u8 type; /* Same as GXFogType */
+    u8 padding[3];
+    f32 fog_start_distance;
+    f32 fog_end_distance;
     struct Vec3f color;
-    uint8_t unk_0x18[12];
+    u8 unk_0x18[12];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StagedefFog) == 0x24);

@@ -66,10 +66,10 @@ static void pass_over_regions(memstore::MemStore *store)
     store->do_region(mkb::balls[0].ape, sizeof(*mkb::balls[0].ape)); // Store entire ape struct for now
 
     // Itemgroups
-    store->do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->collisionHeaderCount);
+    store->do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->collision_header_count);
 
     // Bananas
-    store->do_region(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->bananaCount);
+    store->do_region(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
     for (uint32_t i = 0; i < mkb::stobj_pool_info.upper_bound; i++)
@@ -90,17 +90,17 @@ static void pass_over_regions(memstore::MemStore *store)
     }
 
     // Seesaws
-    for (uint32_t i = 0; i < mkb::stagedef->collisionHeaderCount; i++)
+    for (uint32_t i = 0; i < mkb::stagedef->collision_header_count; i++)
     {
-        if (mkb::stagedef->collisionHeaderList[i].animLoopTypeAndSeesaw == mkb::ANIM_SEESAW)
+        if (mkb::stagedef->collision_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW)
         {
             store->do_region(mkb::itemgroups[i].seesaw_info->state, 12);
         }
     }
 
     // Goal tape and party ball-specific extra data
-    store->do_region(mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goalCount);
-    store->do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goalCount);
+    store->do_region(mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goal_count);
+    store->do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
     store->do_region(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
