@@ -8,6 +8,7 @@
 #include "iw.h"
 #include "pad.h"
 #include "menu.h"
+#include "scratch.h"
 
 #include <mkb/mkb.h>
 
@@ -64,6 +65,7 @@ void init()
     savestate::init();
     timer::init();
     iw::init();
+    scratch::init();
 
     s_drawDebugText_trampoline = patch::hookFunction(
         mkb::draw_debugtext, []()
@@ -109,6 +111,7 @@ void tick()
     iw::tick();
     savestate::tick();
     menu::tick();
+    scratch::tick();
 }
 
 }
