@@ -49,16 +49,16 @@ enum Dir
 };
 
 void tick();
-bool buttonPressed(uint16_t button);
+bool button_pressed(uint16_t button);
 bool buttonReleased(uint16_t button);
-bool buttonDown(uint16_t button);
-bool buttonChordPressed(uint16_t btn1, uint16_t btn2);
-int getCStickDir();
-bool analogPressed(uint16_t analogRegion);
-bool analogReleased(uint16_t analogRegion);
-bool analogDown(uint16_t analogRegion);
-bool dirDown(uint16_t dir); // Only works for cardinal directions
-bool dirPressed(uint16_t dir); // Only works for cardinal directions
-bool konamiPressed();
+bool button_down(uint16_t button);
+bool button_chord_pressed(uint16_t btn1, uint16_t btn2);
+int get_cstick_dir();
+bool analog_pressed(uint16_t analog_region);
+bool analog_released(uint16_t analog_region);
+bool analog_down(uint16_t analog_region);
+bool dir_down(uint16_t dir); // Only works for cardinal directions
+bool dir_pressed(uint16_t dir); // Only works for cardinal directions
+bool konami_pressed();
 
 }

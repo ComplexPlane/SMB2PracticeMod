@@ -15,8 +15,8 @@ struct ChunkInfo
 struct HeapInfo
 {
     int32_t capacity;
-    ChunkInfo *firstFree;
-    ChunkInfo *firstUsed;
+    ChunkInfo *first_free;
+    ChunkInfo *first_used;
 } __attribute__((__packed__));
 
 typedef int OSHeapHandle;

@@ -11,39 +11,39 @@ namespace patch
 
 static constexpr size_t MAX_TRAMPOLINES = 16;
 
-static uint32_t s_trampolinePool[MAX_TRAMPOLINES][2];
-static size_t nextTrampolineIdx;
+static uint32_t s_trampoline_pool[MAX_TRAMPOLINES][2];
+static size_t next_trampoline_idx;
 
-uint32_t *newTrampoline()
+uint32_t *new_trampoline()
 {
-    MOD_ASSERT(nextTrampolineIdx < MAX_TRAMPOLINES);
-    return s_trampolinePool[nextTrampolineIdx++];
+    MOD_ASSERT(next_trampoline_idx < MAX_TRAMPOLINES);
+    return s_trampoline_pool[next_trampoline_idx++];
 }
 
-void clear_DC_IC_Cache(void *ptr, uint32_t size)
+void clear_dc_ic_cache(void *ptr, uint32_t size)
 {
     gc::DCFlushRange(ptr, size);
     gc::ICInvalidateRange(ptr, size);
 }
 
-void writeBranch(void *ptr, void *destination)
+void write_branch(void *ptr, void *destination)
 {
     uint32_t branch = 0x48000000; // b
-    writeBranchMain(ptr, destination, branch);
+    write_branch_main(ptr, destination, branch);
 }
 
-void writeBranchBL(void *ptr, void *destination)
+void write_branch_bl(void *ptr, void *destination)
 {
     uint32_t branch = 0x48000001; // bl
-    writeBranchMain(ptr, destination, branch);
+    write_branch_main(ptr, destination, branch);
 }
 
-void writeBLR(void *ptr)
+void write_blr(void *ptr)
 {
-    writeWord(ptr, 0x4e800020);
+    write_word(ptr, 0x4e800020);
 }
 
-void writeBranchMain(void *ptr, void *destination, uint32_t branch)
+void write_branch_main(void *ptr, void *destination, uint32_t branch)
 {
     uint32_t delta = reinterpret_cast<uint32_t>(destination) - reinterpret_cast<uint32_t>(ptr);
 
@@ -52,18 +52,18 @@ void writeBranchMain(void *ptr, void *destination, uint32_t branch)
     uint32_t *p = reinterpret_cast<uint32_t *>(ptr);
     *p = branch;
 
-    clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+    clear_dc_ic_cache(ptr, sizeof(uint32_t));
 }
 
-void writeWord(void *ptr, uint32_t data)
+void write_word(void *ptr, uint32_t data)
 {
     *reinterpret_cast<uint32_t *>(ptr) = data;
-    clear_DC_IC_Cache(ptr, sizeof(uint32_t));
+    clear_dc_ic_cache(ptr, sizeof(uint32_t));
 }
 
-void writeNop(void *ptr)
+void write_nop(void *ptr)
 {
-    writeWord(ptr, 0x60000000);
+    write_word(ptr, 0x60000000);
 }
 
 }

@@ -14,85 +14,85 @@
 namespace iw
 {
 
-static uint32_t s_animCounter;
-static const char *s_animStrs[4] = {"/", "-", "\\", " |"};
+static uint32_t s_anim_counter;
+static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
 // IW timer stuff
-static uint32_t s_iwTime;
-static uint32_t s_prevRetraceCount;
+static uint32_t s_iw_time;
+static uint32_t s_prev_retrace_count;
 
 void init() {}
 
-static void handleIWSelection()
+static void handle_iw_selection()
 {
     if (mkb::data_select_menu_state != mkb::DSMS_DEFAULT) return;
     if (mkb::story_file_select_state == 1) return;
-    if (pad::analogDown(pad::AR_LSTICK_LEFT) || pad::analogDown(pad::AR_LSTICK_RIGHT)) return;
-    if (pad::buttonDown(pad::BUTTON_DPAD_LEFT) || pad::buttonDown(pad::BUTTON_DPAD_RIGHT)) return;
+    if (pad::analog_down(pad::AR_LSTICK_LEFT) || pad::analog_down(pad::AR_LSTICK_RIGHT)) return;
+    if (pad::button_down(pad::BUTTON_DPAD_LEFT) || pad::button_down(pad::BUTTON_DPAD_RIGHT)) return;
 
-    bool lstickUp = pad::analogPressed(pad::AR_LSTICK_UP);
-    bool lstickDown = pad::analogPressed(pad::AR_LSTICK_DOWN);
-    bool dpadUp = pad::buttonPressed(pad::BUTTON_DPAD_UP);
-    bool dpadDown = pad::buttonPressed(pad::BUTTON_DPAD_DOWN);
+    bool lstick_up = pad::analog_pressed(pad::AR_LSTICK_UP);
+    bool lstick_down = pad::analog_pressed(pad::AR_LSTICK_DOWN);
+    bool dpad_up = pad::button_pressed(pad::BUTTON_DPAD_UP);
+    bool dpad_down = pad::button_pressed(pad::BUTTON_DPAD_DOWN);
 
-    int dir = lstickUp || dpadUp ? +1 : (lstickDown || dpadDown ? -1 : 0);
-    auto &storySave = mkb::storymode_save_files[mkb::selected_story_file_idx];
-    if (storySave.statusFlag)
+    int dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
+    auto &story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];
+    if (story_save.status_flag)
     {
-        int world = storySave.currentWorld + dir;
-        if (world < 0 || world > 9) storySave.statusFlag = 0;
-        else storySave.currentWorld = world;
+        int world = story_save.current_world + dir;
+        if (world < 0 || world > 9) story_save.status_flag = 0;
+        else story_save.current_world = world;
     }
     else
     {
         if (dir != 0)
         {
-            storySave.statusFlag = 1;
-            storySave.currentWorld = dir == +1 ? 0 : 9;
+            story_save.status_flag = 1;
+            story_save.current_world = dir == +1 ? 0 : 9;
         }
     }
 
-    main::currentlyPlayingIW = storySave.statusFlag;
+    main::currently_playing_iw = story_save.status_flag;
 }
 
-static void setSaveFileInfo()
+static void set_save_file_info()
 {
-    s_animCounter += 1;
+    s_anim_counter += 1;
 
     for (int i = 0; i < 3; i++)
     {
-        auto &storySave = mkb::storymode_save_files[i];
-        if (storySave.statusFlag)
+        auto &story_save = mkb::storymode_save_files[i];
+        if (story_save.status_flag)
         {
-            sprintf(storySave.fileName, "W%02d IW %s",
-                    storySave.currentWorld + 1,
-                    s_animStrs[s_animCounter / 2 % 4]);
-            storySave.numBeatenStagesInWorld = 0;
-            storySave.score = 0;
-            storySave.playtimeInFrames = 0;
+            sprintf(story_save.fileName, "W%02d IW %s",
+                    story_save.current_world + 1,
+                    s_anim_strs[s_anim_counter / 2 % 4]);
+            story_save.num_beaten_stages_in_world = 0;
+            story_save.score = 0;
+            story_save.playtime_in_frames = 0;
         }
     }
 }
 
-static void handleIWTimer()
+static void handle_iw_timer()
 {
-    uint32_t retraceCount = gc::VIGetRetraceCount();
+    uint32_t retrace_count = gc::VIGetRetraceCount();
 
     if (mkb::main_mode != mkb::MD_GAME
         || mkb::main_game_mode != mkb::MGM_STORY
         || mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA)
     {
         // We're not actually in the IW, zero the timer
-        s_iwTime = 0;
+        s_iw_time = 0;
     }
-    else if (main::currentlyPlayingIW && !main::IsIWComplete())
+    else if (main::currently_playing_iw && !main::is_iw_complete())
     {
         // We're in story mode playing an IW and it isn't finished, so increment the IW timer
-        s_iwTime += retraceCount - s_prevRetraceCount;
+        s_iw_time += retrace_count - s_prev_retrace_count;
     }
     // Else we're in story mode playing an IW, but we finished it, so don't change the time
 
-    s_prevRetraceCount = retraceCount;
+    s_prev_retrace_count = retrace_count;
 }
 
 void tick()
@@ -106,27 +106,27 @@ void tick()
             strcpy(mkb::start_game_from_beginning_text, msg);
         }
 
-        handleIWSelection();
-        setSaveFileInfo();
+        handle_iw_selection();
+        set_save_file_info();
 
         // Maybe not the best way to detect if we're playing an IW but it works
         if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN)
         {
             mkb::StoryModeSaveFile &file = mkb::storymode_save_files[mkb::selected_story_file_idx];
-            main::currentlyPlayingIW =
-                file.statusFlag
+            main::currently_playing_iw =
+                file.status_flag
                 && file.fileName[0] == 'W'
                 && file.fileName[4] == 'I'
                 && file.fileName[5] == 'W';
         }
     }
 
-    handleIWTimer();
+    handle_iw_timer();
 }
 
 void disp()
 {
-    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY || !main::currentlyPlayingIW) return;
+    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY || !main::currently_playing_iw) return;
 
     constexpr uint32_t SECOND = 60;
     constexpr uint32_t MINUTE = SECOND * 60;
@@ -135,22 +135,22 @@ void disp()
     constexpr int X = 380;
     constexpr int Y = 18;
 
-    uint32_t hours = s_iwTime / HOUR;
-    uint32_t minutes = s_iwTime % HOUR / MINUTE;
-    uint32_t seconds = s_iwTime % MINUTE / SECOND;
-    uint32_t centiSeconds = (s_iwTime % SECOND) * 100 / 60;
+    uint32_t hours = s_iw_time / HOUR;
+    uint32_t minutes = s_iw_time % HOUR / MINUTE;
+    uint32_t seconds = s_iw_time % MINUTE / SECOND;
+    uint32_t centiseconds = (s_iw_time % SECOND) * 100 / 60;
 
     if (hours > 0)
     {
-        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %d:%02d:%02d.%02d", hours, minutes, seconds, centiSeconds);
+        draw::debug_text(X, Y, draw::Color::WHITE, "IW:  %d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds);
     }
     else if (minutes > 0)
     {
-        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %02d:%02d.%02d", minutes, seconds, centiSeconds);
+        draw::debug_text(X, Y, draw::Color::WHITE, "IW:  %02d:%02d.%02d", minutes, seconds, centiseconds);
     }
     else
     {
-        draw::debugText(X, Y, draw::Color::WHITE, "IW:  %02d.%02d", seconds, centiSeconds);
+        draw::debug_text(X, Y, draw::Color::WHITE, "IW:  %02d.%02d", seconds, centiseconds);
     }
 }
 

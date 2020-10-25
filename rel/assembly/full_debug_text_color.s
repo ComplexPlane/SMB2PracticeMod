@@ -1,10 +1,10 @@
-.global FullDebugTextColor
+.global full_debug_text_color
 
 // Hooked at 0x802aeca4 GC
-FullDebugTextColor:
+full_debug_text_color:
 
-lis r5, debugTextColor@h
-ori r5, r5, debugTextColor@l
+lis r5, debug_text_color@h
+ori r5, r5, debug_text_color@l
 lwz r6, 0x0(r5)
 cmpwi r6, 0
 beq end

@@ -14,7 +14,7 @@ include_directories(rel/include/mkb)
 add_definitions(-DMKB2_US)
 
 add_executable(ApeSphere
-        rel/assembly/MainLoopAssembly.s
+        rel/assembly/main_loop_assembly.s
         rel/runtime/restfpr_x.s
         rel/runtime/restgpr_x.s
         rel/cxx.cpp

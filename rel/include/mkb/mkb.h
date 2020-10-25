@@ -23,11 +23,11 @@ namespace mkb
 
 struct GraphicsInfo
 {
-    void *activeFramebuffer; /* A pointer to either framebuffer1 or framebuffer2 */
+    void *active_framebuffer; /* A pointer to either framebuffer1 or framebuffer2 */
     void *framebuffer1;
     void *framebuffer2;
-    uint32_t frameCount;
-    uint32_t activeFramebufferIndex; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
+    uint32_t frame_count;
+    uint32_t active_framebuffer_index; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
     gc::GXFifoObj *fifos[2];
 };
 

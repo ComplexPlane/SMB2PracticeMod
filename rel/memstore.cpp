@@ -8,79 +8,79 @@ namespace memstore
 
 MemStore::MemStore() :
     m_mode{Mode::PREALLOC},
-    m_saveBuf{nullptr},
-    m_saveBufIdx{0},
-    m_saveBufLen{0} {}
+    m_save_buf{nullptr},
+    m_save_buf_idx{0},
+    m_save_buf_len{0} {}
 
 MemStore::~MemStore()
 {
-    enterPreallocMode();
+    enter_prealloc_mode();
 }
 
-void MemStore::enterPreallocMode()
+void MemStore::enter_prealloc_mode()
 {
-    if (m_saveBuf)
+    if (m_save_buf)
     {
-        delete[] m_saveBuf;
-        m_saveBuf = nullptr;
+        delete[] m_save_buf;
+        m_save_buf = nullptr;
     }
 
     m_mode = Mode::PREALLOC;
-    m_saveBufIdx = 0;
+    m_save_buf_idx = 0;
 }
 
 
-bool MemStore::enterSaveMode()
+bool MemStore::enter_save_mode()
 {
-    m_saveBuf = new uint8_t[m_saveBufIdx];
-    if (!m_saveBuf) return false;
+    m_save_buf = new uint8_t[m_save_buf_idx];
+    if (!m_save_buf) return false;
 
     m_mode = Mode::SAVE;
-    m_saveBufLen = m_saveBufIdx;
-    m_saveBufIdx = 0;
+    m_save_buf_len = m_save_buf_idx;
+    m_save_buf_idx = 0;
 
     return true;
 }
 
-void MemStore::enterLoadMode()
+void MemStore::enter_load_mode()
 {
     MOD_ASSERT(m_mode != Mode::PREALLOC);
-    MOD_ASSERT(m_saveBufIdx == m_saveBufLen);
+    MOD_ASSERT(m_save_buf_idx == m_save_buf_len);
 
     m_mode = Mode::LOAD;
-    m_saveBufIdx = 0;
+    m_save_buf_idx = 0;
 }
 
-void MemStore::doRegion(void *ptr, uint32_t size)
+void MemStore::do_region(void *ptr, uint32_t size)
 {
     switch (m_mode)
     {
         case Mode::PREALLOC:
         {
-            m_saveBufIdx += size;
+            m_save_buf_idx += size;
             break;
         }
         case Mode::SAVE:
         {
-            memcpy(&m_saveBuf[m_saveBufIdx], ptr, size);
-            m_saveBufIdx += size;
+            memcpy(&m_save_buf[m_save_buf_idx], ptr, size);
+            m_save_buf_idx += size;
             break;
         }
         case Mode::LOAD:
         {
-            memcpy(ptr, &m_saveBuf[m_saveBufIdx], size);
-            m_saveBufIdx += size;
+            memcpy(ptr, &m_save_buf[m_save_buf_idx], size);
+            m_save_buf_idx += size;
             break;
         }
     }
 }
 
-void MemStore::printStats() const
+void MemStore::print_stats() const
 {
-    gc::OSReport("[mod] MemStore total size: %d bytes\n", m_saveBufLen);
+    gc::OSReport("[mod] MemStore total size: %d bytes\n", m_save_buf_len);
 }
 
-Mode MemStore::getMode() const
+Mode MemStore::get_mode() const
 {
     return m_mode;
 }

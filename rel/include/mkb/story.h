@@ -26,14 +26,14 @@ enum DataSelectMenuState
 struct StoryModeSaveFile
 {
     uint8_t unk_0x0[4];
-    uint32_t statusFlag;
+    uint32_t status_flag;
     char fileName[13];
-    uint8_t currentWorld;
+    uint8_t current_world;
     uint8_t unk_0x16[2];
-    uint32_t playtimeInFrames;
+    uint32_t playtime_in_frames;
     uint32_t score;
     uint8_t unk_0x20[4];
-    uint8_t numBeatenStagesInWorld;
+    uint8_t num_beaten_stages_in_world;
     uint8_t beatenStageIndices[10];
     uint8_t unk_0x2f[85];
 } __attribute__((__packed__));

@@ -10,15 +10,15 @@ namespace mkb
 // contains physics state info like current rotation angle.
 struct SeesawInfo
 {
-    uint16_t itemgroupIdx;
+    uint16_t itemgroup_idx;
     uint16_t type; // There may have been more than one type of seesaw at some point? It's always zero I think now
     struct SeesawState *state;
-    void *someFunc1;
-    void *someFunc2;
-    void *someFunc3;
-    void *someFunc4;
-    void *someFunc5;
-    void *someFunc6;
+    void *some_func1;
+    void *some_func2;
+    void *some_func3;
+    void *some_func4;
+    void *some_func5;
+    void *some_func6;
 } __attribute__((__packed__));
 
 static_assert(sizeof(SeesawInfo) == 32);
@@ -26,7 +26,7 @@ static_assert(sizeof(SeesawInfo) == 32);
 struct SeesawState
 {
     float rot;
-    float rotCopy;
+    float rot_copy;
     uint8_t unk_0x8[112];
 } __attribute__((__packed__));
 
@@ -34,16 +34,16 @@ static_assert(sizeof(SeesawState) == 120);
 
 struct Itemgroup
 {
-    uint32_t playbackState;
-    uint32_t animFrame;
-    Vec3f position;
-    Vec3f prevPosition;
+    uint32_t playback_state;
+    uint32_t anim_frame;
+    Vec3f pos;
+    Vec3f prev_pos;
     Vec3s rotation;
-    Vec3s prevRotation;
+    Vec3s prev_rotation;
     Mtx transform;
-    Mtx prevTransform;
+    Mtx prev_transform;
     uint8_t unk_0x8c[16];
-    SeesawInfo *seesawInfo;
+    SeesawInfo *seesaw_info;
 };
 
 static_assert(sizeof(Itemgroup) == 0xa0);

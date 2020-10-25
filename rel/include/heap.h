@@ -12,46 +12,46 @@ constexpr size_t HEAP_SIZE = 0x40000;
 
 struct CustomHeapStruct
 {
-    gc::HeapInfo *HeapArray;
-    void *ArenaStart;
-    void *ArenaEnd;
+    gc::HeapInfo *heap_array;
+    void *arena_start;
+    void *arena_end;
 };
 
 struct HeapDataStruct
 {
-    CustomHeapStruct *CustomHeap;
-    void *RelocationDataArena;
-    void *RelocationDataStart; // Also the custom REL module start
-    void *CustomRelBSSAreaStart;
-    void *MainLoopRelLocation;
-    void *MainLoopBSSLocation;
+    CustomHeapStruct *custom_heap;
+    void *relocation_data_arena;
+    void *relocation_data_start; // Also the custom REL module start
+    void *custom_rel_bss_area_start;
+    void *main_loop_rel_location;
+    void *main_loop_bss_location;
 
     HeapDataStruct()
     {
-        RelocationDataArena = *reinterpret_cast<uint32_t **>(0x8000452C);
-        RelocationDataStart = *reinterpret_cast<uint32_t **>(0x80004534);
-        CustomRelBSSAreaStart = *reinterpret_cast<uint32_t **>(0x80004530);
-        MainLoopRelLocation = *reinterpret_cast<uint32_t **>(0x80004524);
-        MainLoopBSSLocation = *reinterpret_cast<uint32_t **>(0x80004528);
+        relocation_data_arena = *reinterpret_cast<uint32_t **>(0x8000452C);
+        relocation_data_start = *reinterpret_cast<uint32_t **>(0x80004534);
+        custom_rel_bss_area_start = *reinterpret_cast<uint32_t **>(0x80004530);
+        main_loop_rel_location = *reinterpret_cast<uint32_t **>(0x80004524);
+        main_loop_bss_location = *reinterpret_cast<uint32_t **>(0x80004528);
     }
 };
 
 void init();
-gc::ChunkInfo *extractChunk(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
-gc::ChunkInfo *addChunkToFront(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
-gc::ChunkInfo *findChunkInList(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
-void *clearAndFlushMemory(void *start, uint32_t size);
-void *initMemAllocServices(uint32_t size);
-void *initAlloc(void *arenaStart, void *arenaEnd);
-void makeHeap(uint32_t size);
-void createHeap(void *start, void *end);
-void destroyHeap();
-void *allocFromMainLoopRelocMemory(uint32_t size);
-void *allocFromHeap(uint32_t size);
-bool freeToHeap(void *ptr);
-void checkHeap();
-size_t getFreeSpace();
+gc::ChunkInfo *extract_chunk(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+gc::ChunkInfo *add_chunk_to_front(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+gc::ChunkInfo *find_chunk_in_list(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+void *clear_and_flush_memory(void *start, uint32_t size);
+void *init_mem_alloc_services(uint32_t max_size);
+void *init_alloc(void *arena_start, void *arena_end);
+void make_heap(uint32_t size);
+void create_heap(void *start, void *end);
+void destroy_heap();
+void *alloc_from_main_loop_reloc_memory(uint32_t size);
+void *alloc_from_heap(uint32_t size);
+bool free_to_heap(void *ptr);
+void check_heap();
+size_t get_free_space();
 
-extern HeapDataStruct HeapData;
+extern HeapDataStruct heap_data;
 
 }

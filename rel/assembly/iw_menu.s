@@ -1,10 +1,10 @@
-.global StageSelectMenuHook
-.global PauseMenuTextHook
-.global IsIWComplete
+.global stage_select_menu_hook
+.global pause_menu_text_hook
+.global is_iw_complete
 
 .text
 
-StageSelectMenuHook: // Hook at 0x80274804
+stage_select_menu_hook: // Hook at 0x80274804
 stwu r1, -0x38 (r1)
 stw r31, 0x34 (r1)
 stw r30, 0x30 (r1)
@@ -29,23 +29,23 @@ mr r23, r4
 mr r22, r3
 mr r21, r0
 
-bl IsIWComplete
+bl is_iw_complete
 cmpwi r3, 1
-bne IwNotComplete
+bne iw_not_complete
 // Jump to "Exit game" handler
 lis r4, 0x8027
 ori r4, r4, 0x48cc
 mtlr r4
-b EndStageSelectMenuHook
+b end_stage_select_menu_hook
 
 // Resume "Stage select" handler
-IwNotComplete:
+iw_not_complete:
 lis r4, 0x8027
 ori r4, r4, 0x4808
 mtlr r4
 li r21, 6 // Replaced instruction was "li r0, 6"
 
-EndStageSelectMenuHook:
+end_stage_select_menu_hook:
 mr r12, r31
 mr r11, r30
 mr r10, r29
@@ -73,7 +73,7 @@ blr
 
 // ------------------------------------------------------------------------------------------
 
-PauseMenuTextHook: // Hook at 0x8032a86c
+pause_menu_text_hook: // Hook at 0x8032a86c
 stwu r1, -0x38 (r1)
 stw r31, 0x34 (r1)
 stw r30, 0x30 (r1)
@@ -98,27 +98,27 @@ mr r23, r4
 mr r22, r3
 mr r21, r0
 
-bl IsIWComplete
+bl is_iw_complete
 cmpwi r3, 1
-bne DontModifyText
+bne dont_modify_text
 
 // Check if we're trying to draw the "Stage select" string
 lwzx r3, r25, r21 // Load pointer to string like in replaced instruction
 lis r4, 0x8047
 ori r4, r4, 0xf02c
 cmpw r3, r4
-bne DontModifyText
+bne dont_modify_text
 
 // Replace pointer with pointer to our custom text
 lis r23, FINISH_IW_MSG@h
 ori r23, r23, FINISH_IW_MSG@l
-b EndPauseMenuTextHook
+b end_pause_menu_text_hook
 
 // Show current menu text like normal
-DontModifyText:
+dont_modify_text:
 lwzx r23, r25, r21 // Analog of replaced instruction
 
-EndPauseMenuTextHook:
+end_pause_menu_text_hook:
 // Resume to 0x8032a870
 lis r3, 0x8032
 ori r3, r3, 0xa870
@@ -150,7 +150,7 @@ bctr
 
 // ------------------------------------------------------------------------------------------
 
-IsIWComplete:
+is_iw_complete:
 
 // Check that we're not in Practice Mode
 lis r3, 0x805d
@@ -160,8 +160,8 @@ cmpwi r4, 1
 beq No
 
 // Check if we're doing an IW
-lis r3, currentlyPlayingIW@h
-ori r3, r3, currentlyPlayingIW@l
+lis r3, currently_playing_iw@h
+ori r3, r3, currently_playing_iw@l
 lwz r4, 0x0 (r3)
 cmpwi r4, 1
 bne No
@@ -200,12 +200,12 @@ cmpwi r4, 88
 beq No
 
 li r3, 1
-b EndIsIWComplete
+b end_is_iw_complete
 
 No:
 li r3, 0
 
-EndIsIWComplete:
+end_is_iw_complete:
 blr
 
 .data

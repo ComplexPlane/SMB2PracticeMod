@@ -5,73 +5,73 @@
 namespace pad
 {
 
-static int s_konamiProgress;
+static int s_konami_progress;
 
-static bool anyButtonPressed()
+static bool any_button_pressed()
 {
-    return buttonPressed(~0) || analogPressed(~0);
+    return button_pressed(~0) || analog_pressed(~0);
 }
 
-static void updateKonami()
+static void update_konami()
 {
-    if (s_konamiProgress >= 11)
+    if (s_konami_progress >= 11)
     {
-        s_konamiProgress = 0;
+        s_konami_progress = 0;
     }
 
-    if (!anyButtonPressed()) return;
+    if (!any_button_pressed()) return;
 
-    switch (s_konamiProgress)
+    switch (s_konami_progress)
     {
         case 0:
         case 1:
         {
-            if (dirPressed(DIR_UP)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (dir_pressed(DIR_UP)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 2:
         case 3:
         {
-            if (dirPressed(DIR_DOWN)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (dir_pressed(DIR_DOWN)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 4:
         case 6:
         {
-            if (dirPressed(DIR_LEFT)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (dir_pressed(DIR_LEFT)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 5:
         case 7:
         {
-            if (dirPressed(DIR_RIGHT)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (dir_pressed(DIR_RIGHT)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 8:
         {
-            if (buttonPressed(BUTTON_B)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (button_pressed(BUTTON_B)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 9:
         {
-            if (buttonPressed(BUTTON_A)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (button_pressed(BUTTON_A)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         case 10:
         {
-            if (buttonPressed(BUTTON_START)) s_konamiProgress++;
-            else s_konamiProgress = 0;
+            if (button_pressed(BUTTON_START)) s_konami_progress++;
+            else s_konami_progress = 0;
             break;
         }
         default:
         {
-            s_konamiProgress = 0;
+            s_konami_progress = 0;
             break;
         }
     }
@@ -79,33 +79,33 @@ static void updateKonami()
 
 void tick()
 {
-    updateKonami();
+    update_konami();
 }
 
-bool buttonPressed(uint16_t button)
+bool button_pressed(uint16_t button)
 {
-    bool downThisFrame = mkb::filtered_button_inputs_bitfield & (button << 16u);
-    bool downLastFrame = mkb::filtered_button_inputs_bitfield & button;
-    return downThisFrame && !downLastFrame;
+    bool down_this_frame = mkb::filtered_button_inputs_bitfield & (button << 16u);
+    bool down_last_frame = mkb::filtered_button_inputs_bitfield & button;
+    return down_this_frame && !down_last_frame;
 }
 
 bool buttonReleased(uint16_t button)
 {
-    bool downThisFrame = mkb::filtered_button_inputs_bitfield & (button << 16u);
-    bool downLastFrame = mkb::filtered_button_inputs_bitfield & button;
-    return !downThisFrame && downLastFrame;
+    bool down_this_frame = mkb::filtered_button_inputs_bitfield & (button << 16u);
+    bool down_last_frame = mkb::filtered_button_inputs_bitfield & button;
+    return !down_this_frame && down_last_frame;
 }
 
-bool buttonDown(uint16_t button)
+bool button_down(uint16_t button)
 {
     return mkb::filtered_button_inputs_bitfield & (button << 16);
 }
 
-bool buttonChordPressed(uint16_t btn1, uint16_t btn2)
+bool button_chord_pressed(uint16_t btn1, uint16_t btn2)
 {
-    return (buttonDown(btn1) && buttonPressed(btn2)) || (buttonPressed(btn1) && buttonDown(btn2));
+    return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
 }
-int getCStickDir()
+int get_cstick_dir()
 {
     bool left = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_LEFT << 16u);
     bool right = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_RIGHT << 16u);
@@ -123,39 +123,39 @@ int getCStickDir()
     else return DIR_NONE;
 }
 
-bool analogPressed(uint16_t analogRegion)
+bool analog_pressed(uint16_t analog_region)
 {
-    bool downThisFrame = mkb::filtered_analog_inputs_bitfield & (analogRegion << 16u);
-    bool downLastFrame = mkb::filtered_analog_inputs_bitfield & analogRegion;
-    return downThisFrame && !downLastFrame;
+    bool down_this_frame = mkb::filtered_analog_inputs_bitfield & (analog_region << 16u);
+    bool down_last_frame = mkb::filtered_analog_inputs_bitfield & analog_region;
+    return down_this_frame && !down_last_frame;
 }
 
-bool analogReleased(uint16_t analogRegion)
+bool analog_released(uint16_t analog_region)
 {
-    bool downThisFrame = mkb::filtered_analog_inputs_bitfield & (analogRegion << 16u);
-    bool downLastFrame = mkb::filtered_analog_inputs_bitfield & analogRegion;
-    return !downThisFrame && downLastFrame;
+    bool down_this_frame = mkb::filtered_analog_inputs_bitfield & (analog_region << 16u);
+    bool down_last_frame = mkb::filtered_analog_inputs_bitfield & analog_region;
+    return !down_this_frame && down_last_frame;
 }
 
-bool dirDown(uint16_t dir)
+bool dir_down(uint16_t dir)
 {
     switch (dir)
     {
         case DIR_UP:
         {
-            return buttonDown(BUTTON_DPAD_UP) || analogDown(AR_LSTICK_UP);
+            return button_down(BUTTON_DPAD_UP) || analog_down(AR_LSTICK_UP);
         }
         case DIR_DOWN:
         {
-            return buttonDown(BUTTON_DPAD_DOWN) || analogDown(AR_LSTICK_DOWN);
+            return button_down(BUTTON_DPAD_DOWN) || analog_down(AR_LSTICK_DOWN);
         }
         case DIR_LEFT:
         {
-            return buttonDown(BUTTON_DPAD_LEFT) || analogDown(AR_LSTICK_LEFT);
+            return button_down(BUTTON_DPAD_LEFT) || analog_down(AR_LSTICK_LEFT);
         }
         case DIR_RIGHT:
         {
-            return buttonDown(BUTTON_DPAD_RIGHT) || analogDown(AR_LSTICK_RIGHT);
+            return button_down(BUTTON_DPAD_RIGHT) || analog_down(AR_LSTICK_RIGHT);
         }
         default:
         {
@@ -164,25 +164,25 @@ bool dirDown(uint16_t dir)
     }
 }
 
-bool dirPressed(uint16_t dir)
+bool dir_pressed(uint16_t dir)
 {
     switch (dir)
     {
         case DIR_UP:
         {
-            return buttonPressed(BUTTON_DPAD_UP) || analogPressed(AR_LSTICK_UP);
+            return button_pressed(BUTTON_DPAD_UP) || analog_pressed(AR_LSTICK_UP);
         }
         case DIR_DOWN:
         {
-            return buttonPressed(BUTTON_DPAD_DOWN) || analogPressed(AR_LSTICK_DOWN);
+            return button_pressed(BUTTON_DPAD_DOWN) || analog_pressed(AR_LSTICK_DOWN);
         }
         case DIR_LEFT:
         {
-            return buttonPressed(BUTTON_DPAD_LEFT) || analogPressed(AR_LSTICK_LEFT);;
+            return button_pressed(BUTTON_DPAD_LEFT) || analog_pressed(AR_LSTICK_LEFT);;
         }
         case DIR_RIGHT:
         {
-            return buttonPressed(BUTTON_DPAD_RIGHT) || analogPressed(AR_LSTICK_RIGHT);;
+            return button_pressed(BUTTON_DPAD_RIGHT) || analog_pressed(AR_LSTICK_RIGHT);;
         }
         default:
         {
@@ -191,14 +191,14 @@ bool dirPressed(uint16_t dir)
     }
 }
 
-bool analogDown(uint16_t analogRegion)
+bool analog_down(uint16_t analog_region)
 {
-    return mkb::filtered_analog_inputs_bitfield & (analogRegion << 16);
+    return mkb::filtered_analog_inputs_bitfield & (analog_region << 16);
 }
 
-bool konamiPressed()
+bool konami_pressed()
 {
-    return s_konamiProgress == 11;
+    return s_konami_progress == 11;
 }
 
 }

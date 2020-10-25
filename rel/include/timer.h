@@ -8,5 +8,5 @@ void init();
 void tick();
 void disp();
 
-void saveState(memstore::MemStore *memStore);
+void save_state(memstore::MemStore *store);
 }

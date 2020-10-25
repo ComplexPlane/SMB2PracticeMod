@@ -1,6 +1,6 @@
-.global StartMainLoopAssembly
+.global start_main_loop_assembly
 
-StartMainLoopAssembly:
+start_main_loop_assembly:
 stwu sp, -0x10(sp)
 mflr r0
 stw r0, 0x14(sp)

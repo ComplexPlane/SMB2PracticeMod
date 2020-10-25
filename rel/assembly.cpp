@@ -3,7 +3,7 @@
 namespace main
 {
 
-gc::GXColor debugTextColor = {};
-uint32_t currentlyPlayingIW = 0;
+gc::GXColor debug_text_color = {};
+uint32_t currently_playing_iw = 0;
 
 }

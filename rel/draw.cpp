@@ -11,9 +11,9 @@
 namespace draw
 {
 
-static char s_notifyMsgBuf[80];
-static int s_notifyFrameCounter;
-static Color s_notifyColor;
+static char s_notify_msg_buf[80];
+static int s_notify_frame_counter;
+static Color s_notify_color;
 
 static const gc::GXColor COLOR_MAP[] = {
     {0xff, 0xff, 0xff, 0xff}, // white
@@ -26,25 +26,25 @@ static const gc::GXColor COLOR_MAP[] = {
 
 void init()
 {
-    patch::writeBranch(reinterpret_cast<void *>(0x802aeca4),
-                       reinterpret_cast<void *>(main::FullDebugTextColor));
+    patch::write_branch(reinterpret_cast<void *>(0x802aeca4),
+                        reinterpret_cast<void *>(main::full_debug_text_color));
 }
 
-void preDraw()
+void predraw()
 {
     mkb::GXSetZMode_cached(gc::GX_TRUE, gc::GX_ALWAYS, gc::GX_FALSE);
 
     // Seems necessary to avoid discoloration / lighting interference when using debugtext-drawing-related funcs
-    gc::GXColor tev1Color = {0, 0, 0, 0};
-    gc::GXSetTevColor(gc::GX_TEVREG1, tev1Color);
+    gc::GXColor tev1_color = {0, 0, 0, 0};
+    gc::GXSetTevColor(gc::GX_TEVREG1, tev1_color);
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
 void rect(float x1, float y1, float x2, float y2, gc::GXColor color)
 {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    gc::GXTexObj *texObj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
-    mkb::GXLoadTexObj_cached(texObj, gc::GX_TEXMAP0);
+    gc::GXTexObj *texobj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObj_cached(texobj, gc::GX_TEXMAP0);
 
     // Specify the color of the rectangle
     gc::GXSetTevColor(gc::GX_TEVREG0, color);
@@ -62,7 +62,7 @@ void rect(float x1, float y1, float x2, float y2, gc::GXColor color)
     gc::GXTexCoord2f32(0, 1);
 }
 
-void debugTextPalette()
+void debug_text_palette()
 {
     for (char c = 0; c != 0x80; c++)
     {
@@ -72,9 +72,9 @@ void debugTextPalette()
     }
 }
 
-static void debugTextBuf(int x, int y, gc::GXColor color, const char *buf)
+static void debug_text_buf(int x, int y, gc::GXColor color, const char *buf)
 {
-    main::debugTextColor = color;
+    main::debug_text_color = color;
     for (int i = 0; buf[i] != '\0'; i++)
     {
         // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
@@ -83,60 +83,60 @@ static void debugTextBuf(int x, int y, gc::GXColor color, const char *buf)
             mkb::draw_debugtext_char_en(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
         }
     }
-    main::debugTextColor = {};
+    main::debug_text_color = {};
 }
 
-static void debugTextV(int x, int y, gc::GXColor color, const char *format, va_list args)
+static void debug_text_v(int x, int y, gc::GXColor color, const char *format, va_list args)
 {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
     vsprintf(buf, format, args);
-    debugTextBuf(x, y, color, buf);
+    debug_text_buf(x, y, color, buf);
 }
 
-void debugText(int x, int y, gc::GXColor color, const char *format, ...)
+void debug_text(int x, int y, gc::GXColor color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    debugTextV(x, y, color, format, args);
+    debug_text_v(x, y, color, format, args);
     va_end(args);
 }
 
-void debugText(int x, int y, Color color, const char *format, ...)
+void debug_text(int x, int y, Color color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    debugTextV(x, y, COLOR_MAP[static_cast<int>(color)], format, args);
+    debug_text_v(x, y, COLOR_MAP[static_cast<int>(color)], format, args);
     va_end(args);
 }
 
 void disp()
 {
-    int notifyLen = strlen(s_notifyMsgBuf);
-    int drawX = 640 - notifyLen * DEBUG_CHAR_WIDTH - 12;
-    int drawY = 426;
-    gc::GXColor color = COLOR_MAP[static_cast<int>(s_notifyColor)];
+    int notify_len = strlen(s_notify_msg_buf);
+    int draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
+    int draw_y = 426;
+    gc::GXColor color = COLOR_MAP[static_cast<int>(s_notify_color)];
 
-    if (s_notifyFrameCounter > 40)
+    if (s_notify_frame_counter > 40)
     {
-        color.a = 0xff - (s_notifyFrameCounter - 40) * 0xff / 20;
+        color.a = 0xff - (s_notify_frame_counter - 40) * 0xff / 20;
     }
-    debugText(drawX, drawY, color, s_notifyMsgBuf);
+    debug_text(draw_x, draw_y, color, s_notify_msg_buf);
 
-    s_notifyFrameCounter++;
-    if (s_notifyFrameCounter > 60) s_notifyFrameCounter = 60;
+    s_notify_frame_counter++;
+    if (s_notify_frame_counter > 60) s_notify_frame_counter = 60;
 }
 
 void notify(Color color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vsprintf(s_notifyMsgBuf, format, args);
+    vsprintf(s_notify_msg_buf, format, args);
     va_end(args);
 
-    s_notifyFrameCounter = 0;
-    s_notifyColor = color;
+    s_notify_frame_counter = 0;
+    s_notify_color = color;
 }
 
 }

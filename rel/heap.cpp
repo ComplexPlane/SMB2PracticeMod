@@ -8,14 +8,14 @@
 namespace heap
 {
 
-struct HeapDataStruct HeapData;
+struct HeapDataStruct heap_data;
 
 void init()
 {
-    makeHeap(HEAP_SIZE);
+    make_heap(HEAP_SIZE);
 }
 
-gc::ChunkInfo *extractChunk(
+gc::ChunkInfo *extract_chunk(
     gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
     if (chunk->next)
@@ -34,7 +34,7 @@ gc::ChunkInfo *extractChunk(
     }
 }
 
-gc::ChunkInfo *addChunkToFront(
+gc::ChunkInfo *add_chunk_to_front(
     gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
     chunk->next = list;
@@ -48,7 +48,7 @@ gc::ChunkInfo *addChunkToFront(
     return chunk;
 }
 
-gc::ChunkInfo *findChunkInList(
+gc::ChunkInfo *find_chunk_in_list(
     gc::ChunkInfo *list, gc::ChunkInfo *chunk)
 {
     for (; list; list = list->next)
@@ -61,7 +61,7 @@ gc::ChunkInfo *findChunkInList(
     return nullptr;
 }
 
-void *clearAndFlushMemory(void *start, uint32_t size)
+void *clear_and_flush_memory(void *start, uint32_t size)
 {
     // Clear the memory
     memset(start, 0, size);
@@ -73,232 +73,232 @@ void *clearAndFlushMemory(void *start, uint32_t size)
     return start;
 }
 
-void *initMemAllocServices(uint32_t maxSize)
+void *init_mem_alloc_services(uint32_t max_size)
 {
     // Allocate memory for the heap array
-    HeapData.CustomHeap = reinterpret_cast<CustomHeapStruct *>(
-        allocFromMainLoopRelocMemory(sizeof(CustomHeapStruct)));
+    heap_data.custom_heap = reinterpret_cast<CustomHeapStruct *>(
+        alloc_from_main_loop_reloc_memory(sizeof(CustomHeapStruct)));
 
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t Alignment = 0x20;
-    maxSize = (maxSize + Alignment - 1) & ~(Alignment - 1);
+    const uint32_t alignment = 0x20;
+    max_size = (max_size + alignment - 1) & ~(alignment - 1);
 
     // Allocate the desired memory
-    void *ArenaStart = allocFromMainLoopRelocMemory(maxSize);
+    void *arena_start = alloc_from_main_loop_reloc_memory(max_size);
 
     // Set up the arena end
-    void *ArenaEnd = reinterpret_cast<void *>(
-        reinterpret_cast<uint32_t>(ArenaStart) + maxSize);
+    void *arena_end = reinterpret_cast<void *>(
+        reinterpret_cast<uint32_t>(arena_start) + max_size);
 
     // Init the memory allocation services
-    return initAlloc(ArenaStart, ArenaEnd);
+    return init_alloc(arena_start, arena_end);
 }
 
-void *initAlloc(void *arenaStart, void *arenaEnd)
+void *init_alloc(void *arena_start, void *arena_end)
 {
-    uint32_t ArenaStartRaw = reinterpret_cast<uint32_t>(arenaStart);
-    uint32_t ArenaEndRaw = reinterpret_cast<uint32_t>(arenaEnd);
+    uint32_t arena_start_raw = reinterpret_cast<uint32_t>(arena_start);
+    uint32_t arena_end_raw = reinterpret_cast<uint32_t>(arena_end);
 
     // Put the heap array at the start of the arena
-    CustomHeapStruct *tempCustomHeap = HeapData.CustomHeap;
-    gc::HeapInfo *tempHeapInfo = reinterpret_cast<gc::HeapInfo *>(arenaStart);
-    tempCustomHeap->HeapArray = tempHeapInfo;
+    CustomHeapStruct *temp_custom_heap = heap_data.custom_heap;
+    gc::HeapInfo *temp_heap_info = reinterpret_cast<gc::HeapInfo *>(arena_start);
+    temp_custom_heap->heap_array = temp_heap_info;
 
     // Initialize the members of the heap array
-    tempHeapInfo->firstFree = nullptr;
-    tempHeapInfo->firstUsed = nullptr;
+    temp_heap_info->first_free = nullptr;
+    temp_heap_info->first_used = nullptr;
 
-    const uint32_t Alignment = 0x20;
-    uint32_t ArraySize = sizeof(gc::HeapInfo);
+    const uint32_t alignment = 0x20;
+    uint32_t array_size = sizeof(gc::HeapInfo);
 
     // Adjust arenaStart to be at the nearest reasonable location
     // Gets rounded up to the nearest multiple of 0x20 bytes
-    ArenaStartRaw = ((ArenaStartRaw + ArraySize) + Alignment - 1) & ~(Alignment - 1);
+    arena_start_raw = ((arena_start_raw + array_size) + alignment - 1) & ~(alignment - 1);
 
     // Round the end down to the nearest multiple of 0x20 bytes
-    ArenaEndRaw &= ~(Alignment - 1);
+    arena_end_raw &= ~(alignment - 1);
 
-    arenaStart = reinterpret_cast<void *>(ArenaStartRaw);
-    arenaEnd = reinterpret_cast<void *>(ArenaEndRaw);
-    tempCustomHeap->ArenaStart = arenaStart;
-    tempCustomHeap->ArenaEnd = arenaEnd;
+    arena_start = reinterpret_cast<void *>(arena_start_raw);
+    arena_end = reinterpret_cast<void *>(arena_end_raw);
+    temp_custom_heap->arena_start = arena_start;
+    temp_custom_heap->arena_end = arena_end;
 
-    return arenaStart;
+    return arena_start;
 }
 
-void makeHeap(uint32_t size)
+void make_heap(uint32_t size)
 {
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t Alignment = 0x20;
-    size = (size + Alignment - 1) & ~(Alignment - 1);
+    const uint32_t alignment = 0x20;
+    size = (size + alignment - 1) & ~(alignment - 1);
 
     // Init the memory allocation services
-    void *HeapArrayStart = initMemAllocServices(size);
+    void *heap_array_start = init_mem_alloc_services(size);
 
     // Remove the total heap info size and then round down to the nearest multiple of 0x20 bytes
-    uint32_t ArraySize = sizeof(gc::HeapInfo);
-    size = (size - ArraySize) & ~(Alignment - 1);
+    uint32_t array_size = sizeof(gc::HeapInfo);
+    size = (size - array_size) & ~(alignment - 1);
 
     // Set the end address
-    void *End = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(HeapArrayStart) + size);
+    void *end = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(heap_array_start) + size);
 
     // Create the heap
-    createHeap(HeapArrayStart, End);
+    create_heap(heap_array_start, end);
 }
 
-void createHeap(void *start, void *end)
+void create_heap(void *start, void *end)
 {
-    uint32_t StartRaw = reinterpret_cast<uint32_t>(start);
-    uint32_t EndRaw = reinterpret_cast<uint32_t>(end);
+    uint32_t start_raw = reinterpret_cast<uint32_t>(start);
+    uint32_t end_raw = reinterpret_cast<uint32_t>(end);
 
     // Round the start up to the nearest multiple of 0x20 bytes,
     // Round the end down to the nearest multiple of 0x20 bytes
-    const uint32_t Alignment = 0x20;
-    StartRaw = (StartRaw + Alignment - 1) & ~(Alignment - 1);
-    EndRaw &= ~(Alignment - 1);
+    const uint32_t alignment = 0x20;
+    start_raw = (start_raw + alignment - 1) & ~(alignment - 1);
+    end_raw &= ~(alignment - 1);
 
-    gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
-    int32_t Size = EndRaw - StartRaw;
+    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    int32_t size = end_raw - start_raw;
 
-    gc::ChunkInfo *tempChunk = reinterpret_cast<gc::ChunkInfo *>(StartRaw);
-    tempChunk->prev = nullptr;
-    tempChunk->next = nullptr;
-    tempChunk->size = Size;
+    gc::ChunkInfo *temp_chunk = reinterpret_cast<gc::ChunkInfo *>(start_raw);
+    temp_chunk->prev = nullptr;
+    temp_chunk->next = nullptr;
+    temp_chunk->size = size;
 
-    Info->firstFree = tempChunk;
-    Info->firstUsed = nullptr;
+    info->first_free = temp_chunk;
+    info->first_used = nullptr;
 }
 
-void destroyHeap()
+void destroy_heap()
 {
-    gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
-    Info->firstFree = nullptr;
-    Info->firstUsed = nullptr;
+    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    info->first_free = nullptr;
+    info->first_used = nullptr;
 }
 
-void *allocFromMainLoopRelocMemory(uint32_t size)
+void *alloc_from_main_loop_reloc_memory(uint32_t size)
 {
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t Alignment = 0x20;
-    size = (size + Alignment - 1) & ~(Alignment - 1);
+    const uint32_t alignment = 0x20;
+    size = (size + alignment - 1) & ~(alignment - 1);
 
     // Take the memory from the main game loop's relocation data
-    uint32_t AddressRaw = reinterpret_cast<uint32_t>(HeapData.RelocationDataArena);
+    uint32_t address_raw = reinterpret_cast<uint32_t>(heap_data.relocation_data_arena);
 
     // Increment the main game loop's relocation data by the size
-    HeapData.RelocationDataArena = reinterpret_cast<void *>(AddressRaw + size);
+    heap_data.relocation_data_arena = reinterpret_cast<void *>(address_raw + size);
 
-    return clearAndFlushMemory(reinterpret_cast<void *>(AddressRaw), size);
+    return clear_and_flush_memory(reinterpret_cast<void *>(address_raw), size);
 }
 
-void *allocFromHeap(uint32_t size)
+void *alloc_from_heap(uint32_t size)
 {
     // Enlarge size to the smallest possible chunk size
-    const uint32_t Alignment = 0x20;
-    uint32_t NewSize = size + ((sizeof(gc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1));
-    NewSize = (NewSize + Alignment - 1) & ~(Alignment - 1);
+    const uint32_t alignment = 0x20;
+    uint32_t new_size = size + ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1));
+    new_size = (new_size + alignment - 1) & ~(alignment - 1);
 
-    gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
-    gc::ChunkInfo *tempChunk = nullptr;
+    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    gc::ChunkInfo *temp_chunk = nullptr;
 
     // Find a memory area large enough
-    for (tempChunk = Info->firstFree; tempChunk; tempChunk = tempChunk->next)
+    for (temp_chunk = info->first_free; temp_chunk; temp_chunk = temp_chunk->next)
     {
-        if (static_cast<int32_t>(NewSize) <= tempChunk->size)
+        if (static_cast<int32_t>(new_size) <= temp_chunk->size)
         {
             break;
         }
     }
 
     // Make sure the found region is valid
-    if (!tempChunk)
+    if (!temp_chunk)
     {
         return nullptr;
     }
 
-    int32_t LeftoverSize = tempChunk->size - static_cast<int32_t>(NewSize);
+    int32_t leftover_size = temp_chunk->size - static_cast<int32_t>(new_size);
 
-    int32_t MinSize = ((sizeof(gc::ChunkInfo) +
-                        Alignment - 1) & ~(Alignment - 1)) + Alignment;
+    int32_t min_size = ((sizeof(gc::ChunkInfo) +
+                         alignment - 1) & ~(alignment - 1)) + alignment;
 
     // Check if the current chunk can be split into two pieces
-    if (LeftoverSize < MinSize)
+    if (leftover_size < min_size)
     {
         // Too small to split, so just extract it
-        Info->firstFree = extractChunk(Info->firstFree, tempChunk);
+        info->first_free = extract_chunk(info->first_free, temp_chunk);
     }
     else
     {
         // Large enough to split
-        tempChunk->size = static_cast<int32_t>(NewSize);
+        temp_chunk->size = static_cast<int32_t>(new_size);
 
         // Create a new chunk
-        gc::ChunkInfo *NewChunk = reinterpret_cast<gc::ChunkInfo *>(
-            reinterpret_cast<uint32_t>(tempChunk) + NewSize);
+        gc::ChunkInfo *new_chunk = reinterpret_cast<gc::ChunkInfo *>(
+            reinterpret_cast<uint32_t>(temp_chunk) + new_size);
 
-        NewChunk->size = LeftoverSize;
+        new_chunk->size = leftover_size;
 
-        NewChunk->prev = tempChunk->prev;
-        NewChunk->next = tempChunk->next;
+        new_chunk->prev = temp_chunk->prev;
+        new_chunk->next = temp_chunk->next;
 
-        if (NewChunk->next)
+        if (new_chunk->next)
         {
-            NewChunk->next->prev = NewChunk;
+            new_chunk->next->prev = new_chunk;
         }
 
-        if (NewChunk->prev)
+        if (new_chunk->prev)
         {
-            NewChunk->prev->next = NewChunk;
+            new_chunk->prev->next = new_chunk;
         }
         else
         {
-            Info->firstFree = NewChunk;
+            info->first_free = new_chunk;
         }
     }
 
     // Add the chunk to the allocated list
-    Info->firstUsed = addChunkToFront(Info->firstUsed, tempChunk);
+    info->first_used = add_chunk_to_front(info->first_used, temp_chunk);
 
     // Add the header size to the chunk
-    void *AllocatedMemory = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(tempChunk) +
-                                                     ((sizeof(gc::ChunkInfo) + Alignment - 1) & ~(Alignment - 1)));
+    void *allocated_memory = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(temp_chunk) +
+                                                      ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1)));
 
     // Clear and flush the memory and then return it
-    return clearAndFlushMemory(AllocatedMemory, size);
+    return clear_and_flush_memory(allocated_memory, size);
 }
 
-bool freeToHeap(void *ptr)
+bool free_to_heap(void *ptr)
 {
-    const uint32_t Alignment = 0x20;
-    uint32_t PtrRaw = reinterpret_cast<uint32_t>(ptr);
+    const uint32_t alignment = 0x20;
+    uint32_t ptr_raw = reinterpret_cast<uint32_t>(ptr);
 
-    uint32_t HeaderSize = (sizeof(gc::ChunkInfo) +
-                           Alignment - 1) & ~(Alignment - 1);
+    uint32_t header_size = (sizeof(gc::ChunkInfo) +
+                            alignment - 1) & ~(alignment - 1);
 
     // Remove the header size from ptr, as the value stored in the list does not include it
-    gc::ChunkInfo *tempChunk = reinterpret_cast<gc::ChunkInfo *>(PtrRaw - HeaderSize);
-    gc::HeapInfo *Info = HeapData.CustomHeap->HeapArray;
+    gc::ChunkInfo *temp_chunk = reinterpret_cast<gc::ChunkInfo *>(ptr_raw - header_size);
+    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
 
     // Make sure ptr is actually allocated
-    if (!findChunkInList(Info->firstUsed, tempChunk))
+    if (!find_chunk_in_list(info->first_used, temp_chunk))
     {
         return false;
     }
 
     // Extract the chunk from the allocated list
-    Info->firstUsed = extractChunk(Info->firstUsed, tempChunk);
+    info->first_used = extract_chunk(info->first_used, temp_chunk);
 
     // Add in sorted order to the free list
-    Info->firstFree = gc::DLInsert(Info->firstFree, tempChunk);
+    info->first_free = gc::DLInsert(info->first_free, temp_chunk);
     return true;
 }
 
-size_t getFreeSpace()
+size_t get_free_space()
 {
     size_t space = 0;
-    gc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
+    gc::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
 
-    for (gc::ChunkInfo *chunk = tempHeap->firstFree; chunk; chunk = chunk->next)
+    for (gc::ChunkInfo *chunk = temp_heap->first_free; chunk; chunk = chunk->next)
     {
         space += chunk->size - 32; // Don't count the ChunkInfo
     }
@@ -306,43 +306,43 @@ size_t getFreeSpace()
     return space;
 }
 
-void checkHeap()
+void check_heap()
 {
-    gc::HeapInfo *tempHeap = heap::HeapData.CustomHeap->HeapArray;
+    gc::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
     bool valid = true;
 
-    gc::ChunkInfo *currentChunk = nullptr;
-    gc::ChunkInfo *prevChunk = nullptr;
-    for (currentChunk = tempHeap->firstUsed; currentChunk; currentChunk = currentChunk->next)
+    gc::ChunkInfo *current_chunk = nullptr;
+    gc::ChunkInfo *prev_chunk = nullptr;
+    for (current_chunk = temp_heap->first_used; current_chunk; current_chunk = current_chunk->next)
     {
         // Check pointer sanity
-        auto checkIfPointerIsValid = [](void *ptr)
+        auto check_if_pointer_is_valid = [](void *ptr)
         {
-            uint32_t ptrRaw = reinterpret_cast<uint32_t>(ptr);
-            return (ptrRaw >= 0x80000000) && (ptrRaw < 0x81800000);
+            uint32_t ptr_raw = reinterpret_cast<uint32_t>(ptr);
+            return (ptr_raw >= 0x80000000) && (ptr_raw < 0x81800000);
         };
 
-        if (!checkIfPointerIsValid(currentChunk))
+        if (!check_if_pointer_is_valid(current_chunk))
         {
             valid = false;
             break;
         }
 
         // Sanity check size
-        if (currentChunk->size >= 0x1800000)
+        if (current_chunk->size >= 0x1800000)
         {
             valid = false;
             break;
         }
 
         // Check linked list integrity
-        if (prevChunk != currentChunk->prev)
+        if (prev_chunk != current_chunk->prev)
         {
             valid = false;
             break;
         }
 
-        prevChunk = currentChunk;
+        prev_chunk = current_chunk;
     }
 
     if (!valid)
@@ -350,7 +350,7 @@ void checkHeap()
         // Print the error message to the console
         gc::OSReport(
             "Heap corrupt at 0x%08" PRIx32 "\n",
-            reinterpret_cast<uint32_t>(currentChunk));
+            reinterpret_cast<uint32_t>(current_chunk));
     }
 }
 

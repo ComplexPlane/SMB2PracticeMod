@@ -9,8 +9,8 @@ struct PoolInfo
 {
     uint32_t len;
     uint32_t lowFreeIdx;
-    uint32_t upperBound;
-    uint8_t *statusList;
+    uint32_t upper_bound;
+    uint8_t *status_list;
 };
 
 extern "C"

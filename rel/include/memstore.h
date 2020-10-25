@@ -19,34 +19,34 @@ public:
     MemStore() noexcept;
     ~MemStore();
 
-    MemStore(const MemStore& memStore) = delete;
-    MemStore(MemStore&& memStore) = delete;
-    MemStore& operator=(const MemStore& memStore) = delete;
-    MemStore& operator=(MemStore&& memStore) = delete;
+    MemStore(const MemStore& store) = delete;
+    MemStore(MemStore&& store) = delete;
+    MemStore& operator=(const MemStore& store) = delete;
+    MemStore& operator=(MemStore&& store) = delete;
 
-    void enterPreallocMode();
+    void enter_prealloc_mode();
 
-    // Allocate save buffers on the heap, and subsequent calls to `doRegion()` actually save a memory region.
+    // Allocate save buffers on the heap, and subsequent calls to `do_region()` actually save a memory region.
     // Returns whether the heap allocation was successful
-    [[nodiscard]] bool enterSaveMode();
+    [[nodiscard]] bool enter_save_mode();
 
-    // Subsequent calls to `doRegion()` will cause the region to be restored, rather than saved or prealloc'd
-    void enterLoadMode();
+    // Subsequent calls to `do_region()` will cause the region to be restored, rather than saved or prealloc'd
+    void enter_load_mode();
 
     // In PREALLOC mode, this is used to size the buffer
     // In SAVE mode, this copies the region into the buffer
     // In LOAD mode, this copies the region from the buffer to the ptr
-    void doRegion(void *ptr, uint32_t size);
+    void do_region(void *ptr, uint32_t size);
 
-    void printStats() const;
-    Mode getMode() const;
+    void print_stats() const;
+    Mode get_mode() const;
 
 private:
     Mode m_mode;
 
-    uint8_t *m_saveBuf;
-    uint32_t m_saveBufIdx;
-    uint32_t m_saveBufLen;
+    uint8_t *m_save_buf;
+    uint32_t m_save_buf_idx;
+    uint32_t m_save_buf_len;
 };
 
 }

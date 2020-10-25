@@ -24,16 +24,16 @@ void init();
 void disp();
 
 // Call once per frame in the mkb 2d drawing hook before all other disp functions of other things
-void preDraw();
+void predraw();
 
 /*
  * Functions which draw immediately
  */
 
 void rect(float x1, float y1, float x2, float y2, gc::GXColor color);
-void debugTextPalette();
-void debugText(int x, int y, gc::GXColor color, const char *format, ...);
-void debugText(int x, int y, Color color, const char *format, ...);
+void debug_text_palette();
+void debug_text(int x, int y, gc::GXColor color, const char *format, ...);
+void debug_text(int x, int y, Color color, const char *format, ...);
 
 /*
  * Functions which cause drawing during disp() and don't necessarily need to be called each frame
