@@ -16,11 +16,11 @@ void disp()
 {
     if (!s_enabled) return;
 
-    constexpr int SCREEN_WIDTH = 640;
-    constexpr int SCREEN_HEIGHT = 480;
-    constexpr int MARGIN = 20;
-    constexpr int PAD = 8;
-    constexpr int LINE_HEIGHT = 20;
+    constexpr s32 SCREEN_WIDTH = 640;
+    constexpr s32 SCREEN_HEIGHT = 480;
+    constexpr s32 MARGIN = 20;
+    constexpr s32 PAD = 8;
+    constexpr s32 LINE_HEIGHT = 20;
 
     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN, {0x00, 0x00, 0x00, 0xd0});
 

@@ -5,7 +5,7 @@
 namespace pad
 {
 
-static int s_konami_progress;
+static s32 s_konami_progress;
 
 static bool any_button_pressed()
 {
@@ -105,7 +105,7 @@ bool button_chord_pressed(u16 btn1, u16 btn2)
 {
     return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
 }
-int get_cstick_dir()
+s32 get_cstick_dir()
 {
     bool left = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_LEFT << 16u);
     bool right = mkb::filtered_analog_inputs_bitfield & (AR_CSTICK_RIGHT << 16u);

@@ -12,7 +12,7 @@ namespace draw
 {
 
 static char s_notify_msg_buf[80];
-static int s_notify_frame_counter;
+static s32 s_notify_frame_counter;
 static Color s_notify_color;
 
 static const gc::GXColor COLOR_MAP[] = {
@@ -66,16 +66,16 @@ void debug_text_palette()
 {
     for (char c = 0; c != 0x80; c++)
     {
-        int x = c % 16 * DEBUG_CHAR_WIDTH;
-        int y = c / 16 * DEBUG_CHAR_WIDTH;
+        s32 x = c % 16 * DEBUG_CHAR_WIDTH;
+        s32 y = c / 16 * DEBUG_CHAR_WIDTH;
         mkb::draw_debugtext_char_en(x, y, c, c * 2);
     }
 }
 
-static void debug_text_buf(int x, int y, gc::GXColor color, const char *buf)
+static void debug_text_buf(s32 x, s32 y, gc::GXColor color, const char *buf)
 {
     main::debug_text_color = color;
-    for (int i = 0; buf[i] != '\0'; i++)
+    for (s32 i = 0; buf[i] != '\0'; i++)
     {
         // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
         if (buf[i] != ' ')
@@ -86,7 +86,7 @@ static void debug_text_buf(int x, int y, gc::GXColor color, const char *buf)
     main::debug_text_color = {};
 }
 
-static void debug_text_v(int x, int y, gc::GXColor color, const char *format, va_list args)
+static void debug_text_v(s32 x, s32 y, gc::GXColor color, const char *format, va_list args)
 {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
@@ -95,7 +95,7 @@ static void debug_text_v(int x, int y, gc::GXColor color, const char *format, va
     debug_text_buf(x, y, color, buf);
 }
 
-void debug_text(int x, int y, gc::GXColor color, const char *format, ...)
+void debug_text(s32 x, s32 y, gc::GXColor color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -103,20 +103,20 @@ void debug_text(int x, int y, gc::GXColor color, const char *format, ...)
     va_end(args);
 }
 
-void debug_text(int x, int y, Color color, const char *format, ...)
+void debug_text(s32 x, s32 y, Color color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    debug_text_v(x, y, COLOR_MAP[static_cast<int>(color)], format, args);
+    debug_text_v(x, y, COLOR_MAP[static_cast<s32>(color)], format, args);
     va_end(args);
 }
 
 void disp()
 {
-    int notify_len = strlen(s_notify_msg_buf);
-    int draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
-    int draw_y = 426;
-    gc::GXColor color = COLOR_MAP[static_cast<int>(s_notify_color)];
+    s32 notify_len = strlen(s_notify_msg_buf);
+    s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
+    s32 draw_y = 426;
+    gc::GXColor color = COLOR_MAP[static_cast<s32>(s_notify_color)];
 
     if (s_notify_frame_counter > 40)
     {

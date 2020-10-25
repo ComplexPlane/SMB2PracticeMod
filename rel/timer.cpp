@@ -9,7 +9,7 @@ namespace timer
 
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
-static int s_rta_timer;
+static s32 s_rta_timer;
 
 void init()
 {
@@ -18,7 +18,7 @@ void init()
 
 void tick() {}
 
-static void convert_frame_time(int frames, int *sec, int *centisec)
+static void convert_frame_time(s32 frames, s32 *sec, s32 *centisec)
 {
     if (sec) *sec = frames / 60;
     if (centisec)
@@ -65,7 +65,7 @@ void disp()
 //        if (s_rtaTimer < 0) s_rtaTimer = 0;
     }
 
-    int sec = 0, centisec = 0;
+    s32 sec = 0, centisec = 0;
     convert_frame_time(s_rta_timer, &sec, &centisec);
     draw::debug_text(
         380, 34,

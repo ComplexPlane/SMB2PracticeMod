@@ -16,14 +16,14 @@ namespace savestate
 struct SaveState
 {
     bool active;
-    int stage_id;
+    s32 stage_id;
     memstore::MemStore store;
     u8 pause_menu_sprite_status;
     mkb::Sprite pause_menu_sprite;
 };
 
 static SaveState s_states[8];
-static int s_active_state_slot;
+static s32 s_active_state_slot;
 
 static bool s_created_state_last_frame;
 static bool s_frame_advance_mode;
@@ -169,7 +169,7 @@ static void handle_pause_menu_load(SaveState *state)
     else if (!paused_now && paused_in_state)
     {
         // Allocate a new pause menu sprite
-        int i = mkb::pool_alloc(&mkb::sprite_pool_info, state->pause_menu_sprite_status);
+        s32 i = mkb::pool_alloc(&mkb::sprite_pool_info, state->pause_menu_sprite_status);
         mkb::sprites[i] = state->pause_menu_sprite;
     }
 }
@@ -249,7 +249,7 @@ void tick()
     if (mkb::main_mode != mkb::MD_GAME) return;
 
     // Allow changing the savestate slot as long as the above conditions are at least met
-    int cstick_dir = pad::get_cstick_dir();
+    s32 cstick_dir = pad::get_cstick_dir();
     if (cstick_dir != pad::DIR_NONE)
     {
         s_active_state_slot = cstick_dir;

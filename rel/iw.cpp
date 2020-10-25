@@ -35,11 +35,11 @@ static void handle_iw_selection()
     bool dpad_up = pad::button_pressed(pad::BUTTON_DPAD_UP);
     bool dpad_down = pad::button_pressed(pad::BUTTON_DPAD_DOWN);
 
-    int dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
+    s32 dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
     auto &story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];
     if (story_save.status_flag)
     {
-        int world = story_save.current_world + dir;
+        s32 world = story_save.current_world + dir;
         if (world < 0 || world > 9) story_save.status_flag = 0;
         else story_save.current_world = world;
     }
@@ -59,7 +59,7 @@ static void set_save_file_info()
 {
     s_anim_counter += 1;
 
-    for (int i = 0; i < 3; i++)
+    for (s32 i = 0; i < 3; i++)
     {
         auto &story_save = mkb::storymode_save_files[i];
         if (story_save.status_flag)
@@ -132,8 +132,8 @@ void disp()
     constexpr u32 MINUTE = SECOND * 60;
     constexpr u32 HOUR = MINUTE * 60;
 
-    constexpr int X = 380;
-    constexpr int Y = 18;
+    constexpr s32 X = 380;
+    constexpr s32 Y = 18;
 
     u32 hours = s_iw_time / HOUR;
     u32 minutes = s_iw_time % HOUR / MINUTE;

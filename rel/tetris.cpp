@@ -14,12 +14,12 @@ Non shit RNG
 
 #include <cstdlib>
 
-static constexpr int NUM_TETRADS = 7;
-static constexpr int NUM_CELL_TYPES = 8;
-static constexpr int NUM_TETRAD_ROTATIONS = 4;
+static constexpr s32 NUM_TETRADS = 7;
+static constexpr s32 NUM_CELL_TYPES = 8;
+static constexpr s32 NUM_TETRAD_ROTATIONS = 4;
 
-static constexpr int CELL_WIDTH = 16;
-static constexpr int CELL_PAD = 2;
+static constexpr s32 CELL_WIDTH = 16;
+static constexpr s32 CELL_PAD = 2;
 static constexpr u8 CELL_ALPHA = 0xff;
 
 static constexpr char BOXCHAR_RT = '\x11';
@@ -38,9 +38,9 @@ static constexpr char BOXCHAR_LARROW = '\x1d';
 static constexpr char BOXCHAR_UARROW = '\x1e';
 static constexpr char BOXCHAR_DARROW = '\x1f';
 
-static constexpr int ROW_FLASH_PERIOD = 4;
-static constexpr int INITIAL_DROP_PERIOD = 60;
-static constexpr int MIN_DROP_PERIOD = 20;
+static constexpr s32 ROW_FLASH_PERIOD = 4;
+static constexpr s32 INITIAL_DROP_PERIOD = 60;
+static constexpr s32 MIN_DROP_PERIOD = 20;
 
 static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
@@ -90,15 +90,15 @@ void Tetris::new_game()
 
     m_current_drop_period = INITIAL_DROP_PERIOD;
 
-    for (int x = 0; x < BOARD_WIDTH; x++)
+    for (s32 x = 0; x < BOARD_WIDTH; x++)
     {
-        for (int y = 0; y < BOARD_HEIGHT; y++)
+        for (s32 y = 0; y < BOARD_HEIGHT; y++)
         {
             m_board[x][y] = Cell::EMPTY;
         }
     }
 
-    for (int i = 0; i < TETRAD_QUEUE_LEN; i++)
+    for (s32 i = 0; i < TETRAD_QUEUE_LEN; i++)
     {
         m_tetrad_queue[i] = gen_random_tetrad();
     }
@@ -158,7 +158,7 @@ void Tetris::handle_dropping_state()
 
     if (pad::button_pressed(pad::BUTTON_B))
     {
-        int low_y = find_lowest_possible_tetrad_y(
+        s32 low_y = find_lowest_possible_tetrad_y(
             m_dropping_tetrad,
             m_dropping_tetrad_x,
             m_dropping_tetrad_y,
@@ -169,9 +169,9 @@ void Tetris::handle_dropping_state()
     }
     else
     {
-        int new_tetrad_x = m_dropping_tetrad_x;
-        int new_tetrad_y = m_dropping_tetrad_y;
-        int new_tetrad_rot = m_dropping_tetrad_rot;
+        s32 new_tetrad_x = m_dropping_tetrad_x;
+        s32 new_tetrad_y = m_dropping_tetrad_y;
+        s32 new_tetrad_rot = m_dropping_tetrad_rot;
 
         bool moved_down = false;
         bool rotated = false;
@@ -221,8 +221,8 @@ void Tetris::handle_rowclear_state()
     {
 
         // Delete full rows from board
-        int empty_rows = 0;
-        for (int y = 0; y < BOARD_HEIGHT; y++)
+        s32 empty_rows = 0;
+        for (s32 y = 0; y < BOARD_HEIGHT; y++)
         {
             if (is_row_full(y))
             {
@@ -230,7 +230,7 @@ void Tetris::handle_rowclear_state()
             }
             else
             {
-                for (int x = 0; x < BOARD_WIDTH; x++)
+                for (s32 x = 0; x < BOARD_WIDTH; x++)
                 {
                     m_board[x][y - empty_rows] = m_board[x][y];
                 }
@@ -238,7 +238,7 @@ void Tetris::handle_rowclear_state()
         }
 
         // Add points to score
-        for (int i = 0; i < empty_rows; i++)
+        for (s32 i = 0; i < empty_rows; i++)
         {
             m_score += 100 + 50 * i;
             if (m_score > m_high_score) m_high_score = m_score;
@@ -282,21 +282,21 @@ void Tetris::transition_from_dropping()
     Cell cell = static_cast<Cell>(m_dropping_tetrad);
 
     // Place blocks of dropping tetrad into grid
-    for (int local_x = 0; local_x < 4; local_x++)
+    for (s32 local_x = 0; local_x < 4; local_x++)
     {
-        for (int local_y = 0; local_y < 4; local_y++)
+        for (s32 local_y = 0; local_y < 4; local_y++)
         {
             bool occupied = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot] & (1 << 15 >> (local_y * 4 + local_x));
             if (occupied)
             {
-                int grid_x = m_dropping_tetrad_x + local_x;
-                int grid_y = m_dropping_tetrad_y + local_y;
+                s32 grid_x = m_dropping_tetrad_x + local_x;
+                s32 grid_y = m_dropping_tetrad_y + local_y;
                 m_board[grid_x][grid_y] = cell;
             }
         }
     }
 
-    for (int y = 0; y < BOARD_HEIGHT; y++)
+    for (s32 y = 0; y < BOARD_HEIGHT; y++)
     {
         if (is_row_full(y))
         {
@@ -344,7 +344,7 @@ Tetris::Tetrad Tetris::pop_tetrad_queue()
     Tetrad ret = m_tetrad_queue[0];
 
     // Could treat it like a ring buffer instead, but eh
-    for (int i = 0; i < TETRAD_QUEUE_LEN - 1; i++)
+    for (s32 i = 0; i < TETRAD_QUEUE_LEN - 1; i++)
     {
         m_tetrad_queue[i] = m_tetrad_queue[i + 1];
     }
@@ -368,7 +368,7 @@ void Tetris::draw()
     draw_game_over_text();
 }
 
-void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, u8 color)
+void Tetris::draw_ascii_rect(s32 xpos, s32 ypos, s32 xchars, s32 ychars, u8 color)
 {
     // Draw corners
     mkb::draw_debugtext_char_en(xpos, ypos, BOXCHAR_UL, color);
@@ -378,13 +378,13 @@ void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, u8 colo
                                 BOXCHAR_DR, color);
     mkb::draw_debugtext_char_en(xpos, ypos + (ychars - 1) * draw::DEBUG_CHAR_WIDTH, BOXCHAR_DL, color);
 
-    constexpr int X_VDIV = 16;
-    constexpr int Y_HDIV = 24;
+    constexpr s32 X_VDIV = 16;
+    constexpr s32 Y_HDIV = 24;
 
     // Draw horizontal lines
-    for (int i = 1; i < xchars - 1; i++)
+    for (s32 i = 1; i < xchars - 1; i++)
     {
-        int x = xpos + i * draw::DEBUG_CHAR_WIDTH;
+        s32 x = xpos + i * draw::DEBUG_CHAR_WIDTH;
         if (i != X_VDIV)
         {
             mkb::draw_debugtext_char_en(x, ypos, BOXCHAR_HBAR, color);
@@ -403,9 +403,9 @@ void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, u8 colo
     }
 
     // Draw vertical lines
-    for (int i = 1; i < ychars - 1; i++)
+    for (s32 i = 1; i < ychars - 1; i++)
     {
-        int y = ypos + i * draw::DEBUG_CHAR_WIDTH;
+        s32 y = ypos + i * draw::DEBUG_CHAR_WIDTH;
         mkb::draw_debugtext_char_en(xpos, y, BOXCHAR_VBAR, color);
 
         if (i == Y_HDIV)
@@ -423,11 +423,11 @@ void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, u8 colo
 
 void Tetris::draw_ascii_window()
 {
-    constexpr int X = 130;
-    constexpr int Y = 8;
-    constexpr int WIDTH_CHARS = 30;
-    constexpr int HEIGHT_CHARS = 36;
-    constexpr int MARGIN = 5;
+    constexpr s32 X = 130;
+    constexpr s32 Y = 8;
+    constexpr s32 WIDTH_CHARS = 30;
+    constexpr s32 HEIGHT_CHARS = 36;
+    constexpr s32 MARGIN = 5;
     constexpr float YSCALE = 1.07142857; // Magic scalar found in decompile
 
     float start_x = X + MARGIN;
@@ -442,11 +442,11 @@ void Tetris::draw_ascii_window()
 
 void Tetris::draw_grid()
 {
-    for (int y = 0; y < BOARD_HEIGHT; y++)
+    for (s32 y = 0; y < BOARD_HEIGHT; y++)
     {
         bool row_roll = is_row_full(y);
 
-        for (int x = 0; x < BOARD_WIDTH; x++)
+        for (s32 x = 0; x < BOARD_WIDTH; x++)
         {
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY)
@@ -478,8 +478,8 @@ void Tetris::draw_grid()
 
 void Tetris::draw_info_text()
 {
-    constexpr int STARTX = 335;
-    constexpr int STARTY = 310;
+    constexpr s32 STARTX = 335;
+    constexpr s32 STARTY = 310;
 
     draw::debug_text(
         STARTX, STARTY,
@@ -525,7 +525,7 @@ void Tetris::draw_info_text()
         " L+R: TOGGLE");
 }
 
-void Tetris::draw_tetrad(int x, int y, Tetrad tetrad, int rotation)
+void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation)
 {
     u8 tet = static_cast<u8>(tetrad);
     gc::GXColor color = CELL_COLORS[tet];
