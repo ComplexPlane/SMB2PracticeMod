@@ -14,12 +14,12 @@
 namespace iw
 {
 
-static uint32_t s_anim_counter;
+static u32 s_anim_counter;
 static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
 // IW timer stuff
-static uint32_t s_iw_time;
-static uint32_t s_prev_retrace_count;
+static u32 s_iw_time;
+static u32 s_prev_retrace_count;
 
 void init() {}
 
@@ -76,7 +76,7 @@ static void set_save_file_info()
 
 static void handle_iw_timer()
 {
-    uint32_t retrace_count = gc::VIGetRetraceCount();
+    u32 retrace_count = gc::VIGetRetraceCount();
 
     if (mkb::main_mode != mkb::MD_GAME
         || mkb::main_game_mode != mkb::MGM_STORY
@@ -128,17 +128,17 @@ void disp()
 {
     if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY || !main::currently_playing_iw) return;
 
-    constexpr uint32_t SECOND = 60;
-    constexpr uint32_t MINUTE = SECOND * 60;
-    constexpr uint32_t HOUR = MINUTE * 60;
+    constexpr u32 SECOND = 60;
+    constexpr u32 MINUTE = SECOND * 60;
+    constexpr u32 HOUR = MINUTE * 60;
 
     constexpr int X = 380;
     constexpr int Y = 18;
 
-    uint32_t hours = s_iw_time / HOUR;
-    uint32_t minutes = s_iw_time % HOUR / MINUTE;
-    uint32_t seconds = s_iw_time % MINUTE / SECOND;
-    uint32_t centiseconds = (s_iw_time % SECOND) * 100 / 60;
+    u32 hours = s_iw_time / HOUR;
+    u32 minutes = s_iw_time % HOUR / MINUTE;
+    u32 seconds = s_iw_time % MINUTE / SECOND;
+    u32 centiseconds = (s_iw_time % SECOND) * 100 / 60;
 
     if (hours > 0)
     {

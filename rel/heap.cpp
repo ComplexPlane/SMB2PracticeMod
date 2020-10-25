@@ -61,7 +61,7 @@ gc::ChunkInfo *find_chunk_in_list(
     return nullptr;
 }
 
-void *clear_and_flush_memory(void *start, uint32_t size)
+void *clear_and_flush_memory(void *start, u32 size)
 {
     // Clear the memory
     memset(start, 0, size);
@@ -73,14 +73,14 @@ void *clear_and_flush_memory(void *start, uint32_t size)
     return start;
 }
 
-void *init_mem_alloc_services(uint32_t max_size)
+void *init_mem_alloc_services(u32 max_size)
 {
     // Allocate memory for the heap array
     heap_data.custom_heap = reinterpret_cast<CustomHeapStruct *>(
         alloc_from_main_loop_reloc_memory(sizeof(CustomHeapStruct)));
 
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t alignment = 0x20;
+    const u32 alignment = 0x20;
     max_size = (max_size + alignment - 1) & ~(alignment - 1);
 
     // Allocate the desired memory
@@ -88,7 +88,7 @@ void *init_mem_alloc_services(uint32_t max_size)
 
     // Set up the arena end
     void *arena_end = reinterpret_cast<void *>(
-        reinterpret_cast<uint32_t>(arena_start) + max_size);
+        reinterpret_cast<u32>(arena_start) + max_size);
 
     // Init the memory allocation services
     return init_alloc(arena_start, arena_end);
@@ -96,8 +96,8 @@ void *init_mem_alloc_services(uint32_t max_size)
 
 void *init_alloc(void *arena_start, void *arena_end)
 {
-    uint32_t arena_start_raw = reinterpret_cast<uint32_t>(arena_start);
-    uint32_t arena_end_raw = reinterpret_cast<uint32_t>(arena_end);
+    u32 arena_start_raw = reinterpret_cast<u32>(arena_start);
+    u32 arena_end_raw = reinterpret_cast<u32>(arena_end);
 
     // Put the heap array at the start of the arena
     CustomHeapStruct *temp_custom_heap = heap_data.custom_heap;
@@ -108,8 +108,8 @@ void *init_alloc(void *arena_start, void *arena_end)
     temp_heap_info->first_free = nullptr;
     temp_heap_info->first_used = nullptr;
 
-    const uint32_t alignment = 0x20;
-    uint32_t array_size = sizeof(gc::HeapInfo);
+    const u32 alignment = 0x20;
+    u32 array_size = sizeof(gc::HeapInfo);
 
     // Adjust arenaStart to be at the nearest reasonable location
     // Gets rounded up to the nearest multiple of 0x20 bytes
@@ -126,21 +126,21 @@ void *init_alloc(void *arena_start, void *arena_end)
     return arena_start;
 }
 
-void make_heap(uint32_t size)
+void make_heap(u32 size)
 {
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t alignment = 0x20;
+    const u32 alignment = 0x20;
     size = (size + alignment - 1) & ~(alignment - 1);
 
     // Init the memory allocation services
     void *heap_array_start = init_mem_alloc_services(size);
 
     // Remove the total heap info size and then round down to the nearest multiple of 0x20 bytes
-    uint32_t array_size = sizeof(gc::HeapInfo);
+    u32 array_size = sizeof(gc::HeapInfo);
     size = (size - array_size) & ~(alignment - 1);
 
     // Set the end address
-    void *end = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(heap_array_start) + size);
+    void *end = reinterpret_cast<void *>(reinterpret_cast<u32>(heap_array_start) + size);
 
     // Create the heap
     create_heap(heap_array_start, end);
@@ -148,17 +148,17 @@ void make_heap(uint32_t size)
 
 void create_heap(void *start, void *end)
 {
-    uint32_t start_raw = reinterpret_cast<uint32_t>(start);
-    uint32_t end_raw = reinterpret_cast<uint32_t>(end);
+    u32 start_raw = reinterpret_cast<u32>(start);
+    u32 end_raw = reinterpret_cast<u32>(end);
 
     // Round the start up to the nearest multiple of 0x20 bytes,
     // Round the end down to the nearest multiple of 0x20 bytes
-    const uint32_t alignment = 0x20;
+    const u32 alignment = 0x20;
     start_raw = (start_raw + alignment - 1) & ~(alignment - 1);
     end_raw &= ~(alignment - 1);
 
     gc::HeapInfo *info = heap_data.custom_heap->heap_array;
-    int32_t size = end_raw - start_raw;
+    s32 size = end_raw - start_raw;
 
     gc::ChunkInfo *temp_chunk = reinterpret_cast<gc::ChunkInfo *>(start_raw);
     temp_chunk->prev = nullptr;
@@ -176,14 +176,14 @@ void destroy_heap()
     info->first_used = nullptr;
 }
 
-void *alloc_from_main_loop_reloc_memory(uint32_t size)
+void *alloc_from_main_loop_reloc_memory(u32 size)
 {
     // Round the size up to the nearest multiple of 0x20 bytes
-    const uint32_t alignment = 0x20;
+    const u32 alignment = 0x20;
     size = (size + alignment - 1) & ~(alignment - 1);
 
     // Take the memory from the main game loop's relocation data
-    uint32_t address_raw = reinterpret_cast<uint32_t>(heap_data.relocation_data_arena);
+    u32 address_raw = reinterpret_cast<u32>(heap_data.relocation_data_arena);
 
     // Increment the main game loop's relocation data by the size
     heap_data.relocation_data_arena = reinterpret_cast<void *>(address_raw + size);
@@ -191,11 +191,11 @@ void *alloc_from_main_loop_reloc_memory(uint32_t size)
     return clear_and_flush_memory(reinterpret_cast<void *>(address_raw), size);
 }
 
-void *alloc_from_heap(uint32_t size)
+void *alloc_from_heap(u32 size)
 {
     // Enlarge size to the smallest possible chunk size
-    const uint32_t alignment = 0x20;
-    uint32_t new_size = size + ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1));
+    const u32 alignment = 0x20;
+    u32 new_size = size + ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1));
     new_size = (new_size + alignment - 1) & ~(alignment - 1);
 
     gc::HeapInfo *info = heap_data.custom_heap->heap_array;
@@ -204,7 +204,7 @@ void *alloc_from_heap(uint32_t size)
     // Find a memory area large enough
     for (temp_chunk = info->first_free; temp_chunk; temp_chunk = temp_chunk->next)
     {
-        if (static_cast<int32_t>(new_size) <= temp_chunk->size)
+        if (static_cast<s32>(new_size) <= temp_chunk->size)
         {
             break;
         }
@@ -216,9 +216,9 @@ void *alloc_from_heap(uint32_t size)
         return nullptr;
     }
 
-    int32_t leftover_size = temp_chunk->size - static_cast<int32_t>(new_size);
+    s32 leftover_size = temp_chunk->size - static_cast<s32>(new_size);
 
-    int32_t min_size = ((sizeof(gc::ChunkInfo) +
+    s32 min_size = ((sizeof(gc::ChunkInfo) +
                          alignment - 1) & ~(alignment - 1)) + alignment;
 
     // Check if the current chunk can be split into two pieces
@@ -230,11 +230,11 @@ void *alloc_from_heap(uint32_t size)
     else
     {
         // Large enough to split
-        temp_chunk->size = static_cast<int32_t>(new_size);
+        temp_chunk->size = static_cast<s32>(new_size);
 
         // Create a new chunk
         gc::ChunkInfo *new_chunk = reinterpret_cast<gc::ChunkInfo *>(
-            reinterpret_cast<uint32_t>(temp_chunk) + new_size);
+            reinterpret_cast<u32>(temp_chunk) + new_size);
 
         new_chunk->size = leftover_size;
 
@@ -260,7 +260,7 @@ void *alloc_from_heap(uint32_t size)
     info->first_used = add_chunk_to_front(info->first_used, temp_chunk);
 
     // Add the header size to the chunk
-    void *allocated_memory = reinterpret_cast<void *>(reinterpret_cast<uint32_t>(temp_chunk) +
+    void *allocated_memory = reinterpret_cast<void *>(reinterpret_cast<u32>(temp_chunk) +
                                                       ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1)));
 
     // Clear and flush the memory and then return it
@@ -269,10 +269,10 @@ void *alloc_from_heap(uint32_t size)
 
 bool free_to_heap(void *ptr)
 {
-    const uint32_t alignment = 0x20;
-    uint32_t ptr_raw = reinterpret_cast<uint32_t>(ptr);
+    const u32 alignment = 0x20;
+    u32 ptr_raw = reinterpret_cast<u32>(ptr);
 
-    uint32_t header_size = (sizeof(gc::ChunkInfo) +
+    u32 header_size = (sizeof(gc::ChunkInfo) +
                             alignment - 1) & ~(alignment - 1);
 
     // Remove the header size from ptr, as the value stored in the list does not include it
@@ -318,7 +318,7 @@ void check_heap()
         // Check pointer sanity
         auto check_if_pointer_is_valid = [](void *ptr)
         {
-            uint32_t ptr_raw = reinterpret_cast<uint32_t>(ptr);
+            u32 ptr_raw = reinterpret_cast<u32>(ptr);
             return (ptr_raw >= 0x80000000) && (ptr_raw < 0x81800000);
         };
 
@@ -350,7 +350,7 @@ void check_heap()
         // Print the error message to the console
         gc::OSReport(
             "Heap corrupt at 0x%08" PRIx32 "\n",
-            reinterpret_cast<uint32_t>(current_chunk));
+            reinterpret_cast<u32>(current_chunk));
     }
 }
 

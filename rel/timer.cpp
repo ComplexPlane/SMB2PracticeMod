@@ -7,8 +7,8 @@
 namespace timer
 {
 
-static uint32_t s_retrace_count;
-static uint32_t s_prev_retrace_count;
+static u32 s_retrace_count;
+static u32 s_prev_retrace_count;
 static int s_rta_timer;
 
 void init()
@@ -87,7 +87,7 @@ void save_state(memstore::MemStore *store)
     if (store->get_mode() == memstore::Mode::LOAD)
     {
         // This might not be completely consistently correct
-        uint32_t count = gc::VIGetRetraceCount();
+        u32 count = gc::VIGetRetraceCount();
         s_prev_retrace_count = count - 1;
         s_retrace_count = count - 1;
     }

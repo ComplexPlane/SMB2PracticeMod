@@ -20,7 +20,7 @@ static constexpr int NUM_TETRAD_ROTATIONS = 4;
 
 static constexpr int CELL_WIDTH = 16;
 static constexpr int CELL_PAD = 2;
-static constexpr uint8_t CELL_ALPHA = 0xff;
+static constexpr u8 CELL_ALPHA = 0xff;
 
 static constexpr char BOXCHAR_RT = '\x11';
 static constexpr char BOXCHAR_UT = '\x12';
@@ -53,8 +53,8 @@ static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x00, 0x00, 0x00, CELL_ALPHA},  // Empty (black for nothing?)
 };
 
-// Each uint16_t is a bitfield representing the occupancy of a 4x4 tetrad bounding box
-static const uint16_t TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
+// Each u16 is a bitfield representing the occupancy of a 4x4 tetrad bounding box
+static const u16 TETRAD_ROTATIONS[NUM_TETRADS][NUM_TETRAD_ROTATIONS] = {
     {0b0000000011110000, 0b0010001000100010, 0b0000111100000000, 0b0100010001000100}, // I
     {0b0000000011101000, 0b0000010001000110, 0b0000001011100000, 0b0000110001000100}, // J
     {0b0000000011100010, 0b0000011001000100, 0b0000100011100000, 0b0000010001001100}, // L
@@ -278,7 +278,7 @@ void Tetris::handle_new_game_state()
 
 void Tetris::transition_from_dropping()
 {
-    uint8_t tet = static_cast<uint8_t>(m_dropping_tetrad);
+    u8 tet = static_cast<u8>(m_dropping_tetrad);
     Cell cell = static_cast<Cell>(m_dropping_tetrad);
 
     // Place blocks of dropping tetrad into grid
@@ -368,7 +368,7 @@ void Tetris::draw()
     draw_game_over_text();
 }
 
-void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, uint8_t color)
+void Tetris::draw_ascii_rect(int xpos, int ypos, int xchars, int ychars, u8 color)
 {
     // Draw corners
     mkb::draw_debugtext_char_en(xpos, ypos, BOXCHAR_UL, color);
@@ -467,7 +467,7 @@ void Tetris::draw_grid()
                 }
                 else
                 {
-                    color = CELL_COLORS[static_cast<uint8_t>(cell)];
+                    color = CELL_COLORS[static_cast<u8>(cell)];
                 }
 
                 draw_grid_cell(x, y, color);
@@ -527,7 +527,7 @@ void Tetris::draw_info_text()
 
 void Tetris::draw_tetrad(int x, int y, Tetrad tetrad, int rotation)
 {
-    uint8_t tet = static_cast<uint8_t>(tetrad);
+    u8 tet = static_cast<u8>(tetrad);
     gc::GXColor color = CELL_COLORS[tet];
 
     // Note that the effectice "cell y" when indexing the tetrad rotation
@@ -560,7 +560,7 @@ void Tetris::draw_tetrad_queue()
 
     for (int i = 0; i < TETRAD_QUEUE_LEN; i++)
     {
-        uint8_t tet = static_cast<uint8_t>(m_tetrad_queue[i]);
+        u8 tet = static_cast<u8>(m_tetrad_queue[i]);
         int draw_x = STARTX + TETRAD_CENTER_NUDGE[tet][0] * (CELL_WIDTH + CELL_PAD);
         int draw_y = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
         draw_tetrad(draw_x, draw_y, static_cast<Tetrad>(tet), 0);
@@ -569,8 +569,8 @@ void Tetris::draw_tetrad_queue()
 
 void Tetris::draw_dropping_tetrad()
 {
-    uint8_t tet = static_cast<uint8_t>(m_dropping_tetrad);
-    uint16_t rot = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot];
+    u8 tet = static_cast<u8>(m_dropping_tetrad);
+    u16 rot = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot];
     gc::GXColor color = CELL_COLORS[tet];
     gc::GXColor preview_color = {color.r, color.g, color.b, 0x40};
 
@@ -645,8 +645,8 @@ void Tetris::draw_game_over_text()
 // Also detects if tetrad is out-of-bounds
 bool Tetris::tetrad_intersects_grid(Tetrad tetrad, int tetradX, int tetradY, int rotation)
 {
-    uint8_t tet = static_cast<uint8_t>(tetrad);
-    uint16_t rot = TETRAD_ROTATIONS[tet][rotation];
+    u8 tet = static_cast<u8>(tetrad);
+    u16 rot = TETRAD_ROTATIONS[tet][rotation];
 
     for (int local_x = 0; local_x < 4; local_x++)
     {

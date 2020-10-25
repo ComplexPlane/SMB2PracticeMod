@@ -82,26 +82,26 @@ void tick()
     update_konami();
 }
 
-bool button_pressed(uint16_t button)
+bool button_pressed(u16 button)
 {
     bool down_this_frame = mkb::filtered_button_inputs_bitfield & (button << 16u);
     bool down_last_frame = mkb::filtered_button_inputs_bitfield & button;
     return down_this_frame && !down_last_frame;
 }
 
-bool buttonReleased(uint16_t button)
+bool buttonReleased(u16 button)
 {
     bool down_this_frame = mkb::filtered_button_inputs_bitfield & (button << 16u);
     bool down_last_frame = mkb::filtered_button_inputs_bitfield & button;
     return !down_this_frame && down_last_frame;
 }
 
-bool button_down(uint16_t button)
+bool button_down(u16 button)
 {
     return mkb::filtered_button_inputs_bitfield & (button << 16);
 }
 
-bool button_chord_pressed(uint16_t btn1, uint16_t btn2)
+bool button_chord_pressed(u16 btn1, u16 btn2)
 {
     return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
 }
@@ -123,21 +123,21 @@ int get_cstick_dir()
     else return DIR_NONE;
 }
 
-bool analog_pressed(uint16_t analog_region)
+bool analog_pressed(u16 analog_region)
 {
     bool down_this_frame = mkb::filtered_analog_inputs_bitfield & (analog_region << 16u);
     bool down_last_frame = mkb::filtered_analog_inputs_bitfield & analog_region;
     return down_this_frame && !down_last_frame;
 }
 
-bool analog_released(uint16_t analog_region)
+bool analog_released(u16 analog_region)
 {
     bool down_this_frame = mkb::filtered_analog_inputs_bitfield & (analog_region << 16u);
     bool down_last_frame = mkb::filtered_analog_inputs_bitfield & analog_region;
     return !down_this_frame && down_last_frame;
 }
 
-bool dir_down(uint16_t dir)
+bool dir_down(u16 dir)
 {
     switch (dir)
     {
@@ -164,7 +164,7 @@ bool dir_down(uint16_t dir)
     }
 }
 
-bool dir_pressed(uint16_t dir)
+bool dir_pressed(u16 dir)
 {
     switch (dir)
     {
@@ -191,7 +191,7 @@ bool dir_pressed(uint16_t dir)
     }
 }
 
-bool analog_down(uint16_t analog_region)
+bool analog_down(u16 analog_region)
 {
     return mkb::filtered_analog_inputs_bitfield & (analog_region << 16);
 }

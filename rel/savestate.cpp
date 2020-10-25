@@ -18,7 +18,7 @@ struct SaveState
     bool active;
     int stage_id;
     memstore::MemStore store;
-    uint8_t pause_menu_sprite_status;
+    u8 pause_menu_sprite_status;
     mkb::Sprite pause_menu_sprite;
 };
 
@@ -28,14 +28,14 @@ static int s_active_state_slot;
 static bool s_created_state_last_frame;
 static bool s_frame_advance_mode;
 
-static void (*s_set_minimap_mode_trampoline)(uint32_t mode);
+static void (*s_set_minimap_mode_trampoline)(u32 mode);
 
 void init()
 {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
     s_set_minimap_mode_trampoline = patch::hook_function(
-        mkb::set_minimap_mode, [](uint32_t mode)
+        mkb::set_minimap_mode, [](u32 mode)
         {
             if (!(mkb::main_mode == mkb::MD_GAME
                   && mkb::main_game_mode == mkb::MGM_PRACTICE
@@ -72,7 +72,7 @@ static void pass_over_regions(memstore::MemStore *store)
     store->do_region(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
-    for (uint32_t i = 0; i < mkb::stobj_pool_info.upper_bound; i++)
+    for (u32 i = 0; i < mkb::stobj_pool_info.upper_bound; i++)
     {
         if (mkb::stobj_pool_info.status_list[i] == 0) continue;
 
@@ -90,7 +90,7 @@ static void pass_over_regions(memstore::MemStore *store)
     }
 
     // Seesaws
-    for (uint32_t i = 0; i < mkb::stagedef->collision_header_count; i++)
+    for (u32 i = 0; i < mkb::stagedef->collision_header_count; i++)
     {
         if (mkb::stagedef->collision_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW)
         {
@@ -106,7 +106,7 @@ static void pass_over_regions(memstore::MemStore *store)
     store->do_region(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
     store->do_region(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
 
-    for (uint32_t i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
     {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
         mkb::Sprite *sprite = &mkb::sprites[i];
@@ -132,7 +132,7 @@ static void handle_pause_menu_save(SaveState *state)
     state->pause_menu_sprite_status = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
-    for (uint32_t i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
     {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
@@ -149,17 +149,17 @@ static void handle_pause_menu_save(SaveState *state)
 
 static void handle_pause_menu_load(SaveState *state)
 {
-    bool paused_now = *reinterpret_cast<uint32_t *>(0x805BC474) & 8; // TODO actually give this a name
+    bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
     bool paused_in_state = state->pause_menu_sprite_status != 0;
 
     if (paused_now && !paused_in_state)
     {
         // Destroy the pause menu sprite that currently exists
-        for (uint32_t i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+        for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
         {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-            if (reinterpret_cast<uint32_t>(mkb::sprites[i].disp_func) == 0x8032a4bc)
+            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) == 0x8032a4bc)
             {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
@@ -176,7 +176,7 @@ static void handle_pause_menu_load(SaveState *state)
 
 static void destruct_post_goal_sprites()
 {
-    for (uint32_t i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
     {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
@@ -198,7 +198,7 @@ static void destruct_distracting_effects()
     // Destruct current spark effects so we don't see big sparks
     // generated when changing position by a large amount.
     // Also destruct banana grabbing effects
-    for (uint32_t i = 0; i < mkb::effect_pool_info.upper_bound; i++)
+    for (u32 i = 0; i < mkb::effect_pool_info.upper_bound; i++)
     {
         if (mkb::effect_pool_info.status_list[i] == 0) continue;
 

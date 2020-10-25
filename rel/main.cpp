@@ -22,14 +22,14 @@ static void (*s_draw_debug_text_trampoline)();
 static void perform_assembly_patches()
 {
 #ifdef MKB2_US
-    uint32_t offset = 0x600;
+    u32 offset = 0x600;
 #elif defined MKB2_JP
-    uint32_t offset = 0x604;
+    u32 offset = 0x604;
 #elif defined MKB2_EU
-    uint32_t offset = 0x604;
+    u32 offset = 0x604;
 #endif
     // Inject the run function at the start of the main game loop
-    patch::write_branch_bl(reinterpret_cast<void *>(reinterpret_cast<uint32_t>(
+    patch::write_branch_bl(reinterpret_cast<void *>(reinterpret_cast<u32>(
                                                         heap::heap_data.main_loop_rel_location) + offset),
                            reinterpret_cast<void *>(start_main_loop_assembly));
 

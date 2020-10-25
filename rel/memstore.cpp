@@ -32,7 +32,7 @@ void MemStore::enter_prealloc_mode()
 
 bool MemStore::enter_save_mode()
 {
-    m_save_buf = new uint8_t[m_save_buf_idx];
+    m_save_buf = new u8[m_save_buf_idx];
     if (!m_save_buf) return false;
 
     m_mode = Mode::SAVE;
@@ -51,7 +51,7 @@ void MemStore::enter_load_mode()
     m_save_buf_idx = 0;
 }
 
-void MemStore::do_region(void *ptr, uint32_t size)
+void MemStore::do_region(void *ptr, u32 size)
 {
     switch (m_mode)
     {
