@@ -1,12 +1,11 @@
 #pragma once
 
 #include <mkb/pool.h>
-#include <cstdint>
 
 namespace mkb
 {
 
-constexpr int MAX_ITEMS = 256;
+constexpr s32 MAX_ITEMS = 256;
 
 enum ItemType
 {
@@ -37,10 +36,10 @@ enum ItemType
 
 struct Item
 {
-    uint16_t idx;
-    uint16_t id;
-    uint16_t type;
-    uint8_t unk_0x8[174];
+    u16 idx;
+    u16 id;
+    u16 type;
+    u8 unk_0x8[174];
 };
 
 static_assert(sizeof(Item) == 180);

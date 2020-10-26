@@ -1,11 +1,10 @@
 #pragma once
 
 #include <mkb/pool.h>
-#include <cstdint>
 
 namespace mkb {
 
-constexpr int MAX_EFFECTS = 512;
+constexpr s32 MAX_EFFECTS = 512;
 
 enum EffectType
 { /* Abbreviated "ET" in the game */
@@ -84,11 +83,11 @@ enum EffectType
 
 struct Effect
 {
-    uint16_t idx;
-    uint16_t id;
-    uint8_t unk_0x4[4];
-    uint16_t type;
-    uint8_t unk_0xa[166];
+    u16 idx;
+    u16 id;
+    u8 unk_0x4[4];
+    u16 type;
+    u8 unk_0xa[166];
 };
 
 static_assert(sizeof(Effect) == 176);

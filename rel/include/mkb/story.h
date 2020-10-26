@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace mkb
 {
 
@@ -25,17 +23,17 @@ enum DataSelectMenuState
 
 struct StoryModeSaveFile
 {
-    uint8_t unk_0x0[4];
-    uint32_t status_flag;
+    u8 unk_0x0[4];
+    u32 status_flag;
     char fileName[13];
-    uint8_t current_world;
-    uint8_t unk_0x16[2];
-    uint32_t playtime_in_frames;
-    uint32_t score;
-    uint8_t unk_0x20[4];
-    uint8_t num_beaten_stages_in_world;
-    uint8_t beatenStageIndices[10];
-    uint8_t unk_0x2f[85];
+    u8 current_world;
+    u8 unk_0x16[2];
+    u32 playtime_in_frames;
+    u32 score;
+    u8 unk_0x20[4];
+    u8 num_beaten_stages_in_world;
+    u8 beatenStageIndices[10];
+    u8 unk_0x2f[85];
 } __attribute__((__packed__));
 
 static_assert(sizeof(StoryModeSaveFile) == 132);
@@ -43,12 +41,12 @@ static_assert(sizeof(StoryModeSaveFile) == 132);
 extern "C"
 {
 extern StoryModeSaveFile storymode_save_files[3];
-extern uint8_t data_select_menu_state;
-extern uint8_t story_file_select_state;
-extern uint8_t selected_story_file_idx;
+extern u8 data_select_menu_state;
+extern u8 story_file_select_state;
+extern u8 selected_story_file_idx;
 extern char continue_saved_game_text[40];
 extern char start_game_from_beginning_text[36];
-extern uint16_t curr_world;
+extern u16 curr_world;
 }
 
 }

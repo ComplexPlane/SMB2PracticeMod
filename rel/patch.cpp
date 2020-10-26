@@ -8,10 +8,10 @@
 namespace patch
 {
 
-static constexpr size_t MAX_TRAMPOLINES = 16;
+static constexpr u32 MAX_TRAMPOLINES = 16;
 
 static u32 s_trampoline_pool[MAX_TRAMPOLINES][2];
-static size_t next_trampoline_idx;
+static u32 next_trampoline_idx;
 
 u32 *new_trampoline()
 {

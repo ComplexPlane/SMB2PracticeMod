@@ -89,7 +89,7 @@ bool button_pressed(u16 button)
     return down_this_frame && !down_last_frame;
 }
 
-bool buttonReleased(u16 button)
+bool button_released(u16 button)
 {
     bool down_this_frame = mkb::filtered_button_inputs_bitfield & (button << 16u);
     bool down_last_frame = mkb::filtered_button_inputs_bitfield & button;

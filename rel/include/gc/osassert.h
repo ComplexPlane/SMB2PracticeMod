@@ -17,7 +17,7 @@ namespace gc
 
 extern "C" {
 
-void OSPanic(const char *file, int line, const char *msg, ...);
+void OSPanic(const char *file, s32 line, const char *msg, ...);
 
 }
 

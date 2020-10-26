@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace mkb
 {
 
@@ -44,7 +42,7 @@ enum DipSwitch
 
 extern "C" {
 
-extern uint32_t dip_switches;
+extern u32 dip_switches;
 
 }
 

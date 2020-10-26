@@ -2,85 +2,83 @@
 
 #include "pool.h"
 
-#include <cstdint>
-
 namespace mkb
 {
 
-constexpr int MAX_SPRITES = 80;
+constexpr s32 MAX_SPRITES = 80;
 
 struct Sprite
 {
-    uint8_t visible; /* Whether it's visible or not? */
-    uint8_t field_0x1; /* Seems to affect the font size/type on the pause menu? */
-    uint8_t index;
-    uint8_t field_0x3;
+    u8 visible; /* Whether it's visible or not? */
+    u8 field_0x1; /* Seems to affect the font size/type on the pause menu? */
+    u8 index;
+    u8 field_0x3;
     Vec2f pos;
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue; /* Actually called "bule" in game.. yup */
-    uint8_t field_0x0f;
-    int16_t field_0x10;
-    int16_t field_0x12;
-    uint8_t field_0x14;
-    uint8_t field_0x15;
-    uint8_t field_0x16;
-    uint8_t field_0x17;
-    uint8_t field_0x18;
-    uint8_t field_0x19;
-    uint8_t field_0x1a;
-    uint8_t field_0x1b;
-    uint8_t field_0x1c;
-    uint8_t field_0x1d;
-    uint8_t field_0x1e;
-    uint8_t field_0x1f;
+    u8 red;
+    u8 green;
+    u8 blue; /* Actually called "bule" in game.. yup */
+    u8 field_0x0f;
+    s16 field_0x10;
+    s16 field_0x12;
+    u8 field_0x14;
+    u8 field_0x15;
+    u8 field_0x16;
+    u8 field_0x17;
+    u8 field_0x18;
+    u8 field_0x19;
+    u8 field_0x1a;
+    u8 field_0x1b;
+    u8 field_0x1c;
+    u8 field_0x1d;
+    u8 field_0x1e;
+    u8 field_0x1f;
     float field_0x20;
-    uint32_t field_0x24;
-    uint8_t field_0x28;
-    uint8_t field_0x29;
-    uint8_t field_0x2a;
-    uint8_t field_0x2b;
+    u32 field_0x24;
+    u8 field_0x28;
+    u8 field_0x29;
+    u8 field_0x2a;
+    u8 field_0x2b;
     struct SpriteTex *tex;
     void (*dest_func)(Sprite *sprite);
-    void (*tick_func)(uint8_t *status, Sprite *sprite);
+    void (*tick_func)(u8 *status, Sprite *sprite);
     void (*disp_func)(Sprite *sprite);
-    uint16_t field_0x3c;
-    uint8_t field_0x3e;
-    uint8_t field_0x3f;
+    u16 field_0x3c;
+    u8 field_0x3e;
+    u8 field_0x3f;
     float width;
     float height;
     float depth;
-    int32_t some_frame_count;
-    uint32_t field_0x50;
-    uint32_t field_0x54;
+    s32 some_frame_count;
+    u32 field_0x50;
+    u32 field_0x54;
     float lerp_value;
     float field_0x5c;
-    uint8_t field_0x60;
-    uint8_t field_0x61;
-    uint8_t field_0x62;
-    uint8_t field_0x63;
+    u8 field_0x60;
+    u8 field_0x61;
+    u8 field_0x62;
+    u8 field_0x63;
     struct Sprite *some_sprite1;
     struct Sprite *some_sprite2;
-    uint32_t field_0x6c;
-    uint32_t field_0x70;
-    uint32_t field_0x74;
-    uint32_t field_0x78;
-    uint8_t field_0x7c;
-    uint8_t field_0x7d;
-    uint8_t field_0x7e;
-    uint8_t field_0x7f;
+    u32 field_0x6c;
+    u32 field_0x70;
+    u32 field_0x74;
+    u32 field_0x78;
+    u8 field_0x7c;
+    u8 field_0x7d;
+    u8 field_0x7e;
+    u8 field_0x7f;
     float field_0x80;
-    uint8_t field_0x84;
-    uint8_t field_0x85;
-    uint8_t field_0x86;
-    uint8_t field_0x87;
-    uint32_t some_bitflag;
-    uint8_t field_0x8c;
-    uint8_t field_0x8d;
-    uint8_t field_0x8e;
-    uint8_t field_0x8f;
-    uint32_t field_0x90;
-    uint32_t field_0x94;
+    u8 field_0x84;
+    u8 field_0x85;
+    u8 field_0x86;
+    u8 field_0x87;
+    u32 some_bitflag;
+    u8 field_0x8c;
+    u8 field_0x8d;
+    u8 field_0x8e;
+    u8 field_0x8f;
+    u32 field_0x90;
+    u32 field_0x94;
     float field_0x98;
     float field_0x9c;
     char text[48]; /* If this sprite displays text, this is what it shows, otherwise this is usually just an identifier name */
@@ -99,10 +97,10 @@ void sprite_clear_score_disp(Sprite *sprite);
 void sprite_warp_bonus_disp(Sprite *sprite);
 void sprite_time_bonus_disp(Sprite *sprite);
 void sprite_stage_score_disp(Sprite *sprite);
-void sprite_fallout_tick(uint8_t *status, Sprite *sprite);
-void sprite_bonus_finish_or_perfect_tick(uint8_t *status, Sprite *sprite);
-void sprite_timer_ball_tick(uint8_t *status, Sprite *sprite);
-void sprite_score_tick(uint8_t *status, Sprite *sprite);
+void sprite_fallout_tick(u8 *status, Sprite *sprite);
+void sprite_bonus_finish_or_perfect_tick(u8 *status, Sprite *sprite);
+void sprite_timer_ball_tick(u8 *status, Sprite *sprite);
+void sprite_score_tick(u8 *status, Sprite *sprite);
 void sprite_score_disp(Sprite *sprite);
 }
 

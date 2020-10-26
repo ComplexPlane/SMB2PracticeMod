@@ -316,7 +316,7 @@ void tick()
 
         gc::OSReport("[mod] Saved state:\n");
         state.store.print_stats();
-        size_t freeHeapSpace = heap::get_free_space();
+        u32 freeHeapSpace = heap::get_free_space();
         gc::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
         gc::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         gc::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);

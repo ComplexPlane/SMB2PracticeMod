@@ -533,9 +533,9 @@ void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation)
     // Note that the effectice "cell y" when indexing the tetrad rotation
     // is in the wrong direction, but is flipped again when
     // rendered due to the screen having a flipped y compared to the grid space
-    for (int cell_x = 0; cell_x < 4; cell_x++)
+    for (s32 cell_x = 0; cell_x < 4; cell_x++)
     {
-        for (int cell_y = 0; cell_y < 4; cell_y++)
+        for (s32 cell_y = 0; cell_y < 4; cell_y++)
         {
             bool occupied = TETRAD_ROTATIONS[tet][rotation] & (1 << 15 >> (cell_y * 4 + cell_x));
             if (occupied)
@@ -554,15 +554,15 @@ void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation)
 
 void Tetris::draw_tetrad_queue()
 {
-    constexpr int STARTX = 370;
-    constexpr int STARTY = 32;
-    constexpr int STEP = 55;
+    constexpr s32 STARTX = 370;
+    constexpr s32 STARTY = 32;
+    constexpr s32 STEP = 55;
 
-    for (int i = 0; i < TETRAD_QUEUE_LEN; i++)
+    for (s32 i = 0; i < TETRAD_QUEUE_LEN; i++)
     {
         u8 tet = static_cast<u8>(m_tetrad_queue[i]);
-        int draw_x = STARTX + TETRAD_CENTER_NUDGE[tet][0] * (CELL_WIDTH + CELL_PAD);
-        int draw_y = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
+        s32 draw_x = STARTX + TETRAD_CENTER_NUDGE[tet][0] * (CELL_WIDTH + CELL_PAD);
+        s32 draw_y = i * STEP + STARTY - TETRAD_CENTER_NUDGE[tet][1] * (CELL_WIDTH + CELL_PAD);
         draw_tetrad(draw_x, draw_y, static_cast<Tetrad>(tet), 0);
     }
 }
@@ -577,15 +577,15 @@ void Tetris::draw_dropping_tetrad()
     // Draw drop preview
     // TODO deduplicate?
 
-    int low_y = find_lowest_possible_tetrad_y(
+    s32 low_y = find_lowest_possible_tetrad_y(
         m_dropping_tetrad,
         m_dropping_tetrad_x,
         m_dropping_tetrad_y,
         m_dropping_tetrad_rot);
 
-    for (int cell_x = 0; cell_x < 4; cell_x++)
+    for (s32 cell_x = 0; cell_x < 4; cell_x++)
     {
-        for (int cell_y = 0; cell_y < 4; cell_y++)
+        for (s32 cell_y = 0; cell_y < 4; cell_y++)
         {
             bool occupied = rot & (1 << 15 >> (cell_y * 4 + cell_x));
             if (occupied)
@@ -597,9 +597,9 @@ void Tetris::draw_dropping_tetrad()
 
     // Draw actual tetrad (draw second so we draw over the preview if necessary...
     // a little hacky but it's probably fine)
-    for (int cell_x = 0; cell_x < 4; cell_x++)
+    for (s32 cell_x = 0; cell_x < 4; cell_x++)
     {
-        for (int cell_y = 0; cell_y < 4; cell_y++)
+        for (s32 cell_y = 0; cell_y < 4; cell_y++)
         {
             bool occupied = rot & (1 << 15 >> (cell_y * 4 + cell_x));
             if (occupied)
@@ -610,10 +610,10 @@ void Tetris::draw_dropping_tetrad()
     }
 }
 
-void Tetris::draw_grid_cell(int cellx, int celly, gc::GXColor color)
+void Tetris::draw_grid_cell(s32 cellx, s32 celly, gc::GXColor color)
 {
-    constexpr int DRAWX_START = 143;
-    constexpr int DRAWY_START = 25;
+    constexpr s32 DRAWX_START = 143;
+    constexpr s32 DRAWY_START = 25;
 
     float draw_x1 = DRAWX_START + cellx * (CELL_WIDTH + CELL_PAD);
     float draw_x2 = draw_x1 + CELL_WIDTH;
@@ -643,21 +643,21 @@ void Tetris::draw_game_over_text()
 }
 
 // Also detects if tetrad is out-of-bounds
-bool Tetris::tetrad_intersects_grid(Tetrad tetrad, int tetradX, int tetradY, int rotation)
+bool Tetris::tetrad_intersects_grid(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation)
 {
     u8 tet = static_cast<u8>(tetrad);
     u16 rot = TETRAD_ROTATIONS[tet][rotation];
 
-    for (int local_x = 0; local_x < 4; local_x++)
+    for (s32 local_x = 0; local_x < 4; local_x++)
     {
-        for (int local_y = 0; local_y < 4; local_y++)
+        for (s32 local_y = 0; local_y < 4; local_y++)
         {
             bool tetrad_occupied = rot & (1 << 15 >> (local_y * 4 + local_x));
 
             if (tetrad_occupied)
             {
-                int cell_x = tetradX + local_x;
-                int cell_y = tetradY + local_y;
+                s32 cell_x = tetradX + local_x;
+                s32 cell_y = tetradY + local_y;
 
                 // Detect out-of-bounds tetrad
                 if (cell_x < 0 || cell_x >= BOARD_WIDTH || cell_y < 0 || cell_y >= BOARD_HEIGHT)
@@ -675,15 +675,15 @@ bool Tetris::tetrad_intersects_grid(Tetrad tetrad, int tetradX, int tetradY, int
 }
 
 // Undefined if tetrad is already intersecting grid or out-of-bounds
-int Tetris::find_lowest_possible_tetrad_y(Tetrad tetrad, int tetradX, int tetradY, int rotation)
+s32 Tetris::find_lowest_possible_tetrad_y(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation)
 {
     while (!tetrad_intersects_grid(tetrad, tetradX, tetradY, rotation)) tetradY--;
     return tetradY + 1;
 }
 
-bool Tetris::is_row_full(int y)
+bool Tetris::is_row_full(s32 y)
 {
-    for (int x = 0; x < BOARD_WIDTH; x++)
+    for (s32 x = 0; x < BOARD_WIDTH; x++)
     {
         if (m_board[x][y] == Cell::EMPTY)
         {

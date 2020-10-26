@@ -2,8 +2,6 @@
 
 #include <gc/gc.h>
 
-#include <cstdint>
-
 class Tetris
 {
 public:
@@ -12,15 +10,15 @@ public:
     void disp();
 
 private:
-    static constexpr int BOARD_WIDTH = 10;
-    static constexpr int BOARD_HEIGHT = 24;
-    static constexpr int TETRAD_QUEUE_LEN = 5;
+    static constexpr s32 BOARD_WIDTH = 10;
+    static constexpr s32 BOARD_HEIGHT = 24;
+    static constexpr s32 TETRAD_QUEUE_LEN = 5;
 
     enum class Tetrad
     {
         I, J, L, O, S, T, Z
     };
-    enum class Cell : uint8_t
+    enum class Cell : u8
     {
         I, J, L, O, S, T, Z, EMPTY
     };
@@ -37,21 +35,21 @@ private:
     bool m_hidden;
 
     State m_state;
-    int m_state_timer;
+    s32 m_state_timer;
 
-    int m_score;
-    int m_high_score;
+    s32 m_score;
+    s32 m_high_score;
 
-    int m_current_drop_period;
+    s32 m_current_drop_period;
 
     Cell m_board[BOARD_WIDTH][BOARD_HEIGHT];
     Tetrad m_tetrad_queue[TETRAD_QUEUE_LEN];
 
     Tetrad m_dropping_tetrad;
-    int m_dropping_tetrad_rot;
+    s32 m_dropping_tetrad_rot;
     // Current dropping tetrad position of bottom-left of 4x4 bbox
-    int m_dropping_tetrad_x;
-    int m_dropping_tetrad_y;
+    s32 m_dropping_tetrad_x;
+    s32 m_dropping_tetrad_y;
 
     void new_game();
 
@@ -71,17 +69,17 @@ private:
     Tetrad pop_tetrad_queue();
 
     void draw();
-    void draw_ascii_rect(int x, int y, int widthChars, int heightChars, uint8_t color);
+    void draw_ascii_rect(s32 x, s32 y, s32 widthChars, s32 heightChars, u8 color);
     void draw_ascii_window();
     void draw_grid();
     void draw_info_text();
-    void draw_tetrad(int x, int y, Tetrad tetrad, int rotation);
+    void draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation);
     void draw_tetrad_queue();
     void draw_dropping_tetrad();
-    void draw_grid_cell(int cellx, int celly, gc::GXColor color);
+    void draw_grid_cell(s32 cellx, s32 celly, gc::GXColor color);
     void draw_game_over_text();
 
-    bool tetrad_intersects_grid(Tetrad tetrad, int tetradX, int tetradY, int rotation);
-    int find_lowest_possible_tetrad_y(Tetrad tetrad, int tetradX, int tetradY, int rotation);
-    bool is_row_full(int y);
+    bool tetrad_intersects_grid(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation);
+    s32 find_lowest_possible_tetrad_y(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation);
+    bool is_row_full(s32 y);
 };

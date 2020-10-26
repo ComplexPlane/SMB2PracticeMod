@@ -3,7 +3,7 @@
 namespace mkb
 {
 
-constexpr uint32_t NUM_EVENTS = 23;
+constexpr u32 NUM_EVENTS = 23;
 
 enum Status
 { /* NULL, INIT, NORMAL, and DEST, and FREEZE seem to be the most common */
@@ -56,7 +56,7 @@ struct Event
     void (*init_func)(void); /* Normally, called once when status is STAT_INIT, then status is set to STAT_NORMAL */
     void (*tick_func)(void); /* Normally, called every frame if status is STAT_NORMAL */
     void (*dest_func)(void); /* "destruct:" or "destroy" function; normally, called once when status is STAT_DEST, then status is set to STAT_NULL */
-    uint32_t tick_time; /* For performance metrics (presumably this is what's seen in the debug overlay performance > event menu) */
+    u32 tick_time; /* For performance metrics (presumably this is what's seen in the debug overlay performance > event menu) */
 };
 
 extern "C"

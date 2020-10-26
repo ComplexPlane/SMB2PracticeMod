@@ -5,7 +5,7 @@
 namespace draw
 {
 
-static constexpr int DEBUG_CHAR_WIDTH = 0xc;
+static constexpr s32 DEBUG_CHAR_WIDTH = 0xc;
 
 enum class Color
 {
@@ -32,8 +32,8 @@ void predraw();
 
 void rect(float x1, float y1, float x2, float y2, gc::GXColor color);
 void debug_text_palette();
-void debug_text(int x, int y, gc::GXColor color, const char *format, ...);
-void debug_text(int x, int y, Color color, const char *format, ...);
+void debug_text(s32 x, s32 y, gc::GXColor color, const char *format, ...);
+void debug_text(s32 x, s32 y, Color color, const char *format, ...);
 
 /*
  * Functions which cause drawing during disp() and don't necessarily need to be called each frame

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gc/gc.h>
-#include <cstdint>
 
 namespace main
 {
@@ -24,7 +23,7 @@ void tick();
 extern gc::GXColor debug_text_color;
 
 // IwMenu
-extern uint32_t currently_playing_iw;
+extern u32 currently_playing_iw;
 void stage_select_menu_hook();
 void pause_menu_text_hook();
 bool is_iw_complete();

@@ -10,8 +10,8 @@ namespace mkb
 // contains physics state info like current rotation angle.
 struct SeesawInfo
 {
-    uint16_t itemgroup_idx;
-    uint16_t type; // There may have been more than one type of seesaw at some point? It's always zero I think now
+    u16 itemgroup_idx;
+    u16 type; // There may have been more than one type of seesaw at some point? It's always zero I think now
     struct SeesawState *state;
     void *some_func1;
     void *some_func2;
@@ -27,22 +27,22 @@ struct SeesawState
 {
     float rot;
     float rot_copy;
-    uint8_t unk_0x8[112];
+    u8 unk_0x8[112];
 } __attribute__((__packed__));
 
 static_assert(sizeof(SeesawState) == 120);
 
 struct Itemgroup
 {
-    uint32_t playback_state;
-    uint32_t anim_frame;
+    u32 playback_state;
+    u32 anim_frame;
     Vec3f pos;
     Vec3f prev_pos;
     Vec3s rotation;
     Vec3s prev_rotation;
     Mtx transform;
     Mtx prev_transform;
-    uint8_t unk_0x8c[16];
+    u8 unk_0x8c[16];
     SeesawInfo *seesaw_info;
 };
 
@@ -56,9 +56,9 @@ extern StagedefFileHeader *stagedef;
 // An array of item group / collision header animation states for the currently-loaded stage
 extern Itemgroup *itemgroups;
 
-extern int current_stage_id;
-extern uint16_t stage_time_frames_remaining;
-extern uint16_t stage_time_limit;
+extern s32 current_stage_id;
+extern u16 stage_time_frames_remaining;
+extern u16 stage_time_limit;
 
 }
 

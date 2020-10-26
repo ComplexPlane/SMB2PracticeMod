@@ -1,29 +1,28 @@
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
 
 namespace gc
 {
 
-typedef int64_t OSTime;
-typedef uint32_t OSTick;
+typedef s64 OSTime;
+typedef u32 OSTick;
 
 struct OSModuleInfo
 {
-    uint32_t id;
+    u32 id;
     OSModuleInfo *next;
     OSModuleInfo *prev;
-    uint32_t numSections;
-    uint32_t sectionInfoOffset;
-    uint32_t nameOffset;
-    uint32_t nameSize;
-    uint32_t version;
+    u32 numSections;
+    u32 sectionInfoOffset;
+    u32 nameOffset;
+    u32 nameSize;
+    u32 version;
 } __attribute__((__packed__));
 
-inline uint32_t OSRoundUp32B(uint32_t x) { return (x + 32 - 1) & ~(32 - 1); }
+inline u32 OSRoundUp32B(u32 x) { return (x + 32 - 1) & ~(32 - 1); }
 
-inline uint32_t OSRoundDown32B(uint32_t x) { return x & ~(32 - 1); }
+inline u32 OSRoundDown32B(u32 x) { return x & ~(32 - 1); }
 
 extern "C"
 {
@@ -35,9 +34,9 @@ void *OSGetArenaHi();
 void *OSGetArenaLo();
 void OSSetArenaHi(void *newHi);
 void OSSetArenaLo(void *newLo);
-void *OSAllocFromArenaLo(uint32_t size, uint32_t align);
-void DCFlushRange(void *startAddr, uint32_t nBytes);
-void ICInvalidateRange(void *startAddr, uint32_t nBytes);
+void *OSAllocFromArenaLo(u32 size, u32 align);
+void DCFlushRange(void *startAddr, u32 nBytes);
+void ICInvalidateRange(void *startAddr, u32 nBytes);
 
 void OSReport(const char *msg, ...);
 
@@ -52,8 +51,8 @@ void *OSGetArenaLo();
 void OSSetArenaHi(void *newHi);
 void OSSetArenaLo(void *newLo);
 
-void *OSAllocFromArenaLo(uint32_t size, uint32_t align);
-void *OSAllocFromArenaHi(uint32_t size, uint32_t align);
+void *OSAllocFromArenaLo(u32 size, u32 align);
+void *OSAllocFromArenaHi(u32 size, u32 align);
 
 }
 

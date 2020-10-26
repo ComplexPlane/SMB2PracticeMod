@@ -16,8 +16,6 @@
 #include <mkb/unlock.h>
 #include <mkb/event.h>
 
-#include <cstdint>
-
 namespace mkb
 {
 
@@ -26,26 +24,26 @@ struct GraphicsInfo
     void *active_framebuffer; /* A pointer to either framebuffer1 or framebuffer2 */
     void *framebuffer1;
     void *framebuffer2;
-    uint32_t frame_count;
-    uint32_t active_framebuffer_index; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
+    u32 frame_count;
+    u32 active_framebuffer_index; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
     gc::GXFifoObj *fifos[2];
 };
 
 extern "C" {
 
-extern uint32_t filtered_button_inputs_bitfield;
-extern uint32_t filtered_analog_inputs_bitfield;
+extern u32 filtered_button_inputs_bitfield;
+extern u32 filtered_analog_inputs_bitfield;
 
 extern gc::GXColor debug_text_bg_color;
 extern GraphicsInfo *graphics_info;
 
 extern gc::OSHeapHandle main_heap, stage_heap, bg_heap, char_heap, replay_heap;
-extern uint32_t main_heap_size, stage_heap_size, bg_heap_size, char_heap_size, replay_heap_size;
-extern uint32_t g_something_with_game_heaps;
+extern u32 main_heap_size, stage_heap_size, bg_heap_size, char_heap_size, replay_heap_size;
+extern u32 g_something_with_game_heaps;
 
 void draw_debugtext();
 void draw_debugtext_bg(double x1, double y1, double x2, double y2);
-void draw_debugtext_char_en(uint32_t x, uint32_t y, char ch, uint32_t color);
+void draw_debugtext_char_en(u32 x, u32 y, char ch, u32 color);
 
 void GXSetZMode_cached(gc::GXBool compare_enable, gc::GXCompare func, gc::GXBool update_enable);
 void GXLoadTexObj_cached(gc::GXTexObj *obj, gc::GXTexMapID id);

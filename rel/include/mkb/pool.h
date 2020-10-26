@@ -1,22 +1,20 @@
 #pragma once
 
-#include <cstdint>
-
 namespace mkb
 {
 
 struct PoolInfo
 {
-    uint32_t len;
-    uint32_t lowFreeIdx;
-    uint32_t upper_bound;
-    uint8_t *status_list;
+    u32 len;
+    u32 lowFreeIdx;
+    u32 upper_bound;
+    u8 *status_list;
 };
 
 extern "C"
 {
 
-int pool_alloc(PoolInfo *info, uint8_t status);
+s32 pool_alloc(PoolInfo *info, u8 status);
 
 }
 

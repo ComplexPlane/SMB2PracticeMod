@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace mkb
 {
 
@@ -16,7 +14,7 @@ enum MinimapMode
 
 extern "C"
 {
-void set_minimap_mode(uint32_t mode);
+void set_minimap_mode(u32 mode);
 }
 
 }

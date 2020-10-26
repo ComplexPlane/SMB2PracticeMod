@@ -1,73 +1,72 @@
 #pragma once
 
 #include <gc/gxenum.h>
-
-#include <cstdint>
+#include <gc/mathtypes.h>
 
 namespace gc
 {
 
 struct GXColor
 { /* A generic color structure used by various GX API functions. */
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
 };
 
 struct GXColorS10
 {
-    int16_t r;
-    int16_t g;
-    int16_t b;
-    int16_t a;
+    s16 r;
+    s16 g;
+    s16 b;
+    s16 a;
 };
 
 struct GXFogAdjTable
 {
-    uint16_t dummy[10];
+    u16 dummy[10];
 };
 
 struct GXLightObj
 {
-    uint32_t dummy[16];
+    u32 dummy[16];
 };
 
 struct GXRenderModeObj
 {
     enum VITVMode viTVmode;
-    uint16_t fbWidth;
-    uint16_t efbHeight;
-    uint16_t xfbHeight;
-    uint16_t viXOrigin;
-    uint16_t viYOrigin;
-    uint16_t viWidth;
-    uint16_t viHeight;
+    u16 fbWidth;
+    u16 efbHeight;
+    u16 xfbHeight;
+    u16 viXOrigin;
+    u16 viYOrigin;
+    u16 viWidth;
+    u16 viHeight;
     enum VIXFBMode xFBmode;
-    uint8_t field_rendering;
-    uint8_t aa;
-    uint8_t sample_pattern[12][2];
-    uint8_t vfilter[7];
+    u8 field_rendering;
+    u8 aa;
+    u8 sample_pattern[12][2];
+    u8 vfilter[7];
 };
 
 struct GXTexObj
 {
-    uint32_t dummy[8];
+    u32 dummy[8];
 };
 
 struct GXTexRegion
 {
-    uint32_t dummy[4];
+    u32 dummy[4];
 };
 
 struct GXTlutObj
 {
-    uint32_t dummy[3];
+    u32 dummy[3];
 };
 
 struct GXTlutRegion
 {
-    uint32_t dummy[4];
+    u32 dummy[4];
 };
 
 struct GXVtxAttrFmtList
@@ -75,7 +74,7 @@ struct GXVtxAttrFmtList
     enum GXAttr attr;
     enum GXCompCnt cnt;
     enum GXCompType type;
-    uint8_t frac;
+    u8 frac;
 };
 
 struct GXVtxDescList
@@ -86,7 +85,7 @@ struct GXVtxDescList
 
 struct GXFifoObj
 {
-    uint8_t pad[128];
+    u8 pad[128];
 };
 
 }

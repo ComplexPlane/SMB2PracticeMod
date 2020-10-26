@@ -293,9 +293,9 @@ bool free_to_heap(void *ptr)
     return true;
 }
 
-size_t get_free_space()
+u32 get_free_space()
 {
-    size_t space = 0;
+    u32 space = 0;
     gc::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
 
     for (gc::ChunkInfo *chunk = temp_heap->first_free; chunk; chunk = chunk->next)

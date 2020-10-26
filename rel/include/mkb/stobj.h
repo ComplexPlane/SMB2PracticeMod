@@ -3,8 +3,8 @@
 namespace mkb
 {
 
-constexpr int MAX_STAGE_OBJECTS = 144;
-constexpr int MAX_GOALS = 16;
+constexpr s32 MAX_STAGE_OBJECTS = 144;
+constexpr s32 MAX_GOALS = 16;
 
 enum StobjType
 {
@@ -25,10 +25,10 @@ enum StobjType
 
 struct Stobj
 {
-    uint16_t idx;
-    uint16_t id;
-    uint16_t type;
-    uint8_t unk_0x6[198];
+    u16 idx;
+    u16 id;
+    u16 type;
+    u8 unk_0x6[198];
 };
 
 static_assert(sizeof(Stobj) == 204);
@@ -36,7 +36,7 @@ static_assert(sizeof(Stobj) == 204);
 // Extra data associated with goaltape stage objects
 struct GoalTape
 {
-    uint8_t unk_0x0[408];
+    u8 unk_0x0[408];
 };
 
 static_assert(sizeof(GoalTape) == 408);
@@ -44,7 +44,7 @@ static_assert(sizeof(GoalTape) == 408);
 // Extra data associated with party ball stage objects
 struct GoalBag
 {
-    uint8_t unk_0x0[40];
+    u8 unk_0x0[40];
 };
 
 static_assert(sizeof(GoalBag) == 40);

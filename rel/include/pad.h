@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <gc/mathtypes.h>
 
 namespace pad
 {
@@ -49,16 +49,16 @@ enum Dir
 };
 
 void tick();
-bool button_pressed(uint16_t button);
-bool buttonReleased(uint16_t button);
-bool button_down(uint16_t button);
-bool button_chord_pressed(uint16_t btn1, uint16_t btn2);
-int get_cstick_dir();
-bool analog_pressed(uint16_t analog_region);
-bool analog_released(uint16_t analog_region);
-bool analog_down(uint16_t analog_region);
-bool dir_down(uint16_t dir); // Only works for cardinal directions
-bool dir_pressed(uint16_t dir); // Only works for cardinal directions
+bool button_pressed(u16 button);
+bool button_released(u16 button);
+bool button_down(u16 button);
+bool button_chord_pressed(u16 btn1, u16 btn2);
+s32 get_cstick_dir();
+bool analog_pressed(u16 analog_region);
+bool analog_released(u16 analog_region);
+bool analog_down(u16 analog_region);
+bool dir_down(u16 dir); // Only works for cardinal directions
+bool dir_pressed(u16 dir); // Only works for cardinal directions
 bool konami_pressed();
 
 }

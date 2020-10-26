@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include <gc/mathtypes.h>
 
 namespace memstore
 {
@@ -36,7 +36,7 @@ public:
     // In PREALLOC mode, this is used to size the buffer
     // In SAVE mode, this copies the region into the buffer
     // In LOAD mode, this copies the region from the buffer to the ptr
-    void do_region(void *ptr, uint32_t size);
+    void do_region(void *ptr, u32 size);
 
     void print_stats() const;
     Mode get_mode() const;
@@ -44,9 +44,9 @@ public:
 private:
     Mode m_mode;
 
-    uint8_t *m_save_buf;
-    uint32_t m_save_buf_idx;
-    uint32_t m_save_buf_len;
+    u8 *m_save_buf;
+    u32 m_save_buf_idx;
+    u32 m_save_buf_len;
 };
 
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 namespace gc
 {
 
@@ -9,26 +7,26 @@ struct ChunkInfo
 {
     ChunkInfo *prev;
     ChunkInfo *next;
-    int32_t size;
+    s32 size;
 } __attribute__((__packed__));
 
 struct HeapInfo
 {
-    int32_t capacity;
+    s32 capacity;
     ChunkInfo *first_free;
     ChunkInfo *first_used;
 } __attribute__((__packed__));
 
-typedef int OSHeapHandle;
+typedef s32 OSHeapHandle;
 
 extern "C" {
 
 ChunkInfo *DLInsert(ChunkInfo *list, ChunkInfo *chunk);
-void *OSAllocFromHeap(OSHeapHandle heap, uint32_t size);
+void *OSAllocFromHeap(OSHeapHandle heap, u32 size);
 OSHeapHandle OSCreateHeap(void *start, void *end);
 void OSDestroyHeap(OSHeapHandle heap);
 void OSFreeToHeap(OSHeapHandle heap, void *ptr);
-void *OSInitAlloc(void *arenaStart, void *arenaEnd, int maxHeaps);
+void *OSInitAlloc(void *arenaStart, void *arenaEnd, s32 maxHeaps);
 OSHeapHandle OSSetCurrentHeap(OSHeapHandle heap);
 long OSCheckHeap(OSHeapHandle heap);
 
