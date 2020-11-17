@@ -21,7 +21,9 @@ To set up the mod on **Dolphin Emulator**, follow [this guide](/doc/dolphin-setu
 
 ## Usage
 
-Follow the [basic usage guide video](https://www.youtube.com/watch?v=dfeA8ruJx18&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=2) for an overview of how to use the mod.
+Press R+Z at the same time on your controller to toggle the in-game help menu. For individual-world practice, head to Story Mode and press Up/Down on a savefile to change world.
+
+For a more in-depth guide, check out this [basic usage guide video](https://www.youtube.com/watch?v=dfeA8ruJx18&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=2).
 
 If you have any questions, message me on Discord (`ComplexPlane#3111`).
 
