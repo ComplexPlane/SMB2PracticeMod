@@ -15,6 +15,7 @@
 #include <mkb/story.h>
 #include <mkb/unlock.h>
 #include <mkb/event.h>
+#include <mkb/mathutil.h>
 
 namespace mkb
 {

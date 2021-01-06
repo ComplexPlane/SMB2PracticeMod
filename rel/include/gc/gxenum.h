@@ -99,16 +99,16 @@ enum GXBlendMode
 
 enum GXChannelID
 {
+    GX_COLOR0 = 0,
+    GX_COLOR1 = 1,
     GX_ALPHA0 = 2,
     GX_ALPHA1 = 3,
+    GX_COLOR0A0 = 4,
+    GX_COLOR1A1 = 5,
+    GX_COLOR_ZERO = 6,
     GX_ALPHA_BUMP = 7,
     GX_ALPHA_BUMPN = 8,
-    GX_COLOR0 = 0,
-    GX_COLOR0A0 = 4,
-    GX_COLOR1 = 1,
-    GX_COLOR1A1 = 5,
-    GX_COLOR_NULL = 255,
-    GX_COLOR_ZERO = 6
+    GX_COLOR_NULL = 255
 };
 
 enum GXCITexFmt
