@@ -299,7 +299,7 @@ void tick()
         pass_over_regions(&state.store);
         if (!state.store.enter_save_mode())
         {
-            draw::notify(draw::Color::RED, "Cannot Create Savestate: Out of Memory");
+            draw::notify(draw::Color::RED, "Cannot Create Savestate: Not Enough Memory");
             state.active = false;
             return;
         }

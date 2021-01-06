@@ -2,6 +2,7 @@
 #include "log.h"
 
 #include <cstring>
+#include <heap.h>
 
 namespace memstore
 {
@@ -21,7 +22,7 @@ void MemStore::enter_prealloc_mode()
 {
     if (m_save_buf)
     {
-        delete[] m_save_buf;
+        heap::free_to_heap(m_save_buf);
         m_save_buf = nullptr;
     }
 
@@ -32,7 +33,9 @@ void MemStore::enter_prealloc_mode()
 
 bool MemStore::enter_save_mode()
 {
-    m_save_buf = new u8[m_save_buf_idx];
+    // Allocate directly so a failed allocation (nullptr) can be detected
+    // C++ new operator never returns nullptr
+    m_save_buf = static_cast<u8 *>(heap::alloc_from_heap(m_save_buf_idx));
     if (!m_save_buf) return false;
 
     m_mode = Mode::SAVE;
