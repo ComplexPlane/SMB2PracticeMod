@@ -17,6 +17,7 @@ struct SaveState
 {
     bool active;
     s32 stage_id;
+    u8 character;
     memstore::MemStore store;
     u8 pause_menu_sprite_status;
     mkb::Sprite pause_menu_sprite;
@@ -307,6 +308,7 @@ void tick()
         s_created_state_last_frame = true;
         state.active = true;
         state.stage_id = mkb::current_stage_id;
+        state.character = mkb::selected_characters[mkb::curr_player_idx];
         pass_over_regions(&state.store);
 
         handle_pause_menu_save(&state);
@@ -355,6 +357,11 @@ void tick()
         if (state.stage_id != mkb::current_stage_id)
         {
             draw::notify(draw::Color::RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
+            return;
+        }
+        if (state.character != mkb::selected_characters[mkb::curr_player_idx])
+        {
+            draw::notify(draw::Color::RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
             return;
         }
         if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)

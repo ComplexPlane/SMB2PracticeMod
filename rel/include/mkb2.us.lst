@@ -8488,6 +8488,7 @@
 8054DD4C:pausemenu_scrot_texfmt
 8054DE10:g_sub_mode3
 8054DF20:g_selected_menu_option
+8054DF78:selected_characters
 8054DF84:mode_cnt
 8054DF85:g_dataselect_return_screen
 8054DF94:number_of_starting_monkeys
@@ -9772,7 +9773,6 @@
 80949CEC:g_some_pad_bitfield
 80949CF0:g_language_id
 80949CF4:locked_menu_items
-80949D08:selected_characters
 80949E50:g_menu_color_overlay_timer
 80949E58:g_something_with_preview_textures
 808F40B0:FUN_8058e5e0

@@ -42,6 +42,9 @@ extern gc::OSHeapHandle main_heap, stage_heap, bg_heap, char_heap, replay_heap;
 extern u32 main_heap_size, stage_heap_size, bg_heap_size, char_heap_size, replay_heap_size;
 extern u32 g_something_with_game_heaps;
 
+extern u32 curr_player_idx;
+extern u8 selected_characters[4];
+
 void draw_debugtext();
 void draw_debugtext_bg(double x1, double y1, double x2, double y2);
 void draw_debugtext_char_en(u32 x, u32 y, char ch, u32 color);
