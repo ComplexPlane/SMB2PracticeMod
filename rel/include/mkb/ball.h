@@ -5,6 +5,26 @@
 namespace mkb
 {
 
+typedef enum BallPhysFlags
+{ /* Flags that mostly affect ball physics and controls */
+    PHYS_UNK_0x8 = 8,
+    PHYS_UNK_0x4 = 4,
+    PHYS_BLAST_UP = 512,
+    PHYS_NONE = 0,
+    PHYS_UNK_0x2 = 2,
+    PHYS_DISABLE_CONTROLS = 4096,
+    PHYS_UNK_0x4000 = 16384,
+    PHYS_UNK_0x40 = 64,
+    PHYS_SLOW_DOWN = 1024,
+    PHYS_UNK_0x80 = 128,
+    PHYS_G_SECRET_POSTGOAL_DANCE = 8192,
+    PHYS_UNK_0x10 = 16,
+    PHYS_UNK_0x20 = 32,
+    PHYS_G_DISABLE_GOAL_DETECTION = 2048,
+    PHYS_UNK_0x1 = 1,
+    PHYS_DISABLE_GRAVITY = 256
+} BallPhysFlags;
+
 struct Ball
 {
     u8 status; /* Actually called just "STAT" in the debug menu */
@@ -44,7 +64,7 @@ struct Ball
     u8 unk_0x84[24];
     /* Some more flags related to ball state?
      * The lowest-order bit may represent "is ball touching the ground" and I believe if affects the physics */
-    u32 some_bitfield;
+    u32 phys_flags;
     u8 unk_0xa0[100];
     struct Ape *ape;
     u8 unk_0x108[46];

@@ -3681,7 +3681,7 @@
 80289BB0:g_camera_func8
 80289D94:g_camera_func9
 80289D98:g_camera_func14
-80289DC8:g_camera_func15
+80289DC8:g_camera_func15_goal
 8028A130:g_camera_func16
 8028AB2C:g_camera_func17
 8028AD20:g_camera_func18
@@ -8212,7 +8212,7 @@
 804495F4:DBClose
 8044A0C8:DBClose
 8044ACF4:switchdataD_80374aac
-8044AF28:g_some_camera_func_table1
+8044AF28:camera_funcs
 8044AF30:g_some_camera_func_table2
 8044AF3C:g_some_camera_func_table3
 8044AF68:g_some_camera_func_table4
