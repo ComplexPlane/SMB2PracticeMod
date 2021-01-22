@@ -14923,3 +14923,5 @@ E000002C:mtxa_23
 E0000094:locked_cache_mtx_stack_ptr
 E000019C:e
 E00001A0:0.5
+803e487c:ball_friction
+804724c0:ball_restitution

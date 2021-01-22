@@ -21,7 +21,7 @@ typedef enum BallPhysFlags
     PHYS_UNK_0x10 = 16,
     PHYS_UNK_0x20 = 32,
     PHYS_G_DISABLE_GOAL_DETECTION = 2048,
-    PHYS_UNK_0x1 = 1,
+    PHYS_G_ON_GROUND = 1,
     PHYS_DISABLE_GRAVITY = 256
 } BallPhysFlags;
 
@@ -93,6 +93,8 @@ extern "C" {
 extern Ball balls[8];
 extern u32 ball_mode;
 extern u16 g_standstill_camera_frame_counter;
+extern f32 ball_friction;
+extern f32 ball_restitution;
 
 }
 

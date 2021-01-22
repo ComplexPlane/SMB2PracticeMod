@@ -1,33 +1,110 @@
 #include "scratch.h"
 
-#include <gc/gc.h>
+#include <mkb/mkb.h>
+#include "pad.h"
 
-#include <cstdint>
+#define ABS(x) ((x) < 0 ? (-x) : (x))
+
+constexpr s32 JUMP_FRAMES = 15;
 
 namespace scratch
 {
-//static bool (*DVDOpen_trampoline)(char *fileName, gc::DVDFileInfo *fileInfo) = nullptr;
-//static int32_t (*DVDConvertPathToEntrynum_trampoline)(char *filename) = nullptr;
-//static bool (*DVDFastOpen_trampoline)(int32_t entrynum, gc::DVDFileInfo *fileInfo) = nullptr;
-//static void (*DVDChangeDir_trampoline)(char *dirName) = nullptr;
-//static bool (*DVDOpenDir_trampoline)(char *dirName, gc::DVDDir *dir) = nullptr;
-//
-//static void *(*OSAllocFromHeap_trampoline)(gc::OSHeapHandle heap, uint32_t size) = nullptr;
-//static gc::OSHeapHandle (*OSCreateHeap_trampoline)(void *start, void *end) = nullptr;
-//static void (*OSDestroyHeap_trampoline)(gc::OSHeapHandle heap) = nullptr;
-//static void (*OSFreeToHeap_trampoline)(gc::OSHeapHandle heap, void *ptr) = nullptr;
-//static void *(*OSInitAlloc_trampoline)(void *arenaStart, void *arenaEnd, int maxHeaps) = nullptr;
-//static gc::OSHeapHandle (*OSSetCurrentHeap_trampoline)(gc::OSHeapHandle) = nullptr;
-//
-//static static void (*OSSetArenaLo_trampoline)(void *newLo) = nullptr;
-//static void (*OSSetArenaHi_trampoline)(void *newHi) = nullptr;
-//static void *(*OSAllocFromArenaLo_trampoline)(uint32_t size, uint32_t align) = nullptr;
-//static void *(*OSAllocFromArenaHi_trampoline)(uint32_t size, uint32_t align) = nullptr;
-//
-//static void (*gxFinishFrame_trampoline)() = nullptr;
-//static void (*createGameHeaps_trampoline)(int param1) = nullptr;
 
-void init() {}
-void tick() {}
+static s32 s_jump_frames = 0;
+static bool s_jumping = false;
+static s32 s_ticks_since_jump_input = -1;
+static s32 s_ticks_since_ground = -1;
+
+static void reset()
+{
+    s_ticks_since_jump_input = -1;
+    s_ticks_since_ground = -1;
+    s_jumping = false;
+    s_jump_frames = 0;
+}
+
+void init()
+{
+    mkb::ball_friction = 0.027f;
+    mkb::ball_restitution = 0.25f;
+    reset();
+}
+
+void tick()
+{
+    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
+    {
+        reset();
+        return;
+    }
+
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];
+
+    bool jump_pressed = pad::button_pressed(pad::BUTTON_A);
+    bool ground_touched = ball.phys_flags & mkb::PHYS_G_ON_GROUND;
+
+    if (jump_pressed)
+    {
+        s_ticks_since_jump_input = 0;
+    }
+    if (ground_touched)
+    {
+        s_ticks_since_ground = 0;
+    }
+
+    bool before = ground_touched && s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
+    bool after = jump_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
+
+    if (before && after)
+    {
+        gc::OSReport("Jump and ground at same time\n");
+        s_jumping = true;
+    }
+    else if (before)
+    {
+        gc::OSReport("Jump before ground\n");
+        s_jumping = true;
+    }
+    else if (after)
+    {
+        gc::OSReport("Jump after ground\n");
+        s_jumping = true;
+    }
+
+    if (pad::button_released(pad::BUTTON_A))
+    {
+        s_jumping = false;
+        s_jump_frames = 0;
+    }
+
+    if (s_jumping)
+    {
+        s_jump_frames++;
+        if (s_jump_frames > JUMP_FRAMES)
+        {
+            s_jumping = false;
+            s_jump_frames = 0;
+        }
+    }
+
+    if (s_jumping)
+    {
+        f32 lerp = static_cast<f32>(JUMP_FRAMES - s_jump_frames) / JUMP_FRAMES;
+        lerp = lerp * lerp * lerp;
+        ball.vel.y += lerp * 0.1;
+    }
+
+    if (s_ticks_since_jump_input > -1)
+    {
+        s_ticks_since_jump_input++;
+        if (s_ticks_since_jump_input >= 3) s_ticks_since_jump_input = -1;
+    }
+
+    if (s_ticks_since_ground > -1)
+    {
+        s_ticks_since_ground++;
+        if (s_ticks_since_ground >= 7) s_ticks_since_ground = -1;
+    }
+}
 
 }
