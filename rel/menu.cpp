@@ -60,7 +60,7 @@ void about_menu()
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 9 * LINE_HEIGHT, draw::Color::WHITE, "  L+C or R+C \x1c Browse savestates");
 
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 12 * LINE_HEIGHT, draw::Color::ORANGE, "Updates");
-    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 13 * LINE_HEIGHT, draw::Color::WHITE, "  Current version: v0.1.2-beta");
+    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 13 * LINE_HEIGHT, draw::Color::WHITE, "  Current version: v0.1.3-beta");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 14 * LINE_HEIGHT, draw::Color::WHITE, "  For the newest version of the practice mod:");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 15 * LINE_HEIGHT, draw::Color::BLUE, "  github.com/ComplexPlane/ApeSphere/releases");
 }

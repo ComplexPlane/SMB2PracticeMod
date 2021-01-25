@@ -13,16 +13,25 @@ ifeq ($(REGION),)
 
 all: us jp eu
 us: elf2rel
-	@$(MAKE) --no-print-directory REGION=us
+	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2E8P
+gaiden: elf2rel
+	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EGD
+monkeyed2: elf2rel
+	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EBJ
+deluxein2: elf2rel
+	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EDX
 jp: elf2rel
-	@$(MAKE) --no-print-directory REGION=jp
+	@$(MAKE) --no-print-directory REGION=jp GAMECODE=GM2J8P
 eu: elf2rel
-	@$(MAKE) --no-print-directory REGION=eu
+	@$(MAKE) --no-print-directory REGION=eu GAMECODE=GM2P8P
 
 clean: clean_elf2rel
-	@$(MAKE) --no-print-directory clean_target REGION=us
-	@$(MAKE) --no-print-directory clean_target REGION=jp
-	@$(MAKE) --no-print-directory clean_target REGION=eu
+	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
+	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EGD
+	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EBJ
+	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EDX
+	@$(MAKE) --no-print-directory clean_target REGION=jp GAMECODE=GM2J8P
+	@$(MAKE) --no-print-directory clean_target REGION=eu GAMECODE=GM2P8P
 
 #---------------------------------------------------------------------------------
 # For now, make elf2rel a phony target
@@ -62,8 +71,8 @@ else
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR)).$(REGION)
-BUILD		:=	build.$(REGION)
+TARGET		:=	$(notdir $(CURDIR)).$(GAMECODE)
+BUILD		:=	build.$(GAMECODE)
 SOURCES		:=	rel $(wildcard rel/*)
 DATA		:=	data  
 INCLUDES	:=	rel/include
@@ -81,20 +90,29 @@ ASFLAGS     = -mregnames # Don't require % in front of register names
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 # Platform options
-ifeq ($(REGION),us)
+ifeq ($(GAMECODE),GM2E8P)
 	CFLAGS += -DMKB2_US
 	ASFLAGS += -DMKB2_US
-	GAMECODE = "GM2E"
 	PRINTVER = "US"
-else ifeq ($(REGION),jp)
+else ifeq ($(GAMECODE),GM2EGD)
+	CFLAGS += -DMKB2_US
+	ASFLAGS += -DMKB2_US
+	PRINTVER = "GAIDEN"
+else ifeq ($(GAMECODE),GM2EBJ)
+	CFLAGS += -DMKB2_US
+	ASFLAGS += -DMKB2_US
+	PRINTVER = "MONKEYED2"
+else ifeq ($(GAMECODE),GM2EDX)
+	CFLAGS += -DMKB2_US
+	ASFLAGS += -DMKB2_US
+	PRINTVER = "DELUXEIN2"
+else ifeq ($(GAMECODE),GM2J8P)
 	CFLAGS += -DMKB2_JP
 	ASFLAGS += -DMKB2_JP
-	GAMECODE = "GM2J"
 	PRINTVER = "JP"
-else ifeq ($(REGION),eu)
+else ifeq ($(GAMECODE),GM2P8P)
 	CFLAGS += -DMKB2_EU
 	ASFLAGS += -DMKB2_EU
-	GAMECODE = "GM2P"
 	PRINTVER = "EU"
 endif
 
@@ -188,7 +206,7 @@ $(BUILD):
 
 #---------------------------------------------------------------------------------
 clean_target:
-	@echo clean ... $(REGION)
+	@echo clean ... $(GAMECODE)
 	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
 
 #---------------------------------------------------------------------------------

@@ -2,9 +2,9 @@
 
 ## Set up the GCI
 
-* Download the file ending in `.gci` from the most recent release (found [here](https://github.com/complexplane/apesphere/releases))
+* Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/complexplane/apesphere/releases).
 * Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_.
-* Copy the `.gci` file you downloaded into the appropriate folder, which you may need to create yourself if it doesn't exist
+* Copy the `.gci` files in the release into the appropriate folder, which you may need to create yourself if it doesn't exist
   * On Windows the folder is `Documents\Dolphin Emulator\GC\USA\Card B\`
   * On Linux/macOS the folder is `~/.local/share/dolphin-emu/GC/USA/Card B/`
 
