@@ -11,15 +11,13 @@ Features include:
 
 ...and more to come!
 
-# Quickstart
+# Setup
 
-## Setup
-
-To set up the mod on a Wii console (recommended), either follow this [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) or this [text guide](/doc/console-setup-guide.md). _Note:_ you you only need to copy the `codes` and `saves` folders in the `.zip` to your SD card, not the other files.
+To set up the mod on a **Wii console** (recommended), either follow this [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) or this [text guide](/doc/console-setup-guide.md). _Note:_ you you only need to copy the `codes` and `saves` folders in the `.zip` to your SD card, not the other files.
 
 To set up the mod on **Dolphin Emulator**, follow [this text guide](/doc/dolphin-setup-guide.md). 
 
-## Usage
+# Usage
 
 Press R+Z at the same time on your controller to toggle the in-game help menu. For individual-world practice, head to Story Mode and press Up/Down on a savefile to change world.
 
