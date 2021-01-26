@@ -9,4 +9,5 @@
 #include <gc/osassert.h>
 #include <gc/ppc.h>
 #include <gc/vi.h>
+#include <gc/pad.h>
 

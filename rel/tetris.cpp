@@ -109,7 +109,7 @@ void Tetris::new_game()
 void Tetris::disp()
 {
     bool konami_pressed = pad::konami_pressed();
-    bool trig_chord_pressed = pad::button_chord_pressed(pad::BUTTON_LTRIG, pad::BUTTON_RTRIG);
+    bool trig_chord_pressed = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R);
     if (konami_pressed || (m_ever_shown && trig_chord_pressed))
     {
         m_hidden = !m_hidden;
@@ -156,7 +156,7 @@ void Tetris::handle_dropping_state()
         }
     }
 
-    if (pad::button_pressed(pad::BUTTON_B))
+    if (pad::button_pressed(gc::PAD_BUTTON_B))
     {
         s32 low_y = find_lowest_possible_tetrad_y(
             m_dropping_tetrad,
@@ -176,26 +176,26 @@ void Tetris::handle_dropping_state()
         bool moved_down = false;
         bool rotated = false;
 
-        if (pad::button_pressed(pad::BUTTON_DPAD_LEFT))
+        if (pad::button_pressed(gc::PAD_BUTTON_LEFT))
         {
             new_tetrad_x--;
         }
-        else if (pad::button_pressed(pad::BUTTON_DPAD_RIGHT))
+        else if (pad::button_pressed(gc::PAD_BUTTON_RIGHT))
         {
             new_tetrad_x++;
         }
-        else if (pad::button_pressed(pad::BUTTON_DPAD_DOWN))
+        else if (pad::button_pressed(gc::PAD_BUTTON_DOWN))
         {
             new_tetrad_y--;
             moved_down = true;
         }
 
-        if (pad::button_pressed(pad::BUTTON_Y))
+        if (pad::button_pressed(gc::PAD_BUTTON_Y))
         {
             new_tetrad_rot = (new_tetrad_rot + 3) % 4;
             rotated = true;
         }
-        else if (pad::button_pressed(pad::BUTTON_X))
+        else if (pad::button_pressed(gc::PAD_BUTTON_X))
         {
             new_tetrad_rot = (new_tetrad_rot + 1) % 4;
             rotated = true;
@@ -270,7 +270,7 @@ void Tetris::handle_new_game_state()
     m_state_timer--;
     if (m_state_timer < 0) m_state_timer = 255;
 
-    if (pad::button_pressed(pad::BUTTON_START))
+    if (pad::button_pressed(gc::PAD_BUTTON_START))
     {
         new_game();
     }

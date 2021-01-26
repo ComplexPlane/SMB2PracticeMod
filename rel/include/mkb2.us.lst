@@ -3069,11 +3069,8 @@
 80144C20:switchdataD_80144c20
 80144C3C:switchdataD_80144c3c
 80145120:pad_status_groups
-80145150:g_input_button_pressed
-80145300:filtered_analog_inputs_bitfield
-8014530C:filtered_button_inputs_bitfield
-80145310:g_some_bitflag3
-80145318:g_important_pad_array
+80145300:merged_analog_inputs
+8014530C:merged_digital_inputs
 80145340:frames_since_last_input_change
 80145918:sega_splash_tex
 8014664C:synthGlobalVariable
@@ -14923,3 +14920,5 @@ E000002C:mtxa_23
 E0000094:locked_cache_mtx_stack_ptr
 E000019C:e
 E00001A0:0.5
+80298d50:g_process_inputs
+80145318:analog_inputs

@@ -49,7 +49,7 @@ void init()
 
 static bool is_either_trigger_held()
 {
-    return pad::analog_down(pad::AR_LTRIG) || pad::analog_down(pad::AR_RTRIG);
+    return pad::analog_down(mkb::PAI_LTRIG) || pad::analog_down(mkb::PAI_RTRIG);
 }
 
 // For all memory regions that involve just saving/loading to the same region...
@@ -260,7 +260,7 @@ void tick()
 
     prevent_replays();
 
-    if (pad::button_pressed(pad::BUTTON_X))
+    if (pad::button_pressed(gc::PAD_BUTTON_X))
     {
         if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN || mkb::sub_mode_request != mkb::SMD_INVALID)
         {
@@ -333,8 +333,8 @@ void tick()
         }
     }
     else if (
-        pad::button_down(pad::BUTTON_Y)
-        || (pad::button_down(pad::BUTTON_X)
+        pad::button_down(gc::PAD_BUTTON_Y)
+        || (pad::button_down(gc::PAD_BUTTON_X)
             && s_created_state_last_frame)
         || s_frame_advance_mode
         || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE))

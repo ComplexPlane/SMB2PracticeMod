@@ -31,7 +31,8 @@ static s32 s_menu_stack_ptr = 0;
 
 void tick()
 {
-    s_visible ^= pad::button_chord_pressed(pad::BUTTON_Z, pad::BUTTON_RTRIG);
+    s_visible ^= pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z);
+    pad::set_exclusive_mode(s_visible);
 }
 
 void root_menu()

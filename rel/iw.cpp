@@ -27,13 +27,13 @@ static void handle_iw_selection()
 {
     if (mkb::data_select_menu_state != mkb::DSMS_DEFAULT) return;
     if (mkb::story_file_select_state == 1) return;
-    if (pad::analog_down(pad::AR_LSTICK_LEFT) || pad::analog_down(pad::AR_LSTICK_RIGHT)) return;
-    if (pad::button_down(pad::BUTTON_DPAD_LEFT) || pad::button_down(pad::BUTTON_DPAD_RIGHT)) return;
+    if (pad::analog_down(mkb::PAI_LSTICK_LEFT) || pad::analog_down(mkb::PAI_LSTICK_RIGHT)) return;
+    if (pad::button_down(gc::PAD_BUTTON_LEFT) || pad::button_down(gc::PAD_BUTTON_RIGHT)) return;
 
-    bool lstick_up = pad::analog_pressed(pad::AR_LSTICK_UP);
-    bool lstick_down = pad::analog_pressed(pad::AR_LSTICK_DOWN);
-    bool dpad_up = pad::button_pressed(pad::BUTTON_DPAD_UP);
-    bool dpad_down = pad::button_pressed(pad::BUTTON_DPAD_DOWN);
+    bool lstick_up = pad::analog_pressed(mkb::PAI_LSTICK_UP);
+    bool lstick_down = pad::analog_pressed(mkb::PAI_LSTICK_DOWN);
+    bool dpad_up = pad::button_pressed(gc::PAD_BUTTON_UP);
+    bool dpad_down = pad::button_pressed(gc::PAD_BUTTON_DOWN);
 
     s32 dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
     auto &story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];

@@ -16,6 +16,7 @@
 #include <mkb/unlock.h>
 #include <mkb/event.h>
 #include <mkb/mathutil.h>
+#include <mkb/pad.h>
 
 namespace mkb
 {
@@ -31,9 +32,6 @@ struct GraphicsInfo
 };
 
 extern "C" {
-
-extern u32 filtered_button_inputs_bitfield;
-extern u32 filtered_analog_inputs_bitfield;
 
 extern gc::GXColor debug_text_bg_color;
 extern GraphicsInfo *graphics_info;

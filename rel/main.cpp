@@ -18,6 +18,7 @@ namespace main
 {
 
 static void (*s_draw_debug_text_trampoline)();
+static void (*s_process_inputs_trampoline)();
 
 static void perform_assembly_patches()
 {
@@ -83,6 +84,14 @@ void init()
 
             s_draw_debug_text_trampoline();
         });
+    s_process_inputs_trampoline = patch::hook_function(
+        mkb::g_process_inputs, []()
+        {
+            s_process_inputs_trampoline();
+            // This runs after all controller inputs have been processed / filtered for general-purpose
+            // usage by the game
+            pad::on_input_processing_finished();
+        });
 }
 
 static void unlock_everything()
@@ -106,7 +115,7 @@ void tick()
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
 
     unlock_everything();
-    pad::tick();
+    pad::on_frame_start();
     timer::tick();
     iw::tick();
     savestate::tick();
