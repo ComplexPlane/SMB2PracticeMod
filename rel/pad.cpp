@@ -18,6 +18,7 @@ namespace pad
 
 static s32 s_konami_progress;
 static bool s_exclusive_mode;
+static bool s_exclusive_mode_request;
 
 static mkb::AnalogInputGroup s_merged_analog_inputs;
 static mkb::DigitalInputGroup s_merged_digital_inputs;
@@ -128,6 +129,7 @@ bool button_chord_pressed(u16 btn1, u16 btn2)
 {
     return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
 }
+
 s32 get_cstick_dir()
 {
     bool left = analog_down(mkb::PAI_CSTICK_LEFT);
@@ -207,21 +209,25 @@ bool konami_pressed()
 
 void set_exclusive_mode(bool enabled)
 {
-    s_exclusive_mode = enabled;
+    s_exclusive_mode_request = enabled;
 }
 
 void on_frame_start()
 {
     if (s_exclusive_mode)
     {
+        // Restore previous controller inputs so new inputs can be computed correctly by the game
         mkb::merged_analog_inputs = s_merged_analog_inputs;
         mkb::merged_digital_inputs = s_merged_digital_inputs;
         memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
         memcpy(mkb::analog_inputs, s_analog_inputs, sizeof(mkb::analog_inputs));
     }
+
+    // Only now do we honor the request to change into/out of exclusive mode
+    s_exclusive_mode = s_exclusive_mode_request;
 }
 
-void on_input_processing_finished()
+void tick()
 {
     s_merged_analog_inputs = mkb::merged_analog_inputs;
     s_merged_digital_inputs = mkb::merged_digital_inputs;
@@ -230,6 +236,7 @@ void on_input_processing_finished()
 
     if (s_exclusive_mode)
     {
+        // Zero controller inputs in the game
         mkb::merged_analog_inputs = {};
         mkb::merged_digital_inputs = {};
         memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));

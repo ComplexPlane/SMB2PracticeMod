@@ -54,6 +54,21 @@ static void perform_assembly_patches()
                         reinterpret_cast<void *>(main::custom_titlescreen_text_color));
 }
 
+static void unlock_everything()
+{
+    // Don't yet know how to unlock the staff credits game from a fresh save...
+    mkb::unlock_info.master_unlocked = true;
+    mkb::unlock_info.monkeys = 99;
+    mkb::unlock_info.staff_credits_game_unlocked = true;
+    mkb::unlock_info.play_points = 99999;
+    mkb::unlock_info.newest_play_point_record = 99999;
+    mkb::unlock_info.movies = 0x0fff;
+    mkb::unlock_info.party_games = 0x0001b600;
+    mkb::unlock_info.movies_watched = 0x0fff;
+    memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
+    memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
+}
+
 void init()
 {
     gc::OSReport("[mod] ApeSphere loaded\n");
@@ -84,43 +99,32 @@ void init()
 
             s_draw_debug_text_trampoline();
         });
+
     s_process_inputs_trampoline = patch::hook_function(
         mkb::g_process_inputs, []()
         {
             s_process_inputs_trampoline();
-            // This runs after all controller inputs have been processed / filtered for general-purpose
-            // usage by the game
-            pad::on_input_processing_finished();
+
+            // These run after all controller inputs have been processed, to ensure lowest input delay
+            pad::tick();
+            unlock_everything();
+            timer::tick();
+            iw::tick();
+            savestate::tick();
+            menu::tick();
+            scratch::tick();
         });
 }
 
-static void unlock_everything()
-{
-    // Don't yet know how to unlock the staff credits game from a fresh save...
-    mkb::unlock_info.master_unlocked = true;
-    mkb::unlock_info.monkeys = 99;
-    mkb::unlock_info.staff_credits_game_unlocked = true;
-    mkb::unlock_info.play_points = 99999;
-    mkb::unlock_info.newest_play_point_record = 99999;
-    mkb::unlock_info.movies = 0x0fff;
-    mkb::unlock_info.party_games = 0x0001b600;
-    mkb::unlock_info.movies_watched = 0x0fff;
-    memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
-    memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
-}
-
+/*
+ * This runs at the very start of the main game loop. Most per-frame code runs after
+ * controller inputs have been read and processed however, to ensure the lowest input delay.
+ */
 void tick()
 {
     // Enable debug mode (appears to need to be called every frame)
 //    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-
-    unlock_everything();
     pad::on_frame_start();
-    timer::tick();
-    iw::tick();
-    savestate::tick();
-    menu::tick();
-    scratch::tick();
 }
 
 }

@@ -21,7 +21,7 @@ enum Dir
 void init();
 // Tick functions to be run at different points in the game loop
 void on_frame_start();
-void on_input_processing_finished();
+void tick(); // Run this after controller inputs are read and processed by the game
 
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
 // In exclusive mode, only the mod can read inputs using these functions, while the game sees zero inputs.
