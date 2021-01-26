@@ -29,6 +29,10 @@ namespace jump
 constexpr s32 JUMP_FRAMES = 15;
 
 static bool s_enabled = false;
+static u32 s_patch1;
+static u32 s_patch2;
+static f32 s_orig_friction;
+static f32 s_orig_restitution;
 
 static s32 s_jump_frames = 0;
 static bool s_jumping = false;
@@ -52,9 +56,17 @@ static void reset()
 
 void init()
 {
+    if (s_enabled) return;
     s_enabled = true;
-    mkb::ball_friction = 0.015;
-    mkb::ball_restitution = 0.25f;
+
+    constexpr f32 FRICTION = 0.015;
+    constexpr f32 RESTITUTION = 0.25f;
+
+    s_orig_friction = mkb::ball_friction;
+    s_orig_restitution = mkb::ball_restitution;
+    mkb::ball_friction = FRICTION;
+    mkb::ball_restitution = RESTITUTION;
+    mkb::balls[mkb::curr_player_idx].restitution = RESTITUTION;
     reset();
 
     // Don't lock camera pitch at start of level
@@ -66,28 +78,38 @@ void init()
 
 void tick()
 {
-    // Allow changing the sfx
-    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_BUTTON_X))
-    {
-        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
+//    // Allow changing the sfx
+//    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_BUTTON_X))
+//    {
+//        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
+//
+//        if (JUMP_SOUNDS[s_sfx_idx] != -1)
+//        {
+//            draw::notify(draw::Color::WHITE, "Jump sound: %d", s_sfx_idx + 1);
+//            mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
+//        }
+//        else
+//        {
+//            draw::notify(draw::Color::WHITE, "Jump sound: OFF");
+//        }
+//    }
 
-        if (JUMP_SOUNDS[s_sfx_idx] != -1)
-        {
-            draw::notify(draw::Color::WHITE, "Jump sound: %d", s_sfx_idx + 1);
-            mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
-        }
-        else
-        {
-            draw::notify(draw::Color::WHITE, "Jump sound: OFF");
-        }
-    }
+    if (!s_enabled) return;
 
-    if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT)
+    if (mkb::main_mode == mkb::MD_GAME)
     {
-        // Prevent minimap from being resized with A
-        // Need to patch on each main_game REL reload
-        patch::write_nop(reinterpret_cast<void *>(0x808f4d18));
-        patch::write_nop(reinterpret_cast<void *>(0x808f5168));
+        u32 *patch1_loc = reinterpret_cast<u32 *>(0x808f4d18);
+        u32 *patch2_loc = reinterpret_cast<u32 *>(0x808f5168);
+
+        // Patch instructions if they aren't nop
+        if (*patch1_loc != 0x60000000)
+        {
+            s_patch1 = patch::write_nop(reinterpret_cast<void *>(0x808f4d18));
+        }
+        if (*patch2_loc != 0x60000000)
+        {
+            s_patch2 = patch::write_nop(reinterpret_cast<void *>(0x808f5168));
+        }
     }
 
     bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
@@ -198,8 +220,18 @@ void tick()
 
 void dest()
 {
+    if (!s_enabled) return;
+
     s_enabled = false;
-    // TODO
+    if (mkb::main_mode == mkb::MD_GAME)
+    {
+        // These overwrites exist in main_game.rel which isn't always loaded
+        patch::write_word(reinterpret_cast<void *>(0x808f4d18), s_patch1);
+        patch::write_word(reinterpret_cast<void *>(0x808f5168), s_patch2);
+    }
+    mkb::ball_friction = s_orig_friction;
+    mkb::ball_restitution = s_orig_restitution;
+    mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
 }
 
 bool is_enabled()

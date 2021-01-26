@@ -78,7 +78,6 @@ void init()
     savestate::init();
     timer::init();
     iw::init();
-//    jump::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(
@@ -111,7 +110,7 @@ void init()
             iw::tick();
             savestate::tick();
             menu::tick();
-//            jump::tick();
+            jump::tick();
             scratch::tick();
         });
 }

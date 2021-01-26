@@ -63,6 +63,8 @@ void tick()
 
     pad::set_exclusive_mode(s_visible);
 
+    if (!s_visible) return;
+
     s32 dir_delta = pad::dir_pressed(pad::DIR_UP) - pad::dir_pressed(pad::DIR_DOWN);
     s_cursor_pos += dir_delta;
     if (s_cursor_pos < 0) s_cursor_pos += 2;
