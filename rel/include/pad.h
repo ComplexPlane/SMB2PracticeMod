@@ -26,12 +26,12 @@ void tick(); // Run this after controller inputs are read and processed by the g
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
 // In exclusive mode, only the mod can read inputs using these functions, while the game sees zero inputs.
 
-// Accept a PadDigitalInput
+// Accept a gc::PadDigitalInput
 bool button_down(u16 digital_input);
 bool button_pressed(u16 digital_input);
 bool button_released(u16 digital_input);
 
-// Accept a PadAnalogInput
+// Accept a mkb::PadAnalogInput
 bool analog_down(u16 analog_input);
 bool analog_pressed(u16 analog_input);
 bool analog_released(u16 analog_input);

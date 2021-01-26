@@ -3,16 +3,6 @@
 #include <mkb/mkb.h>
 #include <cstring>
 
-#include "patch.h"
-
-namespace mkb
-{
-extern "C"
-{
-    extern u32 g_some_other_flags;
-}
-}
-
 namespace pad
 {
 
