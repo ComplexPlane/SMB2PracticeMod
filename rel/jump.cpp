@@ -28,6 +28,8 @@ namespace jump
 
 constexpr s32 JUMP_FRAMES = 15;
 
+static bool s_enabled = false;
+
 static s32 s_jump_frames = 0;
 static bool s_jumping = false;
 static s32 s_ticks_since_jump_input = -1;
@@ -50,6 +52,7 @@ static void reset()
 
 void init()
 {
+    s_enabled = true;
     mkb::ball_friction = 0.015;
     mkb::ball_restitution = 0.25f;
     reset();
@@ -191,6 +194,17 @@ void tick()
 
     s_ticks_since_jump++;
     if (s_ticks_since_jump > 1000) s_ticks_since_jump = 1000;
+}
+
+void dest()
+{
+    s_enabled = false;
+    // TODO
+}
+
+bool is_enabled()
+{
+    return s_enabled;
 }
 
 }

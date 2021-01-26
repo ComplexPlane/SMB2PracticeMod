@@ -15,6 +15,7 @@ enum class Color
     BLUE,
     PINK,
     PURPLE,
+    GREEN,
 };
 
 // Call once during mod initialization

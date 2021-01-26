@@ -33,6 +33,8 @@ struct GraphicsInfo
 
 extern "C" {
 
+extern u32 frame_counter;
+
 extern gc::GXColor debug_text_bg_color;
 extern GraphicsInfo *graphics_info;
 
