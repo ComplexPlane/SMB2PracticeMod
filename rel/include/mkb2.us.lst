@@ -137,7 +137,7 @@
 8000999C:g_set_some_card_func_ptr
 800099A4:g_set_some_func_ptr3
 800099AC:pad_init
-80009A10:g_maybe_handle_console_reset
+80009A10:g_read_inputs_and_maybe_reset_console
 80009FEC:g_PADRead_and_handle_errors
 8000A13C:g_reset_console
 8000A2F0:g_reset_console_wrapper
@@ -3069,8 +3069,10 @@
 80144C20:switchdataD_80144c20
 80144C3C:switchdataD_80144c3c
 80145120:pad_status_groups
+80145150:g_input_button_pressed
 80145300:merged_analog_inputs
 8014530C:merged_digital_inputs
+80145318:analog_inputs
 80145340:frames_since_last_input_change
 80145918:sega_splash_tex
 8014664C:synthGlobalVariable
@@ -3657,11 +3659,11 @@
 80285F28:g_camera_func52
 802861C0:g_camera_func53
 802861C4:g_camera_func80
-802864A8:g_camera_func81
+802864A8:g_camera_func81_mainmenu
 80286ED4:g_camera_func87
 8028717C:g_camera_func88
 80287180:g_camera_func10
-80287598:g_camera_func11
+80287598:g_camera_func11_spinin
 802878DC:g_camera_func38
 80287918:FUN_801b16e0
 802879C8:FUN_801b1790
@@ -3669,9 +3671,9 @@
 80287F00:g_camera_func0
 80288224:g_camera_func1
 80288804:g_camera_func2
-80288EC0:g_camera_func3
+80288EC0:g_camera_func3_setup
 80288F7C:g_camera_func62
-80289044:g_camera_func4
+80289044:g_camera_func4_fallout
 802891BC:g_camera_func5
 802896B4:g_camera_func6
 802896B8:g_camera_func7
@@ -3685,7 +3687,7 @@
 8028B054:g_camera_func19
 8028B340:g_camera_func20
 8028B600:g_camera_func21
-8028B628:g_camera_func22_23_24
+8028B628:g_camera_func22_23_24_timeover
 8028B834:g_camera_func25
 8028B854:g_camera_func26
 8028B874:g_camera_func31
@@ -3764,7 +3766,7 @@
 80290FCC:g_camera_func73
 802910F4:g_camera_default_func
 80291138:g_main_camera_function_func75
-80291470:g_camera_func76
+80291470:g_camera_func76_gameplay
 80291C38:g_camera_func82
 80292270:g_camera_func83
 80292834:g_camera_func84
@@ -3888,10 +3890,10 @@
 80298C00:g_load_efcmdl_gmatpl
 80298C6C:FUN_801c2a34
 80298CA0:FUN_801c2a68
-80298D50:g_something_with_input_processing
-80298D78:FUN_801c2b40
+80298D50:process_inputs
+80298D78:threshold_analog_inputs
 80299068:g_calc_frames_since_last_input_change
-80299160:FUN_801c2f28
+80299160:g_input_processing_func2
 802995AC:FUN_801c3374
 80299610:g_something_with_possibly_compressed_bitmaps
 802998CC:FUN_801c3694
@@ -4238,7 +4240,7 @@
 802AFFC8:FUN_801d9d90
 802B014C:debug_overlay_draw_fifo
 802B0310:unset_all_dip_switches
-802B0324:g_something_checking_input
+802B0324:g_check_debug_mode_input
 802B065C:pool_init
 802B0834:pool_tick
 802B0858:pool_update_idxs_of_all_pools
@@ -4396,7 +4398,7 @@
 802BBF04:init_physicsball_from_ball
 802BBFA0:FUN_801e5d68
 802BC004:FUN_801e5dcc
-802BC168:FUN_801e5f30
+802BC168:spawn_postgoal_ball_sparkle
 802BC30C:FUN_801e60d4
 802BC334:g_something_with_sfx
 802BCA98:FUN_801e6860
@@ -6164,7 +6166,7 @@
 8033B70C:set_minimap_mode
 8033B894:FUN_8026565c
 8033B8A4:FUN_8026566c
-8033B8D8:FUN_802656a0
+8033B8D8:toggle_minimap_zoom
 8033B928:g_something_with_minimap
 8033CC78:FUN_80266a40
 8033CCFC:FUN_80266ac4
@@ -6270,7 +6272,7 @@
 80343A90:g_get_debug_level_select_loading_left_asterisks
 80343AF4:FUN_8026d8bc
 80343B08:FUN_8026d8d0
-80343BF8:FUN_8026d9c0
+80343BF8:g_smth_with_file_loading
 80343C18:FUN_8026d9e0
 80343C68:FUN_8026da30
 80343E60:FUN_8026dc28
@@ -8048,6 +8050,7 @@
 803E47B8:debugtext_bg_color
 803E47C8:MAX_GX_FIFO_BUF_SIZE
 803E4878:visual_ball_size
+803E487C:ball_friction
 803E4CB4:epsilon
 803E4D10:g_goal_post_vertical_offset
 803E4DD8:g_itemgroup_anim_rate_post_dropin
@@ -8255,6 +8258,7 @@
 80472000:EVENT_STATUS_NAMES
 804724B8:physical_ball_size
 804724BC:ball_accel
+804724C0:ball_restitution
 804724E8:g_ball_physics_mode_funcs
 804727A8:switchdataD_8039c560
 804727EC:switchdataD_8039c5a4
@@ -8264,6 +8268,7 @@
 80473100:g_fog_type
 80473114:g_current_stage_id
 80473118:g_stage_id_to_load
+8047314C:g_smb1_stage_list
 804733A0:LOCALE_STRINGS
 804733D8:g_loaded_gmas_list
 80473404:goal_gma_model_names
@@ -8350,6 +8355,7 @@
 80493FB4:switchdataD_803bdd6c
 80493FE8:switchdataD_803bdda0
 80494444:g_minimap_mode
+8049445C:minimap_zoom_level
 80494474:minimap_scale
 80494476:minimap_rotation
 804968CC:DBClose
@@ -8516,6 +8522,7 @@
 80553994:bananas_remaining
 8055399C:g_next_stage_id
 8055399E:g_some_cm_stage_id
+805539A2:g_some_stage_id
 805542EC:g_something_related_to_sprites_probably
 80555F34:g_some_buf_related_to_sprites
 80562740:g_profile_timer_start_times
@@ -8560,6 +8567,7 @@
 805BC1DE:os_font_encoding
 805BC470:dip_switches
 805BC474:g_some_other_flags
+805BC478:g_some_pad_idx
 805BC480:ball_pool_info
 805BC490:item_pool_info
 805BC49C:g_item_status_array
@@ -8731,7 +8739,7 @@
 808FA360:caseD_5
 808FA3A8:caseD_6
 808FA3B0:caseD_7
-808FA3C4:g_references_420_01
+808FA3C4:get_next_stage_id
 808FA434:g_something_with_life_counter
 808FA574:FUN_804d24fc
 808FA594:FUN_804d251c
@@ -9165,6 +9173,9 @@
 8097F534:some_ape_float3
 8098005C:g_storymode_stageselect_state
 80980060:g_storymode_stageselect_framecounter
+8098006C:g_some_storymode_stageid1
+80980070:g_some_storymode_stageid2
+80980074:g_some_storymode_stageid3
 809800B8:g_smth_with_size_0x34
 809800D7:g_storymode_are_you_sure_answer
 809800EC:data_select_menu_state
@@ -9767,7 +9778,7 @@
 80949CA1:g_next_menu_screen
 80949CA8:g_menu_transition_frametimer
 80949CD8:g_menu_description_text
-80949CEC:g_some_pad_bitfield
+80949CEC:g_active_pads_bitfield
 80949CF0:g_language_id
 80949CF4:locked_menu_items
 80949E50:g_menu_color_overlay_timer
@@ -14920,5 +14931,3 @@ E000002C:mtxa_23
 E0000094:locked_cache_mtx_stack_ptr
 E000019C:e
 E00001A0:0.5
-80298d50:g_process_inputs
-80145318:analog_inputs

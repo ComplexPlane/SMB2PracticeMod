@@ -73,7 +73,7 @@ extern DigitalInputGroup merged_digital_inputs;
 extern AnalogInputGroup analog_inputs[4];
 extern PadStatusGroup pad_status_groups[4];
 
-void g_process_inputs(void);
+void process_inputs(void);
 
 }
 

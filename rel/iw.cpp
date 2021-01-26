@@ -5,7 +5,9 @@
 #include <mkb/mkb.h>
 #include <cstring>
 #include <cstdio>
-#include <draw.h>
+
+#include "draw.h"
+#include "patch.h"
 
 // TODO: track best times per world
 // I tried this before but it seems like there might be a spurious frame where it thinks the IW is completed
@@ -21,7 +23,12 @@ static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
 
-void init() {}
+void init()
+{
+    // IW-related patches
+    patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
+    patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+}
 
 static void handle_iw_selection()
 {

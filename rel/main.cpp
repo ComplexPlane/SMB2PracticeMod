@@ -8,6 +8,7 @@
 #include "iw.h"
 #include "pad.h"
 #include "menu.h"
+#include "jump.h"
 #include "scratch.h"
 
 #include <mkb/mkb.h>
@@ -44,10 +45,6 @@ static void perform_assembly_patches()
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is disabled
     patch::write_nop(reinterpret_cast<void *>(0x80299f54));
 
-    // IW-related patches
-    patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(stage_select_menu_hook));
-    patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(pause_menu_text_hook));
-
     // Titlescreen patches
     strcpy(reinterpret_cast<char *>(0x8047f4ec), "APESPHERE PRACTICE MOD");
     patch::write_branch(reinterpret_cast<void *>(0x8032ad0c),
@@ -81,6 +78,7 @@ void init()
     savestate::init();
     timer::init();
     iw::init();
+//    jump::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(
@@ -101,17 +99,19 @@ void init()
         });
 
     s_process_inputs_trampoline = patch::hook_function(
-        mkb::g_process_inputs, []()
+        mkb::process_inputs, []()
         {
             s_process_inputs_trampoline();
 
-            // These run after all controller inputs have been processed, to ensure lowest input delay
+            // These run after all controller inputs have been processed on the current frame,
+            // to ensure lowest input delay
             pad::tick();
             unlock_everything();
             timer::tick();
             iw::tick();
             savestate::tick();
             menu::tick();
+//            jump::tick();
             scratch::tick();
         });
 }
