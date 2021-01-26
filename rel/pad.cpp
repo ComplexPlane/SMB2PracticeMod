@@ -212,40 +212,29 @@ void set_exclusive_mode(bool enabled)
 
 void on_frame_start()
 {
-//    if (s_exclusive_mode)
-//    {
-//        mkb::filtered_button_inputs_bitfield = s_filtered_buttons;
-//        mkb::filtered_analog_inputs_bitfield = s_filtered_analog;
-//        memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
-//        memcpy(mkb::g_important_pad_array, s_important_pad_array, sizeof(mkb::g_important_pad_array));
-////        mkb::g_some_other_flags = s_some_other_flags;
-//    }
+    if (s_exclusive_mode)
+    {
+        mkb::merged_analog_inputs = s_merged_analog_inputs;
+        mkb::merged_digital_inputs = s_merged_digital_inputs;
+        memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
+        memcpy(mkb::analog_inputs, s_analog_inputs, sizeof(mkb::analog_inputs));
+    }
 }
 
 void on_input_processing_finished()
 {
-//    s_filtered_buttons = mkb::filtered_button_inputs_bitfield;
-//    s_filtered_analog = mkb::filtered_analog_inputs_bitfield;
-//    memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
-//    memcpy(s_important_pad_array, mkb::g_important_pad_array, sizeof(mkb::g_important_pad_array));
-////    s_some_other_flags = mkb::g_some_other_flags;
-
     s_merged_analog_inputs = mkb::merged_analog_inputs;
     s_merged_digital_inputs = mkb::merged_digital_inputs;
     memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
     memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
-//
-//    if (s_exclusive_mode)
-//    {
-//        mkb::filtered_button_inputs_bitfield = 0;
-//        mkb::filtered_analog_inputs_bitfield = 0;
-//        memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));
-//
-//        // Experimental
-//        memset(mkb::g_important_pad_array, 0, sizeof(mkb::g_important_pad_array));
-////        mkb::g_some_other_flags = 0;
-//        memset(reinterpret_cast<void *>(0x80145210), 0, 0x3C * 4);
-//    }
+
+    if (s_exclusive_mode)
+    {
+        mkb::merged_analog_inputs = {};
+        mkb::merged_digital_inputs = {};
+        memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));
+        memset(mkb::analog_inputs, 0, sizeof(mkb::analog_inputs));
+    }
 
     update_konami();
 }
