@@ -183,7 +183,7 @@ void about_menu()
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 14.5f * LINE_HEIGHT, draw::Color::WHITE, "  B          \x1c Resize minimap");
 
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 16 * LINE_HEIGHT, draw::Color::ORANGE, "Updates");
-    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 17 * LINE_HEIGHT, draw::Color::WHITE, "  Current version: v0.1.3-beta");
+    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 17 * LINE_HEIGHT, draw::Color::WHITE, "  Current version: v0.2.0");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 18 * LINE_HEIGHT, draw::Color::WHITE, "  For the newest version of the practice mod:");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 19 * LINE_HEIGHT, draw::Color::WHITE, "  github.com/ComplexPlane/ApeSphere/releases");
 }
