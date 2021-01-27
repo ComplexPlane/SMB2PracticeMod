@@ -236,30 +236,6 @@ static void destruct_distracting_effects()
     }
 }
 
-static void prevent_replays()
-{
-    // Prevent replays from playing in goal and fallout submodes by locking initial submode frame counter
-    switch (mkb::sub_mode)
-    {
-        case mkb::SMD_GAME_GOAL_MAIN:
-        {
-            // Just prevent the timer from running out completely, so that the GOAL sound plays
-            if (mkb::sub_mode_frame_counter == 1) mkb::sub_mode_frame_counter = 2;
-            break;
-        }
-        case mkb::SMD_GAME_RINGOUT_MAIN:
-        {
-            mkb::sub_mode_frame_counter = 270;
-            break;
-        }
-        case mkb::SMD_GAME_TIMEOVER_MAIN:
-        {
-            mkb::sub_mode_frame_counter = 120;
-            break;
-        }
-    }
-}
-
 void tick()
 {
     if (!s_enabled) return;
@@ -280,8 +256,6 @@ void tick()
         draw::notify(draw::Color::WHITE, "Slot %d Selected", cstick_dir + 1);
     }
     auto &state = s_states[s_active_state_slot];
-
-    prevent_replays();
 
     if (pad::button_pressed(gc::PAD_BUTTON_X))
     {
