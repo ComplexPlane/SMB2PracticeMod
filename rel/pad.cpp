@@ -7,6 +7,7 @@ namespace pad
 {
 
 static s32 s_konami_progress;
+static bool s_konami_input_prev_tick;
 static bool s_exclusive_mode;
 static bool s_exclusive_mode_request;
 
@@ -45,6 +46,11 @@ bool analog_released(u16 analog_input, bool priority)
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
+static bool any_input_down()
+{
+    return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
+}
+
 static bool any_input_pressed()
 {
     return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
@@ -57,8 +63,15 @@ static void update_konami()
         s_konami_progress = 0;
     }
 
-    if (!any_input_pressed()) return;
+    if (s_konami_input_prev_tick && any_input_down()) return;
 
+    if (!any_input_pressed())
+    {
+        s_konami_input_prev_tick = false;
+        return;
+    }
+
+    s_konami_input_prev_tick = true;
     switch (s_konami_progress)
     {
         case 0:

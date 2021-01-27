@@ -75,12 +75,6 @@ static void handle_options()
 
 void tick()
 {
-    // Binding to open menu used to be R+Z, but I found it uncomfortable over time.
-    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z, true))
-    {
-        draw::notify(draw::Color::RED, "Use L+R to toggle menu");
-    }
-
     bool toggle = false;
     if (pad::button_pressed(gc::PAD_BUTTON_B, true))
     {

@@ -108,6 +108,14 @@ void Tetris::new_game()
 
 void Tetris::disp()
 {
+    // Binding to open menu used to be R+Z, but I found it uncomfortable over time. Now it's used to open Tetris
+    // if it's been unlocked
+    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z, true)
+        && !m_ever_shown)
+    {
+        draw::notify(draw::Color::RED, "Use L+R to toggle menu");
+    }
+
     bool konami_pressed = pad::konami_pressed();
     bool trig_chord_pressed = pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z);
     if (konami_pressed || (m_ever_shown && trig_chord_pressed))
@@ -522,7 +530,7 @@ void Tetris::draw_info_text()
     draw::debug_text(
         490, 150,
         {0xff, 0xff, 0xff, 0xff},
-        " L+R: TOGGLE");
+        " R+Z: TOGGLE");
 }
 
 void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation)
