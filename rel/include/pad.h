@@ -23,25 +23,28 @@ void init();
 void on_frame_start();
 void tick(); // Run this after controller inputs are read and processed by the game
 
+// In exclusive mode, only the mod can read inputs using these functions, AND inputs only register
+// when passing `true` to the optional second argument of the input checking functions,
+// meanwhile the game sees zero inputs.
+void set_exclusive_mode(bool enabled);
+
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
-// In exclusive mode, only the mod can read inputs using these functions, while the game sees zero inputs.
 
 // Accept a gc::PadDigitalInput
-bool button_down(u16 digital_input);
-bool button_pressed(u16 digital_input);
-bool button_released(u16 digital_input);
-bool button_chord_pressed(u16 btn1, u16 btn2);
+bool button_down(u16 digital_input, bool priority = false);
+bool button_pressed(u16 digital_input, bool priority = false);
+bool button_released(u16 digital_input, bool priority = false);
+bool button_chord_pressed(u16 btn1, u16 btn2, bool priority = false);
 
 // Accept a mkb::PadAnalogInput
-bool analog_down(u16 analog_input);
-bool analog_pressed(u16 analog_input);
-bool analog_released(u16 analog_input);
-bool analog_chord_pressed(u16 analog1, u16 analog2);
+bool analog_down(u16 analog_input, bool priority = false);
+bool analog_pressed(u16 analog_input, bool priority = false);
+bool analog_released(u16 analog_input, bool priority = false);
+bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority = false);
 
-s32 get_cstick_dir();
-bool dir_down(u16 dir); // Only works for cardinal directions
-bool dir_pressed(u16 dir); // Only works for cardinal directions
+s32 get_cstick_dir(bool priority = false);
+bool dir_down(u16 dir, bool priority = false); // Only works for cardinal directions
+bool dir_pressed(u16 dir, bool priority = false); // Only works for cardinal directions
 bool konami_pressed();
-void set_exclusive_mode(bool enabled);
 
 }

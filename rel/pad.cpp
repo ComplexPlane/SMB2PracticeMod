@@ -15,34 +15,34 @@ static mkb::DigitalInputGroup s_merged_digital_inputs;
 static mkb::AnalogInputGroup s_analog_inputs[4];
 static mkb::PadStatusGroup s_pad_status_groups[4];
 
-bool button_down(u16 digital_input)
+bool button_down(u16 digital_input, bool priority)
 {
-    return s_merged_digital_inputs.raw & digital_input;
+    return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
 }
 
-bool button_pressed(u16 digital_input)
+bool button_pressed(u16 digital_input, bool priority)
 {
-    return s_merged_digital_inputs.pressed & digital_input;
+    return (!s_exclusive_mode || priority) && s_merged_digital_inputs.pressed & digital_input;
 }
 
-bool button_released(u16 digital_input)
+bool button_released(u16 digital_input, bool priority)
 {
-    return s_merged_digital_inputs.released & digital_input;
+    return (!s_exclusive_mode || priority) && s_merged_digital_inputs.released & digital_input;
 }
 
-bool analog_down(u16 analog_input)
+bool analog_down(u16 analog_input, bool priority)
 {
-    return s_merged_analog_inputs.raw & analog_input;
+    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.raw & analog_input;
 }
 
-bool analog_pressed(u16 analog_input)
+bool analog_pressed(u16 analog_input, bool priority)
 {
-    return s_merged_analog_inputs.pressed & analog_input;
+    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.pressed & analog_input;
 }
 
-bool analog_released(u16 analog_input)
+bool analog_released(u16 analog_input, bool priority)
 {
-    return s_merged_analog_inputs.released & analog_input;
+    return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
 static bool any_input_pressed()
@@ -64,46 +64,46 @@ static void update_konami()
         case 0:
         case 1:
         {
-            if (dir_pressed(DIR_UP)) s_konami_progress++;
+            if (dir_pressed(DIR_UP, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 2:
         case 3:
         {
-            if (dir_pressed(DIR_DOWN)) s_konami_progress++;
+            if (dir_pressed(DIR_DOWN, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 4:
         case 6:
         {
-            if (dir_pressed(DIR_LEFT)) s_konami_progress++;
+            if (dir_pressed(DIR_LEFT, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 5:
         case 7:
         {
-            if (dir_pressed(DIR_RIGHT)) s_konami_progress++;
+            if (dir_pressed(DIR_RIGHT, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 8:
         {
-            if (button_pressed(gc::PAD_BUTTON_B)) s_konami_progress++;
+            if (button_pressed(gc::PAD_BUTTON_B, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 9:
         {
-            if (button_pressed(gc::PAD_BUTTON_A)) s_konami_progress++;
+            if (button_pressed(gc::PAD_BUTTON_A, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 10:
         {
-            if (button_pressed(gc::PAD_BUTTON_START)) s_konami_progress++;
+            if (button_pressed(gc::PAD_BUTTON_START, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
@@ -115,22 +115,24 @@ static void update_konami()
     }
 }
 
-bool button_chord_pressed(u16 btn1, u16 btn2)
+bool button_chord_pressed(u16 btn1, u16 btn2, bool priority)
 {
-    return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
+    return (button_down(btn1, priority) && button_pressed(btn2, priority))
+        || (button_pressed(btn1, priority) && button_down(btn2, priority));
 }
 
-bool analog_chord_pressed(u16 analog1, u16 analog2)
+bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority)
 {
-    return (analog_down(analog1) && analog_pressed(analog2)) || (analog_pressed(analog1) && analog_down(analog2));
+    return (analog_down(analog1, priority) && analog_pressed(analog2, priority))
+        || (analog_pressed(analog1, priority) && analog_down(analog2, priority));
 }
 
-s32 get_cstick_dir()
+s32 get_cstick_dir(bool priority)
 {
-    bool left = analog_down(mkb::PAI_CSTICK_LEFT);
-    bool right = analog_down(mkb::PAI_CSTICK_RIGHT);
-    bool up = analog_down(mkb::PAI_CSTICK_UP);
-    bool down = analog_down(mkb::PAI_CSTICK_DOWN);
+    bool left = analog_down(mkb::PAI_CSTICK_LEFT, priority);
+    bool right = analog_down(mkb::PAI_CSTICK_RIGHT, priority);
+    bool up = analog_down(mkb::PAI_CSTICK_UP, priority);
+    bool down = analog_down(mkb::PAI_CSTICK_DOWN, priority);
 
     if (up && left) return DIR_UPLEFT;
     else if (up && right) return DIR_UPRIGHT;
@@ -143,25 +145,25 @@ s32 get_cstick_dir()
     else return DIR_NONE;
 }
 
-bool dir_down(u16 dir)
+bool dir_down(u16 dir, bool priority)
 {
     switch (dir)
     {
         case DIR_UP:
         {
-            return button_down(gc::PAD_BUTTON_UP) || analog_down(mkb::PAI_LSTICK_UP);
+            return button_down(gc::PAD_BUTTON_UP, priority) || analog_down(mkb::PAI_LSTICK_UP, priority);
         }
         case DIR_LEFT:
         {
-            return button_down(gc::PAD_BUTTON_LEFT) || analog_down(mkb::PAI_LSTICK_LEFT);
+            return button_down(gc::PAD_BUTTON_LEFT, priority) || analog_down(mkb::PAI_LSTICK_LEFT, priority);
         }
         case DIR_RIGHT:
         {
-            return button_down(gc::PAD_BUTTON_RIGHT) || analog_down(mkb::PAI_LSTICK_RIGHT);
+            return button_down(gc::PAD_BUTTON_RIGHT, priority) || analog_down(mkb::PAI_LSTICK_RIGHT, priority);
         }
         case DIR_DOWN:
         {
-            return button_down(gc::PAD_BUTTON_DOWN) || analog_down(mkb::PAI_LSTICK_DOWN);
+            return button_down(gc::PAD_BUTTON_DOWN, priority) || analog_down(mkb::PAI_LSTICK_DOWN, priority);
         }
         default:
         {
@@ -170,25 +172,25 @@ bool dir_down(u16 dir)
     }
 }
 
-bool dir_pressed(u16 dir)
+bool dir_pressed(u16 dir, bool priority)
 {
     switch (dir)
     {
         case DIR_UP:
         {
-            return button_pressed(gc::PAD_BUTTON_UP) || analog_pressed(mkb::PAI_LSTICK_UP);
+            return button_pressed(gc::PAD_BUTTON_UP, priority) || analog_pressed(mkb::PAI_LSTICK_UP, priority);
         }
         case DIR_LEFT:
         {
-            return button_pressed(gc::PAD_BUTTON_LEFT) || analog_pressed(mkb::PAI_LSTICK_LEFT);
+            return button_pressed(gc::PAD_BUTTON_LEFT, priority) || analog_pressed(mkb::PAI_LSTICK_LEFT, priority);
         }
         case DIR_RIGHT:
         {
-            return button_pressed(gc::PAD_BUTTON_RIGHT) || analog_pressed(mkb::PAI_LSTICK_RIGHT);
+            return button_pressed(gc::PAD_BUTTON_RIGHT, priority) || analog_pressed(mkb::PAI_LSTICK_RIGHT, priority);
         }
         case DIR_DOWN:
         {
-            return button_pressed(gc::PAD_BUTTON_DOWN) || analog_pressed(mkb::PAI_LSTICK_DOWN);
+            return button_pressed(gc::PAD_BUTTON_DOWN, priority) || analog_pressed(mkb::PAI_LSTICK_DOWN, priority);
         }
         default:
         {

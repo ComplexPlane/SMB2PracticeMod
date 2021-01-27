@@ -48,7 +48,7 @@ static bool are_practice_tools_enabled()
 
 static void handle_options()
 {
-    if (pad::button_pressed(gc::PAD_BUTTON_A))
+    if (pad::button_pressed(gc::PAD_BUTTON_A, true))
     {
         if (s_cursor_pos == 0)
         {
@@ -76,19 +76,19 @@ static void handle_options()
 void tick()
 {
     // Binding to open menu used to be R+Z, but I found it uncomfortable over time.
-    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z))
+    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z, true))
     {
         draw::notify(draw::Color::RED, "Use L+R to toggle menu");
     }
 
     bool toggle = false;
-    if (pad::button_pressed(gc::PAD_BUTTON_B))
+    if (pad::button_pressed(gc::PAD_BUTTON_B, true))
     {
         s_visible = false;
     }
     else
     {
-        toggle = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R);
+        toggle = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R, true);
         s_visible ^= toggle;
     }
     bool just_opened = s_visible && toggle;
@@ -97,7 +97,7 @@ void tick()
 
     if (!s_visible) return;
 
-    s32 dir_delta = pad::dir_pressed(pad::DIR_UP) - pad::dir_pressed(pad::DIR_DOWN);
+    s32 dir_delta = pad::dir_pressed(pad::DIR_UP, true) - pad::dir_pressed(pad::DIR_DOWN, true);
     s_cursor_pos += dir_delta;
     if (s_cursor_pos < 0) s_cursor_pos += 2;
     else if (s_cursor_pos > 1) s_cursor_pos -= 2;
@@ -212,11 +212,11 @@ void disp()
 //
 //    // Advance menu
 //    s32 num_menu_items = s_menu_items[static_cast<s32>(menu.id)];
-//    if (pad::dir_pressed(pad::DIR_DOWN))
+//    if (pad::dir_pressed(pad::DIR_DOWN, true))
 //    {
 //        menu.cursor_pos = (menu.cursor_pos + 1) % num_menu_items;
 //    }
-//    else if (pad::dir_pressed(pad::DIR_UP))
+//    else if (pad::dir_pressed(pad::DIR_UP, true))
 //    {
 //        menu.cursor_pos = (menu.cursor_pos + num_menu_items - 1) % num_menu_items;
 //    }
