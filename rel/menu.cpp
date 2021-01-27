@@ -171,7 +171,7 @@ void about_menu()
     draw::debug_text(MARGIN + PAD + 2, MARGIN + PAD + 2.5f * LINE_HEIGHT + height_offset, light_green, "\x1c");
 
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 5 * LINE_HEIGHT, draw::Color::ORANGE, "Practice Tools Bindings");
-    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 6 * LINE_HEIGHT, draw::Color::WHITE, "  R+Z        \x1c Toggle this menu");
+    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 6 * LINE_HEIGHT, draw::Color::WHITE, "  L+R        \x1c Toggle this menu");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 7 * LINE_HEIGHT, draw::Color::WHITE, "  X          \x1c Create savestate");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 8 * LINE_HEIGHT, draw::Color::WHITE, "  Y          \x1c Load savestate");
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 9 * LINE_HEIGHT, draw::Color::WHITE, "  C-Stick    \x1c Change savestate slot");
