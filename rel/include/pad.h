@@ -30,13 +30,14 @@ void tick(); // Run this after controller inputs are read and processed by the g
 bool button_down(u16 digital_input);
 bool button_pressed(u16 digital_input);
 bool button_released(u16 digital_input);
+bool button_chord_pressed(u16 btn1, u16 btn2);
 
 // Accept a mkb::PadAnalogInput
 bool analog_down(u16 analog_input);
 bool analog_pressed(u16 analog_input);
 bool analog_released(u16 analog_input);
+bool analog_chord_pressed(u16 analog1, u16 analog2);
 
-bool button_chord_pressed(u16 btn1, u16 btn2);
 s32 get_cstick_dir();
 bool dir_down(u16 dir); // Only works for cardinal directions
 bool dir_pressed(u16 dir); // Only works for cardinal directions

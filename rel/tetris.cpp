@@ -109,7 +109,7 @@ void Tetris::new_game()
 void Tetris::disp()
 {
     bool konami_pressed = pad::konami_pressed();
-    bool trig_chord_pressed = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R);
+    bool trig_chord_pressed = pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z);
     if (konami_pressed || (m_ever_shown && trig_chord_pressed))
     {
         m_hidden = !m_hidden;

@@ -16,6 +16,9 @@
 namespace iw
 {
 
+static bool s_enabled;
+static u32 s_patch1, s_patch2;
+
 static u32 s_anim_counter;
 static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
@@ -25,9 +28,29 @@ static u32 s_prev_retrace_count;
 
 void init()
 {
+    if (s_enabled) return;
+
+    s_enabled = true;
+
     // IW-related patches
-    patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
-    patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+    s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
+    s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+}
+
+void dest()
+{
+    if (!s_enabled) return;
+
+    s_enabled = false;
+    patch::write_word(reinterpret_cast<void *>(0x80274804), s_patch1);
+    patch::write_word(reinterpret_cast<void *>(0x8032a86c), s_patch2);
+    strcpy(mkb::continue_saved_game_text, "Continue the game from the saved point.");
+    strcpy(mkb::start_game_from_beginning_text, "Start the game from the beginning.");
+}
+
+bool is_enabled()
+{
+    return s_enabled;
 }
 
 static void handle_iw_selection()
@@ -104,15 +127,17 @@ static void handle_iw_timer()
 
 void tick()
 {
+    if (!s_enabled) return;
+
+    if (mkb::main_mode == mkb::MD_GAME)
+    {
+        const char *msg = "Up/Down to Change World.";
+        strcpy(mkb::continue_saved_game_text, msg);
+        strcpy(mkb::start_game_from_beginning_text, msg);
+    }
+
     if (mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::MGM_STORY)
     {
-        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT)
-        {
-            const char *msg = "Up/Down to Change World.";
-            strcpy(mkb::continue_saved_game_text, msg);
-            strcpy(mkb::start_game_from_beginning_text, msg);
-        }
-
         handle_iw_selection();
         set_save_file_info();
 
@@ -133,7 +158,11 @@ void tick()
 
 void disp()
 {
-    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY || !main::currently_playing_iw) return;
+    if (!s_enabled
+    || mkb::main_mode != mkb::MD_GAME
+    || mkb::main_game_mode != mkb::MGM_STORY
+    || !main::currently_playing_iw)
+        return;
 
     constexpr u32 SECOND = 60;
     constexpr u32 MINUTE = SECOND * 60;

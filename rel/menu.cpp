@@ -5,6 +5,9 @@
 #include "jump.h"
 #include "pad.h"
 #include "draw.h"
+#include "timer.h"
+#include "savestate.h"
+#include "iw.h"
 
 constexpr f32 clamp_256(f32 x) { return x < 0 ? 0 : (x > 255 ? 255 : x); }
 
@@ -38,17 +41,46 @@ static bool s_visible;
 //static MenuState s_menu_stack[4] = {{MenuID::ROOT, 0}};
 //static s32 s_menu_stack_ptr = 0;
 
+static bool are_practice_tools_enabled()
+{
+    return timer::is_enabled() && savestate::is_enabled() && iw::is_enabled();
+}
+
 static void handle_options()
 {
-    if (s_cursor_pos == 1 && pad::button_pressed(gc::PAD_BUTTON_A))
+    if (pad::button_pressed(gc::PAD_BUTTON_A))
     {
-        if (jump::is_enabled()) jump::dest();
-        else jump::init();
+        if (s_cursor_pos == 0)
+        {
+            if (are_practice_tools_enabled())
+            {
+                timer::dest();
+                savestate::dest();
+                iw::dest();
+            }
+            else
+            {
+                timer::init();
+                savestate::init();
+                iw::init();
+            }
+        }
+        else if (s_cursor_pos == 1)
+        {
+            if (jump::is_enabled()) jump::dest();
+            else jump::init();
+        }
     }
 }
 
 void tick()
 {
+    // Binding to open menu used to be R+Z, but I found it uncomfortable over time.
+    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z))
+    {
+        draw::notify(draw::Color::RED, "Use L+R to toggle menu");
+    }
+
     bool toggle = false;
     if (pad::button_pressed(gc::PAD_BUTTON_B))
     {
@@ -56,7 +88,7 @@ void tick()
     }
     else
     {
-        toggle = pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z);
+        toggle = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R);
         s_visible ^= toggle;
     }
     bool just_opened = s_visible && toggle;
@@ -122,8 +154,17 @@ void about_menu()
     gc::GXColor lerped_color = lerp_colors(light_green, unfocused, sin_lerp(40));
 
     draw::debug_text(MARGIN + PAD, MARGIN + PAD + 1.5f * LINE_HEIGHT, draw::Color::ORANGE, "Available Mods");
-    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 2.5f * LINE_HEIGHT, s_cursor_pos == 0 ? lerped_color : unfocused,  "  Practice Tools:     Enabled");
-    draw::debug_text(MARGIN + PAD, MARGIN + PAD + 3.5f * LINE_HEIGHT, s_cursor_pos == 1 ? lerped_color : unfocused,  "  Jump Mod:           %s", jump::is_enabled() ? "Enabled" : "Disabled");
+    draw::debug_text(
+        MARGIN + PAD,
+        MARGIN + PAD + 2.5f * LINE_HEIGHT,
+        s_cursor_pos == 0 ? lerped_color : unfocused,
+        "  Practice Tools:     %s", are_practice_tools_enabled() ? "Enabled" : "Disabled");
+
+    draw::debug_text(
+        MARGIN + PAD,
+        MARGIN + PAD + 3.5f * LINE_HEIGHT,
+        s_cursor_pos == 1 ? lerped_color : unfocused,
+        "  Jump Mod:           %s", jump::is_enabled() ? "Enabled" : "Disabled");
 
     // Draw selection arrow
     s32 height_offset = s_cursor_pos == 0 ? 0 : LINE_HEIGHT;

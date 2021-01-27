@@ -120,6 +120,11 @@ bool button_chord_pressed(u16 btn1, u16 btn2)
     return (button_down(btn1) && button_pressed(btn2)) || (button_pressed(btn1) && button_down(btn2));
 }
 
+bool analog_chord_pressed(u16 analog1, u16 analog2)
+{
+    return (analog_down(analog1) && analog_pressed(analog2)) || (analog_pressed(analog1) && analog_down(analog2));
+}
+
 s32 get_cstick_dir()
 {
     bool left = analog_down(mkb::PAI_CSTICK_LEFT);
