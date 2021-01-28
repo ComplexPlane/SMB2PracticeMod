@@ -11,7 +11,7 @@ include $(DEVKITPPC)/gamecube_rules
 
 ifeq ($(REGION),)
 
-all: us jp eu
+all: us gaiden monkeyed2 deluxein2 commpack2020
 us: elf2rel
 	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2E8P
 gaiden: elf2rel
@@ -20,18 +20,15 @@ monkeyed2: elf2rel
 	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EBJ
 deluxein2: elf2rel
 	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EDX
-jp: elf2rel
-	@$(MAKE) --no-print-directory REGION=jp GAMECODE=GM2J8P
-eu: elf2rel
-	@$(MAKE) --no-print-directory REGION=eu GAMECODE=GM2P8P
+commpack2020: elf2rel
+	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2ECP
 
 clean: clean_elf2rel
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EGD
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EBJ
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EDX
-	@$(MAKE) --no-print-directory clean_target REGION=jp GAMECODE=GM2J8P
-	@$(MAKE) --no-print-directory clean_target REGION=eu GAMECODE=GM2P8P
+	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2ECP
 
 #---------------------------------------------------------------------------------
 # For now, make elf2rel a phony target
@@ -61,7 +58,7 @@ clean_elf2rel:
 	@echo "clean ... elf2rel"
 	@rm -rf $(ELF2REL_BUILD)
 
-.PHONY: all clean us jp eu elf2rel clean_elf2rel
+.PHONY: all clean us gaiden monkeyed2 deluxein2 commpack2020 elf2rel clean_elf2rel
 
 else
 
@@ -91,29 +88,15 @@ LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections 
 
 # Platform options
 ifeq ($(GAMECODE),GM2E8P)
-	CFLAGS += -DMKB2_US
-	ASFLAGS += -DMKB2_US
 	PRINTVER = "US"
 else ifeq ($(GAMECODE),GM2EGD)
-	CFLAGS += -DMKB2_US
-	ASFLAGS += -DMKB2_US
 	PRINTVER = "GAIDEN"
 else ifeq ($(GAMECODE),GM2EBJ)
-	CFLAGS += -DMKB2_US
-	ASFLAGS += -DMKB2_US
 	PRINTVER = "MONKEYED2"
 else ifeq ($(GAMECODE),GM2EDX)
-	CFLAGS += -DMKB2_US
-	ASFLAGS += -DMKB2_US
 	PRINTVER = "DELUXEIN2"
-else ifeq ($(GAMECODE),GM2J8P)
-	CFLAGS += -DMKB2_JP
-	ASFLAGS += -DMKB2_JP
-	PRINTVER = "JP"
-else ifeq ($(GAMECODE),GM2P8P)
-	CFLAGS += -DMKB2_EU
-	ASFLAGS += -DMKB2_EU
-	PRINTVER = "EU"
+else ifeq ($(GAMECODE),GM2ECP)
+	PRINTVER = "COMMPACK2020"
 endif
 
 

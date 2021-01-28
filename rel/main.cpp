@@ -23,13 +23,7 @@ static void (*s_process_inputs_trampoline)();
 
 static void perform_assembly_patches()
 {
-#ifdef MKB2_US
-    u32 offset = 0x600;
-#elif defined MKB2_JP
-    u32 offset = 0x604;
-#elif defined MKB2_EU
-    u32 offset = 0x604;
-#endif
+    constexpr u32 offset = 0x600;
     // Inject the run function at the start of the main game loop
     patch::write_branch_bl(reinterpret_cast<void *>(reinterpret_cast<u32>(
                                                         heap::heap_data.main_loop_rel_location) + offset),
@@ -37,10 +31,8 @@ static void perform_assembly_patches()
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
-#ifdef MKB2_US
     // Only needs to be applied to the US version
     patch::write_nop(reinterpret_cast<void *>(0x80033E9C));
-#endif
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is disabled
     patch::write_nop(reinterpret_cast<void *>(0x80299f54));

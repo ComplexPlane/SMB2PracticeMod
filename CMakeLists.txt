@@ -11,8 +11,6 @@ include_directories(rel/include)
 include_directories(rel/include/gc)
 include_directories(rel/include/mkb)
 
-add_definitions(-DMKB2_US)
-
 add_executable(ApeSphere
         rel/assembly/main_loop_assembly.s
         rel/runtime/restfpr_x.s

@@ -108,7 +108,11 @@ static void handle_iw_timer()
 {
     u32 retrace_count = gc::VIGetRetraceCount();
 
-    if (mkb::g_storymode_mode == 5)
+    // Halt the timer if we're selecting the story mode file
+    // If we're still on the file selection screen and the IW file has been opened though,
+    // start the timer during the open animation (to be more consistent with prior versions
+    // of the IW code)
+    if (mkb::g_storymode_mode == 5 && mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA)
     {
         // We're not actually in the IW, zero the timer
         s_iw_time = 0;
