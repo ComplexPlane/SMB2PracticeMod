@@ -41,9 +41,14 @@ static_assert(sizeof(StoryModeSaveFile) == 132);
 extern "C"
 {
 extern StoryModeSaveFile storymode_save_files[3];
+extern u16 g_storymode_mode;
+extern u8 curr_storymode_save_file_idx;
+
+// These get wiped after loading a savefile (main_game REL gets reloaded when loading a new file??)
 extern u8 data_select_menu_state;
 extern u8 story_file_select_state;
 extern u8 selected_story_file_idx;
+
 extern char continue_saved_game_text[40];
 extern char start_game_from_beginning_text[36];
 extern u16 curr_world;

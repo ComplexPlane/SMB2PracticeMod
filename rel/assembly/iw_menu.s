@@ -163,8 +163,8 @@ beq No
 lis r3, currently_playing_iw@h
 ori r3, r3, currently_playing_iw@l
 lwz r4, 0x0 (r3)
-cmpwi r4, 1
-bne No
+cmpwi r4, 0
+beq No
 
 // Check if 9 stages in world complete
 

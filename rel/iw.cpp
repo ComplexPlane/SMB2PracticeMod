@@ -55,8 +55,8 @@ bool is_enabled()
 
 static void handle_iw_selection()
 {
-    if (mkb::data_select_menu_state != mkb::DSMS_DEFAULT) return;
-    if (mkb::story_file_select_state == 1) return;
+    if (mkb::g_storymode_mode != 5) return;
+
     if (pad::analog_down(mkb::PAI_LSTICK_LEFT) || pad::analog_down(mkb::PAI_LSTICK_RIGHT)) return;
     if (pad::button_down(gc::PAD_BUTTON_LEFT) || pad::button_down(gc::PAD_BUTTON_RIGHT)) return;
 
@@ -81,12 +81,12 @@ static void handle_iw_selection()
             story_save.current_world = dir == +1 ? 0 : 9;
         }
     }
-
-    main::currently_playing_iw = story_save.status_flag;
 }
 
 static void set_save_file_info()
 {
+    if (mkb::g_storymode_mode != 5) return;
+
     s_anim_counter += 1;
 
     for (s32 i = 0; i < 3; i++)
@@ -108,9 +108,7 @@ static void handle_iw_timer()
 {
     u32 retrace_count = gc::VIGetRetraceCount();
 
-    if (mkb::main_mode != mkb::MD_GAME
-        || mkb::main_game_mode != mkb::MGM_STORY
-        || mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA)
+    if (mkb::g_storymode_mode == 5)
     {
         // We're not actually in the IW, zero the timer
         s_iw_time = 0;
@@ -129,29 +127,27 @@ void tick()
 {
     if (!s_enabled) return;
 
-    if (mkb::main_mode == mkb::MD_GAME)
-    {
-        const char *msg = "Up/Down to Change World.";
-        strcpy(mkb::continue_saved_game_text, msg);
-        strcpy(mkb::start_game_from_beginning_text, msg);
-    }
+    main::currently_playing_iw = false;
+    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY) return;
 
-    if (mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::MGM_STORY)
-    {
-        handle_iw_selection();
-        set_save_file_info();
+    const char *msg = "Up/Down to Change World.";
+    strcpy(mkb::continue_saved_game_text, msg);
+    strcpy(mkb::start_game_from_beginning_text, msg);
 
-        // Maybe not the best way to detect if we're playing an IW but it works
-        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN)
-        {
-            mkb::StoryModeSaveFile &file = mkb::storymode_save_files[mkb::selected_story_file_idx];
-            main::currently_playing_iw =
-                file.status_flag
-                && file.fileName[0] == 'W'
-                && file.fileName[4] == 'I'
-                && file.fileName[5] == 'W';
-        }
-    }
+    handle_iw_selection();
+    set_save_file_info();
+
+    u8 file_idx = mkb::g_storymode_mode == 5
+        ? mkb::selected_story_file_idx
+        : mkb::curr_storymode_save_file_idx;
+
+    // Maybe not the best way to detect if we're playing an IW but it works
+    mkb::StoryModeSaveFile &file = mkb::storymode_save_files[file_idx];
+    main::currently_playing_iw =
+        file.status_flag
+        && file.fileName[0] == 'W'
+        && file.fileName[4] == 'I'
+        && file.fileName[5] == 'W';
 
     handle_iw_timer();
 }

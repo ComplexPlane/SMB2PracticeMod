@@ -3893,7 +3893,7 @@
 80298D50:process_inputs
 80298D78:threshold_analog_inputs
 80299068:g_calc_frames_since_last_input_change
-80299160:g_input_processing_func2
+80299160:merge_inputs
 802995AC:FUN_801c3374
 80299610:g_something_with_possibly_compressed_bitmaps
 802998CC:FUN_801c3694
@@ -8212,6 +8212,7 @@
 804495F4:DBClose
 8044A0C8:DBClose
 8044ACF4:switchdataD_80374aac
+8044AF20:g_active_players
 8044AF28:camera_funcs
 8044AF30:g_some_camera_func_table2
 8044AF3C:g_some_camera_func_table3
@@ -8443,6 +8444,7 @@
 8054DBC8:g_storymode_score
 8054DBCC:g_storymode_banana_count
 8054DBD0:g_some_storymode_func_ptr
+8054DBDA:curr_storymode_save_file_idx
 8054DBF0:g_something_related_to_mirrors
 8054DBF8:is_more_than_24_mib
 8054DC04:g_some_buffer_ptr
@@ -8820,7 +8822,7 @@
 808FE74C:g_setup_story_file_nameentry
 808FE890:g_storymode_mode_func22
 808FE914:g_some_storymode_mode_func
-808FE9AC:FUN_804d6934
+808FE9AC:get_current_storymode_save_file
 808FE9D0:FUN_804d6958
 808FEA34:FUN_804d69bc
 808FEAA4:empty_function
