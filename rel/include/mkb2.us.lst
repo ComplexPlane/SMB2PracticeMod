@@ -14933,3 +14933,5 @@ E000002C:mtxa_23
 E0000094:locked_cache_mtx_stack_ptr
 E000019C:e
 E00001A0:0.5
+8032bfb0:sprite_loadin_stage_name_tick
+8032ccb4:sprite_bonus_stage_tick

@@ -102,6 +102,13 @@ void sprite_bonus_finish_or_perfect_tick(u8 *status, Sprite *sprite);
 void sprite_timer_ball_tick(u8 *status, Sprite *sprite);
 void sprite_score_tick(u8 *status, Sprite *sprite);
 void sprite_score_disp(Sprite *sprite);
+void sprite_go_tick(u8 *status, Sprite *sprite);
+void sprite_ready_tick(u8 *status, Sprite *sprite);
+void sprite_player_num_tick(u8 *status, Sprite *sprite);
+void sprite_replay_tick(u8 *status, Sprite *sprite);
+void sprite_loadin_stage_name_tick(u8 *status, Sprite *sprite);
+void sprite_bonus_stage_tick(u8 *status, Sprite *sprite);
+void sprite_final_stage_tick(u8 *status, Sprite *sprite);
 }
 
 }

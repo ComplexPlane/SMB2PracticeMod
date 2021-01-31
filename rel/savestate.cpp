@@ -32,6 +32,9 @@ static s32 s_active_state_slot;
 static bool s_created_state_last_frame;
 static bool s_frame_advance_mode;
 
+// For when a state should be loaded on the subsequent frame
+static bool s_reload_state = false;
+
 static void (*s_set_minimap_mode_trampoline)(u32 mode);
 
 void init()
@@ -176,7 +179,7 @@ static void handle_pause_menu_load(SaveState *state)
 
     if (paused_now && !paused_in_state)
     {
-        // Destroy the pause menu sprite that currently exists
+        // estroy the pause menu sprite that currently exists
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
         {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
@@ -196,7 +199,7 @@ static void handle_pause_menu_load(SaveState *state)
     }
 }
 
-static void destruct_post_goal_sprites()
+static void destruct_non_gameplay_sprites()
 {
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
     {
@@ -210,7 +213,14 @@ static void destruct_post_goal_sprites()
             || sprite->disp_func == mkb::sprite_time_bonus_disp
             || sprite->disp_func == mkb::sprite_stage_score_disp
             || sprite->tick_func == mkb::sprite_fallout_tick
-            || sprite->tick_func == mkb::sprite_bonus_finish_or_perfect_tick);
+            || sprite->tick_func == mkb::sprite_bonus_finish_or_perfect_tick
+            || sprite->tick_func == mkb::sprite_ready_tick
+            || sprite->tick_func == mkb::sprite_go_tick
+            || sprite->tick_func == mkb::sprite_player_num_tick
+            || sprite->tick_func == mkb::sprite_replay_tick
+            || sprite->tick_func == mkb::sprite_loadin_stage_name_tick
+            || sprite->tick_func == mkb::sprite_bonus_stage_tick
+            || sprite->tick_func == mkb::sprite_final_stage_tick);
         if (post_goal_sprite) mkb::sprite_pool_info.status_list[i] = 0;
     }
 }
@@ -234,6 +244,34 @@ static void destruct_distracting_effects()
             }
         }
     }
+}
+
+static bool handle_load_state_from_nonplay_submode()
+{
+    if (!(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
+        || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
+        || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT
+        || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN
+        || mkb::sub_mode == mkb::SMD_GAME_READY_INIT
+        || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)) return true;
+
+    // Loading a state while paused in a non-gameplay mode causes issues for some reason
+    bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
+    if (paused_now)
+    {
+        draw::notify(draw::Color::RED, "Cannot Load Savestate, Please Unpause");
+        return false;
+    }
+
+    mkb::smd_game_play_init();
+    mkb::sub_mode_request = mkb::SMD_GAME_PLAY_MAIN;
+
+    // Loading a state for one frame after being in a replay fails to load the state properly, but also
+    // loading after a frame has elapsed seems to fix it. There's probably some extra data I need to save,
+    // but for now this works.
+    s_reload_state = true;
+
+    return true;
 }
 
 void tick()
@@ -334,13 +372,12 @@ void tick()
         || (pad::button_down(gc::PAD_BUTTON_X)
             && s_created_state_last_frame)
         || s_frame_advance_mode
-        || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE))
+        || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)
+        || s_reload_state)
     {
-        if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)
-        {
-            draw::notify(draw::Color::RED, "Cannot Load Savestate During Retry");
-            return;
-        }
+        s_reload_state = false;
+
+        // TODO allow loading savestate during timeover
         if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
         {
             draw::notify(draw::Color::RED, "Cannot Load Savestate After Timeout");
@@ -367,13 +404,15 @@ void tick()
             return;
         }
 
+        if (!handle_load_state_from_nonplay_submode()) return;
+
         // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
         handle_pause_menu_load(&state);
 
         state.store.enter_load_mode();
         pass_over_regions(&state.store);
 
-        destruct_post_goal_sprites();
+        destruct_non_gameplay_sprites();
         destruct_distracting_effects();
 
         if (!s_created_state_last_frame)

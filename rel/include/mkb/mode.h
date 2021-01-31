@@ -314,6 +314,10 @@ extern s32 main_mode_request;
 extern s32 sub_mode_request;
 extern s32 main_game_mode;
 extern s32 sub_mode_frame_counter;
+
+void smd_game_ready_init();
+void smd_game_play_init();
+void smd_game_play_tick();
 }
 
 }
