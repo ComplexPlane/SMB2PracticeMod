@@ -4034,7 +4034,7 @@
 802A2510:FUN_801cc2d8
 802A254C:SoundIcsReq
 802A2FA0:FUN_801ccd68
-802A3004:fade_out_bgm
+802A3004:g_set_track_volume
 802A3124:switchD
 802A3128:caseD_0
 802A31BC:caseD_1

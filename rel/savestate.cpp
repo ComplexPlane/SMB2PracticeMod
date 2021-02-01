@@ -1,14 +1,24 @@
 #include "savestate.h"
+
+#include <mkb/mkb.h>
+
 #include "pad.h"
 #include "log.h"
 #include "patch.h"
 #include "memstore.h"
 #include "heap.h"
 #include "draw.h"
+#include "timer.h"
 
-#include <mkb/mkb.h>
+namespace mkb
+{
 
-#include <timer.h>
+extern "C"
+{
+void g_set_track_volume(u16 volume, u8 x);
+}
+
+}
 
 namespace savestate
 {
@@ -179,7 +189,7 @@ static void handle_pause_menu_load(SaveState *state)
 
     if (paused_now && !paused_in_state)
     {
-        // estroy the pause menu sprite that currently exists
+        // Destroy the pause menu sprite that currently exists
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
         {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
@@ -190,12 +200,18 @@ static void handle_pause_menu_load(SaveState *state)
                 break;
             }
         }
+
+        // Set the background music volume to 100% like unpausing does
+        mkb::g_set_track_volume(100, 10);
     }
     else if (!paused_now && paused_in_state)
     {
         // Allocate a new pause menu sprite
         s32 i = mkb::pool_alloc(&mkb::sprite_pool_info, state->pause_menu_sprite_status);
         mkb::sprites[i] = state->pause_menu_sprite;
+
+        // Set the background music volume to 50% like the pause menu does
+        mkb::g_set_track_volume(50, 10);
     }
 }
 
