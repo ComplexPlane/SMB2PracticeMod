@@ -81,13 +81,13 @@ void disp()
         convert_frame_time(s_rta_timer, &sec, &centisec);
         draw::debug_text(
             380, 34,
-            draw::Color::WHITE,
+            draw::Color::White,
             "RTA: %02d.%02d", sec, centisec);
 
         convert_frame_time(mkb::stage_time_frames_remaining - s_rta_timer, &sec, &centisec);
         draw::debug_text(
             380, 50,
-            draw::Color::WHITE,
+            draw::Color::White,
             "PAU: %02d.%02d", sec, centisec);
     }
 }

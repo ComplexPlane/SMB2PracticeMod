@@ -7,7 +7,7 @@
 #include "timer.h"
 #include "iw.h"
 #include "pad.h"
-#include "menu.h"
+#include "menu_impl.h"
 #include "jump.h"
 #include "scratch.h"
 

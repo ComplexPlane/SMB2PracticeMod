@@ -9,13 +9,13 @@ static constexpr s32 DEBUG_CHAR_WIDTH = 0xc;
 
 enum class Color
 {
-    WHITE,
-    RED,
-    ORANGE,
-    BLUE,
-    PINK,
-    PURPLE,
-    GREEN,
+    White,
+    Red,
+    Orange,
+    Blue,
+    Pink,
+    Purple,
+    Green,
 };
 
 // Call once during mod initialization
