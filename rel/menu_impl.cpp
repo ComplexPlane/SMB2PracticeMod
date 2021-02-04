@@ -173,8 +173,8 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                     MARGIN + PAD,
                     y,
                     cursor_pos == selectable_idx ? lerped_color : unfocused,
-                    "                      %s",
-                    widget.checkbox.get() ? "Enabled" : "Disabled");
+                    "                        %s",
+                    widget.checkbox.get() ? "On" : "Off");
 
                 if (cursor_pos == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;

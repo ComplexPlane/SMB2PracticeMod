@@ -9,6 +9,16 @@
 
 #define ARRAY_LEN(a) (sizeof((a)) / sizeof((a)[0]))
 
+namespace mkb
+{
+
+extern "C"
+{
+extern u8 rumble_enabled_bitflag;
+}
+
+}
+
 namespace menu
 {
 
@@ -33,14 +43,40 @@ static void set_practice_tools_enabled(bool enable)
     }
 }
 
-static void set_jump_mod_enabled(bool enable) { if (enable) jump::init(); else jump::dest(); }
-
-static bool get_rumble_enabled()
-{
-    return true;
-}
-
-static void set_rumble_enabled(bool enable) {}
+static Widget rumble_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 1 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
+        }
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 2 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 1); },
+        }
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 3 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 2); },
+        }
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 4 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
+        }
+    }
+};
 
 static Widget help_widgets[] = {
     {.type = WidgetType::Header, .header = {"Practice Tools Bindings"}},
@@ -70,12 +106,13 @@ static Widget root_widgets[] = {
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Jump Mod", jump::is_enabled, set_jump_mod_enabled},
+        .checkbox = {
+            .label = "Jump Mod",
+            .get = jump::is_enabled,
+            .set = [](bool enable) { if (enable) jump::init(); else jump::dest(); },
+        },
     },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {"Rumble", get_rumble_enabled, set_rumble_enabled},
-    },
+    {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
 };
 
