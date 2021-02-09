@@ -12,6 +12,7 @@ enum class WidgetType
     Checkbox,
     Separator,
     Menu,
+    FloatView,
 };
 
 struct TextWidget
@@ -40,6 +41,12 @@ struct MenuWidget
     u32 num_widgets;
 };
 
+struct FloatViewWidget
+{
+    const char *label;
+    f32 (*get)();
+};
+
 struct Widget
 {
     WidgetType type;
@@ -49,6 +56,7 @@ struct Widget
         HeaderWidget header;
         CheckboxWidget checkbox;
         MenuWidget menu;
+        FloatViewWidget float_view;
     };
 };
 

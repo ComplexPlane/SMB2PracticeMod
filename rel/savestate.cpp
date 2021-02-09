@@ -263,6 +263,7 @@ static bool handle_load_state_from_nonplay_submode()
         return false;
     }
 
+    mkb::event_init(mkb::EVENT_VIBRATION); // Post-goal replay can disable rumble
     mkb::smd_game_play_init();
     mkb::sub_mode_request = mkb::SMD_GAME_PLAY_MAIN;
 

@@ -1,6 +1,7 @@
 #include "menu_defn.h"
 
 #include <mkb/mkb.h>
+#include <assembly.h>
 
 #include "jump.h"
 #include "timer.h"
@@ -78,6 +79,63 @@ static Widget rumble_widgets[] = {
     }
 };
 
+static Widget dev_tools_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Debug Mode",
+            .get = []() { return main::debug_mode_enabled; },
+            .set = [](bool enable) { main::debug_mode_enabled = enable; },
+        }
+    },
+    {.type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Pos X",
+            .get = []() { return mkb::balls[0].pos.x; },
+        },
+    },
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Pos Y",
+            .get = []() { return mkb::balls[0].pos.y; },
+        },
+    },
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Pos Z",
+            .get = []() { return mkb::balls[0].pos.z; },
+        },
+    },
+    {.type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Vel X",
+            .get = []() { return mkb::balls[0].vel.x; },
+        },
+    },
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Vel Y",
+            .get = []() { return mkb::balls[0].vel.y; },
+        },
+    },
+    {
+        .type = WidgetType::FloatView,
+        .float_view = {
+            .label = "Ball Vel Z",
+            .get = []() { return mkb::balls[0].vel.z; },
+        },
+    },
+};
+
 static Widget help_widgets[] = {
     {.type = WidgetType::Header, .header = {"Practice Tools Bindings"}},
     {.type = WidgetType::Text, .text = {"  L+R        \x1c Toggle this menu"}},
@@ -114,6 +172,7 @@ static Widget root_widgets[] = {
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, ARRAY_LEN(dev_tools_widgets)}},
 };
 
 MenuWidget root_menu = {

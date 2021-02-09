@@ -60,6 +60,20 @@ static Widget *get_selected_widget()
     return nullptr;
 }
 
+static u32 get_menu_selectable_widget_count(MenuWidget *menu)
+{
+    u32 selectable = 0;
+    for (u32 i = 0; i < menu->num_widgets; i++)
+    {
+        Widget *child = &menu->widgets[i];
+        if (child->type == WidgetType::Checkbox || child->type == WidgetType::Menu)
+        {
+            selectable++;
+        }
+    }
+    return selectable;
+}
+
 static void handle_select_button()
 {
     if (!pad::button_pressed(gc::PAD_BUTTON_A, true)) return;
@@ -74,6 +88,7 @@ static void handle_select_button()
     else if (selected->type == WidgetType::Menu)
     {
         push_menu(&selected->menu, 0);
+        s_cursor_frame = 0;
     }
 }
 
@@ -83,6 +98,7 @@ void tick()
     if (pad::button_pressed(gc::PAD_BUTTON_B, true))
     {
         pop_menu();
+        s_cursor_frame = 0;
     }
     else
     {
@@ -100,7 +116,8 @@ void tick()
 
     // Update selected menu item
     s32 dir_delta = pad::dir_pressed(pad::DIR_DOWN, true) - pad::dir_pressed(pad::DIR_UP, true);
-    cursor = (cursor + dir_delta + menu->num_widgets) % menu->num_widgets;
+    u32 selectable = get_menu_selectable_widget_count(menu);
+    cursor = (cursor + dir_delta + selectable) % selectable;
 
     // Make selected menu item green if selection changed or menu opened
     if (dir_delta != 0 || just_opened) s_cursor_frame = 0;
@@ -197,6 +214,18 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
 
                 if (cursor_pos == selectable_idx) cursor_y = y;
                 selectable_idx++;
+                y += LINE_HEIGHT;
+                break;
+            }
+            case WidgetType::FloatView:
+            {
+                draw::debug_text(MARGIN + PAD, y, draw::Color::White, "%s", widget.checkbox.label);
+                draw::debug_text(
+                    MARGIN + PAD,
+                    y,
+                    draw::Color::Green,
+                    "                        %.3Ef",
+                    widget.float_view.get());
                 y += LINE_HEIGHT;
                 break;
             }

@@ -21,6 +21,8 @@ namespace main
 static void (*s_draw_debug_text_trampoline)();
 static void (*s_process_inputs_trampoline)();
 
+bool debug_mode_enabled = false;
+
 static void perform_assembly_patches()
 {
     constexpr u32 offset = 0x600;
@@ -113,8 +115,14 @@ void init()
  */
 void tick()
 {
-    // Enable debug mode (appears to need to be called every frame)
-//    mkb::dipSwitches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+    if (debug_mode_enabled)
+    {
+        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+    }
+    else
+    {
+        mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
+    }
     pad::on_frame_start();
 }
 
