@@ -11,7 +11,7 @@
 ## Set up the Gecko code
 
 * In Dolphin, under _Config -> General_, make sure cheats are enabled
-* Copy the contents of `REL_Loader_US_Gecko.txt` to your clipboard, found under the latest release [here](https://github.com/complexplane/apesphere/releases)
+* Copy the contents of `REL_Loader_US_Gecko.txt` to your clipboard (found in the `.zip` release you downloaded)
   * Don't copy the first line that starts with `$`
 * Right-click your Super Monkey Ball 2 game in the games list and go to _Properties -> Gecko Codes_
 * At the bottom click _Add New Code_, paste the Gecko code into the _Code_ box, then click _Save_
