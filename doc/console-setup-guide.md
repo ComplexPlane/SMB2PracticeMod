@@ -1,11 +1,5 @@
 # ApeSphere Console Setup Guide
 
-For a video version of this guide,
-see [here](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1). You you only
-need to copy the `codes` and `saves` folders in the `.zip` to your SD card, not the other files.
-
-Anyway, here is the text guide:
-
 1. Homebrew your Wii and install Nintendont. You can use [wii.guide](https://wii.guide) for this. I highly recommend
    following the Letterbomb homebrew method over other methods, it's super reliable and easy.
 2. Download the `.zip` file containing the release (_not_ the source code). Releases are
