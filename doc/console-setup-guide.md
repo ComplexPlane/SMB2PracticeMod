@@ -18,8 +18,8 @@ Anyway, here is the text guide:
 5. Drag the `codes` and `saves` folders from the `.zip` release you downloaded to your SD card. If asked to replace
    files, choose Yes.
 6. Plug your SD card back into your Wii and boot up Nintendont.
-7. After booting Nintendont, press B to go to options and enable Cheats, Unlock Read Speed, Memcard Emulation, and
-   Native Control.
+7. After booting Nintendont, press B to go to options. **Enable** Cheats, Unlock Read Speed, Memcard Emulation, and
+   Native Control. **Disable** Memcard Multi.
 8. Boot the game from disc or ISO file like usual.
 
 If you see the "ApeSphere Practice Mod" text in place of the normal "Press Start" text when you start the game, you've
