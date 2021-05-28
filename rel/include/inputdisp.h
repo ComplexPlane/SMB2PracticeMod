@@ -1,10 +1,8 @@
 #pragma once
 
-namespace scratch
+namespace inputdisp
 {
-
 void init();
 void tick();
 void disp();
-
 }

@@ -9,6 +9,7 @@
 #include "pad.h"
 #include "menu_impl.h"
 #include "jump.h"
+#include "inputdisp.h"
 #include "scratch.h"
 
 #include <mkb/mkb.h>
@@ -72,6 +73,7 @@ void init()
     savestate::init();
     timer::init();
     iw::init();
+    inputdisp::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(
@@ -86,8 +88,9 @@ void init()
             timer::disp();
             iw::disp();
             Tetris::get_instance().disp();
-            menu::disp();
+            inputdisp::disp();
             scratch::disp();
+            menu::disp();
 
             s_draw_debug_text_trampoline();
         });
@@ -106,6 +109,7 @@ void init()
             savestate::tick();
             menu::tick();
             jump::tick();
+            inputdisp::tick();
             scratch::tick();
         });
 }
