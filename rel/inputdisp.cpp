@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "patch.h"
+#include "pad.h"
 
 namespace inputdisp
 {
@@ -95,30 +96,35 @@ void tick()
 
 void disp()
 {
-    Vec2f center = {100, 100};
-    draw_ring(8, center, 54, 60, {0x00, 0x00, 0x00, 0xFF});
-    draw_circle(8, center, 54, {0x00, 0x00, 0x00, 0x7F});
-    draw_ring(8, center, 50, 58, {0xb1, 0x5a, 0xff, 0xff});
+    Vec2f center = {100, 64};
+    f32 scale = 0.8f;
+
+    draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
+    draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
+    draw_ring(8, center, 50 * scale, 58 * scale, {0xb1, 0x5a, 0xff, 0xff});
 
     // Accumulate stick inputs from all controllers since we don't always
     // know which player is active, like in menus
     s32 x = 0, y = 0;
-    for (int i = 0; i < 4; i++)
+    if (!pad::get_exclusive_mode())
     {
-        gc::PADStatus &status = s_raw_inputs[i];
-        if (status.err == gc::PAD_ERR_NONE)
+        for (int i = 0; i < 4; i++)
         {
-            x += status.stickX;
-            y += status.stickY;
+            gc::PADStatus &status = s_raw_inputs[i];
+            if (status.err == gc::PAD_ERR_NONE)
+            {
+                x += status.stickX;
+                y += status.stickY;
+            }
         }
     }
 
     Vec2f scaled_input = {
-        100.f + static_cast<f32>(x) / 2.8f,
-        100.f - static_cast<f32>(y) / 2.8f,
+        center.x + static_cast<f32>(x) / 2.7f * scale,
+        center.y - static_cast<f32>(y) / 2.7f * scale,
     };
 
-    draw_circle(16, scaled_input, 10, {0xFF, 0xFF, 0xFF, 0xFF});
+    draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
 }
 
 }

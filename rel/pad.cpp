@@ -222,6 +222,11 @@ void set_exclusive_mode(bool enabled)
     s_exclusive_mode_request = enabled;
 }
 
+bool get_exclusive_mode()
+{
+    return s_exclusive_mode;
+}
+
 void on_frame_start()
 {
     if (s_exclusive_mode)

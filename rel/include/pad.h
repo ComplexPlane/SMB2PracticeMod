@@ -23,10 +23,11 @@ void init();
 void on_frame_start();
 void tick(); // Run this after controller inputs are read and processed by the game
 
-// In exclusive mode, only the mod can read inputs using these functions, AND inputs only register
+// In exclusive mode, inputs only register
 // when passing `true` to the optional second argument of the input checking functions,
 // meanwhile the game sees zero inputs.
 void set_exclusive_mode(bool enabled);
+bool get_exclusive_mode();
 
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
 
