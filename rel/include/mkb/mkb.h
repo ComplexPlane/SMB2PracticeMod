@@ -43,6 +43,7 @@ extern u32 main_heap_size, stage_heap_size, bg_heap_size, char_heap_size, replay
 extern u32 g_something_with_game_heaps;
 
 extern u32 curr_player_idx;
+extern u32 player_pad_map[4];
 extern u8 selected_characters[4];
 
 void draw_debugtext();

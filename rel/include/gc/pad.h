@@ -44,4 +44,9 @@ enum PadError
     PAD_ERR_NONE = 0
 };
 
+extern "C"
+{
+void PADRead(PADStatus *statuses);
+}
+
 }

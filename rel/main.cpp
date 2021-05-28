@@ -87,6 +87,7 @@ void init()
             iw::disp();
             Tetris::get_instance().disp();
             menu::disp();
+            scratch::disp();
 
             s_draw_debug_text_trampoline();
         });

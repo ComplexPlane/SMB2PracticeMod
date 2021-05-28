@@ -17,14 +17,14 @@ mkdir -p /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
 
 if [[ "${1:-}" == "-a" ]]; then
   echo 'Building all versions'
-  make -j$(nproc)
+  make -j"$(nproc)"
 
   echo 'Copying GCIs to dolphin emu folder'
   cp ApeSphere.*.gci /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
 
 else
   echo 'Building us version'
-  make us -j$(nproc)
+  make us -j"$(nproc)"
 
   echo 'Copying GCI to dolphin emu folder'
   cp ApeSphere.GM2E8P.gci /c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
