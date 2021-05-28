@@ -13,6 +13,46 @@ static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
 static gc::PADStatus s_raw_inputs[4];
 
+static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius, gc::GXColor color)
+{
+    // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
+    gc::GXTexObj *texobj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObj_cached(texobj, gc::GX_TEXMAP0);
+    gc::GXSetTevColor(gc::GX_TEVREG0, color);
+    float z = -1.0f / 128.0f;
+
+    gc::GXBegin(gc::GX_QUADS, gc::GX_VTXFMT0, pts * 4);
+
+    for (u32 i = 0; i < pts; i++)
+    {
+        u16 angle = 0xFFFF * i / pts;
+        f32 sin_cos[2];
+        mkb::math_sin_cos_v(static_cast<s32>(angle), sin_cos);
+        f32 curr_inner_x = sin_cos[0] * inner_radius + center.x;
+        f32 curr_inner_y = sin_cos[1] * inner_radius + center.y;
+        f32 curr_outer_x = sin_cos[0] * outer_radius + center.x;
+        f32 curr_outer_y = sin_cos[1] * outer_radius + center.y;
+
+        // TODO factor this out or something?
+        u16 next_angle = 0xFFFF * ((i + 1) % pts) / pts;
+        f32 next_sin_cos[2];
+        mkb::math_sin_cos_v(static_cast<s32>(next_angle), next_sin_cos);
+        f32 next_inner_x = next_sin_cos[0] * inner_radius + center.x;
+        f32 next_inner_y = next_sin_cos[1] * inner_radius + center.y;
+        f32 next_outer_x = next_sin_cos[0] * outer_radius + center.x;
+        f32 next_outer_y = next_sin_cos[1] * outer_radius + center.y;
+
+        gc::GXPosition3f32(next_inner_x, next_inner_y, z);
+        gc::GXTexCoord2f32(0, 0);
+        gc::GXPosition3f32(next_outer_x, next_outer_y, z);
+        gc::GXTexCoord2f32(0, 0);
+        gc::GXPosition3f32(curr_outer_x, curr_outer_y, z);
+        gc::GXTexCoord2f32(0, 0);
+        gc::GXPosition3f32(curr_inner_x, curr_inner_y, z);
+        gc::GXTexCoord2f32(0, 0);
+    }
+}
+
 static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
 {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
@@ -21,29 +61,19 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
     gc::GXSetTevColor(gc::GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
 
-    gc::GXBegin(gc::GX_TRIANGLES, gc::GX_VTXFMT0, pts * 3);
+    gc::GXBegin(gc::GX_TRIANGLEFAN, gc::GX_VTXFMT0, pts + 2);
+    gc::GXPosition3f32(center.x, center.y, z);
+    gc::GXTexCoord2f32(0, 0);
 
-    for (u32 i = 0; i < pts; i++)
+    for (s32 i = static_cast<s32>(pts) - 1; i >= -1; i--)
     {
         u16 angle = 0xFFFF * i / pts;
         f32 sin_cos[2];
         mkb::math_sin_cos_v(static_cast<s32>(angle), sin_cos);
         f32 x = sin_cos[0] * radius + center.x;
         f32 y = sin_cos[1] * radius + center.y;
-
-        // TODO factor this out or something?
-        u16 next_angle = 0xFFFF * ((i + 1) % pts) / pts;
-        f32 next_sin_cos[2];
-        mkb::math_sin_cos_v(static_cast<s32>(next_angle), next_sin_cos);
-        f32 next_x = next_sin_cos[0] * radius + center.x;
-        f32 next_y = next_sin_cos[1] * radius + center.y;
-
-        gc::GXPosition3f32(center.x, center.y, z);
-        gc::GXTexCoord2f32(0, 0);
-        gc::GXPosition3f32(next_x, next_y, z);
-        gc::GXTexCoord2f32(0, 1);
         gc::GXPosition3f32(x, y, z);
-        gc::GXTexCoord2f32(1, 0);
+        gc::GXTexCoord2f32(0, 0);
     }
 }
 
@@ -65,9 +95,10 @@ void tick()
 
 void disp()
 {
-    draw_circle(8, {100, 100}, 60, {0x00, 0x00, 0x00, 0xFF});
-    draw_circle(8, {100, 100}, 58, {0xb1, 0x5a, 0xff, 0xff});
-    draw_circle(8, {100, 100}, 50, {0x00, 0x00, 0x00, 0xFF});
+    Vec2f center = {100, 100};
+    draw_ring(8, center, 54, 60, {0x00, 0x00, 0x00, 0xFF});
+    draw_circle(8, center, 54, {0x00, 0x00, 0x00, 0x7F});
+    draw_ring(8, center, 50, 58, {0xb1, 0x5a, 0xff, 0xff});
 
     // Accumulate stick inputs from all controllers since we don't always
     // know which player is active, like in menus
