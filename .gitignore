@@ -273,3 +273,10 @@ __pycache__/
 /cmake-build-debug/
 
 /go.sh
+
+/release/
+*.vcxproj*
+*.sln
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
