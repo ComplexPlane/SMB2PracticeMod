@@ -126,6 +126,21 @@ void tick()
     kill_score_sprites();
 }
 
+static bool in_notch()
+{
+    for (u32 i = 0; i < 4; i++)
+    {
+        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
+        if (status.err == gc::PAD_ERR_NONE
+            && (status.stickX == -60 || status.stickX == 0 || status.stickX == 60)
+            && (status.stickY == -60 || status.stickY == 0 || status.stickY == 60))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void disp()
 {
     if (!s_enabled) return;
@@ -158,6 +173,10 @@ void disp()
         center.y - static_cast<f32>(y) / 2.7f * scale,
     };
 
+//    if (in_notch())
+//    {
+//        draw_circle(16, scaled_input, 11 * scale, {0x00, 0xff, 0x00, 0xff});
+//    }
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
 }
 
