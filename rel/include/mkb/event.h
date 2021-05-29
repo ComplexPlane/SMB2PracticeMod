@@ -63,6 +63,7 @@ extern "C"
 {
 extern Event events[NUM_EVENTS];
 void event_init(EventID event);
+void event_sprite_dest();
 }
 
 }

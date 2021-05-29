@@ -6177,10 +6177,10 @@
 8033802C:FUN_80261df4
 80338118:FUN_80261ee0
 8033814C:g_draw_some_hud_sprites
-803382A0:g_create_score_sprites
-8033843C:g_create_timer_sprites
-803386B8:g_create_speed_sprite
-80338794:g_create_hud_stage_name_sprites
+803382A0:create_score_sprites
+8033843C:create_timer_sprites
+803386B8:create_speed_sprites
+80338794:create_hud_stage_name_sprites
 80338F14:create_banana_counter_sprites
 803391C0:create_monkey_counter_sprites
 80339700:create_final_stage_sprite

@@ -73,7 +73,6 @@ void init()
     savestate::init();
     timer::init();
     iw::init();
-    inputdisp::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(

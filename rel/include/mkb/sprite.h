@@ -42,7 +42,7 @@ struct Sprite
     void (*dest_func)(Sprite *sprite);
     void (*tick_func)(u8 *status, Sprite *sprite);
     void (*disp_func)(Sprite *sprite);
-    u16 field_0x3c;
+    u16 g_texture_id;
     u8 field_0x3e;
     u8 field_0x3f;
     float width;
@@ -57,8 +57,8 @@ struct Sprite
     u8 field_0x61;
     u8 field_0x62;
     u8 field_0x63;
-    struct Sprite *some_sprite1;
-    struct Sprite *some_sprite2;
+    struct Sprite *prev_sprite;
+    struct Sprite *next_sprite;
     u32 field_0x6c;
     u32 field_0x70;
     u32 field_0x74;
@@ -72,7 +72,7 @@ struct Sprite
     u8 field_0x85;
     u8 field_0x86;
     u8 field_0x87;
-    u32 some_bitflag;
+    u32 g_flags;
     u8 field_0x8c;
     u8 field_0x8d;
     u8 field_0x8e;
@@ -109,6 +109,7 @@ void sprite_replay_tick(u8 *status, Sprite *sprite);
 void sprite_loadin_stage_name_tick(u8 *status, Sprite *sprite);
 void sprite_bonus_stage_tick(u8 *status, Sprite *sprite);
 void sprite_final_stage_tick(u8 *status, Sprite *sprite);
+void create_score_sprites(f32 pos_x, f32 pos_y);
 }
 
 }

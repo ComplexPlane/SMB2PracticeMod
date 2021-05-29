@@ -2,6 +2,7 @@
 
 #include <mkb/mkb.h>
 #include <assembly.h>
+#include <inputdisp.h>
 
 #include "jump.h"
 #include "timer.h"
@@ -161,6 +162,14 @@ static Widget root_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Practice Tools", get_practice_tools_enabled, set_practice_tools_enabled},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Input Display",
+            .get = inputdisp::is_enabled,
+            .set = [](bool enable) { if (enable) inputdisp::init(); else inputdisp::dest(); },
+        }
     },
     {
         .type = WidgetType::Checkbox,

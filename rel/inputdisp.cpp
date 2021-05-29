@@ -10,6 +10,9 @@
 namespace inputdisp
 {
 
+static bool s_enabled = false;
+static bool s_ever_enabled = false;
+
 static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
 static gc::PADStatus s_raw_inputs[4];
@@ -78,24 +81,55 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
     }
 }
 
+static void kill_score_sprites()
+{
+    // Hide distracting score sprites under the input display
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+    {
+        if (mkb::sprite_pool_info.status_list[i] == 0) continue;
+
+        // TODO set visibility based on whether input display is enabled
+        mkb::Sprite &sprite = mkb::sprites[i];
+        if (sprite.g_texture_id == 0x507
+            || sprite.g_texture_id == 0x504
+            || sprite.disp_func == mkb::sprite_score_disp)
+        {
+            mkb::sprite_pool_info.status_list[i] = 0;
+        }
+    }
+}
+
+
 void init()
 {
-    // Hook PADRead to give us raw PAD inputs before the game processes them
-    s_PADRead_tramp = patch::hook_function(
-        gc::PADRead, [](gc::PADStatus *statuses)
-        {
-            s_PADRead_tramp(statuses);
-            memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
-        }
-    );
+    if (!s_ever_enabled)
+    {
+        // Hook PADRead to give us raw PAD inputs before the game processes them
+        s_PADRead_tramp = patch::hook_function(
+            gc::PADRead, [](gc::PADStatus *statuses)
+            {
+                s_PADRead_tramp(statuses);
+                memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
+            }
+        );
+    }
+
+    kill_score_sprites();
+
+    s_enabled = true;
+    s_ever_enabled = true;
 }
 
 void tick()
 {
+    if (!s_enabled) return;
+    kill_score_sprites();
 }
 
 void disp()
 {
+    if (!s_enabled) return;
+
     Vec2f center = {100, 64};
     f32 scale = 0.8f;
 
@@ -125,6 +159,16 @@ void disp()
     };
 
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
+}
+
+void dest()
+{
+    s_enabled = false;
+}
+
+bool is_enabled()
+{
+    return s_enabled;
 }
 
 }
