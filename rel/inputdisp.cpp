@@ -6,6 +6,7 @@
 
 #include "patch.h"
 #include "pad.h"
+#include "draw.h"
 
 namespace inputdisp
 {
@@ -126,20 +127,20 @@ void tick()
     kill_score_sprites();
 }
 
-static bool in_notch()
-{
-    for (u32 i = 0; i < 4; i++)
-    {
-        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
-        if (status.err == gc::PAD_ERR_NONE
-            && (status.stickX == -60 || status.stickX == 0 || status.stickX == 60)
-            && (status.stickY == -60 || status.stickY == 0 || status.stickY == 60))
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//static bool in_notch()
+//{
+//    for (u32 i = 0; i < 4; i++)
+//    {
+//        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
+//        if (status.err == gc::PAD_ERR_NONE
+//            && (status.stickX == -60 || status.stickX == 0 || status.stickX == 60)
+//            && (status.stickY == -60 || status.stickY == 0 || status.stickY == 60))
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 void disp()
 {
@@ -178,6 +179,40 @@ void disp()
 //        draw_circle(16, scaled_input, 11 * scale, {0x00, 0xff, 0x00, 0xff});
 //    }
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
+
+    // Show buttons
+    if (pad::button_down(gc::PAD_BUTTON_START))
+    {
+        draw::debug_text(center.x + 75 * scale, center.y - 45 * scale, draw::Color::White, "Start");
+    }
+    if (pad::button_down(gc::PAD_BUTTON_A))
+    {
+        draw::debug_text(center.x + 75 * scale, center.y - 25 * scale, draw::Color::Green, "A");
+    }
+    if (pad::button_down(gc::PAD_BUTTON_B))
+    {
+        draw::debug_text(center.x + 95 * scale, center.y - 25 * scale, draw::Color::Red, "B");
+    }
+    if (pad::button_down(gc::PAD_BUTTON_X))
+    {
+        draw::debug_text(center.x + 75 * scale, center.y - 05 * scale, draw::Color::White, "X");
+    }
+    if (pad::button_down(gc::PAD_BUTTON_Y))
+    {
+        draw::debug_text(center.x + 95 * scale, center.y - 05 * scale, draw::Color::White, "Y");
+    }
+    if (pad::button_down(gc::PAD_TRIGGER_L))
+    {
+        draw::debug_text(center.x + 75 * scale, center.y + 15 * scale, draw::Color::White, "L");
+    }
+    if (pad::button_down(gc::PAD_TRIGGER_R))
+    {
+        draw::debug_text(center.x + 95 * scale, center.y + 15 * scale, draw::Color::White, "R");
+    }
+    if (pad::button_down(gc::PAD_TRIGGER_Z))
+    {
+        draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::Color::Blue, "Z");
+    }
 }
 
 void dest()
