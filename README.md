@@ -1,4 +1,4 @@
-# :confetti_ball: ApeSphere Practice Mod
+# :confetti_ball: SMB2 Practice Mod
 
 A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 as well as most romhacks, including Gaiden, Deluxe in 2, SMB651, Monkeyed Ball 2, and Community Pack 2020.
 
