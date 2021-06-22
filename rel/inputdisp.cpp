@@ -12,7 +12,7 @@ namespace inputdisp
 {
 
 static bool s_visible = false;
-static bool s_alternate_loc = false;
+static bool s_center_loc = false;
 
 static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
@@ -125,7 +125,7 @@ void init()
 
 void tick()
 {
-    set_sprite_visible(!s_visible);
+    set_sprite_visible(!s_visible || s_center_loc);
 }
 
 void set_visible(bool visible)
@@ -194,7 +194,7 @@ void disp()
 {
     if (!s_visible) return;
 
-    Vec2f center = {534, 60};
+    Vec2f center = s_center_loc ? Vec2f{430, 60} : Vec2f{534, 60};
     f32 scale = 0.6f;
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
@@ -270,7 +270,7 @@ void disp()
     }
 }
 
-void set_in_center_loc(bool alternate_loc) { s_alternate_loc = alternate_loc; }
-bool is_in_center_loc() { return s_alternate_loc; }
+void set_in_center_loc(bool alternate_loc) { s_center_loc = alternate_loc; }
+bool is_in_center_loc() { return s_center_loc; }
 
 }
