@@ -24,27 +24,6 @@ extern u8 rumble_enabled_bitflag;
 namespace menu
 {
 
-static bool get_practice_tools_enabled()
-{
-    return timer::is_enabled() && savestate::is_enabled() && iw::is_enabled();
-}
-
-static void set_practice_tools_enabled(bool enable)
-{
-    if (enable)
-    {
-        timer::init();
-        savestate::init();
-        iw::init();
-    }
-    else
-    {
-        timer::dest();
-        savestate::dest();
-        iw::dest();
-    }
-}
-
 static Widget rumble_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -161,15 +140,7 @@ static Widget help_widgets[] = {
 static Widget root_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Practice Tools", get_practice_tools_enabled, set_practice_tools_enabled},
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {
-            .label = "Input Display",
-            .get = inputdisp::is_enabled,
-            .set = [](bool enable) { if (enable) inputdisp::init(); else inputdisp::dest(); },
-        }
+        .checkbox = {"Input Display", inputdisp::is_visible, inputdisp::set_visible}
     },
     {
         .type = WidgetType::Checkbox,
@@ -178,6 +149,14 @@ static Widget root_widgets[] = {
             .get = jump::is_enabled,
             .set = [](bool enable) { if (enable) jump::init(); else jump::dest(); },
         },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"RTA Timer", timer::is_visible, timer::set_visible},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},

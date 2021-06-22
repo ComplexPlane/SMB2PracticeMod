@@ -9,8 +9,7 @@ namespace timer
 
 // Enabled for the timer just means "is drawing on the screen"; it's always running
 // regardless to prevent fudging IL RTA times
-static bool s_enabled = false;
-static bool s_ever_enabled = false;
+static bool s_visible = false;
 
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
@@ -18,15 +17,11 @@ static s32 s_rta_timer;
 
 void init()
 {
-    if (s_enabled) return;
-
-    if (!s_ever_enabled) s_retrace_count = gc::VIGetRetraceCount();
-
-    s_enabled = true;
-    s_ever_enabled = true;
+    s_retrace_count = gc::VIGetRetraceCount();
 }
 
-void tick() {}
+void set_visible(bool visible) { s_visible = visible; }
+bool is_visible() { return s_visible; }
 
 static void convert_frame_time(s32 frames, s32 *sec, s32 *centisec)
 {
@@ -75,7 +70,7 @@ void disp()
 //        if (s_rtaTimer < 0) s_rtaTimer = 0;
     }
 
-    if (s_enabled)
+    if (s_visible)
     {
         s32 sec = 0, centisec = 0;
         convert_frame_time(s_rta_timer, &sec, &centisec);
@@ -90,16 +85,6 @@ void disp()
             draw::Color::White,
             "PAU: %02d.%02d", sec, centisec);
     }
-}
-
-void dest()
-{
-    s_enabled = false;
-}
-
-bool is_enabled()
-{
-    return s_enabled;
 }
 
 void save_state(memstore::MemStore *store)

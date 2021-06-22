@@ -16,7 +16,7 @@
 namespace iw
 {
 
-static bool s_enabled;
+static bool s_visible;
 static u32 s_patch1, s_patch2;
 
 static u32 s_anim_counter;
@@ -26,32 +26,28 @@ static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
 
-void init()
+void set_visible(bool visible)
 {
-    if (s_enabled) return;
-
-    s_enabled = true;
-
-    // IW-related patches
-    s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
-    s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+    if (visible != s_visible)
+    {
+        s_visible = visible;
+        if (visible)
+        {
+            // IW-related patches
+            s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
+            s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+        }
+        else
+        {
+            patch::write_word(reinterpret_cast<void *>(0x80274804), s_patch1);
+            patch::write_word(reinterpret_cast<void *>(0x8032a86c), s_patch2);
+            strcpy(mkb::continue_saved_game_text, "Continue the game from the saved point.");
+            strcpy(mkb::start_game_from_beginning_text, "Start the game from the beginning.");
+        }
+    }
 }
 
-void dest()
-{
-    if (!s_enabled) return;
-
-    s_enabled = false;
-    patch::write_word(reinterpret_cast<void *>(0x80274804), s_patch1);
-    patch::write_word(reinterpret_cast<void *>(0x8032a86c), s_patch2);
-    strcpy(mkb::continue_saved_game_text, "Continue the game from the saved point.");
-    strcpy(mkb::start_game_from_beginning_text, "Start the game from the beginning.");
-}
-
-bool is_enabled()
-{
-    return s_enabled;
-}
+bool is_visible() { return s_visible; }
 
 static void handle_iw_selection()
 {
@@ -129,7 +125,7 @@ static void handle_iw_timer()
 
 void tick()
 {
-    if (!s_enabled) return;
+    if (!s_visible) return;
 
     main::currently_playing_iw = false;
     if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::MGM_STORY) return;
@@ -158,7 +154,7 @@ void tick()
 
 void disp()
 {
-    if (!s_enabled
+    if (!s_visible
     || mkb::main_mode != mkb::MD_GAME
     || mkb::main_game_mode != mkb::MGM_STORY
     || !main::currently_playing_iw)

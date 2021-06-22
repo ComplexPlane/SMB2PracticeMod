@@ -23,8 +23,7 @@ struct SaveState
     mkb::Sprite pause_menu_sprite;
 };
 
-static bool s_enabled = false;
-static bool s_ever_enabled = false;
+static bool s_visible = false;
 
 static SaveState s_states[8];
 static s32 s_active_state_slot;
@@ -39,37 +38,22 @@ static void (*s_set_minimap_mode_trampoline)(u32 mode);
 
 void init()
 {
-    if (s_enabled) return;
-    s_enabled = true;
-
-    if (!s_ever_enabled)
-    {
-        // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
-        // This way the minimap is unaffected when loading savestates after goal/fallout
-        s_set_minimap_mode_trampoline = patch::hook_function(
-            mkb::set_minimap_mode, [](u32 mode)
+    // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
+    // This way the minimap is unaffected when loading savestates after goal/fallout
+    s_set_minimap_mode_trampoline = patch::hook_function(
+        mkb::set_minimap_mode, [](u32 mode)
+        {
+            if (!s_visible || !(mkb::main_mode == mkb::MD_GAME
+                  && mkb::main_game_mode == mkb::MGM_PRACTICE
+                  && mode == mkb::MINIMAP_SHRINK))
             {
-                if (!s_enabled || !(mkb::main_mode == mkb::MD_GAME
-                      && mkb::main_game_mode == mkb::MGM_PRACTICE
-                      && mode == mkb::MINIMAP_SHRINK))
-                {
-                    s_set_minimap_mode_trampoline(mode);
-                }
-            });
-    }
-    s_ever_enabled = true;
+                s_set_minimap_mode_trampoline(mode);
+            }
+        });
 }
 
-void dest()
-{
-    if (!s_enabled) return;
-    s_enabled = false;
-}
-
-bool is_enabled()
-{
-    return s_enabled;
-}
+void set_visible(bool visible) { s_visible = visible; }
+bool is_visible() { return s_visible; }
 
 static bool is_either_trigger_held()
 {
@@ -277,7 +261,7 @@ static bool handle_load_state_from_nonplay_submode()
 
 void tick()
 {
-    if (!s_enabled) return;
+    if (!s_visible) return;
 
     if (!is_either_trigger_held())
     {

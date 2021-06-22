@@ -11,8 +11,7 @@
 namespace inputdisp
 {
 
-static bool s_enabled = false;
-static bool s_ever_enabled = false;
+static bool s_visible = false;
 
 static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
@@ -103,29 +102,29 @@ static void kill_score_sprites()
 
 void init()
 {
-    if (!s_ever_enabled)
-    {
-        // Hook PADRead to give us raw PAD inputs before the game processes them
-        s_PADRead_tramp = patch::hook_function(
-            gc::PADRead, [](gc::PADStatus *statuses)
-            {
-                s_PADRead_tramp(statuses);
-                memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
-            }
-        );
-    }
-
-    kill_score_sprites();
-
-    s_enabled = true;
-    s_ever_enabled = true;
+    // Hook PADRead to give us raw PAD inputs before the game processes them
+    s_PADRead_tramp = patch::hook_function(
+        gc::PADRead, [](gc::PADStatus *statuses)
+        {
+            s_PADRead_tramp(statuses);
+            memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
+        }
+    );
 }
 
 void tick()
 {
-    if (!s_enabled) return;
-    kill_score_sprites();
+    if (!s_visible) return;
+    // TODO hide score sprites
 }
+
+void set_visible(bool visible)
+{
+    s_visible = visible;
+    // TODO show score sprites if hidden
+}
+
+bool is_visible() { return s_visible; }
 
 static bool get_notch_pos(Vec2f *out_pos)
 {
@@ -184,7 +183,7 @@ static bool get_notch_pos(Vec2f *out_pos)
 
 void disp()
 {
-    if (!s_enabled) return;
+    if (!s_visible) return;
 
     Vec2f center = {100, 64};
     f32 scale = 0.8f;
@@ -260,16 +259,6 @@ void disp()
         };
         draw_circle(6, notch_pos, 5, {0xFF, 0xFF, 0xFF, 0xFF});
     }
-}
-
-void dest()
-{
-    s_enabled = false;
-}
-
-bool is_enabled()
-{
-    return s_enabled;
 }
 
 }

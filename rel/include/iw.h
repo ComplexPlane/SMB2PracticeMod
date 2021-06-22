@@ -2,9 +2,8 @@
 
 namespace iw
 {
-void init();
 void tick();
 void disp();
-void dest();
-bool is_enabled();
+void set_visible(bool visible);
+bool is_visible();
 }

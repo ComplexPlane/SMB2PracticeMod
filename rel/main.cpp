@@ -72,8 +72,12 @@ void init()
     Tetris::get_instance().init();
     savestate::init();
     timer::init();
-    iw::init();
+    inputdisp::init();
     scratch::init();
+
+    savestate::set_visible(true);
+    timer::set_visible(true);
+    iw::set_visible(true);
 
     s_draw_debug_text_trampoline = patch::hook_function(
         mkb::draw_debugtext, []()
@@ -103,7 +107,6 @@ void init()
             // to ensure lowest input delay
             pad::tick();
             unlock_everything();
-            timer::tick();
             iw::tick();
             savestate::tick();
             menu::tick();
