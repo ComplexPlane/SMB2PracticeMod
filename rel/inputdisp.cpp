@@ -81,7 +81,7 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
     }
 }
 
-static void kill_score_sprites()
+static void set_sprite_visible(bool visible)
 {
     // Hide distracting score sprites under the input display
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
@@ -90,15 +90,20 @@ static void kill_score_sprites()
 
         // TODO set visibility based on whether input display is enabled
         mkb::Sprite &sprite = mkb::sprites[i];
-        if (sprite.g_texture_id == 0x507
-            || sprite.g_texture_id == 0x504
-            || sprite.disp_func == mkb::sprite_score_disp)
+        if (sprite.g_texture_id == 0x503 ||
+            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp ||
+            sprite.g_texture_id == 0x502 ||
+            sprite.tick_func == mkb::sprite_banana_icon_tick ||
+            sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
+            sprite.tick_func == mkb::sprite_banana_count_tick)
         {
-            mkb::sprite_pool_info.status_list[i] = 0;
+            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f))
+            {
+                sprite.depth = -sprite.depth;
+            }
         }
     }
 }
-
 
 void init()
 {
@@ -114,14 +119,12 @@ void init()
 
 void tick()
 {
-    if (!s_visible) return;
-    // TODO hide score sprites
+    set_sprite_visible(!s_visible);
 }
 
 void set_visible(bool visible)
 {
     s_visible = visible;
-    // TODO show score sprites if hidden
 }
 
 bool is_visible() { return s_visible; }

@@ -7,7 +7,6 @@
 #include "jump.h"
 #include "timer.h"
 #include "savestate.h"
-#include "iw.h"
 
 #define ARRAY_LEN(a) (sizeof((a)) / sizeof((a)[0]))
 

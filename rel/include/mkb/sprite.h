@@ -110,6 +110,10 @@ void sprite_loadin_stage_name_tick(u8 *status, Sprite *sprite);
 void sprite_bonus_stage_tick(u8 *status, Sprite *sprite);
 void sprite_final_stage_tick(u8 *status, Sprite *sprite);
 void create_score_sprites(f32 pos_x, f32 pos_y);
+void sprite_monkey_counter_icon_disp(Sprite *sprite);
+void sprite_banana_icon_tick(u8 *status, Sprite *sprite);
+void sprite_banana_icon_shadow_tick(u8 *status, Sprite *sprite);
+void sprite_banana_count_tick(u8 *status, Sprite *sprite);
 }
 
 }
