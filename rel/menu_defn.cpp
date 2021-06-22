@@ -142,7 +142,7 @@ static Widget help_widgets[] = {
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
-    {.type = WidgetType::Text, .text = {"  Current version: v0.2.2"}},
+    {.type = WidgetType::Text, .text = {"  Current version: v0.3.0"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::Text, .text = {"  github.com/ComplexPlane/ApeSphere/releases"}},
 };
