@@ -23,6 +23,17 @@ extern u8 rumble_enabled_bitflag;
 namespace menu
 {
 
+static Widget inputdisp_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Show Input Display", inputdisp::is_visible, inputdisp::set_visible},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Use Center Location", inputdisp::is_in_center_loc, inputdisp::set_in_center_loc},
+    }
+};
+
 static Widget rumble_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -138,8 +149,7 @@ static Widget help_widgets[] = {
 
 static Widget root_widgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox = {"Input Display", inputdisp::is_visible, inputdisp::set_visible}
+        .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, ARRAY_LEN(inputdisp_widgets)},
     },
     {
         .type = WidgetType::Checkbox,

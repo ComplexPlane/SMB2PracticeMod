@@ -12,6 +12,7 @@ namespace inputdisp
 {
 
 static bool s_visible = false;
+static bool s_alternate_loc = false;
 
 static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
@@ -83,6 +84,8 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
 
 static void set_sprite_visible(bool visible)
 {
+    if (mkb::main_mode != mkb::MD_GAME) return;
+
     // Hide distracting score sprites under the input display
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
     {
@@ -267,5 +270,7 @@ void disp()
     }
 }
 
-}
+void set_in_center_loc(bool alternate_loc) { s_alternate_loc = alternate_loc; }
+bool is_in_center_loc() { return s_alternate_loc; }
 
+}
