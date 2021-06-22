@@ -16,7 +16,7 @@ extern "C"
 extern f32 ball_friction;
 extern f32 ball_restitution;
 
-void g_call_SoundReqID_arg_0(s32 id);
+void call_SoundReqID_arg_0(s32 id);
 void spawn_effect(Effect *effect);
 void toggle_minimap_zoom(void);
 
@@ -162,7 +162,7 @@ void tick()
 
     if (s_jumping && s_jump_frames == 0)
     {
-        mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
+        mkb::call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
     }
 
     if (s_jumping)

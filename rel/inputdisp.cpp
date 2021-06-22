@@ -91,11 +91,14 @@ static void set_sprite_visible(bool visible)
         // TODO set visibility based on whether input display is enabled
         mkb::Sprite &sprite = mkb::sprites[i];
         if (sprite.g_texture_id == 0x503 ||
+            sprite.tick_func == mkb::sprite_monkey_counter_tick ||
             sprite.disp_func == mkb::sprite_monkey_counter_icon_disp ||
             sprite.g_texture_id == 0x502 ||
             sprite.tick_func == mkb::sprite_banana_icon_tick ||
             sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
-            sprite.tick_func == mkb::sprite_banana_count_tick)
+            sprite.tick_func == mkb::sprite_banana_count_tick ||
+            strcmp(sprite.text, ":") == 0 ||
+            sprite.disp_func == mkb::sprite_hud_player_num_disp)
         {
             if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f))
             {
