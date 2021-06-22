@@ -70,7 +70,7 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
     gc::GXPosition3f32(center.x, center.y, z);
     gc::GXTexCoord2f32(0, 0);
 
-    for (s32 i = static_cast<s32>(pts) - 1; i >= -1; i--)
+    for (s32 i = static_cast<s32>(pts) * 2 - 1; i >= static_cast<s32>(pts) - 1; i--)
     {
         u16 angle = 0xFFFF * i / pts;
         f32 sin_cos[2];
@@ -127,20 +127,60 @@ void tick()
     kill_score_sprites();
 }
 
-//static bool in_notch()
-//{
-//    for (u32 i = 0; i < 4; i++)
-//    {
-//        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
-//        if (status.err == gc::PAD_ERR_NONE
-//            && (status.stickX == -60 || status.stickX == 0 || status.stickX == 60)
-//            && (status.stickY == -60 || status.stickY == 0 || status.stickY == 60))
-//        {
-//            return true;
-//        }
-//    }
-//    return false;
-//}
+static bool get_notch_pos(Vec2f *out_pos)
+{
+    constexpr f32 DIAG = 0.7071067811865476f; // sin(pi/4) or sqrt(2)/2
+    bool notch_found = false;
+
+    for (u32 i = 0; i < 4; i++)
+    {
+        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
+        if (status.err != gc::PAD_ERR_NONE) continue;
+
+        if (status.stickX == 0 && status.stickY == 60)
+        {
+            *out_pos = {0, 1};
+            notch_found = true;
+        }
+        else if (status.stickX == 0 && status.stickY == -60)
+        {
+            *out_pos = {0, -1};
+            notch_found = true;
+        }
+        else if (status.stickX == 60 && status.stickY == 0)
+        {
+            *out_pos = {1, 0};
+            notch_found = true;
+        }
+        else if (status.stickX == -60 && status.stickY == 0)
+        {
+            *out_pos = {-1, 0};
+            notch_found = true;
+        }
+        else if (status.stickX == 60 && status.stickY == 60)
+        {
+            *out_pos = {DIAG, DIAG};
+            notch_found = true;
+        }
+        else if (status.stickX == 60 && status.stickY == -60)
+        {
+            *out_pos = {DIAG, -DIAG};
+            notch_found = true;
+        }
+        else if (status.stickX == -60 && status.stickY == 60)
+        {
+            *out_pos = {-DIAG, DIAG};
+            notch_found = true;
+        }
+        else if (status.stickX == -60 && status.stickY == -60)
+        {
+            *out_pos = {-DIAG, -DIAG};
+            notch_found = true;
+        }
+    }
+
+    return notch_found;
+}
 
 void disp()
 {
@@ -174,10 +214,6 @@ void disp()
         center.y - static_cast<f32>(y) / 2.7f * scale,
     };
 
-//    if (in_notch())
-//    {
-//        draw_circle(16, scaled_input, 11 * scale, {0x00, 0xff, 0x00, 0xff});
-//    }
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
 
     // Show buttons
@@ -212,6 +248,17 @@ void disp()
     if (pad::button_down(gc::PAD_TRIGGER_Z))
     {
         draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::Color::Blue, "Z");
+    }
+
+    // Show notch indicators
+    Vec2f notch_norm = {};
+    if (get_notch_pos(&notch_norm))
+    {
+        Vec2f notch_pos = {
+            .x = notch_norm.x * 62 * scale + center.x,
+            .y = -notch_norm.y * 62 * scale + center.y,
+        };
+        draw_circle(6, notch_pos, 5, {0xFF, 0xFF, 0xFF, 0xFF});
     }
 }
 
