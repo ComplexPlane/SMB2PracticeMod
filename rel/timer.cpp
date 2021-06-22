@@ -77,13 +77,21 @@ void disp()
         draw::debug_text(
             380, 34,
             draw::Color::White,
-            "RTA: %02d.%02d", sec, centisec);
+            "RTA:");
+        draw::debug_text(
+            434, 34,
+            draw::Color::White,
+            "%02d.%02d", sec, centisec);
 
         convert_frame_time(mkb::stage_time_frames_remaining - s_rta_timer, &sec, &centisec);
         draw::debug_text(
             380, 50,
             draw::Color::White,
-            "PAU: %02d.%02d", sec, centisec);
+            "PAU:");
+        draw::debug_text(
+            434, 50,
+            draw::Color::White,
+            "%02d.%02d", sec, centisec);
     }
 }
 

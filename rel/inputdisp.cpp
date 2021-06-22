@@ -188,8 +188,8 @@ void disp()
 {
     if (!s_visible) return;
 
-    Vec2f center = {100, 64};
-    f32 scale = 0.8f;
+    Vec2f center = {534, 60};
+    f32 scale = 0.6f;
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
@@ -221,31 +221,31 @@ void disp()
     // Show buttons
     if (pad::button_down(gc::PAD_BUTTON_START))
     {
-        draw::debug_text(center.x + 75 * scale, center.y - 45 * scale, draw::Color::White, "Start");
+        draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::Color::White, "Start");
     }
     if (pad::button_down(gc::PAD_BUTTON_A))
     {
-        draw::debug_text(center.x + 75 * scale, center.y - 25 * scale, draw::Color::Green, "A");
+        draw::debug_text(center.x + 65 * scale, center.y - 25 * scale, draw::Color::Green, "A");
     }
     if (pad::button_down(gc::PAD_BUTTON_B))
     {
-        draw::debug_text(center.x + 95 * scale, center.y - 25 * scale, draw::Color::Red, "B");
+        draw::debug_text(center.x + 90 * scale, center.y - 25 * scale, draw::Color::Red, "B");
     }
     if (pad::button_down(gc::PAD_BUTTON_X))
     {
-        draw::debug_text(center.x + 75 * scale, center.y - 05 * scale, draw::Color::White, "X");
+        draw::debug_text(center.x + 65 * scale, center.y - 05 * scale, draw::Color::White, "X");
     }
     if (pad::button_down(gc::PAD_BUTTON_Y))
     {
-        draw::debug_text(center.x + 95 * scale, center.y - 05 * scale, draw::Color::White, "Y");
+        draw::debug_text(center.x + 90 * scale, center.y - 05 * scale, draw::Color::White, "Y");
     }
     if (pad::button_down(gc::PAD_TRIGGER_L))
     {
-        draw::debug_text(center.x + 75 * scale, center.y + 15 * scale, draw::Color::White, "L");
+        draw::debug_text(center.x + 65 * scale, center.y + 15 * scale, draw::Color::White, "L");
     }
     if (pad::button_down(gc::PAD_TRIGGER_R))
     {
-        draw::debug_text(center.x + 95 * scale, center.y + 15 * scale, draw::Color::White, "R");
+        draw::debug_text(center.x + 90 * scale, center.y + 15 * scale, draw::Color::White, "R");
     }
     if (pad::button_down(gc::PAD_TRIGGER_Z))
     {
@@ -257,10 +257,10 @@ void disp()
     if (get_notch_pos(&notch_norm))
     {
         Vec2f notch_pos = {
-            .x = notch_norm.x * 62 * scale + center.x,
-            .y = -notch_norm.y * 62 * scale + center.y,
+            .x = notch_norm.x * 60 * scale + center.x,
+            .y = -notch_norm.y * 60 * scale + center.y,
         };
-        draw_circle(6, notch_pos, 5, {0xFF, 0xFF, 0xFF, 0xFF});
+        draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
     }
 }
 
