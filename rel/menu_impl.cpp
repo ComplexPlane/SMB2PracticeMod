@@ -212,6 +212,17 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                     "  %s",
                     widget.menu.label);
 
+                // Draw "..." with dots closer together
+                for (s32 i = 0; i < 3; i++)
+                {
+                    draw::debug_text(
+                        MARGIN + PAD + 24 * draw::DEBUG_CHAR_WIDTH + i * 6,
+                        y,
+                        cursor_pos == selectable_idx ? lerped_color : unfocused,
+                        "."
+                    );
+                }
+
                 if (cursor_pos == selectable_idx) cursor_y = y;
                 selectable_idx++;
                 y += LINE_HEIGHT;
