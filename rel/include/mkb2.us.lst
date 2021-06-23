@@ -8709,6 +8709,10 @@
 805E9058:g_some_goalbag1
 805E9080:g_some_goalbag2
 805E90AC:sprites
+805ED590:g_screenfade_flags
+805ED594:g_screenfade_color
+805ED598:g_screenfading1
+805ED59C:g_screenfading2
 805ED5A0:g_something_with_fonts3
 805F1FF0:g_some_data_with_font_drawing1
 805F1FF4:g_some_data_with_font_drawing2

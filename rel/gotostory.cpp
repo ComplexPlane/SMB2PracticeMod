@@ -2,6 +2,18 @@
 
 #include <mkb/mkb.h>
 
+namespace mkb
+{
+extern "C"
+{
+void g_fade_screen_to_color(u32 flags, u32 color, u32 frames);
+extern u32 g_screenfade_color;
+extern u32 g_screenfade_flags;
+extern u32 g_screenfading1;
+extern u32 g_screenfading2;
+}
+}
+
 namespace gotostory
 {
 
@@ -29,6 +41,15 @@ void load_storymode()
     }
 }
 
+static void reset_screenfade_state()
+{
+    // Reset screenfade parameters to that of "begin fading back from black screen"
+    mkb::g_screenfade_flags = 0x00000100;
+    mkb::g_screenfade_color = 0x00000000;
+    mkb::g_screenfading1 = 0x0000001a;
+    mkb::g_screenfading2 = 0x0000001b;
+}
+
 void tick()
 {
     if (s_state == State::LoadMainReq)
@@ -36,6 +57,7 @@ void tick()
         mkb::main_mode_request = mkb::MD_SEL;
         mkb::sub_mode_request = mkb::SMD_SEL_NGC_INIT;
         s_state = State::LoadStoryReq;
+        reset_screenfade_state();
     }
     else if (s_state == State::LoadStoryReq)
     {
@@ -49,6 +71,7 @@ void tick()
         mkb::g_menu_stack[1] = 7; // Story mode menu
         mkb::g_focused_root_menu = 0;
         mkb::g_focused_maingame_menu = 0;
+        reset_screenfade_state();
     }
 }
 
