@@ -4,11 +4,12 @@ A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It 
 
 Features include:
 
-* Console savestates
-* An RTA timer that tracks time spent paused
-* An individual-world practice mode
-* Frame advance
+* Savestates
+* Input display
+* Individual-world practice mode
+* RTA timer which tracks time spent paused
 * [Jump mod](https://www.youtube.com/watch?v=kWAunK6Av-Q)
+* Frame advance
 
 ...and more to come!
 
