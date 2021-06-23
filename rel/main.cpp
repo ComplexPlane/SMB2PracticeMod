@@ -10,6 +10,7 @@
 #include "menu_impl.h"
 #include "jump.h"
 #include "inputdisp.h"
+#include "gotostory.h"
 #include "scratch.h"
 
 #include <mkb/mkb.h>
@@ -112,6 +113,7 @@ void init()
             menu::tick();
             jump::tick();
             inputdisp::tick();
+            gotostory::tick();
             scratch::tick();
         });
 }

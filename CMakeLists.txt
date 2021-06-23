@@ -28,4 +28,5 @@ add_executable(ApeSphere
         rel/jump.cpp
         rel/menu_defn.cpp
         rel/inputdisp.cpp
+        rel/gotostory.cpp
         rel/scratch.cpp rel/assembly.cpp rel/timer.cpp rel/include/timer.h rel/include/gc/vi.h rel/include/mkb/story.h rel/include/iw.h rel/iw.cpp rel/include/mkb/unlock.h rel/include/menu_impl.h rel/menu_impl.cpp rel/include/gc/mathtypes.h)

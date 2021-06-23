@@ -7,7 +7,7 @@
 #include "jump.h"
 #include "timer.h"
 #include "savestate.h"
-#include "scratch.h"
+#include "gotostory.h"
 
 #define ARRAY_LEN(a) (sizeof((a)) / sizeof((a)[0]))
 
@@ -195,7 +195,7 @@ static Widget root_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {"Go To Story Mode", scratch::load_storymode},
+        .button = {"Go To Story Mode", gotostory::load_storymode},
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
