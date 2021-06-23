@@ -7,6 +7,8 @@ namespace mkb
 extern "C"
 {
 void g_fade_screen_to_color(u32 flags, u32 color, u32 frames);
+void dmd_scen_1st_init(void);
+void g_change_music_volume(s32 param_1, s32 param_2, s32 param_3);
 extern u32 g_screenfade_color;
 extern u32 g_screenfade_flags;
 extern u32 g_screenfading1;
@@ -28,17 +30,10 @@ static State s_state = State::Default;
 
 void load_storymode()
 {
-    if (mkb::main_mode == mkb::MD_ADV)
-    {
-        // Mainloop may not be loaded, so loading storymode may cause main_game.rel to be
-        // loaded in a different place
-        // So, load the main menu first
-        s_state = State::LoadMainReq;
-    }
-    else
-    {
-        s_state = State::LoadStoryReq;
-    }
+    // Mainloop may not be loaded, so loading storymode may cause main_game.rel to be
+    // loaded in a different place
+    // So, load the main menu first
+    s_state = State::LoadMainReq;
 }
 
 static void reset_screenfade_state()
