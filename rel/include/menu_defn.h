@@ -13,6 +13,7 @@ enum class WidgetType
     Separator,
     Menu,
     FloatView,
+    Choose,
 };
 
 struct TextWidget
@@ -31,7 +32,7 @@ struct CheckboxWidget
     const char *label;
     // We can't use std::function due to destructors in unions stuff
     bool (*get)();
-    void (*set)(bool value);
+    void (*set)(bool);
 };
 
 struct MenuWidget
@@ -47,6 +48,15 @@ struct FloatViewWidget
     f32 (*get)();
 };
 
+struct ChooseWidget
+{
+    const char *label;
+    const char **choices;
+    u32 num_choices;
+    u32 (*get)();
+    void (*set)(u32);
+};
+
 struct Widget
 {
     WidgetType type;
@@ -57,6 +67,7 @@ struct Widget
         CheckboxWidget checkbox;
         MenuWidget menu;
         FloatViewWidget float_view;
+        ChooseWidget choose;
     };
 };
 

@@ -23,6 +23,18 @@ extern u8 rumble_enabled_bitflag;
 namespace menu
 {
 
+static const char *inputdisp_colors[] = {
+    "Purple",
+    "Red",
+    "Orange",
+    "Yellow",
+    "Green",
+    "Blue",
+    "Pink",
+    "Black",
+};
+static_assert(ARRAY_LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
+
 static Widget inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -31,7 +43,20 @@ static Widget inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Use Center Location", inputdisp::is_in_center_loc, inputdisp::set_in_center_loc},
-    }
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Color",
+            .choices = inputdisp_colors,
+            .num_choices = ARRAY_LEN(inputdisp_colors),
+            .get = []() { return static_cast<u32>(inputdisp::get_color()); },
+            .set = [](u32 color)
+            {
+                inputdisp::set_color(static_cast<inputdisp::Color>(color));
+            },
+        },
+    },
 };
 
 static Widget rumble_widgets[] = {

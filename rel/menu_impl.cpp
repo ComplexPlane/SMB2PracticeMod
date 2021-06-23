@@ -50,7 +50,9 @@ static Widget *get_selected_widget()
     for (u32 i = 0; i < menu->num_widgets; i++)
     {
         Widget *child = &menu->widgets[i];
-        if (child->type == WidgetType::Checkbox || child->type == WidgetType::Menu)
+        if (child->type == WidgetType::Checkbox
+            || child->type == WidgetType::Menu
+            || child->type == WidgetType::Choose)
         {
             selectable++;
             if (selectable == sel) return child;
@@ -66,7 +68,9 @@ static u32 get_menu_selectable_widget_count(MenuWidget *menu)
     for (u32 i = 0; i < menu->num_widgets; i++)
     {
         Widget *child = &menu->widgets[i];
-        if (child->type == WidgetType::Checkbox || child->type == WidgetType::Menu)
+        if (child->type == WidgetType::Checkbox ||
+            child->type == WidgetType::Menu ||
+            child->type == WidgetType::Choose)
         {
             selectable++;
         }
@@ -74,21 +78,35 @@ static u32 get_menu_selectable_widget_count(MenuWidget *menu)
     return selectable;
 }
 
-static void handle_select_button()
+static void handle_widget_bind()
 {
-    if (!pad::button_pressed(gc::PAD_BUTTON_A, true)) return;
+    bool a_pressed = pad::button_pressed(gc::PAD_BUTTON_A, true);
+    bool y_pressed = pad::button_pressed(gc::PAD_BUTTON_Y, true);
 
     Widget *selected = get_selected_widget();
     if (selected == nullptr) return;
 
-    if (selected->type == WidgetType::Checkbox)
+    if (selected->type == WidgetType::Checkbox && a_pressed)
     {
         selected->checkbox.set(!selected->checkbox.get());
     }
-    else if (selected->type == WidgetType::Menu)
+    else if (selected->type == WidgetType::Menu && a_pressed)
     {
         push_menu(&selected->menu, 0);
         s_cursor_frame = 0;
+    }
+    else if (selected->type == WidgetType::Choose)
+    {
+        auto &choose = selected->choose;
+        if (a_pressed)
+        {
+            choose.set((choose.get() + 1) % choose.num_choices);
+        }
+        if (y_pressed)
+        {
+            choose.set((choose.get() + choose.num_choices - 1) % choose.num_choices);
+        }
+        // TODO handle setting default value
     }
 }
 
@@ -123,7 +141,7 @@ void tick()
     if (dir_delta != 0 || just_opened) s_cursor_frame = 0;
     else s_cursor_frame++;
 
-    handle_select_button();
+    handle_widget_bind();
 }
 
 static gc::GXColor lerp_colors(gc::GXColor color1, gc::GXColor color2, f32 t)
@@ -168,13 +186,13 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
         {
             case WidgetType::Header:
             {
-                draw::debug_text(MARGIN + PAD, y, draw::Color::Orange, widget.header.label);
+                draw::debug_text(MARGIN + PAD, y, draw::ORANGE, widget.header.label);
                 y += LINE_HEIGHT;
                 break;
             }
             case WidgetType::Text:
             {
-                draw::debug_text(MARGIN + PAD, y, draw::Color::White, widget.header.label);
+                draw::debug_text(MARGIN + PAD, y, draw::WHITE, widget.header.label);
                 y += LINE_HEIGHT;
                 break;
             }
@@ -230,14 +248,36 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
             }
             case WidgetType::FloatView:
             {
-                draw::debug_text(MARGIN + PAD, y, draw::Color::White, "%s", widget.checkbox.label);
+                draw::debug_text(MARGIN + PAD, y, draw::WHITE, "%s", widget.checkbox.label);
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    draw::Color::Green,
+                    draw::GREEN,
                     "                        %.3Ef",
                     widget.float_view.get());
                 y += LINE_HEIGHT;
+                break;
+            }
+            case WidgetType::Choose:
+            {
+                draw::debug_text(
+                    MARGIN + PAD,
+                    y,
+                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    "  %s",
+                    widget.choose.label);
+                draw::debug_text(
+                    MARGIN + PAD,
+                    y,
+                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    "                        (%d/%d) %s",
+                    widget.choose.get() + 1,
+                    widget.choose.num_choices,
+                    widget.choose.choices[widget.choose.get()]);
+
+                if (cursor_pos == selectable_idx) cursor_y = y;
+                y += LINE_HEIGHT;
+                selectable_idx++;
                 break;
             }
         }
@@ -255,11 +295,11 @@ static void draw_breadcrumbs()
     for (u32 i = 0; i <= s_menu_stack_ptr; i++)
     {
         MenuWidget *menu = s_menu_stack[i];
-        draw::debug_text(x, MARGIN + PAD, i == 0 ? draw::Color::Purple : draw::Color::White, menu->label);
+        draw::debug_text(x, MARGIN + PAD, i == 0 ? draw::PURPLE : draw::WHITE, menu->label);
         x += strlen(menu->label) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr)
         {
-            draw::debug_text(x, MARGIN + PAD, draw::Color::White, ARROW_STR);
+            draw::debug_text(x, MARGIN + PAD, draw::WHITE, ARROW_STR);
             x += strlen(ARROW_STR) * draw::DEBUG_CHAR_WIDTH;
         }
     }

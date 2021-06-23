@@ -243,7 +243,7 @@ static bool handle_load_state_from_nonplay_submode()
     bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
     if (paused_now)
     {
-        draw::notify(draw::Color::Red, "Cannot Load Savestate, Please Unpause");
+        draw::notify(draw::RED, "Cannot Load Savestate, Please Unpause");
         return false;
     }
 
@@ -276,7 +276,7 @@ void tick()
     if (cstick_dir != pad::DIR_NONE)
     {
         s_active_state_slot = cstick_dir;
-        draw::notify(draw::Color::White, "Slot %d Selected", cstick_dir + 1);
+        draw::notify(draw::WHITE, "Slot %d Selected", cstick_dir + 1);
     }
     auto &state = s_states[s_active_state_slot];
 
@@ -286,23 +286,23 @@ void tick()
         {
             if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN)
             {
-                draw::notify(draw::Color::Red, "Cannot Create Savestate After Fallout");
+                draw::notify(draw::RED, "Cannot Create Savestate After Fallout");
             }
             else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN)
             {
-                draw::notify(draw::Color::Red, "Cannot Create Savestate After Goal");
+                draw::notify(draw::RED, "Cannot Create Savestate After Goal");
             }
             else if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)
             {
-                draw::notify(draw::Color::Red, "Cannot Create Savestate During Retry");
+                draw::notify(draw::RED, "Cannot Create Savestate During Retry");
             }
             else if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
             {
-                draw::notify(draw::Color::Red, "Cannot Create Savestate After Timeout");
+                draw::notify(draw::RED, "Cannot Create Savestate After Timeout");
             }
             else
             {
-                draw::notify(draw::Color::Red, "Cannot Create Savestate Here");
+                draw::notify(draw::RED, "Cannot Create Savestate Here");
             }
 
             return;
@@ -310,7 +310,7 @@ void tick()
 
         if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
         {
-            draw::notify(draw::Color::Red, "Cannot Create Savestate in View Stage");
+            draw::notify(draw::RED, "Cannot Create Savestate in View Stage");
             return;
         }
 
@@ -320,7 +320,7 @@ void tick()
         pass_over_regions(&state.store);
         if (!state.store.enter_save_mode())
         {
-            draw::notify(draw::Color::Red, "Cannot Create Savestate: Not Enough Memory");
+            draw::notify(draw::RED, "Cannot Create Savestate: Not Enough Memory");
             state.active = false;
             return;
         }
@@ -345,11 +345,11 @@ void tick()
 
         if (s_frame_advance_mode)
         {
-            draw::notify(draw::Color::Pink, "Slot %d Frame Advance", s_active_state_slot + 1);
+            draw::notify(draw::PINK, "Slot %d Frame Advance", s_active_state_slot + 1);
         }
         else
         {
-            draw::notify(draw::Color::Pink, "Slot %d Saved", s_active_state_slot + 1);
+            draw::notify(draw::PINK, "Slot %d Saved", s_active_state_slot + 1);
         }
     }
     else if (
@@ -365,27 +365,27 @@ void tick()
         // TODO allow loading savestate during timeover
         if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
         {
-            draw::notify(draw::Color::Red, "Cannot Load Savestate After Timeout");
+            draw::notify(draw::RED, "Cannot Load Savestate After Timeout");
             return;
         }
         if (!state.active)
         {
-            draw::notify(draw::Color::Red, "Slot %d Empty", s_active_state_slot + 1);
+            draw::notify(draw::RED, "Slot %d Empty", s_active_state_slot + 1);
             return;
         }
         if (state.stage_id != mkb::current_stage_id)
         {
-            draw::notify(draw::Color::Red, "Slot %d Wrong Stage", s_active_state_slot + 1);
+            draw::notify(draw::RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
             return;
         }
         if (state.character != mkb::selected_characters[mkb::curr_player_idx])
         {
-            draw::notify(draw::Color::Red, "Slot %d Wrong Monkey", s_active_state_slot + 1);
+            draw::notify(draw::RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
             return;
         }
         if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
         {
-            draw::notify(draw::Color::Red, "Cannot Load Savestate in View Stage");
+            draw::notify(draw::RED, "Cannot Load Savestate in View Stage");
             return;
         }
 
@@ -402,7 +402,7 @@ void tick()
 
         if (!s_created_state_last_frame)
         {
-            draw::notify(draw::Color::Blue, "Slot %d Loaded", s_active_state_slot + 1);
+            draw::notify(draw::BLUE, "Slot %d Loaded", s_active_state_slot + 1);
         }
     }
     else

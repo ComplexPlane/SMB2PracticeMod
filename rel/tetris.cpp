@@ -113,7 +113,7 @@ void Tetris::disp()
     if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z, true)
         && !m_ever_shown)
     {
-        draw::notify(draw::Color::Red, "Use L+R to toggle menu");
+        draw::notify(draw::RED, "Use L+R to toggle menu");
     }
 
     bool konami_pressed = pad::konami_pressed();

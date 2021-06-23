@@ -13,17 +13,15 @@ namespace draw
 
 static char s_notify_msg_buf[80];
 static s32 s_notify_frame_counter;
-static Color s_notify_color;
+static gc::GXColor s_notify_color;
 
-static const gc::GXColor COLOR_MAP[] = {
-    {0xff, 0xff, 0xff, 0xff}, // white
-    {0xfd, 0x68, 0x75, 0xff}, // red
-    {0xfd, 0xac, 0x68, 0xff}, // orange
-    {0x9d, 0xe3, 0xff, 0xff}, // blue
-    {0xdf, 0x7f, 0xfa, 0xff}, // pink
-    {0xb1, 0x5a, 0xff, 0xff}, // purple
-    {0x00, 0xff, 0x00, 0xff}, // green
-};
+const gc::GXColor WHITE = {0xff, 0xff, 0xff, 0xff};
+const gc::GXColor RED = {0xfd, 0x68, 0x75, 0xff};
+const gc::GXColor ORANGE = {0xfd, 0xac, 0x68, 0xff};
+const gc::GXColor BLUE = {0x9d, 0xe3, 0xff, 0xff};
+const gc::GXColor PINK = {0xdf, 0x7f, 0xfa, 0xff};
+const gc::GXColor PURPLE = {0xb1, 0x5a, 0xff, 0xff};
+const gc::GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
 
 void init()
 {
@@ -104,20 +102,12 @@ void debug_text(s32 x, s32 y, gc::GXColor color, const char *format, ...)
     va_end(args);
 }
 
-void debug_text(s32 x, s32 y, Color color, const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    debug_text_v(x, y, COLOR_MAP[static_cast<s32>(color)], format, args);
-    va_end(args);
-}
-
 void disp()
 {
     s32 notify_len = strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
     s32 draw_y = 426;
-    gc::GXColor color = COLOR_MAP[static_cast<s32>(s_notify_color)];
+    gc::GXColor color = s_notify_color;
 
     if (s_notify_frame_counter > 40)
     {
@@ -129,7 +119,7 @@ void disp()
     if (s_notify_frame_counter > 60) s_notify_frame_counter = 60;
 }
 
-void notify(Color color, const char *format, ...)
+void notify(gc::GXColor color, const char *format, ...)
 {
     va_list args;
     va_start(args, format);

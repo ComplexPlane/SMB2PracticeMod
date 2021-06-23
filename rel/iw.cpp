@@ -174,18 +174,18 @@ void disp()
 
     if (hours > 0)
     {
-        draw::debug_text(X, Y, draw::Color::White, "IW:");
-        draw::debug_text(X + 54, Y, draw::Color::White, "%d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds);
+        draw::debug_text(X, Y, draw::WHITE, "IW:");
+        draw::debug_text(X + 54, Y, draw::WHITE, "%d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds);
     }
     else if (minutes > 0)
     {
-        draw::debug_text(X, Y, draw::Color::White, "IW:");
-        draw::debug_text(X + 54, Y, draw::Color::White, "%02d:%02d.%02d", minutes, seconds, centiseconds);
+        draw::debug_text(X, Y, draw::WHITE, "IW:");
+        draw::debug_text(X + 54, Y, draw::WHITE, "%02d:%02d.%02d", minutes, seconds, centiseconds);
     }
     else
     {
-        draw::debug_text(X, Y, draw::Color::White, "IW:");
-        draw::debug_text(X + 54, Y, draw::Color::White, "%02d.%02d", seconds, centiseconds);
+        draw::debug_text(X, Y, draw::WHITE, "IW:");
+        draw::debug_text(X + 54, Y, draw::WHITE, "%02d.%02d", seconds, centiseconds);
     }
 }
 

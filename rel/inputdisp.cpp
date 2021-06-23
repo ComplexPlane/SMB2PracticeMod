@@ -13,6 +13,7 @@ namespace inputdisp
 
 static bool s_visible = false;
 static bool s_center_loc = false;
+static Color s_color = Color::Purple;
 
 static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
 
@@ -197,9 +198,22 @@ void disp()
     Vec2f center = s_center_loc ? Vec2f{430, 60} : Vec2f{534, 60};
     f32 scale = 0.6f;
 
+    gc::GXColor chosen_color = {};
+    switch (s_color)
+    {
+        case Color::Purple: chosen_color = {0xb1, 0x5a, 0xff, 0xff}; break;
+        case Color::Red: chosen_color = draw::RED; break;
+        case Color::Orange: chosen_color = draw::ORANGE; break;
+        case Color::Yellow: chosen_color = {0xfd, 0xfb, 0x78, 0xff}; break;
+        case Color::Green: chosen_color = {0x78, 0xfd, 0x85, 0xff}; break;
+        case Color::Blue: chosen_color = {0x78, 0xca, 0xfd, 0xff}; break;
+        case Color::Pink: chosen_color = draw::PINK; break;
+        case Color::Black: chosen_color = {0x00, 0x00, 0x00, 0xff}; break;
+    }
+
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
-    draw_ring(8, center, 50 * scale, 58 * scale, {0xb1, 0x5a, 0xff, 0xff});
+    draw_ring(8, center, 50 * scale, 58 * scale, chosen_color);
 
     // Accumulate stick inputs from all controllers since we don't always
     // know which player is active, like in menus
@@ -227,35 +241,35 @@ void disp()
     // Show buttons
     if (pad::button_down(gc::PAD_BUTTON_START))
     {
-        draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::Color::White, "Start");
+        draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::WHITE, "Start");
     }
     if (pad::button_down(gc::PAD_BUTTON_A))
     {
-        draw::debug_text(center.x + 65 * scale, center.y - 25 * scale, draw::Color::Green, "A");
+        draw::debug_text(center.x + 65 * scale, center.y - 25 * scale, draw::GREEN, "A");
     }
     if (pad::button_down(gc::PAD_BUTTON_B))
     {
-        draw::debug_text(center.x + 90 * scale, center.y - 25 * scale, draw::Color::Red, "B");
+        draw::debug_text(center.x + 90 * scale, center.y - 25 * scale, draw::RED, "B");
     }
     if (pad::button_down(gc::PAD_BUTTON_X))
     {
-        draw::debug_text(center.x + 65 * scale, center.y - 05 * scale, draw::Color::White, "X");
+        draw::debug_text(center.x + 65 * scale, center.y - 05 * scale, draw::WHITE, "X");
     }
     if (pad::button_down(gc::PAD_BUTTON_Y))
     {
-        draw::debug_text(center.x + 90 * scale, center.y - 05 * scale, draw::Color::White, "Y");
+        draw::debug_text(center.x + 90 * scale, center.y - 05 * scale, draw::WHITE, "Y");
     }
     if (pad::button_down(gc::PAD_TRIGGER_L))
     {
-        draw::debug_text(center.x + 65 * scale, center.y + 15 * scale, draw::Color::White, "L");
+        draw::debug_text(center.x + 65 * scale, center.y + 15 * scale, draw::WHITE, "L");
     }
     if (pad::button_down(gc::PAD_TRIGGER_R))
     {
-        draw::debug_text(center.x + 90 * scale, center.y + 15 * scale, draw::Color::White, "R");
+        draw::debug_text(center.x + 90 * scale, center.y + 15 * scale, draw::WHITE, "R");
     }
     if (pad::button_down(gc::PAD_TRIGGER_Z))
     {
-        draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::Color::Blue, "Z");
+        draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::BLUE, "Z");
     }
 
     // Show notch indicators
@@ -272,5 +286,7 @@ void disp()
 
 void set_in_center_loc(bool alternate_loc) { s_center_loc = alternate_loc; }
 bool is_in_center_loc() { return s_center_loc; }
+void set_color(Color color) { s_color = color; }
+Color get_color() { return s_color; }
 
 }
