@@ -314,6 +314,10 @@ extern s32 main_mode_request;
 extern s32 sub_mode_request;
 extern s32 main_game_mode;
 extern s32 sub_mode_frame_counter;
+extern u8 menu_stack_ptr;
+extern u8 g_menu_stack[10];
+extern u8 g_focused_root_menu;
+extern u8 g_focused_maingame_menu;
 
 void smd_game_ready_init();
 void smd_game_play_init();

@@ -8551,12 +8551,15 @@
 8054DD4C:pausemenu_scrot_texfmt
 8054DE10:g_sub_mode3
 8054DE44:adv_demo_frame_counter
-8054DF20:g_selected_menu_option
+8054DF20:g_focused_root_menu
+8054DF21:g_focused_partygame_menu
+8054DF22:g_focused_options_menu
+8054DF27:g_focused_maingame_menu
 8054DF28:selected_cm_difficulty2
 8054DF29:selected_cm_difficulty
 8054DF78:selected_characters
-8054DF84:mode_cnt
-8054DF85:g_dataselect_return_screen
+8054DF84:menu_stack_ptr
+8054DF85:g_menu_stack
 8054DF94:number_of_starting_monkeys
 8054DF99:g_currently_selected_world
 8054DF9A:g_selected_world
@@ -9334,7 +9337,7 @@
 80985A60:view_stage_camera_rot_x
 80985A62:view_stage_camera_rot_y
 80985A64:view_stage_camera_rot_z
-808F40B8:g_sel_ngc_prolog
+808F40B8:sel_ngc_prolog
 808F4154:sel_ngc_epilog
 808F41A4:sel_ngc_unlinked_func
 808F4250:FUN_8054a1b8

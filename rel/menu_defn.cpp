@@ -7,6 +7,7 @@
 #include "jump.h"
 #include "timer.h"
 #include "savestate.h"
+#include "scratch.h"
 
 #define ARRAY_LEN(a) (sizeof((a)) / sizeof((a)[0]))
 
@@ -194,10 +195,7 @@ static Widget root_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {"Go To Story Mode", []() {
-            mkb::main_mode_request = mkb::MD_GAME;
-            mkb::sub_mode_request = mkb::SMD_GAME_SCENARIO_INIT;
-        }},
+        .button = {"Go To Story Mode", scratch::load_storymode},
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
