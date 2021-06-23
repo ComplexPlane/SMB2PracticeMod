@@ -192,6 +192,13 @@ static Widget root_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
     },
+    {
+        .type = WidgetType::Button,
+        .button = {"Go To Story Mode", []() {
+            mkb::main_mode_request = mkb::MD_GAME;
+            mkb::sub_mode_request = mkb::SMD_GAME_SCENARIO_INIT;
+        }},
+    },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, ARRAY_LEN(dev_tools_widgets)}},

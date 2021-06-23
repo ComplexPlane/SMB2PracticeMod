@@ -14,6 +14,7 @@ enum class WidgetType
     Menu,
     FloatView,
     Choose,
+    Button,
 };
 
 struct TextWidget
@@ -57,6 +58,12 @@ struct ChooseWidget
     void (*set)(u32);
 };
 
+struct ButtonWidget
+{
+    const char *label;
+    void (*push)();
+};
+
 struct Widget
 {
     WidgetType type;
@@ -68,6 +75,7 @@ struct Widget
         MenuWidget menu;
         FloatViewWidget float_view;
         ChooseWidget choose;
+        ButtonWidget button;
     };
 };
 

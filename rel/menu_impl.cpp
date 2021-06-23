@@ -52,7 +52,8 @@ static Widget *get_selected_widget()
         Widget *child = &menu->widgets[i];
         if (child->type == WidgetType::Checkbox
             || child->type == WidgetType::Menu
-            || child->type == WidgetType::Choose)
+            || child->type == WidgetType::Choose
+            || child->type == WidgetType::Button)
         {
             selectable++;
             if (selectable == sel) return child;
@@ -70,7 +71,8 @@ static u32 get_menu_selectable_widget_count(MenuWidget *menu)
         Widget *child = &menu->widgets[i];
         if (child->type == WidgetType::Checkbox ||
             child->type == WidgetType::Menu ||
-            child->type == WidgetType::Choose)
+            child->type == WidgetType::Choose ||
+            child->type == WidgetType::Button)
         {
             selectable++;
         }
@@ -107,6 +109,11 @@ static void handle_widget_bind()
             choose.set((choose.get() + choose.num_choices - 1) % choose.num_choices);
         }
         // TODO handle setting default value
+    }
+    else if (selected->type == WidgetType::Button && a_pressed)
+    {
+        selected->button.push();
+        s_visible = false;
     }
 }
 
@@ -274,6 +281,20 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                     widget.choose.get() + 1,
                     widget.choose.num_choices,
                     widget.choose.choices[widget.choose.get()]);
+
+                if (cursor_pos == selectable_idx) cursor_y = y;
+                y += LINE_HEIGHT;
+                selectable_idx++;
+                break;
+            }
+            case WidgetType::Button:
+            {
+                draw::debug_text(
+                    MARGIN + PAD,
+                    y,
+                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    "  %s",
+                    widget.button.label);
 
                 if (cursor_pos == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
