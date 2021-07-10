@@ -1,20 +1,6 @@
 #include "gotostory.h"
 
-#include <mkb/mkb.h>
-
-namespace mkb
-{
-extern "C"
-{
-void g_fade_screen_to_color(u32 flags, u32 color, u32 frames);
-void dmd_scen_1st_init(void);
-void g_change_music_volume(s32 param_1, s32 param_2, s32 param_3);
-extern u32 g_screenfade_color;
-extern u32 g_screenfade_flags;
-extern u32 g_screenfading1;
-extern u32 g_screenfading2;
-}
-}
+#include <mkb.h>
 
 namespace gotostory
 {

@@ -1,9 +1,8 @@
 #include "heap.h"
 
-#include <gc/gc.h>
-
 #include <cstring>
 #include <cinttypes>
+#include <mkb.h>
 
 namespace heap
 {
@@ -15,8 +14,8 @@ void init()
     make_heap(HEAP_SIZE);
 }
 
-gc::ChunkInfo *extract_chunk(
-    gc::ChunkInfo *list, gc::ChunkInfo *chunk)
+mkb::ChunkInfo *extract_chunk(
+    mkb::ChunkInfo *list, mkb::ChunkInfo *chunk)
 {
     if (chunk->next)
     {
@@ -34,8 +33,8 @@ gc::ChunkInfo *extract_chunk(
     }
 }
 
-gc::ChunkInfo *add_chunk_to_front(
-    gc::ChunkInfo *list, gc::ChunkInfo *chunk)
+mkb::ChunkInfo *add_chunk_to_front(
+    mkb::ChunkInfo *list, mkb::ChunkInfo *chunk)
 {
     chunk->next = list;
     chunk->prev = nullptr;
@@ -48,8 +47,8 @@ gc::ChunkInfo *add_chunk_to_front(
     return chunk;
 }
 
-gc::ChunkInfo *find_chunk_in_list(
-    gc::ChunkInfo *list, gc::ChunkInfo *chunk)
+mkb::ChunkInfo *find_chunk_in_list(
+    mkb::ChunkInfo *list, mkb::ChunkInfo *chunk)
 {
     for (; list; list = list->next)
     {
@@ -67,7 +66,7 @@ void *clear_and_flush_memory(void *start, u32 size)
     memset(start, 0, size);
 
     // Flush the memory
-    gc::DCFlushRange(start, size);
+    mkb::DCFlushRange(start, size);
 
     // Return the address
     return start;
@@ -101,7 +100,7 @@ void *init_alloc(void *arena_start, void *arena_end)
 
     // Put the heap array at the start of the arena
     CustomHeapStruct *temp_custom_heap = heap_data.custom_heap;
-    gc::HeapInfo *temp_heap_info = reinterpret_cast<gc::HeapInfo *>(arena_start);
+    mkb::HeapInfo *temp_heap_info = reinterpret_cast<mkb::HeapInfo *>(arena_start);
     temp_custom_heap->heap_array = temp_heap_info;
 
     // Initialize the members of the heap array
@@ -109,7 +108,7 @@ void *init_alloc(void *arena_start, void *arena_end)
     temp_heap_info->first_used = nullptr;
 
     const u32 alignment = 0x20;
-    u32 array_size = sizeof(gc::HeapInfo);
+    u32 array_size = sizeof(mkb::HeapInfo);
 
     // Adjust arenaStart to be at the nearest reasonable location
     // Gets rounded up to the nearest multiple of 0x20 bytes
@@ -136,7 +135,7 @@ void make_heap(u32 size)
     void *heap_array_start = init_mem_alloc_services(size);
 
     // Remove the total heap info size and then round down to the nearest multiple of 0x20 bytes
-    u32 array_size = sizeof(gc::HeapInfo);
+    u32 array_size = sizeof(mkb::HeapInfo);
     size = (size - array_size) & ~(alignment - 1);
 
     // Set the end address
@@ -157,10 +156,10 @@ void create_heap(void *start, void *end)
     start_raw = (start_raw + alignment - 1) & ~(alignment - 1);
     end_raw &= ~(alignment - 1);
 
-    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    mkb::HeapInfo *info = heap_data.custom_heap->heap_array;
     s32 size = end_raw - start_raw;
 
-    gc::ChunkInfo *temp_chunk = reinterpret_cast<gc::ChunkInfo *>(start_raw);
+    mkb::ChunkInfo *temp_chunk = reinterpret_cast<mkb::ChunkInfo *>(start_raw);
     temp_chunk->prev = nullptr;
     temp_chunk->next = nullptr;
     temp_chunk->size = size;
@@ -171,7 +170,7 @@ void create_heap(void *start, void *end)
 
 void destroy_heap()
 {
-    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    mkb::HeapInfo *info = heap_data.custom_heap->heap_array;
     info->first_free = nullptr;
     info->first_used = nullptr;
 }
@@ -195,16 +194,16 @@ void *alloc_from_heap(u32 size)
 {
     // Enlarge size to the smallest possible chunk size
     const u32 alignment = 0x20;
-    u32 new_size = size + ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1));
+    u32 new_size = size + ((sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1));
     new_size = (new_size + alignment - 1) & ~(alignment - 1);
 
-    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
-    gc::ChunkInfo *temp_chunk = nullptr;
+    mkb::HeapInfo *info = heap_data.custom_heap->heap_array;
+    mkb::ChunkInfo *temp_chunk = nullptr;
 
     // Find a memory area large enough
     for (temp_chunk = info->first_free; temp_chunk; temp_chunk = temp_chunk->next)
     {
-        if (static_cast<s32>(new_size) <= temp_chunk->size)
+        if (new_size <= temp_chunk->size)
         {
             break;
         }
@@ -216,9 +215,9 @@ void *alloc_from_heap(u32 size)
         return nullptr;
     }
 
-    s32 leftover_size = temp_chunk->size - static_cast<s32>(new_size);
+    s32 leftover_size = temp_chunk->size - new_size;
 
-    s32 min_size = ((sizeof(gc::ChunkInfo) +
+    s32 min_size = ((sizeof(mkb::ChunkInfo) +
                          alignment - 1) & ~(alignment - 1)) + alignment;
 
     // Check if the current chunk can be split into two pieces
@@ -233,7 +232,7 @@ void *alloc_from_heap(u32 size)
         temp_chunk->size = static_cast<s32>(new_size);
 
         // Create a new chunk
-        gc::ChunkInfo *new_chunk = reinterpret_cast<gc::ChunkInfo *>(
+        mkb::ChunkInfo *new_chunk = reinterpret_cast<mkb::ChunkInfo *>(
             reinterpret_cast<u32>(temp_chunk) + new_size);
 
         new_chunk->size = leftover_size;
@@ -261,7 +260,7 @@ void *alloc_from_heap(u32 size)
 
     // Add the header size to the chunk
     void *allocated_memory = reinterpret_cast<void *>(reinterpret_cast<u32>(temp_chunk) +
-                                                      ((sizeof(gc::ChunkInfo) + alignment - 1) & ~(alignment - 1)));
+                                                      ((sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1)));
 
     // Clear and flush the memory and then return it
     return clear_and_flush_memory(allocated_memory, size);
@@ -272,12 +271,12 @@ bool free_to_heap(void *ptr)
     const u32 alignment = 0x20;
     u32 ptr_raw = reinterpret_cast<u32>(ptr);
 
-    u32 header_size = (sizeof(gc::ChunkInfo) +
+    u32 header_size = (sizeof(mkb::ChunkInfo) +
                             alignment - 1) & ~(alignment - 1);
 
     // Remove the header size from ptr, as the value stored in the list does not include it
-    gc::ChunkInfo *temp_chunk = reinterpret_cast<gc::ChunkInfo *>(ptr_raw - header_size);
-    gc::HeapInfo *info = heap_data.custom_heap->heap_array;
+    mkb::ChunkInfo *temp_chunk = reinterpret_cast<mkb::ChunkInfo *>(ptr_raw - header_size);
+    mkb::HeapInfo *info = heap_data.custom_heap->heap_array;
 
     // Make sure ptr is actually allocated
     if (!find_chunk_in_list(info->first_used, temp_chunk))
@@ -289,16 +288,16 @@ bool free_to_heap(void *ptr)
     info->first_used = extract_chunk(info->first_used, temp_chunk);
 
     // Add in sorted order to the free list
-    info->first_free = gc::DLInsert(info->first_free, temp_chunk);
+    info->first_free = mkb::DLInsert(info->first_free, temp_chunk);
     return true;
 }
 
 u32 get_free_space()
 {
     u32 space = 0;
-    gc::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
+    mkb::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
 
-    for (gc::ChunkInfo *chunk = temp_heap->first_free; chunk; chunk = chunk->next)
+    for (mkb::ChunkInfo *chunk = temp_heap->first_free; chunk; chunk = chunk->next)
     {
         space += chunk->size - 32; // Don't count the ChunkInfo
     }
@@ -308,11 +307,11 @@ u32 get_free_space()
 
 void check_heap()
 {
-    gc::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
+    mkb::HeapInfo *temp_heap = heap::heap_data.custom_heap->heap_array;
     bool valid = true;
 
-    gc::ChunkInfo *current_chunk = nullptr;
-    gc::ChunkInfo *prev_chunk = nullptr;
+    mkb::ChunkInfo *current_chunk = nullptr;
+    mkb::ChunkInfo *prev_chunk = nullptr;
     for (current_chunk = temp_heap->first_used; current_chunk; current_chunk = current_chunk->next)
     {
         // Check pointer sanity
@@ -348,7 +347,7 @@ void check_heap()
     if (!valid)
     {
         // Print the error message to the console
-        gc::OSReport(
+        mkb::OSReport(
             "Heap corrupt at 0x%08" PRIx32 "\n",
             reinterpret_cast<u32>(current_chunk));
     }

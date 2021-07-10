@@ -13,7 +13,7 @@
 #include "gotostory.h"
 #include "scratch.h"
 
-#include <mkb/mkb.h>
+#include <mkb.h>
 
 #include <cstring>
 
@@ -57,14 +57,14 @@ static void unlock_everything()
     mkb::unlock_info.newest_play_point_record = 99999;
     mkb::unlock_info.movies = 0x0fff;
     mkb::unlock_info.party_games = 0x0001b600;
-    mkb::unlock_info.movies_watched = 0x0fff;
+    mkb::unlock_info.g_movies_watched = 0x0fff;
     memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
     memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
 void init()
 {
-    gc::OSReport("[mod] ApeSphere loaded\n");
+    mkb::OSReport("[mod] ApeSphere loaded\n");
 
     perform_assembly_patches();
 
@@ -126,11 +126,11 @@ void tick()
 {
     if (debug_mode_enabled)
     {
-        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+        mkb::dip_switches = static_cast<mkb::DipSwitch>(mkb::dip_switches | mkb::DIP_DEBUG | mkb::DIP_DISP);
     }
     else
     {
-        mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
+        mkb::dip_switches = static_cast<mkb::DipSwitch>(mkb::dip_switches & ~(mkb::DIP_DEBUG | mkb::DIP_DISP));
     }
     pad::on_frame_start();
 }

@@ -4,8 +4,10 @@ project(ApeSphere)
 set(CMAKE_CXX_STANDARD 20)
 
 # Specify 32-bit processor for better linting
-set(CMAKE_C_FLAGS -m32)
-set(CMAKE_CXX_FLAGS -m32)
+# -Wno-write-strings because some GC SDK functions take non-const char *,
+# and Ghidra can't represent const char * anyhow
+set(CMAKE_C_FLAGS -m32 -Wno-write-strings)
+set(CMAKE_CXX_FLAGS -m32 -Wno-write-strings)
 
 include_directories(rel/include)
 include_directories(rel/include/gc)

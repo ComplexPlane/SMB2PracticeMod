@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/gc.h>
+#include <mkb.h>
 
 namespace heap
 {
@@ -10,7 +10,7 @@ constexpr u32 HEAP_SIZE = 0x40000;
 
 struct CustomHeapStruct
 {
-    gc::HeapInfo *heap_array;
+    mkb::HeapInfo *heap_array;
     void *arena_start;
     void *arena_end;
 };
@@ -35,9 +35,9 @@ struct HeapDataStruct
 };
 
 void init();
-gc::ChunkInfo *extract_chunk(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
-gc::ChunkInfo *add_chunk_to_front(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
-gc::ChunkInfo *find_chunk_in_list(gc::ChunkInfo *list, gc::ChunkInfo *chunk);
+mkb::ChunkInfo *extract_chunk(mkb::ChunkInfo *list, mkb::ChunkInfo *chunk);
+mkb::ChunkInfo *add_chunk_to_front(mkb::ChunkInfo *list, mkb::ChunkInfo *chunk);
+mkb::ChunkInfo *find_chunk_in_list(mkb::ChunkInfo *list, mkb::ChunkInfo *chunk);
 void *clear_and_flush_memory(void *start, u32 size);
 void *init_mem_alloc_services(u32 max_size);
 void *init_alloc(void *arena_start, void *arena_end);

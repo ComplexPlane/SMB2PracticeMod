@@ -1,27 +1,12 @@
 #include "jump.h"
 
-#include <mkb/mkb.h>
+#include <mkb.h>
 #include <cstring>
 #include "pad.h"
 #include "patch.h"
 #include "draw.h"
 
 #define ABS(x) ((x) < 0 ? (-x) : (x))
-
-namespace mkb
-{
-extern "C"
-{
-
-extern f32 ball_friction;
-extern f32 ball_restitution;
-
-void call_SoundReqID_arg_0(s32 id);
-void spawn_effect(Effect *effect);
-void toggle_minimap_zoom(void);
-
-}
-}
 
 namespace jump
 {
@@ -79,7 +64,7 @@ void init()
 void tick()
 {
 //    // Allow changing the sfx
-//    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_BUTTON_X))
+//    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_BUTTON_X))
 //    {
 //        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
 //
@@ -117,7 +102,7 @@ void tick()
          || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)
         && !paused_now)
     {
-        if (pad::button_pressed(gc::PAD_BUTTON_B))
+        if (pad::button_pressed(mkb::PAD_BUTTON_B))
         {
             mkb::toggle_minimap_zoom();
         }
@@ -135,7 +120,7 @@ void tick()
 
     mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];
 
-    bool jump_pressed = pad::button_pressed(gc::PAD_BUTTON_A);
+    bool jump_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
     bool ground_touched = ball.phys_flags & mkb::PHYS_G_ON_GROUND;
 
     if (jump_pressed)
@@ -149,11 +134,11 @@ void tick()
 
     bool before = ground_touched && s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
     bool after = jump_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
-    bool go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && pad::button_down(gc::PAD_BUTTON_A);
+    bool go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && pad::button_down(mkb::PAD_BUTTON_A);
 
     if (before || after || go_buffered_press) s_jumping = true;
 
-    if (pad::button_released(gc::PAD_BUTTON_A))
+    if (pad::button_released(mkb::PAD_BUTTON_A))
     {
         s_jumping = false;
         s_jump_frames = 0;

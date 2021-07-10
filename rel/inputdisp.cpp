@@ -1,7 +1,7 @@
 #include "inputdisp.h"
 
-#include <gc/gc.h>
-#include <mkb/mkb.h>
+
+#include <mkb.h>
 #include <cstring>
 
 #include "patch.h"
@@ -15,19 +15,19 @@ static bool s_visible = false;
 static bool s_center_loc = false;
 static Color s_color = Color::Purple;
 
-static void (*s_PADRead_tramp)(gc::PADStatus *statuses);
+static u32 (*s_PADRead_tramp)(mkb::PADStatus *statuses);
 
-static gc::PADStatus s_raw_inputs[4];
+static mkb::PADStatus s_raw_inputs[4];
 
-static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius, gc::GXColor color)
+static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius, mkb::GXColor color)
 {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    gc::GXTexObj *texobj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
-    mkb::GXLoadTexObj_cached(texobj, gc::GX_TEXMAP0);
-    gc::GXSetTevColor(gc::GX_TEVREG0, color);
+    mkb::GXTexObj *texobj = reinterpret_cast<mkb::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+    mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
 
-    gc::GXBegin(gc::GX_QUADS, gc::GX_VTXFMT0, pts * 4);
+    mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT0, pts * 4);
 
     for (u32 i = 0; i < pts; i++)
     {
@@ -48,28 +48,28 @@ static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius,
         f32 next_outer_x = next_sin_cos[0] * outer_radius + center.x;
         f32 next_outer_y = next_sin_cos[1] * outer_radius + center.y;
 
-        gc::GXPosition3f32(next_inner_x, next_inner_y, z);
-        gc::GXTexCoord2f32(0, 0);
-        gc::GXPosition3f32(next_outer_x, next_outer_y, z);
-        gc::GXTexCoord2f32(0, 0);
-        gc::GXPosition3f32(curr_outer_x, curr_outer_y, z);
-        gc::GXTexCoord2f32(0, 0);
-        gc::GXPosition3f32(curr_inner_x, curr_inner_y, z);
-        gc::GXTexCoord2f32(0, 0);
+        mkb::GXPosition3f32(next_inner_x, next_inner_y, z);
+        mkb::GXTexCoord2f32(0, 0);
+        mkb::GXPosition3f32(next_outer_x, next_outer_y, z);
+        mkb::GXTexCoord2f32(0, 0);
+        mkb::GXPosition3f32(curr_outer_x, curr_outer_y, z);
+        mkb::GXTexCoord2f32(0, 0);
+        mkb::GXPosition3f32(curr_inner_x, curr_inner_y, z);
+        mkb::GXTexCoord2f32(0, 0);
     }
 }
 
-static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
+static void draw_circle(u32 pts, Vec2f center, f32 radius, mkb::GXColor color)
 {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    gc::GXTexObj *texobj = reinterpret_cast<gc::GXTexObj *>(0x807ad0e0);
-    mkb::GXLoadTexObj_cached(texobj, gc::GX_TEXMAP0);
-    gc::GXSetTevColor(gc::GX_TEVREG0, color);
+    mkb::GXTexObj *texobj = reinterpret_cast<mkb::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+    mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
 
-    gc::GXBegin(gc::GX_TRIANGLEFAN, gc::GX_VTXFMT0, pts + 2);
-    gc::GXPosition3f32(center.x, center.y, z);
-    gc::GXTexCoord2f32(0, 0);
+    mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT0, pts + 2);
+    mkb::GXPosition3f32(center.x, center.y, z);
+    mkb::GXTexCoord2f32(0, 0);
 
     for (s32 i = static_cast<s32>(pts) * 2 - 1; i >= static_cast<s32>(pts) - 1; i--)
     {
@@ -78,8 +78,8 @@ static void draw_circle(u32 pts, Vec2f center, f32 radius, gc::GXColor color)
         mkb::math_sin_cos_v(static_cast<s32>(angle), sin_cos);
         f32 x = sin_cos[0] * radius + center.x;
         f32 y = sin_cos[1] * radius + center.y;
-        gc::GXPosition3f32(x, y, z);
-        gc::GXTexCoord2f32(0, 0);
+        mkb::GXPosition3f32(x, y, z);
+        mkb::GXTexCoord2f32(0, 0);
     }
 }
 
@@ -104,9 +104,9 @@ static void set_sprite_visible(bool visible)
             strcmp(sprite.text, ":") == 0 ||
             sprite.disp_func == mkb::sprite_hud_player_num_disp)
         {
-            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f))
+            if ((visible && sprite.g_depth < 0.f) || (!visible && sprite.g_depth >= 0.f))
             {
-                sprite.depth = -sprite.depth;
+                sprite.g_depth = -sprite.g_depth;
             }
         }
     }
@@ -116,10 +116,11 @@ void init()
 {
     // Hook PADRead to give us raw PAD inputs before the game processes them
     s_PADRead_tramp = patch::hook_function(
-        gc::PADRead, [](gc::PADStatus *statuses)
+        mkb::PADRead, [](mkb::PADStatus *statuses)
         {
-            s_PADRead_tramp(statuses);
-            memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
+            u32 ret = s_PADRead_tramp(statuses);
+            mkb::memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
+            return ret;
         }
     );
 }
@@ -143,8 +144,8 @@ static bool get_notch_pos(Vec2f *out_pos)
 
     for (u32 i = 0; i < 4; i++)
     {
-        gc::PADStatus &status = mkb::pad_status_groups[i].raw;
-        if (status.err != gc::PAD_ERR_NONE) continue;
+        mkb::PADStatus &status = mkb::pad_status_groups[i].raw;
+        if (status.err != mkb::PAD_ERR_NONE) continue;
 
         if (status.stickX == 0 && status.stickY == 60)
         {
@@ -198,7 +199,7 @@ void disp()
     Vec2f center = s_center_loc ? Vec2f{430, 60} : Vec2f{534, 60};
     f32 scale = 0.6f;
 
-    gc::GXColor chosen_color = {};
+    mkb::GXColor chosen_color = {};
     switch (s_color)
     {
         case Color::Purple: chosen_color = {0xb1, 0x5a, 0xff, 0xff}; break;
@@ -222,8 +223,8 @@ void disp()
     {
         for (int i = 0; i < 4; i++)
         {
-            gc::PADStatus &status = s_raw_inputs[i];
-            if (status.err == gc::PAD_ERR_NONE)
+            mkb::PADStatus &status = s_raw_inputs[i];
+            if (status.err == mkb::PAD_ERR_NONE)
             {
                 x += status.stickX;
                 y += status.stickY;
@@ -239,35 +240,35 @@ void disp()
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
 
     // Show buttons
-    if (pad::button_down(gc::PAD_BUTTON_START))
+    if (pad::button_down(mkb::PAD_BUTTON_START))
     {
         draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::WHITE, "Start");
     }
-    if (pad::button_down(gc::PAD_BUTTON_A))
+    if (pad::button_down(mkb::PAD_BUTTON_A))
     {
         draw::debug_text(center.x + 65 * scale, center.y - 25 * scale, draw::GREEN, "A");
     }
-    if (pad::button_down(gc::PAD_BUTTON_B))
+    if (pad::button_down(mkb::PAD_BUTTON_B))
     {
         draw::debug_text(center.x + 90 * scale, center.y - 25 * scale, draw::RED, "B");
     }
-    if (pad::button_down(gc::PAD_BUTTON_X))
+    if (pad::button_down(mkb::PAD_BUTTON_X))
     {
         draw::debug_text(center.x + 65 * scale, center.y - 05 * scale, draw::WHITE, "X");
     }
-    if (pad::button_down(gc::PAD_BUTTON_Y))
+    if (pad::button_down(mkb::PAD_BUTTON_Y))
     {
         draw::debug_text(center.x + 90 * scale, center.y - 05 * scale, draw::WHITE, "Y");
     }
-    if (pad::button_down(gc::PAD_TRIGGER_L))
+    if (pad::button_down(mkb::PAD_TRIGGER_L))
     {
         draw::debug_text(center.x + 65 * scale, center.y + 15 * scale, draw::WHITE, "L");
     }
-    if (pad::button_down(gc::PAD_TRIGGER_R))
+    if (pad::button_down(mkb::PAD_TRIGGER_R))
     {
         draw::debug_text(center.x + 90 * scale, center.y + 15 * scale, draw::WHITE, "R");
     }
-    if (pad::button_down(gc::PAD_TRIGGER_Z))
+    if (pad::button_down(mkb::PAD_TRIGGER_Z))
     {
         draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::BLUE, "Z");
     }

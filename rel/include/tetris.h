@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/gc.h>
+#include <mkb.h>
 
 class Tetris
 {
@@ -76,7 +76,7 @@ private:
     void draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation);
     void draw_tetrad_queue();
     void draw_dropping_tetrad();
-    void draw_grid_cell(s32 cellx, s32 celly, gc::GXColor color);
+    void draw_grid_cell(s32 cellx, s32 celly, mkb::GXColor color);
     void draw_game_over_text();
 
     bool tetrad_intersects_grid(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation);

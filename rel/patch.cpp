@@ -1,17 +1,17 @@
 #include "patch.h"
+
+#include <mkb.h>
+
 #include "pad.h"
-
-#include <gc/gc.h>
-
-#include <log.h>
+#include "log.h"
 
 namespace patch
 {
 
 void clear_dc_ic_cache(void *ptr, u32 size)
 {
-    gc::DCFlushRange(ptr, size);
-    gc::ICInvalidateRange(ptr, size);
+    mkb::DCFlushRange(ptr, size);
+    mkb::ICInvalidateRange(ptr, size);
 }
 
 u32 write_branch(void *ptr, void *destination)

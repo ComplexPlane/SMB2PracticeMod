@@ -1,6 +1,6 @@
 #include "menu_impl.h"
 
-#include <mkb/mkb.h>
+#include <mkb.h>
 #include <cstring>
 
 #include "menu_defn.h"
@@ -82,8 +82,8 @@ static u32 get_menu_selectable_widget_count(MenuWidget *menu)
 
 static void handle_widget_bind()
 {
-    bool a_pressed = pad::button_pressed(gc::PAD_BUTTON_A, true);
-    bool y_pressed = pad::button_pressed(gc::PAD_BUTTON_Y, true);
+    bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
+    bool y_pressed = pad::button_pressed(mkb::PAD_BUTTON_Y, true);
 
     Widget *selected = get_selected_widget();
     if (selected == nullptr) return;
@@ -120,14 +120,14 @@ static void handle_widget_bind()
 void tick()
 {
     bool toggle = false;
-    if (pad::button_pressed(gc::PAD_BUTTON_B, true))
+    if (pad::button_pressed(mkb::PAD_BUTTON_B, true))
     {
         pop_menu();
         s_cursor_frame = 0;
     }
     else
     {
-        toggle = pad::button_chord_pressed(gc::PAD_TRIGGER_L, gc::PAD_TRIGGER_R, true);
+        toggle = pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true);
         s_visible ^= toggle;
     }
     bool just_opened = s_visible && toggle;
@@ -151,14 +151,14 @@ void tick()
     handle_widget_bind();
 }
 
-static gc::GXColor lerp_colors(gc::GXColor color1, gc::GXColor color2, f32 t)
+static mkb::GXColor lerp_colors(mkb::GXColor color1, mkb::GXColor color2, f32 t)
 {
     f32 r = (1.f - t) * color1.r + t * color2.r;
     f32 g = (1.f - t) * color1.g + t * color2.g;
     f32 b = (1.f - t) * color1.b + t * color2.b;
     f32 a = (1.f - t) * color1.a + t * color2.a;
 
-    gc::GXColor ret;
+    mkb::GXColor ret;
     ret.r = clamp_256(r);
     ret.g = clamp_256(g);
     ret.b = clamp_256(b);
@@ -181,9 +181,9 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
     u32 selectable_idx = 0;
     s32 cursor_y = -1;
 
-    gc::GXColor light_green = {0xad, 0xff, 0xa6, 0xff};
-    gc::GXColor unfocused = {0xa2, 0xad, 0xff, 0xff};
-    gc::GXColor lerped_color = lerp_colors(light_green, unfocused, sin_lerp(40));
+    mkb::GXColor light_green = {0xad, 0xff, 0xa6, 0xff};
+    mkb::GXColor unfocused = {0xa2, 0xad, 0xff, 0xff};
+    mkb::GXColor lerped_color = lerp_colors(light_green, unfocused, sin_lerp(40));
 
     for (u32 i = 0; i < menu->num_widgets; i++)
     {

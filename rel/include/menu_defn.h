@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/gc.h>
+#include <mkb.h>
 
 namespace menu
 {

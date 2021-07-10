@@ -80,7 +80,9 @@ INCLUDES	:=	rel/include
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall $(MACHDEP) $(INCLUDE)
+# -Wno-write-strings because some GC SDK functions take non-const char *,
+# and Ghidra can't represent const char * anyhow
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 

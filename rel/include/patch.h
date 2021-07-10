@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gc/mathtypes.h>
+#include <mkb.h>
 #include "heap.h"
 #include "log.h"
 

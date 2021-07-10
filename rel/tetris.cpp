@@ -6,13 +6,11 @@ Non shit RNG
 
 #include "tetris.h"
 
-#include <gc/gc.h>
-#include <mkb/mkb.h>
+#include <mkb.h>
+#include <cstdlib>
 
 #include "pad.h"
 #include "draw.h"
-
-#include <cstdlib>
 
 static constexpr s32 NUM_TETRADS = 7;
 static constexpr s32 NUM_CELL_TYPES = 8;
@@ -42,7 +40,7 @@ static constexpr s32 ROW_FLASH_PERIOD = 4;
 static constexpr s32 INITIAL_DROP_PERIOD = 60;
 static constexpr s32 MIN_DROP_PERIOD = 20;
 
-static const gc::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
+static const mkb::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA}, // I
     {0x00, 0x02, 0xec, CELL_ALPHA}, // J
     {0xef, 0xa0, 0x00, CELL_ALPHA}, // L
@@ -110,14 +108,14 @@ void Tetris::disp()
 {
     // Binding to open menu used to be R+Z, but I found it uncomfortable over time. Now it's used to open Tetris
     // if it's been unlocked
-    if (pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z, true)
+    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_TRIGGER_Z, true)
         && !m_ever_shown)
     {
         draw::notify(draw::RED, "Use L+R to toggle menu");
     }
 
     bool konami_pressed = pad::konami_pressed();
-    bool trig_chord_pressed = pad::button_chord_pressed(gc::PAD_TRIGGER_R, gc::PAD_TRIGGER_Z);
+    bool trig_chord_pressed = pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_TRIGGER_Z);
     if (konami_pressed || (m_ever_shown && trig_chord_pressed))
     {
         m_hidden = !m_hidden;
@@ -164,7 +162,7 @@ void Tetris::handle_dropping_state()
         }
     }
 
-    if (pad::button_pressed(gc::PAD_BUTTON_B))
+    if (pad::button_pressed(mkb::PAD_BUTTON_B))
     {
         s32 low_y = find_lowest_possible_tetrad_y(
             m_dropping_tetrad,
@@ -184,26 +182,26 @@ void Tetris::handle_dropping_state()
         bool moved_down = false;
         bool rotated = false;
 
-        if (pad::button_pressed(gc::PAD_BUTTON_LEFT))
+        if (pad::button_pressed(mkb::PAD_BUTTON_LEFT))
         {
             new_tetrad_x--;
         }
-        else if (pad::button_pressed(gc::PAD_BUTTON_RIGHT))
+        else if (pad::button_pressed(mkb::PAD_BUTTON_RIGHT))
         {
             new_tetrad_x++;
         }
-        else if (pad::button_pressed(gc::PAD_BUTTON_DOWN))
+        else if (pad::button_pressed(mkb::PAD_BUTTON_DOWN))
         {
             new_tetrad_y--;
             moved_down = true;
         }
 
-        if (pad::button_pressed(gc::PAD_BUTTON_Y))
+        if (pad::button_pressed(mkb::PAD_BUTTON_Y))
         {
             new_tetrad_rot = (new_tetrad_rot + 3) % 4;
             rotated = true;
         }
-        else if (pad::button_pressed(gc::PAD_BUTTON_X))
+        else if (pad::button_pressed(mkb::PAD_BUTTON_X))
         {
             new_tetrad_rot = (new_tetrad_rot + 1) % 4;
             rotated = true;
@@ -278,7 +276,7 @@ void Tetris::handle_new_game_state()
     m_state_timer--;
     if (m_state_timer < 0) m_state_timer = 255;
 
-    if (pad::button_pressed(gc::PAD_BUTTON_START))
+    if (pad::button_pressed(mkb::PAD_BUTTON_START))
     {
         new_game();
     }
@@ -459,7 +457,7 @@ void Tetris::draw_grid()
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY)
             {
-                gc::GXColor color = {};
+                mkb::GXColor color = {};
 
                 if (m_state == State::ROWCLEAR && row_roll)
                 {
@@ -536,7 +534,7 @@ void Tetris::draw_info_text()
 void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation)
 {
     u8 tet = static_cast<u8>(tetrad);
-    gc::GXColor color = CELL_COLORS[tet];
+    mkb::GXColor color = CELL_COLORS[tet];
 
     // Note that the effectice "cell y" when indexing the tetrad rotation
     // is in the wrong direction, but is flipped again when
@@ -579,8 +577,8 @@ void Tetris::draw_dropping_tetrad()
 {
     u8 tet = static_cast<u8>(m_dropping_tetrad);
     u16 rot = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot];
-    gc::GXColor color = CELL_COLORS[tet];
-    gc::GXColor preview_color = {color.r, color.g, color.b, 0x40};
+    mkb::GXColor color = CELL_COLORS[tet];
+    mkb::GXColor preview_color = {color.r, color.g, color.b, 0x40};
 
     // Draw drop preview
     // TODO deduplicate?
@@ -618,7 +616,7 @@ void Tetris::draw_dropping_tetrad()
     }
 }
 
-void Tetris::draw_grid_cell(s32 cellx, s32 celly, gc::GXColor color)
+void Tetris::draw_grid_cell(s32 cellx, s32 celly, mkb::GXColor color)
 {
     constexpr s32 DRAWX_START = 143;
     constexpr s32 DRAWY_START = 25;

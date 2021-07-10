@@ -1,6 +1,6 @@
 #include "pad.h"
 
-#include <mkb/mkb.h>
+#include <mkb.h>
 #include <cstring>
 
 namespace pad
@@ -104,19 +104,19 @@ static void update_konami()
         }
         case 8:
         {
-            if (button_pressed(gc::PAD_BUTTON_B, true)) s_konami_progress++;
+            if (button_pressed(mkb::PAD_BUTTON_B, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 9:
         {
-            if (button_pressed(gc::PAD_BUTTON_A, true)) s_konami_progress++;
+            if (button_pressed(mkb::PAD_BUTTON_A, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
         case 10:
         {
-            if (button_pressed(gc::PAD_BUTTON_START, true)) s_konami_progress++;
+            if (button_pressed(mkb::PAD_BUTTON_START, true)) s_konami_progress++;
             else s_konami_progress = 0;
             break;
         }
@@ -164,19 +164,19 @@ bool dir_down(u16 dir, bool priority)
     {
         case DIR_UP:
         {
-            return button_down(gc::PAD_BUTTON_UP, priority) || analog_down(mkb::PAI_LSTICK_UP, priority);
+            return button_down(mkb::PAD_BUTTON_UP, priority) || analog_down(mkb::PAI_LSTICK_UP, priority);
         }
         case DIR_LEFT:
         {
-            return button_down(gc::PAD_BUTTON_LEFT, priority) || analog_down(mkb::PAI_LSTICK_LEFT, priority);
+            return button_down(mkb::PAD_BUTTON_LEFT, priority) || analog_down(mkb::PAI_LSTICK_LEFT, priority);
         }
         case DIR_RIGHT:
         {
-            return button_down(gc::PAD_BUTTON_RIGHT, priority) || analog_down(mkb::PAI_LSTICK_RIGHT, priority);
+            return button_down(mkb::PAD_BUTTON_RIGHT, priority) || analog_down(mkb::PAI_LSTICK_RIGHT, priority);
         }
         case DIR_DOWN:
         {
-            return button_down(gc::PAD_BUTTON_DOWN, priority) || analog_down(mkb::PAI_LSTICK_DOWN, priority);
+            return button_down(mkb::PAD_BUTTON_DOWN, priority) || analog_down(mkb::PAI_LSTICK_DOWN, priority);
         }
         default:
         {
@@ -191,19 +191,19 @@ bool dir_pressed(u16 dir, bool priority)
     {
         case DIR_UP:
         {
-            return button_pressed(gc::PAD_BUTTON_UP, priority) || analog_pressed(mkb::PAI_LSTICK_UP, priority);
+            return button_pressed(mkb::PAD_BUTTON_UP, priority) || analog_pressed(mkb::PAI_LSTICK_UP, priority);
         }
         case DIR_LEFT:
         {
-            return button_pressed(gc::PAD_BUTTON_LEFT, priority) || analog_pressed(mkb::PAI_LSTICK_LEFT, priority);
+            return button_pressed(mkb::PAD_BUTTON_LEFT, priority) || analog_pressed(mkb::PAI_LSTICK_LEFT, priority);
         }
         case DIR_RIGHT:
         {
-            return button_pressed(gc::PAD_BUTTON_RIGHT, priority) || analog_pressed(mkb::PAI_LSTICK_RIGHT, priority);
+            return button_pressed(mkb::PAD_BUTTON_RIGHT, priority) || analog_pressed(mkb::PAI_LSTICK_RIGHT, priority);
         }
         case DIR_DOWN:
         {
-            return button_pressed(gc::PAD_BUTTON_DOWN, priority) || analog_pressed(mkb::PAI_LSTICK_DOWN, priority);
+            return button_pressed(mkb::PAD_BUTTON_DOWN, priority) || analog_pressed(mkb::PAI_LSTICK_DOWN, priority);
         }
         default:
         {
@@ -234,8 +234,8 @@ void on_frame_start()
         // Restore previous controller inputs so new inputs can be computed correctly by the game
         mkb::merged_analog_inputs = s_merged_analog_inputs;
         mkb::merged_digital_inputs = s_merged_digital_inputs;
-        memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
-        memcpy(mkb::analog_inputs, s_analog_inputs, sizeof(mkb::analog_inputs));
+        mkb::memcpy(mkb::pad_status_groups, s_pad_status_groups, sizeof(mkb::pad_status_groups));
+        mkb::memcpy(mkb::analog_inputs, s_analog_inputs, sizeof(mkb::analog_inputs));
     }
 
     // Only now do we honor the request to change into/out of exclusive mode
@@ -246,8 +246,8 @@ void tick()
 {
     s_merged_analog_inputs = mkb::merged_analog_inputs;
     s_merged_digital_inputs = mkb::merged_digital_inputs;
-    memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
-    memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
+    mkb::memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
+    mkb::memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
 
     if (s_exclusive_mode)
     {

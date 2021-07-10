@@ -1,6 +1,6 @@
 #include "menu_defn.h"
 
-#include <mkb/mkb.h>
+#include <mkb.h>
 #include <assembly.h>
 #include <inputdisp.h>
 
