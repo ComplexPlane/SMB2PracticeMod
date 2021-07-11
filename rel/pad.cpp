@@ -6,6 +6,9 @@
 namespace pad
 {
 
+static constexpr u32 DIR_REPEAT_PERIOD = 4;
+static constexpr u32 DIR_REPEAT_WAIT = 12;
+
 static s32 s_konami_progress;
 static bool s_konami_input_prev_tick;
 static bool s_exclusive_mode;
@@ -16,32 +19,34 @@ static mkb::DigitalInputGroup s_merged_digital_inputs;
 static mkb::AnalogInputGroup s_analog_inputs[4];
 static mkb::PadStatusGroup s_pad_status_groups[4];
 
-bool button_down(u16 digital_input, bool priority)
+static u8 s_dir_down_time[8];
+
+bool button_down(mkb::PadDigitalInput digital_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
 }
 
-bool button_pressed(u16 digital_input, bool priority)
+bool button_pressed(mkb::PadDigitalInput digital_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.pressed & digital_input;
 }
 
-bool button_released(u16 digital_input, bool priority)
+bool button_released(mkb::PadDigitalInput digital_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.released & digital_input;
 }
 
-bool analog_down(u16 analog_input, bool priority)
+bool analog_down(mkb::PadAnalogInput analog_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.raw & analog_input;
 }
 
-bool analog_pressed(u16 analog_input, bool priority)
+bool analog_pressed(mkb::PadAnalogInput analog_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.pressed & analog_input;
 }
 
-bool analog_released(u16 analog_input, bool priority)
+bool analog_released(mkb::PadAnalogInput analog_input, bool priority)
 {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
@@ -128,13 +133,13 @@ static void update_konami()
     }
 }
 
-bool button_chord_pressed(u16 btn1, u16 btn2, bool priority)
+bool button_chord_pressed(mkb::PadDigitalInput btn1, mkb::PadDigitalInput btn2, bool priority)
 {
     return (button_down(btn1, priority) && button_pressed(btn2, priority))
         || (button_pressed(btn1, priority) && button_down(btn2, priority));
 }
 
-bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority)
+bool analog_chord_pressed(mkb::PadDigitalInput analog1, mkb::PadDigitalInput analog2, bool priority)
 {
     return (analog_down(analog1, priority) && analog_pressed(analog2, priority))
         || (analog_pressed(analog1, priority) && analog_down(analog2, priority));
@@ -158,7 +163,7 @@ s32 get_cstick_dir(bool priority)
     else return DIR_NONE;
 }
 
-bool dir_down(u16 dir, bool priority)
+bool dir_down(Dir dir, bool priority)
 {
     switch (dir)
     {
@@ -185,7 +190,7 @@ bool dir_down(u16 dir, bool priority)
     }
 }
 
-bool dir_pressed(u16 dir, bool priority)
+bool dir_pressed(Dir dir, bool priority)
 {
     switch (dir)
     {
@@ -210,6 +215,13 @@ bool dir_pressed(u16 dir, bool priority)
             return false;
         }
     }
+}
+
+bool dir_repeat(Dir dir, bool priority) {
+    if (s_exclusive_mode && !priority) return false;
+
+    u32 t = s_dir_down_time[dir];
+    return t == 1 || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
 bool konami_pressed()
@@ -242,6 +254,20 @@ void on_frame_start()
     s_exclusive_mode = s_exclusive_mode_request;
 }
 
+static void update_dir_times()
+{
+    for (u32 dir = 0; dir < 8; dir++) {
+        if (dir_down(static_cast<Dir>(dir), true)) {
+            s_dir_down_time[dir]++;
+            if (s_dir_down_time[dir] == 120) {
+                s_dir_down_time[dir] = 120 - DIR_REPEAT_PERIOD;
+            }
+        } else {
+            s_dir_down_time[dir] = 0;
+        }
+    }
+}
+
 void tick()
 {
     s_merged_analog_inputs = mkb::merged_analog_inputs;
@@ -259,6 +285,7 @@ void tick()
     }
 
     update_konami();
+    update_dir_times();
 }
 
 }

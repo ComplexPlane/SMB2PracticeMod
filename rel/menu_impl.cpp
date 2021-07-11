@@ -140,7 +140,7 @@ void tick()
     u32 &cursor = s_cursor_stack[s_menu_stack_ptr];
 
     // Update selected menu item
-    s32 dir_delta = pad::dir_pressed(pad::DIR_DOWN, true) - pad::dir_pressed(pad::DIR_UP, true);
+    s32 dir_delta = pad::dir_repeat(pad::DIR_DOWN, true) - pad::dir_repeat(pad::DIR_UP, true);
     u32 selectable = get_menu_selectable_widget_count(menu);
     cursor = (cursor + dir_delta + selectable) % selectable;
 

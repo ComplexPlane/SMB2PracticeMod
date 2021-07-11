@@ -44,8 +44,9 @@ bool analog_released(u16 analog_input, bool priority = false);
 bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority = false);
 
 s32 get_cstick_dir(bool priority = false);
-bool dir_down(u16 dir, bool priority = false); // Only works for cardinal directions
-bool dir_pressed(u16 dir, bool priority = false); // Only works for cardinal directions
+bool dir_down(Dir dir, bool priority = false); // Only works for cardinal directions
+bool dir_pressed(Dir dir, bool priority = false); // Only works for cardinal directions
+bool dir_repeat(Dir dir, bool priority = false); // Only works for cardinal directions
 bool konami_pressed();
 
 }

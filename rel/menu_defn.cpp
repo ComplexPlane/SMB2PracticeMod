@@ -175,6 +175,10 @@ static Widget help_widgets[] = {
 
 static Widget root_widgets[] = {
     {
+        .type = WidgetType::Button,
+        .button = {"Go To Story Mode", gotostory::load_storymode},
+    },
+    {
         .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, ARRAY_LEN(inputdisp_widgets)},
     },
     {
@@ -192,10 +196,6 @@ static Widget root_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {"Go To Story Mode", gotostory::load_storymode},
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
