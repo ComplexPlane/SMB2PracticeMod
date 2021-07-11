@@ -16,10 +16,14 @@ static State s_state = State::Default;
 
 void load_storymode()
 {
-    // Mainloop may not be loaded, so loading storymode may cause main_game.rel to be
-    // loaded in a different place
-    // So, load the main menu first
-    s_state = State::LoadMainReq;
+    if (mkb::main_mode == mkb::MD_SEL) {
+        s_state = State::LoadStoryReq;
+    } else {
+        // Mainloop may not be loaded, so loading storymode may cause main_game.rel to be
+        // loaded in a different place
+        // So, load the main menu first
+        s_state = State::LoadMainReq;
+    }
 }
 
 static void reset_screenfade_state()
