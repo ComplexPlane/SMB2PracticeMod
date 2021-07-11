@@ -159,7 +159,7 @@ static void handle_pause_menu_save(SaveState *state)
 
 static void handle_pause_menu_load(SaveState *state)
 {
-    bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
+    bool paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED;
     bool paused_in_state = state->pause_menu_sprite_status != 0;
 
     if (paused_now && !paused_in_state)

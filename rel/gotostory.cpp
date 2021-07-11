@@ -16,6 +16,7 @@ static State s_state = State::Default;
 
 void load_storymode()
 {
+    mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
     if (mkb::main_mode == mkb::MD_SEL) {
         s_state = State::LoadStoryReq;
     } else {
@@ -40,7 +41,9 @@ void tick()
     if (s_state == State::LoadMainReq)
     {
         mkb::main_mode_request = mkb::MD_SEL;
-        mkb::sub_mode_request = mkb::SMD_SEL_NGC_INIT;
+        // Using REINIT instead of INIT seems to prevent weird game state issues, like
+        // the Final Stage sprite being shown when loading a stage in story mode
+        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
         s_state = State::LoadStoryReq;
         reset_screenfade_state();
     }

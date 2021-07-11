@@ -3317,7 +3317,7 @@
 80273290:caseD_c
 80273290:caseD_d
 80273338:g_check_input_in_pausemenu
-80273B28:handle_storymode_pausemenu_selection
+80273B28:handle_pausemenu_selection
 80273B88:switchD
 80273B8C:caseD_0
 80273CA4:caseD_1
@@ -5372,7 +5372,7 @@
 80314D9C:g_load_cm_unlock_entries
 80314DD4:FUN_8023eb9c
 80314E10:FUN_8023ebd8
-80314E28:FUN_8023ebf0
+80314E28:get_world_beaten_stage_count
 80314E80:FUN_8023ec48
 80314EF0:g_load_stage_for_stageselect_preview
 80314F10:g_get_storymode_stage_id
@@ -8252,8 +8252,8 @@
 8054DBBC:curr_world
 8054DBBE:selected_storymode_stage
 8054DBC4:g_storymode_next_world
-8054DBC8:g_storymode_score
-8054DBCC:g_storymode_banana_count
+8054DBC8:storymode_score
+8054DBCC:storymode_bananas
 8054DBD0:g_some_storymode_func_ptr
 8054DBDA:curr_storymode_save_file_idx
 8054DBF0:g_maybe_related_to_stage_tilt
@@ -8286,10 +8286,11 @@
 8054DC9C:g_some_func_ptr_related_to_sub_mode
 8054DCA8:g_repause_cooldown_counter
 8054DCB0:g_some_bitflag2
-8054DCB4:g_current_selected_pause_menu_entry
+8054DCB4:g_current_focused_pause_menu_entry
 8054DCB8:g_current_pause_menu_entry_count
-8054DCBC:g_pause_menu_type
+8054DCBC:pausemenu_type
 8054DCC4:g_pause_status
+8054DCCC:g_smth_with_pasuemenu_selection
 8054DCE0:g_some_render_flag
 8054DCE4:g_mirror_pos1
 8054DCE8:g_mirror_plane_height
@@ -8623,7 +8624,7 @@
 808FCA10:g_set_something2
 808FCA20:g_preload_ape_model_for_stageselect
 808FCAF8:FUN_804d4a80
-808FCC00:FUN_804d4b88
+808FCC00:g_save_storymode_progress
 808FCCF8:FUN_804d4c80
 808FCDD0:FUN_804d4d58
 808FCDE4:FUN_804d4d6c
@@ -8634,7 +8635,7 @@
 808FCEB0:g_some_storymode_mode_handler
 808FCF5C:FUN_804d4ee4
 808FCFD8:FUN_804d4f60
-808FD000:FUN_804d4f88
+808FD000:g_get_storymode_playtime_frames
 808FD0C4:dmd_scen_select_init
 808FD154:dmd_scen_select_main
 808FD510:dmd_scen_1st_init

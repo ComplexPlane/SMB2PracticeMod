@@ -126,11 +126,11 @@ void tick()
 {
     if (debug_mode_enabled)
     {
-        mkb::dip_switches = static_cast<mkb::DipSwitch>(mkb::dip_switches | mkb::DIP_DEBUG | mkb::DIP_DISP);
+        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
     }
     else
     {
-        mkb::dip_switches = static_cast<mkb::DipSwitch>(mkb::dip_switches & ~(mkb::DIP_DEBUG | mkb::DIP_DISP));
+        mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
     }
     pad::on_frame_start();
 }

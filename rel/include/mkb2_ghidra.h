@@ -1681,6 +1681,12 @@ struct GSomethingWithPadMotorsStruct {
     undefined2 b;
 } __attribute__((__packed__));
 
+enum {
+    OF_G_SMTH_WITH_CAMERA=2,
+    OF_GAME_PAUSED=8
+};
+typedef undefined4 GOtherFlags;
+
 typedef struct RankingEntry RankingEntry, *PRankingEntry;
 
 struct RankingEntry {
@@ -2168,10 +2174,11 @@ struct StoryModeSaveFile {
     BOOL32 is_valid;
     char file_name[13];
     u8 current_world;
-    undefined field_0x16[0x2];
+    u8 field_0x16;
+    undefined field_0x17[0x1];
     u32 playtime_in_frames;
     u32 score;
-    undefined field_0x20[4];
+    u32 bananas;
     u8 num_beaten_stages_in_current_world;
     u8 beaten_stage_indices[10];
     undefined field_0x2f[85];
@@ -2237,6 +2244,18 @@ struct MemCardInfo { /* Some struct that seems to hold per-memcard info; there a
     dword field_0x3c;
     dword field_0x40;
 } __attribute__((__packed__));
+
+enum {
+    PMT_UNKNOWN0=0,
+    PMT_CHALLENGE=1,
+    PMT_PRACTICE=2,
+    PMT_UNKNOWN3=3,
+    PMT_UNKNOWN4=4,
+    PMT_STORY_STAGE_SELECT=5,
+    PMT_STORY_PLAY=6,
+    PMT_UNKNOWN7=7
+};
+typedef undefined4 PauseMenuType;
 
 typedef struct ytgut ytgut, *Pytgut;
 
@@ -4750,8 +4769,8 @@ extern "C" {
     extern undefined2 curr_world;
     extern undefined2 selected_storymode_stage;
     extern undefined2 g_storymode_next_world;
-    extern undefined4 g_storymode_score;
-    extern undefined4 g_storymode_banana_count;
+    extern undefined4 storymode_score;
+    extern undefined4 storymode_bananas;
     extern undefined4 g_some_storymode_func_ptr;
     extern undefined1 curr_storymode_save_file_idx;
     extern Mtx * g_maybe_related_to_stage_tilt;
@@ -4784,10 +4803,11 @@ extern "C" {
     extern undefined4 g_some_func_ptr_related_to_sub_mode;
     extern undefined1 g_repause_cooldown_counter;
     extern undefined4 g_some_bitflag2;
-    extern undefined4 g_current_selected_pause_menu_entry;
+    extern undefined4 g_current_focused_pause_menu_entry;
     extern undefined4 g_current_pause_menu_entry_count;
-    extern undefined4 g_pause_menu_type;
+    extern PauseMenuType  pausemenu_type;
     extern Status  g_pause_status;
+    extern undefined4 g_smth_with_pasuemenu_selection;
     extern undefined4 g_some_render_flag;
     extern struct Vec3f g_mirror_pos1;
     extern struct Vec3f g_mirror_pos2;
@@ -4887,7 +4907,7 @@ extern "C" {
     extern char g_debugtext_colorbuf2[1961];
     extern u16 os_font_encoding;
     extern DipSwitch  dip_switches;
-    extern undefined4 g_some_other_flags;
+    extern GOtherFlags  g_some_other_flags;
     extern undefined2 g_some_pad_idx;
     extern struct PoolInfo ball_pool_info;
     extern struct PoolInfo item_pool_info;
@@ -6920,7 +6940,7 @@ extern "C" {
     uint g_get_next_player_idx(void);
     void g_something_with_pausemenu(int param_1);
     void g_check_input_in_pausemenu(int param_1);
-    void handle_storymode_pausemenu_selection(int param_1);
+    void handle_pausemenu_selection(int param_1);
     void g_related_to_pausemenu(void);
     void init_events(void);
     void tick_events(void);
@@ -7669,6 +7689,7 @@ extern "C" {
     void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_save_cm_unlock_entries(void);
     void g_load_cm_unlock_entries(void);
+    int get_world_beaten_stage_count(int world);
     int g_load_stage_for_stageselect_preview(int param_1, int param_2);
     int g_get_storymode_stage_id(int world, int stage);
     void clear_unlocked_storymode_stages(void);
@@ -8229,10 +8250,12 @@ extern "C" {
     undefined4 g_get_storymode_banana_count(void);
     void g_set_something2(undefined4 value);
     void g_preload_ape_model_for_stageselect(void);
+    void g_save_storymode_progress(void * param_1);
     int g_is_timer_30s_or_60s_current_stage(void);
     int is_timer_30s_or_60s_wrapper(int param_1, int param_2);
     void g_some_scenario_init_func_1(void);
     void g_some_storymode_mode_handler(void);
+    void g_get_storymode_playtime_frames(void);
     void dmd_scen_select_init(void);
     void dmd_scen_select_main(void);
     void dmd_scen_1st_init(void);
