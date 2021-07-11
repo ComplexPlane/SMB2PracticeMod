@@ -22,6 +22,8 @@ static u32 s_patch1, s_patch2;
 static u32 s_anim_counter;
 static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
+static u32 s_iw_files; // Bitflag for which save files are IW save files
+
 // IW timer stuff
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
@@ -34,8 +36,10 @@ void set_visible(bool visible)
         if (visible)
         {
             // IW-related patches
-            s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804), reinterpret_cast<void *>(main::stage_select_menu_hook));
-            s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c), reinterpret_cast<void *>(main::pause_menu_text_hook));
+            s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804),
+                                           reinterpret_cast<void *>(main::stage_select_menu_hook));
+            s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c),
+                                           reinterpret_cast<void *>(main::pause_menu_text_hook));
         }
         else
         {
@@ -63,11 +67,18 @@ static void handle_iw_selection()
 
     s32 dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
     auto &story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];
-    if (story_save.is_valid)
+    if (s_iw_files & (1 << mkb::selected_story_file_idx))
     {
         s32 world = story_save.current_world + dir;
-        if (world < 0 || world > 9) story_save.is_valid = 0;
-        else story_save.current_world = world;
+        if (world < 0 || world > 9)
+        {
+            story_save.is_valid = 0;
+            s_iw_files &= ~(1 << mkb::selected_story_file_idx);
+        }
+        else
+        {
+            story_save.current_world = world;
+        }
     }
     else
     {
@@ -75,6 +86,7 @@ static void handle_iw_selection()
         {
             story_save.is_valid = 1;
             story_save.current_world = dir == +1 ? 0 : 9;
+            s_iw_files |= (1 << mkb::selected_story_file_idx);
         }
     }
 }
@@ -88,7 +100,7 @@ static void set_save_file_info()
     for (s32 i = 0; i < 3; i++)
     {
         auto &story_save = mkb::storymode_save_files[i];
-        if (story_save.is_valid)
+        if (s_iw_files & (1 << i))
         {
             sprintf(story_save.file_name, "W%02d IW %s",
                     story_save.current_world + 1,
@@ -138,16 +150,11 @@ void tick()
     set_save_file_info();
 
     u8 file_idx = mkb::g_storymode_mode == 5
-        ? mkb::selected_story_file_idx
-        : mkb::curr_storymode_save_file_idx;
+                  ? mkb::selected_story_file_idx
+                  : mkb::curr_storymode_save_file_idx;
 
     // Maybe not the best way to detect if we're playing an IW but it works
-    mkb::StoryModeSaveFile &file = mkb::storymode_save_files[file_idx];
-    main::currently_playing_iw =
-        file.is_valid
-        && file.file_name[0] == 'W'
-        && file.file_name[4] == 'I'
-        && file.file_name[5] == 'W';
+    main::currently_playing_iw = s_iw_files & (1 << file_idx);
 
     handle_iw_timer();
 }
@@ -155,9 +162,9 @@ void tick()
 void disp()
 {
     if (!s_visible
-    || mkb::main_mode != mkb::MD_GAME
-    || mkb::main_game_mode != mkb::STORY_MODE
-    || !main::currently_playing_iw)
+        || mkb::main_mode != mkb::MD_GAME
+        || mkb::main_game_mode != mkb::STORY_MODE
+        || !main::currently_playing_iw)
         return;
 
     constexpr u32 SECOND = 60;
