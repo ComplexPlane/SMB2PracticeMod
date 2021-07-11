@@ -60,11 +60,9 @@ void disp()
 
     if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT)
     {
-        s_rta_timer = mkb::stage_time_limit;
+        s_rta_timer = mkb::mode_info.stage_time_limit;
     }
-    // This flag seems to correspond to when the timer should be running...
-    // See 0x802974bc in memory
-    else if ((mkb::ball_mode & 0x8u) == 0)
+    else if ((mkb::mode_info.ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0)
     {
         s_rta_timer -= s_retrace_count - s_prev_retrace_count;
 //        if (s_rtaTimer < 0) s_rtaTimer = 0;
@@ -83,7 +81,7 @@ void disp()
             draw::WHITE,
             "%02d.%02d", sec, centisec);
 
-        convert_frame_time(mkb::stage_time_frames_remaining - s_rta_timer, &sec, &centisec);
+        convert_frame_time(mkb::mode_info.stage_time_frames_remaining - s_rta_timer, &sec, &centisec);
         draw::debug_text(
             380, 50,
             draw::WHITE,

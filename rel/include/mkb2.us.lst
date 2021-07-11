@@ -5364,7 +5364,7 @@
 80313F24:g_smth_with_cm_entries_in_main_menu
 80314178:empty_function
 8031417C:update_cm_unlocked_levels
-80314274:g_something_with_cm_entries
+80314274:g_clear_cm_player_progress
 80314308:FUN_8023e0d0
 803146E0:g_something_with_cm_entries2
 80314854:sprite_debug_course_display_disp
@@ -8290,7 +8290,6 @@
 8054DCB8:g_current_pause_menu_entry_count
 8054DCBC:pausemenu_type
 8054DCC4:g_pause_status
-8054DCCC:g_smth_with_pasuemenu_selection
 8054DCE0:g_some_render_flag
 8054DCE4:g_mirror_pos1
 8054DCE8:g_mirror_plane_height
@@ -8334,7 +8333,7 @@
 8055395C:tick_at_gx_finish_frame
 80553964:gx_fifo_use_size
 80553968:g_video_mode_change_requested
-80553970:ball_mode
+80553970:mode_info
 80553974:stage_time_frames_remaining
 80553976:stage_time_limit
 80553980:g_some_ball_vel
@@ -8450,9 +8449,9 @@
 805D4918:g_stage_id_in_practice_mode
 805D491C:g_mode_flags2
 805D4948:g_some_course_length
-805D494C:g_some_cm_entry_list
-805D4950:g_some_cm_entry_list3
-805D4958:g_some_cm_entry_list2
+805D494C:g_cm_player_progress
+805D4950:g_likely_not_some_cm_entry_list3
+805D4958:g_likely_not_some_cm_entry_list2
 805D4D38:storymode_unlock_entries
 805D4D48:g_next_item_id
 805D4D4C:items

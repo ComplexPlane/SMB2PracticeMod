@@ -1681,6 +1681,16 @@ struct GSomethingWithPadMotorsStruct {
     undefined2 b;
 } __attribute__((__packed__));
 
+typedef struct CmPlayerProgress CmPlayerProgress, *PCmPlayerProgress;
+
+struct CmPlayerProgress { /* Seems to be one of these per player, not sure what they are exactly yet */
+    u32 g_curr_course_stage_num; /* Aka the stage number displayed in the bottom-left */
+    s32 field_0x4;
+    undefined field_0x8[0x18];
+    s16 field_0x20;
+    s16 field_0x22;
+} __attribute__((__packed__));
+
 enum {
     OF_G_SMTH_WITH_CAMERA=2,
     OF_GAME_PAUSED=8
@@ -2399,6 +2409,33 @@ struct MemCardFile {
     struct CARDFileInfo gc_file_info; /* Created by retype action */
     undefined field_0x22[0x2];
     char * file_name; /* Struct may be bigger? /shrug */
+} __attribute__((__packed__));
+
+typedef struct ModeInfo ModeInfo, *PModeInfo;
+
+struct ModeInfo {
+    BallMode  ball_mode; /* Correlates with the ball's 'mode' in the debug menu's ball display. Bonus stages have 0x40 set, final stages in a difficulty have 0x1000 set.  0x8 seems to stop the timer? -Crafted */
+    s16 stage_time_frames_remaining;
+    undefined2 stage_time_limit;
+    undefined4 field_0x8;
+    undefined2 field_0xc;
+    undefined2 field_0xe;
+    struct Vec3f g_some_ball_vel;
+    undefined2 g_some_timer_frame_remaining_count;
+    undefined2 field_0x1e;
+    undefined2 g_next_stage_id;
+    undefined2 g_holds_stage_jump_distance_at_some_point;
+    undefined4 bananas_remaining;
+    undefined2 field_0x28;
+    undefined2 field_0x2a;
+    undefined2 g_next_stage_id2;
+    undefined2 g_some_cm_stage_id;
+    undefined2 field_0x30;
+    undefined2 g_some_stage_id;
+    undefined2 field_0x34;
+    undefined2 field_0x36;
+    undefined1 field_0x38;
+    undefined field_0x39[0x3];
 } __attribute__((__packed__));
 
 typedef void _IO_lock_t;
@@ -4807,7 +4844,6 @@ extern "C" {
     extern undefined4 g_current_pause_menu_entry_count;
     extern PauseMenuType  pausemenu_type;
     extern Status  g_pause_status;
-    extern undefined4 g_smth_with_pasuemenu_selection;
     extern undefined4 g_some_render_flag;
     extern struct Vec3f g_mirror_pos1;
     extern struct Vec3f g_mirror_pos2;
@@ -4850,17 +4886,7 @@ extern "C" {
     extern undefined4 tick_at_gx_finish_frame;
     extern u32 gx_fifo_use_size;
     extern BOOL32 g_video_mode_change_requested;
-    extern BallMode  ball_mode;
-    extern s16 stage_time_frames_remaining;
-    extern undefined2 stage_time_limit;
-    extern struct Vec3f g_some_ball_vel;
-    extern undefined2 g_some_timer_frame_remaining_count;
-    extern undefined2 g_next_stage_id;
-    extern undefined2 g_holds_stage_jump_distance_at_some_point;
-    extern undefined4 bananas_remaining;
-    extern undefined2 g_next_stage_id;
-    extern undefined2 g_some_cm_stage_id;
-    extern undefined2 g_some_stage_id;
+    extern struct ModeInfo mode_info;
     extern struct GmaBuffer * g_background_gma;
     extern struct TplBuffer * g_background_tpl;
     extern undefined4 g_something_related_to_sprites_probably;
@@ -4964,7 +4990,7 @@ extern "C" {
     extern undefined2 g_stage_id_in_practice_mode;
     extern ModeFlag  g_mode_flags2;
     extern undefined4 g_some_course_length;
-    extern struct CmListEntry g_some_cm_entry_list[4];
+    extern struct CmPlayerProgress g_cm_player_progress[12];
     extern undefined1 storymode_unlock_entries[13];
     extern undefined2 g_next_item_id;
     extern struct Item items[256];
@@ -7684,7 +7710,7 @@ extern "C" {
     undefined4 g_smth_with_cm_entries_in_main_menu(int param_1, int param_2, uint param_3);
     void empty_function(void);
     void update_cm_unlocked_levels(Difficulty  difficulty, int param_2, ModeFlag  mode_flags);
-    void g_something_with_cm_entries(void);
+    void g_clear_cm_player_progress(void);
     void g_something_with_cm_entries2(void);
     void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_save_cm_unlock_entries(void);

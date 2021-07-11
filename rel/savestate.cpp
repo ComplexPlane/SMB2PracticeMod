@@ -3,7 +3,6 @@
 #include <mkb.h>
 
 #include "pad.h"
-#include "log.h"
 #include "patch.h"
 #include "memstore.h"
 #include "heap.h"
@@ -67,10 +66,10 @@ static void pass_over_regions(memstore::MemStore *store)
 {
     store->do_region(&mkb::balls[0], sizeof(mkb::balls[0]));
     store->do_region(&mkb::sub_mode, sizeof(mkb::sub_mode));
-    store->do_region(&mkb::stage_time_frames_remaining, sizeof(mkb::stage_time_frames_remaining));
+    store->do_region(&mkb::mode_info.stage_time_frames_remaining, sizeof(mkb::mode_info.stage_time_frames_remaining));
     store->do_region(reinterpret_cast<void *>(0x8054E03C), 0xe0); // Camera region
     store->do_region(reinterpret_cast<void *>(0x805BD830), 0x1c); // Some physics region
-    store->do_region(&mkb::ball_mode, sizeof(mkb::ball_mode));
+    store->do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     store->do_region(&mkb::g_standstill_camera_frame_counter, sizeof(mkb::g_standstill_camera_frame_counter));
     store->do_region(mkb::balls[0].ape, sizeof(*mkb::balls[0].ape)); // Store entire ape struct for now
 
