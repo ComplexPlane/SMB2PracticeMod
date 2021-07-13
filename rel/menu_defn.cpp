@@ -173,10 +173,37 @@ static Widget help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  github.com/ComplexPlane/ApeSphere/releases"}},
 };
 
+static Widget cm_seg_widgets[] = {
+    {.type = WidgetType::Button, .button = {"Beginner 1-10"}},
+    {.type = WidgetType::Button, .button = {"Beginner Extra"}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Button, .button = {"Advanced 1-10"}},
+    {.type = WidgetType::Button, .button = {"Advanced 11-20"}},
+    {.type = WidgetType::Button, .button = {"Advanced 21-30"}},
+    {.type = WidgetType::Button, .button = {"Advanced Extra"}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Button, .button = {"Expert 1-10"}},
+    {.type = WidgetType::Button, .button = {"Expert 11-20"}},
+    {.type = WidgetType::Button, .button = {"Expert 21-30"}},
+    {.type = WidgetType::Button, .button = {"Expert 31-40"}},
+    {.type = WidgetType::Button, .button = {"Expert 41-50"}},
+    {.type = WidgetType::Button, .button = {"Expert Extra"}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Button, .button = {"Master 1-10"}},
+    {.type = WidgetType::Button, .button = {"Master Extra"}},
+};
+
 static Widget root_widgets[] = {
     {
         .type = WidgetType::Button,
         .button = {"Go To Story Mode", gotostory::load_storymode},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Challenge Mode Seg", cm_seg_widgets, ARRAY_LEN(cm_seg_widgets)},
     },
     {
         .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, ARRAY_LEN(inputdisp_widgets)},
