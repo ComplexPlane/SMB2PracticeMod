@@ -8,7 +8,7 @@ namespace gotostory
 enum class State
 {
     Default,
-    LoadMainReq,
+    LoadMenuReq,
     LoadStoryReq,
 };
 
@@ -16,14 +16,13 @@ static State s_state = State::Default;
 
 void load_storymode()
 {
-    mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
     if (mkb::main_mode == mkb::MD_SEL) {
         s_state = State::LoadStoryReq;
     } else {
         // Mainloop may not be loaded, so loading storymode may cause main_game.rel to be
         // loaded in a different place
         // So, load the main menu first
-        s_state = State::LoadMainReq;
+        s_state = State::LoadMenuReq;
     }
 }
 
@@ -38,8 +37,9 @@ static void reset_screenfade_state()
 
 void tick()
 {
-    if (s_state == State::LoadMainReq)
+    if (s_state == State::LoadMenuReq)
     {
+        mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
         mkb::main_mode_request = mkb::MD_SEL;
         // Using REINIT instead of INIT seems to prevent weird game state issues, like
         // the Final Stage sprite being shown when loading a stage in story mode

@@ -11,6 +11,7 @@
 #include "jump.h"
 #include "inputdisp.h"
 #include "gotostory.h"
+#include "cmseg.h"
 #include "scratch.h"
 
 #include <mkb.h>
@@ -74,6 +75,7 @@ void init()
     savestate::init();
     timer::init();
     inputdisp::init();
+    cmseg::init();
     scratch::init();
 
     savestate::set_visible(true);
@@ -114,6 +116,7 @@ void init()
             jump::tick();
             inputdisp::tick();
             gotostory::tick();
+            cmseg::tick();
             scratch::tick();
         });
 }

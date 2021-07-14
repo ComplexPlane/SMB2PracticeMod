@@ -3,6 +3,7 @@
 #include <mkb.h>
 #include <assembly.h>
 #include <inputdisp.h>
+#include <cmseg.h>
 
 #include "jump.h"
 #include "timer.h"
@@ -174,26 +175,69 @@ static Widget help_widgets[] = {
 };
 
 static Widget cm_seg_widgets[] = {
-    {.type = WidgetType::Button, .button = {"Beginner 1-10"}},
-    {.type = WidgetType::Button, .button = {"Beginner Extra"}},
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Beginner 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Beginner Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}
+    },
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Button, .button = {"Advanced 1-10"}},
-    {.type = WidgetType::Button, .button = {"Advanced 11-20"}},
-    {.type = WidgetType::Button, .button = {"Advanced 21-30"}},
-    {.type = WidgetType::Button, .button = {"Advanced Extra"}},
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}
+    },
+    {
+        .type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 31-40", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 41-50", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}
+    },
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Button, .button = {"Expert 1-10"}},
-    {.type = WidgetType::Button, .button = {"Expert 11-20"}},
-    {.type = WidgetType::Button, .button = {"Expert 21-30"}},
-    {.type = WidgetType::Button, .button = {"Expert 31-40"}},
-    {.type = WidgetType::Button, .button = {"Expert 41-50"}},
-    {.type = WidgetType::Button, .button = {"Expert Extra"}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Button, .button = {"Master 1-10"}},
-    {.type = WidgetType::Button, .button = {"Master Extra"}},
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Master 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Master Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}
+    },
 };
 
 static Widget root_widgets[] = {

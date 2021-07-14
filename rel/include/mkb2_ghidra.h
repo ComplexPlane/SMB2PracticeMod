@@ -139,11 +139,19 @@ struct DVDDiskID {
 
 typedef struct CmEntry CmEntry, *PCmEntry;
 
+enum { /* See cmEntryFormat.txt notes */
+    CMET_IF=0,
+    CMET_THEN=1,
+    CMET_INFO=2,
+    CMET_END=3
+};
+typedef undefined1 CmEntryType;
+
 struct CmEntry { /* Challenge Mode Entry, see cmEntryFormat.txt by TwixNinja in notes for more info */
-    byte m;
-    byte n;
+    CmEntryType  type;
+    u8 arg;
     undefined field_0x2[2];
-    dword v;
+    u32 value;
     undefined field_0x8[20];
 } __attribute__((__packed__));
 
@@ -2413,7 +2421,7 @@ struct MemCardFile {
 
 typedef struct ModeInfo ModeInfo, *PModeInfo;
 
-struct ModeInfo {
+struct ModeInfo { /* I don't know what to call this, but there's some important global game info in here! -Complex */
     BallMode  ball_mode; /* Correlates with the ball's 'mode' in the debug menu's ball display. Bonus stages have 0x40 set, final stages in a difficulty have 0x1000 set.  0x8 seems to stop the timer? -Crafted */
     s16 stage_time_frames_remaining;
     undefined2 stage_time_limit;
