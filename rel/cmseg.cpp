@@ -26,6 +26,15 @@ static void (*s_g_reset_cm_course_tramp)();
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
 
+static void reset_screenfade_state()
+{
+    // Reset screenfade parameters to that of "begin fading back from black screen"
+    mkb::g_screenfade_flags = 0x00000100;
+    mkb::g_screenfade_color = 0x00000000;
+    mkb::g_screenfading1 = 0x0000001a;
+    mkb::g_screenfading2 = 0x0000001b;
+}
+
 //static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
 //{
 //    static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
@@ -114,6 +123,8 @@ static void state_load_menu()
     mkb::g_focused_root_menu = 0;
     mkb::g_focused_maingame_menu = 1;
 
+    reset_screenfade_state();
+
     s_state = State::EnterCm;
 }
 
@@ -130,6 +141,8 @@ static void state_enter_cm()
 
     // TODO restore main menu state to look like we entered Challenge Mode
     // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
+
+    reset_screenfade_state();
 
     s_state = State::SegActive;
 }
