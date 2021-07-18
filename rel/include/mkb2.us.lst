@@ -5354,7 +5354,7 @@
 803137F4:clear_next_cm_stage_id2
 80313808:clear_next_cm_stage_id
 8031381C:g_get_current_cm_stage_time_limit
-80313950:g_init_cm_course
+80313950:g_update_cm_course
 80313A78:calc_course_idx
 80313AD8:FUN_8023d8a0
 80313BA4:g_are_on_final_course_level

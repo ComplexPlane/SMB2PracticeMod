@@ -1829,7 +1829,8 @@ enum {
     MF_OPTION_MODE=262144,
     MF_G_STOP_GAME_LOOP=2097152,
     MF_0x400000=4194304,
-    MF_PLAYING_MASTER_EX_COURSE=8388608
+    MF_PLAYING_MASTER_EX_COURSE=8388608,
+    MF_G_PLAYING_MASTER_COURSE=33554432
 };
 typedef undefined4 ModeFlag;
 
@@ -7732,7 +7733,7 @@ extern "C" {
     void clear_next_cm_stage_id2(struct CmEntry * entry);
     void clear_next_cm_stage_id(struct CmEntry * entry);
     s32 g_get_current_cm_stage_time_limit(void);
-    u32 g_init_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
+    u32 g_update_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
     int calc_course_idx(Difficulty  difficulty, ModeFlag  mode_flags);
     uint g_are_on_final_course_level(int difficulty_id, int course_stage, uint difficulty_flags);
     undefined4 is_bonus_stage_being_played(int param_1);

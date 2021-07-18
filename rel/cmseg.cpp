@@ -21,23 +21,22 @@ enum class State
 static State s_state = State::Default;
 static Seg s_seg_request;
 static void (*s_g_reset_cm_course_tramp)();
-static u32 (*s_g_init_cm_course_tramp)(mkb::Difficulty difficulty, s32 course_stage_num, mkb::ModeFlag mode_flags);
 
 static bool s_cm_seg_active;
 static s16 s_seg_course_stage_num;
 
-//static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
-//{
-//    static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
-//
-//    mkb::OSReport("Course entry count: %d\n", entry_count);
-//    for (u32 i = 0; i < entry_count; i++)
-//    {
-//        mkb::CmEntry &entry = course[i];
-//        mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.type], entry.arg, entry.value);
-//    }
-//    mkb::OSReport("\n");
-//}
+static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
+{
+    static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
+
+    mkb::OSReport("Course entry count: %d\n", entry_count);
+    for (u32 i = 0; i < entry_count; i++)
+    {
+        mkb::CmEntry &entry = course[i];
+        mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.type], entry.arg, entry.value);
+    }
+    mkb::OSReport("\n");
+}
 
 /**
  * Create a new course in an existing one by inserting a CMET_END entry
@@ -115,7 +114,6 @@ static void state_load_menu()
 static void state_load_cm()
 {
 
-    // TODO set difficulty, flags etc. based on requested course
     // TODO enforce 1-player game
     // TODO character, lives
 
@@ -136,108 +134,123 @@ void init_seg()
 {
     mkb::CmEntry *course = nullptr;
     u32 start_course_stage_num = 0;
+    mkb::mode_flags &= ~(
+        mkb::MF_G_PLAYING_MASTER_COURSE
+        | mkb::MF_PLAYING_EXTRA_COURSE
+        | mkb::MF_PLAYING_MASTER_NOEX_COURSE
+        | mkb::MF_PLAYING_MASTER_EX_COURSE);
     switch (s_seg_request)
     {
         case Seg::Beginner1:
         {
-            mkb::selected_cm_difficulty = 0;
+            mkb::curr_difficulty = mkb::DIFF_BEGINNER;
             course = mkb::beginner_noex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::BeginnerExtra:
         {
-            mkb::selected_cm_difficulty = 0;
+            mkb::curr_difficulty = mkb::DIFF_BEGINNER;
+            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
             course = mkb::beginner_ex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::Advanced1:
         {
-            mkb::selected_cm_difficulty = 1;
+            mkb::curr_difficulty = mkb::DIFF_ADVANCED;
             course = mkb::advanced_noex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::Advanced11:
         {
-            mkb::selected_cm_difficulty = 1;
+            mkb::curr_difficulty = mkb::DIFF_ADVANCED;
             course = mkb::advanced_noex_cm_entries;
             start_course_stage_num = 11;
             break;
         }
         case Seg::Advanced21:
         {
-            mkb::selected_cm_difficulty = 1;
+            mkb::curr_difficulty = mkb::DIFF_ADVANCED;
             course = mkb::advanced_noex_cm_entries;
             start_course_stage_num = 21;
             break;
         }
         case Seg::AdvancedExtra:
         {
-            mkb::selected_cm_difficulty = 1;
+            mkb::curr_difficulty = mkb::DIFF_ADVANCED;
+            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
             course = mkb::advanced_ex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::Expert1:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
             course = mkb::expert_noex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::Expert11:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
             course = mkb::expert_noex_cm_entries;
             start_course_stage_num = 11;
             break;
         }
         case Seg::Expert21:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
             course = mkb::expert_noex_cm_entries;
             start_course_stage_num = 21;
             break;
         }
         case Seg::Expert31:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
             course = mkb::expert_noex_cm_entries;
             start_course_stage_num = 31;
             break;
         }
         case Seg::Expert41:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
             course = mkb::expert_noex_cm_entries;
             start_course_stage_num = 41;
             break;
         }
         case Seg::ExpertExtra:
         {
-            mkb::selected_cm_difficulty = 2;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
+            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
             course = mkb::expert_ex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::Master1:
         {
-            mkb::selected_cm_difficulty = 3;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
+            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE
+                | mkb::MF_G_PLAYING_MASTER_COURSE
+                | mkb::MF_PLAYING_MASTER_NOEX_COURSE;
             course = mkb::master_noex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
         case Seg::MasterExtra:
         {
-            mkb::selected_cm_difficulty = 3;
+            mkb::curr_difficulty = mkb::DIFF_EXPERT;
+            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE
+                               | mkb::MF_G_PLAYING_MASTER_COURSE
+                               | mkb::MF_PLAYING_MASTER_EX_COURSE;
             course = mkb::master_ex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
     }
     gen_course(course, start_course_stage_num, 2);
+    debug_print_course(mkb::advanced_noex_cm_entries, 10);
 
     s_state = State::Default;
 }
@@ -251,12 +264,11 @@ void request_cm_seg(Seg seg)
 
 void init()
 {
-    s_g_init_cm_course_tramp = patch::hook_function(
-        mkb::g_init_cm_course, [](mkb::Difficulty difficulty, s32 course_stage_num, mkb::ModeFlag mode_flags)
+    s_g_reset_cm_course_tramp = patch::hook_function(
+        mkb::g_reset_cm_course, []()
         {
-            u32 ret = s_g_init_cm_course_tramp(difficulty, course_stage_num, mode_flags);
+            s_g_reset_cm_course_tramp();
             if (s_state == State::SegActive) init_seg();
-            return ret;
         }
     );
 }
