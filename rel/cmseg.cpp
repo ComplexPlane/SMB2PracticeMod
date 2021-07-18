@@ -2,6 +2,7 @@
 
 #include <mkb.h>
 #include <log.h>
+#include <patch.h>
 
 #define ARRAY_LEN(x) (sizeof((x)) / sizeof((x)[0]))
 
@@ -17,6 +18,10 @@ enum class State
 
 static State s_state = State::Default;
 static Seg s_seg_request;
+static void (*s_g_reset_cm_course_tramp)();
+
+static bool s_cm_seg_active;
+static s16 s_seg_course_stage_num;
 
 //static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
 //{
@@ -35,7 +40,7 @@ static Seg s_seg_request;
  * Create a new course on top of an existing one, by inserting a CMET_END entry and returning the first entry of the
  * segment.
  */
-static mkb::CmEntry *gen_course(mkb::CmEntry *course, u32 stage_start_idx, u32 stage_count)
+static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 stage_count)
 {
     s32 start_entry_idx = -1;
     s32 end_entry_idx = -1;
@@ -46,11 +51,11 @@ static mkb::CmEntry *gen_course(mkb::CmEntry *course, u32 stage_start_idx, u32 s
         if (course[i].type == mkb::CMET_INFO && course[i].arg == 0)
         {
             curr_stage_count++;
-            if (curr_stage_count == stage_start_idx + 1)
+            if (curr_stage_count == start_course_stage_num)
             {
                 start_entry_idx = i;
             }
-            else if (curr_stage_count == stage_start_idx + stage_count + 1)
+            else if (curr_stage_count == start_course_stage_num + stage_count)
             {
                 end_entry_idx = i;
                 break;
@@ -58,7 +63,7 @@ static mkb::CmEntry *gen_course(mkb::CmEntry *course, u32 stage_start_idx, u32 s
         }
         else if (course[i].type == mkb::CMET_END)
         {
-            if (curr_stage_count == stage_start_idx + stage_count)
+            if (curr_stage_count == start_course_stage_num + stage_count - 1)
             {
                 end_entry_idx = i; // This CmEntry is one past the end - we tack on a CMET_END entry ourselves
             }
@@ -74,11 +79,35 @@ static mkb::CmEntry *gen_course(mkb::CmEntry *course, u32 stage_start_idx, u32 s
     // TODO backup and restore
     course[end_entry_idx].type = mkb::CMET_END;
 
-    return &course[start_entry_idx];
+    s16 first_stage_id = static_cast<s16>(course[start_entry_idx].value);
+//    mkb::mode_info.next_cm_stage_id = first_stage_id; // Record first stage in course
+    mkb::mode_info.cm_course_stage_num = start_course_stage_num;
+    mkb::current_cm_entry = &course[start_entry_idx + 1];
+    mkb::g_some_cm_stage_id2 = first_stage_id;
+
+    // Make up "previous" stage for "current" stage
+    mkb::CmStage &curr_stage = mkb::cm_player_progress[0].curr_stage;
+    curr_stage.stage_course_num = start_course_stage_num - 1;
+    curr_stage.stage_id = first_stage_id - 1;
+
+    // Next stage for player is the first one we want to start on
+    mkb::CmStage &next_stage = mkb::cm_player_progress[0].next_stages[0];
+    next_stage.stage_course_num = start_course_stage_num;
+    next_stage.stage_id = first_stage_id;
+
+    s_cm_seg_active = true;
+    s_seg_course_stage_num = start_course_stage_num;
 }
 
 void init()
 {
+    s_g_reset_cm_course_tramp = patch::hook_function(
+        mkb::g_reset_cm_course, []()
+        {
+            s_g_reset_cm_course_tramp();
+            if (s_cm_seg_active) mkb::mode_info.cm_course_stage_num = s_seg_course_stage_num;
+        }
+    );
 }
 
 void tick()
@@ -97,14 +126,12 @@ void tick()
     else if (s_state == State::LoadCmReq)
     {
         // TODO set difficulty, flags etc. based on requested course
+        // TODO enforce 1-player game
+        // TODO character, lives
         mkb::selected_cm_difficulty = 0;
 
-        mkb::CmEntry *first_entry = gen_course(mkb::beginner_noex_cm_entries, 3, 2);
-        mkb::g_enter_challenge_mode();
-
-        mkb::mode_info.g_some_cm_stage_id = first_entry->value; // Record first stage in course
-        mkb::current_cm_entry = first_entry;
-        mkb::g_some_cm_stage_id2 = mkb::mode_info.g_some_cm_stage_id;
+        mkb::enter_challenge_mode();
+        gen_course(mkb::beginner_noex_cm_entries, 2, 2);
 
         // TODO restore main menu state to look like we entered Challenge Mode
         // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
