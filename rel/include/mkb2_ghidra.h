@@ -7732,7 +7732,7 @@ extern "C" {
     void clear_next_cm_stage_id2(struct CmEntry * entry);
     void clear_next_cm_stage_id(struct CmEntry * entry);
     s32 g_get_current_cm_stage_time_limit(void);
-    dword g_advance_cm_entry(Difficulty  difficulty, int g_stage_id_or_course_stage_num, ModeFlag  mode_flags);
+    u32 g_init_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
     int calc_course_idx(Difficulty  difficulty, ModeFlag  mode_flags);
     uint g_are_on_final_course_level(int difficulty_id, int course_stage, uint difficulty_flags);
     undefined4 is_bonus_stage_being_played(int param_1);

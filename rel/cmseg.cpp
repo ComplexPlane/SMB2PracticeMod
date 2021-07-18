@@ -13,12 +13,15 @@ enum class State
 {
     Default,
     LoadMenu,
-    LoadCm,
+    EnterCm,
+    SegActive,
+    SegComplete,
 };
 
 static State s_state = State::Default;
 static Seg s_seg_request;
 static void (*s_g_reset_cm_course_tramp)();
+static u32 (*s_g_init_cm_course_tramp)(mkb::Difficulty difficulty, s32 course_stage_num, mkb::ModeFlag mode_flags);
 
 static bool s_cm_seg_active;
 static s16 s_seg_course_stage_num;
@@ -37,8 +40,7 @@ static s16 s_seg_course_stage_num;
 //}
 
 /**
- * Create a new course on top of an existing one, by inserting a CMET_END entry and returning the first entry of the
- * segment.
+ * Create a new course in an existing one by inserting a CMET_END entry
  */
 static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 stage_count)
 {
@@ -99,17 +101,6 @@ static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 sta
     s_seg_course_stage_num = start_course_stage_num;
 }
 
-void init()
-{
-    s_g_reset_cm_course_tramp = patch::hook_function(
-        mkb::g_reset_cm_course, []()
-        {
-            s_g_reset_cm_course_tramp();
-            if (s_cm_seg_active) mkb::mode_info.cm_course_stage_num = s_seg_course_stage_num;
-        }
-    );
-}
-
 static void state_load_menu()
 {
     mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
@@ -118,10 +109,30 @@ static void state_load_menu()
     // the Final Stage sprite being shown when loading a stage in story mode
     mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
 
-    s_state = State::LoadCm;
+    s_state = State::EnterCm;
 }
 
 static void state_load_cm()
+{
+
+    // TODO set difficulty, flags etc. based on requested course
+    // TODO enforce 1-player game
+    // TODO character, lives
+
+    mkb::enter_challenge_mode();
+
+    // TODO restore main menu state to look like we entered Challenge Mode
+    // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
+
+    s_state = State::SegActive;
+}
+
+static void state_seg_active()
+{
+
+}
+
+void init_seg()
 {
     mkb::CmEntry *course = nullptr;
     u32 start_course_stage_num = 0;
@@ -226,32 +237,35 @@ static void state_load_cm()
             break;
         }
     }
-
-    // TODO set difficulty, flags etc. based on requested course
-    // TODO enforce 1-player game
-    // TODO character, lives
-    mkb::g_character_selected = 1; // TODO fix
-
-    mkb::enter_challenge_mode();
-    gen_course(course, start_course_stage_num, 10);
-
-    // TODO restore main menu state to look like we entered Challenge Mode
-    // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
+    gen_course(course, start_course_stage_num, 2);
 
     s_state = State::Default;
-}
-
-void tick()
-{
-    if (s_state == State::LoadMenu) state_load_menu();
-    else if (s_state == State::LoadCm) state_load_cm();
 }
 
 void request_cm_seg(Seg seg)
 {
     s_seg_request = seg;
-    if (mkb::main_mode == mkb::MD_SEL) s_state = State::LoadCm; // Load challenge mode directly
+    if (mkb::main_mode == mkb::MD_SEL) s_state = State::EnterCm; // Load challenge mode directly
     else s_state = State::LoadMenu; // Load main menu first
+}
+
+void init()
+{
+    s_g_init_cm_course_tramp = patch::hook_function(
+        mkb::g_init_cm_course, [](mkb::Difficulty difficulty, s32 course_stage_num, mkb::ModeFlag mode_flags)
+        {
+            u32 ret = s_g_init_cm_course_tramp(difficulty, course_stage_num, mode_flags);
+            if (s_state == State::SegActive) init_seg();
+            return ret;
+        }
+    );
+}
+
+void tick()
+{
+    if (s_state == State::LoadMenu) state_load_menu();
+    else if (s_state == State::EnterCm) state_load_cm();
+    else if (s_state == State::SegActive) state_seg_active();
 }
 
 }
