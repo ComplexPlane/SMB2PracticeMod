@@ -45,6 +45,14 @@ void tick()
         // the Final Stage sprite being shown when loading a stage in story mode
         mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
         s_state = State::LoadStoryReq;
+
+        // Set menu state to have chosen Main Game -> Story Mode
+        mkb::menu_stack_ptr = 1;
+        mkb::g_menu_stack[0] = 0; // ??
+        mkb::g_menu_stack[1] = 7; // Main game
+        mkb::g_focused_root_menu = 0;
+        mkb::g_focused_maingame_menu = 0;
+
         reset_screenfade_state();
     }
     else if (s_state == State::LoadStoryReq)
@@ -52,13 +60,6 @@ void tick()
         mkb::main_mode_request = mkb::MD_GAME;
         mkb::sub_mode_request = mkb::SMD_GAME_SCENARIO_INIT;
         s_state = State::Default;
-
-        // Set menu state to have chosen Main Game -> Story Mode
-        mkb::menu_stack_ptr = 2;
-        mkb::g_menu_stack[0] = 0; // Main game menu
-        mkb::g_menu_stack[1] = 7; // Story mode menu
-        mkb::g_focused_root_menu = 0;
-        mkb::g_focused_maingame_menu = 0;
         reset_screenfade_state();
     }
 }

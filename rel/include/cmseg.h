@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mkb.h>
+
 namespace cmseg
 {
 
@@ -24,8 +26,17 @@ enum class Seg
     MasterExtra,
 };
 
+enum class Chara
+{
+    AiAi,
+    MeeMee,
+    Baby,
+    GonGon,
+    Random,
+};
+
 void init();
 void tick();
-void request_cm_seg(Seg seg);
+void request_cm_seg(Seg seg, Chara chara);
 
 }

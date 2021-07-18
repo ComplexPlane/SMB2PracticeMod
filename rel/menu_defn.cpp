@@ -174,69 +174,104 @@ static Widget help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  github.com/ComplexPlane/ApeSphere/releases"}},
 };
 
+static const char *chara_choices[] = {
+    "Aiai", "MeeMee", "Baby", "GonGon", "Random"
+};
+static cmseg::Chara s_chara_choice;
+
+static Widget cm_seg_settings_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Character",
+            .choices = chara_choices,
+            .num_choices = ARRAY_LEN(chara_choices),
+            .get = [] { return static_cast<u32>(s_chara_choice); },
+            .set = [](u32 choice) { s_chara_choice = static_cast<cmseg::Chara>(choice); },
+        }
+    },
+    // TODO use integer selection widget
+    {
+        .type = WidgetType::Text,
+        .text = {"Monkeys"},
+    }
+};
+
 static Widget cm_seg_widgets[] = {
+    // Settings
     {
-        .type = WidgetType::Button,
-        .button = {.label = "Beginner 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Beginner Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}
+        .type = WidgetType::Menu,
+        .menu = {"Settings", cm_seg_settings_widgets, ARRAY_LEN(cm_seg_settings_widgets)},
     },
     {.type = WidgetType::Separator},
 
+    // Beginner
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); }}
+        .button = {.label = "Beginner 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1, s_chara_choice); }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Advanced 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Advanced Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}
-    },
-    {
-        .type = WidgetType::Separator},
-
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert 31-40", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert 41-50", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); }}
-    },
-    {
-        .type = WidgetType::Button,
-        .button = {.label = "Expert Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}
+        .button = {.label = "Beginner Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra, s_chara_choice); }}
     },
     {.type = WidgetType::Separator},
 
+    // Advanced
     {
         .type = WidgetType::Button,
-        .button = {.label = "Master 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); }}
+        .button = {.label = "Advanced 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1, s_chara_choice); }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Master Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}
+        .button = {.label = "Advanced 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Advanced Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Separator
+    },
+
+    // Expert
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 31-40", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert 41-50", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Expert Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra, s_chara_choice); }}
+    },
+    {.type = WidgetType::Separator},
+
+    // Master
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Master 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1, s_chara_choice); }}
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Master Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra, s_chara_choice); }}
     },
 };
 

@@ -20,23 +20,24 @@ enum class State
 
 static State s_state = State::Default;
 static Seg s_seg_request;
+static Chara s_chara_request;
 static void (*s_g_reset_cm_course_tramp)();
 
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
 
-static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
-{
-    static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
-
-    mkb::OSReport("Course entry count: %d\n", entry_count);
-    for (u32 i = 0; i < entry_count; i++)
-    {
-        mkb::CmEntry &entry = course[i];
-        mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.type], entry.arg, entry.value);
-    }
-    mkb::OSReport("\n");
-}
+//static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
+//{
+//    static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
+//
+//    mkb::OSReport("Course entry count: %d\n", entry_count);
+//    for (u32 i = 0; i < entry_count; i++)
+//    {
+//        mkb::CmEntry &entry = course[i];
+//        mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.type], entry.arg, entry.value);
+//    }
+//    mkb::OSReport("\n");
+//}
 
 /**
  * Create a new course in an existing one by inserting a CMET_END entry
@@ -106,6 +107,13 @@ static void state_load_menu()
     // the Final Stage sprite being shown when loading a stage in story mode
     mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
 
+    // Set menu state to have chosen Main Game -> Challenge Mode
+    mkb::menu_stack_ptr = 1;
+    mkb::g_menu_stack[0] = 0; // ??
+    mkb::g_menu_stack[1] = 7; // Main game
+    mkb::g_focused_root_menu = 0;
+    mkb::g_focused_maingame_menu = 1;
+
     s_state = State::EnterCm;
 }
 
@@ -114,6 +122,9 @@ static void state_enter_cm()
 
     // TODO enforce 1-player game
     // TODO character, lives
+
+    mkb::num_players = 1;
+    mkb::selected_characters[0] = static_cast<int>(s_chara_request); // TODO make this actually work
 
     mkb::enter_challenge_mode();
 
@@ -263,9 +274,10 @@ void init_seg()
     gen_course(course, start_course_stage_num, 10);
 }
 
-void request_cm_seg(Seg seg)
+void request_cm_seg(Seg seg, Chara chara)
 {
     s_seg_request = seg;
+    s_chara_request = chara;
     if (s_state == State::SegActive || s_state == State::SegComplete)
     {
         s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
