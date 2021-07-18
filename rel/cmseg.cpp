@@ -252,15 +252,15 @@ void init_seg()
         case Seg::MasterExtra:
         {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE
-                               | mkb::MF_G_PLAYING_MASTER_COURSE
-                               | mkb::MF_PLAYING_MASTER_EX_COURSE;
+            // Magic set of flags used in Master Extra,
+            // can't be bothered to reverse all of them
+            mkb::mode_flags = 0x0280071D;
             course = mkb::master_ex_cm_entries;
             start_course_stage_num = 1;
             break;
         }
     }
-    gen_course(course, start_course_stage_num, 2);
+    gen_course(course, start_course_stage_num, 10);
 }
 
 void request_cm_seg(Seg seg)
