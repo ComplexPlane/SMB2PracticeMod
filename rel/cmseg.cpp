@@ -22,8 +22,8 @@ static State s_state = State::Default;
 static Seg s_seg_request;
 static void (*s_g_reset_cm_course_tramp)();
 
-static bool s_cm_seg_active;
-static s16 s_seg_course_stage_num;
+static mkb::CmEntry *s_overwritten_entry;
+static mkb::CmEntryType s_overwritten_entry_type;
 
 static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
 {
@@ -77,7 +77,8 @@ static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 sta
     MOD_ASSERT(end_entry_idx > -1);
 
     // Write new course end marker
-    // TODO backup and restore
+    s_overwritten_entry = &course[end_entry_idx];
+    s_overwritten_entry_type = course[end_entry_idx].type;
     course[end_entry_idx].type = mkb::CMET_END;
 
     s16 first_stage_id = static_cast<s16>(course[start_entry_idx].value);
@@ -95,9 +96,6 @@ static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 sta
     mkb::CmStage &next_stage = mkb::cm_player_progress[0].next_stages[0];
     next_stage.stage_course_num = start_course_stage_num;
     next_stage.stage_id = first_stage_id;
-
-    s_cm_seg_active = true;
-    s_seg_course_stage_num = start_course_stage_num;
 }
 
 static void state_load_menu()
@@ -111,7 +109,7 @@ static void state_load_menu()
     s_state = State::EnterCm;
 }
 
-static void state_load_cm()
+static void state_enter_cm()
 {
 
     // TODO enforce 1-player game
@@ -127,7 +125,20 @@ static void state_load_cm()
 
 static void state_seg_active()
 {
+    if (mkb::main_mode != mkb::MD_GAME)
+    {
+        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+        s_state = State::Default;
+    }
+}
 
+static void state_seg_complete()
+{
+    if (mkb::main_mode != mkb::MD_GAME)
+    {
+        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+        s_state = State::Default;
+    }
 }
 
 void init_seg()
@@ -232,8 +243,8 @@ void init_seg()
         {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
             mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE
-                | mkb::MF_G_PLAYING_MASTER_COURSE
-                | mkb::MF_PLAYING_MASTER_NOEX_COURSE;
+                               | mkb::MF_G_PLAYING_MASTER_COURSE
+                               | mkb::MF_PLAYING_MASTER_NOEX_COURSE;
             course = mkb::master_noex_cm_entries;
             start_course_stage_num = 1;
             break;
@@ -250,14 +261,15 @@ void init_seg()
         }
     }
     gen_course(course, start_course_stage_num, 2);
-    debug_print_course(mkb::advanced_noex_cm_entries, 10);
-
-    s_state = State::Default;
 }
 
 void request_cm_seg(Seg seg)
 {
     s_seg_request = seg;
+    if (s_state == State::SegActive || s_state == State::SegComplete)
+    {
+        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+    }
     if (mkb::main_mode == mkb::MD_SEL) s_state = State::EnterCm; // Load challenge mode directly
     else s_state = State::LoadMenu; // Load main menu first
 }
@@ -276,8 +288,9 @@ void init()
 void tick()
 {
     if (s_state == State::LoadMenu) state_load_menu();
-    else if (s_state == State::EnterCm) state_load_cm();
+    else if (s_state == State::EnterCm) state_enter_cm();
     else if (s_state == State::SegActive) state_seg_active();
+    else if (s_state == State::SegComplete) state_seg_complete();
 }
 
 }
