@@ -181,7 +181,7 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Beginner Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}
+        .button = {.label = "Beginner Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}
     },
     {.type = WidgetType::Separator},
 
@@ -199,7 +199,7 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}
+        .button = {.label = "Advanced Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}
     },
     {
         .type = WidgetType::Separator},
@@ -226,7 +226,7 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Expert Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}
+        .button = {.label = "Expert Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}
     },
     {.type = WidgetType::Separator},
 
@@ -236,7 +236,7 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Master Extra", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}
+        .button = {.label = "Master Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}
     },
 };
 

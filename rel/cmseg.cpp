@@ -12,8 +12,8 @@ namespace cmseg
 enum class State
 {
     Default,
-    LoadMenuReq,
-    LoadCmReq,
+    LoadMenu,
+    LoadCm,
 };
 
 static State s_state = State::Default;
@@ -80,8 +80,8 @@ static void gen_course(mkb::CmEntry *course, u32 start_course_stage_num, u32 sta
     course[end_entry_idx].type = mkb::CMET_END;
 
     s16 first_stage_id = static_cast<s16>(course[start_entry_idx].value);
-//    mkb::mode_info.next_cm_stage_id = first_stage_id; // Record first stage in course
     mkb::mode_info.cm_course_stage_num = start_course_stage_num;
+    mkb::mode_info.cm_stage_id = first_stage_id; // Record first stage in course
     mkb::current_cm_entry = &course[start_entry_idx + 1];
     mkb::g_some_cm_stage_id2 = first_stage_id;
 
@@ -110,41 +110,148 @@ void init()
     );
 }
 
+static void state_load_menu()
+{
+    mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
+    mkb::main_mode_request = mkb::MD_SEL;
+    // Using REINIT instead of INIT seems to prevent weird game state issues, like
+    // the Final Stage sprite being shown when loading a stage in story mode
+    mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+
+    s_state = State::LoadCm;
+}
+
+static void state_load_cm()
+{
+    mkb::CmEntry *course = nullptr;
+    u32 start_course_stage_num = 0;
+    switch (s_seg_request)
+    {
+        case Seg::Beginner1:
+        {
+            mkb::selected_cm_difficulty = 0;
+            course = mkb::beginner_noex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::BeginnerExtra:
+        {
+            mkb::selected_cm_difficulty = 0;
+            course = mkb::beginner_ex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::Advanced1:
+        {
+            mkb::selected_cm_difficulty = 1;
+            course = mkb::advanced_noex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::Advanced11:
+        {
+            mkb::selected_cm_difficulty = 1;
+            course = mkb::advanced_noex_cm_entries;
+            start_course_stage_num = 11;
+            break;
+        }
+        case Seg::Advanced21:
+        {
+            mkb::selected_cm_difficulty = 1;
+            course = mkb::advanced_noex_cm_entries;
+            start_course_stage_num = 21;
+            break;
+        }
+        case Seg::AdvancedExtra:
+        {
+            mkb::selected_cm_difficulty = 1;
+            course = mkb::advanced_ex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::Expert1:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_noex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::Expert11:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_noex_cm_entries;
+            start_course_stage_num = 11;
+            break;
+        }
+        case Seg::Expert21:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_noex_cm_entries;
+            start_course_stage_num = 21;
+            break;
+        }
+        case Seg::Expert31:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_noex_cm_entries;
+            start_course_stage_num = 31;
+            break;
+        }
+        case Seg::Expert41:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_noex_cm_entries;
+            start_course_stage_num = 31;
+            break;
+        }
+        case Seg::ExpertExtra:
+        {
+            mkb::selected_cm_difficulty = 2;
+            course = mkb::expert_ex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::Master1:
+        {
+            mkb::selected_cm_difficulty = 3;
+            course = mkb::master_noex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+        case Seg::MasterExtra:
+        {
+            mkb::selected_cm_difficulty = 3;
+            course = mkb::master_ex_cm_entries;
+            start_course_stage_num = 1;
+            break;
+        }
+    }
+
+    // TODO set difficulty, flags etc. based on requested course
+    // TODO enforce 1-player game
+    // TODO character, lives
+    mkb::g_character_selected = 1; // TODO fix
+
+    mkb::enter_challenge_mode();
+    gen_course(course, start_course_stage_num, 10);
+
+    // TODO restore main menu state to look like we entered Challenge Mode
+    // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
+
+    s_state = State::Default;
+}
+
 void tick()
 {
-    if (s_state == State::LoadMenuReq)
-    {
-        mkb::g_some_other_flags &= ~mkb::OF_GAME_PAUSED; // Unpause the game to avoid weird darkening issues
-        mkb::main_mode_request = mkb::MD_SEL;
-        // Using REINIT instead of INIT seems to prevent weird game state issues, like
-        // the Final Stage sprite being shown when loading a stage in story mode
-        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
-
-
-        s_state = State::LoadCmReq;
-    }
-    else if (s_state == State::LoadCmReq)
-    {
-        // TODO set difficulty, flags etc. based on requested course
-        // TODO enforce 1-player game
-        // TODO character, lives
-        mkb::selected_cm_difficulty = 0;
-
-        mkb::enter_challenge_mode();
-        gen_course(mkb::beginner_noex_cm_entries, 2, 2);
-
-        // TODO restore main menu state to look like we entered Challenge Mode
-        // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
-
-        s_state = State::Default;
-    }
+    if (s_state == State::LoadMenu) state_load_menu();
+    else if (s_state == State::LoadCm) state_load_cm();
 }
 
 void request_cm_seg(Seg seg)
 {
     s_seg_request = seg;
-    if (mkb::main_mode == mkb::MD_SEL) s_state = State::LoadCmReq; // Load challenge mode directly
-    else s_state = State::LoadMenuReq; // Load main menu first
+    if (mkb::main_mode == mkb::MD_SEL) s_state = State::LoadCm; // Load challenge mode directly
+    else s_state = State::LoadMenu; // Load main menu first
 }
 
 }
