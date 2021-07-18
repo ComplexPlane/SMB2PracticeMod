@@ -201,7 +201,7 @@ static void state_load_cm()
         {
             mkb::selected_cm_difficulty = 2;
             course = mkb::expert_noex_cm_entries;
-            start_course_stage_num = 31;
+            start_course_stage_num = 41;
             break;
         }
         case Seg::ExpertExtra:
