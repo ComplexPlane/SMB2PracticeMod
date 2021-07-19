@@ -175,7 +175,14 @@ static Widget help_widgets[] = {
 };
 
 static const char *chara_choices[] = {
-    "Aiai", "MeeMee", "Baby", "GonGon", "Random"
+    "AiAi",
+    "MeeMee",
+    "Baby",
+    "GonGon",
+    "Dr. Bad-Boon",
+    "Whale",
+    "Random (main 4)",
+    "Random (all)"
 };
 static cmseg::Chara s_chara_choice;
 

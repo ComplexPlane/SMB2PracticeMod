@@ -21,7 +21,9 @@ enum class State
 static State s_state = State::Default;
 static Seg s_seg_request;
 static Chara s_chara_request;
+
 static void (*s_g_reset_cm_course_tramp)();
+static void (*s_create_final_stage_sprite_tramp)();
 
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
@@ -128,6 +130,15 @@ static void state_load_menu()
     s_state = State::EnterCm;
 }
 
+static const mkb::ApeCharacter s_ape_charas[] = {
+    mkb::APE_AIAI,
+    mkb::APE_MEEMEE,
+    mkb::APE_BABY,
+    mkb::APE_GONGON,
+    mkb::APE_MADH,
+    mkb::APE_WHALE,
+};
+
 static void state_enter_cm()
 {
 
@@ -135,7 +146,20 @@ static void state_enter_cm()
     // TODO character, lives
 
     mkb::num_players = 1;
-    mkb::selected_characters[0] = static_cast<int>(s_chara_request); // TODO make this actually work
+    mkb::ApeCharacter real_chara;
+    if (s_chara_request == Chara::RandomMainFour)
+    {
+        real_chara = s_ape_charas[mkb::rand() % 4];
+    }
+    else if (s_chara_request == Chara::RandomAll)
+    {
+        real_chara = s_ape_charas[mkb::rand() % 6];
+    }
+    else
+    {
+        real_chara = s_ape_charas[static_cast<u32>(s_chara_request)];
+    }
+    mkb::active_monkey_id = real_chara;
 
     mkb::enter_challenge_mode();
 
@@ -284,7 +308,7 @@ void init_seg()
             break;
         }
     }
-    gen_course(course, start_course_stage_num, 10);
+    gen_course(course, start_course_stage_num, 2);
 }
 
 void request_cm_seg(Seg seg, Chara chara)
@@ -306,6 +330,17 @@ void init()
         {
             s_g_reset_cm_course_tramp();
             if (s_state == State::SegActive) init_seg();
+        }
+    );
+
+    // Hide "Final Stage" sprite
+    s_create_final_stage_sprite_tramp = patch::hook_function(
+        mkb::create_final_stage_sprite, []()
+        {
+            if (s_state != State::SegActive || s_overwritten_entry_type == mkb::CMET_END)
+            {
+                s_create_final_stage_sprite_tramp();
+            }
         }
     );
 }

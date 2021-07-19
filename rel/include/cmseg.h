@@ -32,7 +32,10 @@ enum class Chara
     MeeMee,
     Baby,
     GonGon,
-    Random,
+    BadBoon,
+    Whale,
+    RandomMainFour,
+    RandomAll,
 };
 
 void init();
