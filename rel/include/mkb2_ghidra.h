@@ -139,11 +139,19 @@ struct DVDDiskID {
 
 typedef struct CmEntry CmEntry, *PCmEntry;
 
+enum { /* See cmEntryFormat.txt notes */
+    CMET_IF=0,
+    CMET_THEN=1,
+    CMET_INFO=2,
+    CMET_END=3
+};
+typedef undefined1 CmEntryType;
+
 struct CmEntry { /* Challenge Mode Entry, see cmEntryFormat.txt by TwixNinja in notes for more info */
-    byte m;
-    byte n;
+    CmEntryType  type;
+    u8 arg;
     undefined field_0x2[2];
-    dword v;
+    u32 value;
     undefined field_0x8[20];
 } __attribute__((__packed__));
 
@@ -1683,12 +1691,18 @@ struct GSomethingWithPadMotorsStruct {
 
 typedef struct CmPlayerProgress CmPlayerProgress, *PCmPlayerProgress;
 
+typedef struct CmStage CmStage, *PCmStage;
+
+struct CmStage { /* Stage in Challenge Mode. Stage course number is what's shown in bottom left of screen */
+    s32 stage_course_num;
+    s32 stage_id;
+} __attribute__((__packed__));
+
 struct CmPlayerProgress { /* Seems to be one of these per player, not sure what they are exactly yet */
-    u32 g_curr_course_stage_num; /* Aka the stage number displayed in the bottom-left */
-    s32 field_0x4;
-    undefined field_0x8[0x18];
+    struct CmStage curr_stage;
+    struct CmStage next_stages[3]; /* Appears to track the "next" stage for the player in the first element (assuming a blue goal is taken). The latter two elements are never updated, and I don't think the first element is even used for anything */
     s16 field_0x20;
-    s16 field_0x22;
+    s16 g_next_stage_idx;
 } __attribute__((__packed__));
 
 enum {
@@ -1804,14 +1818,19 @@ typedef undefined2 StoryModeStageSelectState;
 
 enum {
     MF_NONE=0,
+    MF_0x1=1,
+    MF_0x2=2,
+    MF_0x4=4,
     MF_PLAYING_EXTRA_COURSE=8,
     MF_PLAYING_MASTER_NOEX_COURSE=16,
+    MF_0x20=32,
     MF_ADDITIONAL_REL_LOADED=512,
     MF_0x2000=8192,
     MF_OPTION_MODE=262144,
     MF_G_STOP_GAME_LOOP=2097152,
     MF_0x400000=4194304,
-    MF_PLAYING_MASTER_EX_COURSE=8388608
+    MF_PLAYING_MASTER_EX_COURSE=8388608,
+    MF_G_PLAYING_MASTER_COURSE=33554432
 };
 typedef undefined4 ModeFlag;
 
@@ -2411,30 +2430,37 @@ struct MemCardFile {
     char * file_name; /* Struct may be bigger? /shrug */
 } __attribute__((__packed__));
 
+enum {
+    Blue=0,
+    Green=1,
+    Red=2
+};
+typedef undefined1 GoalType;
+
 typedef struct ModeInfo ModeInfo, *PModeInfo;
 
-struct ModeInfo {
+struct ModeInfo { /* I don't know what to call this, but there's some important global game info in here! -Complex */
     BallMode  ball_mode; /* Correlates with the ball's 'mode' in the debug menu's ball display. Bonus stages have 0x40 set, final stages in a difficulty have 0x1000 set.  0x8 seems to stop the timer? -Crafted */
     s16 stage_time_frames_remaining;
     undefined2 stage_time_limit;
     undefined4 field_0x8;
-    undefined2 field_0xc;
+    s16 entered_goal_idx;
     undefined2 field_0xe;
     struct Vec3f g_some_ball_vel;
     undefined2 g_some_timer_frame_remaining_count;
     undefined2 field_0x1e;
-    undefined2 g_next_stage_id;
-    undefined2 g_holds_stage_jump_distance_at_some_point;
+    undefined2 cm_course_stage_num; /* Current course stage num, updated immediately after completing stage */
+    undefined2 g_some_stage_jump_distance;
     undefined4 bananas_remaining;
     undefined2 field_0x28;
     undefined2 field_0x2a;
     undefined2 g_next_stage_id2;
-    undefined2 g_some_cm_stage_id;
+    s16 cm_stage_id; /* Current challenge mode stage id, updated immediately after finishing stage */
     undefined2 field_0x30;
-    undefined2 g_some_stage_id;
+    undefined2 cm_next_stage_id;
     undefined2 field_0x34;
     undefined2 field_0x36;
-    undefined1 field_0x38;
+    GoalType  entered_goal_type;
     undefined field_0x39[0x3];
 } __attribute__((__packed__));
 
@@ -2833,7 +2859,8 @@ struct StagedefColiTri {
 struct StagedefGoal {
     struct Vec3f position;
     struct Vec3s rotation;
-    s16 type;
+    GoalType  type;
+    undefined field_0x13[0x1];
 } __attribute__((__packed__));
 
 struct StagedefWormhole {
@@ -4696,8 +4723,8 @@ extern "C" {
     extern undefined * switchdataD_8039f61c;
     extern undefined * switchdataD_8039ff54;
     extern undefined * switchdataD_803a0864;
-    extern pointer g_some_course_func_table1;
-    extern pointer g_some_course_func_table2;
+    extern pointer cm_entry_if_funcs;
+    extern pointer cm_entry_then_funcs;
     extern struct CmEntry beginner_noex_cm_entries[31];
     extern struct CmEntry advanced_noex_cm_entries[120];
     extern struct CmEntry expert_noex_cm_entries[208];
@@ -4833,6 +4860,8 @@ extern "C" {
     extern undefined4 num_players;
     extern MainGameMode  main_game_mode;
     extern undefined4 curr_player_idx;
+    extern undefined4 g_set_when_enter_cm1;
+    extern undefined2 g_set_when_enter_cm2;
     extern undefined1 g_related_to_fov1;
     extern char * g_curr_main_mode_name;
     extern char * g_curr_sub_mode_name;
@@ -4990,7 +5019,7 @@ extern "C" {
     extern undefined2 g_stage_id_in_practice_mode;
     extern ModeFlag  g_mode_flags2;
     extern undefined4 g_some_course_length;
-    extern struct CmPlayerProgress g_cm_player_progress[12];
+    extern struct CmPlayerProgress cm_player_progress[12];
     extern undefined1 storymode_unlock_entries[13];
     extern undefined2 g_next_item_id;
     extern struct Item items[256];
@@ -5069,59 +5098,59 @@ extern "C" {
     extern pointer switchdataD_804ef11c;
     extern undefined CHAR_SPACE_3;
     extern undefined CHAR_SPACE_2;
-    extern undefined CHAR_A;
-    extern undefined CHAR_B;
-    extern undefined CHAR_C;
-    extern undefined CHAR_D;
-    extern undefined CHAR_E;
-    extern undefined CHAR_F;
-    extern undefined CHAR_G;
-    extern undefined CHAR_H;
-    extern undefined CHAR_I;
-    extern undefined CHAR_J;
-    extern undefined CHAR_K;
-    extern undefined CHAR_L;
-    extern undefined CHAR_M;
-    extern undefined CHAR_N;
-    extern undefined CHAR_O;
-    extern undefined CHAR_P;
-    extern undefined CHAR_Q;
-    extern undefined CHAR_R;
-    extern undefined CHAR_S;
-    extern undefined CHAR_T;
-    extern undefined CHAR_U;
-    extern undefined CHAR_V;
-    extern undefined CHAR_W;
-    extern undefined CHAR_X;
-    extern undefined CHAR_Y;
-    extern undefined CHAR_Z;
-    extern undefined CHAR_SPACE;
-    extern undefined CHAR_a;
-    extern undefined CHAR_b;
-    extern undefined CHAR_c;
-    extern undefined CHAR_d;
-    extern undefined CHAR_e;
-    extern undefined CHAR_f;
-    extern undefined CHAR_g;
-    extern undefined CHAR_h;
-    extern undefined CHAR_i;
-    extern undefined CHAR_j;
-    extern undefined CHAR_k;
-    extern undefined CHAR_l;
-    extern undefined CHAR_m;
-    extern undefined CHAR_n;
-    extern undefined CHAR_o;
-    extern undefined CHAR_p;
-    extern undefined CHAR_q;
-    extern undefined CHAR_r;
-    extern undefined CHAR_s;
-    extern undefined CHAR_t;
-    extern undefined CHAR_u;
-    extern undefined CHAR_v;
-    extern undefined CHAR_x;
-    extern undefined CHAR_y;
-    extern undefined CHAR_z;
-    extern undefined * nameentry_character_ptr_list;
+    extern undefined4 CHAR_A;
+    extern undefined4 CHAR_B;
+    extern undefined4 CHAR_C;
+    extern undefined4 CHAR_D;
+    extern undefined4 CHAR_E;
+    extern undefined4 CHAR_F;
+    extern undefined4 CHAR_G;
+    extern undefined4 CHAR_H;
+    extern undefined4 CHAR_I;
+    extern undefined4 CHAR_J;
+    extern undefined4 CHAR_K;
+    extern undefined4 CHAR_L;
+    extern undefined4 CHAR_M;
+    extern undefined4 CHAR_N;
+    extern undefined4 CHAR_O;
+    extern undefined4 CHAR_P;
+    extern undefined4 CHAR_Q;
+    extern undefined4 CHAR_R;
+    extern undefined4 CHAR_S;
+    extern undefined4 CHAR_T;
+    extern undefined4 CHAR_U;
+    extern undefined4 CHAR_V;
+    extern undefined4 CHAR_W;
+    extern undefined4 CHAR_X;
+    extern undefined4 CHAR_Y;
+    extern undefined4 CHAR_Z;
+    extern undefined4 CHAR_SPACE;
+    extern undefined4 CHAR_a;
+    extern undefined4 CHAR_b;
+    extern undefined4 CHAR_c;
+    extern undefined4 CHAR_d;
+    extern undefined4 CHAR_e;
+    extern undefined4 CHAR_f;
+    extern undefined4 CHAR_g;
+    extern undefined4 CHAR_h;
+    extern undefined4 CHAR_i;
+    extern undefined4 CHAR_j;
+    extern undefined4 CHAR_k;
+    extern undefined4 CHAR_l;
+    extern undefined4 CHAR_m;
+    extern undefined4 CHAR_n;
+    extern undefined4 CHAR_o;
+    extern undefined4 CHAR_p;
+    extern undefined4 CHAR_q;
+    extern undefined4 CHAR_r;
+    extern undefined4 CHAR_s;
+    extern undefined4 CHAR_t;
+    extern undefined4 CHAR_u;
+    extern undefined4 CHAR_v;
+    extern undefined4 CHAR_x;
+    extern undefined4 CHAR_y;
+    extern undefined4 CHAR_z;
+    extern undefined4 * * * nameentry_character_ptr_list;
     extern undefined * DEFAULT_FILENAME;
     extern pointer DEFAULT_FILENAME_LOCALE_LIST;
     extern char continue_saved_game_text[40];
@@ -6963,7 +6992,7 @@ extern "C" {
     void smd_null(void);
     void g_set_current_sub_mode_dest(undefined4 param_1);
     void g_maybe_call_some_func_ptr_related_to_sub_mode(void);
-    uint g_get_next_player_idx(void);
+    uint get_next_player_idx(void);
     void g_something_with_pausemenu(int param_1);
     void g_check_input_in_pausemenu(int param_1);
     void handle_pausemenu_selection(int param_1);
@@ -7135,9 +7164,11 @@ extern "C" {
     void g_something_with_video_this_also_finishes_a_frame(void);
     void gp_wait_wrapper(void);
     u32 get_gx_fifo_use_size(void);
+    void g_reset_cm_course(void);
     void event_info_init(void);
     void event_info_tick(void);
     void event_info_dest(void);
+    void g_reset_mode_info_stuff(void);
     bool did_ball_enter_goal(struct Ball * ball, int * out_stage_goal_idx, int * out_itemgroup_id, byte * out_goal_flags);
     BOOL32 did_ball_enter_wormhole(struct Ball * ball, int * out_wormhole_idx);
     void g_set_goaled(void);
@@ -7691,18 +7722,18 @@ extern "C" {
     void bg_bow2_author_disp(void);
     void bg_bow2_author_item_coin_coli(void);
     void clear_unlocked_cm_stages(void);
-    void g_get_first_cm_entry_of_course(void);
+    void init_course(void);
     void event_course_init(void);
     void event_course_tick(void);
     void event_course_dest(void);
-    bool is_ball_goaled_perfect_or_not_dead(struct CmEntry * entry);
-    uint g_something_with_cm_entries_goals(struct CmEntry * entry);
-    int g_something_with_cm_entries_timer(struct CmEntry * entry);
-    void g_calc_stage_jump_distance(struct CmEntry * entry);
-    void g_set_some_cm_stageid_to_0xffff_2(struct CmEntry * entry);
-    void g_set_some_cm_stageid_to_0xffff(struct CmEntry * entry);
+    bool is_stage_complete(struct CmEntry * entry);
+    bool entered_goal_has_type(struct CmEntry * entry);
+    bool did_beat_stage_faster_than(struct CmEntry * entry);
+    void calc_stage_jump_distance(struct CmEntry * entry);
+    void clear_next_cm_stage_id2(struct CmEntry * entry);
+    void clear_next_cm_stage_id(struct CmEntry * entry);
     s32 g_get_current_cm_stage_time_limit(void);
-    dword g_advance_cm_entry(Difficulty  difficulty, int g_stage_id_or_course_stage_num, ModeFlag  mode_flags);
+    u32 g_update_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
     int calc_course_idx(Difficulty  difficulty, ModeFlag  mode_flags);
     uint g_are_on_final_course_level(int difficulty_id, int course_stage, uint difficulty_flags);
     undefined4 is_bonus_stage_being_played(int param_1);
@@ -7710,8 +7741,9 @@ extern "C" {
     undefined4 g_smth_with_cm_entries_in_main_menu(int param_1, int param_2, uint param_3);
     void empty_function(void);
     void update_cm_unlocked_levels(Difficulty  difficulty, int param_2, ModeFlag  mode_flags);
-    void g_clear_cm_player_progress(void);
-    void g_something_with_cm_entries2(void);
+    void clear_cm_player_progress(void);
+    void update_course_progress(void);
+    void g_something_with_cm_player_progress(void);
     void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_save_cm_unlock_entries(void);
     void g_load_cm_unlock_entries(void);
@@ -8369,7 +8401,7 @@ extern "C" {
     void g_something_with_menus3(void);
     void g_on_main_menu_pressed(void);
     void g_something_with_menus4(void);
-    void g_enter_challenge_mode(void);
+    void enter_challenge_mode(void);
     void g_something_with_practice_mode_init(void);
     byte * g_handle_starting_monkeys_count(int param_1, int param_2);
     void create_main_menu_sprites(void);

@@ -16,6 +16,7 @@
 #include <mkb.h>
 
 #include <cstring>
+#include <banans.h>
 
 namespace main
 {
@@ -115,6 +116,7 @@ void init()
             inputdisp::tick();
             gotostory::tick();
             scratch::tick();
+            banans::tick();
         });
 }
 
