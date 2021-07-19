@@ -23,7 +23,6 @@ static Seg s_seg_request;
 static Chara s_chara_request;
 
 static void (*s_g_reset_cm_course_tramp)();
-static void (*s_create_final_stage_sprite_tramp)();
 
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
@@ -173,6 +172,21 @@ static void state_enter_cm()
 
 static void state_seg_active()
 {
+    // Nuke "Final Stage" sprite
+    if (s_state == State::SegActive && s_overwritten_entry_type != mkb::CMET_END)
+    {
+        for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
+        {
+            if (mkb::sprite_pool_info.status_list[i] == 0) continue;
+            mkb::Sprite &sprite = mkb::sprites[i];
+            if (sprite.tick_func == mkb::sprite_final_stage_tick)
+            {
+                mkb::sprite_pool_info.status_list[i] = 0;
+                break;
+            }
+        }
+    }
+
     if (mkb::main_mode != mkb::MD_GAME)
     {
         s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
@@ -308,7 +322,7 @@ void init_seg()
             break;
         }
     }
-    gen_course(course, start_course_stage_num, 2);
+    gen_course(course, start_course_stage_num, 10);
 }
 
 void request_cm_seg(Seg seg, Chara chara)
@@ -330,17 +344,6 @@ void init()
         {
             s_g_reset_cm_course_tramp();
             if (s_state == State::SegActive) init_seg();
-        }
-    );
-
-    // Hide "Final Stage" sprite
-    s_create_final_stage_sprite_tramp = patch::hook_function(
-        mkb::create_final_stage_sprite, []()
-        {
-            if (s_state != State::SegActive || s_overwritten_entry_type == mkb::CMET_END)
-            {
-                s_create_final_stage_sprite_tramp();
-            }
         }
     );
 }
