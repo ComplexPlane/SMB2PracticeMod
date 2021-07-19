@@ -187,6 +187,14 @@ static void state_seg_active()
         }
     }
 
+    // If we've reached end-of-difficulty, go back to main menu
+    if (mkb::sub_mode_request == mkb::SMD_GAME_EXTRA_INIT
+        || mkb::sub_mode_request == mkb::SMD_AUTHOR_PLAY_ENDING_INIT)
+    {
+        mkb::main_mode_request = mkb::MD_SEL;
+        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+    }
+
     if (mkb::main_mode != mkb::MD_GAME)
     {
         s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
