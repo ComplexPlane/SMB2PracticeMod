@@ -186,7 +186,8 @@ static const char *chara_choices[] = {
 };
 static cmseg::Chara s_chara_choice;
 
-static Widget cm_seg_settings_widgets[] = {
+static Widget cm_seg_widgets[] = {
+    // Settings
     {
         .type = WidgetType::Choose,
         .choose = {
@@ -196,19 +197,6 @@ static Widget cm_seg_settings_widgets[] = {
             .get = [] { return static_cast<u32>(s_chara_choice); },
             .set = [](u32 choice) { s_chara_choice = static_cast<cmseg::Chara>(choice); },
         }
-    },
-    // TODO use integer selection widget
-    {
-        .type = WidgetType::Text,
-        .text = {"Monkeys"},
-    }
-};
-
-static Widget cm_seg_widgets[] = {
-    // Settings
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Settings", cm_seg_settings_widgets, ARRAY_LEN(cm_seg_settings_widgets)},
     },
     {.type = WidgetType::Separator},
 
