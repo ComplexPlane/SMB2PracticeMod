@@ -26,6 +26,7 @@ static void (*s_g_reset_cm_course_tramp)();
 
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
+static s8 s_overwritten_starting_monkeys;
 
 static void reset_screenfade_state()
 {
@@ -159,6 +160,8 @@ static void state_enter_cm()
         real_chara = s_ape_charas[static_cast<u32>(s_chara_request)];
     }
     mkb::active_monkey_id = real_chara;
+    s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
+    mkb::number_of_starting_monkeys = 100;
 
     mkb::enter_challenge_mode();
 
@@ -168,6 +171,12 @@ static void state_enter_cm()
     reset_screenfade_state();
 
     s_state = State::SegActive;
+}
+
+static void restore_overwritten_state()
+{
+    s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+    mkb::number_of_starting_monkeys = s_overwritten_starting_monkeys;
 }
 
 static void state_seg_active()
@@ -197,16 +206,7 @@ static void state_seg_active()
 
     if (mkb::main_mode != mkb::MD_GAME)
     {
-        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
-        s_state = State::Default;
-    }
-}
-
-static void state_seg_complete()
-{
-    if (mkb::main_mode != mkb::MD_GAME)
-    {
-        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+        restore_overwritten_state();
         s_state = State::Default;
     }
 }
@@ -339,7 +339,7 @@ void request_cm_seg(Seg seg, Chara chara)
     s_chara_request = chara;
     if (s_state == State::SegActive || s_state == State::SegComplete)
     {
-        s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
+        restore_overwritten_state();
     }
     if (mkb::main_mode == mkb::MD_SEL) s_state = State::EnterCm; // Load challenge mode directly
     else s_state = State::LoadMenu; // Load main menu first
@@ -361,7 +361,6 @@ void tick()
     if (s_state == State::LoadMenu) state_load_menu();
     else if (s_state == State::EnterCm) state_enter_cm();
     else if (s_state == State::SegActive) state_seg_active();
-    else if (s_state == State::SegComplete) state_seg_complete();
 }
 
 }

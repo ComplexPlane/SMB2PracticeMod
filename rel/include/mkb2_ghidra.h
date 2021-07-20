@@ -4895,7 +4895,7 @@ extern "C" {
     extern u8 selected_characters[4];
     extern byte menu_stack_ptr;
     extern undefined1 g_menu_stack[10];
-    extern undefined1 number_of_starting_monkeys;
+    extern s8 number_of_starting_monkeys;
     extern undefined1 g_currently_selected_world;
     extern undefined1 g_selected_world;
     extern undefined1 g_stageselect_selected_stage_number;
@@ -7314,7 +7314,7 @@ extern "C" {
     void event_ball_dest(void);
     void add_bananas(int bananas_to_add);
     void g_something_with_translating_items(double param_1, int param_2, struct Vec3f * param_3);
-    void g_maybe_sets_number_of_starting_monkeys(undefined * param_1);
+    void g_maybe_sets_number_of_starting_monkeys(struct Ball * ball);
     void g_assign_ball_ape(struct Ball * in_ball);
     void ball_physics_g_something_w_postgoal_slowdown(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up(struct Ball * param_1);
