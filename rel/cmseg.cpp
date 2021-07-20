@@ -146,6 +146,7 @@ static void state_enter_cm()
     // TODO character, lives
 
     mkb::num_players = 1;
+    s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     mkb::number_of_starting_monkeys = 100;
 
     mkb::enter_challenge_mode();
@@ -183,7 +184,6 @@ static void state_seg_active()
             real_chara = s_ape_charas[static_cast<u32>(s_chara_request)];
         }
         mkb::active_monkey_id = real_chara;
-        s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     }
 
     // Nuke "Final Stage" sprite
