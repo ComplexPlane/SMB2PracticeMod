@@ -141,21 +141,11 @@ static const mkb::ApeCharacter s_ape_charas[] = {
 
 static void state_enter_cm()
 {
-
-    // TODO enforce 1-player game
-    // TODO character, lives
-
     mkb::num_players = 1;
     s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     mkb::number_of_starting_monkeys = 100;
-
-    mkb::enter_challenge_mode();
-
-    // TODO restore main menu state to look like we entered Challenge Mode
-    // TODO do this before loading REINIT to avoid mode.cnt = 0 error (and in Go To Story Mode too)
-
     reset_screenfade_state();
-
+    mkb::enter_challenge_mode();
     s_state = State::SegActive;
 }
 
@@ -187,7 +177,7 @@ static void state_seg_active()
     }
 
     // Nuke "Final Stage" sprite
-    if (s_state == State::SegActive && s_overwritten_entry_type != mkb::CMET_END)
+    if (s_overwritten_entry_type != mkb::CMET_END)
     {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
         {
@@ -209,6 +199,27 @@ static void state_seg_active()
         mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
     }
 
+    // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
+    if (mkb::mode_info.cm_stage_id == -1)
+    {
+        if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT)
+        {
+            mkb::sub_mode_frame_counter += 120;
+        }
+        else if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN && mkb::sub_mode_frame_counter == 0x3c)
+        {
+            // Same as post-goal fadeout when completing difficulty
+            mkb::fade_screen_to_color(0x101, 0, 0x3d);
+            mkb::g_set_track_volume(0x3c, 2);
+        }
+        else if (mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT)
+        {
+            mkb::main_mode_request = mkb::MD_SEL;
+            mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+        }
+    }
+
+    // Restore overwritten state if we exit main mode and thus thw IW
     if (mkb::main_mode != mkb::MD_GAME)
     {
         restore_overwritten_state();
