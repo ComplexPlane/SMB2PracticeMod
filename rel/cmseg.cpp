@@ -193,14 +193,15 @@ static void state_seg_active()
 
     // If we've reached end-of-difficulty, go back to main menu
     if (mkb::sub_mode_request == mkb::SMD_GAME_EXTRA_INIT
-        || mkb::sub_mode_request == mkb::SMD_AUTHOR_PLAY_ENDING_INIT)
+
+        || mkb::sub_mode_request == mkb::SMD_GAME_RESULT_INIT)
     {
         mkb::main_mode_request = mkb::MD_SEL;
         mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
     }
 
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
-    if (mkb::mode_info.cm_stage_id == -1)
+    if (mkb::mode_info.cm_stage_id == -1 && mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE)
     {
         if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT)
         {
