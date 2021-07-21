@@ -193,11 +193,14 @@ static void state_seg_active()
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
     if (mkb::mode_info.cm_stage_id == -1 && mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE)
     {
-        if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT)
+        if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
+            || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT)
         {
             mkb::sub_mode_frame_counter += 120;
         }
-        else if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN && mkb::sub_mode_frame_counter == 0x3c)
+        else if ((mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
+                  || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
+                 && mkb::sub_mode_frame_counter == 0x3c)
         {
             // Same as post-goal fadeout when completing difficulty
             mkb::fade_screen_to_color(0x101, 0, 0x3d);
