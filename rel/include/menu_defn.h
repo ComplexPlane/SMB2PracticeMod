@@ -41,6 +41,9 @@ struct MenuWidget
     const char *label;
     struct Widget *widgets;
     u32 num_widgets;
+    // It's too convenient to store currently selected menu entry in the widget itself,
+    // even if it violates the otherwise immutable nature of the menu definition
+    u32 selected_idx;
 };
 
 struct FloatViewWidget

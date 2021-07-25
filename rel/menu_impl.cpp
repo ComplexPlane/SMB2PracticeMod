@@ -24,15 +24,13 @@ static u32 s_cursor_frame = 0;
 
 constexpr u32 MENU_STACK_SIZE = 5;
 static MenuWidget *s_menu_stack[MENU_STACK_SIZE] = {&root_menu};
-static u32 s_cursor_stack[MENU_STACK_SIZE] = {0};
 static u32 s_menu_stack_ptr = 0;
 
-static void push_menu(MenuWidget *menu, u32 cursor_pos)
+static void push_menu(MenuWidget *menu)
 {
     MOD_ASSERT_MSG(s_menu_stack_ptr < MENU_STACK_SIZE - 1, "Menu stack overflow");
     s_menu_stack_ptr++;
     s_menu_stack[s_menu_stack_ptr] = menu;
-    s_cursor_stack[s_menu_stack_ptr] = cursor_pos;
 }
 
 static void pop_menu()
@@ -44,7 +42,7 @@ static void pop_menu()
 static Widget *get_selected_widget()
 {
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
-    s32 sel = s_cursor_stack[s_menu_stack_ptr];
+    s32 sel = menu->selected_idx;
 
     s32 selectable = -1;
     for (u32 i = 0; i < menu->num_widgets; i++)
@@ -94,7 +92,7 @@ static void handle_widget_bind()
     }
     else if (selected->type == WidgetType::Menu && a_pressed)
     {
-        push_menu(&selected->menu, 0);
+        push_menu(&selected->menu);
         s_cursor_frame = 0;
     }
     else if (selected->type == WidgetType::Choose)
@@ -137,12 +135,11 @@ void tick()
     if (!s_visible) return;
 
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
-    u32 &cursor = s_cursor_stack[s_menu_stack_ptr];
 
     // Update selected menu item
     s32 dir_delta = pad::dir_repeat(pad::DIR_DOWN, true) - pad::dir_repeat(pad::DIR_UP, true);
     u32 selectable = get_menu_selectable_widget_count(menu);
-    cursor = (cursor + dir_delta + selectable) % selectable;
+    menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
 
     // Make selected menu item green if selection changed or menu opened
     if (dir_delta != 0 || just_opened) s_cursor_frame = 0;
@@ -175,7 +172,7 @@ static f32 sin_lerp(s32 period_frames)
     return lerp;
 }
 
-void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
+void draw_menu_widget(MenuWidget *menu)
 {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
@@ -208,17 +205,17 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "  %s",
                     widget.checkbox.label);
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "                        %s",
                     widget.checkbox.get() ? "On" : "Off");
 
-                if (cursor_pos == selectable_idx) cursor_y = y;
+                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
@@ -233,7 +230,7 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "  %s",
                     widget.menu.label);
 
@@ -243,12 +240,12 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                     draw::debug_text(
                         MARGIN + PAD + 24 * draw::DEBUG_CHAR_WIDTH + i * 6,
                         y,
-                        cursor_pos == selectable_idx ? lerped_color : unfocused,
+                        menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                         "."
                     );
                 }
 
-                if (cursor_pos == selectable_idx) cursor_y = y;
+                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 selectable_idx++;
                 y += LINE_HEIGHT;
                 break;
@@ -270,19 +267,19 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "  %s",
                     widget.choose.label);
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "                        (%d/%d) %s",
                     widget.choose.get() + 1,
                     widget.choose.num_choices,
                     widget.choose.choices[widget.choose.get()]);
 
-                if (cursor_pos == selectable_idx) cursor_y = y;
+                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
@@ -292,11 +289,11 @@ void draw_menu_widget(MenuWidget *menu, u32 cursor_pos)
                 draw::debug_text(
                     MARGIN + PAD,
                     y,
-                    cursor_pos == selectable_idx ? lerped_color : unfocused,
+                    menu->selected_idx == selectable_idx ? lerped_color : unfocused,
                     "  %s",
                     widget.button.label);
 
-                if (cursor_pos == selectable_idx) cursor_y = y;
+                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
@@ -316,7 +313,7 @@ static void draw_breadcrumbs()
     for (u32 i = 0; i <= s_menu_stack_ptr; i++)
     {
         MenuWidget *menu = s_menu_stack[i];
-        draw::debug_text(x, MARGIN + PAD, i == 0 ? draw::PURPLE : draw::WHITE, menu->label);
+        draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : draw::WHITE, menu->label);
         x += strlen(menu->label) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr)
         {
@@ -332,7 +329,7 @@ void disp()
 
     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN, {0x00, 0x00, 0x00, 0xd0});
     draw_breadcrumbs();
-    draw_menu_widget(s_menu_stack[s_menu_stack_ptr], s_cursor_stack[s_menu_stack_ptr]);
+    draw_menu_widget(s_menu_stack[s_menu_stack_ptr]);
 }
 
 }
