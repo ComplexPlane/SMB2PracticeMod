@@ -5,6 +5,7 @@
 #include <mkb.h>
 #include <cstring>
 #include <cstdio>
+#include <timerdisp.h>
 
 #include "draw.h"
 #include "patch.h"
@@ -166,34 +167,7 @@ void disp()
         || mkb::main_game_mode != mkb::STORY_MODE
         || !main::currently_playing_iw)
         return;
-
-    constexpr u32 SECOND = 60;
-    constexpr u32 MINUTE = SECOND * 60;
-    constexpr u32 HOUR = MINUTE * 60;
-
-    constexpr s32 X = 380;
-    constexpr s32 Y = 18;
-
-    u32 hours = s_iw_time / HOUR;
-    u32 minutes = s_iw_time % HOUR / MINUTE;
-    u32 seconds = s_iw_time % MINUTE / SECOND;
-    u32 centiseconds = (s_iw_time % SECOND) * 100 / 60;
-
-    if (hours > 0)
-    {
-        draw::debug_text(X, Y, draw::WHITE, "IW:");
-        draw::debug_text(X + 54, Y, draw::WHITE, "%d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds);
-    }
-    else if (minutes > 0)
-    {
-        draw::debug_text(X, Y, draw::WHITE, "IW:");
-        draw::debug_text(X + 54, Y, draw::WHITE, "%02d:%02d.%02d", minutes, seconds, centiseconds);
-    }
-    else
-    {
-        draw::debug_text(X, Y, draw::WHITE, "IW:");
-        draw::debug_text(X + 54, Y, draw::WHITE, "%02d.%02d", seconds, centiseconds);
-    }
+    timerdisp::draw_timer(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
 }
 
 }

@@ -1,6 +1,7 @@
 #include "timer.h"
 
 #include <mkb.h>
+#include <timerdisp.h>
 
 #include "draw.h"
 
@@ -23,16 +24,6 @@ void init()
 void set_visible(bool visible) { s_visible = visible; }
 bool is_visible() { return s_visible; }
 
-static void convert_frame_time(s32 frames, s32 *sec, s32 *centisec)
-{
-    if (sec) *sec = frames / 60;
-    if (centisec)
-    {
-        *centisec = (frames % 60) * 100 / 60;
-        if (*centisec < 0) *centisec = -*centisec;
-    }
-}
-
 // Need to do logic in disp() so that we can know the game state _after_ the frame has processed
 void disp()
 {
@@ -50,6 +41,8 @@ void disp()
         case mkb::SMD_GAME_RINGOUT_MAIN:
         case mkb::SMD_GAME_TIMEOVER_INIT:
         case mkb::SMD_GAME_TIMEOVER_MAIN:
+        case mkb::SMD_GAME_GOAL_REPLAY_INIT:
+        case mkb::SMD_GAME_GOAL_REPLAY_MAIN:
             break;
         default:
             return;
@@ -70,26 +63,8 @@ void disp()
 
     if (s_visible)
     {
-        s32 sec = 0, centisec = 0;
-        convert_frame_time(s_rta_timer, &sec, &centisec);
-        draw::debug_text(
-            380, 34,
-            draw::WHITE,
-            "RTA:");
-        draw::debug_text(
-            434, 34,
-            draw::WHITE,
-            "%02d.%02d", sec, centisec);
-
-        convert_frame_time(mkb::mode_info.stage_time_frames_remaining - s_rta_timer, &sec, &centisec);
-        draw::debug_text(
-            380, 50,
-            draw::WHITE,
-            "PAU:");
-        draw::debug_text(
-            434, 50,
-            draw::WHITE,
-            "%02d.%02d", sec, centisec);
+        timerdisp::draw_timer(s_rta_timer, "RTA:", 1, draw::WHITE, true);
+        timerdisp::draw_timer(mkb::mode_info.stage_time_frames_remaining - s_rta_timer, "PAU:", 2, draw::WHITE, true);
     }
 }
 
