@@ -96,6 +96,7 @@ void init()
             Tetris::get_instance().disp();
             inputdisp::disp();
             scratch::disp();
+            cmseg::disp();
             menu::disp();
 
             s_draw_debug_text_trampoline();

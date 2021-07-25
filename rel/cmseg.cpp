@@ -1,8 +1,10 @@
 #include "cmseg.h"
 
 #include <mkb.h>
-#include <log.h>
-#include <patch.h>
+#include "log.h"
+#include "patch.h"
+#include "timerdisp.h"
+#include "draw.h"
 
 #define ARRAY_LEN(x) (sizeof((x)) / sizeof((x)[0]))
 
@@ -21,6 +23,8 @@ enum class State
 static State s_state = State::Default;
 static Seg s_seg_request;
 static Chara s_chara_request;
+static u32 s_start_time;
+static u32 s_seg_time;
 
 static void (*s_g_reset_cm_course_tramp)();
 
@@ -136,6 +140,7 @@ static void state_enter_cm()
     s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     mkb::number_of_starting_monkeys = 100;
     mkb::enter_challenge_mode();
+    s_start_time = mkb::VIGetRetraceCount();
     s_state = State::SegActive;
 }
 
@@ -143,6 +148,16 @@ static void restore_overwritten_state()
 {
     s_overwritten_entry->type = s_overwritten_entry_type; // Restore original challenge mode course
     mkb::number_of_starting_monkeys = s_overwritten_starting_monkeys;
+}
+
+static void check_exit_seg()
+{
+    // Restore overwritten state if we exit main mode and thus thw IW
+    if (mkb::main_mode != mkb::MD_GAME)
+    {
+        restore_overwritten_state();
+        s_state = State::Default;
+    }
 }
 
 static void state_seg_active()
@@ -181,15 +196,17 @@ static void state_seg_active()
         }
     }
 
-    // If we've reached end-of-difficulty, go back to main menu
-    if (mkb::sub_mode_request == mkb::SMD_GAME_EXTRA_INIT
-
-        || mkb::sub_mode_request == mkb::SMD_GAME_RESULT_INIT)
+    s_seg_time = mkb::VIGetRetraceCount() - s_start_time;
+    if (mkb::mode_info.cm_stage_id == -1 && mkb::is_stage_complete(nullptr))
     {
-        mkb::main_mode_request = mkb::MD_SEL;
-        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+        s_state = State::SegComplete;
     }
 
+    check_exit_seg();
+}
+
+void state_seg_complete()
+{
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
     if (mkb::mode_info.cm_stage_id == -1 && mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE)
     {
@@ -213,12 +230,16 @@ static void state_seg_active()
         }
     }
 
-    // Restore overwritten state if we exit main mode and thus thw IW
-    if (mkb::main_mode != mkb::MD_GAME)
+    // If we've reached end-of-difficulty, go back to main menu
+    if (mkb::sub_mode_request == mkb::SMD_GAME_EXTRA_INIT
+        || mkb::sub_mode_request == mkb::SMD_GAME_RESULT_INIT
+        || mkb::main_mode_request == mkb::MD_AUTHOR)
     {
-        restore_overwritten_state();
-        s_state = State::Default;
+        mkb::main_mode_request = mkb::MD_SEL;
+        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
     }
+
+    check_exit_seg();
 }
 
 void init_seg()
@@ -340,7 +361,7 @@ void init_seg()
             break;
         }
     }
-    gen_course(course, start_course_stage_num, 10);
+    gen_course(course, start_course_stage_num + 9, 1);
 }
 
 void request_cm_seg(Seg seg, Chara chara)
@@ -371,6 +392,15 @@ void tick()
     if (s_state == State::LoadMenu) state_load_menu();
     else if (s_state == State::EnterCm) state_enter_cm();
     else if (s_state == State::SegActive) state_seg_active();
+    else if (s_state == State::SegComplete) state_seg_complete();
+}
+
+void disp()
+{
+    if (s_state == State::SegActive || s_state == State::SegComplete)
+    {
+        timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, draw::WHITE, false);
+    }
 }
 
 }

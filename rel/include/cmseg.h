@@ -40,6 +40,7 @@ enum class Chara
 
 void init();
 void tick();
+void disp();
 void request_cm_seg(Seg seg, Chara chara);
 
 }
