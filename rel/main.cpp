@@ -17,6 +17,7 @@
 #include <mkb.h>
 
 #include <cstring>
+#include <banans.h>
 
 namespace main
 {
@@ -119,6 +120,7 @@ void init()
             gotostory::tick();
             cmseg::tick();
             scratch::tick();
+            banans::tick();
         });
 }
 

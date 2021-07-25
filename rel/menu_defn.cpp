@@ -4,6 +4,7 @@
 #include <assembly.h>
 #include <inputdisp.h>
 #include <cmseg.h>
+#include <banans.h>
 
 #include "jump.h"
 #include "timer.h"
@@ -299,6 +300,14 @@ static Widget root_widgets[] = {
         .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "9999 Banana Counter",
+            .get = banans::is_visible,
+            .set = banans::set_visible,
+        },
+    },
     {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, ARRAY_LEN(dev_tools_widgets)}},
 };
