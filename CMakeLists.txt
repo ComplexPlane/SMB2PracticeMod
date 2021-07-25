@@ -36,4 +36,5 @@ add_executable(ApeSphere
         rel/timer.cpp
         rel/iw.cpp
         rel/menu_impl.cpp
-        rel/cmseg.cpp)
+        rel/cmseg.cpp
+        rel/timerdisp.cpp)

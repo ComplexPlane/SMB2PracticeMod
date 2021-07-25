@@ -6,8 +6,8 @@
 namespace pad
 {
 
-static constexpr u32 DIR_REPEAT_PERIOD = 4;
-static constexpr u32 DIR_REPEAT_WAIT = 12;
+static constexpr u32 DIR_REPEAT_PERIOD = 3;
+static constexpr u32 DIR_REPEAT_WAIT = 14;
 
 static s32 s_konami_progress;
 static bool s_konami_input_prev_tick;

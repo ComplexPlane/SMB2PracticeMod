@@ -3298,7 +3298,7 @@
 80272990:get_next_player_idx
 802729E8:FUN_8019c7b0
 80272B44:FUN_8019c90c
-80272DC0:FUN_8019cb88
+80272DC0:g_get_next_stage_id
 80272E78:g_something_with_pausemenu
 802730AC:switchD
 802730B0:caseD_0
@@ -4069,7 +4069,7 @@
 802A2510:FUN_801cc2d8
 802A254C:SoundIcsReq
 802A2FA0:FUN_801ccd68
-802A3004:g_set_track_volume
+802A3004:g_fade_track_volume
 802A3124:switchD
 802A3128:caseD_0
 802A31BC:caseD_1

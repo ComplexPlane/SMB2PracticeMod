@@ -3293,7 +3293,7 @@ union PPCWGPipe { /* PPC Write Gather Pipe. Original field names didn't have v_ 
     s32 v_s32;
     f32 v_f32;
     f64 v_f64;
-} __attribute__((__packed__));
+};
 
 typedef u32 OSTick;
 
@@ -6993,6 +6993,7 @@ extern "C" {
     void g_set_current_sub_mode_dest(undefined4 param_1);
     void g_maybe_call_some_func_ptr_related_to_sub_mode(void);
     uint get_next_player_idx(void);
+    int g_get_next_stage_id(void);
     void g_something_with_pausemenu(int param_1);
     void g_check_input_in_pausemenu(int param_1);
     void handle_pausemenu_selection(int param_1);
@@ -7241,7 +7242,7 @@ extern "C" {
     void SoundChoID(int param_1, byte param_2);
     uint SoundCheckStateID(int param_1);
     void SoundIcsReq(uint param_1, byte param_2, char param_3);
-    void g_set_track_volume(uint param_1, char param_2);
+    void g_fade_track_volume(uint param_1, char param_2);
     int get_smgr_port(char param_1, int param_2, char param_3, short * param_4);
     void g_something_with_bgm(void);
     void g_crossfade_music(void);

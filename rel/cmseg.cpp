@@ -204,7 +204,7 @@ static void state_seg_active()
         {
             // Same as post-goal fadeout when completing difficulty
             mkb::fade_screen_to_color(0x101, 0, 0x3d);
-            mkb::g_set_track_volume(0x3c, 2);
+            mkb::g_fade_track_volume(0x3c, 2);
         }
         else if (mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT)
         {
