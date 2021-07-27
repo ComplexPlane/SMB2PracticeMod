@@ -22,7 +22,7 @@ struct SaveState
     mkb::Sprite pause_menu_sprite;
 };
 
-static bool s_visible = false;
+static bool s_visible = true;
 
 static SaveState s_states[8];
 static s32 s_active_state_slot;

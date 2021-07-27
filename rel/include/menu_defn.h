@@ -8,6 +8,7 @@ namespace menu
 enum class WidgetType
 {
     Text,
+    ColoredText,
     Header,
     Checkbox,
     Separator,
@@ -20,6 +21,12 @@ enum class WidgetType
 struct TextWidget
 {
     const char *label;
+};
+
+struct ColoredTextWidget
+{
+    const char *label;
+    mkb::GXColor color;
 };
 
 // Just a different color TextWidget
@@ -73,6 +80,7 @@ struct Widget
     union
     {
         TextWidget text;
+        ColoredTextWidget colored_text;
         HeaderWidget header;
         CheckboxWidget checkbox;
         MenuWidget menu;

@@ -42,5 +42,7 @@ void init();
 void tick();
 void disp();
 void request_cm_seg(Seg seg, Chara chara);
+bool is_visible();
+void set_visible(bool visible);
 
 }

@@ -14,8 +14,8 @@ extern const mkb::GXColor BLUE;
 extern const mkb::GXColor PINK;
 extern const mkb::GXColor PURPLE;
 extern const mkb::GXColor GREEN;
-
-extern const mkb::GXColor color_map[];
+extern const mkb::GXColor LIGHT_GREEN;
+extern const mkb::GXColor LIGHT_PURPLE;
 
 // Call once during mod initialization
 void init();

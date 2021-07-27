@@ -5,6 +5,8 @@
 #include <inputdisp.h>
 #include <cmseg.h>
 #include <banans.h>
+#include <iw.h>
+#include <draw.h>
 
 #include "jump.h"
 #include "timer.h"
@@ -155,24 +157,16 @@ static Widget dev_tools_widgets[] = {
 };
 
 static Widget help_widgets[] = {
-    {.type = WidgetType::Header, .header = {"Practice Tools Bindings"}},
-    {.type = WidgetType::Text, .text = {"  L+R        \x1c Toggle this menu"}},
-    {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
-    {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
-    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
-    {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
-    {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
-    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
-    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
+    {.type = WidgetType::Header, .header = {"SMB2 Practice Mod"}},
+    {.type = WidgetType::Text, .text = {"  Made with :heart: by ComplexPlane"}},
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
     {.type = WidgetType::Text, .text = {"  Current version: v0.3.0"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
-    {.type = WidgetType::Text, .text = {"  github.com/ComplexPlane/ApeSphere/releases"}},
+    {.type = WidgetType::ColoredText, .colored_text = {
+        "  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}
+    },
 };
 
 static const char *chara_choices[] = {
@@ -204,30 +198,48 @@ static Widget cm_seg_widgets[] = {
     // Beginner
     {
         .type = WidgetType::Button,
-        .button = {.label = "Beginner 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1, s_chara_choice); }}
+        .button = {.label = "Beginner 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::Beginner1, s_chara_choice);
+        }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Beginner Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra, s_chara_choice); }}
+        .button = {.label = "Beginner Extra 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra, s_chara_choice);
+        }}
     },
     {.type = WidgetType::Separator},
 
     // Advanced
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1, s_chara_choice); }}
+        .button = {.label = "Advanced 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::Advanced1, s_chara_choice);
+        }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced 11-20", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11, s_chara_choice); }}
+        .button = {.label = "Advanced 11-20", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::Advanced11, s_chara_choice);
+        }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced 21-30", .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21, s_chara_choice); }}
+        .button = {.label = "Advanced 21-30", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::Advanced21, s_chara_choice);
+        }}
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Advanced Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra, s_chara_choice); }}
+        .button = {.label = "Advanced Extra 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra, s_chara_choice);
+        }}
     },
     {
         .type = WidgetType::Separator
@@ -256,7 +268,10 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Expert Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra, s_chara_choice); }}
+        .button = {.label = "Expert Extra 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::ExpertExtra, s_chara_choice);
+        }}
     },
     {.type = WidgetType::Separator},
 
@@ -267,8 +282,58 @@ static Widget cm_seg_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Master Extra 1-10", .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra, s_chara_choice); }}
+        .button = {.label = "Master Extra 1-10", .push = []
+        {
+            cmseg::request_cm_seg(cmseg::Seg::MasterExtra, s_chara_choice);
+        }}
     },
+};
+
+static Widget timers_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"RTA+Pause Timer", timer::is_visible, timer::set_visible},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Story Mode IW Timer", iw::is_visible, iw::set_visible},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"CM Seg Timer", cmseg::is_visible, cmseg::set_visible},
+    }
+};
+
+static Widget savestates_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Enable Savestates", savestate::is_visible, savestate::set_visible},
+    },
+    {
+        .type = WidgetType::Separator,
+    },
+    {.type = WidgetType::Header, .header = {"Savestates Bindings"}},
+    {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
+    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
+    // TODO replace this feature with a better one that works in-menu
+    {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
+    {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
+};
+
+static Widget jumpmod_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Enable Jump Mod",
+            .get = jump::is_enabled,
+            .set = [](bool enable) { if (enable) jump::init(); else jump::dest(); },
+        },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
+    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
+    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
 };
 
 static Widget root_widgets[] = {
@@ -280,26 +345,20 @@ static Widget root_widgets[] = {
         .type = WidgetType::Menu,
         .menu = {"Challenge Mode Seg", cm_seg_widgets, ARRAY_LEN(cm_seg_widgets)},
     },
+    {.type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::Menu, .menu = {"Savestates", savestates_widgets, ARRAY_LEN(savestates_widgets)},
+    },
     {
         .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, ARRAY_LEN(inputdisp_widgets)},
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox = {
-            .label = "Jump Mod",
-            .get = jump::is_enabled,
-            .set = [](bool enable) { if (enable) jump::init(); else jump::dest(); },
-        },
+        .type = WidgetType::Menu, .menu = {"Timers", timers_widgets, ARRAY_LEN(timers_widgets)},
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox = {"RTA Timer", timer::is_visible, timer::set_visible},
+        .type = WidgetType::Menu, .menu = {"Jump Mod", jumpmod_widgets, ARRAY_LEN(jumpmod_widgets)},
     },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
-    },
-    {.type = WidgetType::Menu, .menu = {"Rumble", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
     {
         .type = WidgetType::Checkbox,
         .checkbox = {
@@ -308,12 +367,15 @@ static Widget root_widgets[] = {
             .set = banans::set_visible,
         },
     },
-    {.type = WidgetType::Menu, .menu = {"Help", help_widgets, ARRAY_LEN(help_widgets)}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Menu, .menu = {"Rumble Settings", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"About", help_widgets, ARRAY_LEN(help_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, ARRAY_LEN(dev_tools_widgets)}},
 };
 
 MenuWidget root_menu = {
-    .label = "ApeSphere Menu",
+    .label = "Main Menu",
     .widgets = root_widgets,
     .num_widgets = ARRAY_LEN(root_widgets),
 };

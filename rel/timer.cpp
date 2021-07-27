@@ -10,7 +10,7 @@ namespace timer
 
 // Enabled for the timer just means "is drawing on the screen"; it's always running
 // regardless to prevent fudging IL RTA times
-static bool s_visible = false;
+static bool s_visible = true;
 
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;

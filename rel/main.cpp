@@ -73,15 +73,12 @@ void init()
     heap::init();
     draw::init();
     Tetris::get_instance().init();
+    iw::init();
     savestate::init();
     timer::init();
     inputdisp::init();
     cmseg::init();
     scratch::init();
-
-    savestate::set_visible(true);
-    timer::set_visible(true);
-    iw::set_visible(true);
 
     s_draw_debug_text_trampoline = patch::hook_function(
         mkb::draw_debugtext, []()

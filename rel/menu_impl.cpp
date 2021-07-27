@@ -178,9 +178,9 @@ void draw_menu_widget(MenuWidget *menu)
     u32 selectable_idx = 0;
     s32 cursor_y = -1;
 
-    mkb::GXColor light_green = {0xad, 0xff, 0xa6, 0xff};
-    mkb::GXColor unfocused = {0xa2, 0xad, 0xff, 0xff};
-    mkb::GXColor lerped_color = lerp_colors(light_green, unfocused, sin_lerp(40));
+    mkb::GXColor focused = draw::LIGHT_GREEN;
+    mkb::GXColor unfocused = draw::LIGHT_PURPLE;
+    mkb::GXColor lerped_color = lerp_colors(focused, unfocused, sin_lerp(40));
 
     for (u32 i = 0; i < menu->num_widgets; i++)
     {
@@ -196,7 +196,13 @@ void draw_menu_widget(MenuWidget *menu)
             }
             case WidgetType::Text:
             {
-                draw::debug_text(MARGIN + PAD, y, draw::WHITE, widget.header.label);
+                draw::debug_text(MARGIN + PAD, y, draw::WHITE, widget.text.label);
+                y += LINE_HEIGHT;
+                break;
+            }
+            case WidgetType::ColoredText:
+            {
+                draw::debug_text(MARGIN + PAD, y, widget.colored_text.color, widget.colored_text.label);
                 y += LINE_HEIGHT;
                 break;
             }
@@ -302,7 +308,7 @@ void draw_menu_widget(MenuWidget *menu)
     }
 
     // Draw selection arrow
-    if (cursor_y != -1) draw::debug_text(MARGIN + PAD + 2, cursor_y, light_green, "\x1c");
+    if (cursor_y != -1) draw::debug_text(MARGIN + PAD + 2, cursor_y, focused, "\x1c");
 }
 
 static void draw_breadcrumbs()
@@ -317,7 +323,7 @@ static void draw_breadcrumbs()
         x += strlen(menu->label) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr)
         {
-            draw::debug_text(x, MARGIN + PAD, draw::WHITE, ARROW_STR);
+            draw::debug_text(x, MARGIN + PAD, draw::LIGHT_GREEN, ARROW_STR);
             x += strlen(ARROW_STR) * draw::DEBUG_CHAR_WIDTH;
         }
     }

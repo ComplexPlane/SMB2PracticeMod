@@ -20,6 +20,7 @@ enum class State
     SegComplete,
 };
 
+static bool s_visible = true;
 static State s_state = State::Default;
 static Seg s_seg_request;
 static Chara s_chara_request;
@@ -397,10 +398,22 @@ void tick()
 
 void disp()
 {
+    if (!s_visible) return;
+
     if (s_state == State::SegActive || s_state == State::SegComplete)
     {
         timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, draw::WHITE, false);
     }
+}
+
+bool is_visible()
+{
+    return s_visible;
+}
+
+void set_visible(bool visible)
+{
+    s_visible = visible;
 }
 
 }

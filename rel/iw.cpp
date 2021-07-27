@@ -17,8 +17,7 @@
 namespace iw
 {
 
-static bool s_visible;
-static u32 s_patch1, s_patch2;
+static bool s_visible = true;
 
 static u32 s_anim_counter;
 static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
@@ -31,25 +30,7 @@ static u32 s_prev_retrace_count;
 
 void set_visible(bool visible)
 {
-    if (visible != s_visible)
-    {
-        s_visible = visible;
-        if (visible)
-        {
-            // IW-related patches
-            s_patch1 = patch::write_branch(reinterpret_cast<void *>(0x80274804),
-                                           reinterpret_cast<void *>(main::stage_select_menu_hook));
-            s_patch2 = patch::write_branch(reinterpret_cast<void *>(0x8032a86c),
-                                           reinterpret_cast<void *>(main::pause_menu_text_hook));
-        }
-        else
-        {
-            patch::write_word(reinterpret_cast<void *>(0x80274804), s_patch1);
-            patch::write_word(reinterpret_cast<void *>(0x8032a86c), s_patch2);
-            strcpy(mkb::continue_saved_game_text, "Continue the game from the saved point.");
-            strcpy(mkb::start_game_from_beginning_text, "Start the game from the beginning.");
-        }
-    }
+    s_visible = visible;
 }
 
 bool is_visible() { return s_visible; }
@@ -136,10 +117,16 @@ static void handle_iw_timer()
     s_prev_retrace_count = retrace_count;
 }
 
+void init()
+{
+    patch::write_branch(reinterpret_cast<void *>(0x80274804),
+                                   reinterpret_cast<void *>(main::stage_select_menu_hook));
+    patch::write_branch(reinterpret_cast<void *>(0x8032a86c),
+                                   reinterpret_cast<void *>(main::pause_menu_text_hook));
+}
+
 void tick()
 {
-    if (!s_visible) return;
-
     main::currently_playing_iw = false;
     if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE) return;
 
