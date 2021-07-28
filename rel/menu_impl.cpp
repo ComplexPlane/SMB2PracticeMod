@@ -319,21 +319,25 @@ static void draw_breadcrumbs()
     for (u32 i = 0; i <= s_menu_stack_ptr; i++)
     {
         MenuWidget *menu = s_menu_stack[i];
-        draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : draw::WHITE, menu->label);
+        mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
+        draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
         x += strlen(menu->label) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr)
         {
-            draw::debug_text(x, MARGIN + PAD, draw::LIGHT_GREEN, ARROW_STR);
+            draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
             x += strlen(ARROW_STR) * draw::DEBUG_CHAR_WIDTH;
         }
     }
+
+    // Draw line under breadcrumbs. You can draw lines directly with GX but I couldn't get it working
+    draw::rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, {0x70, 0x70, 0x70, 0xFF});
 }
 
 void disp()
 {
     if (!s_visible) return;
 
-    draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN, {0x00, 0x00, 0x00, 0xd0});
+    draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN, {0x00, 0x00, 0x00, 0xe0});
     draw_breadcrumbs();
     draw_menu_widget(s_menu_stack[s_menu_stack_ptr]);
 }

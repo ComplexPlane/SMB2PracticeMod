@@ -16,6 +16,7 @@ extern const mkb::GXColor PURPLE;
 extern const mkb::GXColor GREEN;
 extern const mkb::GXColor LIGHT_GREEN;
 extern const mkb::GXColor LIGHT_PURPLE;
+extern const mkb::GXColor BRIGHT_PURPLE;
 
 // Call once during mod initialization
 void init();
