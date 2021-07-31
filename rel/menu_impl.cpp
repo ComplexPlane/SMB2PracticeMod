@@ -304,6 +304,11 @@ void draw_menu_widget(MenuWidget *menu)
                 selectable_idx++;
                 break;
             }
+            case WidgetType::Custom:
+            {
+                widget.custom.draw();
+                break;
+            }
         }
     }
 

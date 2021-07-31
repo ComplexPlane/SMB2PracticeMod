@@ -34,6 +34,7 @@ void predraw();
 void rect(float x1, float y1, float x2, float y2, mkb::GXColor color);
 void debug_text_palette();
 void debug_text(s32 x, s32 y, mkb::GXColor color, const char *format, ...);
+void heart();
 
 /*
  * Functions which cause drawing during disp() and don't necessarily need to be called each frame

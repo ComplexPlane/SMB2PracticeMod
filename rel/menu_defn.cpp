@@ -12,18 +12,7 @@
 #include "timer.h"
 #include "savestate.h"
 #include "gotostory.h"
-
-#define ARRAY_LEN(a) (sizeof((a)) / sizeof((a)[0]))
-
-namespace mkb
-{
-
-extern "C"
-{
-extern u8 rumble_enabled_bitflag;
-}
-
-}
+#include "macro_utils"
 
 namespace menu
 {
@@ -38,7 +27,7 @@ static const char *inputdisp_colors[] = {
     "Pink",
     "Black",
 };
-static_assert(ARRAY_LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
+static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
 
 static Widget inputdisp_widgets[] = {
     {
@@ -54,7 +43,7 @@ static Widget inputdisp_widgets[] = {
         .choose = {
             .label = "Color",
             .choices = inputdisp_colors,
-            .num_choices = ARRAY_LEN(inputdisp_colors),
+            .num_choices = LEN(inputdisp_colors),
             .get = []() { return static_cast<u32>(inputdisp::get_color()); },
             .set = [](u32 color)
             {
@@ -156,9 +145,10 @@ static Widget dev_tools_widgets[] = {
     },
 };
 
-static Widget help_widgets[] = {
+static Widget about_widgets[] = {
     {.type = WidgetType::Header, .header = {"SMB2 Practice Mod"}},
-    {.type = WidgetType::Text, .text = {"  Made with :heart: by ComplexPlane"}},
+    {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
+    {.type = WidgetType::Custom, .custom = {draw::heart}},
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
@@ -188,7 +178,7 @@ static Widget cm_seg_widgets[] = {
         .choose = {
             .label = "Character",
             .choices = chara_choices,
-            .num_choices = ARRAY_LEN(chara_choices),
+            .num_choices = LEN(chara_choices),
             .get = [] { return static_cast<u32>(s_chara_choice); },
             .set = [](u32 choice) { s_chara_choice = static_cast<cmseg::Chara>(choice); },
         }
@@ -343,21 +333,21 @@ static Widget root_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Challenge Mode Seg", cm_seg_widgets, ARRAY_LEN(cm_seg_widgets)},
+        .menu = {"Challenge Mode Seg", cm_seg_widgets, LEN(cm_seg_widgets)},
     },
     {.type = WidgetType::Separator},
 
     {
-        .type = WidgetType::Menu, .menu = {"Savestates", savestates_widgets, ARRAY_LEN(savestates_widgets)},
+        .type = WidgetType::Menu, .menu = {"Savestates", savestates_widgets, LEN(savestates_widgets)},
     },
     {
-        .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, ARRAY_LEN(inputdisp_widgets)},
+        .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, LEN(inputdisp_widgets)},
     },
     {
-        .type = WidgetType::Menu, .menu = {"Timers", timers_widgets, ARRAY_LEN(timers_widgets)},
+        .type = WidgetType::Menu, .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
     },
     {
-        .type = WidgetType::Menu, .menu = {"Jump Mod", jumpmod_widgets, ARRAY_LEN(jumpmod_widgets)},
+        .type = WidgetType::Menu, .menu = {"Jump Mod", jumpmod_widgets, LEN(jumpmod_widgets)},
     },
     {
         .type = WidgetType::Checkbox,
@@ -369,15 +359,15 @@ static Widget root_widgets[] = {
     },
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Menu, .menu = {"Rumble Settings", rumble_widgets, ARRAY_LEN(rumble_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"About", help_widgets, ARRAY_LEN(help_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, ARRAY_LEN(dev_tools_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"Rumble Settings", rumble_widgets, LEN(rumble_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"About", about_widgets, LEN(about_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, LEN(dev_tools_widgets)}},
 };
 
 MenuWidget root_menu = {
     .label = "Main Menu",
     .widgets = root_widgets,
-    .num_widgets = ARRAY_LEN(root_widgets),
+    .num_widgets = LEN(root_widgets),
 };
 
 }

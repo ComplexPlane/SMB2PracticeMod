@@ -6,8 +6,6 @@
 #include "timerdisp.h"
 #include "draw.h"
 
-#define ARRAY_LEN(x) (sizeof((x)) / sizeof((x)[0]))
-
 namespace cmseg
 {
 

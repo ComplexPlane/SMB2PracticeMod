@@ -7,6 +7,7 @@
 
 #include "patch.h"
 #include "assembly.h"
+#include "macro_utils"
 
 namespace draw
 {
@@ -100,9 +101,61 @@ static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char *format, v
 void debug_text(s32 x, s32 y, mkb::GXColor color, const char *format, ...)
 {
     va_list args;
-    va_start(args, format);
+        va_start(args, format);
     debug_text_v(x, y, color, format, args);
-    va_end(args);
+        va_end(args);
+}
+
+// Too lazy to make index buffer or display list or whatnot
+static Vec2f heart_verts[] = {
+    {65.f,   118.14f},
+    {113,    74},
+    {120,    63},
+    {122,    52},
+    {123,    40},
+    {116,    22.5},
+    {103.25, 13.88},
+    {88.63,  12.63},
+    {77.88,  16.25},
+    {65.25,  29.25},
+};
+
+void heart()
+{
+    // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
+    mkb::GXTexObj *texobj = reinterpret_cast<mkb::GXTexObj *>(0x807ad0e0);
+    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+    mkb::GXSetTevColor(mkb::GX_TEVREG0, {0xFF, 0x07, 0x07, 0xFF});
+    constexpr f32 Z = -1.0f / 128.0f;
+    constexpr f32 CENTER_X = 65.f;
+    constexpr f32 CENTER_Y = 62.f;
+    constexpr f32 SCALE = 0.13;
+    constexpr f32 OFFSET_X = 178.f;
+    constexpr f32 OFFSET_Y = 100.f;
+    constexpr u32 PERIOD = 120;
+
+    f32 t = static_cast<f32>(mkb::frame_counter % PERIOD) / PERIOD;
+    f32 scale = mkb::math_sin(t * 0xFFFF) * 0.02 + SCALE;
+
+    mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT0, LEN(heart_verts) * 2 - 1);
+    for (s32 i = LEN(heart_verts) - 1; i >= 0; i--)
+    {
+        f32 x = heart_verts[i % LEN(heart_verts)].x;
+        f32 y = heart_verts[i % LEN(heart_verts)].y;
+        x = (x - CENTER_X) * scale + OFFSET_X;
+        y = (y - CENTER_Y) * scale + OFFSET_Y;
+        mkb::GXPosition3f32(x, y, Z);
+        mkb::GXTexCoord2f32(0, 0);
+    }
+    for (u32 i = 1; i < LEN(heart_verts); i++)
+    {
+        f32 x = -(heart_verts[i % LEN(heart_verts)].x - CENTER_X) + CENTER_X;
+        f32 y = heart_verts[i % LEN(heart_verts)].y;
+        x = (x - CENTER_X) * scale + OFFSET_X;
+        y = (y - CENTER_Y) * scale + OFFSET_Y;
+        mkb::GXPosition3f32(x, y, Z);
+        mkb::GXTexCoord2f32(0, 0);
+    }
 }
 
 void disp()
@@ -125,9 +178,9 @@ void disp()
 void notify(mkb::GXColor color, const char *format, ...)
 {
     va_list args;
-    va_start(args, format);
+        va_start(args, format);
     vsprintf(s_notify_msg_buf, format, args);
-    va_end(args);
+        va_end(args);
 
     s_notify_frame_counter = 0;
     s_notify_color = color;
