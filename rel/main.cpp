@@ -44,7 +44,7 @@ static void perform_assembly_patches()
     patch::write_nop(reinterpret_cast<void *>(0x80299f54));
 
     // Titlescreen patches
-    strcpy(reinterpret_cast<char *>(0x8047f4ec), "APESPHERE PRACTICE MOD");
+    strcpy(reinterpret_cast<char *>(0x8047f4ec), "SMB2 PRACTICE MOD");
     patch::write_branch(reinterpret_cast<void *>(0x8032ad0c),
                         reinterpret_cast<void *>(main::custom_titlescreen_text_color));
 }

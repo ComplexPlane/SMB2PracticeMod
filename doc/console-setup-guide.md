@@ -1,4 +1,4 @@
-# ApeSphere Console Setup Guide
+# SMB2 Practice Mod Console Setup Guide
 
 1. Homebrew your Wii using [this guide](wii.guide), up to and including installing the Homebrew channel.
    I highly recommend following the Letterbomb homebrew method over other methods, it's super reliable and easy.
@@ -17,7 +17,7 @@
    Native Control. **Disable** Memcard Multi.
 9. Boot the game from disc or ISO file like usual.
 
-If you see the "ApeSphere Practice Mod" text in place of the normal "Press Start" text when you start the game, you've
+If you see the "SMB2 Practice Mod" text in place of the normal "Press Start" text when you start the game, you've
 loaded the mod successfully. If you don't see this, the mod is definitely not loaded correctly, go back and and check to
 make sure you didn't miss a step. If you can't figure it out, feel free to ping me on Discord (`ComplexPlane#3111`) for
 help.

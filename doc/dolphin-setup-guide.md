@@ -1,4 +1,4 @@
-# ApeSphere Dolphin Setup Guide
+# SMB2 Practice Mod Dolphin Setup Guide
 
 ## Set up the GCI
 
@@ -21,6 +21,6 @@
 
 ## Launch the game
 
-You should be able to launch the game like usual by double-clicking it in the games list. If you see "ApeSphere Practice Mod" on the titlescreen, you're good to go, otherwise the mod did not load correctly. You can use either Card A or Card B for your save data, it doesn't matter.
+You should be able to launch the game like usual by double-clicking it in the games list. If you see "SMB2 Practice Mod" on the titlescreen, you're good to go, otherwise the mod did not load correctly. You can use either Card A or Card B for your save data, it doesn't matter.
 
 If the game does not progress past the Presented By Sega screen, try upgrading your version of Dolphin Emulator (download [here](https://dolphin-emu.org/download/)). Using at least the latest beta is recommended.
