@@ -136,9 +136,9 @@ void heart()
     constexpr u32 PERIOD = 120;
 
     f32 t = static_cast<f32>(mkb::frame_counter % PERIOD) / PERIOD;
-    f32 scale = mkb::math_sin(t * 0xFFFF) * 0.02 + SCALE;
+    f32 scale = mkb::math_sin(t * 0xFFFF) * 0.02f + SCALE;
 
-    mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT0, LEN(heart_verts) * 2 - 1);
+    mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT7, LEN(heart_verts) * 2 - 1);
     for (s32 i = LEN(heart_verts) - 1; i >= 0; i--)
     {
         f32 x = heart_verts[i % LEN(heart_verts)].x;

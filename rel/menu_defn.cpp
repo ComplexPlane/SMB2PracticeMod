@@ -88,63 +88,6 @@ static Widget rumble_widgets[] = {
     }
 };
 
-static Widget dev_tools_widgets[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {
-            .label = "Debug Mode",
-            .get = []() { return main::debug_mode_enabled; },
-            .set = [](bool enable) { main::debug_mode_enabled = enable; },
-        }
-    },
-    {.type = WidgetType::Separator},
-
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Pos X",
-            .get = []() { return mkb::balls[0].pos.x; },
-        },
-    },
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Pos Y",
-            .get = []() { return mkb::balls[0].pos.y; },
-        },
-    },
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Pos Z",
-            .get = []() { return mkb::balls[0].pos.z; },
-        },
-    },
-    {.type = WidgetType::Separator},
-
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Vel X",
-            .get = []() { return mkb::balls[0].vel.x; },
-        },
-    },
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Vel Y",
-            .get = []() { return mkb::balls[0].vel.y; },
-        },
-    },
-    {
-        .type = WidgetType::FloatView,
-        .float_view = {
-            .label = "Ball Vel Z",
-            .get = []() { return mkb::balls[0].vel.z; },
-        },
-    },
-};
-
 static Widget about_widgets[] = {
     {.type = WidgetType::Header, .header = {"SMB2 Practice Mod"}},
     {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
@@ -294,14 +237,7 @@ static Widget timers_widgets[] = {
     }
 };
 
-static Widget savestates_widgets[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {"Enable Savestates", savestate::is_visible, savestate::set_visible},
-    },
-    {
-        .type = WidgetType::Separator,
-    },
+static Widget help_widgets[] = {
     {.type = WidgetType::Header, .header = {"Savestates Bindings"}},
     {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
     {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
@@ -309,21 +245,48 @@ static Widget savestates_widgets[] = {
     // TODO replace this feature with a better one that works in-menu
     {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
     {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
+    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
+    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
 };
 
-static Widget jumpmod_widgets[] = {
+static Widget mods_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
+    },
+    {
+        .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, LEN(inputdisp_widgets)},
+    },
+    {
+        .type = WidgetType::Menu, .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox = {
-            .label = "Enable Jump Mod",
+            .label = "Jump Mod",
             .get = jump::is_enabled,
             .set = [](bool enable) { if (enable) jump::init(); else jump::dest(); },
         },
     },
-    {.type = WidgetType::Separator},
-    {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
-    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
-    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "9999 Banana Counter",
+            .get = banans::is_visible,
+            .set = banans::set_visible,
+        },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Debug Mode",
+            .get = []() { return main::debug_mode_enabled; },
+            .set = [](bool enable) { main::debug_mode_enabled = enable; },
+        }
+    },
 };
 
 static Widget root_widgets[] = {
@@ -335,33 +298,10 @@ static Widget root_widgets[] = {
         .type = WidgetType::Menu,
         .menu = {"Challenge Mode Seg", cm_seg_widgets, LEN(cm_seg_widgets)},
     },
-    {.type = WidgetType::Separator},
-
-    {
-        .type = WidgetType::Menu, .menu = {"Savestates", savestates_widgets, LEN(savestates_widgets)},
-    },
-    {
-        .type = WidgetType::Menu, .menu = {"Input Display", inputdisp_widgets, LEN(inputdisp_widgets)},
-    },
-    {
-        .type = WidgetType::Menu, .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
-    },
-    {
-        .type = WidgetType::Menu, .menu = {"Jump Mod", jumpmod_widgets, LEN(jumpmod_widgets)},
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {
-            .label = "9999 Banana Counter",
-            .get = banans::is_visible,
-            .set = banans::set_visible,
-        },
-    },
-    {.type = WidgetType::Separator},
-
+    {.type = WidgetType::Menu, .menu = {"Mods", mods_widgets, LEN(mods_widgets)}},
     {.type = WidgetType::Menu, .menu = {"Rumble Settings", rumble_widgets, LEN(rumble_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"Help", help_widgets, LEN(help_widgets)}},
     {.type = WidgetType::Menu, .menu = {"About", about_widgets, LEN(about_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"Developer Tools", dev_tools_widgets, LEN(dev_tools_widgets)}},
 };
 
 MenuWidget root_menu = {
