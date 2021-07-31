@@ -5,6 +5,7 @@
 #include "patch.h"
 #include "timerdisp.h"
 #include "draw.h"
+#include "macro_utils"
 
 namespace cmseg
 {
@@ -30,6 +31,8 @@ static void (*s_g_reset_cm_course_tramp)();
 static mkb::CmEntry *s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
 static s8 s_overwritten_starting_monkeys;
+
+static u32 s_pbs[13];
 
 //static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
 //{
@@ -198,6 +201,11 @@ static void state_seg_active()
     s_seg_time = mkb::VIGetRetraceCount() - s_start_time;
     if (mkb::mode_info.cm_stage_id == -1 && mkb::is_stage_complete(nullptr))
     {
+        u32 seg = static_cast<u32>(s_seg_request);
+        if (s_seg_time < s_pbs[seg])
+        {
+            s_pbs[seg] = s_seg_time;
+        }
         s_state = State::SegComplete;
     }
 
@@ -360,7 +368,7 @@ void init_seg()
             break;
         }
     }
-    gen_course(course, start_course_stage_num, 10);
+    gen_course(course, start_course_stage_num + 9, 1);
 }
 
 void request_cm_seg(Seg seg, Chara chara)
@@ -384,6 +392,12 @@ void init()
             if (s_state == State::SegActive) init_seg();
         }
     );
+
+    // Set PBs to maximum time
+    for (u32 i = 0; i < LEN(s_pbs); i++)
+    {
+        s_pbs[i] = 0xFFFFFFFF;
+    }
 }
 
 void tick()
@@ -400,7 +414,11 @@ void disp()
 
     if (s_state == State::SegActive || s_state == State::SegComplete)
     {
-        timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, draw::WHITE, false);
+        u32 seg = static_cast<u32>(s_seg_request);
+        mkb::GXColor color;
+        if (s_state == State::SegComplete && s_pbs[seg] == s_seg_time) color = draw::GOLD;
+        else color = draw::WHITE;
+        timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, color, false);
     }
 }
 
