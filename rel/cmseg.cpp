@@ -368,7 +368,7 @@ void init_seg()
             break;
         }
     }
-    gen_course(course, start_course_stage_num + 9, 1);
+    gen_course(course, start_course_stage_num, 10);
 }
 
 void request_cm_seg(Seg seg, Chara chara)
