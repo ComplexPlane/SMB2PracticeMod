@@ -3,6 +3,7 @@
 #include <assembly.h>
 #include <banans.h>
 #include <cmseg.h>
+#include <dpad.h>
 #include <draw.h>
 #include <inputdisp.h>
 #include <iw.h>
@@ -219,6 +220,13 @@ static Widget mods_widgets[] = {
                 .set = banans::set_visible,
             },
     },
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "D-pad Controls",
+             .get = dpad::is_visible,
+             .set = dpad::set_visible,
+         }},
     {.type = WidgetType::Checkbox,
      .checkbox = {
          .label = "Debug Mode",

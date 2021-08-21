@@ -17,6 +17,7 @@
 #include <mkb.h>
 
 #include <banans.h>
+#include <dpad.h>
 #include <cstring>
 
 namespace main {
@@ -110,8 +111,9 @@ void init() {
         inputdisp::tick();
         gotostory::tick();
         cmseg::tick();
-        scratch::tick();
         banans::tick();
+        dpad::tick();
+        scratch::tick();
     });
 }
 
