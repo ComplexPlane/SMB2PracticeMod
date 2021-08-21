@@ -66,55 +66,62 @@ static void update_konami() {
     switch (s_konami_progress) {
         case 0:
         case 1: {
-            if (dir_pressed(DIR_UP, true))
+            if (dir_pressed(DIR_UP, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 2:
         case 3: {
-            if (dir_pressed(DIR_DOWN, true))
+            if (dir_pressed(DIR_DOWN, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 4:
         case 6: {
-            if (dir_pressed(DIR_LEFT, true))
+            if (dir_pressed(DIR_LEFT, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 5:
         case 7: {
-            if (dir_pressed(DIR_RIGHT, true))
+            if (dir_pressed(DIR_RIGHT, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 8: {
-            if (button_pressed(mkb::PAD_BUTTON_B, true))
+            if (button_pressed(mkb::PAD_BUTTON_B, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 9: {
-            if (button_pressed(mkb::PAD_BUTTON_A, true))
+            if (button_pressed(mkb::PAD_BUTTON_A, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         case 10: {
-            if (button_pressed(mkb::PAD_BUTTON_START, true))
+            if (button_pressed(mkb::PAD_BUTTON_START, true)) {
                 s_konami_progress++;
-            else
+            } else {
                 s_konami_progress = 0;
+            }
             break;
         }
         default: {
@@ -141,24 +148,15 @@ s32 get_cstick_dir(bool priority) {
     bool up = analog_down(mkb::PAI_CSTICK_UP, priority);
     bool down = analog_down(mkb::PAI_CSTICK_DOWN, priority);
 
-    if (up && left)
-        return DIR_UPLEFT;
-    else if (up && right)
-        return DIR_UPRIGHT;
-    else if (down && left)
-        return DIR_DOWNLEFT;
-    else if (down && right)
-        return DIR_DOWNRIGHT;
-    else if (up)
-        return DIR_UP;
-    else if (down)
-        return DIR_DOWN;
-    else if (left)
-        return DIR_LEFT;
-    else if (right)
-        return DIR_RIGHT;
-    else
-        return DIR_NONE;
+    if (up && left) return DIR_UPLEFT;
+    if (up && right) return DIR_UPRIGHT;
+    if (down && left) return DIR_DOWNLEFT;
+    if (down && right) return DIR_DOWNRIGHT;
+    if (up) return DIR_UP;
+    if (down) return DIR_DOWN;
+    if (left) return DIR_LEFT;
+    if (right) return DIR_RIGHT;
+    return DIR_NONE;
 }
 
 bool dir_down(Dir dir, bool priority) {

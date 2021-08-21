@@ -202,10 +202,11 @@ static Widget mods_widgets[] = {
                 .get = jump::is_enabled,
                 .set =
                     [](bool enable) {
-                        if (enable)
+                        if (enable) {
                             jump::init();
-                        else
+                        } else {
                             jump::dest();
+                        }
                     },
             },
     },

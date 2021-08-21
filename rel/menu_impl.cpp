@@ -32,10 +32,11 @@ static void push_menu(MenuWidget* menu) {
 }
 
 static void pop_menu() {
-    if (s_menu_stack_ptr == 0)
+    if (s_menu_stack_ptr == 0) {
         s_visible = false;
-    else
+    } else {
         s_menu_stack_ptr--;
+    }
 }
 
 static Widget* get_selected_widget() {

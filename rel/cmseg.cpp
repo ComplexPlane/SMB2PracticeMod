@@ -320,10 +320,11 @@ void request_cm_seg(Seg seg, Chara chara) {
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         restore_overwritten_state();
     }
-    if (mkb::main_mode == mkb::MD_SEL)
+    if (mkb::main_mode == mkb::MD_SEL) {
         s_state = State::EnterCm;  // Load challenge mode directly
-    else
+    } else {
         s_state = State::LoadMenu;  // Load main menu first
+    }
 }
 
 void init() {
@@ -333,20 +334,21 @@ void init() {
     });
 
     // Set PBs to maximum time
-    for (u32 i = 0; i < LEN(s_pbs); i++) {
-        s_pbs[i] = 0xFFFFFFFF;
+    for (u32& s_pb : s_pbs) {
+        s_pb = 0xFFFFFFFF;
     }
 }
 
 void tick() {
-    if (s_state == State::LoadMenu)
+    if (s_state == State::LoadMenu) {
         state_load_menu();
-    else if (s_state == State::EnterCm)
+    } else if (s_state == State::EnterCm) {
         state_enter_cm();
-    else if (s_state == State::SegActive)
+    } else if (s_state == State::SegActive) {
         state_seg_active();
-    else if (s_state == State::SegComplete)
+    } else if (s_state == State::SegComplete) {
         state_seg_complete();
+    }
 }
 
 void disp() {

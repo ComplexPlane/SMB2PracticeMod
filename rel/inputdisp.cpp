@@ -119,8 +119,8 @@ static bool get_notch_pos(Vec2f* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
-    for (u32 i = 0; i < 4; i++) {
-        mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+    for (mkb::PadStatusGroup& pad_status_group : mkb::pad_status_groups) {
+        mkb::PADStatus& status = pad_status_group.raw;
         if (status.err != mkb::PAD_ERR_NONE) continue;
 
         if (status.stickX == 0 && status.stickY == 60) {
@@ -195,8 +195,7 @@ void disp() {
     // know which player is active, like in menus
     s32 x = 0, y = 0;
     if (!pad::get_exclusive_mode()) {
-        for (int i = 0; i < 4; i++) {
-            mkb::PADStatus& status = s_raw_inputs[i];
+        for (mkb::PADStatus& status : s_raw_inputs) {
             if (status.err == mkb::PAD_ERR_NONE) {
                 x += status.stickX;
                 y += status.stickY;
