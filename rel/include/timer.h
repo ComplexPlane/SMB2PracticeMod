@@ -2,12 +2,12 @@
 
 #include "memstore.h"
 
-namespace timer
-{
+namespace timer {
+
 void init();
 void disp();
 void set_visible(bool visible);
 bool is_visible();
+void save_state(memstore::MemStore* store);
 
-void save_state(memstore::MemStore *store);
-}
+}  // namespace timer

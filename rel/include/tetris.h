@@ -2,30 +2,22 @@
 
 #include <mkb.h>
 
-class Tetris
-{
-public:
+class Tetris {
+ public:
     static Tetris& get_instance();
     void init();
     void disp();
 
-private:
+ private:
     static constexpr s32 BOARD_WIDTH = 10;
     static constexpr s32 BOARD_HEIGHT = 24;
     static constexpr s32 TETRAD_QUEUE_LEN = 5;
 
-    enum class Tetrad
-    {
-        I, J, L, O, S, T, Z
-    };
-    enum class Cell : u8
-    {
-        I, J, L, O, S, T, Z, EMPTY
-    };
+    enum class Tetrad { I, J, L, O, S, T, Z };
+    enum class Cell : u8 { I, J, L, O, S, T, Z, EMPTY };
 
     // Game state and hidden state not mututally exclusive
-    enum class State
-    {
+    enum class State {
         DROPPING,
         ROWCLEAR,
         GAMEOVER,

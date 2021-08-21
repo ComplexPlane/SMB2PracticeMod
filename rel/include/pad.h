@@ -2,11 +2,9 @@
 
 #include <mkb.h>
 
-namespace pad
-{
+namespace pad {
 
-enum Dir
-{
+enum Dir {
     DIR_UP,
     DIR_UPRIGHT,
     DIR_RIGHT,
@@ -21,7 +19,7 @@ enum Dir
 void init();
 // Tick functions to be run at different points in the game loop
 void on_frame_start();
-void tick(); // Run this after controller inputs are read and processed by the game
+void tick();  // Run this after controller inputs are read and processed by the game
 
 // In exclusive mode, inputs only register
 // when passing `true` to the optional second argument of the input checking functions,
@@ -44,9 +42,9 @@ bool analog_released(u16 analog_input, bool priority = false);
 bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority = false);
 
 s32 get_cstick_dir(bool priority = false);
-bool dir_down(Dir dir, bool priority = false); // Only works for cardinal directions
-bool dir_pressed(Dir dir, bool priority = false); // Only works for cardinal directions
-bool dir_repeat(Dir dir, bool priority = false); // Only works for cardinal directions
+bool dir_down(Dir dir, bool priority = false);     // Only works for cardinal directions
+bool dir_pressed(Dir dir, bool priority = false);  // Only works for cardinal directions
+bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal directions
 bool konami_pressed();
 
-}
+}  // namespace pad

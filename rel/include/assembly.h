@@ -1,7 +1,8 @@
 #pragma once
 
-namespace main
-{
+#include <mkb.h>
+
+namespace main {
 
 extern "C" {
 
@@ -27,7 +28,6 @@ extern u32 currently_playing_iw;
 void stage_select_menu_hook();
 void pause_menu_text_hook();
 bool is_iw_complete();
-
 }
 
-}
+}  // namespace main

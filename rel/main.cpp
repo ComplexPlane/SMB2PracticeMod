@@ -1,56 +1,55 @@
-#include "patch.h"
 #include "assembly.h"
-#include "heap.h"
-#include "savestate.h"
-#include "tetris.h"
-#include "draw.h"
-#include "timer.h"
-#include "iw.h"
-#include "pad.h"
-#include "menu_impl.h"
-#include "jump.h"
-#include "inputdisp.h"
-#include "gotostory.h"
 #include "cmseg.h"
+#include "draw.h"
+#include "gotostory.h"
+#include "heap.h"
+#include "inputdisp.h"
+#include "iw.h"
+#include "jump.h"
+#include "menu_impl.h"
+#include "pad.h"
+#include "patch.h"
+#include "savestate.h"
 #include "scratch.h"
+#include "tetris.h"
+#include "timer.h"
 
 #include <mkb.h>
 
-#include <cstring>
 #include <banans.h>
+#include <cstring>
 
-namespace main
-{
+namespace main {
 
 static void (*s_draw_debug_text_trampoline)();
 static void (*s_process_inputs_trampoline)();
 
 bool debug_mode_enabled = false;
 
-static void perform_assembly_patches()
-{
+static void perform_assembly_patches() {
     constexpr u32 offset = 0x600;
     // Inject the run function at the start of the main game loop
-    patch::write_branch_bl(reinterpret_cast<void *>(reinterpret_cast<u32>(
-                                                        heap::heap_data.main_loop_rel_location) + offset),
-                           reinterpret_cast<void *>(start_main_loop_assembly));
+    patch::write_branch_bl(
+        reinterpret_cast<void*>(reinterpret_cast<u32>(heap::heap_data.main_loop_rel_location) +
+                                offset),
+        reinterpret_cast<void*>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
     // Only needs to be applied to the US version
-    patch::write_nop(reinterpret_cast<void *>(0x80033E9C));
+    patch::write_nop(reinterpret_cast<void*>(0x80033E9C));
 
-    // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is disabled
-    patch::write_nop(reinterpret_cast<void *>(0x80299f54));
+    // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
+    // disabled
+    patch::write_nop(reinterpret_cast<void*>(0x80299f54));
 
     // Titlescreen patches
-    strcpy(reinterpret_cast<char *>(0x8047f4ec), "SMB2 PRACTICE MOD");
-    patch::write_branch(reinterpret_cast<void *>(0x8032ad0c),
-                        reinterpret_cast<void *>(main::custom_titlescreen_text_color));
+    strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
+    patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
+                        reinterpret_cast<void*>(main::custom_titlescreen_text_color));
 }
 
-static void unlock_everything()
-{
+static void unlock_everything() {
     // Don't yet know how to unlock the staff credits game from a fresh save...
     mkb::unlock_info.master_unlocked = true;
     mkb::unlock_info.monkeys = 99;
@@ -64,8 +63,7 @@ static void unlock_everything()
     memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
-void init()
-{
+void init() {
     mkb::OSReport("[mod] ApeSphere loaded\n");
 
     perform_assembly_patches();
@@ -80,62 +78,54 @@ void init()
     cmseg::init();
     scratch::init();
 
-    s_draw_debug_text_trampoline = patch::hook_function(
-        mkb::draw_debugtext, []()
-        {
-            // Drawing hook for UI elements.
-            // Gets run at the start of smb2's function which draws debug text windows,
-            // which is called at the end of smb2's function which draws the UI in general.
+    s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
+        // Drawing hook for UI elements.
+        // Gets run at the start of smb2's function which draws debug text windows,
+        // which is called at the end of smb2's function which draws the UI in general.
 
-            draw::predraw();
-            draw::disp();
-            timer::disp();
-            iw::disp();
-            Tetris::get_instance().disp();
-            inputdisp::disp();
-            scratch::disp();
-            cmseg::disp();
-            menu::disp();
+        draw::predraw();
+        draw::disp();
+        timer::disp();
+        iw::disp();
+        Tetris::get_instance().disp();
+        inputdisp::disp();
+        scratch::disp();
+        cmseg::disp();
+        menu::disp();
 
-            s_draw_debug_text_trampoline();
-        });
+        s_draw_debug_text_trampoline();
+    });
 
-    s_process_inputs_trampoline = patch::hook_function(
-        mkb::process_inputs, []()
-        {
-            s_process_inputs_trampoline();
+    s_process_inputs_trampoline = patch::hook_function(mkb::process_inputs, []() {
+        s_process_inputs_trampoline();
 
-            // These run after all controller inputs have been processed on the current frame,
-            // to ensure lowest input delay
-            pad::tick();
-            unlock_everything();
-            iw::tick();
-            savestate::tick();
-            menu::tick();
-            jump::tick();
-            inputdisp::tick();
-            gotostory::tick();
-            cmseg::tick();
-            scratch::tick();
-            banans::tick();
-        });
+        // These run after all controller inputs have been processed on the current frame,
+        // to ensure lowest input delay
+        pad::tick();
+        unlock_everything();
+        iw::tick();
+        savestate::tick();
+        menu::tick();
+        jump::tick();
+        inputdisp::tick();
+        gotostory::tick();
+        cmseg::tick();
+        scratch::tick();
+        banans::tick();
+    });
 }
 
 /*
  * This runs at the very start of the main game loop. Most per-frame code runs after
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
-void tick()
-{
-    if (debug_mode_enabled)
-    {
+void tick() {
+    if (debug_mode_enabled) {
         mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-    }
-    else
-    {
+    } else {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
     }
     pad::on_frame_start();
 }
 
-}
+}  // namespace main

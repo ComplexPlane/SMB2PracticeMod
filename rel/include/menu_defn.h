@@ -2,11 +2,9 @@
 
 #include <mkb.h>
 
-namespace menu
-{
+namespace menu {
 
-enum class WidgetType
-{
+enum class WidgetType {
     Text,
     ColoredText,
     Header,
@@ -19,72 +17,61 @@ enum class WidgetType
     Custom,
 };
 
-struct TextWidget
-{
-    const char *label;
+struct TextWidget {
+    const char* label;
 };
 
-struct ColoredTextWidget
-{
-    const char *label;
+struct ColoredTextWidget {
+    const char* label;
     mkb::GXColor color;
 };
 
 // Just a different color TextWidget
-struct HeaderWidget
-{
-    const char *label;
+struct HeaderWidget {
+    const char* label;
 };
 
-struct CheckboxWidget
-{
-    const char *label;
+struct CheckboxWidget {
+    const char* label;
     // We can't use std::function due to destructors in unions stuff
     bool (*get)();
     void (*set)(bool);
 };
 
-struct MenuWidget
-{
-    const char *label;
-    struct Widget *widgets;
+struct MenuWidget {
+    const char* label;
+    struct Widget* widgets;
     u32 num_widgets;
     // It's too convenient to store currently selected menu entry in the widget itself,
     // even if it violates the otherwise immutable nature of the menu definition
     u32 selected_idx;
 };
 
-struct FloatViewWidget
-{
-    const char *label;
+struct FloatViewWidget {
+    const char* label;
     f32 (*get)();
 };
 
-struct ChooseWidget
-{
-    const char *label;
-    const char **choices;
+struct ChooseWidget {
+    const char* label;
+    const char** choices;
     u32 num_choices;
     u32 (*get)();
     void (*set)(u32);
 };
 
-struct ButtonWidget
-{
-    const char *label;
+struct ButtonWidget {
+    const char* label;
     void (*push)();
 };
 
-struct CustomWidget
-{
+struct CustomWidget {
     void (*draw)();
 };
 
-struct Widget
-{
+struct Widget {
     WidgetType type;
-    union
-    {
+    union {
         TextWidget text;
         ColoredTextWidget colored_text;
         HeaderWidget header;
@@ -99,4 +86,4 @@ struct Widget
 
 extern MenuWidget root_menu;
 
-}
+}  // namespace menu

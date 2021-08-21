@@ -1,9 +1,8 @@
 #pragma once
 
-namespace gotostory
-{
+namespace gotostory {
 
 void tick();
 void load_storymode();
 
-}
+}  // namespace gotostory

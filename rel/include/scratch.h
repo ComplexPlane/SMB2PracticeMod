@@ -1,10 +1,9 @@
 #pragma once
 
-namespace scratch
-{
+namespace scratch {
 
 void init();
 void tick();
 void disp();
 
-}
+}  // namespace scratch

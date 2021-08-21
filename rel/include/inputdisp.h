@@ -2,19 +2,17 @@
 
 #include <mkb.h>
 
-namespace inputdisp
-{
+namespace inputdisp {
 
-enum class Color
-{
-   Purple,
-   Red,
-   Orange,
-   Yellow,
-   Green,
-   Blue,
-   Pink,
-   Black,
+enum class Color {
+    Purple,
+    Red,
+    Orange,
+    Yellow,
+    Green,
+    Blue,
+    Pink,
+    Black,
 };
 
 static constexpr u32 NUM_COLORS = 8;
@@ -31,4 +29,4 @@ bool is_in_center_loc();
 Color get_color();
 void set_color(Color color);
 
-}
+}  // namespace inputdisp

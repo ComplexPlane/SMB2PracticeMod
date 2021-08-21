@@ -2,18 +2,16 @@
 
 #include <mkb.h>
 
+#include "draw.h"
+#include "heap.h"
+#include "memstore.h"
 #include "pad.h"
 #include "patch.h"
-#include "memstore.h"
-#include "heap.h"
-#include "draw.h"
 #include "timer.h"
 
-namespace savestate
-{
+namespace savestate {
 
-struct SaveState
-{
+struct SaveState {
     bool active;
     s32 stage_id;
     u8 character;
@@ -35,17 +33,14 @@ static bool s_reload_state = false;
 
 static void (*s_set_minimap_mode_trampoline)(mkb::MinimapMode mode);
 
-void init()
-{
+void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
-    s_set_minimap_mode_trampoline = patch::hook_function(
-        mkb::set_minimap_mode, [](mkb::MinimapMode mode)
-        {
-            if (!s_visible || !(mkb::main_mode == mkb::MD_GAME
-                  && mkb::main_game_mode == mkb::PRACTICE_MODE
-                  && mode == mkb::MINIMAP_SHRINK))
-            {
+    s_set_minimap_mode_trampoline =
+        patch::hook_function(mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
+            if (!s_visible ||
+                !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
+                  mode == mkb::MINIMAP_SHRINK)) {
                 s_set_minimap_mode_trampoline(mode);
             }
         });
@@ -54,24 +49,25 @@ void init()
 void set_visible(bool visible) { s_visible = visible; }
 bool is_visible() { return s_visible; }
 
-static bool is_either_trigger_held()
-{
+static bool is_either_trigger_held() {
     return pad::analog_down(mkb::PAI_LTRIG) || pad::analog_down(mkb::PAI_RTRIG);
 }
 
 // For all memory regions that involve just saving/loading to the same region...
-// Do a pass over them. This may involve preallocating a buffer to save them in, actually saving them,
-// or restoring them, depending on the mode `memStore` is in
-static void pass_over_regions(memstore::MemStore *store)
-{
+// Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
+// them, or restoring them, depending on the mode `memStore` is in
+static void pass_over_regions(memstore::MemStore* store) {
     store->do_region(&mkb::balls[0], sizeof(mkb::balls[0]));
     store->do_region(&mkb::sub_mode, sizeof(mkb::sub_mode));
-    store->do_region(&mkb::mode_info.stage_time_frames_remaining, sizeof(mkb::mode_info.stage_time_frames_remaining));
-    store->do_region(reinterpret_cast<void *>(0x8054E03C), 0xe0); // Camera region
-    store->do_region(reinterpret_cast<void *>(0x805BD830), 0x1c); // Some physics region
+    store->do_region(&mkb::mode_info.stage_time_frames_remaining,
+                     sizeof(mkb::mode_info.stage_time_frames_remaining));
+    store->do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
+    store->do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     store->do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
-    store->do_region(&mkb::g_standstill_camera_frame_counter, sizeof(mkb::g_standstill_camera_frame_counter));
-    store->do_region(mkb::balls[0].ape, sizeof(*mkb::balls[0].ape)); // Store entire ape struct for now
+    store->do_region(&mkb::g_standstill_camera_frame_counter,
+                     sizeof(mkb::g_standstill_camera_frame_counter));
+    store->do_region(mkb::balls[0].ape,
+                     sizeof(*mkb::balls[0].ape));  // Store entire ape struct for now
 
     // Itemgroups
     store->do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
@@ -80,29 +76,25 @@ static void pass_over_regions(memstore::MemStore *store)
     store->do_region(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
-    for (u32 i = 0; i < mkb::stobj_pool_info.upper_bound; i++)
-    {
+    for (u32 i = 0; i < mkb::stobj_pool_info.upper_bound; i++) {
         if (mkb::stobj_pool_info.status_list[i] == 0) continue;
 
-        switch (mkb::stobjs[i].type)
-        {
+        switch (mkb::stobjs[i].type) {
             case mkb::STOBJ_GOALTAPE:
             case mkb::STOBJ_GOALBAG:
             case mkb::STOBJ_GOALBAG_EXMASTER:
-            case mkb::STOBJ_BUTTON:
-            {
+            case mkb::STOBJ_BUTTON: {
                 store->do_region(&mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
-            default: break;
+            default:
+                break;
         }
     }
 
     // Seesaws
-    for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++)
-    {
-        if (mkb::stagedef->coli_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW)
-        {
+    for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
+        if (mkb::stagedef->coli_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW) {
             store->do_region(mkb::itemgroups[i].seesaw_info->state, 12);
         }
     }
@@ -112,21 +104,17 @@ static void pass_over_regions(memstore::MemStore *store)
     store->do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    store->do_region(reinterpret_cast<void *>(0x8054DCA8), 56); // Pause menu state
-    store->do_region(reinterpret_cast<void *>(0x805BC474), 4); // Pause menu bitfield
+    store->do_region(reinterpret_cast<void*>(0x8054DCA8), 56);  // Pause menu state
+    store->do_region(reinterpret_cast<void*>(0x805BC474), 4);   // Pause menu bitfield
 
-    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
-    {
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-        mkb::Sprite *sprite = &mkb::sprites[i];
+        mkb::Sprite* sprite = &mkb::sprites[i];
 
-        if (sprite->tick_func == mkb::sprite_timer_ball_tick)
-        {
+        if (sprite->tick_func == mkb::sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
             store->do_region(sprite, sizeof(*sprite));
-        }
-        else if (sprite->tick_func == mkb::sprite_score_tick)
-        {
+        } else if (sprite->tick_func == mkb::sprite_score_tick) {
             // Score sprite's lerped score value
             store->do_region(&sprite->g_lerp_value, sizeof(sprite->g_lerp_value));
         }
@@ -136,18 +124,15 @@ static void pass_over_regions(memstore::MemStore *store)
     timer::save_state(store);
 }
 
-static void handle_pause_menu_save(SaveState *state)
-{
+static void handle_pause_menu_save(SaveState* state) {
     state->pause_menu_sprite_status = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
-    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
-    {
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite &sprite = mkb::sprites[i];
-        if (sprite.disp_func == mkb::sprite_pausemenu_disp)
-        {
+        mkb::Sprite& sprite = mkb::sprites[i];
+        if (sprite.disp_func == mkb::sprite_pausemenu_disp) {
             state->pause_menu_sprite_status = mkb::sprite_pool_info.status_list[i];
             state->pause_menu_sprite = sprite;
 
@@ -156,116 +141,100 @@ static void handle_pause_menu_save(SaveState *state)
     }
 }
 
-static void handle_pause_menu_load(SaveState *state)
-{
+static void handle_pause_menu_load(SaveState* state) {
     bool paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED;
     bool paused_in_state = state->pause_menu_sprite_status != 0;
 
-    if (paused_now && !paused_in_state)
-    {
+    if (paused_now && !paused_in_state) {
         // Destroy the pause menu sprite that currently exists
-        for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
-        {
+        for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) == 0x8032a4bc)
-            {
+            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) == 0x8032a4bc) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
             }
         }
-    }
-    else if (!paused_now && paused_in_state)
-    {
+    } else if (!paused_now && paused_in_state) {
         // Allocate a new pause menu sprite
         s32 i = mkb::pool_alloc(&mkb::sprite_pool_info, state->pause_menu_sprite_status);
         mkb::sprites[i] = state->pause_menu_sprite;
     }
 }
 
-static void destruct_non_gameplay_sprites()
-{
-    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++)
-    {
+static void destruct_non_gameplay_sprites() {
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite *sprite = &mkb::sprites[i];
-        bool post_goal_sprite = (
-            sprite->disp_func == mkb::sprite_goal_disp
-            || sprite->disp_func == mkb::sprite_clear_score_disp
-            || sprite->disp_func == mkb::sprite_warp_bonus_disp
-            || sprite->disp_func == mkb::sprite_time_bonus_disp
-            || sprite->disp_func == mkb::sprite_stage_score_disp
-            || sprite->tick_func == mkb::sprite_fallout_tick
-            || sprite->tick_func == mkb::sprite_bonus_finish_or_perfect_tick
-            || sprite->tick_func == mkb::sprite_ready_tick
-            || sprite->tick_func == mkb::sprite_go_tick
-            || sprite->tick_func == mkb::sprite_player_num_tick
-            || sprite->tick_func == mkb::sprite_replay_tick
-            || sprite->tick_func == mkb::sprite_loadin_stage_name_tick
-            || sprite->tick_func == mkb::sprite_bonus_stage_tick
-            || sprite->tick_func == mkb::sprite_final_stage_tick);
+        mkb::Sprite* sprite = &mkb::sprites[i];
+        bool post_goal_sprite = (sprite->disp_func == mkb::sprite_goal_disp ||
+                                 sprite->disp_func == mkb::sprite_clear_score_disp ||
+                                 sprite->disp_func == mkb::sprite_warp_bonus_disp ||
+                                 sprite->disp_func == mkb::sprite_time_bonus_disp ||
+                                 sprite->disp_func == mkb::sprite_stage_score_disp ||
+                                 sprite->tick_func == mkb::sprite_fallout_tick ||
+                                 sprite->tick_func == mkb::sprite_bonus_finish_or_perfect_tick ||
+                                 sprite->tick_func == mkb::sprite_ready_tick ||
+                                 sprite->tick_func == mkb::sprite_go_tick ||
+                                 sprite->tick_func == mkb::sprite_player_num_tick ||
+                                 sprite->tick_func == mkb::sprite_replay_tick ||
+                                 sprite->tick_func == mkb::sprite_loadin_stage_name_tick ||
+                                 sprite->tick_func == mkb::sprite_bonus_stage_tick ||
+                                 sprite->tick_func == mkb::sprite_final_stage_tick);
         if (post_goal_sprite) mkb::sprite_pool_info.status_list[i] = 0;
     }
 }
 
-static void destruct_distracting_effects()
-{
+static void destruct_distracting_effects() {
     // Destruct current spark effects so we don't see big sparks
     // generated when changing position by a large amount.
     // Also destruct banana grabbing effects
-    for (u32 i = 0; i < mkb::effect_pool_info.upper_bound; i++)
-    {
+    for (u32 i = 0; i < mkb::effect_pool_info.upper_bound; i++) {
         if (mkb::effect_pool_info.status_list[i] == 0) continue;
 
-        switch (mkb::effects[i].type)
-        {
+        switch (mkb::effects[i].type) {
             case mkb::EFFECT_COLI_PARTICLE:
             case mkb::EFFECT_HOLDING_BANANA:
-            case mkb::EFFECT_GET_BANANA:
-            {
+            case mkb::EFFECT_GET_BANANA: {
                 mkb::effect_pool_info.status_list[i] = 0;
             }
-            default: break;
+            default:
+                break;
         }
     }
 }
 
-static bool handle_load_state_from_nonplay_submode()
-{
-    if (!(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
-        || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
-        || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT
-        || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN
-        || mkb::sub_mode == mkb::SMD_GAME_READY_INIT
-        || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)) return true;
+static bool handle_load_state_from_nonplay_submode() {
+    if (!(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
+          mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
+          mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT ||
+          mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN ||
+          mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN))
+        return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *reinterpret_cast<u32 *>(0x805BC474) & 8; // TODO actually give this a name
-    if (paused_now)
-    {
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
+    if (paused_now) {
         draw::notify(draw::RED, "Cannot Load Savestate, Please Unpause");
         return false;
     }
 
-    mkb::event_init(mkb::EVENT_VIBRATION); // Post-goal replay can disable rumble
+    mkb::event_init(mkb::EVENT_VIBRATION);  // Post-goal replay can disable rumble
     mkb::smd_game_play_init();
     mkb::sub_mode_request = mkb::SMD_GAME_PLAY_MAIN;
 
-    // Loading a state for one frame after being in a replay fails to load the state properly, but also
-    // loading after a frame has elapsed seems to fix it. There's probably some extra data I need to save,
-    // but for now this works.
+    // Loading a state for one frame after being in a replay fails to load the state properly, but
+    // also loading after a frame has elapsed seems to fix it. There's probably some extra data I
+    // need to save, but for now this works.
     s_reload_state = true;
 
     return true;
 }
 
-void tick()
-{
+void tick() {
     if (!s_visible) return;
 
-    if (!is_either_trigger_held())
-    {
+    if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;
     }
 
@@ -274,53 +243,44 @@ void tick()
 
     // Allow changing the savestate slot as long as the above conditions are at least met
     s32 cstick_dir = pad::get_cstick_dir();
-    if (cstick_dir != pad::DIR_NONE)
-    {
+    if (cstick_dir != pad::DIR_NONE) {
         s_active_state_slot = cstick_dir;
         draw::notify(draw::WHITE, "Slot %d Selected", cstick_dir + 1);
     }
-    auto &state = s_states[s_active_state_slot];
+    auto& state = s_states[s_active_state_slot];
 
-    if (pad::button_pressed(mkb::PAD_BUTTON_X))
-    {
-        if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN || mkb::sub_mode_request != mkb::SMD_INVALID)
-        {
-            if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN)
-            {
+    if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
+        if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN || mkb::sub_mode_request != mkb::SMD_INVALID) {
+            if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
+                mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN) {
                 draw::notify(draw::RED, "Cannot Create Savestate After Fallout");
-            }
-            else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN)
-            {
+            } else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
+                       mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
                 draw::notify(draw::RED, "Cannot Create Savestate After Goal");
-            }
-            else if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)
-            {
+            } else if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT ||
+                       mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) {
                 draw::notify(draw::RED, "Cannot Create Savestate During Retry");
-            }
-            else if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
-            {
+            } else if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
+                       mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
                 draw::notify(draw::RED, "Cannot Create Savestate After Timeout");
-            }
-            else
-            {
+            } else {
                 draw::notify(draw::RED, "Cannot Create Savestate Here");
             }
 
             return;
         }
 
-        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
-        {
+        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL) {
             draw::notify(draw::RED, "Cannot Create Savestate in View Stage");
             return;
         }
 
         // Test that there is enough memory to create state
-        // TODO use a scratch savestate instead of obliterating whichever slot was currently selected?
+        // TODO use a scratch savestate instead of obliterating whichever slot was currently
+        // selected?
         state.store.enter_prealloc_mode();
         pass_over_regions(&state.store);
-        if (!state.store.enter_save_mode())
-        {
+        if (!state.store.enter_save_mode()) {
             draw::notify(draw::RED, "Cannot Create Savestate: Not Enough Memory");
             state.active = false;
             return;
@@ -344,55 +304,44 @@ void tick()
         mkb::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
         mkb::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
 
-        if (s_frame_advance_mode)
-        {
+        if (s_frame_advance_mode) {
             draw::notify(draw::PINK, "Slot %d Frame Advance", s_active_state_slot + 1);
-        }
-        else
-        {
+        } else {
             draw::notify(draw::PINK, "Slot %d Saved", s_active_state_slot + 1);
         }
-    }
-    else if (
-        pad::button_down(mkb::PAD_BUTTON_Y)
-        || (pad::button_down(mkb::PAD_BUTTON_X)
-            && s_created_state_last_frame)
-        || s_frame_advance_mode
-        || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)
-        || s_reload_state)
-    {
+    } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
+               (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
+               s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE) ||
+               s_reload_state) {
         s_reload_state = false;
 
         // TODO allow loading savestate during timeover
-        if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
-        {
+        if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
+            mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
             draw::notify(draw::RED, "Cannot Load Savestate After Timeout");
             return;
         }
-        if (!state.active)
-        {
+        if (!state.active) {
             draw::notify(draw::RED, "Slot %d Empty", s_active_state_slot + 1);
             return;
         }
-        if (state.stage_id != mkb::current_stage_id)
-        {
+        if (state.stage_id != mkb::current_stage_id) {
             draw::notify(draw::RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
             return;
         }
-        if (state.character != mkb::selected_characters[mkb::curr_player_idx])
-        {
+        if (state.character != mkb::selected_characters[mkb::curr_player_idx]) {
             draw::notify(draw::RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
             return;
         }
-        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL)
-        {
+        if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL) {
             draw::notify(draw::RED, "Cannot Load Savestate in View Stage");
             return;
         }
 
         if (!handle_load_state_from_nonplay_submode()) return;
 
-        // Need to handle pausemenu-specific loading first so we can detect the game isn't currently paused
+        // Need to handle pausemenu-specific loading first so we can detect the game isn't currently
+        // paused
         handle_pause_menu_load(&state);
 
         state.store.enter_load_mode();
@@ -401,15 +350,12 @@ void tick()
         destruct_non_gameplay_sprites();
         destruct_distracting_effects();
 
-        if (!s_created_state_last_frame)
-        {
+        if (!s_created_state_last_frame) {
             draw::notify(draw::BLUE, "Slot %d Loaded", s_active_state_slot + 1);
         }
-    }
-    else
-    {
+    } else {
         s_created_state_last_frame = false;
     }
 }
 
-}
+}  // namespace savestate

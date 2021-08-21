@@ -1,7 +1,8 @@
 #pragma once
 
-namespace menu
-{
+namespace menu {
+
 void tick();
 void disp();
-}
+
+}  // namespace menu

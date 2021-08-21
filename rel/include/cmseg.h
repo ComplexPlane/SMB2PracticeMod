@@ -2,11 +2,9 @@
 
 #include <mkb.h>
 
-namespace cmseg
-{
+namespace cmseg {
 
-enum class Seg
-{
+enum class Seg {
     Beginner1,
     BeginnerExtra,
 
@@ -26,8 +24,7 @@ enum class Seg
     MasterExtra,
 };
 
-enum class Chara
-{
+enum class Chara {
     AiAi,
     MeeMee,
     Baby,
@@ -45,4 +42,4 @@ void request_cm_seg(Seg seg, Chara chara);
 bool is_visible();
 void set_visible(bool visible);
 
-}
+}  // namespace cmseg
