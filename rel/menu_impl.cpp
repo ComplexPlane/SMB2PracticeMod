@@ -26,7 +26,7 @@ static MenuWidget* s_menu_stack[MENU_STACK_SIZE] = {&root_menu};
 static u32 s_menu_stack_ptr = 0;
 
 static void push_menu(MenuWidget* menu) {
-    MOD_ASSERT_MSG(s_menu_stack_ptr < MENU_STACK_SIZE - 1, "Menu stack overflow");
+    MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
     s_menu_stack_ptr++;
     s_menu_stack[s_menu_stack_ptr] = menu;
 }

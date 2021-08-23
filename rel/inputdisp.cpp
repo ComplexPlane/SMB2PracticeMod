@@ -193,6 +193,7 @@ void disp() {
 
     // Accumulate stick inputs from all controllers since we don't always
     // know which player is active, like in menus
+    // TODO account for d-pad control setting
     s32 x = 0, y = 0;
     if (!pad::get_exclusive_mode()) {
         for (mkb::PADStatus& status : s_raw_inputs) {

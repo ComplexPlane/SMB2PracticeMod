@@ -9,6 +9,7 @@
 #include "menu_impl.h"
 #include "pad.h"
 #include "patch.h"
+#include "pref.h"
 #include "savestate.h"
 #include "scratch.h"
 #include "tetris.h"
@@ -77,6 +78,7 @@ void init() {
     timer::init();
     inputdisp::init();
     cmseg::init();
+    pref::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
