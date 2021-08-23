@@ -140,7 +140,7 @@ static void card_buf_to_pref_struct(void* card_buf, Pref& pref) {
     if (header->semver_major > 1) return;  // Preferences file format too new for this mod
 
     IdEntry* entry_list =
-        reinterpret_cast<IdEntry*>(reinterpret_cast<uintptr_t>(card_buf) + sizeof(FileHeader));
+        reinterpret_cast<IdEntry*>(reinterpret_cast<u32>(card_buf) + sizeof(FileHeader));
 
     for (s32 i = 0; i < header->num_prefs; i++) {
         PrefId id = static_cast<PrefId>(entry_list[i].id);
@@ -166,7 +166,7 @@ static void card_buf_to_pref_struct(void* card_buf, Pref& pref) {
 }
 
 static void load_default_prefs() {
-    memset(&s_pref, 0, sizeof(s_pref));
+    mkb::memset(&s_pref, 0, sizeof(s_pref));
     set_bool_pref(BoolPref::Savestates, true);
     set_bool_pref(BoolPref::RtaPauseTimer, true);
 }
@@ -174,9 +174,12 @@ static void load_default_prefs() {
 static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
     FileHeader* header = static_cast<FileHeader*>(card_buf);
     IdEntry* entry_list =
-        reinterpret_cast<IdEntry*>(reinterpret_cast<uintptr_t>(card_buf) + sizeof(FileHeader));
+        reinterpret_cast<IdEntry*>(reinterpret_cast<u32>(card_buf) + sizeof(FileHeader));
 
-    memcpy(header->magic, static_cast<const char*>("APMP"), 4);
+    header->magic[0] = 'A';
+    header->magic[1] = 'P';
+    header->magic[2] = 'M';
+    header->magic[3] = 'P';
     header->semver_major = 1;
     header->semver_minor = 0;
     header->semver_patch = 0;
