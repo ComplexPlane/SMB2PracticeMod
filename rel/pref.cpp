@@ -71,19 +71,30 @@ static const PrefId s_pref_ids[] = {
     PrefId::CmChara,
     PrefId::InputDispColor,
     PrefId::InputDispNotchIndicators,
+    PrefId::StoryTimer,
+    PrefId::CmTimer,
+    PrefId::JumpMod,
+    PrefId::BananaCounter9999,
+    PrefId::DpadControls,
+    PrefId::DebugMode,
 };
 
 static u8 s_file_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
 
-static bool get_bool_pref(BoolPref bp) {
+static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(bpi / 8 < LEN(s_pref.bool_prefs));  // Out of room for bool prefs
+    MOD_ASSERT(static_cast<u16>(bpi / 8 + 1) < LEN(s_pref.bool_prefs));  // Out of room for bool
+                                                                         // prefs
+    return bpi;
+}
+
+static bool get_bool_pref(BoolPref bp) {
+    u16 bpi = validate_bool_pref(bp);
     return s_pref.bool_prefs[bpi / 8] & (1 << (bpi % 8));
 }
 
 static void set_bool_pref(BoolPref bp, bool value) {
-    u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(bpi / 8 < LEN(s_pref.bool_prefs));  // Out of room for bool prefs
+    u16 bpi = validate_bool_pref(bp);
     if (value) {
         s_pref.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
     } else {
