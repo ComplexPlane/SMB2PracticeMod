@@ -7,6 +7,7 @@
 namespace pref {
 
 void init();
+void save();
 
 u8 get_cm_chara();
 void set_cm_chara(s8 idx);

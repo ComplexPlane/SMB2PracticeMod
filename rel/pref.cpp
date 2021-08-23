@@ -220,53 +220,41 @@ static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
 }
 
 void init() {}
-
-void save_prefs() {}
-
-void set_bool_pref_and_save(BoolPref bp, bool value) {
-    set_bool_pref(bp, value);
-    save_prefs();
-}
-
-template <typename T>
-void set_and_save(T& dest, T src) {
-    dest = src;
-    save_prefs();
-}
+void save() {}
 
 u8 get_cm_chara() { return s_pref.cm_chara; }
-void set_cm_chara(u8 idx) { set_and_save(s_pref.cm_chara, idx); }
+void set_cm_chara(u8 idx) { s_pref.cm_chara = idx; }
 
 bool get_savestates() { return get_bool_pref(BoolPref::Savestates); }
-void set_savestates(bool on) { set_bool_pref_and_save(BoolPref::Savestates, on); }
+void set_savestates(bool on) { set_bool_pref(BoolPref::Savestates, on); }
 
 bool get_input_disp() { return get_bool_pref(BoolPref::InputDisp); }
-void set_input_disp(bool on) { set_bool_pref_and_save(BoolPref::InputDisp, on); }
+void set_input_disp(bool on) { set_bool_pref(BoolPref::InputDisp, on); }
 bool get_input_disp_center_location() { return get_bool_pref(BoolPref::InputDispCenterLocation); }
 void set_input_disp_center_location(bool on) {
-    set_bool_pref_and_save(BoolPref::InputDispCenterLocation, on);
+    set_bool_pref(BoolPref::InputDispCenterLocation, on);
 };
 u8 get_input_disp_color() { return s_pref.input_disp_color; }
-void set_input_disp_color(u8 idx) { set_and_save(s_pref.input_disp_color, idx); }
+void set_input_disp_color(u8 idx) { s_pref.input_disp_color = idx; }
 bool get_input_disp_notch_indicators() { return get_bool_pref(BoolPref::InputDispNotchIndicators); }
 void set_input_disp_notch_indicators(bool on) {
-    set_bool_pref_and_save(BoolPref::InputDispNotchIndicators, on);
+    set_bool_pref(BoolPref::InputDispNotchIndicators, on);
 }
 
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
-void set_rta_pause_timer(bool on) { set_bool_pref_and_save(BoolPref::RtaPauseTimer, on); }
+void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_story_timer() { return get_bool_pref(BoolPref::StoryTimer); }
-void set_story_timer(bool on) { set_bool_pref_and_save(BoolPref::StoryTimer, on); }
+void set_story_timer(bool on) { set_bool_pref(BoolPref::StoryTimer, on); }
 bool get_cm_timer() { return get_bool_pref(BoolPref::CmTimer); }
-void set_cm_timer(bool on) { set_bool_pref_and_save(BoolPref::CmTimer, on); }
+void set_cm_timer(bool on) { set_bool_pref(BoolPref::CmTimer, on); }
 
 bool get_jump_mod() { return get_bool_pref(BoolPref::JumpMod); }
-void set_jump_mod(bool on) { set_bool_pref_and_save(BoolPref::JumpMod, on); }
+void set_jump_mod(bool on) { set_bool_pref(BoolPref::JumpMod, on); }
 bool get_9999_banana_counter() { return get_bool_pref(BoolPref::BananaCounter9999); }
-void set_9999_banana_counter(bool on) { set_bool_pref_and_save(BoolPref::BananaCounter9999, on); }
+void set_9999_banana_counter(bool on) { set_bool_pref(BoolPref::BananaCounter9999, on); }
 bool get_dpad_controls() { return get_bool_pref(BoolPref::DpadControls); }
-void set_dpad_controls(bool on) { set_bool_pref_and_save(BoolPref::DpadControls, on); }
+void set_dpad_controls(bool on) { set_bool_pref(BoolPref::DpadControls, on); }
 bool get_debug_mode() { return get_bool_pref(BoolPref::DebugMode); }
-void set_debug_mode(bool on) { set_bool_pref_and_save(BoolPref::DebugMode, on); }
+void set_debug_mode(bool on) { set_bool_pref(BoolPref::DebugMode, on); }
 
 }  // namespace pref
