@@ -40,4 +40,5 @@ add_executable(ApeSphere
         rel/timerdisp.cpp
         rel/banans.cpp
         rel/dpad.cpp
-        rel/pref.cpp)
+        rel/pref.cpp
+        rel/log.cpp)

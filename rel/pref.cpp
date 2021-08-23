@@ -200,14 +200,14 @@ static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
         PrefId id = s_pref_ids[i];
         entry_list[i].id = static_cast<u16>(id);
 
-        // Write out boolean property, if this is a boolean
+        // Write out boolean preference if this is a boolean
         std::optional<BoolPref> bool_pref_idx = pref_id_to_bool_pref(id);
         if (bool_pref_idx.has_value()) {
             entry_list[i].data = get_bool_pref(bool_pref_idx.value());
             continue;
         }
 
-        // Write out u8 property if this is a u8
+        // Write out u8 preference if this is a u8
         const u8* u8_pref = pref_id_to_u8(id, pref);
         if (u8_pref != nullptr) {
             entry_list[i].data = *u8_pref;
