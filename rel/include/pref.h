@@ -20,6 +20,8 @@ bool get_input_disp_center_location();
 void set_input_disp_center_location(bool on);
 u8 get_input_disp_color();
 void set_input_disp_color(u8 idx);
+bool get_input_disp_notch_indicators();
+void set_input_disp_notch_indicators(bool on);
 
 bool get_rta_pause_timer();
 void set_rta_pause_timer(bool on);
