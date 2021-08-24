@@ -11,7 +11,8 @@
 
 #include "gotostory.h"
 #include "jump.h"
-#include "macro_utils"
+#include "macro_utils.h"
+#include "pref.h"
 #include "savestate.h"
 #include "timer.h"
 
@@ -25,12 +26,12 @@ static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
 static Widget inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Show Input Display", inputdisp::is_visible, inputdisp::set_visible},
+        .checkbox = {"Show Input Display", pref::get_input_disp, pref::set_input_disp},
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Use Center Location", inputdisp::is_in_center_loc,
-                     inputdisp::set_in_center_loc},
+        .checkbox = {"Use Center Location", pref::get_input_disp_center_location,
+                     pref::set_input_disp_center_location},
     },
     {
         .type = WidgetType::Choose,
@@ -38,8 +39,8 @@ static Widget inputdisp_widgets[] = {
             .label = "Color",
             .choices = inputdisp_colors,
             .num_choices = LEN(inputdisp_colors),
-            .get = []() { return static_cast<u32>(inputdisp::get_color()); },
-            .set = [](u32 color) { inputdisp::set_color(static_cast<inputdisp::Color>(color)); },
+            .get = []() { return static_cast<u32>(pref::get_input_disp_color()); },
+            .set = [](u32 color) { pref::set_input_disp_color(static_cast<u8>(color)); },
         },
     },
 };
@@ -83,9 +84,7 @@ static Widget about_widgets[] = {
      .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
 };
 
-static const char* chara_choices[] = {
-    "AiAi", "MeeMee", "Baby", "GonGon", "Dr. Bad-Boon", "Whale", "Random (main 4)", "Random (all)"};
-static cmseg::Chara s_chara_choice;
+static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget cm_seg_widgets[] = {
     // Settings
@@ -94,77 +93,77 @@ static Widget cm_seg_widgets[] = {
          .label = "Character",
          .choices = chara_choices,
          .num_choices = LEN(chara_choices),
-         .get = [] { return static_cast<u32>(s_chara_choice); },
-         .set = [](u32 choice) { s_chara_choice = static_cast<cmseg::Chara>(choice); },
+         .get = [] { return static_cast<u32>(pref::get_cm_chara()); },
+         .set = [](u32 choice) { pref::set_cm_chara(static_cast<u8>(choice)); },
      }},
     {.type = WidgetType::Separator},
 
     // Beginner
     {.type = WidgetType::Button,
      .button = {.label = "Beginner 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Beginner Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}},
     {.type = WidgetType::Separator},
 
     // Advanced
     {.type = WidgetType::Button,
      .button = {.label = "Advanced 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Advanced 11-20",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Advanced 21-30",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Advanced Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}},
     {.type = WidgetType::Separator},
 
     // Expert
     {.type = WidgetType::Button,
      .button = {.label = "Expert 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Expert 11-20",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Expert 21-30",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Expert 31-40",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Expert 41-50",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Expert Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}},
     {.type = WidgetType::Separator},
 
     // Master
     {.type = WidgetType::Button,
      .button = {.label = "Master 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); }}},
     {.type = WidgetType::Button,
      .button = {.label = "Master Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra, s_chara_choice); }}},
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}},
 };
 
 static Widget timers_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"RTA+Pause Timer", timer::is_visible, timer::set_visible},
+        .checkbox = {"RTA+Pause Timer", pref::get_rta_pause_timer, pref::set_rta_pause_timer},
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Story Mode IW Timer", iw::is_visible, iw::set_visible},
+        .checkbox = {"Story Mode IW Timer", pref::get_iw_timer, pref::set_iw_timer},
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"CM Seg Timer", cmseg::is_visible, cmseg::set_visible},
+        .checkbox = {"CM Seg Timer", pref::get_cm_timer, pref::set_cm_timer},
     }};
 
 static Widget help_widgets[] = {
@@ -185,7 +184,7 @@ static Widget help_widgets[] = {
 static Widget mods_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Savestates", savestate::is_visible, savestate::set_visible},
+        .checkbox = {"Savestates", pref::get_savestates, pref::set_savestates},
     },
     {
         .type = WidgetType::Menu,
@@ -200,15 +199,8 @@ static Widget mods_widgets[] = {
         .checkbox =
             {
                 .label = "Jump Mod",
-                .get = jump::is_enabled,
-                .set =
-                    [](bool enable) {
-                        if (enable) {
-                            jump::init();
-                        } else {
-                            jump::dest();
-                        }
-                    },
+                .get = pref::get_jump_mod,
+                .set = pref::set_jump_mod,
             },
     },
     {
@@ -216,23 +208,24 @@ static Widget mods_widgets[] = {
         .checkbox =
             {
                 .label = "9999 Banana Counter",
-                .get = banans::is_visible,
-                .set = banans::set_visible,
+                .get = pref::get_9999_banana_counter,
+                .set = pref::set_9999_banana_counter,
             },
     },
     {.type = WidgetType::Checkbox,
      .checkbox =
          {
              .label = "D-pad Controls",
-             .get = dpad::is_visible,
-             .set = dpad::set_visible,
+             .get = pref::get_dpad_controls,
+             .set = pref::set_dpad_controls,
          }},
     {.type = WidgetType::Checkbox,
-     .checkbox = {
-         .label = "Debug Mode",
-         .get = []() { return main::debug_mode_enabled; },
-         .set = [](bool enable) { main::debug_mode_enabled = enable; },
-     }},
+     .checkbox =
+         {
+             .label = "Debug Mode",
+             .get = pref::get_debug_mode,
+             .set = pref::set_debug_mode,
+         }},
 };
 
 static Widget root_widgets[] = {

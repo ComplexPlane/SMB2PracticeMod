@@ -5,6 +5,7 @@
 #include "draw.h"
 #include "pad.h"
 #include "patch.h"
+#include "pref.h"
 
 #define ABS(x) ((x) < 0 ? (-x) : (x))
 
@@ -12,7 +13,7 @@ namespace jump {
 
 constexpr s32 JUMP_FRAMES = 15;
 
-static bool s_enabled = false;
+static bool s_prev_enabled = false;
 static u32 s_patch1;
 static u32 s_patch2;
 static f32 s_orig_friction;
@@ -27,7 +28,6 @@ static s32 s_ticks_since_jump = 1000;
 static s32 s_sfx_idx = 0;
 
 const s32 JUMP_SOUNDS[] = {268, 50, 52, 55, 295, 500, -1};
-constexpr s32 NUM_JUMP_SOUNDS = sizeof(JUMP_SOUNDS) / sizeof(JUMP_SOUNDS[0]);
 
 static void reset() {
     s_ticks_since_jump_input = -1;
@@ -37,10 +37,7 @@ static void reset() {
     s_ticks_since_jump = 1000;
 }
 
-void init() {
-    if (s_enabled) return;
-    s_enabled = true;
-
+static void enable() {
     constexpr f32 FRICTION = 0.015;
     constexpr f32 RESTITUTION = 0.25f;
 
@@ -58,25 +55,18 @@ void init() {
     //    patch::write_nop(reinterpret_cast<void *>(0x802916d0));
 }
 
-void tick() {
-    //    // Allow changing the sfx
-    //    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_BUTTON_X))
-    //    {
-    //        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
-    //
-    //        if (JUMP_SOUNDS[s_sfx_idx] != -1)
-    //        {
-    //            draw::notify(draw::Color::WHITE, "Jump sound: %d", s_sfx_idx + 1);
-    //            mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
-    //        }
-    //        else
-    //        {
-    //            draw::notify(draw::Color::WHITE, "Jump sound: OFF");
-    //        }
-    //    }
+static void disable() {
+    if (mkb::main_mode == mkb::MD_GAME) {
+        // These overwrites exist in main_game.rel which isn't always loaded
+        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
+        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+    }
+    mkb::ball_friction = s_orig_friction;
+    mkb::ball_restitution = s_orig_restitution;
+    mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
+}
 
-    if (!s_enabled) return;
-
+static void jumping() {
     if (mkb::main_mode == mkb::MD_GAME) {
         u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
         u32* patch2_loc = reinterpret_cast<u32*>(0x808f5168);
@@ -92,15 +82,15 @@ void tick() {
 
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
     if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) &&
-        !paused_now) {
+    !paused_now) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
             mkb::toggle_minimap_zoom();
         }
     }
 
     if (mkb::sub_mode != mkb::SMD_GAME_READY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT &&
-        mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
-        mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
+    mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
+    mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
         reset();
         return;
     }
@@ -182,20 +172,36 @@ void tick() {
     if (s_ticks_since_jump > 1000) s_ticks_since_jump = 1000;
 }
 
-void dest() {
-    if (!s_enabled) return;
+void tick() {
+    // TODO add back SFX customization
+    //    // Allow changing the sfx
+    //    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_BUTTON_X))
+    //    {
+    //        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
+    //
+    //        if (JUMP_SOUNDS[s_sfx_idx] != -1)
+    //        {
+    //            draw::notify(draw::Color::WHITE, "Jump sound: %d", s_sfx_idx + 1);
+    //            mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
+    //        }
+    //        else
+    //        {
+    //            draw::notify(draw::Color::WHITE, "Jump sound: OFF");
+    //        }
+    //    }
 
-    s_enabled = false;
-    if (mkb::main_mode == mkb::MD_GAME) {
-        // These overwrites exist in main_game.rel which isn't always loaded
-        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
-        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+    bool enabled = pref::get_jump_mod();
+    if (enabled != s_prev_enabled) {
+        s_prev_enabled = enabled;
+        if (enabled) {
+            enable();
+        } else {
+            disable();
+        }
     }
-    mkb::ball_friction = s_orig_friction;
-    mkb::ball_restitution = s_orig_restitution;
-    mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
+    if (enabled) {
+        jumping();
+    }
 }
-
-bool is_enabled() { return s_enabled; }
 
 }  // namespace jump

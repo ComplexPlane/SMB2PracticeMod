@@ -4,21 +4,15 @@
 #include <timerdisp.h>
 
 #include "draw.h"
+#include "pref.h"
 
 namespace timer {
-
-// Enabled for the timer just means "is drawing on the screen"; it's always running
-// regardless to prevent fudging IL RTA times
-static bool s_visible = true;
 
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
 
 void init() { s_retrace_count = mkb::VIGetRetraceCount(); }
-
-void set_visible(bool visible) { s_visible = visible; }
-bool is_visible() { return s_visible; }
 
 // Need to do logic in disp() so that we can know the game state _after_ the frame has processed
 void disp() {
@@ -52,7 +46,7 @@ void disp() {
         //        if (s_rtaTimer < 0) s_rtaTimer = 0;
     }
 
-    if (s_visible) {
+    if (pref::get_rta_pause_timer()) {
         timerdisp::draw_timer(s_rta_timer, "RTA:", 1, draw::WHITE, true);
         timerdisp::draw_timer(mkb::mode_info.stage_time_frames_remaining - s_rta_timer, "PAU:", 2,
                               draw::WHITE, true);

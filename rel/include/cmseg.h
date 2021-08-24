@@ -29,17 +29,12 @@ enum class Chara {
     MeeMee,
     Baby,
     GonGon,
-    BadBoon,
-    Whale,
-    RandomMainFour,
-    RandomAll,
+    Random,
 };
 
 void init();
 void tick();
 void disp();
-void request_cm_seg(Seg seg, Chara chara);
-bool is_visible();
-void set_visible(bool visible);
+void request_cm_seg(Seg seg);
 
 }  // namespace cmseg

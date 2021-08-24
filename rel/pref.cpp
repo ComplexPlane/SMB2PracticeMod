@@ -1,8 +1,8 @@
 #include "pref.h"
 
 #include <log.h>
+#include <macro_utils.h>
 #include <mkb.h>
-#include <macro_utils>
 #include <optional>
 
 namespace pref {
@@ -17,7 +17,7 @@ enum class PrefId : u16 {
     CmChara = 5,
     InputDispColor = 6,
     InputDispNotchIndicators = 7,
-    StoryTimer = 8,
+    IwTimer = 8,
     CmTimer = 9,
     JumpMod = 10,
     BananaCounter9999 = 11,
@@ -32,7 +32,7 @@ enum class BoolPref {
     InputDispCenterLocation,
     RtaPauseTimer,
     InputDispNotchIndicators,
-    StoryTimer,
+    IwTimer,
     CmTimer,
     JumpMod,
     BananaCounter9999,
@@ -71,7 +71,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::CmChara,
     PrefId::InputDispColor,
     PrefId::InputDispNotchIndicators,
-    PrefId::StoryTimer,
+    PrefId::IwTimer,
     PrefId::CmTimer,
     PrefId::JumpMod,
     PrefId::BananaCounter9999,
@@ -114,8 +114,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::RtaPauseTimer;
         case PrefId::InputDispNotchIndicators:
             return BoolPref::InputDispNotchIndicators;
-        case PrefId::StoryTimer:
-            return BoolPref::StoryTimer;
+        case PrefId::IwTimer:
+            return BoolPref::IwTimer;
         case PrefId::CmTimer:
             return BoolPref::CmTimer;
         case PrefId::JumpMod:
@@ -219,7 +219,8 @@ static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
     }
 }
 
-void init() {}
+void init() { load_default_prefs(); }
+
 void save() {}
 
 u8 get_cm_chara() { return s_pref.cm_chara; }
@@ -243,8 +244,8 @@ void set_input_disp_notch_indicators(bool on) {
 
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
-bool get_story_timer() { return get_bool_pref(BoolPref::StoryTimer); }
-void set_story_timer(bool on) { set_bool_pref(BoolPref::StoryTimer, on); }
+bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }
+void set_iw_timer(bool on) { set_bool_pref(BoolPref::IwTimer, on); }
 bool get_cm_timer() { return get_bool_pref(BoolPref::CmTimer); }
 void set_cm_timer(bool on) { set_bool_pref(BoolPref::CmTimer, on); }
 

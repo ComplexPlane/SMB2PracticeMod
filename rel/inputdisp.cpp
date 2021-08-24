@@ -6,12 +6,9 @@
 #include "draw.h"
 #include "pad.h"
 #include "patch.h"
+#include "pref.h"
 
 namespace inputdisp {
-
-static bool s_visible = false;
-static bool s_center_loc = false;
-static Color s_color = Color::Purple;
 
 static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
 
@@ -109,11 +106,9 @@ void init() {
     });
 }
 
-void tick() { set_sprite_visible(!s_visible || s_center_loc); }
-
-void set_visible(bool visible) { s_visible = visible; }
-
-bool is_visible() { return s_visible; }
+void tick() {
+    set_sprite_visible(!pref::get_input_disp() || pref::get_input_disp_center_location());
+}
 
 static bool get_notch_pos(Vec2f* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
@@ -153,39 +148,24 @@ static bool get_notch_pos(Vec2f* out_pos) {
     return notch_found;
 }
 
-void disp() {
-    if (!s_visible) return;
+static const mkb::GXColor s_color_map[] = {
+    {0xb1, 0x5a, 0xff, 0xff},  // Purple
+    draw::RED,                 // Red
+    draw::ORANGE,              // Orange
+    {0xfd, 0xfb, 0x78, 0xff},  // Yellow
+    {0x78, 0xfd, 0x85, 0xff},  // Green
+    {0x78, 0xca, 0xfd, 0xff},  // Blue
+    draw::PINK,                // Pink
+    {0x00, 0x00, 0x00, 0xff},  // Black
+};
 
-    Vec2f center = s_center_loc ? Vec2f{430, 60} : Vec2f{534, 60};
+void disp() {
+    if (!pref::get_input_disp()) return;
+
+    Vec2f center = pref::get_input_disp_center_location() ? Vec2f{430, 60} : Vec2f{534, 60};
     f32 scale = 0.6f;
 
-    mkb::GXColor chosen_color = {};
-    switch (s_color) {
-        case Color::Purple:
-            chosen_color = {0xb1, 0x5a, 0xff, 0xff};
-            break;
-        case Color::Red:
-            chosen_color = draw::RED;
-            break;
-        case Color::Orange:
-            chosen_color = draw::ORANGE;
-            break;
-        case Color::Yellow:
-            chosen_color = {0xfd, 0xfb, 0x78, 0xff};
-            break;
-        case Color::Green:
-            chosen_color = {0x78, 0xfd, 0x85, 0xff};
-            break;
-        case Color::Blue:
-            chosen_color = {0x78, 0xca, 0xfd, 0xff};
-            break;
-        case Color::Pink:
-            chosen_color = draw::PINK;
-            break;
-        case Color::Black:
-            chosen_color = {0x00, 0x00, 0x00, 0xff};
-            break;
-    }
+    mkb::GXColor chosen_color = s_color_map[pref::get_input_disp_color()];
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
@@ -247,10 +227,5 @@ void disp() {
         draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
     }
 }
-
-void set_in_center_loc(bool alternate_loc) { s_center_loc = alternate_loc; }
-bool is_in_center_loc() { return s_center_loc; }
-void set_color(Color color) { s_color = color; }
-Color get_color() { return s_color; }
 
 }  // namespace inputdisp

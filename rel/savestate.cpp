@@ -7,6 +7,7 @@
 #include "memstore.h"
 #include "pad.h"
 #include "patch.h"
+#include "pref.h"
 #include "timer.h"
 
 namespace savestate {
@@ -19,8 +20,6 @@ struct SaveState {
     u8 pause_menu_sprite_status;
     mkb::Sprite pause_menu_sprite;
 };
-
-static bool s_visible = true;
 
 static SaveState s_states[8];
 static s32 s_active_state_slot;
@@ -38,16 +37,13 @@ void init() {
     // This way the minimap is unaffected when loading savestates after goal/fallout
     s_set_minimap_mode_trampoline =
         patch::hook_function(mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
-            if (!s_visible ||
+            if (!pref::get_savestates() ||
                 !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
                   mode == mkb::MINIMAP_SHRINK)) {
                 s_set_minimap_mode_trampoline(mode);
             }
         });
 }
-
-void set_visible(bool visible) { s_visible = visible; }
-bool is_visible() { return s_visible; }
 
 static bool is_either_trigger_held() {
     return pad::analog_down(mkb::PAI_LTRIG) || pad::analog_down(mkb::PAI_RTRIG);
@@ -232,7 +228,7 @@ static bool handle_load_state_from_nonplay_submode() {
 }
 
 void tick() {
-    if (!s_visible) return;
+    if (!pref::get_savestates()) return;
 
     if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;

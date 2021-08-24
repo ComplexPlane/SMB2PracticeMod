@@ -96,6 +96,8 @@ static void handle_widget_bind() {
 }
 
 void tick() {
+    // TODO save settings on close
+    // TODO save menu position as settings
     bool toggle = false;
     if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
         pop_menu();

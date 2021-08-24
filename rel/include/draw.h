@@ -4,19 +4,19 @@
 
 namespace draw {
 
-static constexpr s32 DEBUG_CHAR_WIDTH = 0xc;
+constexpr s32 DEBUG_CHAR_WIDTH = 0xc;
 
-extern const mkb::GXColor WHITE;
-extern const mkb::GXColor RED;
-extern const mkb::GXColor ORANGE;
-extern const mkb::GXColor BLUE;
-extern const mkb::GXColor PINK;
-extern const mkb::GXColor PURPLE;
-extern const mkb::GXColor GREEN;
-extern const mkb::GXColor LIGHT_GREEN;
-extern const mkb::GXColor LIGHT_PURPLE;
-extern const mkb::GXColor BRIGHT_PURPLE;
-extern const mkb::GXColor GOLD;
+constexpr mkb::GXColor WHITE = {0xff, 0xff, 0xff, 0xff};
+constexpr mkb::GXColor RED = {0xfd, 0x68, 0x75, 0xff};
+constexpr mkb::GXColor ORANGE = {0xfd, 0xac, 0x68, 0xff};
+constexpr mkb::GXColor BLUE = {0x9d, 0xe3, 0xff, 0xff};
+constexpr mkb::GXColor PINK = {0xdf, 0x7f, 0xfa, 0xff};
+constexpr mkb::GXColor PURPLE = {0xb1, 0x5a, 0xff, 0xff};
+constexpr mkb::GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
+constexpr mkb::GXColor LIGHT_GREEN = {0xad, 0xff, 0xa6, 0xff};
+constexpr mkb::GXColor LIGHT_PURPLE = {0xa2, 0xad, 0xff, 0xff};
+constexpr mkb::GXColor BRIGHT_PURPLE = {0xCE, 0x4F, 0xFF, 0xFF};
+constexpr mkb::GXColor GOLD = {0xFF, 0xD7, 0x00, 0xFF};
 
 // Call once during mod initialization
 void init();

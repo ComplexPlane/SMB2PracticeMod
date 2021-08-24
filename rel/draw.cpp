@@ -6,7 +6,7 @@
 #include <cstring>
 
 #include "assembly.h"
-#include "macro_utils"
+#include "macro_utils.h"
 #include "patch.h"
 
 namespace draw {
@@ -14,18 +14,6 @@ namespace draw {
 static char s_notify_msg_buf[80];
 static s32 s_notify_frame_counter;
 static mkb::GXColor s_notify_color;
-
-const mkb::GXColor WHITE = {0xff, 0xff, 0xff, 0xff};
-const mkb::GXColor RED = {0xfd, 0x68, 0x75, 0xff};
-const mkb::GXColor ORANGE = {0xfd, 0xac, 0x68, 0xff};
-const mkb::GXColor BLUE = {0x9d, 0xe3, 0xff, 0xff};
-const mkb::GXColor PINK = {0xdf, 0x7f, 0xfa, 0xff};
-const mkb::GXColor PURPLE = {0xb1, 0x5a, 0xff, 0xff};
-const mkb::GXColor GREEN = {0x00, 0xff, 0x00, 0xff};
-const mkb::GXColor LIGHT_GREEN = {0xad, 0xff, 0xa6, 0xff};
-const mkb::GXColor LIGHT_PURPLE = {0xa2, 0xad, 0xff, 0xff};
-const mkb::GXColor BRIGHT_PURPLE = {0xCE, 0x4F, 0xFF, 0xFF};
-const mkb::GXColor GOLD = {0xFF, 0xD7, 0x00, 0xFF};
 
 void init() {
     patch::write_branch(reinterpret_cast<void*>(0x802aeca4),

@@ -9,14 +9,13 @@
 
 #include "draw.h"
 #include "patch.h"
+#include "pref.h"
 
 // TODO: track best times per world
 // I tried this before but it seems like there might be a spurious frame where it thinks the IW is
 // completed when beating the second-to-last level, so the fastest time isn't saving correctly.
 
 namespace iw {
-
-static bool s_visible = true;
 
 static u32 s_anim_counter;
 static const char* s_anim_strs[4] = {"/", "-", "\\", " |"};
@@ -26,10 +25,6 @@ static u32 s_iw_files;  // Bitflag for which save files are IW save files
 // IW timer stuff
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
-
-void set_visible(bool visible) { s_visible = visible; }
-
-bool is_visible() { return s_visible; }
 
 static void handle_iw_selection() {
     if (mkb::g_storymode_mode != 5) return;
@@ -125,8 +120,8 @@ void tick() {
 }
 
 void disp() {
-    if (!s_visible || mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE ||
-        !main::currently_playing_iw)
+    if (!pref::get_iw_timer() || mkb::main_mode != mkb::MD_GAME ||
+        mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw)
         return;
     timerdisp::draw_timer(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
 }

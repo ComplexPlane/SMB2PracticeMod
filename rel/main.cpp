@@ -26,8 +26,6 @@ namespace main {
 static void (*s_draw_debug_text_trampoline)();
 static void (*s_process_inputs_trampoline)();
 
-bool debug_mode_enabled = false;
-
 static void perform_assembly_patches() {
     constexpr u32 offset = 0x600;
     // Inject the run function at the start of the main game loop
@@ -124,7 +122,7 @@ void init() {
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
 void tick() {
-    if (debug_mode_enabled) {
+    if (pref::get_debug_mode()) {
         mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
     } else {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);

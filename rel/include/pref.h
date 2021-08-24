@@ -10,7 +10,7 @@ void init();
 void save();
 
 u8 get_cm_chara();
-void set_cm_chara(s8 idx);
+void set_cm_chara(u8 idx);
 
 bool get_savestates();
 void set_savestates(bool on);
@@ -26,8 +26,8 @@ void set_input_disp_notch_indicators(bool on);
 
 bool get_rta_pause_timer();
 void set_rta_pause_timer(bool on);
-bool get_story_timer();
-void set_story_timer(bool on);
+bool get_iw_timer();
+void set_iw_timer(bool on);
 bool get_cm_timer();
 void set_cm_timer(bool on);
 

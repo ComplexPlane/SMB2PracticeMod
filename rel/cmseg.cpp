@@ -3,8 +3,8 @@
 #include <mkb.h>
 #include "draw.h"
 #include "log.h"
-#include "macro_utils"
 #include "patch.h"
+#include "pref.h"
 #include "timerdisp.h"
 
 namespace cmseg {
@@ -17,10 +17,8 @@ enum class State {
     SegComplete,
 };
 
-static bool s_visible = true;
 static State s_state = State::Default;
 static Seg s_seg_request;
-static Chara s_chara_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
@@ -118,9 +116,8 @@ static void state_load_menu() {
     s_state = State::EnterCm;
 }
 
-static const mkb::ApeCharacter s_ape_charas[] = {
-    mkb::APE_AIAI, mkb::APE_MEEMEE, mkb::APE_BABY, mkb::APE_GONGON, mkb::APE_MADH, mkb::APE_WHALE,
-};
+static const mkb::ApeCharacter s_ape_charas[] = {mkb::APE_AIAI, mkb::APE_MEEMEE, mkb::APE_BABY,
+                                                 mkb::APE_GONGON};
 
 static void state_enter_cm() {
     mkb::num_players = 1;
@@ -147,13 +144,12 @@ static void check_exit_seg() {
 static void state_seg_active() {
     // Set character
     if (mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT) {
+        Chara ch = static_cast<Chara>(pref::get_cm_chara());
         mkb::ApeCharacter real_chara;
-        if (s_chara_request == Chara::RandomMainFour) {
+        if (ch == Chara::Random) {
             real_chara = s_ape_charas[mkb::rand() % 4];
-        } else if (s_chara_request == Chara::RandomAll) {
-            real_chara = s_ape_charas[mkb::rand() % 6];
         } else {
-            real_chara = s_ape_charas[static_cast<u32>(s_chara_request)];
+            real_chara = s_ape_charas[pref::get_cm_chara()];
         }
         mkb::active_monkey_id = real_chara;
     }
@@ -314,9 +310,8 @@ void init_seg() {
     gen_course(course, start_course_stage_num, 10);
 }
 
-void request_cm_seg(Seg seg, Chara chara) {
+void request_cm_seg(Seg seg) {
     s_seg_request = seg;
-    s_chara_request = chara;
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         restore_overwritten_state();
     }
@@ -352,7 +347,7 @@ void tick() {
 }
 
 void disp() {
-    if (!s_visible) return;
+    if (!pref::get_cm_timer()) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);
@@ -364,9 +359,5 @@ void disp() {
         timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, color, false);
     }
 }
-
-bool is_visible() { return s_visible; }
-
-void set_visible(bool visible) { s_visible = visible; }
 
 }  // namespace cmseg
