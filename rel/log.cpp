@@ -2,9 +2,9 @@
 
 namespace log {
 
-void mod_assert(const char* file, u32 line, bool exp) {
+void mod_assert(const char* file, s32 line, bool exp) {
     if (!(exp)) {
-        mkb::OSReport("[mod] Failed assertion in %s line %d", file, line);
+        mkb::OSPanic(const_cast<char*>(file), line, "[mod] Assertion failed");
         while (true)
             ;
     }
