@@ -83,7 +83,7 @@ static u8 s_file_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
 
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(static_cast<u16>(bpi / 8 + 1) < LEN(s_pref.bool_prefs));  // Out of room for bool
+    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(s_pref.bool_prefs));  // Out of room for bool
                                                                          // prefs
     return bpi;
 }
