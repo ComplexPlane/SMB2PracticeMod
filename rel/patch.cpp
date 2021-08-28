@@ -49,4 +49,23 @@ u32 write_word(void* ptr, u32 data) {
 
 u32 write_nop(void* ptr) { return write_word(ptr, 0x60000000); }
 
+void* hook_function_internal(void* function, void* destination) {
+    u32* instructions = static_cast<u32*>(function);
+
+    u32* trampoline = static_cast<u32*>(heap::alloc_from_heap(8));
+    MOD_ASSERT(trampoline != nullptr);
+
+    // Original instruction
+    trampoline[0] = instructions[0];
+    clear_dc_ic_cache(&trampoline[0], sizeof(u32));
+
+    // Branch to original function past hook
+    write_branch(&trampoline[1], &instructions[1]);
+
+    // Write actual hook
+    write_branch(&instructions[0], destination);
+
+    return trampoline;
+}
+
 }  // namespace patch

@@ -16,24 +16,13 @@ u32 write_branch_main(void* ptr, void* destination, u32 branch);
 u32 write_word(void* ptr, u32 data);
 u32 write_nop(void* ptr);
 
+void* hook_function_internal(void* function, void* destination);
+
 template <typename Func, typename Dest>
 Func hook_function(Func function, Dest destination) {
-    u32* instructions = reinterpret_cast<u32*>(function);
-
-    u32* trampoline = static_cast<u32*>(heap::alloc_from_heap(8));
-    MOD_ASSERT(trampoline != nullptr);
-
-    // Original instruction
-    trampoline[0] = instructions[0];
-    clear_dc_ic_cache(&trampoline[0], sizeof(u32));
-
-    // Branch to original function past hook
-    write_branch(&trampoline[1], &instructions[1]);
-
-    // Write actual hook
-    write_branch(&instructions[0], reinterpret_cast<void*>(static_cast<Func>(destination)));
-
-    return reinterpret_cast<Func>(trampoline);
+    return reinterpret_cast<Func>(
+        hook_function_internal(reinterpret_cast<void*>(function),
+                               reinterpret_cast<void*>(static_cast<Func>(destination))));
 }
 
 }  // namespace patch
