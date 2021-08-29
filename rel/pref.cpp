@@ -82,7 +82,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreezeTimer,
 };
 
-static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
+static u8 s_file_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
+    __attribute__((__aligned__(32)));  // CARD API requires 32-byte alignment
 
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
@@ -229,7 +230,40 @@ static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
 
 void init() { load_default_prefs(); }
 
-void save() {}
+// We need a 40KB(!) buffer just for the privilege of accessing memory cards, this sucks!
+// Reminder we only have ~300KB to work with for the entire mod, including savestates
+constexpr char* PREF_FILENAME = "apmp";
+static u8 s_card_work_area[mkb::CARD_WORKAREA_SIZE] __attribute__((__aligned__(32)));
+static mkb::CARDFileInfo s_card_file_info;
+
+void save() {
+    // TODO this is completely happy path, check for errors!
+
+    // Probe and mount card
+    mkb::CARDProbeEx(0, nullptr, nullptr);
+    mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
+    while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
+        ;
+
+    // Open the file, creating it if it doesn't exist or is too small
+    mkb::CARDResult res = mkb::CARDOpen(0, PREF_FILENAME, &s_card_file_info);
+    if (res == mkb::CARD_RESULT_NOFILE) {
+        mkb::CARDCreateAsync(0, PREF_FILENAME, sizeof(s_file_buf), &s_card_file_info, nullptr);
+        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
+            ;
+    } else if (s_card_file_info.length < sizeof(s_file_buf)) {
+        mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
+        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
+            ;
+        mkb::CARDCreateAsync(0, PREF_FILENAME, sizeof(s_file_buf), &s_card_file_info, nullptr);
+        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
+            ;
+        mkb::CARDOpen(0, PREF_FILENAME, &s_card_file_info);
+    }
+
+    // TODO write file, with rounded up size to 8KB (minimum sector size, game probably just assumed
+    // 8KB?)
+}
 
 u8 get_cm_chara() { return s_pref.cm_chara; }
 void set_cm_chara(u8 idx) { s_pref.cm_chara = idx; }

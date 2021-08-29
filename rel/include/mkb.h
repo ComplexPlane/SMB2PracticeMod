@@ -21,6 +21,8 @@ inline void GXTexCoord2f32(float s, float t) {
     GXWGFifo.v_f32 = t;
 }
 
+constexpr u32 CARD_WORKAREA_SIZE = 5 * 8 * 1024;
+
 }  // namespace mkb
 
 // It's convenient to always use these types "as our own", without having to namespace-address them
@@ -43,5 +45,4 @@ using mkb::Vec3s;
 // assertions Prefer to use MOD_ASSERT and friends instead
 
 #define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-
 #define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
