@@ -1,14 +1,14 @@
 #include "menu_impl.h"
 
+#include <macro_utils.h>
 #include <mkb.h>
+#include <pref.h>
 #include <cstring>
 
 #include "draw.h"
 #include "log.h"
 #include "menu_defn.h"
 #include "pad.h"
-
-constexpr f32 clamp_256(f32 x) { return x < 0 ? 0 : (x > 255 ? 255 : x); }
 
 namespace menu {
 
@@ -77,6 +77,7 @@ static void handle_widget_bind() {
 
     if (selected->type == WidgetType::Checkbox && a_pressed) {
         selected->checkbox.set(!selected->checkbox.get());
+        pref::save();
     } else if (selected->type == WidgetType::Menu && a_pressed) {
         push_menu(&selected->menu);
         s_cursor_frame = 0;
@@ -84,9 +85,11 @@ static void handle_widget_bind() {
         auto& choose = selected->choose;
         if (a_pressed) {
             choose.set((choose.get() + 1) % choose.num_choices);
+            pref::save();
         }
         if (y_pressed) {
             choose.set((choose.get() + choose.num_choices - 1) % choose.num_choices);
+            pref::save();
         }
         // TODO handle setting default value
     } else if (selected->type == WidgetType::Button && a_pressed) {
@@ -135,10 +138,10 @@ static mkb::GXColor lerp_colors(mkb::GXColor color1, mkb::GXColor color2, f32 t)
     f32 a = (1.f - t) * color1.a + t * color2.a;
 
     mkb::GXColor ret;
-    ret.r = clamp_256(r);
-    ret.g = clamp_256(g);
-    ret.b = clamp_256(b);
-    ret.a = clamp_256(a);
+    ret.r = CLAMP(r, 0, 255);
+    ret.g = CLAMP(g, 0, 255);
+    ret.b = CLAMP(b, 0, 255);
+    ret.a = CLAMP(a, 0, 255);
 
     return ret;
 }

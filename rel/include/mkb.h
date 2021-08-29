@@ -9,6 +9,22 @@ constexpr GXBool GX_TRUE = 1;
 constexpr GXBool GX_FALSE = 0;
 inline u32 OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
 inline u32 OSRoundDown32B(u32 x) { return x & ~31; }
+constexpr s32 CARD_RESULT_READY = 0;
+constexpr s32 CARD_RESULT_BUSY = -1;
+constexpr s32 CARD_RESULT_WRONGDEVICE = -2;
+constexpr s32 CARD_RESULT_NOCARD = -3;
+constexpr s32 CARD_RESULT_NOFILE = -4;
+constexpr s32 CARD_RESULT_IOERROR = -5;
+constexpr s32 CARD_RESULT_BROKEN = -6;
+constexpr s32 CARD_RESULT_EXIST = -7;
+constexpr s32 CARD_RESULT_NOENT = -8;
+constexpr s32 CARD_RESULT_INSSPACE = -9;
+constexpr s32 CARD_RESULT_NOPERM = -10;
+constexpr s32 CARD_RESULT_LIMIT = -11;
+constexpr s32 CARD_RESULT_NAMETOOLONG = -12;
+constexpr s32 CARD_RESULT_ENCODING = -13;
+constexpr s32 CARD_RESULT_CANCELED = -14;
+constexpr s32 CARD_RESULT_FATAL_ERROR = -128;
 
 // A few inline GX functions we need
 inline void GXPosition3f32(float x, float y, float z) {
