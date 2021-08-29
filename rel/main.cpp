@@ -70,6 +70,7 @@ void init() {
     perform_assembly_patches();
 
     heap::init();
+    pref::init();
     draw::init();
     Tetris::get_instance().init();
     iw::init();
@@ -77,7 +78,6 @@ void init() {
     timer::init();
     inputdisp::init();
     cmseg::init();
-    pref::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {

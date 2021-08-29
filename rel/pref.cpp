@@ -1,11 +1,12 @@
 #include "pref.h"
 
+#include <heap.h>
 #include <mkb.h>
 #include <optional>
 
+#include "cardio.h"
 #include "log.h"
 #include "macro_utils.h"
-#include "cardio.h"
 
 namespace pref {
 
@@ -150,11 +151,7 @@ static u8* pref_id_to_u8(PrefId id, Pref& pref) {
     }
 }
 
-static const u8* pref_id_to_u8(PrefId id, const Pref& pref) {
-    return pref_id_to_u8(id, const_cast<Pref&>(pref));
-}
-
-static void card_buf_to_pref_struct(void* card_buf, Pref& pref) {
+static void card_buf_to_pref_struct(void* card_buf) {
     FileHeader* header = static_cast<FileHeader*>(card_buf);
     if (header->semver_major > 1) return;  // Preferences file format too new for this mod
 
@@ -173,7 +170,7 @@ static void card_buf_to_pref_struct(void* card_buf, Pref& pref) {
         }
 
         // For u8 preferences, copy them to struct fields directly
-        u8* u8_pref = pref_id_to_u8(id, pref);
+        u8* u8_pref = pref_id_to_u8(id, s_pref);
         if (u8_pref != nullptr) {
             // File data offset is in bytes
             *u8_pref = static_cast<u8>(pref_data);
@@ -230,9 +227,18 @@ static void pref_struct_to_card_buf() {
     }
 }
 
-void init() { load_default_prefs(); }
-
 constexpr char* PREF_FILENAME = "apmp";
+
+void init() {
+    FileHeader* header = nullptr;
+    s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void**>(&header));
+    if (result == mkb::CARD_RESULT_READY) {
+        card_buf_to_pref_struct(header);
+        heap::free(header);
+    } else {
+        load_default_prefs();
+    }
+}
 
 void save() {
     pref_struct_to_card_buf();
