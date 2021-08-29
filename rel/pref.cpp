@@ -180,6 +180,8 @@ static void load_default_prefs() {
     mkb::memset(&s_pref, 0, sizeof(s_pref));
     set_bool_pref(BoolPref::Savestates, true);
     set_bool_pref(BoolPref::RtaPauseTimer, true);
+    set_bool_pref(BoolPref::IwTimer, true);
+    set_bool_pref(BoolPref::CmTimer, true);
 }
 
 static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {
