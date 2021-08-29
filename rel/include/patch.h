@@ -20,7 +20,7 @@ template <typename Func, typename Dest>
 Func hook_function(Func function, Dest destination) {
     u32* instructions = reinterpret_cast<u32*>(function);
 
-    u32* trampoline = static_cast<u32*>(heap::alloc_from_heap(8));
+    u32* trampoline = static_cast<u32*>(heap::alloc(8));
     MOD_ASSERT(trampoline != nullptr);
 
     // Original instruction

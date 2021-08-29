@@ -295,9 +295,10 @@ void tick() {
 
         mkb::OSReport("[mod] Saved state:\n");
         state.store.print_stats();
-        u32 freeHeapSpace = heap::get_free_space();
-        mkb::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
-        mkb::OSReport("[mod] Heap used:        %d bytes\n", heap::get_total_space() - freeHeapSpace);
+        u32 free_heap_space = heap::get_free_space();
+        mkb::OSReport("[mod] Heap free:        %d bytes\n", free_heap_space);
+        mkb::OSReport("[mod] Heap used:        %d bytes\n",
+                      heap::get_total_space() - free_heap_space);
         mkb::OSReport("[mod] Heap total space: %d bytes\n", heap::get_total_space());
 
         if (s_frame_advance_mode) {
