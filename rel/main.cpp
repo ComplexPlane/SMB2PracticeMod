@@ -90,9 +90,9 @@ void init() {
         timer::disp();
         iw::disp();
         Tetris::get_instance().disp();
-        inputdisp::disp();
         scratch::disp();
         cmseg::disp();
+        inputdisp::disp();
         menu::disp();
 
         s_draw_debug_text_trampoline();
