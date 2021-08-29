@@ -8,7 +8,12 @@ namespace heap {
 
 struct HeapDataStruct heap_data;
 
-void init() { make_heap(HEAP_SIZE); }
+void init() {
+    u32 max_size = reinterpret_cast<u32>(heap_data.relocation_data_end) -
+                   reinterpret_cast<u32>(heap_data.relocation_data_arena);
+    mkb::OSReport("[mod] Heap size: %d bytes\n", max_size);
+    make_heap(max_size);
+}
 
 mkb::ChunkInfo* extract_chunk(mkb::ChunkInfo* list, mkb::ChunkInfo* chunk) {
     if (chunk->next) {
@@ -75,7 +80,6 @@ void* init_mem_alloc_services(u32 max_size) {
 
 void* init_alloc(void* arena_start, void* arena_end) {
     u32 arena_start_raw = reinterpret_cast<u32>(arena_start);
-    u32 arena_end_raw = reinterpret_cast<u32>(arena_end);
 
     // Put the heap array at the start of the arena
     CustomHeapStruct* temp_custom_heap = heap_data.custom_heap;
@@ -94,12 +98,7 @@ void* init_alloc(void* arena_start, void* arena_end) {
     arena_start_raw = ((arena_start_raw + array_size) + alignment - 1) & ~(alignment - 1);
 
     // Round the end down to the nearest multiple of 0x20 bytes
-    arena_end_raw &= ~(alignment - 1);
-
     arena_start = reinterpret_cast<void*>(arena_start_raw);
-    arena_end = reinterpret_cast<void*>(arena_end_raw);
-    temp_custom_heap->arena_start = arena_start;
-    temp_custom_heap->arena_end = arena_end;
 
     return arena_start;
 }
@@ -262,6 +261,10 @@ u32 get_free_space() {
     }
 
     return space;
+}
+
+u32 get_total_space() {
+    return 0;
 }
 
 void check_heap() {

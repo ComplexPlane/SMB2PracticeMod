@@ -1,22 +1,19 @@
 #pragma once
 
 #include <mkb.h>
+#include "relutil.h"
 
 namespace heap {
 
-// 0x40000 bytes (256 KiB) for now
-constexpr u32 HEAP_SIZE = 0x40000;
-
 struct CustomHeapStruct {
     mkb::HeapInfo* heap_array;
-    void* arena_start;
-    void* arena_end;
 };
 
 struct HeapDataStruct {
     CustomHeapStruct* custom_heap;
     void* relocation_data_arena;
     void* relocation_data_start;  // Also the custom REL module start
+    void* relocation_data_end;
     void* custom_rel_bss_area_start;
     void* main_loop_rel_location;
     void* main_loop_bss_location;
@@ -24,6 +21,8 @@ struct HeapDataStruct {
     HeapDataStruct() {
         relocation_data_arena = *reinterpret_cast<u32**>(0x8000452C);
         relocation_data_start = *reinterpret_cast<u32**>(0x80004534);
+        relocation_data_end =
+            relutil::compute_mainloop_reldata_boundary();  // TODO don't do this in header
         custom_rel_bss_area_start = *reinterpret_cast<u32**>(0x80004530);
         main_loop_rel_location = *reinterpret_cast<u32**>(0x80004524);
         main_loop_bss_location = *reinterpret_cast<u32**>(0x80004528);
@@ -45,6 +44,7 @@ void* alloc_from_heap(u32 size);
 bool free_to_heap(void* ptr);
 void check_heap();
 u32 get_free_space();
+u32 get_total_space();
 
 extern HeapDataStruct heap_data;
 

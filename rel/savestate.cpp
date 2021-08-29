@@ -297,8 +297,8 @@ void tick() {
         state.store.print_stats();
         u32 freeHeapSpace = heap::get_free_space();
         mkb::OSReport("[mod] Heap free:        %d bytes\n", freeHeapSpace);
-        mkb::OSReport("[mod] Heap used:        %d bytes\n", heap::HEAP_SIZE - freeHeapSpace);
-        mkb::OSReport("[mod] Heap total space: %d bytes\n", heap::HEAP_SIZE);
+        mkb::OSReport("[mod] Heap used:        %d bytes\n", heap::get_total_space() - freeHeapSpace);
+        mkb::OSReport("[mod] Heap total space: %d bytes\n", heap::get_total_space());
 
         if (s_frame_advance_mode) {
             draw::notify(draw::PINK, "Slot %d Frame Advance", s_active_state_slot + 1);
