@@ -72,41 +72,88 @@ mkb::CARDResult write_file(const char* file_name, const void* buf, u32 buf_size)
     // TODO this is completely happy path, check for errors!
     // TODO do this asynchronously, it lags
 
+    mkb::CARDResult res = mkb::CARD_RESULT_READY;
+
     // Probe and mount card
     s32 sector_size = 0;
     mkb::CARDProbeEx(0, nullptr, &sector_size);
     mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
-    while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
-        ;
+    do {
+        res = mkb::CARDGetResultCode(0);
+    } while (res == mkb::CARD_RESULT_BUSY);
+    if (res != mkb::CARD_RESULT_READY) {
+        return res;
+    }
 
     // File size must be a multiple of the sector size
     // Since our file isn't actually a multiple of the sector size, we'll just write undefined
     // memory to the remainder of the file I guess...
-    s32 write_size = (buf_size + sector_size - 1) & ~(sector_size - 1);
+    u32 write_size = (buf_size + sector_size - 1) & ~(sector_size - 1);
 
     // Open the file, creating it if it doesn't exist or is too small
-    s32 res = mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+    res = mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+    if (res != mkb::CARD_RESULT_READY && res != mkb::CARD_RESULT_NOFILE) {
+        mkb::CARDUnmount(0);
+        return res;
+    }
     if (res == mkb::CARD_RESULT_NOFILE) {
         mkb::CARDCreateAsync(0, const_cast<char*>(file_name), write_size, &s_card_file_info,
                              nullptr);
-        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
-            ;
-    } else if (s_card_file_info.length < write_size) {
-        mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
-        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
-            ;
-        mkb::CARDCreateAsync(0, const_cast<char*>(file_name), write_size, &s_card_file_info,
-                             nullptr);
-        while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
-            ;
-        mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+        do {
+            res = mkb::CARDGetResultCode(0);
+        } while (res == mkb::CARD_RESULT_BUSY);
+        if (res != mkb::CARD_RESULT_READY) {
+            mkb::CARDUnmount(0);
+            return res;
+        }
+
+    } else {
+        // Get file size
+        mkb::CARDStat stat;
+        res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
+        if (res != mkb::CARD_RESULT_READY) {
+            mkb::CARDUnmount(0);
+            return res;
+        }
+
+        if (stat.length < write_size) {
+            mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
+            do {
+                res = mkb::CARDGetResultCode(0);
+            } while (res == mkb::CARD_RESULT_BUSY);
+            if (res != mkb::CARD_RESULT_READY) {
+                mkb::CARDUnmount(0);
+                return res;
+            }
+
+            mkb::CARDCreateAsync(0, const_cast<char*>(file_name), write_size, &s_card_file_info,
+                                 nullptr);
+            do {
+                res = mkb::CARDGetResultCode(0);
+            } while (res == mkb::CARD_RESULT_BUSY);
+            if (res != mkb::CARD_RESULT_READY) {
+                mkb::CARDUnmount(0);
+                return res;
+            }
+
+            res = mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+            if (res != mkb::CARD_RESULT_READY) {
+                mkb::CARDUnmount(0);
+                return res;
+            }
+        }
     }
 
     mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(buf), write_size, 0, nullptr);
-    while (mkb::CARDGetResultCode(0) == mkb::CARD_RESULT_BUSY)
-        ;
-    mkb::CARDUnmount(0);
+    do {
+        res = mkb::CARDGetResultCode(0);
+    } while (res == mkb::CARD_RESULT_BUSY);
+    if (res != mkb::CARD_RESULT_READY) {
+        mkb::CARDUnmount(0);
+        return res;
+    }
 
+    mkb::CARDUnmount(0);
     return mkb::CARD_RESULT_READY;
 }
 

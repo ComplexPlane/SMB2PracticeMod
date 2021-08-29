@@ -7,6 +7,7 @@
 #include "cardio.h"
 #include "log.h"
 #include "macro_utils.h"
+#include "draw.h"
 
 namespace pref {
 
@@ -236,6 +237,9 @@ void init() {
         card_buf_to_pref_struct(header);
         heap::free(header);
     } else {
+        if (result != mkb::CARD_RESULT_NOFILE) {
+            draw::notify(draw::RED, "Error loading settings from Card A, loading defaults");
+        }
         load_default_prefs();
     }
 }
