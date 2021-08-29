@@ -4,12 +4,11 @@ namespace mkb {
 
 #include "mkb2_ghidra.h"
 
-// void OSReport(const char *msg, ...);
-// void OSPanic(const char *file, int line, const char *msg, ...);
-
 // Originally #define'd
 constexpr GXBool GX_TRUE = 1;
 constexpr GXBool GX_FALSE = 0;
+inline u32 OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
+inline u32 OSRoundDown32B(u32 x) { return x & ~31; }
 
 // A few inline GX functions we need
 inline void GXPosition3f32(float x, float y, float z) {

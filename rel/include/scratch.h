@@ -1,7 +1,8 @@
 #pragma once
 
-namespace scratch {
+#include <mkb.h>
 
+namespace scratch {
 void init();
 void tick();
 void disp();

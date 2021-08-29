@@ -41,4 +41,5 @@ add_executable(ApeSphere
         rel/banans.cpp
         rel/dpad.cpp
         rel/pref.cpp
-        rel/log.cpp)
+        rel/log.cpp
+        rel/relutil.cpp)
