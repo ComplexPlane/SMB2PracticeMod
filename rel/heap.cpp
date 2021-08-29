@@ -58,9 +58,8 @@ static void make_heap() {
 
 void* alloc(u32 size) {
     // Enlarge size to the smallest possible chunk size
-    const u32 alignment = 0x20;
-    u32 new_size = size + ((sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1));
-    new_size = (new_size + alignment - 1) & ~(alignment - 1);
+    u32 new_size = size + mkb::OSRoundUp32B(sizeof(mkb::ChunkInfo));
+    new_size = mkb::OSRoundUp32B(new_size);
 
     mkb::ChunkInfo* temp_chunk = nullptr;
 
@@ -78,7 +77,7 @@ void* alloc(u32 size) {
 
     s32 leftover_size = temp_chunk->size - new_size;
 
-    s32 min_size = ((sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1)) + alignment;
+    s32 min_size = mkb::OSRoundUp32B(sizeof(mkb::ChunkInfo)) + 32;
 
     // Check if the current chunk can be split into two pieces
     if (leftover_size < min_size) {
@@ -112,19 +111,17 @@ void* alloc(u32 size) {
     s_heap_info.first_used = add_chunk_to_front(s_heap_info.first_used, temp_chunk);
 
     // Add the header size to the chunk
-    void* allocated_memory =
-        reinterpret_cast<void*>(reinterpret_cast<u32>(temp_chunk) +
-                                ((sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1)));
+    void* allocated_memory = reinterpret_cast<void*>(reinterpret_cast<u32>(temp_chunk) +
+                                                     mkb::OSRoundUp32B(sizeof(mkb::ChunkInfo)));
 
     mkb::memset(allocated_memory, 0, size);
     return allocated_memory;
 }
 
 bool free(void* ptr) {
-    const u32 alignment = 0x20;
     u32 ptr_raw = reinterpret_cast<u32>(ptr);
 
-    u32 header_size = (sizeof(mkb::ChunkInfo) + alignment - 1) & ~(alignment - 1);
+    u32 header_size = mkb::OSRoundUp32B(sizeof(mkb::ChunkInfo));
 
     // Remove the header size from ptr, as the value stored in the list does not include it
     mkb::ChunkInfo* temp_chunk = reinterpret_cast<mkb::ChunkInfo*>(ptr_raw - header_size);
