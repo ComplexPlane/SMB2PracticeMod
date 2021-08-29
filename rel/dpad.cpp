@@ -6,19 +6,54 @@
 
 namespace dpad {
 
-void tick() {
+void on_PADRead(mkb::PADStatus* statuses) {
     if (!pref::get_dpad_controls()) return;
 
-    for (auto& btnGrp : mkb::pad_status_groups) {
-        bool up = btnGrp.raw.button & mkb::PAD_BUTTON_UP;
-        bool down = btnGrp.raw.button & mkb::PAD_BUTTON_DOWN;
-        bool left = btnGrp.raw.button & mkb::PAD_BUTTON_LEFT;
-        bool right = btnGrp.raw.button & mkb::PAD_BUTTON_RIGHT;
+    for (u32 i = 0; i < 4; i++) {
+        mkb::PADStatus& status = statuses[i];
+        if (status.err != mkb::PAD_ERR_NONE) continue;
 
-        s32 newX = btnGrp.raw.stickX + left * -60 + right * 60;
-        btnGrp.raw.stickX = CLAMP(newX, -60, 60);
-        s32 newY = btnGrp.raw.stickY + down * -60 + up * 60;
-        btnGrp.raw.stickY = CLAMP(newY, -60, 60);
+        bool up = status.button & mkb::PAD_BUTTON_UP;
+        bool down = status.button & mkb::PAD_BUTTON_DOWN;
+        bool left = status.button & mkb::PAD_BUTTON_LEFT;
+        bool right = status.button & mkb::PAD_BUTTON_RIGHT;
+
+        s32 newX = status.stickX;
+        s32 newY = status.stickY;
+        constexpr s32 CARDINAL = 105;
+        constexpr s32 DIAG = 78;
+
+        // Modify raw stick input so that input display still looks reasonable when using dpad
+        if (up && left) {
+            newX -= DIAG;
+            newY += DIAG;
+        } else if (up && right) {
+            newX += DIAG;
+            newY += DIAG;
+        } else if (down && left) {
+            newX -= DIAG;
+            newY -= DIAG;
+        } else if (down && right) {
+            newX += DIAG;
+            newY -= DIAG;
+        } else if (up) {
+            newY += CARDINAL;
+        } else if (down) {
+            newY -= CARDINAL;
+        } else if (left) {
+            newX -= CARDINAL;
+        } else if (right) {
+            newX += CARDINAL;
+        }
+        if (up || down || left || right) {
+            // This is enough to prevent overflow, but diagonals can still exceed their normal range
+            // when using stick+dpad
+            newX = CLAMP(newX, -CARDINAL, CARDINAL);
+            newY = CLAMP(newY, -CARDINAL, CARDINAL);
+        }
+
+        status.stickX = newX;
+        status.stickY = newY;
     }
 }
 

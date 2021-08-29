@@ -18,6 +18,7 @@ enum class Color {
 static constexpr u32 NUM_COLORS = 8;
 
 void init();
+void on_PADRead(mkb::PADStatus* statuses);
 void tick();
 void disp();
 

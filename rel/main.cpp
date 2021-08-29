@@ -25,14 +25,14 @@ namespace main {
 
 static void (*s_draw_debug_text_trampoline)();
 static void (*s_process_inputs_trampoline)();
+static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
 
 static void perform_assembly_patches() {
     const u32 MAIN_LOOP_REL_LOCATION = *reinterpret_cast<u32*>(0x80004524);
     constexpr u32 OFFSET = 0x600;
     // Inject the run function at the start of the main game loop
-    patch::write_branch_bl(
-        reinterpret_cast<void*>(MAIN_LOOP_REL_LOCATION + OFFSET),
-        reinterpret_cast<void*>(start_main_loop_assembly));
+    patch::write_branch_bl(reinterpret_cast<void*>(MAIN_LOOP_REL_LOCATION + OFFSET),
+                           reinterpret_cast<void*>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -112,8 +112,17 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
-        dpad::tick();
         scratch::tick();
+    });
+
+    s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
+        u32 ret = s_PADRead_tramp(statuses);
+
+        // Dpad can modify effective stick input, shown by input display
+        dpad::on_PADRead(statuses);
+        inputdisp::on_PADRead(statuses);
+
+        return ret;
     });
 }
 

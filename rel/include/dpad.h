@@ -1,11 +1,13 @@
+/*
+* Mod that allows controlling the ball with the Gamecube controller's d-pad
+*/
+
 #pragma once
 
-/*
- * Mod that allows controlling the ball with the Gamecube controller's d-pad
- */
+#include <mkb.h>
 
 namespace dpad {
 
-void tick();
+void on_PADRead(mkb::PADStatus* statuses);
 
 }  // namespace dpad
