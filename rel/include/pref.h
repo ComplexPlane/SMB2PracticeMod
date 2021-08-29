@@ -39,5 +39,7 @@ bool get_dpad_controls();
 void set_dpad_controls(bool on);
 bool get_debug_mode();
 void set_debug_mode(bool on);
+bool get_freeze_timer();
+void set_freeze_timer(bool on);
 
 }  // namespace pref

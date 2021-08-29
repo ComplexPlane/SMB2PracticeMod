@@ -23,6 +23,7 @@ enum class PrefId : u16 {
     BananaCounter9999 = 11,
     DpadControls = 12,
     DebugMode = 13,
+    FreezeTimer = 14,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -38,6 +39,7 @@ enum class BoolPref {
     BananaCounter9999,
     DpadControls,
     DebugMode,
+    FreezeTimer,
 };
 
 struct Pref {
@@ -77,6 +79,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::BananaCounter9999,
     PrefId::DpadControls,
     PrefId::DebugMode,
+    PrefId::FreezeTimer,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
@@ -84,7 +87,7 @@ static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
     MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(s_pref.bool_prefs));  // Out of room for bool
-                                                                         // prefs
+                                                                     // prefs
     return bpi;
 }
 
@@ -126,6 +129,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::DpadControls;
         case PrefId::DebugMode:
             return BoolPref::DebugMode;
+        case PrefId::FreezeTimer:
+            return BoolPref::FreezeTimer;
         default:
             return {};
     }
@@ -260,5 +265,7 @@ bool get_dpad_controls() { return get_bool_pref(BoolPref::DpadControls); }
 void set_dpad_controls(bool on) { set_bool_pref(BoolPref::DpadControls, on); }
 bool get_debug_mode() { return get_bool_pref(BoolPref::DebugMode); }
 void set_debug_mode(bool on) { set_bool_pref(BoolPref::DebugMode, on); }
+bool get_freeze_timer() { return get_bool_pref(BoolPref::FreezeTimer); }
+void set_freeze_timer(bool on) { set_bool_pref(BoolPref::FreezeTimer, on); }
 
 }  // namespace pref

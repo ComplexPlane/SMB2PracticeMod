@@ -19,6 +19,7 @@
 
 #include <banans.h>
 #include <dpad.h>
+#include <freeze.h>
 #include <cstring>
 
 namespace main {
@@ -112,6 +113,7 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
+        freeze::tick();
         scratch::tick();
     });
 

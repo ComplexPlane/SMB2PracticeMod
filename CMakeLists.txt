@@ -42,4 +42,5 @@ add_executable(ApeSphere
         rel/dpad.cpp
         rel/pref.cpp
         rel/log.cpp
-        rel/relutil.cpp)
+        rel/relutil.cpp
+        rel/freeze.cpp)

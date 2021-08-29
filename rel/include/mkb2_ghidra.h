@@ -1516,6 +1516,27 @@ struct Camera {
     undefined field_0x210[0x7c];
 } __attribute__((__packed__));
 
+typedef struct CARDStat CARDStat, *PCARDStat;
+
+struct CARDStat {
+    char fileName[32];
+    u32 length;
+    u32 time;
+    u8 gameName[4];
+    u8 company[2];
+    u8 bannerFormat;
+    u8 field_0x2f;
+    u32 iconAddr;
+    u16 iconFormat;
+    u16 iconSpeed;
+    u32 commentAddr;
+    u32 offsetBanner;
+    u32 offsetBannerTlut;
+    u32 offsetIcon[8];
+    u32 offsetIconTlut;
+    u32 offsetData;
+} __attribute__((__packed__));
+
 typedef struct Rect Rect, *PRect;
 
 struct Rect {
@@ -2356,26 +2377,6 @@ struct AnalogInputGroup { /* Consolidated thresholded analog input bitfields cor
     PadAnalogInput  released;
     PadAnalogInput  repeated;
 } __attribute__((__packed__));
-
-enum { /* These are normally just #define'd in the Dolphin SDK */
-    CARD_RESULT_READY=0,
-    CARD_RESULT_FATAL_ERROR=128,
-    CARD_RESULT_CANCELED=242,
-    CARD_RESULT_ENCODING=243,
-    CARD_RESULT_NAMETOOLONG=244,
-    CARD_RESULT_LIMIT=245,
-    CARD_RESULT_NOPERM=246,
-    CARD_RESULT_INSSPACE=247,
-    CARD_RESULT_NOENT=248,
-    CARD_RESULT_EXIST=249,
-    CARD_RESULT_BROKEN=250,
-    CARD_RESULT_IOERROR=251,
-    CARD_RESULT_NOFILE=252,
-    CARD_RESULT_NOCARD=253,
-    CARD_RESULT_WRONGDEVICE=254,
-    CARD_RESULT_BUSY=255
-};
-typedef undefined1 CARDResult;
 
 enum {
     PIID_LEFT=0,
@@ -5866,7 +5867,7 @@ extern "C" {
     void __CARDSetDiskID(undefined * param_1);
     undefined4 __CARDGetControlBlock(int param_1, int * * param_2);
     int __CARDPutControlBlock(int * param_1, int param_2);
-    undefined4 CARDGetResultCode(int param_1);
+    s32 CARDGetResultCode(int param_1);
     int CARDFreeBlocks(int param_1, int * param_2, int * param_3);
     undefined4 OnReset(int param_1);
     uint bitrev(uint param_1);
@@ -5911,21 +5912,21 @@ extern "C" {
     undefined4 __CARDAccess(int param_1, char * param_2);
     undefined4 __CARDIsPublic(char * param_1);
     undefined4 __CARDGetFileNo(int * param_1, char * param_2, int * param_3);
-    CARDResult CARDOpen(s32 chan, char * fileName, struct CARDFileInfo * fileInfo);
+    s32 CARDOpen(s32 chan, char * fileName, struct CARDFileInfo * fileInfo);
     undefined4 return_0(void);
     void CreateCallbackFat(int param_1, int param_2);
-    CARDResult CARDCreateAsync(s32 chan, char * fileName, u32 size, struct CARDFileInfo * fileInfo, void * callback);
+    void CARDCreateAsync(s32 chan, char * fileName, u32 size, struct CARDFileInfo * fileInfo, void * callback);
     int __CARDSeek(int * param_1, int param_2, uint param_3, int * * param_4);
     void ReadCallback(int param_1, int param_2);
-    int CARDReadAsync(int * param_1, uint param_2, uint param_3, uint param_4, undefined * param_5);
+    s32 CARDReadAsync(struct CARDFileInfo * fileInfo, void * buf, s32 length, s32 offset, void * callback);
     void WriteCallback(int param_1, int param_2);
     void EraseCallback(int param_1, int param_2);
-    int CARDWriteAsync(int * param_1, uint param_2, uint param_3, uint param_4, undefined * param_5);
+    s32 CARDWriteAsync(struct CARDFileInfo * fileInfo, void * buf, s32 length, s32 offset, void * callback);
     void DeleteCallback(int param_1, int param_2);
-    CARDResult CARDFastDeleteAsync(s32 chan, s32 fileNo, void * callback);
+    void CARDFastDeleteAsync(s32 chan, s32 fileNo, void * callback);
     int CARDDeleteAsync(int param_1, char * param_2, undefined * param_3);
     void UpdateIconOffsets(int param_1, int param_2);
-    int CARDGetStatus(int param_1, int param_2, void * param_3);
+    s32 CARDGetStatus(s32 chan, s32 fileNo, struct CARDStat * stat);
     int CARDSetStatusAsync(int param_1, int param_2, int param_3, undefined4 param_4);
     int CARDRenameAsync(int param_1, char * param_2, char * param_3, undefined4 param_4);
     int CARDGetSerialNo(int param_1, uint * param_2);
@@ -6791,7 +6792,7 @@ extern "C" {
     void __copy_longs_aligned(int param_1, int param_2, uint param_3);
     void __sinit_AILoader_cpp(void);
     int sprintf(char * buffer, char * format, ...);
-    void vsprintf(char * out_str, char * format_str, va_list args);
+    s32 vsprintf(char * out_str, char * format_str, va_list args);
     int vprintf(char * format, char * param_2);
     int printf(char * format, ...);
     void * __StringWrite(struct __OutStrCtrl * osc, char * Buffer, size_t NumChars);

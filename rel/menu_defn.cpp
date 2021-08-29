@@ -228,6 +228,13 @@ static Widget mods_widgets[] = {
     {.type = WidgetType::Checkbox,
      .checkbox =
          {
+             .label = "Freeze Timer",
+             .get = pref::get_freeze_timer,
+             .set = pref::set_freeze_timer,
+         }},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
              .label = "Debug Mode",
              .get = pref::get_debug_mode,
              .set = pref::set_debug_mode,
