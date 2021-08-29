@@ -11,6 +11,7 @@
 namespace inputdisp {
 
 static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
+static void (*s_create_speed_sprites_tramp)(f32 x, f32 y);
 
 static mkb::PADStatus s_raw_inputs[4];
 
@@ -99,11 +100,14 @@ static void set_sprite_visible(bool visible) {
 
 void init() {
     // Hook PADRead to give us raw PAD inputs before the game processes them
-    s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
-        u32 ret = s_PADRead_tramp(statuses);
-        mkb::memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
-        return ret;
-    });
+   s_PADRead_tramp =
+        patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
+            u32 ret = s_PADRead_tramp(statuses);
+            mkb::memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
+            return ret;
+        });
+    s_create_speed_sprites_tramp = patch::hook_function(
+        mkb::create_speed_sprites, [](f32 x, f32 y) { s_create_speed_sprites_tramp(x + 5, y); });
 }
 
 void tick() {

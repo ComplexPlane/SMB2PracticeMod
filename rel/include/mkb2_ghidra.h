@@ -1571,7 +1571,7 @@ typedef struct SpriteTex SpriteTex, *PSpriteTex;
 typedef int OSHeapHandle;
 
 struct Sprite {
-    u8 g_visible; /* Whether it's visible or not? */
+    u8 g_unk_flags; /* Whether it's visible or not? */
     Font  g_font2; /* Seems to affect the font size/type on the pause menu? */
     u8 index;
     undefined1 field_0x3;
@@ -2356,6 +2356,26 @@ struct AnalogInputGroup { /* Consolidated thresholded analog input bitfields cor
     PadAnalogInput  released;
     PadAnalogInput  repeated;
 } __attribute__((__packed__));
+
+enum { /* These are normally just #define'd in the Dolphin SDK */
+    CARD_RESULT_READY=0,
+    CARD_RESULT_FATAL_ERROR=128,
+    CARD_RESULT_CANCELED=242,
+    CARD_RESULT_ENCODING=243,
+    CARD_RESULT_NAMETOOLONG=244,
+    CARD_RESULT_LIMIT=245,
+    CARD_RESULT_NOPERM=246,
+    CARD_RESULT_INSSPACE=247,
+    CARD_RESULT_NOENT=248,
+    CARD_RESULT_EXIST=249,
+    CARD_RESULT_BROKEN=250,
+    CARD_RESULT_IOERROR=251,
+    CARD_RESULT_NOFILE=252,
+    CARD_RESULT_NOCARD=253,
+    CARD_RESULT_WRONGDEVICE=254,
+    CARD_RESULT_BUSY=255
+};
+typedef undefined1 CARDResult;
 
 enum {
     PIID_LEFT=0,
@@ -5881,7 +5901,7 @@ extern "C" {
     s32 CARDProbeEx(s32 chan, s32 * memSize, s32 * sectorSize);
     int DoMount(int param_1);
     void __CARDMountCallback(int param_1, int param_2);
-    int CARDMountAsync(int param_1, undefined4 param_2, undefined4 param_3, undefined * param_4);
+    s32 CARDMountAsync(s32 chan, void * workArea, void * detachCallback, void * attachCallback);
     void DoUnmount(int param_1, undefined4 param_2);
     s32 CARDUnmount(s32 chan);
     void FormatCallback(int param_1, int param_2);
@@ -5891,10 +5911,10 @@ extern "C" {
     undefined4 __CARDAccess(int param_1, char * param_2);
     undefined4 __CARDIsPublic(char * param_1);
     undefined4 __CARDGetFileNo(int * param_1, char * param_2, int * param_3);
-    void CARDOpen(s32 chan, char * fileName, struct CARDFileInfo * fileInfo);
+    CARDResult CARDOpen(s32 chan, char * fileName, struct CARDFileInfo * fileInfo);
     undefined4 return_0(void);
     void CreateCallbackFat(int param_1, int param_2);
-    int CARDCreateAsync(int param_1, char * param_2, uint param_3, int * param_4, undefined * param_5);
+    CARDResult CARDCreateAsync(s32 chan, char * fileName, u32 size, struct CARDFileInfo * fileInfo, void * callback);
     int __CARDSeek(int * param_1, int param_2, uint param_3, int * * param_4);
     void ReadCallback(int param_1, int param_2);
     int CARDReadAsync(int * param_1, uint param_2, uint param_3, uint param_4, undefined * param_5);
@@ -5902,7 +5922,7 @@ extern "C" {
     void EraseCallback(int param_1, int param_2);
     int CARDWriteAsync(int * param_1, uint param_2, uint param_3, uint param_4, undefined * param_5);
     void DeleteCallback(int param_1, int param_2);
-    int CARDFastDeleteAsync(int param_1, int param_2, undefined * param_3);
+    CARDResult CARDFastDeleteAsync(s32 chan, s32 fileNo, void * callback);
     int CARDDeleteAsync(int param_1, char * param_2, undefined * param_3);
     void UpdateIconOffsets(int param_1, int param_2);
     int CARDGetStatus(int param_1, int param_2, void * param_3);
@@ -6459,6 +6479,7 @@ extern "C" {
     undefined4 return_0(void);
     void g_some_printf_function_0(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void empty_function(void);
+    void g_cvFsAddDev(char * param_1, undefined * param_2);
     undefined4 math_init(void);
     float CHUNK__math_rsqrt(float param_1, float param_2);
     float math_sqrt(double param_1);
@@ -6572,7 +6593,7 @@ extern "C" {
     int swap_gx_cpu_fifo(void);
     void wait_for_gp_read_idle(void);
     void gx_draw_done_callback_func(void);
-    void g_reset_some_gx_vtx_descs(void);
+    void g_set_gx_vtx_formats(void);
     void init_loched_cache(BOOL32 use_locked_cache);
     void * g_something_with_locked_cache(uint param_1);
     void g_make_arena_simulate_24mb_console(void);
@@ -7242,7 +7263,7 @@ extern "C" {
     void SoundChoID(int param_1, byte param_2);
     uint SoundCheckStateID(int param_1);
     void SoundIcsReq(uint param_1, byte param_2, char param_3);
-    void g_fade_track_volume(uint param_1, char param_2);
+    void g_fade_track_volume(u32 volume, u8 param_2);
     int get_smgr_port(char param_1, int param_2, char param_3, short * param_4);
     void g_something_with_bgm(void);
     void g_crossfade_music(void);
@@ -8057,6 +8078,7 @@ extern "C" {
     void g_something_free_card_blocks(struct MemCardFile * param_1);
     void g_open_card_file(struct MemCardFile * file);
     void something_that_calls_CARDCreateAsync(byte * param_1);
+    void g_calls_CARDWriteAsync(byte * param_1);
     void g_related_to_memcard_rw(byte * param_1);
     void g_something_with_card12(byte * param_1);
     void g_something_with_card(void);
@@ -8174,6 +8196,7 @@ extern "C" {
     int g_get_ape_flag(struct Ape * ape, undefined4 g_something_with_game, int param_3);
     void gan_setanim_e4(struct GApeAnim * param_1);
     void gan_setAnim2(struct Ape * ape, int param_2, short * param_3);
+    int g_some_ape_anim_func2(int param_1, int param_2, undefined4 param_3, undefined4 param_4, int param_5);
     void g_something_with_GXPeekZ(void);
     void empty_function(void);
     void g_init_rankings_to_defaults_wrapper(void);
@@ -8184,6 +8207,7 @@ extern "C" {
     void sprite_rank_tick(void);
     void sprite_rank_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_name_entry_get_course(int param_1);
+    void g_some_ape_anim_func1(struct Ape * ape);
     void g_something_with_loading_cutscenes(int param_1_00);
     uint g_something_to_do_with_cutscenes(int g_cutscene_id);
     void empty_function(void);
