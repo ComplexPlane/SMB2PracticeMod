@@ -79,7 +79,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::DebugMode,
 };
 
-static u8 s_file_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
+static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)];
 
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
@@ -182,6 +182,7 @@ static void load_default_prefs() {
     set_bool_pref(BoolPref::RtaPauseTimer, true);
     set_bool_pref(BoolPref::IwTimer, true);
     set_bool_pref(BoolPref::CmTimer, true);
+    set_bool_pref(BoolPref::InputDispNotchIndicators, true);
 }
 
 static void pref_struct_to_card_buf(const Pref& pref, void* card_buf) {

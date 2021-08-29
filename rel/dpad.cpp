@@ -20,7 +20,7 @@ void on_PADRead(mkb::PADStatus* statuses) {
 
         s32 newX = status.stickX;
         s32 newY = status.stickY;
-        constexpr s32 CARDINAL = 105;
+        constexpr s32 CARDINAL = 107;
         constexpr s32 DIAG = 78;
 
         // Modify raw stick input so that input display still looks reasonable when using dpad

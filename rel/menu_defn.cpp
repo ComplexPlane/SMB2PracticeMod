@@ -23,7 +23,8 @@ static const char* inputdisp_colors[] = {
 };
 static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
 
-static Widget inputdisp_widgets[] = {
+typedef Widget pWidget[4];
+pWidget inputdisp_widgets = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Show Input Display", pref::get_input_disp, pref::set_input_disp},
@@ -42,6 +43,11 @@ static Widget inputdisp_widgets[] = {
             .get = []() { return static_cast<u32>(pref::get_input_disp_color()); },
             .set = [](u32 color) { pref::set_input_disp_color(static_cast<u8>(color)); },
         },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Notch Indicators", pref::get_input_disp_notch_indicators,
+                     pref::set_input_disp_notch_indicators},
     },
 };
 

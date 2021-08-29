@@ -217,13 +217,15 @@ void disp() {
     }
 
     // Show notch indicators
-    Vec2f notch_norm = {};
-    if (get_notch_pos(&notch_norm)) {
-        Vec2f notch_pos = {
-            .x = notch_norm.x * 60 * scale + center.x,
-            .y = -notch_norm.y * 60 * scale + center.y,
-        };
-        draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
+    if (pref::get_input_disp_notch_indicators()) {
+        Vec2f notch_norm = {};
+        if (get_notch_pos(&notch_norm)) {
+            Vec2f notch_pos = {
+                .x = notch_norm.x * 60 * scale + center.x,
+                .y = -notch_norm.y * 60 * scale + center.y,
+            };
+            draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
+        }
     }
 }
 
