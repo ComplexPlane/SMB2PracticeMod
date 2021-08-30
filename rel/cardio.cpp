@@ -11,13 +11,8 @@ namespace cardio {
 enum class WriteState {
     Idle,
     Mount,
-
-    // If memcard file doesn't exist
-    Create,
-
-    // Else, it exists but it's too small, delete and create from scratch
-    FileTooSmall_Delete,
-
+    Create,  // If memcard file doesn't exist
+    Delete,  // Else, it exists but it's too small, delete and create from scratch
     Write,
 };
 
@@ -38,7 +33,25 @@ static WriteParams s_write_params;                  // Current params
 static std::optional<WriteParams> s_write_request;  // Params for use for next write
 static u32 s_write_size;  // Sector size of memory card A which we read when probing it
 
-mkb::CARDResult read_file(const char* file_name, void** out_buf) {
+static char s_orig_gamecode[6];
+
+/*
+ * Probably not Nintendo-approved hack for letting us read/write to the same savefile even if the
+ * gamecode varies. Just modify the gamecode (stored at 0x80000000) to GM2E8P (vanilla SMB2) before
+ * doing memcard operations!
+ */
+
+static void set_fake_gamecode() {
+    mkb::memcpy(mkb::DVD_GAME_NAME, (void*)"GM2E8P", sizeof(s_orig_gamecode));
+    mkb::DCFlushRange(mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
+}
+
+static void restore_original_gamecode() {
+    mkb::memcpy(mkb::DVD_GAME_NAME, s_orig_gamecode, sizeof(s_orig_gamecode));
+    mkb::DCFlushRange(mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
+}
+
+static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf) {
     mkb::CARDResult res = mkb::CARD_RESULT_READY;
 
     // Probe and mount card
@@ -88,9 +101,25 @@ mkb::CARDResult read_file(const char* file_name, void** out_buf) {
     return mkb::CARD_RESULT_READY;
 }
 
+mkb::CARDResult read_file(const char* file_name, void** out_buf) {
+    set_fake_gamecode();
+    mkb::CARDResult res = read_file_internal(file_name, out_buf);
+    restore_original_gamecode();
+    return res;
+}
+
 void write_file(const char* file_name, const void* buf, u32 buf_size,
                 void (*callback)(mkb::CARDResult)) {
     s_write_request.emplace(WriteParams{file_name, buf, buf_size, callback});
+}
+
+void init() { mkb::memcpy(s_orig_gamecode, mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode)); }
+
+static void finish_write(mkb::CARDResult res) {
+    mkb::CARDUnmount(0);  // I'm assuming that trying to unmount when mounting failed is OK
+    s_write_params.callback(res);
+    s_state = WriteState::Idle;
+    restore_original_gamecode();
 }
 
 void tick() {
@@ -102,7 +131,9 @@ void tick() {
                 // Kick off write operation
                 s_write_params = s_write_request.value();
                 s_write_request.reset();
+                set_fake_gamecode();
 
+                // Probe and begin mounting card A
                 s32 sector_size;
                 mkb::CARDProbeEx(0, nullptr, &sector_size);
                 s_write_size = (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
@@ -124,14 +155,12 @@ void tick() {
                         mkb::CARDStat stat;
                         res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
                         if (res != mkb::CARD_RESULT_READY) {
-                            mkb::CARDUnmount(0);
-                            s_write_params.callback(res);
-                            s_state = WriteState::Idle;
+                            finish_write(res);
 
                         } else if (stat.length < s_write_size) {
                             // Recreate file
                             mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
-                            s_state = WriteState::FileTooSmall_Delete;
+                            s_state = WriteState::Delete;
 
                         } else {
                             // Card opened successfully, proceed directly to writing
@@ -149,15 +178,12 @@ void tick() {
 
                     } else {
                         // Some other error, fail entire write operation
-                        mkb::CARDUnmount(0);
-                        s_write_params.callback(res);
-                        s_state = WriteState::Idle;
+                        finish_write(res);
                     }
 
                 } else {
                     // Error mounting
-                    s_write_params.callback(res);
-                    s_state = WriteState::Idle;
+                    finish_write(res);
                 }
             }
             break;
@@ -171,15 +197,13 @@ void tick() {
                                         s_write_size, 0, nullptr);
                     s_state = WriteState::Write;
                 } else {
-                    mkb::CARDUnmount(0);
-                    s_write_params.callback(res);
-                    s_state = WriteState::Idle;
+                    finish_write(res);
                 }
             }
             break;
         }
 
-        case WriteState::FileTooSmall_Delete: {
+        case WriteState::Delete: {
             res = mkb::CARDGetResultCode(0);
             if (res != mkb::CARD_RESULT_BUSY) {
                 if (res == mkb::CARD_RESULT_READY) {
@@ -187,9 +211,7 @@ void tick() {
                                          s_write_size, &s_card_file_info, nullptr);
                     s_state = WriteState::Create;
                 } else {
-                    mkb::CARDUnmount(0);
-                    s_write_params.callback(res);
-                    s_state = WriteState::Idle;
+                    finish_write(res);
                 }
             }
             break;
@@ -199,9 +221,7 @@ void tick() {
             res = mkb::CARDGetResultCode(0);
             if (res != mkb::CARD_RESULT_BUSY) {
                 // Either succeeded or failed, either way we're done
-                mkb::CARDUnmount(0);
-                s_write_params.callback(res);
-                s_state = WriteState::Idle;
+                finish_write(res);
             }
             break;
         }

@@ -72,6 +72,7 @@ void init() {
 
     heap::init();
     pref::init();
+    cardio::init();
     draw::init();
     Tetris::get_instance().init();
     iw::init();

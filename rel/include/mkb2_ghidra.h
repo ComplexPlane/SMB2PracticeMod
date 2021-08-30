@@ -4364,7 +4364,7 @@ typedef void *pointer;
 extern "C" {
 #endif
     /* Global data */
-    extern float DVD_GAME_NAME;
+    extern char DVD_GAME_NAME[4];
     extern char DVD_COMPANY[2];
     extern u8 DVD_DISK_NUMBER;
     extern u8 DVD_GAME_VERSION;
