@@ -5,9 +5,9 @@
 #include <optional>
 
 #include "cardio.h"
+#include "draw.h"
 #include "log.h"
 #include "macro_utils.h"
-#include "draw.h"
 
 namespace pref {
 
@@ -246,7 +246,15 @@ void init() {
 
 void save() {
     pref_struct_to_card_buf();
-    cardio::write_file(PREF_FILENAME, s_card_buf, sizeof(s_card_buf));
+    cardio::write_file(PREF_FILENAME, s_card_buf, sizeof(s_card_buf), [](mkb::CARDResult res) {
+        if (res != mkb::CARD_RESULT_READY) {
+            if (res == mkb::CARD_RESULT_NOENT || res == mkb::CARD_RESULT_INSSPACE) {
+                draw::notify(draw::RED, "Cannot Save Settings: Card A Full");
+            } else {
+                draw::notify(draw::RED, "Cannot Save Settings: Card A Unknown Error");
+            }
+        }
+    });
 }
 
 u8 get_cm_chara() { return s_pref.cm_chara; }

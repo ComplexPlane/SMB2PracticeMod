@@ -18,6 +18,7 @@
 #include <mkb.h>
 
 #include <banans.h>
+#include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
 #include <cstring>
@@ -86,7 +87,6 @@ void init() {
         // which is called at the end of smb2's function which draws the UI in general.
 
         draw::predraw();
-        draw::disp();
         timer::disp();
         iw::disp();
         Tetris::get_instance().disp();
@@ -94,6 +94,7 @@ void init() {
         cmseg::disp();
         inputdisp::disp();
         menu::disp();
+        draw::disp();
 
         s_draw_debug_text_trampoline();
     });
@@ -104,6 +105,7 @@ void init() {
         // These run after all controller inputs have been processed on the current frame,
         // to ensure lowest input delay
         pad::tick();
+        cardio::tick();
         unlock_everything();
         iw::tick();
         savestate::tick();
