@@ -11,6 +11,7 @@ namespace timer {
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
+static s32 s_pause_timer;
 
 void init() { s_retrace_count = mkb::VIGetRetraceCount(); }
 
@@ -33,6 +34,7 @@ void disp() {
         case mkb::SMD_GAME_GOAL_REPLAY_MAIN:
             break;
         default:
+            s_pause_timer = 0;
             return;
     }
 
@@ -41,15 +43,18 @@ void disp() {
 
     if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_rta_timer = mkb::mode_info.stage_time_limit;
+        s_pause_timer = 0;
     } else if ((mkb::mode_info.ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0) {
         s_rta_timer -= s_retrace_count - s_prev_retrace_count;
         //        if (s_rtaTimer < 0) s_rtaTimer = 0;
+        if (mkb::g_some_other_flags & mkb::OF_GAME_PAUSED) {
+            s_pause_timer++;
+        }
     }
 
     if (pref::get_rta_pause_timer()) {
         timerdisp::draw_timer(s_rta_timer, "RTA:", 1, draw::WHITE, true);
-        timerdisp::draw_timer(mkb::mode_info.stage_time_frames_remaining - s_rta_timer, "PAU:", 2,
-                              draw::WHITE, true);
+        timerdisp::draw_timer(s_pause_timer, "PAU:", 2, draw::WHITE, true);
     }
 }
 
