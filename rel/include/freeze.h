@@ -2,6 +2,6 @@
 
 namespace freeze {
 
-void tick();
+void init();
 
 }

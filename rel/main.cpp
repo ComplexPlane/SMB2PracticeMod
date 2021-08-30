@@ -79,6 +79,7 @@ void init() {
     timer::init();
     inputdisp::init();
     cmseg::init();
+    freeze::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
@@ -115,7 +116,6 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
-        freeze::tick();
         scratch::tick();
     });
 

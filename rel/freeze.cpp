@@ -6,25 +6,16 @@
 
 namespace freeze {
 
-static bool s_prev_enabled = false;
+static void (*s_event_info_tick_tramp)();
 
-constexpr u32 TIMER_SUB_ADDR = 0x80297534;
-constexpr u32 TIMER_FREEZE_INSTR = 0x7c030214;
-constexpr u32 TIMER_SUB_INSTR = 0x3803ffff;
-
-void tick() {
-    bool enabled = pref::get_freeze_timer();
-    if (enabled != s_prev_enabled) {
-        s_prev_enabled = enabled;
-
-        if (enabled) {
-            // Disable timer subtraction
-            patch::write_word(reinterpret_cast<void*>(TIMER_SUB_ADDR), TIMER_FREEZE_INSTR);
-        } else {
-            // Enable timer subtraction
-            patch::write_word(reinterpret_cast<void*>(TIMER_SUB_ADDR), TIMER_SUB_INSTR);
+void init() {
+    // TODO use a generic pre-draw hook instead of hooking this important function?
+    s_event_info_tick_tramp = patch::hook_function(mkb::event_info_tick, []() {
+        s_event_info_tick_tramp();
+        if (pref::get_freeze_timer()) {
+            mkb::mode_info.stage_time_frames_remaining = mkb::mode_info.stage_time_limit;
         }
-    }
+    });
 }
 
 }  // namespace freeze
