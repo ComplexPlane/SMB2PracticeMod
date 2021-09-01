@@ -1,8 +1,8 @@
-//
-// Created by ComplexPlane on 8/26/2021.
-//
+#pragma once
 
-#ifndef APESPHERE_SFX_H
-#define APESPHERE_SFX_H
+namespace sfx {
 
-#endif //APESPHERE_SFX_H
+void init();
+void reboot();  // Like, reboot the game, now
+
+}  // namespace sfx

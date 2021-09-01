@@ -41,5 +41,7 @@ bool get_debug_mode();
 void set_debug_mode(bool on);
 bool get_freeze_timer();
 void set_freeze_timer(bool on);
+bool get_mute_bgm();
+void set_mute_bgm(bool on);
 
 }  // namespace pref

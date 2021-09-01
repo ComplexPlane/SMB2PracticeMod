@@ -44,4 +44,5 @@ add_executable(ApeSphere
         rel/log.cpp
         rel/relutil.cpp
         rel/freeze.cpp
-        rel/cardio.cpp)
+        rel/cardio.cpp
+        rel/sfx.cpp)

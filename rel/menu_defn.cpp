@@ -14,6 +14,7 @@
 #include "macro_utils.h"
 #include "pref.h"
 #include "savestate.h"
+#include "sfx.h"
 #include "timer.h"
 
 namespace menu {
@@ -187,6 +188,23 @@ static Widget help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
 };
 
+static Widget sound_widgets[] = {
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Mute Background Music",
+             .get = pref::get_mute_bgm,
+             .set = pref::set_mute_bgm,
+         }},
+    {.type = WidgetType::Text, .text = {"Changing background music setting requires reboot:"}},
+    {.type = WidgetType::Button,
+     .button =
+         {
+             .label = "Reboot Game Now",
+             .push = sfx::reboot,
+         }},
+};
+
 static Widget mods_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -210,6 +228,17 @@ static Widget mods_widgets[] = {
             },
     },
     {
+        .type = WidgetType::Menu,
+        .menu = {"Audio", sound_widgets, LEN(sound_widgets)},
+    },
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Freeze Timer",
+             .get = pref::get_freeze_timer,
+             .set = pref::set_freeze_timer,
+         }},
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -224,13 +253,6 @@ static Widget mods_widgets[] = {
              .label = "D-pad Controls",
              .get = pref::get_dpad_controls,
              .set = pref::set_dpad_controls,
-         }},
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Freeze Timer",
-             .get = pref::get_freeze_timer,
-             .set = pref::set_freeze_timer,
          }},
     {.type = WidgetType::Checkbox,
      .checkbox =

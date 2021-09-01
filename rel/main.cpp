@@ -22,6 +22,7 @@
 #include <dpad.h>
 #include <freeze.h>
 #include <cstring>
+#include "sfx.h"
 
 namespace main {
 
@@ -81,6 +82,7 @@ void init() {
     inputdisp::init();
     cmseg::init();
     freeze::init();
+    sfx::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
