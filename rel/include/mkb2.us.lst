@@ -8340,7 +8340,7 @@
 8054ED18:g_camera_aspect_ratio
 8054ED1D:g_related_to_fov2
 8054EDC4:g_minigame_camera_func
-8054EDC8:g_standstill_camera_frame_counter
+8054EDC8:g_camera_standstill_counters
 8054F824:g_maybe_something_with_lights
 805537C0:g_light_group_stack
 805537CC:num_light_groups

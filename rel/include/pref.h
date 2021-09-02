@@ -43,5 +43,7 @@ bool get_freeze_timer();
 void set_freeze_timer(bool on);
 bool get_mute_bgm();
 void set_mute_bgm(bool on);
+bool get_mute_timer_ding();
+void set_mute_timer_ding(bool on);
 
 }  // namespace pref

@@ -98,7 +98,7 @@ static void jumping() {
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 
     bool jump_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
-    bool ground_touched = ball.phys_flags & mkb::PHYS_G_ON_GROUND;
+    bool ground_touched = ball.phys_flags & mkb::PHYS_ON_GROUND;
 
     if (jump_pressed) {
         s_ticks_since_jump_input = 0;

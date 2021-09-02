@@ -689,7 +689,7 @@ typedef struct Vec3f Vec3f, *PVec3f;
 
 enum { /* Flags that mostly affect ball physics and controls */
     PHYS_NONE=0,
-    PHYS_G_ON_GROUND=1,
+    PHYS_ON_GROUND=1,
     PHYS_UNK_0x2=2,
     PHYS_UNK_0x4=4,
     PHYS_UNK_0x8=8,
@@ -1463,7 +1463,7 @@ typedef struct Camera Camera, *PCamera;
 
 struct Camera {
     struct Vec3f pos; /* Position of the camera */
-    struct Vec3f pivot; /* Called 'intr' in the debug menu. The point which the camera rotates around - the monkey in normal play, but can also be modified with the C-stick in test camera */
+    struct Vec3f pivot; /* Called 'intr' in the debug menu. The point which the camera looks at - close to the monkey in normal play, but can also be modified with the C-stick in test camera. Camera pose is actually controled by pos and rot - pivot is an intermediate value */
     struct Vec3s rot; /* Rotation of the camera. Called 'ang' in the debug menu */
     u8 mode; /* One byte representing camera mode (1 (dec) = SMB 1 style camera, 75 (dec) = SMB 2 style camera, and there's a lot more (everything from 1 to about 105 - a few are duplicates. Each value  corresponds to a different function in the camera function table */
     u8 submode; /* Called 'SUB' in the debug menu. Not sure of the purpose */
@@ -1512,7 +1512,7 @@ struct Camera {
     Mtx g_some_mtx2;
     Mtx g_some_mtx3;
     Mtx g_some_mtx4;
-    s32 g_smth_with_standstill_counter;
+    u32 idx;
     undefined field_0x210[0x7c];
 } __attribute__((__packed__));
 
@@ -4927,7 +4927,7 @@ extern "C" {
     extern float g_camera_aspect_ratio;
     extern undefined1 g_related_to_fov2;
     extern undefined4 g_minigame_camera_func;
-    extern u16 g_standstill_camera_frame_counter;
+    extern s16 g_camera_standstill_counters[5];
     extern undefined4 g_maybe_something_with_lights;
     extern undefined4 g_light_group_stack;
     extern u8 num_light_groups;
@@ -6483,7 +6483,7 @@ extern "C" {
     void g_cvFsAddDev(char * param_1, undefined * param_2);
     undefined4 math_init(void);
     float CHUNK__math_rsqrt(float param_1, float param_2);
-    float math_sqrt(double param_1);
+    float math_sqrt(float param_1);
     float math_rsqrt(double param_1);
     float math_sqrt_rsqrt(double param_1, float * param_2);
     double g_math_unknown1(double param_1, double param_2);
@@ -7271,7 +7271,7 @@ extern "C" {
     void SoftStreamSEReq(char param_1, int param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5);
     void empty_function(void);
     void g_some_dvd_read_async_sound_callback2(undefined4 param_1, struct DVDCommandBlock * param_2);
-    void SoftStreamStart(undefined4 g_looping_state, BgmTrack  g_bgm_id, undefined4 param_3);
+    s32 SoftStreamStart(u32 g_looping_state, BgmTrack  g_bgm_id, u32 param_3);
     void empty_function(void);
     void g_SoftStreamStart_with_some_defaults(BgmTrack  param_1);
     void g_SoftStreamStart_with_some_defaults_2(BgmTrack  param_1);
@@ -7283,7 +7283,7 @@ extern "C" {
     int g_maybe_related_to_music_crossfading(int param_1);
     undefined4 g_check_current_track(BgmTrack  track_id);
     void g_maybe_smth_with_music(int param_1, char param_2);
-    void g_change_music_volume(int param_1, int param_2, char volume);
+    void g_change_music_volume(s32 param_1, s32 param_2, u8 volume);
     void SoundEffectInit(void);
     void g_something_with_sound9(void);
     void g_smth_calls_sndAuxCallbackUpdateSettingsReverbHI(undefined4 * param_1);

@@ -29,6 +29,7 @@ enum class PrefId : u16 {
     DebugMode = 13,
     FreezeTimer = 14,
     MuteBgm = 15,
+    MuteTimerDing = 16,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -46,6 +47,7 @@ enum class BoolPref {
     DebugMode,
     FreezeTimer,
     MuteBgm,
+    MuteTimerDing,
 };
 
 struct Pref {
@@ -87,6 +89,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::DebugMode,
     PrefId::FreezeTimer,
     PrefId::MuteBgm,
+    PrefId::MuteTimerDing,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -141,6 +144,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::FreezeTimer;
         case PrefId::MuteBgm:
             return BoolPref::MuteBgm;
+        case PrefId::MuteTimerDing:
+            return BoolPref::MuteTimerDing;
         default:
             return {};
     }
@@ -300,5 +305,7 @@ bool get_freeze_timer() { return get_bool_pref(BoolPref::FreezeTimer); }
 void set_freeze_timer(bool on) { set_bool_pref(BoolPref::FreezeTimer, on); }
 bool get_mute_bgm() { return get_bool_pref(BoolPref::MuteBgm); }
 void set_mute_bgm(bool on) { set_bool_pref(BoolPref::MuteBgm, on); }
+bool get_mute_timer_ding() { return get_bool_pref(BoolPref::MuteTimerDing); }
+void set_mute_timer_ding(bool on) { set_bool_pref(BoolPref::MuteTimerDing, on); }
 
 }  // namespace pref

@@ -196,12 +196,22 @@ static Widget sound_widgets[] = {
              .get = pref::get_mute_bgm,
              .set = pref::set_mute_bgm,
          }},
-    {.type = WidgetType::Text, .text = {"Changing background music setting requires reboot:"}},
+    {.type = WidgetType::Text, .text = {"Changing background music setting"}},
+    {.type = WidgetType::Text, .text = {"requires reboot:"}},
     {.type = WidgetType::Button,
      .button =
          {
              .label = "Reboot Game Now",
              .push = sfx::reboot,
+         }},
+
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Mute Timer Ding",
+             .get = pref::get_mute_timer_ding,
+             .set = pref::set_mute_timer_ding,
          }},
 };
 

@@ -60,8 +60,8 @@ static void pass_over_regions(memstore::MemStore* store) {
     store->do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     store->do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     store->do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
-    store->do_region(&mkb::g_standstill_camera_frame_counter,
-                     sizeof(mkb::g_standstill_camera_frame_counter));
+    store->do_region(mkb::g_camera_standstill_counters,
+                     sizeof(mkb::g_camera_standstill_counters));
     store->do_region(mkb::balls[0].ape,
                      sizeof(*mkb::balls[0].ape));  // Store entire ape struct for now
 
