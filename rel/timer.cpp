@@ -62,6 +62,7 @@ void save_state(memstore::MemStore* store) {
     store->do_region(&s_retrace_count, sizeof(s_retrace_count));
     store->do_region(&s_prev_retrace_count, sizeof(s_prev_retrace_count));
     store->do_region(&s_rta_timer, sizeof(s_rta_timer));
+    store->do_region(&s_pause_timer, sizeof(s_pause_timer));
     if (store->get_mode() == memstore::Mode::LOAD) {
         // This might not be completely consistently correct
         u32 count = mkb::VIGetRetraceCount();
