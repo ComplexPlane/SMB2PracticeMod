@@ -2,7 +2,7 @@
 
 1. Homebrew your Wii using [this guide](wii.guide), up to and including installing the Homebrew channel.
    I highly recommend following the Letterbomb homebrew method over other methods, it's super reliable and easy.
-2. Install [Nintendont](https://github.com/FIX94/Nintendont) on your Wii.
+2. Install [Nintendont](https://github.com/FIX94/Nintendont) on your Wii. **Note:** make sure you're on the latest version of Nintendont. Older versions (e.x v4.446) can cause issues loading.
 3. Download the `.zip` file containing the release (_not_ the source code). Releases are
    found [here](https://github.com/complexplane/apesphere/releases). Open up the `.zip` file (you don't necessarily need
    to extract it).
