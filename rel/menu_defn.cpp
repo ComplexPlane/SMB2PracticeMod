@@ -84,7 +84,7 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
-    {.type = WidgetType::Text, .text = {"  Current version: v0.4.0"}},
+    {.type = WidgetType::Text, .text = {"  Current version: v0.5.0"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
      .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
