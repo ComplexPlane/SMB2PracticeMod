@@ -1,34 +1,46 @@
 # :confetti_ball: Super Monkey Ball 2 Practice Mod
 
-A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 as well as most romhacks, including Gaiden, Deluxe in 2, SMB651, Monkeyed Ball 2, and Community Pack 2020.
+A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 as well as most
+popular romhacks, including Gaiden, Deluxe in 2, SMB651, Monkeyed Ball 2, and Community Pack 2020.
+
+![Dual Screenshots](doc/dual-screenshot.png)
 
 Features include:
 
 * Savestates
-* Story Mode individual world (IW) practice
-* Challenge Mode individual segment practice
-* Input display
-* RTA+Pause timer
-* [Jump mod](https://www.youtube.com/watch?v=kWAunK6Av-Q)
-* Frame advance
+* Input Display
+* Story Mode Individual World (IW) Practice
+* Challenge Mode Individual Segment Practice
+* Stage RTA and Pause Timers
+* [Jump Mod](https://www.youtube.com/watch?v=kWAunK6Av-Q)
+* Frame Advance
+* D-pad Controls
+* Freeze Timer
+* Debug Mode
+* Quick Rumble Adjust
 
-... and more!
+... and more! Features can be toggled on/off and configured as you desire.
 
-# Setup
+# Install
 
-To set up the mod on a **Wii console** (recommended), follow [this guide](/doc/console-setup-guide.md). There's also a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1), but it's a bit out-of-date.
+To install the mod on a **Wii console** (recommended), follow [this guide](doc/console-setup-guide.md). There's also
+a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1), but it's a
+bit out-of-date.
 
-To set up the mod on **Dolphin Emulator**, follow [this guide](/doc/dolphin-setup-guide.md). 
+To install the mod on **Dolphin Emulator**, follow [this guide](doc/dolphin-setup-guide.md).
 
 # Usage
 
-Press L+R at the same time on your controller to toggle the in-game menu which also shows controller bindings. For individual-world practice, head to Story Mode and press Up/Down on a savefile to change world.
-
-For a more in-depth guide, check out this [basic usage guide video](https://www.youtube.com/watch?v=dfeA8ruJx18&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=2).
-
-If you have any questions, message me on Discord (`ComplexPlane#3111`).
+Press L+R at the same time on your controller to toggle the in-game menu. Go to the Help menu to see controller bindings
+for savestates and for other features. For individual-world practice, head to Story Mode and press Up/Down on a savefile
+to change world.
 
 Be sure to look for the Easter egg!
+
+# Contact
+
+If you have any questions, bugs, or feature requests, feel free to message me on Discord (`ComplexPlane#3111`) or
+email (`complexplanegames@gmail.com`). You can also file a Github issue.
 
 # Credits
 
@@ -36,7 +48,8 @@ Thank you to:
 
 **Zephiles** for their numerous code contributions. These include:
 
-* The initial [TTYD-Practice-Codes](https://github.com/Zephiles/TTYD-Practice-Codes) framework of which this mod is based on
+* The initial [TTYD-Practice-Codes](https://github.com/Zephiles/TTYD-Practice-Codes) framework of which this mod is
+  based on
 * The current REL loader Gecko code
 * A custom heap implementation for the mod
 * A revised REL loader which serves as both a Gecko and ISO loader (not yet included)
