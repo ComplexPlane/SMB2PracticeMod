@@ -123,8 +123,8 @@ struct DVDFileInfo { /* Not entirely sure about this one... I've filled in some 
 } __attribute__((__packed__));
 
 struct GSomeFileStruct {
-    BOOL32 g_is_cached;
-    struct DVDFileInfo field_0x4;
+    BOOL32 dvd_entrynum;
+    struct DVDFileInfo dvdFileInfo;
 } __attribute__((__packed__));
 
 struct DVDDiskID {
@@ -288,8 +288,9 @@ typedef struct GCachedFileEntry GCachedFileEntry, *PGCachedFileEntry;
 
 struct GCachedFileEntry {
     undefined field_0x0[0x4];
-    int g_dvd_entrynum;
-    undefined field_0x8[0x8];
+    int dvd_entrynum;
+    struct DVDCommandBlock * next; /* Created by retype action */
+    struct DVDCommandBlock * prev;
 } __attribute__((__packed__));
 
 typedef struct CoinType CoinType, *PCoinType;
@@ -310,6 +311,14 @@ struct CoinType {
     s16 g_score_value;
     struct Vec3s angular_velocity;
     undefined field_0xc[0x8];
+} __attribute__((__packed__));
+
+typedef struct GMotionData GMotionData, *PGMotionData;
+
+struct GMotionData {
+    undefined field_0x0[0x4c];
+    float progress;
+    float length;
 } __attribute__((__packed__));
 
 enum { /* NULL, INIT, NORMAL, and DEST, and FREEZE seem to be the most common */
@@ -715,6 +724,10 @@ typedef struct LineTraceHit LineTraceHit, *PLineTraceHit;
 
 typedef struct GApeAnim GApeAnim, *PGApeAnim;
 
+typedef struct GmaBuffer GmaBuffer, *PGmaBuffer;
+
+typedef struct TplBuffer TplBuffer, *PTplBuffer;
+
 enum {
     GAME_COMMON=0,
     GAME_MAIN=1,
@@ -775,17 +788,67 @@ enum {
 };
 typedef undefined2 ApeFace;
 
-struct Vec3f {
-    float x;
-    float y;
-    float z;
-} __attribute__((__packed__));
+typedef struct g_thing g_thing, *Pg_thing;
+
+typedef struct GmaModelEntry GmaModelEntry, *PGmaModelEntry;
+
+typedef struct TplTextureHeader TplTextureHeader, *PTplTextureHeader;
+
+typedef struct GmaModelHeader GmaModelHeader, *PGmaModelHeader;
+
+enum {
+    GX_TF_I4=0,
+    GX_TF_I8=1,
+    GX_TF_IA4=2,
+    GX_TF_IA8=3,
+    GX_TF_RGB565=4,
+    GX_TF_RGB5A3=5,
+    GX_TF_RGBA8=6,
+    GX_TF_CMPR=14,
+    GX_CTF_R4=15,
+    GX_CTF_RA4=16,
+    GX_CTF_RA8=17,
+    GX_CTF_YUVA8=18,
+    GX_CTF_A8=19,
+    GX_CTF_R8=20,
+    GX_CTF_G8=21,
+    GX_CTF_B8=22,
+    GX_CTF_RG8=23,
+    GX_CTF_GB8=24,
+    GX_TF_Z8=25,
+    GX_TF_Z16=26,
+    GX_TF_Z24X8=27,
+    GX_CTF_Z4=28,
+    GX_CTF_Z8M=29,
+    GX_CTF_Z8L=30,
+    GX_CTF_Z16L=31,
+    GX_TF_A8=32
+};
+typedef undefined4 GXTexFmt;
+
+enum { /* Per-GMA model attributes */
+    GCMF_ATTR_16BIT=1,
+    GCMF_ATTR_STITCHING_MODEL=4,
+    GCMF_ATTR_SKIN_MODEL=8,
+    GCMF_ATTR_EFFECTIVE_MODEL=16
+};
+typedef undefined4 GcmfAttributes;
+
+typedef signed char s8;
+
+typedef struct GXTexObj GXTexObj, *PGXTexObj;
 
 struct Quat {
     f32 x;
     f32 y;
     f32 z;
     f32 w;
+} __attribute__((__packed__));
+
+struct Vec3f {
+    float x;
+    float y;
+    float z;
 } __attribute__((__packed__));
 
 struct LineTraceHit {
@@ -806,7 +869,7 @@ struct Ball {
     struct Vec3s g_some_rot;
     u8 idx; /* The index of the ball in the ball pool, aka 0 for the first ball, 1 for the second */
     undefined field_0x2f[0x1];
-    Mtx g_some_mtx;
+    Mtx ball_transform;
     short g_some_rot10;
     short g_some_rot11;
     short g_some_rot12;
@@ -821,14 +884,12 @@ struct Ball {
     undefined field_0x84[0xe];
     s16 g_monkey_angle; /* Seems to be related to the direction the monkey is facing */
     undefined field_0x94[0x4];
-    u32 g_some_bitfield;
+    u32 g_effect_flags;
     BallPhysFlags  phys_flags; /* Some more flags related to ball state? The lowest-order bit may represent "is ball touching the ground" and I believe if affects the physics */
     struct Quat g_monkey_rotation; /* Rotation of the monkey inside the ball? */
     struct Quat g_ball_rotation; /* Rotation of the ball itself? */
-    float field_0xc0;
-    float field_0xc4;
-    float field_0xc8;
-    float field_0xcc;
+    struct Vec3f some_vec3;
+    float some_length;
     float field_0xd0;
     float field_0xd4;
     float field_0xd8;
@@ -841,7 +902,7 @@ struct Ball {
     float field_0xf4;
     float field_0xf8;
     float field_0xfc;
-    float field_0x100;
+    float speed;
     struct Ape * ape;
     int field_0x108;
     struct Vec3f ape_facedir_point; /* The point of interest that the monkey looks at (goal, banana, etc) */
@@ -854,7 +915,7 @@ struct Ball {
     s16 field_0x134;
     s16 g_something_timer; /* Created by retype action */
     undefined field_0x138[0x4];
-    float field_0x13c;
+    float g_phys_jerk;
     undefined field_0x140[0xc];
     float physical_ball_radius;
     undefined field_0x150[0x4];
@@ -872,14 +933,73 @@ struct Ball {
     undefined field_0x198[0x18];
 } __attribute__((__packed__));
 
+struct g_thing {
+    undefined field_0x0[0x8];
+    char * Name;
+    undefined field_0xc[0x1c];
+} __attribute__((__packed__));
+
+struct TplBuffer { /* Buffer allocated for TPL files (with 32 extra bytes at the beginning compared to the on-disc TPL file). Amusement Vision TPL is different than standard Gamecube TPL */
+    s32 texture_count;
+    struct TplTextureHeader * texture_headers;
+    void * raw_tpl_buffer; /* Pointer to the raw TPL data loaded from disc */
+    dword g_initially_zero;
+    undefined field_0x10[0x10];
+} __attribute__((__packed__));
+
+struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for loaded GMA files. The first 32 bytes are extra; not part of the original GMA file */
+    s32 model_count;
+    void * model_list_ptr; /* Pointer to the first model (after GMA header) */
+    struct GmaModelEntry * model_entries;
+    dword model_names_ptr;
+    dword g_initially_zero;
+    undefined field_0x14[0xc];
+} __attribute__((__packed__));
+
+struct TplTextureHeader {
+    GXTexFmt  format;
+    dword data_offset;
+    u16 width;
+    u16 height;
+    u16 mipmap_count;
+    u16 always_0x1234;
+} __attribute__((__packed__));
+
+struct GmaModelHeader { /* Also known as a GCMF (GameCube Model Format?) */
+    char gcmf_magic[4]; /* Just the string "GCMF" */
+    GcmfAttributes  attrs; /* Also called "section flags" */
+    struct Vec3f origin; /* Also the center of the bounding sphere */
+    float bounding_sphere_radius;
+    u16 texture_count; /* In F-Zero GX this is "texture count" */
+    u16 material_count; /* In F-Zero GX this is "material count" */
+    u16 translucid_material_count; /* In F-Zero GX this is "translucid material count" */
+    s8 transform_mtx_count;
+    undefined field_0x1f[0x1];
+    s32 model_header_size; /* Memory size of this structure in bytes, including texture description array and transform matrices. */
+    struct GXTexObj * texobjs; /* Array of texobjs, one for each texture in the model */
+    s8 default_mtx_indices[8]; /* Default (root?) indices into Transform Matrix array */
+    undefined field_0x30[0x18];
+    struct GXTexObj * g_some_texobjs_ptr;
+    undefined field_0x4c[0x8];
+    void * g_some_ptr;
+    undefined field_0x58[0x8];
+} __attribute__((__packed__));
+
+struct GXTexObj {
+    undefined field_0x0[0x14];
+    GXTexFmt  format; /* Created by retype action */
+    undefined field_0x18[0x8];
+} __attribute__((__packed__));
+
 struct GApeAnim { /* Unknown length -Crafted */
     u8 field_0x0;
     undefined field_0x1[0x3];
-    s32 * g_either_motion_or_skel;
-    struct Ape * ape;
+    struct g_thing * count;
+    struct GApeAnim * ape;
     s32 * field_0xc; /* Ptr to some struct? */
     undefined field_0x10[0xc];
     s32 g_either_motion_or_skel2;
+    undefined field_0x20[0x8];
 } __attribute__((__packed__));
 
 struct Ape {
@@ -887,7 +1007,7 @@ struct Ape {
     ushort field_0x2;
     float g_anim_len; /* Was originally ushort -Crafted */
     void * g_anim_inc; /* It's not, a lot of these labels were confusingly wrong?? - bomb Is this even a float? -Crafted */
-    float g_body_frame;
+    void * frame_ptr;
     float field_0x10;
     float g_some_ptr;
     void * int_0x18;
@@ -896,34 +1016,34 @@ struct Ape {
     void * g_animation_storage;
     void * g_some_ptr_4;
     void * g_some_ptr_5;
-    void * g_some_ptr_6;
+    void * motion_ptr_6;
     void * g_some_ptr_7;
     void * g_some_ptr_8;
     void * g_some_ptr_9;
     ushort g_some_ptr_10;
     undefined field_0x42[0x2];
     struct GApeAnim * animLengthBytes; /* Created by retype action */
-    int * g_anim_pointer;
-    float field_0x4c;
-    float field_0x50;
+    struct GApeAnim * g_anim_pointer;
+    struct GmaBuffer * GMABuffer;
+    struct TplBuffer * TPLBuffer;
     undefined2 field_0x54;
     undefined field_0x56[0x2];
     undefined2 field_0x58;
     undefined field_0x5a[0x2];
-    void * funPointer_0x5c; /* Created by retype action */
+    void * drawing_func; /* Created by retype action */
     float float_0x60;
     undefined field_0x64[0x10];
     ApeGame  game; /* Created by retype action */
-    char field_0x76;
+    char g_ape_variant;
     undefined field_0x77[0x1];
     int g_smth_with_game; /* Created by retype action */
     undefined4 field_0x7c;
     undefined2 field_0x80;
     undefined field_0x82[0x2];
     short field_0x84;
-    u8 g_chara_anim_type; /* Some value that changes the type of animation the character is doing. From standing still, to walking, to the "I lost" state, etc */
+    u8 chara_anim_type; /* Some value that changes the type of animation the character is doing. From standing still, to walking, to the "I lost" state, etc */
     byte g_anim_step;
-    int g_flag_5; /* Something to do with character spinning post-goal */
+    int ape_total_index; /* Something to do with character spinning post-goal */
     ushort g_handr_short;
     ushort g_handl_short;
     ApeFace  face;
@@ -940,15 +1060,7 @@ struct Ape {
     undefined4 field_0xb8;
     undefined4 field_0xbc;
     int field_0xc0;
-    void * field_0xc4;
-    void * field_0xc8;
-    void * field_0xcc;
-    void * field_0xd0;
-    void * field_0xd4;
-    void * field_0xd8;
-    void * field_0xdc;
-    void * field_0xe0;
-    undefined field_0xe4[0x80];
+    void * g_frames1[40];
     void * field_0x164;
     void * field_0x168;
     void * field_0x16c;
@@ -972,21 +1084,13 @@ struct Ape {
     void * field_0x1b4;
     void * field_0x1b8;
     void * field_0x1bc;
-    void * field_0x1c0;
-    void * field_0x1c4;
-    void * field_0x1c8;
-    void * field_0x1cc;
-    void * field_0x1d0;
-    void * field_0x1d4;
-    void * field_0x1d8;
-    void * field_0x1dc;
-    undefined field_0x1e0[0x10];
-    void * field_0x1f0;
-    undefined field_0x1f4[0x10];
-    int field_0x204;
-    int field_0x208;
-    int field_0x20c;
-    int field_0x210;
+    undefined field_0x1c0[0x1c];
+    void * expression_models[9];
+    undefined field_0x200[0x4];
+    void * HandL_GHA_model;
+    void * HandL_PHA_model;
+    void * HandR_GHA_model;
+    void * HANDR_PHA_model;
     float float_0x214;
     short field_0x218;
     undefined field_0x21a[0x2];
@@ -997,24 +1101,21 @@ struct Ape {
     undefined field_0x228[0x14];
     undefined4 field_0x23c;
     undefined4 field_0x240;
-    struct GApeAnim * character;
+    int character;
     u32 flag1;
     undefined4 field_0x24c;
     undefined4 field_0x250;
     undefined4 field_0x254;
-    float pos;
-    undefined field_0x25c[0x8];
-    float field_0x264;
-    float field_0x268;
-    float field_0x26c;
+    struct Vec3f pos;
+    struct Vec3f some_vec3;
     undefined4 field_0x270;
     undefined4 field_0x274;
     undefined4 field_0x278;
     undefined4 field_0x27c;
-    float g_some_float;
+    float scale;
     undefined field_0x284[0x4];
     struct Quat chara_rotation;
-    int field_0x298;
+    int ape_index;
     undefined4 field_0x29c;
     ApeLOD  lod;
     undefined4 field_0x2a4;
@@ -1036,6 +1137,11 @@ struct Ape {
     float field_0x2e4;
     float field_0x2e8;
     float field_0x2ec;
+} __attribute__((__packed__));
+
+struct GmaModelEntry {
+    struct GmaModelHeader * model;
+    char * name;
 } __attribute__((__packed__));
 
 enum { /* I made MD_INVALID, it's `-1` -Crafted */
@@ -1263,8 +1369,6 @@ enum { /* These are normally just #defines in the SDK's PAD library */
 };
 typedef undefined2 PadDigitalInput;
 
-typedef signed char s8;
-
 enum { /* These are normally just #defines in the SDK's PAD library. Also these are supposed to be signed */
     PAD_ERR_NONE=0,
     PAD_ERR_TRANSFER=253,
@@ -1334,68 +1438,6 @@ enum {
 };
 typedef undefined2 ItemType;
 
-typedef struct GmaModelHeader GmaModelHeader, *PGmaModelHeader;
-
-enum { /* Per-GMA model attributes */
-    GCMF_ATTR_16BIT=1,
-    GCMF_ATTR_STITCHING_MODEL=4,
-    GCMF_ATTR_SKIN_MODEL=8,
-    GCMF_ATTR_EFFECTIVE_MODEL=16
-};
-typedef undefined4 GcmfAttributes;
-
-typedef struct GXTexObj GXTexObj, *PGXTexObj;
-
-enum {
-    GX_TF_I4=0,
-    GX_TF_I8=1,
-    GX_TF_IA4=2,
-    GX_TF_IA8=3,
-    GX_TF_RGB565=4,
-    GX_TF_RGB5A3=5,
-    GX_TF_RGBA8=6,
-    GX_TF_CMPR=14,
-    GX_CTF_R4=15,
-    GX_CTF_RA4=16,
-    GX_CTF_RA8=17,
-    GX_CTF_YUVA8=18,
-    GX_CTF_A8=19,
-    GX_CTF_R8=20,
-    GX_CTF_G8=21,
-    GX_CTF_B8=22,
-    GX_CTF_RG8=23,
-    GX_CTF_GB8=24,
-    GX_TF_Z8=25,
-    GX_TF_Z16=26,
-    GX_TF_Z24X8=27,
-    GX_CTF_Z4=28,
-    GX_CTF_Z8M=29,
-    GX_CTF_Z8L=30,
-    GX_CTF_Z16L=31,
-    GX_TF_A8=32
-};
-typedef undefined4 GXTexFmt;
-
-struct GmaModelHeader { /* Also known as a GCMF (GameCube Model Format?) */
-    char gcmf_magic[4]; /* Just the string "GCMF" */
-    GcmfAttributes  attrs; /* Also called "section flags" */
-    struct Vec3f origin; /* Also the center of the bounding sphere */
-    float bounding_sphere_radius;
-    u16 texture_count; /* In F-Zero GX this is "texture count" */
-    u16 material_count; /* In F-Zero GX this is "material count" */
-    u16 translucid_material_count; /* In F-Zero GX this is "translucid material count" */
-    s8 transform_mtx_count;
-    undefined field_0x1f[0x1];
-    s32 model_header_size; /* Memory size of this structure in bytes, including texture description array and transform matrices. */
-    struct GXTexObj * texobjs; /* Array of texobjs, one for each texture in the model */
-    s8 default_mtx_indices[8]; /* Default (root?) indices into Transform Matrix array */
-    undefined field_0x30[0x18];
-    struct GXTexObj * g_some_texobjs_ptr;
-    undefined field_0x4c[0x8];
-    void * g_some_ptr;
-    undefined field_0x58[0x8];
-} __attribute__((__packed__));
-
 struct Item { /* Represents an item that can be picked up by the player. These are bananas in main game, but can be other pickups in the party games. Are "tickable" like events, effects, etc. */
     word index;
     short id;
@@ -1436,12 +1478,6 @@ struct Item { /* Represents an item that can be picked up by the player. These a
     struct Vec3f g_something_with_shadows;
 } __attribute__((__packed__));
 
-struct GXTexObj {
-    undefined field_0x0[0x14];
-    GXTexFmt  format; /* Created by retype action */
-    undefined field_0x18[0x8];
-} __attribute__((__packed__));
-
 struct PhysicsBall { /* A representation of a Ball with just the physics/collision-related info */
     dword g_flags_maybe_similar_to_phys_flags;
     struct Vec3f pos;
@@ -1450,7 +1486,7 @@ struct PhysicsBall { /* A representation of a Ball with just the physics/collisi
     float ball_size;
     float acceleration;
     float restitution;
-    dword field_0x34;
+    dword g_jerk;
     undefined field_0x38[0xc];
     struct Vec3f field_0x44;
     undefined field_0x50[0x4];
@@ -1499,10 +1535,10 @@ struct Camera {
     undefined field_0x94[0x8];
     struct Vec3f vel;
     struct Vec3f pivot_vel;
-    struct Vec3f g_some_vec3; /* Something to do with camera rotation interpolation? */
-    struct Vec3f g_some_vec4;
-    undefined field_0xcc[0x48];
-    s16 g_some_rot_y;
+    struct Vec3f g_pos_desire; /* Something to do with camera rotation interpolation? */
+    s16 g_pivot_x_rot;
+    undefined field_0xc2[0x52];
+    s16 g_y_rot_vel;
     undefined field_0x116[0x2];
     undefined1 g_some_goal_idx; /* Created by retype action */
     undefined field_0x119[0x1b];
@@ -1854,6 +1890,26 @@ enum {
     MF_G_PLAYING_MASTER_COURSE=33554432
 };
 typedef undefined4 ModeFlag;
+
+typedef struct GSomeSoundStruct GSomeSoundStruct, *PGSomeSoundStruct;
+
+struct GSomeSoundStruct {
+    short g_sfx_id;
+    short g_sfx_rid;
+    char field_0x4;
+    byte g_sfx_pan;
+    char g_sfx_span;
+    char g_sfx_grp;
+    int g_player_id;
+} __attribute__((__packed__));
+
+typedef struct Map Map, *PMap;
+
+struct Map {
+    int size;
+    undefined4 field_0x4;
+    undefined field_0x8[0x4];
+} __attribute__((__packed__));
 
 enum {
     MINIMAP_HIDDEN=0,
@@ -2275,6 +2331,14 @@ struct Effect {
     undefined field_0xa4[0xc];
 } __attribute__((__packed__));
 
+typedef struct GTableEntry GTableEntry, *PGTableEntry;
+
+struct GTableEntry {
+    undefined field_0x0[0x3];
+    byte field_0x3;
+    undefined field_0x4[0x8];
+} __attribute__((__packed__));
+
 typedef struct MemCardInfo MemCardInfo, *PMemCardInfo;
 
 struct MemCardInfo { /* Some struct that seems to hold per-memcard info; there are two statically allocated, one for each memory card slot (I think) */
@@ -2493,6 +2557,12 @@ typedef struct _IO_FILE _IO_FILE, *P_IO_FILE;
 
 typedef long __off_t;
 
+struct _IO_marker {
+    struct _IO_marker * _next;
+    struct _IO_FILE * _sbuf;
+    int _pos;
+} __attribute__((__packed__));
+
 struct _IO_FILE {
     int _flags;
     char * _IO_read_ptr;
@@ -2525,12 +2595,6 @@ struct _IO_FILE {
     undefined padding_0x73[0x1];
 } __attribute__((__packed__));
 
-struct _IO_marker {
-    struct _IO_marker * _next;
-    struct _IO_FILE * _sbuf;
-    int _pos;
-} __attribute__((__packed__));
-
 typedef double f64;
 
 #define _M_IX86 500
@@ -2558,6 +2622,20 @@ typedef int bool_t;
 typedef signed char int8_t;
 
 typedef int int32_t;
+
+typedef struct gSceneData gSceneData, *PgSceneData;
+
+struct gSceneData {
+    char world_theme;
+    char g_anim_flag;
+    char ape_count;
+    undefined field_0x3[0x5];
+    char LOD;
+    char unknown;
+    char scene_item_count;
+    undefined field_0xb[0x1];
+    char * * field_0xc;
+} __attribute__((__packed__));
 
 typedef struct StagedefBackgroundAnimHeader StagedefBackgroundAnimHeader, *PStagedefBackgroundAnimHeader;
 
@@ -3058,24 +3136,6 @@ typedef void * __gnuc_va_list;
 
 typedef __gnuc_va_list va_list;
 
-typedef struct GmaBuffer GmaBuffer, *PGmaBuffer;
-
-typedef struct GmaModelEntry GmaModelEntry, *PGmaModelEntry;
-
-struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for loaded GMA files. The first 32 bytes are extra; not part of the original GMA file */
-    s32 model_count;
-    void * model_list_ptr; /* Pointer to the first model (after GMA header) */
-    struct GmaModelEntry * model_entries;
-    dword model_names_ptr;
-    dword g_initially_zero;
-    undefined field_0x14[0xc];
-} __attribute__((__packed__));
-
-struct GmaModelEntry {
-    struct GmaModelHeader * model;
-    char * name;
-} __attribute__((__packed__));
-
 typedef struct GmaVertexControlHeader GmaVertexControlHeader, *PGmaVertexControlHeader;
 
 struct GmaVertexControlHeader { /* Also called "Model Type 1". This structure appears to outline various information relating to skinned and effective models only. A such, it is assumed that it is data for controlling the vertices. */
@@ -3093,27 +3153,6 @@ typedef struct GmaHeader GmaHeader, *PGmaHeader;
 struct GmaHeader { /* First 8 bytes of a GMA file. Following this is an arbitrary-length list of 8-byte GMA model entries */
     s32 model_count; /* The number of GCMF models in the file (including null entries) */
     s32 header_size; /* Size of header including FIFO padding before GCMF models begin. Also called "model base position" */
-} __attribute__((__packed__));
-
-typedef struct TplBuffer TplBuffer, *PTplBuffer;
-
-typedef struct TplTextureHeader TplTextureHeader, *PTplTextureHeader;
-
-struct TplBuffer { /* Buffer allocated for TPL files (with 32 extra bytes at the beginning compared to the on-disc TPL file). Amusement Vision TPL is different than standard Gamecube TPL */
-    s32 texture_count;
-    struct TplTextureHeader * texture_headers;
-    void * raw_tpl_buffer; /* Pointer to the raw TPL data loaded from disc */
-    dword g_initially_zero;
-    undefined field_0x10[0x10];
-} __attribute__((__packed__));
-
-struct TplTextureHeader {
-    GXTexFmt  format;
-    dword data_offset;
-    u16 width;
-    u16 height;
-    u16 mipmap_count;
-    u16 always_0x1234;
 } __attribute__((__packed__));
 
 typedef struct GmaSomeStruct GmaSomeStruct, *PGmaSomeStruct;
@@ -4524,7 +4563,7 @@ extern "C" {
     extern undefined1 g_some_gmaflag_2;
     extern undefined1 g_some_gmaflag_3;
     extern pointer INIT_REL_PATHS[2];
-    extern OSHeapHandle __OSCurrHeap;
+    extern OSHeapHandle chara_heap;
     extern undefined4 arena_lo;
     extern pointer gx;
     extern BOOL32 SHOULD_ALLOCATE_MEM_FROM_ARENA_HI;
@@ -4731,6 +4770,7 @@ extern "C" {
     extern undefined4 g_something_with_world_theme_3;
     extern undefined2 g_something_with_world_theme_4;
     extern undefined2 g_something_with_world_theme_5;
+    extern struct Ape * * BGApeTable;
     extern undefined bg_init_funcs;
     extern undefined bg_tick_funcs;
     extern undefined bg_dest_funcs;
@@ -4816,9 +4856,15 @@ extern "C" {
     extern pointer switchdataD_803d1624;
     extern pointer switchdataD_803d1c2c;
     extern undefined * switchdataD_803d35f0;
+    extern undefined * postfix_table;
+    extern undefined * postfix_table;
     extern undefined * ape_name_enum;
     extern undefined * storymode_ape_enum;
     extern undefined * ape_lod_enum;
+    extern undefined * eye_string_table;
+    extern undefined * eye_name_table;
+    extern undefined * scene_name_enum;
+    extern undefined * enum_face_types;
     extern undefined * ape_face_enum_alt;
     extern undefined * ape_face_enum_monkey;
     extern undefined * switchdataD_803d9220;
@@ -4849,7 +4895,7 @@ extern "C" {
     extern undefined4 g_loaded_rel_count;
     extern struct RelBufferInfo * g_loaded_rel_infos[10];
     extern undefined4 frame_counter;
-    extern undefined2 g_storymode_mode;
+    extern StoryModeFunc  g_storymode_mode;
     extern StoryModeFunc  active_story_mode_func;
     extern undefined2 curr_world;
     extern undefined2 selected_storymode_stage;
@@ -4917,9 +4963,9 @@ extern "C" {
     extern byte menu_stack_ptr;
     extern undefined1 g_menu_stack[10];
     extern s8 number_of_starting_monkeys;
-    extern undefined1 g_currently_selected_world;
-    extern undefined1 g_selected_world;
-    extern undefined1 g_stageselect_selected_stage_number;
+    extern bool stageselect_is_storymode;
+    extern undefined1 stageselect_cm_course_idx;
+    extern undefined1 stageselect_storymode_world_idx;
     extern undefined4 g_some_func_ptr4;
     extern undefined4 g_something_with_camera3;
     extern struct Camera * g_current_camera;
@@ -4965,12 +5011,15 @@ extern "C" {
     extern undefined4 g_some_perf_timer17;
     extern undefined4 g_some_perf_timer18;
     extern undefined4 g_some_perf_timer16;
-    extern undefined2 g_active_music_tracks;
+    extern undefined4 g_debug_sound_ram_usage;
+    extern undefined4 g_debug_sound_aram_usage;
+    extern undefined2 g_active_music_tracks[10];
     extern undefined1 g_something_related_to_bgm_track_id;
     extern undefined1 g_some_music_related_counter;
     extern undefined4 current_bgm_volume;
     extern undefined4 g_something_with_sound5;
     extern undefined4 g_smth_with_sound;
+    extern undefined4 g_player_id_for_sound;
     extern char g_debugtext_unknown_buf1[1961];
     extern char g_debugtext_unknown_buf2[1961];
     extern char g_debugtext_unknown_buf3[1961];
@@ -5080,7 +5129,7 @@ extern "C" {
     extern undefined4 g_some_data_with_font_drawing_22;
     extern u8 g_banana_disp_efc_req_count;
     extern undefined g_banana_disp_efc_stack[10];
-    extern undefined4 g_something_with_apes;
+    extern undefined4 global_ape_lod;
     extern undefined4 g_is_waiting_on_some_arq_request;
     extern struct GCachedFileEntry g_cached_file_entries[128];
     extern undefined4 g_last_filename_attempted_to_open;
@@ -5094,10 +5143,22 @@ extern "C" {
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array1[4];
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array2[4];
     extern OSHeapHandle g_some_heap_handle;
+    extern undefined main_mta_storage;
+    extern undefined face_mta_storage;
+    extern undefined hand_mta_storage;
+    extern undefined4 tail_mta_storage;
+    extern undefined g_chara_storage2;
+    extern undefined chara_storage5;
+    extern undefined chara_storage6;
     extern undefined4 g_something_with_apes_and_arc;
+    extern undefined ape_tpls;
     extern undefined some_address;
+    extern undefined ape_gma_table;
     extern struct ARCHandle ape_skl_arc_handle;
     extern void * ape_skl_arc_data;
+    extern undefined ape_ref_count_table;
+    extern struct Ape * registered_apes[64];
+    extern undefined4 total_apes_registered;
     extern undefined4 g_ptr_to_something;
     extern undefined4 g_something_with_cutscenes3;
     extern undefined2 g_author_frame;
@@ -5218,7 +5279,10 @@ extern "C" {
     extern pointer switchdataD_805749f8;
     extern pointer switchdataD_80574bb0;
     extern struct MenuEntry main_menu_list;
+    extern char CAN_PLAY_NUM_PARTY_GAMES_STRING[49];
     extern undefined party_game_menu_list;
+    extern char CAN_PURCHASE_PARTY_GAME_STRING[93];
+    extern char CANNOT_SELECT_PARTY_GAME_STRING[84];
     extern undefined options_menu_list;
     extern struct MenuEntry main_game_menu_list[3];
     extern struct MenuScreen menu_screen_list[87];
@@ -5257,12 +5321,27 @@ extern "C" {
     extern undefined * switchdataD_8063ec08;
     extern pointer switchdataD_80642514;
     extern undefined * switchdataD_80642534;
+    extern undefined4 g_debug_sound_fx_id;
+    extern undefined1 g_debug_sound_fx_pan;
+    extern undefined2 g_debug_sound_fx_pitch;
+    extern undefined2 g_debug_sound_fx_doppler;
+    extern undefined2 g_debug_sound_fx_mod;
+    extern undefined1 g_debug_sound_fx_reverb;
+    extern undefined1 g_debug_sound_fx_chorus;
+    extern undefined1 g_debug_sound_ics;
+    extern undefined2 g_debug_stream_se_id;
+    extern undefined1 g_debug_sound_ics_volume;
+    extern undefined1 g_debug_sound_ics_pan_L;
+    extern undefined1 g_debug_sound_ics_pan_R;
+    extern undefined2 g_debug_stream_bgm_id;
+    extern undefined1 g_debug_sound_efc;
     extern u16 g_something_with_cutscenes2;
     extern u16 g_something_with_cutscenes;
     extern undefined * switchdataD_8065c7a0;
     extern pointer switchdataD_80685ba0;
     extern pointer switchdataD_80686b64;
     extern pointer switchdataD_80686c20;
+    extern undefined2 player_count;
     extern undefined4 race_frames_remaining;
     extern undefined * switchdataD_806c6ec4;
     extern undefined * switchdataD_806c6ef8;
@@ -6494,7 +6573,7 @@ extern "C" {
     void math_sin_cos(s16 angle);
     void CHUNK__math_sin_cos(s16 angle, float * out_sin, float * out_cos);
     float math_tan(s16 param_1);
-    int math_atan2(double param_1, double param_2);
+    s16 math_atan2(double param_1, double param_2);
     int math_atan(double param_1);
     int CHUNK__math_atan(void);
     int g_math_unk3(double param_1);
@@ -7208,6 +7287,7 @@ extern "C" {
     void g_something_with_loading_wl_tpls(int world_number);
     void g_load_efcmdl_gmatpl(void);
     void load_efcmdl_files_from_disc(void);
+    void g_something_freeing_heap_parent(void);
     void process_inputs(void);
     void threshold_analog_inputs(void);
     void g_calc_frames_since_last_input_change(void);
@@ -7240,12 +7320,13 @@ extern "C" {
     double g_smth_called_by_event_tick_sound_1(char param_1, short param_2);
     void g_smth_called_by_event_tick_sound_2(void);
     void g_set_smth_with_sound(undefined param_1);
-    void g_smth_calls_sndFXStartParaInfo(short * param_1);
+    void g_smth_calls_sndFXStartParaInfo(struct GSomeSoundStruct * param_1);
+    int g_something_with_volume(uint * param_1, int param_2, int param_3);
     undefined4 g_something_calls_sndFXKeyOff(uint param_1, int param_2, int param_3);
-    int SoundReq(uint param_1);
-    int SoundReqDirect(uint param_1);
+    int SoundReq(uint g_some_id);
+    int SoundReqDirect(uint sfx_id);
     int SoundReqID(uint g_sfx_id, int param_2);
-    void call_SoundReqID_arg_0(uint g_sfx_id);
+    void call_SoundReqID_arg_0(u32 g_sfx_id);
     void call_SoundReqID_arg_1(uint g_sfx_id);
     void call_SoundReqID_arg_2(uint g_sfx_id);
     void call_SoundReqID_arg_1_copy(uint param_1);
@@ -7268,8 +7349,10 @@ extern "C" {
     int get_smgr_port(char param_1, int param_2, char param_3, short * param_4);
     void g_something_with_bgm(void);
     void g_crossfade_music(void);
-    void SoftStreamSEReq(char param_1, int param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5);
+    void SoftStreamSEReq(char param_1, int sfx_id, undefined4 sfx_volume, undefined4 sfx_pan_L, undefined4 sfx_pan_R);
     void empty_function(void);
+    void call_SoftStreamSEReq_arg_0(int sfx_id, uint sfx_volume, uint sfx_pan_L, uint sfx_pan_R);
+    void g_stop_music_sound_debug(int param_1);
     void g_some_dvd_read_async_sound_callback2(undefined4 param_1, struct DVDCommandBlock * param_2);
     s32 SoftStreamStart(u32 g_looping_state, BgmTrack  g_bgm_id, u32 param_3);
     void empty_function(void);
@@ -7279,7 +7362,7 @@ extern "C" {
     undefined4 play_track_and_fade_out_other_tracks(undefined4 param_1, undefined4 param_2, byte volume);
     undefined4 g_smth_related_to_music(int param_1_00, int param_2_00, int param_3_00, char param_4, char param_5);
     void g_handle_world_bgm(undefined4 g_volume);
-    void g_maybe_related_to_hurryup_music(BgmTrack  param_1);
+    void g_something_with_stopping_music_or_sfx(BgmTrack  param_1);
     int g_maybe_related_to_music_crossfading(int param_1);
     undefined4 g_check_current_track(BgmTrack  track_id);
     void g_maybe_smth_with_music(int param_1, char param_2);
@@ -7330,23 +7413,34 @@ extern "C" {
     void g_set_some_draw_values(float param_1, float param_2, float param_3);
     void g_something_with_some_sort_of_lzs(undefined4 param_1, undefined4 param_2, char * p_lz_path, char * lz_path);
     void empty_function(void);
+    void move_ape_into_ball(struct Ape * ape);
+    void g_default_ape_draw(struct Ape * ape, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void empty_function(void);
     void event_ball_init(void);
     void g_call_maybe_sets_number_of_starting_monkeys(undefined * param_1);
+    void create_stage_player(byte player_index, PhysicsMode  physicsmode, byte ape_id, byte param_4, uint LOD, void * draw_func, int g_variant);
+    void create_stage_player_wrapper(byte player_index, PhysicsMode  physicsMode, byte ape_id, byte param_4, ApeLOD  LOD, void * draw_func);
     void event_ball_tick(void);
     void event_ball_dest(void);
     void add_bananas(int bananas_to_add);
-    void g_something_with_translating_items(double param_1, int param_2, struct Vec3f * param_3);
+    void g_something_with_translating_items(double param_1, int param_2, struct Vec3f * param_position);
     void g_maybe_sets_number_of_starting_monkeys(struct Ball * ball);
     void g_assign_ball_ape(struct Ball * in_ball);
     void ball_physics_g_something_w_postgoal_slowdown(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up(struct Ball * param_1);
     void ball_physics_g_something_w_poastgoal_slowdown_blast_up(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up2(struct Ball * param_1);
+    void collide_with_stage(struct Ball * ball, struct PhysicsBall * physicsball);
+    void position_ball(struct Ball * ball, struct PhysicsBall * phys_ball);
+    void ball_collision_stars(struct Ball * ball);
     void init_physicsball_from_ball(struct Ball * ball, struct PhysicsBall * physicsball);
     void g_copy_physicsball_to_ball(struct Ball * ball, struct PhysicsBall * physicsball);
+    void g_ball_ape_rotation(struct Ball * ball);
     void spawn_postgoal_ball_sparkle(void);
-    void g_something_with_sfx(struct Ball * ball);
+    void g_some_ballfunc(struct Ball * param_1);
+    void ball_sounds_gameplay(struct Ball * ball);
+    BallMode * ball_movement_sparks(struct Ball * ball);
+    void set_visual_scale(struct Ball * ball);
     void main_game_draw_monkey(void);
     void g_something_with_view_stage_and_ball(void);
     undefined4 * g_some_ball_stage_coli_func(struct PhysicsBall * physicsball, struct StagedefFileHeader * stagedef);
@@ -7380,6 +7474,7 @@ extern "C" {
     double g_advance_itemgroup_anim_frame(struct Itemgroup * itemgroup, struct StagedefColiHeader * colis_header);
     void g_advance_stage_animation(void);
     void g_transform_some_itemgroup_vec(void);
+    GmaModelHeader * get_GmaBuffer_entry(struct GmaBuffer * buffer, char * name);
     void g_something_with_stgname3(void);
     void init_itemgroups(void);
     void empty_function(void);
@@ -8004,10 +8099,10 @@ extern "C" {
     void g_smth_with_rendefc_reflective_height(double height);
     void g_some_perf_timer_function(void);
     void empty_function(void);
-    void g_set_something_with_apes_to_one(void);
+    void set_global_ape_LOD_1(void);
     void empty_function(void);
     undefined4 return_0(void);
-    void g_load_ape_gameplay_with_some_more_params(int param_1);
+    void load_ape_gameplay_id_only(int monkey_id);
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
@@ -8019,10 +8114,11 @@ extern "C" {
     void g_some_arq_callback(u32 pointerToARQRequest);
     void g_something_load_from_disc(void);
     uint g_something_with_dvd(s32 entry_num, undefined4 * param_2);
-    BOOL32 g_open_file(char * file_path, struct GSomeFileStruct * param_2);
-    uint g_maybe_dvd_close(int * param_1);
+    BOOL32 g_open_file(char * file_path, struct GSomeFileStruct * fileStruct);
+    BOOL32 dvd_close(struct GSomeFileStruct * file);
     void g_some_ARQPostRequest_callback(void);
     u32 g_something_with_reading_dvd_file(int * param_1, void * buffer, u32 length, int offset);
+    int fileSize(struct GSomeFileStruct * fileStruct);
     void g_some_dvd_callback(s32 result, struct DVDFileInfo * fileInfo);
     void g_something_with_dvd2(uint param_1, int param_2);
     int add_one_wrap_if_over127(int num);
@@ -8158,22 +8254,24 @@ extern "C" {
     void apply_wormhole_tf_to_quat(struct Quat * quat, Mtx * wormhole_tf);
     void empty_function(void);
     void gan_setanim_wrapper(struct Ape * param_1, char * param_2);
-    void gan_setAnim(struct Ape * ape, undefined * param_2, int * animation_number);
+    void gan_setAnim(struct Ape * ape, undefined * param_2, short animation_number);
     void gan_setanim_edance(undefined4 param_1, undefined param_2, uint param_3, uint param_4, uint param_5);
     void gan_incframe(double g_speed, struct Ape * ape);
     void g_smth_with_quat_slerp(ushort * param_1);
+    uint g_table_index(uint * param1, char * str);
+    void load_ape_body(int ape_index, int scene_index);
     void gan_setanim_estagebegin(struct GApeAnim * * param_1, int param_2, int param_3);
     void g_something_freeing_chara_heap_3(void * * param_1);
-    void g_something_with_new_ape(struct GApeAnim * * param_1, int param_2, int param_3);
+    void g_something_with_new_ape(struct GApeAnim * * animation_array, int param_2, int param_3);
     ulonglong event_ape_init(void);
     void event_ape_tick(void);
     void event_ape_dest(void);
-    Ape * load_ape(struct GApeAnim * param_1, ApeLOD  param_2, int param_3, int param_4);
+    Ape * load_ape(int chara_index, ApeLOD  LOD, int scene_index, int s_mal);
     Ape * g_load_ape_wrapper(int param_1, int param_2, int param_3);
-    void load_ape_gameplay(int monkey_id, undefined4 param_2, int param_3);
-    void g_load_ape_gameplay_with_some_params(int param_1, undefined4 param_2);
+    void load_ape_gameplay(int monkey_id, undefined4 LOD, int g_variant);
+    void load_ape_gameplay_LOD(int monkey_id, ApeLOD  LOD);
     void draw_ape_subroutine(int param_1);
-    void g_draw_ape1(double param_1, struct Ape * param_2);
+    void g_draw_ape1(double param_1, struct Ape * ape2);
     void draw_ape_wrapper(struct Ape * ape);
     void g_something_with_freeing_chara_heap_ape(struct Ape * ape);
     void g_draw_ape2(struct Ape * ape);
@@ -8181,18 +8279,22 @@ extern "C" {
     void g_load_mal_files_from_disc(int param_1, int param_2, int param_3, int param_4);
     void g_something_freeing_chara_heap_4(int param_1, int param_2, int param_3);
     void g_something_freeing_chara_heap_2(int param_1, int param_2);
+    void assign_model_pointers(struct Ape * ape, ApeLOD  lod);
     int gan_getsomeframe(struct Ape * ape, int index);
     double body_frame_add72(struct Ape * ape);
     undefined * get_ape_game_string(struct Ape * ape);
     void g_related_to_loading_ape(int param_1, int param_2, int param_3, int param_4);
     void g_load_ape_mta_mal_files(int param_1, int param_2);
     uint g_something_with_comparing_strings(undefined4 param_1, char * param_2);
-    Ape g_get_ape_from_array(struct Ape * __return_storage_ptr__, int index);
+    void register_ape(struct Ape * ape);
+    void unregister_ape(struct Ape * ape);
+    Ape get_ape_index(struct Ape * __return_storage_ptr__, int index);
     void dip_apenum_draw(int param_1);
     char * get_ape_name_string(struct Ape * ape);
     char * get_ape_lod_string(struct Ape * ape);
     undefined * get_ape_face_string(struct Ape * param_1);
     int seek(char * param_1);
+    void g_load_models(struct Ape * ape);
     void g_something_freeing_heap_3(void * param_1);
     int g_get_ape_flag(struct Ape * ape, undefined4 g_something_with_game, int param_3);
     void gan_setanim_e4(struct GApeAnim * param_1);
@@ -8209,6 +8311,9 @@ extern "C" {
     void sprite_rank_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_name_entry_get_course(int param_1);
     void g_some_ape_anim_func1(struct Ape * ape);
+    void set_ape_anim(struct Ape * ape, undefined animationType);
+    void g_some_set_ape_anim(struct Ape * ape, undefined chara_anim_type, undefined2 param_3);
+    void run_anim_funcs(struct Ape * ape);
     void g_something_with_loading_cutscenes(int param_1_00);
     uint g_something_to_do_with_cutscenes(int g_cutscene_id);
     void empty_function(void);
@@ -8260,7 +8365,7 @@ extern "C" {
     void unlock_staff_credits_game(void);
     uint g_check_if_partygame_unlocked(int param_1);
     int get_num_of_unlocked_party_games(void);
-    uint g_get_num_of_unlocked_party_games_2(void);
+    uint get_num_of_unlocked_party_games_2(void);
     void set_unlocked_monkeys_to_three(void);
     uint get_num_unlocked_monkeys(void);
     void g_set_movie_as_unlocked(int param_1);
@@ -8323,6 +8428,8 @@ extern "C" {
     void smd_game_scenscnplay_return(void);
     void smd_game_force_over_init(void);
     void smd_game_force_over_tick(void);
+    void challenge_mode_physics(struct Ball * ball);
+    void apply_velocity(struct Ball * ball);
     void g_smth_with_mystery_3(struct Ball * ball);
     void g_camera_func89(struct Camera * camera, struct Ball * ball);
     void g_camera_func90(struct Camera * camera, struct Ball * ball);
@@ -8428,7 +8535,7 @@ extern "C" {
     void g_on_main_menu_pressed(void);
     void g_something_with_menus4(void);
     void enter_challenge_mode(void);
-    void g_something_with_practice_mode_init(void);
+    void enter_practice_mode(void);
     byte * g_handle_starting_monkeys_count(int param_1, int param_2);
     void create_main_menu_sprites(void);
     void g_display_game_settings_sprite(void);
@@ -8474,7 +8581,9 @@ extern "C" {
     void test_mode_prolog(void);
     void test_mode_unlinked_func(void);
     void g_references_420_05_maybe_wraparound_for_debug(void);
+    void g_init_smd_test_sound_main(void);
     void g_something_with_debug_mode_sound(void);
+    void g_draw_debug_mode_sound_screen(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_something_that_loads_common_p_dot_lz(void);
     void empty_function(void);
     void empty_function(void);

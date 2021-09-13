@@ -85,7 +85,7 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
-    {.type = WidgetType::Text, .text = {"  Current version: v0.5.0"}},
+    {.type = WidgetType::Text, .text = {"  Current version: v0.5.1"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
      .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
@@ -196,14 +196,8 @@ static Widget sound_widgets[] = {
              .get = pref::get_mute_bgm,
              .set = pref::set_mute_bgm,
          }},
-    {.type = WidgetType::Text, .text = {"Changing background music setting"}},
-    {.type = WidgetType::Text, .text = {"requires reboot:"}},
-    {.type = WidgetType::Button,
-     .button =
-         {
-             .label = "Reboot Game Now",
-             .push = sfx::reboot,
-         }},
+    {.type = WidgetType::Text, .text = {"  To apply background music setting:"}},
+    {.type = WidgetType::Text, .text = {"  Wait 2s then reset console"}},
 
     {.type = WidgetType::Separator},
     {.type = WidgetType::Checkbox,
