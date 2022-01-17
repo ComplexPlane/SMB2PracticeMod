@@ -1,4 +1,4 @@
-# SMB2 Practice Mod Dolphin Setup Guide
+# Dolphin Setup Guide
 
 ## Set up the GCI
 

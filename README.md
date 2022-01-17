@@ -24,7 +24,7 @@ Features include:
 # Install
 
 To install the mod on a **Wii console** (recommended), follow [this guide](doc/console-setup-guide.md). There's also
-a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1), but it's a
+a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) but it's a
 bit out-of-date.
 
 To install the mod on **Dolphin Emulator**, follow [this guide](doc/dolphin-setup-guide.md).
@@ -36,6 +36,10 @@ for savestates and for other features. For individual-world practice, head to St
 to change world.
 
 Be sure to look for the Easter egg!
+
+# Building
+
+To build from source, see [this guide](doc/building.md).
 
 # Contact
 

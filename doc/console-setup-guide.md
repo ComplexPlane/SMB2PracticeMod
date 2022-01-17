@@ -1,4 +1,4 @@
-# SMB2 Practice Mod Console Setup Guide
+# Console Setup Guide
 
 1. Homebrew your Wii using [this guide](https://wii.guide), up to and including installing the Homebrew channel. I
    highly recommend following the Letterbomb homebrew method over other methods, it's super reliable and easy.
