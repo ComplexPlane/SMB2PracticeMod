@@ -281,3 +281,6 @@ __pycache__/
 /CMakeFiles/
 /cmake_install.cmake
 /build/
+/.clangd/
+/*.elf
+/*.rel
