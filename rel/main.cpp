@@ -67,7 +67,7 @@ static void unlock_everything() {
 }
 
 void init() {
-    mkb::OSReport("[mod] ApeSphere loaded\n");
+    mkb::OSReport("[pracmod] SMB2 Practice Mod loaded\n");
 
     perform_assembly_patches();
 

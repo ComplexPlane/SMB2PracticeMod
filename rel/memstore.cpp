@@ -62,7 +62,7 @@ void MemStore::do_region(void* ptr, u32 size) {
 }
 
 void MemStore::print_stats() const {
-    mkb::OSReport("[mod] MemStore total size: %d bytes\n", m_save_buf_len);
+    mkb::OSReport("[pracmod] MemStore total size: %d bytes\n", m_save_buf_len);
 }
 
 Mode MemStore::get_mode() const { return m_mode; }

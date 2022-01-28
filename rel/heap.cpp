@@ -2,6 +2,7 @@
 
 #include <mkb.h>
 #include <cinttypes>
+#include "relutil.h"
 
 namespace heap {
 

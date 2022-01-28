@@ -88,7 +88,7 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Text, .text = {"  Current version: v0.5.1"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
-     .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
+     .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
 
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
