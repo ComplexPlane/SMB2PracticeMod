@@ -30,7 +30,7 @@ lis r28,0x8000
 bl checkModLink
 cmpwi r3,-1 # If Workshop Mod is loaded, but ModLink is an incompatible version...
 beq- exit # Exit
-mr r20,r3 # Store result for later, 0  wsmod not loaded, 1  wsmod is loaded
+mr r20,r3 # Store result for later, 0 = wsmod not loaded, 1 = wsmod is loaded
 
 li r27,0 # Used to check if a REL file is loaded or not
 
@@ -118,7 +118,8 @@ rlwinm r23,r23,0,0,26
 
 # Allocate memory based on the adjusted file size
 mr r3,r24 # File Size
-bl allocateFromMainLoopRelocMemory
+mr r4,r20 # 0 = rel, 1 = heap
+bl allocateFromRelOrHeap
 
 # Backup the returned address to be used for later
 mr r22,r3
@@ -138,7 +139,8 @@ bne- closeCard
 
 # Get the BSS Area size and allocate memory for it
 lwz r3,0x20(r22)
-bl allocateFromMainLoopRelocMemory
+mr r4,r20 # 0 = rel, 1 = heap
+bl allocateFromRelOrHeap
 
 # Backup the returned address to be used for later
 mr r21,r3
@@ -267,6 +269,11 @@ blr
 #
 # void *allocateFromRelOrHeap(u32 size, bool use_heap)
 #
+
+allocateFromRelOrHeap:
+cmpwi r4,0
+beq allocateFromMainLoopRelocMemory
+b allocateFromWsmodHeap
 
 #
 # CARDClose()
