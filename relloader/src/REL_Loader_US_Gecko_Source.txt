@@ -1,4 +1,18 @@
-# 80006d08 - Address to hook for this code
+#
+# HOW TO BUILD ME:
+# 
+# To turn into a Gecko code:
+# - Get CodeWrite: https://github.com/TheGag96/CodeWrite
+# - Use 80006d08 as insertion address
+# - Paste in asm and generate Gecko codes
+# - Prepend this line to generated Gecko code: 040044C0 72656C00
+#
+# To turn into a .gct for use with Nintendont:
+# - Build Gecko code with CodeWrite like above
+# - Get Gecko Code Manager: https://www.zeldacodes.org/downloads/code-manager
+# - Set GM2E8P gamecode
+# - Add a code, paste in Gecko, save modifications, export to GCT
+#
 
 # Make sure mkb2.main_game.rel was the REL file that was just loaded
 lwz r3,0(r31) # Pointer to the Main Loop's Module
@@ -11,6 +25,12 @@ bne+ exit
 lis r30,0x8002
 lis r29,0x8001
 lis r28,0x8000
+
+# Determine whether Workshop Mod is loaded, and if the ModLink version is compatible
+bl checkModLink
+cmpwi r3,-1 # If Workshop Mod is loaded, but ModLink is an incompatible version...
+beq- exit # Exit
+mr r20,r3 # Store result for later, 0  wsmod not loaded, 1  wsmod is loaded
 
 li r27,0 # Used to check if a REL file is loaded or not
 
@@ -148,6 +168,26 @@ lwz r27,0x34(r22)
 # Done, so close and unmount the card
 b closeCard
 
+#############################
+###### Begin Functions ######
+#############################
+
+#
+# s32 checkModLink()
+#
+# Returns -1 if invalid mod link version
+#          0 if Workshop Mod not loaded
+#          1 if Workshop MOd is loaded
+#
+
+checkModLink:
+li r3,0
+blr
+
+#
+# void *allocateFromMainLoopRelocMemory(u32 size)
+#
+
 allocateFromMainLoopRelocMemory:
 stwu %sp,-0x10(%sp)
 mflr %r0
@@ -184,6 +224,10 @@ mtlr %r0
 addi %sp,%sp,0x10
 blr
 
+#
+# allocateFromArenaLow(u32 size)
+#
+
 allocateFromArenaLow:
 stwu %sp,-0x10(%sp)
 mflr %r0
@@ -215,6 +259,18 @@ cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
 mtlr r14
 blr
+
+#
+# void *allocateFromWsmodHeap(u32 size)
+#
+
+#
+# void *allocateFromRelOrHeap(u32 size, bool use_heap)
+#
+
+#
+# CARDClose()
+#
 
 CARDClose:
 mflr r0
@@ -248,6 +304,10 @@ lwz r31,0x14(sp)
 addi sp,sp,0x18
 mtlr r0
 blr
+
+#############################
+####### End Functions #######
+#############################
 
 callOSUnlink:
 ori r3,r29,0xb8c # OSUnlink
