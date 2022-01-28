@@ -307,6 +307,16 @@ blr
 # void *allocateFromWsmodHeap(u32 size)
 #
 
+allocateFromWsmodHeap:
+
+# Load ModLink base addr
+lis r4,0x800a
+ori r4,r4,0x9cb4
+# Branch to malloc func
+lwz r5,0x14(r4)
+mtctr r5
+bctr
+
 #
 # void *allocateFromRelOrHeap(u32 size, bool use_heap)
 #
