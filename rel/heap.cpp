@@ -189,6 +189,16 @@ void check_integrity() {
     }
 }
 
-void init() { make_heap(); }
+void init(mkb::HeapInfo* heap_info) {
+    if (heap_info != nullptr) {
+        s_heap_info = *heap_info;
+    } else {
+        make_heap();
+    }
+}
+
+mkb::HeapInfo& get_heap_info() {
+    return s_heap_info;
+}
 
 }  // namespace heap

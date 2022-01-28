@@ -25,6 +25,7 @@
 #include <cstring>
 #include "sfx.h"
 #include "version.h"
+#include "modlink.h"
 
 namespace main {
 
@@ -69,16 +70,19 @@ static void unlock_everything() {
 }
 
 void init() {
-    mkb::OSReport("[pracmod] SMB2 Practice Mod version v%d.%d.%d loaded\n",
+    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n",
                   version::PRACMOD_VERSION.major,
                   version::PRACMOD_VERSION.minor,
                   version::PRACMOD_VERSION.patch);
 
-    return;
-
     perform_assembly_patches();
 
-    heap::init();
+    if (modlink::get() != nullptr) {
+        heap::init(modlink::get()->heap_info);
+    } else {
+        heap::init(nullptr);
+    }
+    return;
     pref::init();
     cardio::init();
     draw::init();

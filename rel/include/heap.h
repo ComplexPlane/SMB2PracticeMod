@@ -4,7 +4,13 @@
 
 namespace heap {
 
-void init();
+/**
+ * Initialize the mod's heap.
+ *
+ * @param heap_info Use this heap if non-nullptr, otherwise create a new heap
+ */
+void init(mkb::HeapInfo* heap_info);
+
 void* alloc(u32 size);
 bool free(void* ptr);
 void check_integrity();

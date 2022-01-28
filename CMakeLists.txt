@@ -45,4 +45,4 @@ add_executable(SMB2PracticeMod
         rel/relutil.cpp
         rel/freeze.cpp
         rel/cardio.cpp
-        rel/sfx.cpp rel/version.cpp rel/include/version.h)
+        rel/sfx.cpp rel/version.cpp rel/include/version.h rel/include/modlink.h rel/modlink.cpp)
