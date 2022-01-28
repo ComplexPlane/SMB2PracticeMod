@@ -1,3 +1,5 @@
+#include <mkb.h>
+
 #include "assembly.h"
 #include "cmseg.h"
 #include "draw.h"
@@ -7,6 +9,7 @@
 #include "iw.h"
 #include "jump.h"
 #include "menu_impl.h"
+#include "menu_defn.h"
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
@@ -15,14 +18,13 @@
 #include "tetris.h"
 #include "timer.h"
 
-#include <mkb.h>
-
 #include <banans.h>
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
 #include <cstring>
 #include "sfx.h"
+#include "version.h"
 
 namespace main {
 
@@ -47,7 +49,7 @@ static void perform_assembly_patches() {
     patch::write_nop(reinterpret_cast<void*>(0x80299f54));
 
     // Titlescreen patches
-    strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
+    mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
     patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
                         reinterpret_cast<void*>(main::custom_titlescreen_text_color));
 }
@@ -62,12 +64,15 @@ static void unlock_everything() {
     mkb::unlock_info.movies = 0x0fff;
     mkb::unlock_info.party_games = 0x0001b600;
     mkb::unlock_info.g_movies_watched = 0x0fff;
-    memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
-    memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
+    mkb::memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
+    mkb::memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
 void init() {
-    mkb::OSReport("[pracmod] SMB2 Practice Mod loaded\n");
+    mkb::OSReport("[pracmod] SMB2 Practice Mod version v%d.%d.%d loaded\n",
+                  version::PRACMOD_VERSION.major,
+                  version::PRACMOD_VERSION.minor,
+                  version::PRACMOD_VERSION.patch);
 
     return;
 
@@ -85,6 +90,7 @@ void init() {
     cmseg::init();
     freeze::init();
     sfx::init();
+    menu_defn::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
@@ -99,7 +105,7 @@ void init() {
         scratch::disp();
         cmseg::disp();
         inputdisp::disp();
-        menu::disp();
+        menu_impl::disp();
         draw::disp();
 
         s_draw_debug_text_trampoline();
@@ -115,7 +121,7 @@ void init() {
         unlock_everything();
         iw::tick();
         savestate::tick();
-        menu::tick();
+        menu_impl::tick();
         jump::tick();
         inputdisp::tick();
         gotostory::tick();

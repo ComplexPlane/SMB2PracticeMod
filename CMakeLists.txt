@@ -13,7 +13,7 @@ include_directories(rel/include)
 include_directories(rel/include/gc)
 include_directories(rel/include/mkb)
 
-add_executable(ApeSphere
+add_executable(SMB2PracticeMod
         rel/assembly/main_loop_assembly.s
         rel/runtime/restfpr_x.s
         rel/runtime/restgpr_x.s
@@ -45,4 +45,4 @@ add_executable(ApeSphere
         rel/relutil.cpp
         rel/freeze.cpp
         rel/cardio.cpp
-        rel/sfx.cpp)
+        rel/sfx.cpp rel/version.cpp rel/include/version.h)
