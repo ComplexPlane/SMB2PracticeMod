@@ -69,6 +69,8 @@ static void unlock_everything() {
 void init() {
     mkb::OSReport("[pracmod] SMB2 Practice Mod loaded\n");
 
+    return;
+
     perform_assembly_patches();
 
     heap::init();

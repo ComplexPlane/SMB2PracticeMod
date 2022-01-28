@@ -1,8 +1,10 @@
+# 80006D0C - Address to hook for this code
+
 # HOW TO BUILD ME:
 # 
 # To turn into a Gecko code:
 # - Get CodeWrite: https://github.com/TheGag96/CodeWrite
-# - Use 80006d08 as insertion address
+# - Use 80006D0C as insertion address
 # - Paste in asm and generate Gecko codes
 # - Prepend this line to generated Gecko code: 040044C0 72656C00
 #
@@ -20,13 +22,11 @@
 # 0x4:  u16 modlink_semver_major; 
 # 0x6:  u16 modlink_semver_minor;
 # 0x8:  u16 modlink_semver_patch;
-# 0xA:  u16 padding_0xA;
-# 0xC:  u16 wsmod_semver_major;
-# 0xE:  u16 wsmod_semver_minor;
-# 0x10: u16 wsmod_semver_patch;
-# 0x12: u16 padding2;
-# 0x14: void* (*malloc_func)(u32 size);
-# 0x18: HeapInfo* heap_info;
+# 0xA:  u16 wsmod_semver_major;
+# 0xC:  u16 wsmod_semver_minor;
+# 0xE: u16 wsmod_semver_patch;
+# 0x10: void* (*malloc_func)(u32 size);
+# 0x14: HeapInfo* heap_info;
 
 # Make sure mkb2.main_game.rel was the REL file that was just loaded
 lwz r3,0(r31) # Pointer to the Main Loop's Module
@@ -313,7 +313,7 @@ allocateFromWsmodHeap:
 lis r4,0x800a
 ori r4,r4,0x9cb4
 # Branch to malloc func
-lwz r5,0x14(r4)
+lwz r5,0x10(r4)
 mtctr r5
 bctr
 
@@ -394,5 +394,7 @@ mtctr r27
 bctrl
 
 exit:
-# Restore the overwritten instruction
+# Restore the overwritten instruction, and the instruction before it
+# as we clobbered r3
 lwz r3,0(r31) # Pointer to the Main Loop's Module
+lwz r12,0x34(r3) # Pointer to Main Loop's prologue function
