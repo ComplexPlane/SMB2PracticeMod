@@ -3,7 +3,6 @@
 #include <mkb.h>
 
 #include "log.h"
-#include "pad.h"
 
 namespace patch {
 
@@ -51,6 +50,28 @@ u32 write_nop(void* ptr) { return write_word(ptr, 0x60000000); }
 
 void* hook_function_internal(void* function, void* destination) {
     u32* instructions = static_cast<u32*>(function);
+
+    // If function has been hooked already, chain the hooks
+
+    constexpr u32 B_OPCODE_MASK = 0xFC000000;
+    constexpr u32 B_OPCODE = 0x48000000;
+    constexpr u32 B_DEST_MASK = 0x03FFFFFC;
+
+    if ((instructions[0] & B_OPCODE_MASK) == B_OPCODE) {
+        // Compute destination currently branched to
+        u32 old_dest_offset = instructions[0] & B_DEST_MASK;
+        // Sign extend to make it actually a s32
+        if (old_dest_offset & (0x02000000)) {
+            old_dest_offset |= 0xFC000000;
+        }
+        u32 old_dest = reinterpret_cast<u32>(function) + old_dest_offset;
+
+        // Hook to our new function instead
+        write_branch(&instructions[0], destination);
+
+        // Return the old hooked function as the trampoline
+        return reinterpret_cast<void*>(old_dest);
+    }
 
     u32* trampoline = static_cast<u32*>(heap::alloc(8));
     MOD_ASSERT(trampoline != nullptr);

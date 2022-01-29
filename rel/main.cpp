@@ -22,10 +22,8 @@
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
-#include <cstring>
 #include "sfx.h"
 #include "version.h"
-#include "modlink.h"
 
 namespace main {
 
@@ -151,7 +149,6 @@ void tick() {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
     }
     pad::on_frame_start();
-    mkb::OSReport("[pracmod] DEBUG: tick()\n");
 }
 
 }  // namespace main
