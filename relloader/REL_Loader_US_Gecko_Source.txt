@@ -5,7 +5,7 @@
 # To turn into a Gecko code:
 # - Get CodeWrite: https://github.com/TheGag96/CodeWrite
 # - Use 80006D0C as insertion address
-# - Paste in asm and generate Gecko codes
+# - Paste in asm and generate Gecko code
 # - Prepend this line to generated Gecko code: 040044C0 72656C00
 #
 # To turn into a .gct for use with Nintendont:
@@ -24,7 +24,7 @@
 # 0x8:  u16 modlink_semver_patch;
 # 0xA:  u16 wsmod_semver_major;
 # 0xC:  u16 wsmod_semver_minor;
-# 0xE: u16 wsmod_semver_patch;
+# 0xE:  u16 wsmod_semver_patch;
 # 0x10: void* (*malloc_func)(u32 size);
 # 0x14: HeapInfo* heap_info;
 

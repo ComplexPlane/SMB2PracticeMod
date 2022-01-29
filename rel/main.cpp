@@ -77,11 +77,7 @@ void init() {
 
     perform_assembly_patches();
 
-    if (modlink::get() != nullptr) {
-        heap::init(modlink::get()->heap_info);
-    } else {
-        heap::init(nullptr);
-    }
+    heap::init();
     return;
     pref::init();
     cardio::init();
@@ -156,6 +152,7 @@ void tick() {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
     }
     pad::on_frame_start();
+    mkb::OSReport("[pracmod] DEBUG: tick()\n");
 }
 
 }  // namespace main

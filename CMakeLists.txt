@@ -10,8 +10,6 @@ set(CMAKE_C_FLAGS "-m32 -Wno-write-strings")
 set(CMAKE_CXX_FLAGS "-m32 -Wno-write-strings")
 
 include_directories(rel/include)
-include_directories(rel/include/gc)
-include_directories(rel/include/mkb)
 
 add_executable(SMB2PracticeMod
         rel/assembly/main_loop_assembly.s
@@ -45,4 +43,7 @@ add_executable(SMB2PracticeMod
         rel/relutil.cpp
         rel/freeze.cpp
         rel/cardio.cpp
-        rel/sfx.cpp rel/version.cpp rel/include/version.h rel/include/modlink.h rel/modlink.cpp)
+        rel/sfx.cpp rel/version.cpp
+        rel/include/version.h
+        rel/include/modlink.h
+        rel/modlink.cpp)
