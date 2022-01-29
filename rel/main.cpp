@@ -34,10 +34,9 @@ static void (*s_process_inputs_trampoline)();
 static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
 
 static void perform_assembly_patches() {
-    const u32 MAIN_LOOP_REL_LOCATION = *reinterpret_cast<u32*>(0x80004524);
-    constexpr u32 OFFSET = 0x600;
     // Inject the run function at the start of the main game loop
-    patch::write_branch_bl(reinterpret_cast<void*>(MAIN_LOOP_REL_LOCATION + OFFSET),
+    // Hooked after Workshop Mod's tick()
+    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
                            reinterpret_cast<void*>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
