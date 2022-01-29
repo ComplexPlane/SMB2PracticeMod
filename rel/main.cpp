@@ -75,7 +75,6 @@ void init() {
     perform_assembly_patches();
 
     heap::init();
-    return;
     pref::init();
     cardio::init();
     draw::init();
