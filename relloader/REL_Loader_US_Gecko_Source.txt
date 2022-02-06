@@ -1,4 +1,4 @@
-# 80007D0C - Address to hook for this code
+# 80006D0C - Address to hook for this code
 
 # HOW TO BUILD ME:
 # 
