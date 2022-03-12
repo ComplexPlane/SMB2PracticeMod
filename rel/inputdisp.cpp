@@ -132,7 +132,8 @@ void on_PADRead(mkb::PADStatus* statuses) {
 }
 
 void tick() {
-    set_sprite_visible(!pref::get_input_disp() || pref::get_input_disp_center_location());
+    set_sprite_visible(!pref::get_input_disp() || (pref::get_input_disp_center_location() &&
+                                                   !pref::get_input_disp_raw_stick_inputs()));
 }
 
 static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2f* out_pos) {
@@ -236,6 +237,8 @@ static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Ve
 }
 
 static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
+    if (!pref::get_input_disp_raw_stick_inputs()) return;
+
     Vec2f center = {
         .x = pref::get_input_disp_center_location() ? 540.f : 390.f,
         .y = 28.f,

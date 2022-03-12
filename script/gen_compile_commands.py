@@ -16,7 +16,7 @@ def main():
         command = (
             "/usr/bin/c++ "
             f"-I {include_dir} "
-            "-m32 -std=c++20 "
+            "-m32 -std=gnu++20 "
             f"-c {src_path} -o {src_path.with_suffix('.o')}"
         )
         cmds.append(
