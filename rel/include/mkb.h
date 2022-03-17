@@ -58,10 +58,10 @@ using mkb::s8;
 using mkb::u16;
 using mkb::u32;
 using mkb::u8;
-using mkb::Vec2f;
-using mkb::Vec2i;
-using mkb::Vec3f;
-using mkb::Vec3s;
+using mkb::Vec2d;
+using mkb::S32Vec;
+using mkb::Vec;
+using mkb::S16Vec;
 
 // Necessary to use macros here so file information is accurate
 // Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore

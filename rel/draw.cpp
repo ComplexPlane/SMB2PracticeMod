@@ -86,7 +86,7 @@ void debug_text(s32 x, s32 y, mkb::GXColor color, const char* format, ...) {
 }
 
 // Too lazy to make index buffer or display list or whatnot
-static Vec2f heart_verts[] = {
+static Vec2d heart_verts[] = {
     {65.f, 118.14f}, {113, 74},       {120, 63},      {122, 52},      {123, 40},
     {116, 22.5},     {103.25, 13.88}, {88.63, 12.63}, {77.88, 16.25}, {65.25, 29.25},
 };
