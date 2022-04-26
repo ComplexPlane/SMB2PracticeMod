@@ -95,6 +95,16 @@ static Widget about_widgets[] = {
      .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
 };
 
+static Widget stuntgoal_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Stunt Goal Progress"}},
+    {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
+    {.type = WidgetType::Custom, .custom = {draw::heart}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::ColoredText,
+     .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
+};
+
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget cm_seg_widgets[] = {

@@ -21,6 +21,7 @@
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
+#include <marathon.h>
 #include <cstring>
 #include "sfx.h"
 
@@ -120,6 +121,7 @@ void init() {
         cmseg::tick();
         banans::tick();
         scratch::tick();
+        marathon::tick();
     });
 
     s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
