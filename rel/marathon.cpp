@@ -6,6 +6,7 @@
 #include "draw.h"
 #include "heap.h"
 #include "memstore.h"
+#include "mkb2_ghidra.h"
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
@@ -47,6 +48,26 @@ static void apply_saved_vel() { // [Nambo] Transforms the stored ball velocity r
     ball.vel.y = 10.f;
     ball.vel.z = 10.f;
     reset_saved_vel();
+
+    // Build [world_from_goal]
+    // Build [world_from_itemgroup] * [itemgroup_from_goal]
+    // Build [world_from_itemgroup] * [translation(goal)] * [zrotation(goal)] * [yrotation(goal)] * [xrotation(goal)]
+    mkb::mtxa_from_mtx(&mkb::itemgroups[0].transform); // Build [world_from_itemgroup]
+    mkb::mtxa_translate(&mkb::stagedef->coli_header_list[0].goal_list[0].position);
+    mkb::mtxa_rotate_z(mkb::stagedef->coli_header_list[0].goal_list[0].rotation.z);
+    mkb::mtxa_rotate_y(mkb::stagedef->coli_header_list[0].goal_list[0].rotation.y);
+    mkb::mtxa_rotate_x(mkb::stagedef->coli_header_list[0].goal_list[0].rotation.x);
+
+    Vec entered_goal_vel_rt_world = {-100, 0, 0};
+    Vec entered_goal_vel_rt_goal = {};
+    mkb::mtxa_rigid_inv_tf_vec(&entered_goal_vel_rt_world, &entered_goal_vel_rt_goal);
+
+    // Vec pos_rt_itemgroup = {5, 5, 0};
+    // Vec pos_rt_world = {};
+    // mtxa = [ig_to_world]
+    // mkb::mtxa_from_mtx(&mkb::itemgroups[0].transform);
+    // pos_rt_world = mtxa * pos_rt_itemgroup
+    // mkb::mtxa_tf_point(&pos_rt_itemgroup, &pos_rt_world);
 }
 /*
 static void store_saved_vel() { // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
