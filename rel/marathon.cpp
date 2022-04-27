@@ -14,9 +14,9 @@
 namespace marathon {
 
 // [Nambo] Current saved velocity (if all 3 are zero, new stuff can be saved, and nothing will be applied)
-static s32 saved_vel_x = 100.f;
-static s32 saved_vel_y = 100.f;
-static s32 saved_vel_z = 100.f;
+static s32 saved_vel_x = 0.f;
+static s32 saved_vel_y = 0.f;
+static s32 saved_vel_z = 0.f;
 
 static void reset_saved_vel() { // [Nambo] Sets stored velocity to 0
     saved_vel_x = 0.f;
@@ -43,14 +43,15 @@ static void apply_saved_vel() { // [Nambo] Transforms the stored ball velocity r
     ball.vel.z = saved_vel_z;
     reset_saved_vel();
     */
-    ball.vel.x = 10.f;
-    ball.vel.y = 10.f;
-    ball.vel.z = 10.f;
+    ball.vel.x = saved_vel_x;
+    ball.vel.y = saved_vel_y;
+    ball.vel.z = saved_vel_z;
     reset_saved_vel();
 }
-/*
+
 static void store_saved_vel() { // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx]; // I think this makes ball.vel work
+    
     // x axis rotation
     saved_vel_y = ball.vel.y * mkb::math_sin(mkb::StagedefStart::rotation.x + 90) + ball.vel.z * mkb::math_sin(mkb::StagedefStart::rotation.x);
     saved_vel_z = ball.vel.z * mkb::math_sin(mkb::StagedefStart::rotation.x + 90) + ball.vel.y * mkb::math_sin(mkb::StagedefStart::rotation.x);
@@ -61,10 +62,7 @@ static void store_saved_vel() { // [Nambo] Transforms the current ball velocity 
     saved_vel_x = saved_vel_x * mkb::math_sin(mkb::StagedefStart::rotation.x + 90) + saved_vel_y * mkb::math_sin(mkb::StagedefStart::rotation.x);
     saved_vel_y = saved_vel_y * mkb::math_sin(mkb::StagedefStart::rotation.x + 90) + saved_vel_x * mkb::math_sin(mkb::StagedefStart::rotation.x);
 }
-*/
-static void crash() {
-    crash();
-}
+
 
 static void (*s_event_info_tick_tramp2)();
 
@@ -87,9 +85,8 @@ void tick() {
             
         }
     });
-    apply_saved_vel();
     */
-   crash();
+    apply_saved_vel();
 }
 
 

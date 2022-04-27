@@ -119,8 +119,8 @@ void heart() {
     for (u32 i = 1; i < LEN(heart_verts); i++) {
         f32 x = -(heart_verts[i % LEN(heart_verts)].x - CENTER_X) + CENTER_X;
         f32 y = heart_verts[i % LEN(heart_verts)].y;
-        x = (x - CENTER_X) + OFFSET_X;
-        y = (y - CENTER_Y) + OFFSET_Y;
+        x = (x - CENTER_X) * scale + OFFSET_X;
+        y = (y - CENTER_Y) * scale + OFFSET_Y;
         mkb::GXPosition3f32(x, y, Z);
         mkb::GXTexCoord2f32(0, 0);
     }
