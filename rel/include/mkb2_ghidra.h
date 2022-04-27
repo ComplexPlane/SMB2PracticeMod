@@ -1117,13 +1117,13 @@ struct Camera {
     u8 g_some_flag2;
     float g_some_float2;
     float g_some_float3;
-    u16 fov; /* Field of view of the camera, called 'pers' in the debug menu */
-    u16 next_fov; /* Next field of view - when the camera FOV changes through some event (goal replay, new level start), this value is taken and used for the FOV */
-    float aspect_ratio; /* Aspect ratio of the camera */
+    s16 fov; /* Field of view of the camera, called 'pers' in the debug menu */
+    s16 next_fov; /* Next field of view - when the camera FOV changes through some event (goal replay, new level start), this value is taken and used for the FOV */
+    float aspect; /* Aspect ratio of the camera */
     float fov_tangent; /* Tangent of (fov/32768)*(pi/2) */
     float fov_cotangent; /* Cotangent of (fov/32768)*(pi/2) */
-    float start_draw_distance; /* Relative to camera position */
-    float end_draw_distance; /* Relative to camera position */
+    float near; /* Near clip plane distance */
+    float far; /* Far clip plane distance */
     struct Vec2d viewport_pos;
     struct Vec2d viewport_size;
     u16 g_some_counter1;
@@ -1599,8 +1599,8 @@ struct Stobj { /* A "stage object" which is one of a: bumper, jamabar, goaltape,
     float field15_0x4c;
     float field16_0x50;
     struct GmaModelHeader * g_visual_model;
-    struct Vec g_some_position; /* Has something to do w/ position */
-    struct Vec velocity;
+    struct Vec g_some_pos; /* Has something to do w/ position */
+    struct Vec vel;
     struct S16Vec rot;
     short field21_0x76;
     short field22_0x78;
@@ -1965,8 +1965,7 @@ typedef undefined4 BallPhysFlags;
 typedef struct RaycastHit RaycastHit, *PRaycastHit;
 
 struct RaycastHit {
-    u16 geom_flags; /* Bit 0 is set if the hit is valid. Also OR-d with some flags from the tri/sphere/whatever the line trace hit */
-    undefined field_0x2[0x2];
+    u32 flags;
     struct Vec pos; /* Position of ray-geometry intersection */
     struct Vec normal; /* Geometry normal at point of ray-geometry intersection */
 } __attribute__((__packed__));
@@ -2520,7 +2519,7 @@ struct ModeInfo { /* I don't know what to call this, but there's some important 
     undefined2 stage_time_limit;
     undefined4 field3_0x8;
     s16 entered_goal_idx;
-    undefined2 field5_0xe;
+    undefined2 entered_goal_itemgroup_idx;
     struct Vec g_ballVelAtGoal;
     undefined2 g_some_timer_frame_remaining_count;
     undefined2 field8_0x1e;
@@ -4775,6 +4774,8 @@ enum {
     GX_TEXCOORD_NULL=255
 };
 typedef undefined4 GXTexCoordID;
+
+typedef int (* __compar_fn_t)(void *, void *);
 
 typedef uchar uint8_t;
 
@@ -7304,6 +7305,7 @@ extern "C" {
     char * longlong2str(uint param_1, uint param_2, int param_3, char * param_4);
     char * long2str(uint param_1, int param_2, char * param_3);
     char * parse_format(int param_1, char * param_2, uint * param_3);
+    void qsort(void * __base, size_t __nmemb, size_t __size, __compar_fn_t __compar);
     void srand(u32 seed);
     int rand(void);
     byte * __StringRead(byte * * param_1, byte * param_2, int param_3);
