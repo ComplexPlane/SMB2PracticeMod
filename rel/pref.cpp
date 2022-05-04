@@ -30,6 +30,7 @@ enum class PrefId : u16 {
     FreezeTimer = 14,
     MuteBgm = 15,
     MuteTimerDing = 16,
+    InputDispRawStickInputs = 17,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -48,6 +49,7 @@ enum class BoolPref {
     FreezeTimer,
     MuteBgm,
     MuteTimerDing,
+    InputDispRawStickInputs,
 };
 
 struct Pref {
@@ -90,6 +92,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreezeTimer,
     PrefId::MuteBgm,
     PrefId::MuteTimerDing,
+    PrefId::InputDispRawStickInputs,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -146,6 +149,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::MuteBgm;
         case PrefId::MuteTimerDing:
             return BoolPref::MuteTimerDing;
+        case PrefId::InputDispRawStickInputs:
+            return BoolPref::InputDispRawStickInputs;
         default:
             return {};
     }
@@ -285,6 +290,8 @@ bool get_input_disp_notch_indicators() { return get_bool_pref(BoolPref::InputDis
 void set_input_disp_notch_indicators(bool on) {
     set_bool_pref(BoolPref::InputDispNotchIndicators, on);
 }
+bool get_input_disp_raw_stick_inputs() { return get_bool_pref(BoolPref::InputDispRawStickInputs); }
+void set_input_disp_raw_stick_inputs(bool on) { set_bool_pref(BoolPref::InputDispRawStickInputs, on); }
 
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }

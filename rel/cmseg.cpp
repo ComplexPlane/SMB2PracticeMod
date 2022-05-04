@@ -82,7 +82,7 @@ static void gen_course(mkb::CmEntry* course, u32 start_course_stage_num, u32 sta
     mkb::mode_info.cm_course_stage_num = start_course_stage_num;
     mkb::mode_info.cm_stage_id = first_stage_id;  // Record first stage in course
     mkb::current_cm_entry = &course[start_entry_idx + 1];
-    mkb::g_some_cm_stage_id2 = first_stage_id;
+    mkb::g_another_stage_id = first_stage_id;
 
     // Make up "previous" stage for "current" stage
     mkb::CmStage& curr_stage = mkb::cm_player_progress[0].curr_stage;
@@ -151,7 +151,7 @@ static void state_seg_active() {
         } else {
             real_chara = s_ape_charas[pref::get_cm_chara()];
         }
-        mkb::active_monkey_id = real_chara;
+        mkb::active_monkey_id[0] = real_chara;
     }
 
     // Nuke "Final Stage" sprite
@@ -181,7 +181,7 @@ static void state_seg_active() {
 void state_seg_complete() {
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
     if (mkb::mode_info.cm_stage_id == -1 &&
-        mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE) {
+        mkb::mode_info.g_ball_mode & mkb::BALLMODE_ON_BONUS_STAGE) {
         if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
             mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT) {
             mkb::sub_mode_frame_counter += 120;

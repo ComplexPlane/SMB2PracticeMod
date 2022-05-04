@@ -43,6 +43,11 @@ static Widget inputdisp_widgets[] = {
         .checkbox = {"Notch Indicators", pref::get_input_disp_notch_indicators,
                      pref::set_input_disp_notch_indicators},
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Raw Stick Inputs", pref::get_input_disp_raw_stick_inputs,
+                     pref::set_input_disp_raw_stick_inputs},
+    },
 };
 
 static Widget rumble_widgets[] = {

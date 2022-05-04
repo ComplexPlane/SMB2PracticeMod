@@ -20,15 +20,15 @@ if [[ "${1:-}" == "-a" ]]; then
   make -j"$(nproc)"
 
   echo 'Copying GCIs to dolphin emu folder'
-  cp ApeSphere.*.gci /mnt/c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
+  cp SMB2PracticeMod.*.gci /mnt/c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
 
 else
   echo 'Building us version'
   make us -j"$(nproc)"
 
   echo 'Copying GCI to dolphin emu folder'
-  cp ApeSphere.GM2E8P.gci /mnt/c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
+  cp SMB2PracticeMod.GM2E8P.gci /mnt/c/Users/ComplexPlane/Documents/Dolphin\ Emulator/GC/USA/Card\ B/
 fi
 
 # echo 'Copying REL to smb2mut'
-# cp ApeSphere.us.rel ~/romhack/smb2mut/files/mkb2.rel_sample.rel
+# cp SMB2PracticeMod.us.rel ~/romhack/smb2mut/files/mkb2.rel_sample.rel

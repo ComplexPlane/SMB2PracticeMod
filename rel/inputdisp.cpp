@@ -1,20 +1,45 @@
 #include "inputdisp.h"
 
 #include <mkb.h>
-#include <cstring>
 
 #include "draw.h"
+#include "mkb2_ghidra.h"
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
 
 namespace inputdisp {
 
+struct MergedStickInputs {
+    s32 rawX;
+    s32 rawY;
+    s32 gameX;
+    s32 gameY;
+};
+
 static void (*s_create_speed_sprites_tramp)(f32 x, f32 y);
 
 static mkb::PADStatus s_raw_inputs[4];
 
-static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius,
+static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
+    outInputs = {};
+
+    // Accumulate stick inputs from all controllers since we don't always
+    // know which player is active, like in menus
+    // TODO account for d-pad control setting
+    if (!pad::get_exclusive_mode()) {
+        for (s32 i = 0; i < 4; i++) {
+            if (s_raw_inputs[i].err == mkb::PAD_ERR_NONE) {
+                outInputs.rawX += s_raw_inputs[i].stickX;
+                outInputs.rawY += s_raw_inputs[i].stickY;
+                outInputs.gameX += mkb::pad_status_groups[i].raw.stickX;
+                outInputs.gameY += mkb::pad_status_groups[i].raw.stickY;
+            }
+        }
+    }
+}
+
+static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
                       mkb::GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb::GXTexObj* texobj = reinterpret_cast<mkb::GXTexObj*>(0x807ad0e0);
@@ -53,7 +78,7 @@ static void draw_ring(u32 pts, Vec2f center, f32 inner_radius, f32 outer_radius,
     }
 }
 
-static void draw_circle(u32 pts, Vec2f center, f32 radius, mkb::GXColor color) {
+static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb::GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb::GXTexObj* texobj = reinterpret_cast<mkb::GXTexObj*>(0x807ad0e0);
     mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
@@ -83,14 +108,15 @@ static void set_sprite_visible(bool visible) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
         mkb::Sprite& sprite = mkb::sprites[i];
-        if (sprite.g_texture_id == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
+        if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
             sprite.disp_func == mkb::sprite_monkey_counter_icon_disp ||
-            sprite.g_texture_id == 0x502 || sprite.tick_func == mkb::sprite_banana_icon_tick ||
+            sprite.bmp == 0x502 || sprite.tick_func == mkb::sprite_banana_icon_tick ||
             sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
-            sprite.tick_func == mkb::sprite_banana_count_tick || strcmp(sprite.text, ":") == 0 ||
+            sprite.tick_func == mkb::sprite_banana_count_tick ||
+            mkb::strcmp(sprite.text, ":") == 0 ||
             sprite.disp_func == mkb::sprite_hud_player_num_disp) {
-            if ((visible && sprite.g_depth < 0.f) || (!visible && sprite.g_depth >= 0.f)) {
-                sprite.g_depth = -sprite.g_depth;
+            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f)) {
+                sprite.depth = -sprite.depth;
             }
         }
     }
@@ -106,42 +132,38 @@ void on_PADRead(mkb::PADStatus* statuses) {
 }
 
 void tick() {
-    set_sprite_visible(!pref::get_input_disp() || pref::get_input_disp_center_location());
+    set_sprite_visible(!pref::get_input_disp() || (pref::get_input_disp_center_location() &&
+                                                   !pref::get_input_disp_raw_stick_inputs()));
 }
 
-static bool get_notch_pos(Vec2f* out_pos) {
+static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2d* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
-    for (mkb::PadStatusGroup& pad_status_group : mkb::pad_status_groups) {
-        mkb::PADStatus& status = pad_status_group.raw;
-        if (status.err != mkb::PAD_ERR_NONE) continue;
-
-        if (status.stickX == 0 && status.stickY == 60) {
-            *out_pos = {0, 1};
-            notch_found = true;
-        } else if (status.stickX == 0 && status.stickY == -60) {
-            *out_pos = {0, -1};
-            notch_found = true;
-        } else if (status.stickX == 60 && status.stickY == 0) {
-            *out_pos = {1, 0};
-            notch_found = true;
-        } else if (status.stickX == -60 && status.stickY == 0) {
-            *out_pos = {-1, 0};
-            notch_found = true;
-        } else if (status.stickX == 60 && status.stickY == 60) {
-            *out_pos = {DIAG, DIAG};
-            notch_found = true;
-        } else if (status.stickX == 60 && status.stickY == -60) {
-            *out_pos = {DIAG, -DIAG};
-            notch_found = true;
-        } else if (status.stickX == -60 && status.stickY == 60) {
-            *out_pos = {-DIAG, DIAG};
-            notch_found = true;
-        } else if (status.stickX == -60 && status.stickY == -60) {
-            *out_pos = {-DIAG, -DIAG};
-            notch_found = true;
-        }
+    if (stickInputs.gameX == 0 && stickInputs.gameY == 60) {
+        *out_pos = {0, 1};
+        notch_found = true;
+    } else if (stickInputs.gameX == 0 && stickInputs.gameY == -60) {
+        *out_pos = {0, -1};
+        notch_found = true;
+    } else if (stickInputs.gameX == 60 && stickInputs.gameY == 0) {
+        *out_pos = {1, 0};
+        notch_found = true;
+    } else if (stickInputs.gameX == -60 && stickInputs.gameY == 0) {
+        *out_pos = {-1, 0};
+        notch_found = true;
+    } else if (stickInputs.gameX == 60 && stickInputs.gameY == 60) {
+        *out_pos = {DIAG, DIAG};
+        notch_found = true;
+    } else if (stickInputs.gameX == 60 && stickInputs.gameY == -60) {
+        *out_pos = {DIAG, -DIAG};
+        notch_found = true;
+    } else if (stickInputs.gameX == -60 && stickInputs.gameY == 60) {
+        *out_pos = {-DIAG, DIAG};
+        notch_found = true;
+    } else if (stickInputs.gameX == -60 && stickInputs.gameY == -60) {
+        *out_pos = {-DIAG, -DIAG};
+        notch_found = true;
     }
 
     return notch_found;
@@ -158,39 +180,22 @@ static const mkb::GXColor s_color_map[] = {
     {0x00, 0x00, 0x00, 0xff},  // Black
 };
 
-void disp() {
-    if (!pref::get_input_disp()) return;
-
-    Vec2f center = pref::get_input_disp_center_location() ? Vec2f{430, 60} : Vec2f{534, 60};
-    f32 scale = 0.6f;
-
+static void draw_stick(const MergedStickInputs& stickInputs, const Vec2d& center, f32 scale) {
     mkb::GXColor chosen_color = s_color_map[pref::get_input_disp_color()];
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
     draw_ring(8, center, 50 * scale, 58 * scale, chosen_color);
 
-    // Accumulate stick inputs from all controllers since we don't always
-    // know which player is active, like in menus
-    // TODO account for d-pad control setting
-    s32 x = 0, y = 0;
-    if (!pad::get_exclusive_mode()) {
-        for (mkb::PADStatus& status : s_raw_inputs) {
-            if (status.err == mkb::PAD_ERR_NONE) {
-                x += status.stickX;
-                y += status.stickY;
-            }
-        }
-    }
-
-    Vec2f scaled_input = {
-        center.x + static_cast<f32>(x) / 2.7f * scale,
-        center.y - static_cast<f32>(y) / 2.7f * scale,
+    Vec2d scaled_input = {
+        center.x + static_cast<f32>(stickInputs.rawX) / 2.7f * scale,
+        center.y - static_cast<f32>(stickInputs.rawY) / 2.7f * scale,
     };
 
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
+}
 
-    // Show buttons
+static void draw_buttons(const Vec2d& center, f32 scale) {
     if (pad::button_down(mkb::PAD_BUTTON_START)) {
         draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::WHITE, "Start");
     }
@@ -215,18 +220,49 @@ void disp() {
     if (pad::button_down(mkb::PAD_TRIGGER_Z)) {
         draw::debug_text(center.x + 115 * scale, center.y + 15 * scale, draw::BLUE, "Z");
     }
+}
 
-    // Show notch indicators
-    if (pref::get_input_disp_notch_indicators()) {
-        Vec2f notch_norm = {};
-        if (get_notch_pos(&notch_norm)) {
-            Vec2f notch_pos = {
-                .x = notch_norm.x * 60 * scale + center.x,
-                .y = -notch_norm.y * 60 * scale + center.y,
-            };
-            draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
-        }
+static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Vec2d& center,
+                                  f32 scale) {
+    if (!pref::get_input_disp_notch_indicators()) return;
+
+    Vec2d notch_norm = {};
+    if (get_notch_pos(stickInputs, &notch_norm)) {
+        Vec2d notch_pos = {
+            .x = notch_norm.x * 60 * scale + center.x,
+            .y = -notch_norm.y * 60 * scale + center.y,
+        };
+        draw_circle(6, notch_pos, 5 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
     }
+}
+
+static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
+    if (!pref::get_input_disp_raw_stick_inputs()) return;
+
+    Vec2d center = {
+        .x = pref::get_input_disp_center_location() ? 540.f : 390.f,
+        .y = 28.f,
+    };
+
+    draw::debug_text(center.x, center.y + 0 * 14, draw::WHITE, "rX: %d", stickInputs.rawX);
+    draw::debug_text(center.x, center.y + 1 * 14, draw::WHITE, "rY: %d", stickInputs.rawY);
+    draw::debug_text(center.x, center.y + 2 * 14, draw::WHITE, "gX: %d", stickInputs.gameX);
+    draw::debug_text(center.x, center.y + 3 * 14, draw::WHITE, "gY: %d", stickInputs.gameY);
+}
+
+void disp() {
+    if (!pref::get_input_disp()) return;
+
+    Vec2d center = pref::get_input_disp_center_location() ? Vec2d{430, 60} : Vec2d{534, 60};
+    f32 scale = 0.6f;
+
+    MergedStickInputs stickInputs;
+    get_merged_stick_inputs(stickInputs);
+
+    draw_stick(stickInputs, center, scale);
+    draw_buttons(center, scale);
+    draw_notch_indicators(stickInputs, center, scale);
+    draw_raw_stick_inputs(stickInputs);
 }
 
 }  // namespace inputdisp

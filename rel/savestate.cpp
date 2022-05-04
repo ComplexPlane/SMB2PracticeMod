@@ -59,7 +59,7 @@ static void pass_over_regions(memstore::MemStore* store) {
                      sizeof(mkb::mode_info.stage_time_frames_remaining));
     store->do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     store->do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
-    store->do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
+    store->do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
     store->do_region(mkb::g_camera_standstill_counters,
                      sizeof(mkb::g_camera_standstill_counters));
     store->do_region(mkb::balls[0].ape,
@@ -112,7 +112,7 @@ static void pass_over_regions(memstore::MemStore* store) {
             store->do_region(sprite, sizeof(*sprite));
         } else if (sprite->tick_func == mkb::sprite_score_tick) {
             // Score sprite's lerped score value
-            store->do_region(&sprite->g_lerp_value, sizeof(sprite->g_lerp_value));
+            store->do_region(&sprite->fpara1, sizeof(sprite->fpara1));
         }
     }
 
