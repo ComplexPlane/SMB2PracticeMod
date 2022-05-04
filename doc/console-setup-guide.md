@@ -15,10 +15,11 @@
    you don't have this file or don't know what I'm talking about, you're probably fine.
 6. Drag the `codes` and `saves` folders from the `.zip` release you downloaded to your SD card. If asked to replace
    files, choose Yes.
-7. Plug your SD card back into your Wii and boot up Nintendont.
-8. In Nintendont, press B to go to options. **Enable** Cheats, Unlock Read Speed, Memcard Emulation, and Native
+7. If you plan to play a romhack, make sure you have a `<game_id>.gct` file in the `codes` folder with a `<game_id>` that matches the game ID of your romhack. The `codes` folder includes files for some popular romhacks (like `GM2EGD` for Gaiden), but if your romhack isn't included, make a copy of one of the `.gct` files (they're all identical) and name it appropriately. You can find the game ID of your romhack by opening the ISO file in a hex editor such as [hxd](https://mh-nexus.de/en/hxd/) - it's the first 6 characters of the file.
+8. Plug your SD card back into your Wii and boot up Nintendont.
+9. In Nintendont, press B to go to options. **Enable** Cheats, Unlock Read Speed, Memcard Emulation, and Native
    Control. **Disable** Memcard Multi.
-9. Boot the game from disc or ISO file like usual.
+10. Boot the game from disc or ISO file like usual.
 
 If you see the "SMB2 Practice Mod" text in place of the normal "Press Start" text on the title screen when you start the
 game, you've loaded the mod successfully. If you don't see this, the mod is definitely not loaded correctly, go back and

@@ -1,23 +1,17 @@
 #include "menu_defn.h"
 
-#include <assembly.h>
-#include <banans.h>
-#include <cmseg.h>
-#include <dpad.h>
-#include <draw.h>
-#include <inputdisp.h>
-#include <iw.h>
 #include <mkb.h>
-
+#include "cmseg.h"
+#include "draw.h"
+#include "inputdisp.h"
 #include "gotostory.h"
-#include "jump.h"
 #include "macro_utils.h"
 #include "pref.h"
-#include "savestate.h"
-#include "sfx.h"
-#include "timer.h"
+#include "version.h"
 
-namespace menu {
+namespace menu_defn {
+
+static char s_version_str[30];
 
 static const char* inputdisp_colors[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
@@ -89,10 +83,10 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Header, .header = {"Updates"}},
-    {.type = WidgetType::Text, .text = {"  Current version: v0.5.1"}},
+    {.type = WidgetType::Text, .text = {s_version_str}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
-     .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
+     .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
 
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
@@ -292,4 +286,11 @@ MenuWidget root_menu = {
     .num_widgets = LEN(root_widgets),
 };
 
-}  // namespace menu
+void init() {
+    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d\n",
+                 version::PRACMOD_VERSION.major,
+                 version::PRACMOD_VERSION.minor,
+                 version::PRACMOD_VERSION.patch);
+}
+
+}  // namespace menu_defn

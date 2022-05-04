@@ -1,3 +1,5 @@
+#include <mkb.h>
+
 #include "assembly.h"
 #include "cmseg.h"
 #include "draw.h"
@@ -7,6 +9,7 @@
 #include "iw.h"
 #include "jump.h"
 #include "menu_impl.h"
+#include "menu_defn.h"
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
@@ -15,14 +18,12 @@
 #include "tetris.h"
 #include "timer.h"
 
-#include <mkb.h>
-
 #include <banans.h>
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
-#include <cstring>
 #include "sfx.h"
+#include "version.h"
 
 namespace main {
 
@@ -31,10 +32,9 @@ static void (*s_process_inputs_trampoline)();
 static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
 
 static void perform_assembly_patches() {
-    const u32 MAIN_LOOP_REL_LOCATION = *reinterpret_cast<u32*>(0x80004524);
-    constexpr u32 OFFSET = 0x600;
     // Inject the run function at the start of the main game loop
-    patch::write_branch_bl(reinterpret_cast<void*>(MAIN_LOOP_REL_LOCATION + OFFSET),
+    // Hooked after Workshop Mod's tick()
+    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
                            reinterpret_cast<void*>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
@@ -47,7 +47,7 @@ static void perform_assembly_patches() {
     patch::write_nop(reinterpret_cast<void*>(0x80299f54));
 
     // Titlescreen patches
-    strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
+    mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
     patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
                         reinterpret_cast<void*>(main::custom_titlescreen_text_color));
 }
@@ -62,12 +62,15 @@ static void unlock_everything() {
     mkb::unlock_info.movies = 0x0fff;
     mkb::unlock_info.party_games = 0x0001b600;
     mkb::unlock_info.g_movies_watched = 0x0fff;
-    memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
-    memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
+    mkb::memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
+    mkb::memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
 void init() {
-    mkb::OSReport("[mod] ApeSphere loaded\n");
+    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n",
+                  version::PRACMOD_VERSION.major,
+                  version::PRACMOD_VERSION.minor,
+                  version::PRACMOD_VERSION.patch);
 
     perform_assembly_patches();
 
@@ -83,6 +86,7 @@ void init() {
     cmseg::init();
     freeze::init();
     sfx::init();
+    menu_defn::init();
     scratch::init();
 
     s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
@@ -97,7 +101,7 @@ void init() {
         scratch::disp();
         cmseg::disp();
         inputdisp::disp();
-        menu::disp();
+        menu_impl::disp();
         draw::disp();
 
         s_draw_debug_text_trampoline();
@@ -113,7 +117,7 @@ void init() {
         unlock_everything();
         iw::tick();
         savestate::tick();
-        menu::tick();
+        menu_impl::tick();
         jump::tick();
         inputdisp::tick();
         gotostory::tick();

@@ -15,6 +15,7 @@ lwz r0, 0x14(sp)
 mtlr r0
 addi sp, sp, 0x10
 
-# Restore the overwritten instruction
+# Restore the overwritten instruction and the instruction before
 lwz r0, 0(r3)
+cmplwi r0,0
 blr

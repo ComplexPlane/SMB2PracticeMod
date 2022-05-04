@@ -9,8 +9,11 @@
 #include "log.h"
 #include "menu_defn.h"
 #include "pad.h"
+#include "menu_defn.h"
 
-namespace menu {
+using namespace menu_defn;
+
+namespace menu_impl {
 
 constexpr s32 SCREEN_WIDTH = 640;
 constexpr s32 SCREEN_HEIGHT = 480;
@@ -289,4 +292,4 @@ void disp() {
     draw_menu_widget(s_menu_stack[s_menu_stack_ptr]);
 }
 
-}  // namespace menu
+}  // namespace menu_impl

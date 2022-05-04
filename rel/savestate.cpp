@@ -293,14 +293,6 @@ void tick() {
         // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
         s_frame_advance_mode = is_either_trigger_held();
 
-        mkb::OSReport("[mod] Saved state:\n");
-        state.store.print_stats();
-        u32 free_heap_space = heap::get_free_space();
-        mkb::OSReport("[mod] Heap free:        %d bytes\n", free_heap_space);
-        mkb::OSReport("[mod] Heap used:        %d bytes\n",
-                      heap::get_total_space() - free_heap_space);
-        mkb::OSReport("[mod] Heap total space: %d bytes\n", heap::get_total_space());
-
         if (s_frame_advance_mode) {
             draw::notify(draw::PINK, "Slot %d Frame Advance", s_active_state_slot + 1);
         } else {

@@ -1,7 +1,6 @@
 # :confetti_ball: Super Monkey Ball 2 Practice Mod
 
-A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 as well as most
-popular romhacks, including Gaiden, Deluxe in 2, SMB651, Monkeyed Ball 2, and Community Pack 2020.
+A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 and romhacks (Gaiden, SMB651, etc).
 
 ![Dual Screenshots](doc/dual-screenshot.png)
 
@@ -12,12 +11,13 @@ Features include:
 * Story Mode Individual World (IW) Practice
 * Challenge Mode Individual Segment Practice
 * Stage RTA and Pause Timers
+* Background Music Toggle
 * [Jump Mod](https://www.youtube.com/watch?v=kWAunK6Av-Q)
-* Frame Advance
-* D-pad Controls
-* Freeze Timer
 * Debug Mode
+* Freeze Timer
 * Quick Rumble Adjust
+* D-pad Controls
+* Frame Advance
 
 ... and more! Features can be toggled on/off and configured as you desire.
 
