@@ -11,7 +11,7 @@ sudo apt install build-essential pkg-config cmake libboost-dev libboost-program-
 
 ## Install devkitPro
 
-devkitPro is a gcc-based compiler suite for Gamecube and other consoles.
+devkitPro is a gcc-based compiler suite for GameCube and other consoles.
 
 1. Download devkitPro-pacman from here: https://github.com/devkitPro/pacman/releases
 2. Install the downloaded .deb: `sudo dpkg -i devkitpro-pacman.amd64.deb`
