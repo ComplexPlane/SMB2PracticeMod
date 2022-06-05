@@ -3,8 +3,8 @@
 #include <mkb.h>
 #include "cmseg.h"
 #include "draw.h"
-#include "inputdisp.h"
 #include "gotostory.h"
+#include "inputdisp.h"
 #include "macro_utils.h"
 #include "pref.h"
 #include "version.h"
@@ -240,6 +240,8 @@ static Widget mods_widgets[] = {
              .get = pref::get_freeze_timer,
              .set = pref::set_freeze_timer,
          }},
+    {.type = WidgetType::Checkbox,
+     .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -287,10 +289,8 @@ MenuWidget root_menu = {
 };
 
 void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d\n",
-                 version::PRACMOD_VERSION.major,
-                 version::PRACMOD_VERSION.minor,
-                 version::PRACMOD_VERSION.patch);
+    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d\n", version::PRACMOD_VERSION.major,
+                 version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
 }
 
 }  // namespace menu_defn

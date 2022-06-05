@@ -17,13 +17,13 @@
 #include "scratch.h"
 #include "tetris.h"
 #include "timer.h"
-
 #include <banans.h>
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
 #include "sfx.h"
 #include "version.h"
+#include "freecam.h"
 
 namespace main {
 
@@ -123,6 +123,7 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
+        freecam::tick();
         scratch::tick();
     });
 
