@@ -44,7 +44,7 @@ To build from source, see [this guide](doc/building.md).
 # Contact
 
 If you have any questions, bugs, or feature requests, feel free to message me on Discord (`ComplexPlane#3111`) or
-email (`complexplanegames@gmail.com`). You can also file a Github issue.
+email (`complexplanegames@gmail.com`). You can also file a GitHub issue.
 
 # Credits
 

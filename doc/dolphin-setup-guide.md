@@ -31,4 +31,4 @@ If the game does not progress past the Presented By Sega screen, try upgrading y
 (download [here](https://dolphin-emu.org/download/)). Using at least the latest beta is recommended.
 
 If you still can't figure it out, feel free to message me on Discord (`ComplexPlane#3111`) or
-email (`complexplanegames@gmail.com`), or file a Github issue.
+email (`complexplanegames@gmail.com`), or file a GitHub issue.
