@@ -3,6 +3,7 @@
 #include <mkb.h>
 #include "draw.h"
 #include "log.h"
+#include "mkb2_ghidra.h"
 #include "patch.h"
 #include "pref.h"
 #include "timerdisp.h"
@@ -22,7 +23,7 @@ static Seg s_seg_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
-static void (*s_g_reset_cm_course_tramp)();
+static patch::Tramp<decltype(&mkb::g_reset_cm_course)> s_reset_cm_course_tramp;
 
 static mkb::CmEntry* s_overwritten_entry;
 static mkb::CmEntryType s_overwritten_entry_type;
@@ -323,8 +324,8 @@ void request_cm_seg(Seg seg) {
 }
 
 void init() {
-    s_g_reset_cm_course_tramp = patch::hook_function(mkb::g_reset_cm_course, []() {
-        s_g_reset_cm_course_tramp();
+    patch::hook_function(s_reset_cm_course_tramp, mkb::g_reset_cm_course, []() {
+        s_reset_cm_course_tramp.dest();
         if (s_state == State::SegActive) init_seg();
     });
 

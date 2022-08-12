@@ -23,7 +23,7 @@ Features include:
 
 # Install
 
-To install the mod on a **Wii console** (recommended), follow [this guide](doc/console-setup-guide.md). There's also
+To install the mod on a **Wii console**, follow [this guide](doc/console-setup-guide.md). There's also
 a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) but it's a
 bit out-of-date.
 
