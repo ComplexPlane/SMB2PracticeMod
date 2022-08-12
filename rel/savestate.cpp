@@ -30,17 +30,17 @@ static bool s_frame_advance_mode;
 // For when a state should be loaded on the subsequent frame
 static bool s_reload_state = false;
 
-static void (*s_set_minimap_mode_trampoline)(mkb::MinimapMode mode);
+static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
 
 void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
-    s_set_minimap_mode_trampoline =
-        patch::hook_function(mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
+    patch::hook_function(
+        s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
             if (!pref::get_savestates() ||
                 !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
                   mode == mkb::MINIMAP_SHRINK)) {
-                s_set_minimap_mode_trampoline(mode);
+                s_set_minimap_mode_tramp.dest(mode);
             }
         });
 }
@@ -60,8 +60,7 @@ static void pass_over_regions(memstore::MemStore* store) {
     store->do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     store->do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     store->do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
-    store->do_region(mkb::g_camera_standstill_counters,
-                     sizeof(mkb::g_camera_standstill_counters));
+    store->do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
     store->do_region(mkb::balls[0].ape,
                      sizeof(*mkb::balls[0].ape));  // Store entire ape struct for now
 

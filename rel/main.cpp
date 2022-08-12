@@ -10,6 +10,7 @@
 #include "jump.h"
 #include "menu_impl.h"
 #include "menu_defn.h"
+#include "mkb2_ghidra.h"
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
@@ -27,9 +28,9 @@
 
 namespace main {
 
-static void (*s_draw_debug_text_trampoline)();
-static void (*s_process_inputs_trampoline)();
-static u32 (*s_PADRead_tramp)(mkb::PADStatus* statuses);
+static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debug_text_tramp;
+static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
+static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -89,7 +90,7 @@ void init() {
     menu_defn::init();
     scratch::init();
 
-    s_draw_debug_text_trampoline = patch::hook_function(mkb::draw_debugtext, []() {
+    patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
         // Drawing hook for UI elements.
         // Gets run at the start of smb2's function which draws debug text windows,
         // which is called at the end of smb2's function which draws the UI in general.
@@ -104,11 +105,11 @@ void init() {
         menu_impl::disp();
         draw::disp();
 
-        s_draw_debug_text_trampoline();
+        s_draw_debug_text_tramp.dest();
     });
 
-    s_process_inputs_trampoline = patch::hook_function(mkb::process_inputs, []() {
-        s_process_inputs_trampoline();
+    patch::hook_function(s_process_inputs_tramp, mkb::process_inputs, []() {
+        s_process_inputs_tramp.dest();
 
         // These run after all controller inputs have been processed on the current frame,
         // to ensure lowest input delay
@@ -126,8 +127,8 @@ void init() {
         scratch::tick();
     });
 
-    s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
-        u32 ret = s_PADRead_tramp(statuses);
+    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
+        u32 ret = s_PADRead_tramp.dest(statuses);
 
         // Dpad can modify effective stick input, shown by input display
         dpad::on_PADRead(statuses);

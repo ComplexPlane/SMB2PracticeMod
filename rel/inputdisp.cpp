@@ -17,7 +17,7 @@ struct MergedStickInputs {
     s32 gameY;
 };
 
-static void (*s_create_speed_sprites_tramp)(f32 x, f32 y);
+static patch::Tramp<decltype(&mkb::create_speed_sprites)> s_create_speed_sprites_tramp;
 
 static mkb::PADStatus s_raw_inputs[4];
 
@@ -109,8 +109,8 @@ static void set_sprite_visible(bool visible) {
 
         mkb::Sprite& sprite = mkb::sprites[i];
         if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
-            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp ||
-            sprite.bmp == 0x502 || sprite.tick_func == mkb::sprite_banana_icon_tick ||
+            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp || sprite.bmp == 0x502 ||
+            sprite.tick_func == mkb::sprite_banana_icon_tick ||
             sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
             sprite.tick_func == mkb::sprite_banana_count_tick ||
             mkb::strcmp(sprite.text, ":") == 0 ||
@@ -123,8 +123,8 @@ static void set_sprite_visible(bool visible) {
 }
 
 void init() {
-    s_create_speed_sprites_tramp = patch::hook_function(
-        mkb::create_speed_sprites, [](f32 x, f32 y) { s_create_speed_sprites_tramp(x + 5, y); });
+    patch::hook_function(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
+                         [](f32 x, f32 y) { s_create_speed_sprites_tramp.dest(x + 5, y); });
 }
 
 void on_PADRead(mkb::PADStatus* statuses) {
