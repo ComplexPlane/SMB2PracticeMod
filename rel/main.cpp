@@ -88,6 +88,7 @@ void init() {
     freeze::init();
     sfx::init();
     menu_defn::init();
+    freecam::init();
     scratch::init();
 
     patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {

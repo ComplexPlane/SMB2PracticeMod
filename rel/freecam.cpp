@@ -6,6 +6,7 @@
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
+#include "macro_utils.h"
 
 namespace freecam {
 
@@ -16,6 +17,8 @@ enum FreecamFlags {
 static bool s_enabledPrevTick = false;
 static Vec s_fcEye = {};
 static S16Vec s_fcRot = {};
+
+static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     bool enabledNow = pref::get_freecam();
@@ -66,6 +69,18 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
         ball->vel.y = 0;
         ball->vel.z = 0;
     }
+}
+
+void init() {
+    patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
+        if (pref::get_freecam()) {
+            for (u32 i = 0; i < LEN(mkb::world_infos); i++) {
+                mkb::world_infos[i].stage_tilt_x = 0;
+                mkb::world_infos[i].stage_tilt_z = 0;
+            }
+        }
+        s_event_camera_tick_tramp.dest();
+    });
 }
 
 void tick() {
