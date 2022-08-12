@@ -31,19 +31,16 @@ class SaveState {
         ErrorPausedAndNonGameplaySubmode,
     };
 
-    SaveState() noexcept;
-    ~SaveState();
-
     void tick();
     SaveResult save();
     LoadResult load();
 
  private:
-    u32 m_flags;
-    s32 m_stage_id;
-    u8 m_character;
+    u32 m_flags = 0;
+    s32 m_stage_id = -1;
+    u8 m_character = 0;
     memstore::MemStore m_store;
-    u8 m_pause_menu_sprite_status;
+    u8 m_pause_menu_sprite_status = 0;
     mkb::Sprite m_pause_menu_sprite;
 
     void pass_over_regions();

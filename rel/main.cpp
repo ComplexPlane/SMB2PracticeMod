@@ -14,7 +14,8 @@
 #include "pad.h"
 #include "patch.h"
 #include "pref.h"
-#include "savestate.h"
+#include "libsavest.h"
+#include "savest_ui.h"
 #include "scratch.h"
 #include "tetris.h"
 #include "timer.h"
@@ -81,7 +82,7 @@ void init() {
     draw::init();
     Tetris::get_instance().init();
     iw::init();
-    savestate::init();
+    libsavest::init();
     timer::init();
     inputdisp::init();
     cmseg::init();
@@ -118,7 +119,7 @@ void init() {
         cardio::tick();
         unlock_everything();
         iw::tick();
-        savestate::tick();
+        savest_ui::tick();
         menu_impl::tick();
         jump::tick();
         inputdisp::tick();
