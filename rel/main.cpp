@@ -14,8 +14,8 @@
 #include "scratch.h"
 #include "tetris.h"
 #include "timer.h"
-#include "bunnyhop.h"
 #include "ballcolor.h"
+#include "marathon.h"
 
 #include <mkb.h>
 
@@ -23,7 +23,6 @@
 #include <cardio.h>
 #include <dpad.h>
 #include <freeze.h>
-#include <marathon.h>
 #include <cstring>
 #include "sfx.h"
 
@@ -124,7 +123,6 @@ void init() {
         banans::tick();
         scratch::tick();
         marathon::tick();
-        bunnyhop::tick();
         ballcolor::tick();
     });
 
