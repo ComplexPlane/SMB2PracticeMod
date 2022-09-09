@@ -14,6 +14,8 @@
 #include "scratch.h"
 #include "tetris.h"
 #include "timer.h"
+#include "bunnyhop.h"
+#include "ballcolor.h"
 
 #include <mkb.h>
 
@@ -122,6 +124,8 @@ void init() {
         banans::tick();
         scratch::tick();
         marathon::tick();
+        bunnyhop::tick();
+        ballcolor::tick();
     });
 
     s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {

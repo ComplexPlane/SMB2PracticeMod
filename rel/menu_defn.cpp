@@ -8,6 +8,7 @@
 #include <inputdisp.h>
 #include <iw.h>
 #include <mkb.h>
+#include <ballcolor.h>
 
 #include "gotostory.h"
 #include "jump.h"
@@ -56,6 +57,34 @@ static Widget inputdisp_widgets[] = {
     },
 };
 
+static const char* ball_colors[] = {
+    "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
+};
+static_assert(LEN(ball_colors) == ballcolor::NUM_COLORS);
+
+static Widget ballcolor_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Ball Color",
+            .choices = ball_colors,
+            .num_choices = LEN(ball_colors),
+            .get = []() { return static_cast<u32>(pref::get_ball_color()); },
+            .set = [](u32 color) { pref::set_ball_color(static_cast<u8>(color)); },
+        },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Ape Color",
+            .choices = ball_colors,
+            .num_choices = LEN(ball_colors),
+            .get = []() { return static_cast<u32>(pref::get_ape_color()); },
+            .set = [](u32 color) { pref::set_ape_color(static_cast<u8>(color)); },
+        },
+    },
+};
+
 static Widget rumble_widgets[] = {
     {.type = WidgetType::Checkbox,
      .checkbox = {
@@ -91,16 +120,6 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Header, .header = {"Updates"}},
     {.type = WidgetType::Text, .text = {"  Current version: v0.5.1"}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
-    {.type = WidgetType::ColoredText,
-     .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
-};
-
-static Widget stuntgoal_widgets[] = {
-    {.type = WidgetType::Header, .header = {"Stunt Goal Progress"}},
-    {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
-    {.type = WidgetType::Custom, .custom = {draw::heart}},
-    {.type = WidgetType::Separator},
-
     {.type = WidgetType::ColoredText,
      .colored_text = {"  github.com/ComplexPlane/ApeSphere/releases", draw::BLUE}},
 };
@@ -237,6 +256,10 @@ static Widget mods_widgets[] = {
         .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
     },
     {
+        .type = WidgetType::Menu,
+        .menu = {"Ball & Ape Color", ballcolor_widgets, LEN(ballcolor_widgets)},
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -263,6 +286,15 @@ static Widget mods_widgets[] = {
                 .label = "9999 Banana Counter",
                 .get = pref::get_9999_banana_counter,
                 .set = pref::set_9999_banana_counter,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Marathon Mod",
+                .get = pref::get_marathon,
+                .set = pref::set_marathon,
             },
     },
     {.type = WidgetType::Checkbox,

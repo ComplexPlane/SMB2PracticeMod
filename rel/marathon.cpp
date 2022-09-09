@@ -20,10 +20,6 @@ static bool is_saved_vel = false; // True if we have something saved, gets set t
 static bool ready_to_store = false; // Using this to delay the storing action by 1 frame just in case it fricks with goal init stuff
 static bool used_once = true; // This is used to make sure the velocity doesnt save multiple times after each goal entry.
 
-static void reset_saved_vel() { // [Nambo] Sets stored velocity to 0
-    saved_vel = {};
-}
-
 static void apply_saved_vel() { // [Nambo] Transforms the stored ball velocity relative to the startpos, and applies it to the ball
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx]; // I think this makes ball.vel work
 
@@ -47,12 +43,6 @@ static void apply_saved_vel() { // [Nambo] Transforms the stored ball velocity r
     // pos_rt_world = mtxa * pos_rt_itemgroup
     // mkb::mtxa_tf_point(&pos_rt_itemgroup, &pos_rt_world);
 }
-
-static void ball_go_up_lol() { // [Nambo] This is a SIMPLE AS FRICK test effect, just makes the ball go up weeeeeee
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx]; // I think this makes ball.vel work
-    ball.vel.y = 1.f;
-}
-
 
 static void store_saved_vel() { // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx]; // I think this makes ball.vel work
@@ -82,14 +72,15 @@ static void store_saved_vel() { // [Nambo] Transforms the current ball velocity 
 }
 
 void tick() {
-    // Reset saved vel when the mod is turned off
-    if (!pref::get_dpad_controls() && is_saved_vel) {
+    // Mod is turned off
+    if (!pref::get_marathon() && is_saved_vel) {
         saved_vel = {};
         is_saved_vel = false;
         used_once = true;
     }
-    // This whole toggle is under get_dpad_controls for now (CHANGE THIS LATER NAMBO)
-    if (pref::get_dpad_controls()) {
+
+    // Mod is on
+    if (pref::get_marathon()) {
 
         // If saved, apply the vel at 59.98 (1f after start)
         if(is_saved_vel && mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1){
@@ -103,13 +94,12 @@ void tick() {
             is_saved_vel = true;
             used_once = false;
         }
-
+    
         // At goal entry, get ready to store (This setup delays the actiob by 1 tick to avoid fricking with stuff)
-        if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN && used_once) {
+        if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN && used_once)) {
             ready_to_store = true;
         }
     }
 }
-
 
 } // namespace marathon
