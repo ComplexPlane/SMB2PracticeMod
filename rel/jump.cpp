@@ -133,7 +133,7 @@ static void jumping() {
         }
     }
 
-    if (s_jumping) {
+    if (s_jumping && !paused_now) {
         f32 lerp = static_cast<f32>(JUMP_FRAMES - s_jump_frames) / JUMP_FRAMES;
         lerp = lerp * lerp * lerp;
         ball.vel.y += lerp * 0.1;

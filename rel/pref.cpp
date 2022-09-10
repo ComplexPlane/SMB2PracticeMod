@@ -32,6 +32,9 @@ enum class PrefId : u16 {
     MuteTimerDing = 16,
     InputDispRawStickInputs = 17,
     Freecam = 18,
+    BallColor = 19,
+    ApeColor = 20,
+    Marathon = 21,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -52,12 +55,15 @@ enum class BoolPref {
     MuteTimerDing,
     InputDispRawStickInputs,
     Freecam,
+    Marathon,
 };
 
 struct Pref {
     u8 bool_prefs[8];
     u8 cm_chara;
     u8 input_disp_color;
+    u8 ball_color;
+    u8 ape_color;
 } s_pref;
 
 struct FileHeader {
@@ -96,6 +102,9 @@ static const PrefId s_pref_ids[] = {
     PrefId::MuteTimerDing,
     PrefId::InputDispRawStickInputs,
     PrefId::Freecam,
+    PrefId::BallColor,
+    PrefId::ApeColor,
+    PrefId::Marathon,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -156,6 +165,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::InputDispRawStickInputs;
         case PrefId::Freecam:
             return BoolPref::Freecam;
+        case PrefId::Marathon:
+            return BoolPref::Marathon;
         default:
             return {};
     }
@@ -167,6 +178,10 @@ static u8* pref_id_to_u8(PrefId id, Pref& pref) {
             return &pref.cm_chara;
         case PrefId::InputDispColor:
             return &pref.input_disp_color;
+        case PrefId::BallColor:
+            return &pref.ball_color;
+        case PrefId::ApeColor:
+            return &pref.ape_color;
         default:
             return nullptr;
     }
@@ -291,6 +306,10 @@ void set_input_disp_center_location(bool on) {
 };
 u8 get_input_disp_color() { return s_pref.input_disp_color; }
 void set_input_disp_color(u8 idx) { s_pref.input_disp_color = idx; }
+u8 get_ball_color() { return s_pref.ball_color; }
+void set_ball_color(u8 idx) { s_pref.ball_color = idx; }
+u8 get_ape_color() { return s_pref.ape_color; }
+void set_ape_color(u8 idx) { s_pref.ape_color = idx; }
 bool get_input_disp_notch_indicators() { return get_bool_pref(BoolPref::InputDispNotchIndicators); }
 void set_input_disp_notch_indicators(bool on) {
     set_bool_pref(BoolPref::InputDispNotchIndicators, on);
@@ -299,7 +318,8 @@ bool get_input_disp_raw_stick_inputs() { return get_bool_pref(BoolPref::InputDis
 void set_input_disp_raw_stick_inputs(bool on) {
     set_bool_pref(BoolPref::InputDispRawStickInputs, on);
 }
-
+bool get_marathon() { return get_bool_pref(BoolPref::Marathon); }
+void set_marathon(bool on) { set_bool_pref(BoolPref::Marathon, on); }
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }

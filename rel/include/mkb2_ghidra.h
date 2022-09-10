@@ -9184,7 +9184,6 @@ extern "C" {
     undefined4 get_storymode_score(void);
     void set_storymode_score(int value);
     undefined4 get_storymode_banana_count(void);
-    void set_storymode_bananas(int banana_count);
     void g_preload_ape_model_for_stageselect(void);
     void g_save_storymode_progress(void * param_1);
     int g_is_timer_30s_or_60s_current_stage(void);

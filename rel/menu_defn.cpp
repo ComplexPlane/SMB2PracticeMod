@@ -4,6 +4,8 @@
 #include "cmseg.h"
 #include "draw.h"
 #include "gotostory.h"
+#include "jump.h"
+#include "ballcolor.h"
 #include "inputdisp.h"
 #include "macro_utils.h"
 #include "pref.h"
@@ -47,6 +49,34 @@ static Widget inputdisp_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox = {"Raw Stick Inputs", pref::get_input_disp_raw_stick_inputs,
                      pref::set_input_disp_raw_stick_inputs},
+    },
+};
+
+static const char* s_ball_colors[] = {
+    "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
+};
+static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
+
+static Widget s_ball_color_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Ball Color",
+            .choices = s_ball_colors,
+            .num_choices = LEN(s_ball_colors),
+            .get = []() { return static_cast<u32>(pref::get_ball_color()); },
+            .set = [](u32 color) { pref::set_ball_color(static_cast<u8>(color)); },
+        },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Ape Color",
+            .choices = s_ball_colors,
+            .num_choices = LEN(s_ball_colors),
+            .get = []() { return static_cast<u32>(pref::get_ape_color()); },
+            .set = [](u32 color) { pref::set_ape_color(static_cast<u8>(color)); },
+        },
     },
 };
 
@@ -221,6 +251,10 @@ static Widget mods_widgets[] = {
         .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
     },
     {
+        .type = WidgetType::Menu,
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -249,6 +283,15 @@ static Widget mods_widgets[] = {
                 .label = "9999 Banana Counter",
                 .get = pref::get_9999_banana_counter,
                 .set = pref::set_9999_banana_counter,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Marathon Mod",
+                .get = pref::get_marathon,
+                .set = pref::set_marathon,
             },
     },
     {.type = WidgetType::Checkbox,
