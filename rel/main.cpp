@@ -19,6 +19,11 @@
 #include "scratch.h"
 #include "tetris.h"
 #include "timer.h"
+#include "ballcolor.h"
+#include "marathon.h"
+
+#include <mkb.h>
+
 #include <banans.h>
 #include <cardio.h>
 #include <dpad.h>
@@ -126,6 +131,8 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
+        marathon::tick();
+        ballcolor::tick();
         freecam::tick();
         scratch::tick();
     });
