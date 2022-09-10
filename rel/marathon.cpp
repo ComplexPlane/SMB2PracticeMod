@@ -15,10 +15,10 @@
 namespace marathon {
 
 enum class MarathonState {
-    WaitForGoal,     // No velocity is stored
-    StoringVel,  // Goal was just passed, vel will be stored next frame
-    WaitForFirstApply,     // Vel stored, waiting to be applied (but not stored, so we dont store multiple
-                     // times in one goal)
+    WaitForGoal,         // No velocity is stored
+    StoringVel,          // Goal was just passed, vel will be stored next frame
+    WaitForFirstApply,   // Vel stored, waiting to be applied (but not stored, so we dont store
+                         // multiple times in one goal)
     WaitForApplyOrGoal,  // Vel stored, waiting to be applied or stored again
 };
 
@@ -52,7 +52,7 @@ static void apply_saved_vel() {
     // mkb::mtxa_from_mtx(&mkb::itemgroups[0].transform);
     // pos_rt_world = mtxa * pos_rt_itemgroup
     // mkb::mtxa_tf_point(&pos_rt_itemgroup, &pos_rt_world);
-} // apply_saved_vel
+}
 
 // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
 static void store_saved_vel() {
@@ -81,40 +81,42 @@ static void store_saved_vel() {
     mkb::mtxa_rigid_inv_tf_vec(&entered_goal_vel_rt_world, &entered_goal_vel_rt_goal);
     // We have now stored the desired veloocity vector as entered_goal_vel_rt_goal
     s_saved_vel = entered_goal_vel_rt_goal;
-} // store_saved_vel
+    s_state = MarathonState::WaitForFirstApply;
+}
+
+// Checks for a goal, and sets state to StoringVel
+static void wait_for_goal() {
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+        s_state = MarathonState::StoringVel;
+    }
+}
+
+// Checks for the start of a level, and applies the stored vel, setting state to WaitForApplyOrGoal
+static void wait_for_apply() {
+    if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+        apply_saved_vel();
+        s_state = MarathonState::WaitForApplyOrGoal;
+    }
+}
 
 void tick() {
-    if(pref::get_marathon()) {
-        if(s_state == MarathonState::WaitForGoal) {
-            if(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-                s_state = MarathonState::StoringVel;
-            }
-        } // State 1: WaitForGoal
-        else if(s_state == MarathonState::StoringVel) {
+    if (pref::get_marathon()) {
+        if (s_state == MarathonState::WaitForGoal) {
+            wait_for_goal();
+        } else if (s_state == MarathonState::StoringVel) {
             store_saved_vel();
-            s_state = MarathonState::WaitForFirstApply;
-        } // State 2: StoringVel
-        else if(s_state == MarathonState::WaitForFirstApply) {
-            if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-                apply_saved_vel();
-                s_state = MarathonState::WaitForApplyOrGoal;
-            }
-        } // State 3: WaitForFirstApply
-        else if(s_state == MarathonState::WaitForApplyOrGoal) {
-            if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-                apply_saved_vel();
-                s_state = MarathonState::WaitForApplyOrGoal;
-            }
-            if(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-                s_state = MarathonState::StoringVel;
-            }
-        } // State 4: WaitForApplyOrGoal
-    } // if marathon mod is on
+        } else if (s_state == MarathonState::WaitForFirstApply) {
+            wait_for_apply();
+        } else if (s_state == MarathonState::WaitForApplyOrGoal) {
+            wait_for_apply();
+            wait_for_goal();
+        }
+    }
 
     // Mod is turned off
     else {
         s_state = MarathonState::WaitForGoal;
     }
-} // tick
+}
 
 }  // namespace marathon
