@@ -8,10 +8,10 @@
 #include <inputdisp.h>
 #include <iw.h>
 #include <mkb.h>
-#include <ballcolor.h>
 
 #include "gotostory.h"
 #include "jump.h"
+#include "ballcolor.h"
 #include "macro_utils.h"
 #include "pref.h"
 #include "savestate.h"
@@ -57,18 +57,18 @@ static Widget inputdisp_widgets[] = {
     },
 };
 
-static const char* ball_colors[] = {
+static const char* s_ball_colors[] = {
     "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
 };
-static_assert(LEN(ball_colors) == ballcolor::NUM_COLORS);
+static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
 
-static Widget ballcolor_widgets[] = {
+static Widget s_ball_color_widgets[] = {
     {
         .type = WidgetType::Choose,
         .choose = {
             .label = "Ball Color",
-            .choices = ball_colors,
-            .num_choices = LEN(ball_colors),
+            .choices = s_ball_colors,
+            .num_choices = LEN(s_ball_colors),
             .get = []() { return static_cast<u32>(pref::get_ball_color()); },
             .set = [](u32 color) { pref::set_ball_color(static_cast<u8>(color)); },
         },
@@ -77,8 +77,8 @@ static Widget ballcolor_widgets[] = {
         .type = WidgetType::Choose,
         .choose = {
             .label = "Ape Color",
-            .choices = ball_colors,
-            .num_choices = LEN(ball_colors),
+            .choices = s_ball_colors,
+            .num_choices = LEN(s_ball_colors),
             .get = []() { return static_cast<u32>(pref::get_ape_color()); },
             .set = [](u32 color) { pref::set_ape_color(static_cast<u8>(color)); },
         },
@@ -257,7 +257,7 @@ static Widget mods_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", ballcolor_widgets, LEN(ballcolor_widgets)},
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
     },
     {
         .type = WidgetType::Checkbox,

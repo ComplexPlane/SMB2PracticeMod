@@ -121,9 +121,9 @@ void init() {
         gotostory::tick();
         cmseg::tick();
         banans::tick();
-        scratch::tick();
         marathon::tick();
         ballcolor::tick();
+        scratch::tick();
     });
 
     s_PADRead_tramp = patch::hook_function(mkb::PADRead, [](mkb::PADStatus* statuses) {
