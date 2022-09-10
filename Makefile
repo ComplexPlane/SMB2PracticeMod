@@ -68,7 +68,7 @@ else
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	$(notdir $(CURDIR)).$(GAMECODE)
+TARGET		:=	SMB2PracticeMod.$(GAMECODE)
 BUILD		:=	build.$(GAMECODE)
 SOURCES		:=	rel $(wildcard rel/*)
 DATA		:=	data  
