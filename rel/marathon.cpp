@@ -15,14 +15,14 @@
 namespace marathon {
 
 enum class MarathonState {
-    WaitToStore,     // No velocity is stored
-    StoreNextFrame,  // Goal was just passed, vel will be stored next frame
-    WaitToApply,     // Vel stored, waiting to be applied (but not stored, so we dont store multiple
+    WaitForGoal,     // No velocity is stored
+    StoringVel,  // Goal was just passed, vel will be stored next frame
+    WaitForFirstApply,     // Vel stored, waiting to be applied (but not stored, so we dont store multiple
                      // times in one goal)
-    WaitToApplyOrStore,  // Vel stored, waiting to be applied or stored again
+    WaitForApplyOrGoal,  // Vel stored, waiting to be applied or stored again
 };
 
-static MarathonState s_state = MarathonState::WaitToStore;
+static MarathonState s_state = MarathonState::WaitForGoal;
 
 // [Nambo] Current saved velocity (if all 3 are zero, new stuff can be saved, and nothing will be
 // applied)
@@ -52,7 +52,7 @@ static void apply_saved_vel() {
     // mkb::mtxa_from_mtx(&mkb::itemgroups[0].transform);
     // pos_rt_world = mtxa * pos_rt_itemgroup
     // mkb::mtxa_tf_point(&pos_rt_itemgroup, &pos_rt_world);
-}
+} // apply_saved_vel
 
 // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
 static void store_saved_vel() {
@@ -81,40 +81,40 @@ static void store_saved_vel() {
     mkb::mtxa_rigid_inv_tf_vec(&entered_goal_vel_rt_world, &entered_goal_vel_rt_goal);
     // We have now stored the desired veloocity vector as entered_goal_vel_rt_goal
     s_saved_vel = entered_goal_vel_rt_goal;
-}
+} // store_saved_vel
 
 void tick() {
-    // Mod is turned off
-    if (!pref::get_marathon() && s_state != MarathonState::WaitToStore) {
-        s_saved_vel = {};
-        s_state = MarathonState::WaitToStore;
-    }
-
-    // Mod is on
-    if (pref::get_marathon()) {
-        // If saved, apply the vel at 59.98 (1f after start)
-        if ((s_state == MarathonState::WaitToApply ||
-             s_state == MarathonState::WaitToApplyOrStore) &&
-            mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-            apply_saved_vel();
-            s_state = MarathonState::WaitToApplyOrStore;
-        }
-
-        // If ready to store (the delay), store the velocity!
-        if (s_state == MarathonState::StoreNextFrame) {
+    if(pref::get_marathon()) {
+        if(s_state == MarathonState::WaitForGoal) {
+            if(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+                s_state = MarathonState::StoringVel;
+            }
+        } // State 1: WaitForGoal
+        else if(s_state == MarathonState::StoringVel) {
             store_saved_vel();
-            s_state = MarathonState::WaitToApply;
-        }
+            s_state = MarathonState::WaitForFirstApply;
+        } // State 2: StoringVel
+        else if(s_state == MarathonState::WaitForFirstApply) {
+            if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+                apply_saved_vel();
+                s_state = MarathonState::WaitForApplyOrGoal;
+            }
+        } // State 3: WaitForFirstApply
+        else if(s_state == MarathonState::WaitForApplyOrGoal) {
+            if(mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
+                apply_saved_vel();
+                s_state = MarathonState::WaitForApplyOrGoal;
+            }
+            if(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+                s_state = MarathonState::StoringVel;
+            }
+        } // State 4: WaitForApplyOrGoal
+    } // if marathon mod is on
 
-        // At goal entry, get ready to store (This setup delays the action by 1 tick to avoid
-        // fricking with stuff)
-        if ((mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-             mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) &&
-            (s_state == MarathonState::WaitToStore ||
-             s_state == MarathonState::WaitToApplyOrStore)) {
-            s_state = MarathonState::StoreNextFrame;
-        }
+    // Mod is turned off
+    else {
+        s_state = MarathonState::WaitForGoal;
     }
-}
+} // tick
 
 }  // namespace marathon

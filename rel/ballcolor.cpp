@@ -14,27 +14,27 @@
 
 namespace ballcolor {
 
-static u8 s_convert_to_ball_color_id(u8 color_choice) {
-    if (color_choice == 0)
+static u8 convert_to_ball_color_id(u8 color_choice) {
+    if (color_choice == 0) {
         return 3;
-    else
-        return color_choice - 1;
+    }
+    return color_choice - 1;
 }
 
-static u8 s_convert_to_ape_color_id(u8 color_choice) {
-    if (color_choice == 0)
+static u8 convert_to_ape_color_id(u8 color_choice) {
+    if (color_choice == 0) {
         return 0;
-    else
-        return color_choice - 1;
+    }
+    return color_choice - 1;
 }
 
 void tick() {
     // Set ball & ape color to color ID
     if (mkb::balls[mkb::curr_player_idx].ape != nullptr) {  // Check for nullpointers first
         mkb::balls[mkb::curr_player_idx].ape->color_index =
-            s_convert_to_ape_color_id(pref::get_ape_color());
+            convert_to_ape_color_id(pref::get_ape_color());
         mkb::balls[mkb::curr_player_idx].g_ball_color_index =
-            s_convert_to_ball_color_id(pref::get_ball_color());
+            convert_to_ball_color_id(pref::get_ball_color());
     }
 }
 
