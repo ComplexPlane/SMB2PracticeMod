@@ -319,7 +319,7 @@ void set_input_disp_raw_stick_inputs(bool on) {
     set_bool_pref(BoolPref::InputDispRawStickInputs, on);
 }
 bool get_marathon() { return get_bool_pref(BoolPref::Marathon); }
-void set_marathon(bool on) { set_bool_pref(BoolPref::Maramarathonthon, on); }
+void set_marathon(bool on) { set_bool_pref(BoolPref::Marathon, on); }
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }
