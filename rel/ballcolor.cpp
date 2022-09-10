@@ -14,56 +14,22 @@
 
 namespace ballcolor {
 
-static s32 ballColorID = 0;
-static s32 apeColorID = 0;
-
-static void convert_to_ballColorID(u8 color_choice){
-    switch(color_choice){
-        case 0: // Default
-            ballColorID = 3;
-            break;
-        case 1: // Red
-        case 2: // Blue
-        case 3: // Yellow
-        case 4: // Green
-        case 5: // Teal
-        case 6: // Pink
-        case 7: // Black
-        case 8: // White
-            ballColorID = color_choice - 1;
-            break;
-    }
+static u8 convert_to_ballColorID(u8 color_choice){
+    if(color_choice == 0) return 3;
+    else return color_choice - 1;
 }
 
-static void convert_to_apeColorID(u8 color_choice){
-    switch(color_choice){
-        case 0: // Default
-            apeColorID = 0;
-            break;
-        case 1: // Red
-        case 2: // Blue
-        case 3: // Yellow
-        case 4: // Green
-        case 5: // Teal
-        case 6: // Pink
-        case 7: // Black
-        case 8: // White
-            apeColorID = color_choice - 1;
-            break;
-    }
-}
-
-static void set_color() { // Sets the ball color to colorID
-    if(mkb::balls[mkb::curr_player_idx].ape != nullptr){ // Check for nullpointers first
-        convert_to_ballColorID(pref::get_ball_color());
-        convert_to_apeColorID(pref::get_ape_color());
-        mkb::balls[mkb::curr_player_idx].ape->color_index = apeColorID;
-        mkb::balls[mkb::curr_player_idx].g_ball_color_index = ballColorID;
-    }
+static u8 convert_to_apeColorID(u8 color_choice){
+    if(color_choice == 0) return 0;
+    else return color_choice - 1;
 }
 
 void tick() {
-    set_color();
+    // Set ball & ape color to color ID
+    if(mkb::balls[mkb::curr_player_idx].ape != nullptr){ // Check for nullpointers first
+        mkb::balls[mkb::curr_player_idx].ape->color_index = convert_to_apeColorID(pref::get_ape_color());
+        mkb::balls[mkb::curr_player_idx].g_ball_color_index = convert_to_ballColorID(pref::get_ball_color());
+    }
 }
 
 } // namespace ballcolor
