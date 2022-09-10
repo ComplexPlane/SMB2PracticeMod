@@ -27,8 +27,8 @@ You should be able to launch the game like usual by double-clicking it in the ga
 on the titlescreen, you're good to go, otherwise the mod did not load correctly. You can use either Card A or Card B for
 your save data, it doesn't matter.
 
-If the game does not progress past the Presented By Sega screen, try upgrading your version of Dolphin Emulator (
-download [here](https://dolphin-emu.org/download/)). Using at least the latest beta is recommended.
+If the game does not progress past the Presented By Sega screen, try upgrading your version of Dolphin Emulator 
+(download [here](https://dolphin-emu.org/download/)). Using at least the latest beta is recommended.
 
 If you still can't figure it out, feel free to message me on Discord (`ComplexPlane#3111`) or
-email (`complexplanegames@gmail.com`), or file a Github issue.
+email (`complexplanegames@gmail.com`), or file a GitHub issue.

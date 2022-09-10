@@ -2,11 +2,10 @@
 #include "log.h"
 
 #include <heap.h>
-#include <cstring>
 
 namespace memstore {
 
-MemStore::MemStore()
+MemStore::MemStore() noexcept
     : m_mode{Mode::PREALLOC}, m_save_buf{nullptr}, m_save_buf_idx{0}, m_save_buf_len{0} {}
 
 MemStore::~MemStore() { enter_prealloc_mode(); }
@@ -49,12 +48,12 @@ void MemStore::do_region(void* ptr, u32 size) {
             break;
         }
         case Mode::SAVE: {
-            memcpy(&m_save_buf[m_save_buf_idx], ptr, size);
+            mkb::memcpy(&m_save_buf[m_save_buf_idx], ptr, size);
             m_save_buf_idx += size;
             break;
         }
         case Mode::LOAD: {
-            memcpy(ptr, &m_save_buf[m_save_buf_idx], size);
+            mkb::memcpy(ptr, &m_save_buf[m_save_buf_idx], size);
             m_save_buf_idx += size;
             break;
         }
@@ -62,7 +61,7 @@ void MemStore::do_region(void* ptr, u32 size) {
 }
 
 void MemStore::print_stats() const {
-    mkb::OSReport("[mod] MemStore total size: %d bytes\n", m_save_buf_len);
+    mkb::OSReport("[pracmod] MemStore total size: %d bytes\n", m_save_buf_len);
 }
 
 Mode MemStore::get_mode() const { return m_mode; }

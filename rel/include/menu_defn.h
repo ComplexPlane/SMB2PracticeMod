@@ -2,7 +2,7 @@
 
 #include <mkb.h>
 
-namespace menu {
+namespace menu_defn {
 
 enum class WidgetType {
     Text,
@@ -18,7 +18,8 @@ enum class WidgetType {
 };
 
 struct TextWidget {
-    const char* label;
+    const char* label;  // For static text
+    const char* (*label_func)();  // For dynamic text
 };
 
 struct ColoredTextWidget {
@@ -86,4 +87,6 @@ struct Widget {
 
 extern MenuWidget root_menu;
 
-}  // namespace menu
+void init();
+
+}  // namespace menu_defn

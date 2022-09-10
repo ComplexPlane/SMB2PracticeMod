@@ -2,10 +2,13 @@
 
 #include <mkb.h>
 #include <cinttypes>
+#include "relutil.h"
+#include "modlink.h"
 
 namespace heap {
 
-static mkb::HeapInfo s_heap_info;
+static mkb::HeapInfo s_local_heap_info;  // Use our own HeapInfo if Workshop Mod isn't loaded
+static mkb::HeapInfo* s_heap_info;  // Pointer to either our HeapInfo or Workshop Mod's
 
 mkb::ChunkInfo* extract_chunk(mkb::ChunkInfo* list, mkb::ChunkInfo* chunk) {
     if (chunk->next) {
@@ -48,12 +51,12 @@ static void make_heap() {
 
     mkb::memset(reinterpret_cast<void*>(start), 0, size);
 
-    s_heap_info.capacity = size;
-    s_heap_info.first_free = reinterpret_cast<mkb::ChunkInfo*>(start);
-    s_heap_info.first_free->next = nullptr;
-    s_heap_info.first_free->prev = nullptr;
-    s_heap_info.first_free->size = size;
-    s_heap_info.first_used = nullptr;
+    s_heap_info->capacity = size;
+    s_heap_info->first_free = reinterpret_cast<mkb::ChunkInfo*>(start);
+    s_heap_info->first_free->next = nullptr;
+    s_heap_info->first_free->prev = nullptr;
+    s_heap_info->first_free->size = size;
+    s_heap_info->first_used = nullptr;
 }
 
 void* alloc(u32 size) {
@@ -64,7 +67,7 @@ void* alloc(u32 size) {
     mkb::ChunkInfo* temp_chunk = nullptr;
 
     // Find a memory area large enough
-    for (temp_chunk = s_heap_info.first_free; temp_chunk; temp_chunk = temp_chunk->next) {
+    for (temp_chunk = s_heap_info->first_free; temp_chunk; temp_chunk = temp_chunk->next) {
         if (new_size <= temp_chunk->size) {
             break;
         }
@@ -82,7 +85,7 @@ void* alloc(u32 size) {
     // Check if the current chunk can be split into two pieces
     if (leftover_size < min_size) {
         // Too small to split, so just extract it
-        s_heap_info.first_free = extract_chunk(s_heap_info.first_free, temp_chunk);
+        s_heap_info->first_free = extract_chunk(s_heap_info->first_free, temp_chunk);
     } else {
         // Large enough to split
         temp_chunk->size = static_cast<s32>(new_size);
@@ -103,12 +106,12 @@ void* alloc(u32 size) {
         if (new_chunk->prev) {
             new_chunk->prev->next = new_chunk;
         } else {
-            s_heap_info.first_free = new_chunk;
+            s_heap_info->first_free = new_chunk;
         }
     }
 
     // Add the chunk to the allocated list
-    s_heap_info.first_used = add_chunk_to_front(s_heap_info.first_used, temp_chunk);
+    s_heap_info->first_used = add_chunk_to_front(s_heap_info->first_used, temp_chunk);
 
     // Add the header size to the chunk
     void* allocated_memory = reinterpret_cast<void*>(reinterpret_cast<u32>(temp_chunk) +
@@ -127,34 +130,34 @@ bool free(void* ptr) {
     mkb::ChunkInfo* temp_chunk = reinterpret_cast<mkb::ChunkInfo*>(ptr_raw - header_size);
 
     // Make sure ptr is actually allocated
-    if (!find_chunk_in_list(s_heap_info.first_used, temp_chunk)) {
+    if (!find_chunk_in_list(s_heap_info->first_used, temp_chunk)) {
         return false;
     }
 
     // Extract the chunk from the allocated list
-    s_heap_info.first_used = extract_chunk(s_heap_info.first_used, temp_chunk);
+    s_heap_info->first_used = extract_chunk(s_heap_info->first_used, temp_chunk);
 
     // Add in sorted order to the free list
-    s_heap_info.first_free = mkb::DLInsert(s_heap_info.first_free, temp_chunk);
+    s_heap_info->first_free = mkb::DLInsert(s_heap_info->first_free, temp_chunk);
     return true;
 }
 
 u32 get_free_space() {
     u32 space = 0;
-    for (mkb::ChunkInfo* chunk = s_heap_info.first_free; chunk; chunk = chunk->next) {
+    for (mkb::ChunkInfo* chunk = s_heap_info->first_free; chunk; chunk = chunk->next) {
         space += chunk->size - 32;  // Don't count the ChunkInfo
     }
     return space;
 }
 
-u32 get_total_space() { return s_heap_info.capacity; }
+u32 get_total_space() { return s_heap_info->capacity; }
 
 void check_integrity() {
     bool valid = true;
 
     mkb::ChunkInfo* current_chunk = nullptr;
     mkb::ChunkInfo* prev_chunk = nullptr;
-    for (current_chunk = s_heap_info.first_used; current_chunk;
+    for (current_chunk = s_heap_info->first_used; current_chunk;
          current_chunk = current_chunk->next) {
         // Check pointer sanity
         auto check_if_pointer_is_valid = [](void* ptr) {
@@ -188,6 +191,14 @@ void check_integrity() {
     }
 }
 
-void init() { make_heap(); }
+void init() {
+    // Use Workshop Mod's heap if it's loaded, otherwise make our own
+    if (modlink::get() != nullptr) {
+        s_heap_info = modlink::get()->heap_info;
+    } else {
+        s_heap_info = &s_local_heap_info;
+        make_heap();
+    }
+}
 
 }  // namespace heap

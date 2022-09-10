@@ -31,9 +31,10 @@ enum class PrefId : u16 {
     MuteBgm = 15,
     MuteTimerDing = 16,
     InputDispRawStickInputs = 17,
-    BallColor = 18,
-    ApeColor = 19,
-    Marathon = 20,
+    Freecam = 18,
+    BallColor = 19,
+    ApeColor = 20,
+    Marathon = 21,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -53,6 +54,7 @@ enum class BoolPref {
     MuteBgm,
     MuteTimerDing,
     InputDispRawStickInputs,
+    Freecam,
     Marathon,
 };
 
@@ -99,6 +101,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::MuteBgm,
     PrefId::MuteTimerDing,
     PrefId::InputDispRawStickInputs,
+    PrefId::Freecam,
     PrefId::BallColor,
     PrefId::ApeColor,
     PrefId::Marathon,
@@ -160,6 +163,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::MuteTimerDing;
         case PrefId::InputDispRawStickInputs:
             return BoolPref::InputDispRawStickInputs;
+        case PrefId::Freecam:
+            return BoolPref::Freecam;
         case PrefId::Marathon:
             return BoolPref::Marathon;
         default:
@@ -310,10 +315,11 @@ void set_input_disp_notch_indicators(bool on) {
     set_bool_pref(BoolPref::InputDispNotchIndicators, on);
 }
 bool get_input_disp_raw_stick_inputs() { return get_bool_pref(BoolPref::InputDispRawStickInputs); }
-void set_input_disp_raw_stick_inputs(bool on) { set_bool_pref(BoolPref::InputDispRawStickInputs, on); }
-bool get_() { return get_bool_pref(BoolPref::Marathon); }
+void set_input_disp_raw_stick_inputs(bool on) {
+    set_bool_pref(BoolPref::InputDispRawStickInputs, on);
+}
+bool get_marathon() { return get_bool_pref(BoolPref::Marathon); }
 void set_marathon(bool on) { set_bool_pref(BoolPref::Maramarathonthon, on); }
-
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }
@@ -335,5 +341,7 @@ bool get_mute_bgm() { return get_bool_pref(BoolPref::MuteBgm); }
 void set_mute_bgm(bool on) { set_bool_pref(BoolPref::MuteBgm, on); }
 bool get_mute_timer_ding() { return get_bool_pref(BoolPref::MuteTimerDing); }
 void set_mute_timer_ding(bool on) { set_bool_pref(BoolPref::MuteTimerDing, on); }
+bool get_freecam() { return get_bool_pref(BoolPref::Freecam); }
+void set_freecam(bool on) { return set_bool_pref(BoolPref::Freecam, on); }
 
 }  // namespace pref

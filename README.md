@@ -1,7 +1,6 @@
 # :confetti_ball: Super Monkey Ball 2 Practice Mod
 
-A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 as well as most
-popular romhacks, including Gaiden, Deluxe in 2, SMB651, Monkeyed Ball 2, and Community Pack 2020.
+A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It supports vanilla SMB2 and romhacks (Gaiden, SMB651, etc).
 
 ![Dual Screenshots](doc/dual-screenshot.png)
 
@@ -12,18 +11,19 @@ Features include:
 * Story Mode Individual World (IW) Practice
 * Challenge Mode Individual Segment Practice
 * Stage RTA and Pause Timers
+* Background Music Toggle
 * [Jump Mod](https://www.youtube.com/watch?v=kWAunK6Av-Q)
-* Frame Advance
-* D-pad Controls
-* Freeze Timer
 * Debug Mode
+* Freeze Timer
 * Quick Rumble Adjust
+* D-pad Controls
+* Frame Advance
 
 ... and more! Features can be toggled on/off and configured as you desire.
 
 # Install
 
-To install the mod on a **Wii console** (recommended), follow [this guide](doc/console-setup-guide.md). There's also
+To install the mod on a **Wii console**, follow [this guide](doc/console-setup-guide.md). There's also
 a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) but it's a
 bit out-of-date.
 
@@ -44,7 +44,7 @@ To build from source, see [this guide](doc/building.md).
 # Contact
 
 If you have any questions, bugs, or feature requests, feel free to message me on Discord (`ComplexPlane#3111`) or
-email (`complexplanegames@gmail.com`). You can also file a Github issue.
+email (`complexplanegames@gmail.com`). You can also file a GitHub issue.
 
 # Credits
 
