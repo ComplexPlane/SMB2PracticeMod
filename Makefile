@@ -46,7 +46,7 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ELF2REL_BUILD := $(CURDIR)/dep/ttyd-tools/ttyd-tools/elf2rel/build
+ELF2REL_BUILD := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/elf2rel/build
 
 elf2rel:
 	@echo "Compiling elf2rel..."
@@ -159,14 +159,14 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
 ifeq ($(REGION),us)
-	export BANNERFILE	:= $(CURDIR)/image/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_us.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 else ifeq ($(REGION),jp)
-	export BANNERFILE	:= $(CURDIR)/image/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_jp.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
 else ifeq ($(REGION),eu)
-	export BANNERFILE	:= $(CURDIR)/image/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_eu.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
 endif
 
 #---------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-TTYDTOOLS := $(abspath $(CURDIR)/../dep/ttyd-tools/ttyd-tools)
+TTYDTOOLS := $(abspath $(CURDIR)/../3rdparty/ttyd-tools/ttyd-tools)
 ELF2REL := $(TTYDTOOLS)/elf2rel/build/elf2rel
 GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
