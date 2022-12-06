@@ -1,0 +1,9 @@
+#pragma once
+
+#include "mkb/mkb.h"
+
+namespace log {
+void mod_assert(const char* file, s32 line, bool exp);
+}
+
+#define MOD_ASSERT(exp) (log::mod_assert(__FILE__, __LINE__, (exp)))

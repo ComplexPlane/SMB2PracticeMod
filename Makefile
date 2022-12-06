@@ -46,7 +46,7 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ELF2REL_BUILD := $(CURDIR)/dep/ttyd-tools/ttyd-tools/elf2rel/build
+ELF2REL_BUILD := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/elf2rel/build
 
 elf2rel:
 	@echo "Compiling elf2rel..."
@@ -70,9 +70,10 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	SMB2PracticeMod.$(GAMECODE)
 BUILD		:=	build.$(GAMECODE)
-SOURCES		:=	rel $(wildcard rel/*)
+# Find command is invalid during recursive Make execution in build dir, ust ignore it for now
+SOURCES		:=	$(shell find src 2>/dev/null)
 DATA		:=	data  
-INCLUDES	:=	rel/include
+INCLUDES	:=	src
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -83,7 +84,7 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -fmacro-prefix-map=$(abspath $(CURDIR)/../rel)=. $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
@@ -156,16 +157,16 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/rel/include/mkb2.$(REGION).lst
+export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
 ifeq ($(REGION),us)
-	export BANNERFILE	:= $(CURDIR)/image/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_us.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 else ifeq ($(REGION),jp)
-	export BANNERFILE	:= $(CURDIR)/image/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_jp.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
 else ifeq ($(REGION),eu)
-	export BANNERFILE	:= $(CURDIR)/image/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/image/icon_eu.raw
+	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
+	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
 endif
 
 #---------------------------------------------------------------------------------
@@ -200,7 +201,7 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-TTYDTOOLS := $(abspath $(CURDIR)/../dep/ttyd-tools/ttyd-tools)
+TTYDTOOLS := $(abspath $(CURDIR)/../3rdparty/ttyd-tools/ttyd-tools)
 ELF2REL := $(TTYDTOOLS)/elf2rel/build/elf2rel
 GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
 
