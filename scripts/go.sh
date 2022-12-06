@@ -2,21 +2,15 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-
 PPCINJECT=~/romhack/util/ppc-inject/PPCInject 
 DOL_SRC=~/romhack/smb2imm/sys/main.dol
 DOL_DEST=~/romhack/smb2mut/sys/main.dol
 RELLOADER_SRC=relloader/src/iso-rel-loader-us.asm
+DOLPHIN_DIR=~/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu 
 
-if [[ "${1:-}" == "-i" ]]; then
-    echo 'Patching main.dol with ppcinject'
-    "$PPCINJECT" "$DOL_SRC" "$DOL_DEST" "$RELLOADER_SRC"
-fi
-
-make us -j$(nproc)
-
-echo 'Copying REL to smb2mut'
-cp ApeSphere.us.rel ~/romhack/smb2mut/files/mkb2.rel_sample.rel
+echo "Building"
+make us -j
 
 echo 'Copying GCI to dolphin emu folder' 
-cp ApeSphere.us.gci ~/.local/share/dolphin-emu/GC/USA/Card\ A/
+mkdir -p "$DOLPHIN_DIR/GC/USA/Card A"
+cp SMB2PracticeMod.GM2E8P.gci "$DOLPHIN_DIR/GC/USA/Card A"
