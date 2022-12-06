@@ -1,12 +1,11 @@
 #include "freecam.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include "mkb2_ghidra.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
-#include "macro_utils.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/patch.h"
+#include "utils/macro_utils.h"
 
 namespace freecam {
 

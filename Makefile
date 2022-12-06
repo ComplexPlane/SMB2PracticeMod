@@ -70,9 +70,10 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	SMB2PracticeMod.$(GAMECODE)
 BUILD		:=	build.$(GAMECODE)
-SOURCES		:=	$(shell find src)
+# Find command is invalid during recursive Make execution in build dir, ust ignore it for now
+SOURCES		:=	$(shell find src 2>/dev/null)
 DATA		:=	data  
-INCLUDES	:=	src/include
+INCLUDES	:=	src
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -156,7 +157,7 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/src/include/mkb2.$(REGION).lst
+export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
 ifeq ($(REGION),us)
 	export BANNERFILE	:= $(CURDIR)/image/banner_us.raw
 	export ICONFILE		:= $(CURDIR)/image/icon_us.raw

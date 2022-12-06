@@ -1,15 +1,12 @@
 #include "menu_impl.h"
 
-#include <macro_utils.h>
-#include <mkb.h>
-#include <pref.h>
-#include <cstring>
-
-#include "draw.h"
-#include "log.h"
-#include "menu_defn.h"
-#include "pad.h"
-#include "menu_defn.h"
+#include "mkb/mkb.h"
+#include "systems/log.h"
+#include "systems/menu_defn.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
 
 using namespace menu_defn;
 
@@ -271,10 +268,10 @@ static void draw_breadcrumbs() {
         MenuWidget* menu = s_menu_stack[i];
         mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
         draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
-        x += strlen(menu->label) * draw::DEBUG_CHAR_WIDTH;
+        x += mkb::strlen(const_cast<char*>(menu->label)) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr) {
             draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
-            x += strlen(ARROW_STR) * draw::DEBUG_CHAR_WIDTH;
+            x += mkb::strlen(const_cast<char*>(ARROW_STR)) * draw::DEBUG_CHAR_WIDTH;
         }
     }
 

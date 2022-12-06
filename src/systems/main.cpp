@@ -1,36 +1,33 @@
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include "assembly.h"
-#include "cmseg.h"
-#include "draw.h"
-#include "gotostory.h"
-#include "heap.h"
-#include "inputdisp.h"
-#include "iw.h"
-#include "jump.h"
-#include "menu_impl.h"
-#include "menu_defn.h"
-#include "mkb2_ghidra.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
-#include "libsavest.h"
-#include "savest_ui.h"
-#include "scratch.h"
-#include "tetris.h"
-#include "timer.h"
-#include "ballcolor.h"
-#include "marathon.h"
+#include "systems/assembly.h"
+#include "systems/cardio.h"
+#include "systems/heap.h"
+#include "systems/menu_defn.h"
+#include "systems/menu_impl.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "systems/version.h"
+#include "utils/draw.h"
+#include "utils/libsavest.h"
+#include "utils/patch.h"
 
-#include <mkb.h>
-
-#include <banans.h>
-#include <cardio.h>
-#include <dpad.h>
-#include <freeze.h>
-#include "sfx.h"
-#include "version.h"
-#include "freecam.h"
+#include "mods/ballcolor.h"
+#include "mods/banans.h"
+#include "mods/cmseg.h"
+#include "mods/dpad.h"
+#include "mods/freecam.h"
+#include "mods/freeze.h"
+#include "mods/gotostory.h"
+#include "mods/inputdisp.h"
+#include "mods/iw.h"
+#include "mods/jump.h"
+#include "mods/marathon.h"
+#include "mods/savest_ui.h"
+#include "mods/scratch.h"
+#include "mods/sfx.h"
+#include "mods/tetris.h"
+#include "mods/timer.h"
 
 namespace main {
 
@@ -74,10 +71,8 @@ static void unlock_everything() {
 }
 
 void init() {
-    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n",
-                  version::PRACMOD_VERSION.major,
-                  version::PRACMOD_VERSION.minor,
-                  version::PRACMOD_VERSION.patch);
+    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n", version::PRACMOD_VERSION.major,
+                  version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
 
     perform_assembly_patches();
 

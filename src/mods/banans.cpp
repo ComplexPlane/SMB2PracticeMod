@@ -1,7 +1,7 @@
 #include "banans.h"
 
-#include "patch.h"
-#include "pref.h"
+#include "systems/pref.h"
+#include "utils/patch.h"
 
 namespace banans {
 

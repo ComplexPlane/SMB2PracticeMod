@@ -2,15 +2,15 @@
 
 #include "libsavest.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include "draw.h"
-#include "heap.h"
-#include "memstore.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
-#include "timer.h"
+#include "mods/timer.h"
+#include "systems/heap.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/memstore.h"
+#include "utils/patch.h"
 
 namespace libsavest {
 

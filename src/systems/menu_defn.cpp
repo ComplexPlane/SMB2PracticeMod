@@ -1,15 +1,15 @@
 #include "menu_defn.h"
 
-#include <mkb.h>
-#include "cmseg.h"
-#include "draw.h"
-#include "gotostory.h"
-#include "jump.h"
-#include "ballcolor.h"
-#include "inputdisp.h"
-#include "macro_utils.h"
-#include "pref.h"
-#include "version.h"
+#include "mkb/mkb.h"
+#include "mods/ballcolor.h"
+#include "mods/cmseg.h"
+#include "mods/gotostory.h"
+#include "mods/inputdisp.h"
+#include "mods/jump.h"
+#include "systems/pref.h"
+#include "systems/version.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
 
 namespace menu_defn {
 

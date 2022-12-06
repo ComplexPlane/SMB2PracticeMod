@@ -6,11 +6,10 @@ Non shit RNG
 
 #include "tetris.h"
 
-#include <mkb.h>
-#include <cstdlib>
+#include "mkb/mkb.h"
 
-#include "draw.h"
-#include "pad.h"
+#include "utils/draw.h"
+#include "systems/pad.h"
 
 static constexpr s32 NUM_TETRADS = 7;
 static constexpr s32 NUM_CELL_TYPES = 8;
@@ -283,9 +282,9 @@ void Tetris::try_transition_to_dropping() {
     }
 }
 
-Tetris::Cell Tetris::gen_random_cell() { return static_cast<Cell>(rand() % NUM_CELL_TYPES); }
+Tetris::Cell Tetris::gen_random_cell() { return static_cast<Cell>(mkb::rand() % NUM_CELL_TYPES); }
 
-Tetris::Tetrad Tetris::gen_random_tetrad() { return static_cast<Tetrad>(rand() % NUM_TETRADS); }
+Tetris::Tetrad Tetris::gen_random_tetrad() { return static_cast<Tetrad>(mkb::rand() % NUM_TETRADS); }
 
 Tetris::Tetrad Tetris::pop_tetrad_queue() {
     Tetrad ret = m_tetrad_queue[0];

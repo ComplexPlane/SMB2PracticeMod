@@ -1,6 +1,6 @@
 #include "mod.h"
 
-#include "patch.h"
+#include "utils/patch.h"
 
 #include <ttyd/system.h>
 #include <ttyd/mariost.h>

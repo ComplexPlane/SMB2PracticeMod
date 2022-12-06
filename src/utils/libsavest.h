@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include <mkb.h>
-#include "memstore.h"
+#include "mkb/mkb.h"
+#include "utils/memstore.h"
 
 namespace libsavest {
 

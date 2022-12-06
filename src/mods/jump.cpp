@@ -1,11 +1,10 @@
 #include "jump.h"
 
-#include <mkb.h>
-#include <cstring>
-#include "draw.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
+#include "mkb/mkb.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/patch.h"
 
 #define ABS(x) ((x) < 0 ? (-x) : (x))
 
@@ -82,15 +81,15 @@ static void jumping() {
 
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
     if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) &&
-    !paused_now) {
+        !paused_now) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
             mkb::toggle_minimap_zoom();
         }
     }
 
     if (mkb::sub_mode != mkb::SMD_GAME_READY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT &&
-    mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
-    mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
+        mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
+        mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
         reset();
         return;
     }

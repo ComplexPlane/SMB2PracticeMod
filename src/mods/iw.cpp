@@ -1,15 +1,13 @@
 #include "iw.h"
-#include "assembly.h"
-#include "pad.h"
 
-#include <mkb.h>
-#include <timerdisp.h>
-#include <cstdio>
-#include <cstring>
+#include "mkb/mkb.h"
 
-#include "draw.h"
-#include "patch.h"
-#include "pref.h"
+#include "systems/assembly.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/patch.h"
+#include "utils/timerdisp.h"
 
 // TODO: track best times per world
 // I tried this before but it seems like there might be a spurious frame where it thinks the IW is
@@ -64,8 +62,8 @@ static void set_save_file_info() {
     for (s32 i = 0; i < 3; i++) {
         auto& story_save = mkb::storymode_save_files[i];
         if (s_iw_files & (1 << i)) {
-            sprintf(story_save.file_name, "W%02d IW %s", story_save.current_world + 1,
-                    s_anim_strs[s_anim_counter / 2 % 4]);
+            mkb::sprintf(story_save.file_name, "W%02d IW %s", story_save.current_world + 1,
+                         s_anim_strs[s_anim_counter / 2 % 4]);
             story_save.num_beaten_stages_in_current_world = 0;
             story_save.score = 0;
             story_save.playtime_in_frames = 0;
@@ -104,8 +102,8 @@ void tick() {
     if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE) return;
 
     const char* msg = "Up/Down to Change World.";
-    strcpy(mkb::continue_saved_game_text, msg);
-    strcpy(mkb::start_game_from_beginning_text, msg);
+    mkb::strcpy(mkb::continue_saved_game_text, const_cast<char*>(msg));
+    mkb::strcpy(mkb::start_game_from_beginning_text, const_cast<char*>(msg));
 
     handle_iw_selection();
     set_save_file_info();

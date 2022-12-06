@@ -1,7 +1,6 @@
-#include "pad.h"
+#include "systems/pad.h"
 
-#include <mkb.h>
-#include <cstring>
+#include "mkb/mkb.h"
 
 namespace pad {
 

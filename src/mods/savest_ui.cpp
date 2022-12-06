@@ -1,17 +1,16 @@
 #include "savest_ui.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include "draw.h"
-#include "heap.h"
-#include "libsavest.h"
-#include "log.h"
-#include "macro_utils.h"
-#include "memstore.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
-#include "timer.h"
+#include "systems/heap.h"
+#include "systems/log.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/libsavest.h"
+#include "utils/macro_utils.h"
+#include "utils/memstore.h"
+#include "utils/patch.h"
 
 namespace savest_ui {
 
@@ -100,9 +99,7 @@ void tick() {
 
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
-               s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)
-               ) {
-
+               s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {
         using LoadResult = libsavest::SaveState::LoadResult;
         switch (state.load()) {
             case LoadResult::Ok: {

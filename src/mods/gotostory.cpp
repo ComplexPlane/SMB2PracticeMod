@@ -1,6 +1,6 @@
 #include "gotostory.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
 namespace gotostory {
 

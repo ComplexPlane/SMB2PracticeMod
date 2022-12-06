@@ -1,12 +1,12 @@
 #include "cmseg.h"
 
-#include <mkb.h>
-#include "draw.h"
-#include "log.h"
-#include "mkb2_ghidra.h"
-#include "patch.h"
-#include "pref.h"
-#include "timerdisp.h"
+#include "mkb/mkb.h"
+
+#include "systems/log.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/patch.h"
+#include "utils/timerdisp.h"
 
 namespace cmseg {
 

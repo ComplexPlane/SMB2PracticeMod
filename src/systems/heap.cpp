@@ -1,14 +1,14 @@
 #include "heap.h"
 
-#include <mkb.h>
 #include <cinttypes>
-#include "relutil.h"
-#include "modlink.h"
+#include "mkb/mkb.h"
+#include "systems/modlink.h"
+#include "utils/relutil.h"
 
 namespace heap {
 
 static mkb::HeapInfo s_local_heap_info;  // Use our own HeapInfo if Workshop Mod isn't loaded
-static mkb::HeapInfo* s_heap_info;  // Pointer to either our HeapInfo or Workshop Mod's
+static mkb::HeapInfo* s_heap_info;       // Pointer to either our HeapInfo or Workshop Mod's
 
 mkb::ChunkInfo* extract_chunk(mkb::ChunkInfo* list, mkb::ChunkInfo* chunk) {
     if (chunk->next) {

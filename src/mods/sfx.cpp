@@ -1,9 +1,8 @@
 #include "sfx.h"
 
-#include <mkb.h>
-#include "mkb2_ghidra.h"
-#include "patch.h"
-#include "pref.h"
+#include "mkb/mkb.h"
+#include "utils/patch.h"
+#include "systems/pref.h"
 
 namespace sfx {
 

@@ -1,7 +1,7 @@
 #include "memstore.h"
-#include "log.h"
 
-#include <heap.h>
+#include "systems/heap.h"
+#include "systems/log.h"
 
 namespace memstore {
 

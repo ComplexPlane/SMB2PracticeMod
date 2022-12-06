@@ -1,12 +1,11 @@
 #include "inputdisp.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include "draw.h"
-#include "mkb2_ghidra.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
+#include "utils/draw.h"
+#include "systems/pad.h"
+#include "utils/patch.h"
+#include "systems/pref.h"
 
 namespace inputdisp {
 

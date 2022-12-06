@@ -1,4 +1,4 @@
-#include "patch.h"
+#include "utils/patch.h"
 
 namespace patch {
 void clear_dc_ic_cache(void* ptr, u32 size) {

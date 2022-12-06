@@ -1,13 +1,12 @@
-#include "draw.h"
+#include "utils/draw.h"
 
-#include <mkb.h>
-#include <cstdarg>
-#include <cstdio>
-#include <cstring>
+#include <stdarg.h>
 
-#include "assembly.h"
+#include "mkb/mkb.h"
+
 #include "macro_utils.h"
 #include "patch.h"
+#include "systems/assembly.h"
 
 namespace draw {
 
@@ -74,7 +73,7 @@ static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char* format, v
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
-    vsprintf(buf, format, args);
+    mkb::vsprintf(buf, const_cast<char*>(format), args);
     debug_text_buf(x, y, color, buf);
 }
 
@@ -127,7 +126,7 @@ void heart() {
 }
 
 void disp() {
-    s32 notify_len = strlen(s_notify_msg_buf);
+    s32 notify_len = mkb::strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
     s32 draw_y = 426;
     mkb::GXColor color = s_notify_color;
@@ -144,7 +143,7 @@ void disp() {
 void notify(mkb::GXColor color, const char* format, ...) {
     va_list args;
     va_start(args, format);
-    vsprintf(s_notify_msg_buf, format, args);
+    mkb::vsprintf(s_notify_msg_buf, const_cast<char*>(format), args);
     va_end(args);
 
     s_notify_frame_counter = 0;

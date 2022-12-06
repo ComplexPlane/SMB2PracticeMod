@@ -1,16 +1,14 @@
 #include "ballcolor.h"
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
-#include <cstring>
-#include "draw.h"
-#include "heap.h"
-#include "memstore.h"
-#include "mkb2_ghidra.h"
-#include "pad.h"
-#include "patch.h"
-#include "pref.h"
-#include "timer.h"
+#include "systems/heap.h"
+#include "utils/memstore.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+
+#include "utils/patch.h"
+#include "utils/draw.h"
 
 namespace ballcolor {
 

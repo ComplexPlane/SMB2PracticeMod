@@ -1,8 +1,8 @@
 #include "freeze.h"
 
-#include <mkb.h>
-#include "patch.h"
-#include "pref.h"
+#include "mkb/mkb.h"
+#include "systems/pref.h"
+#include "utils/patch.h"
 
 namespace freeze {
 

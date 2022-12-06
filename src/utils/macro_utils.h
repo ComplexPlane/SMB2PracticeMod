@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mkb.h>
+#include "mkb/mkb.h"
 
 #define LEN(array) (sizeof(array) / sizeof((array)[0]))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
