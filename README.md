@@ -4,7 +4,7 @@ A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It 
 
 ![Dual Screenshots](doc/dual-screenshot.png)
 
-Features include:
+# Features
 
 * Savestates
 * Input Display
