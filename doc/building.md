@@ -40,8 +40,8 @@ I recommend using a script to quickly build and copy the rels/gcis to your Dolph
 
 Here's how to set up VSCode with clangd. Clangd provides error checking, autocompletion, formatting, and more. It's faster and more accurate than the Microsoft C++ extension in my experience.
 
-1. Run: `script/gen_compile_commands.json` to generate `compile_commands.json` which clangd needs
-    You ought to run this every time you add a new `.cpp` file but it may work fine if you forget
+1. Run: `script/gen_compile_commands.json` to generate `compile_commands.json` which clangd needs.
+    - You ought to run this every time you add a new `.cpp` file but it may work fine if you forget.
 2. Install the clangd extension. If you see popups for disabling the conflicting Microsoft C++ Intellisense or downloading clangd, go ahead and comply.
 3. Restart your editor and enjoy!
 
