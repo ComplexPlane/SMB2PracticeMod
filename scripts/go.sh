@@ -12,5 +12,5 @@ echo "Building"
 make us -j
 
 echo 'Copying GCI to dolphin emu folder' 
-mkdir -p "$DOLPHIN_DIR/GC/USA/Card A"
-cp SMB2PracticeMod.GM2E8P.gci "$DOLPHIN_DIR/GC/USA/Card A"
+mkdir -p "$DOLPHIN_DIR/GC/USA/Card B"
+cp SMB2PracticeMod.GM2E8P.gci "$DOLPHIN_DIR/GC/USA/Card B"
