@@ -7,12 +7,9 @@ import json
 def main():
     cmds = []
     repo_dir = Path(__file__).parent.parent.resolve()
-    src_dir = repo_dir / "rel"
-    include_dir = repo_dir / "rel" / "include"
-    for src_path in src_dir.iterdir():
-        if src_path.suffix not in [".cpp"]:
-            continue
-
+    src_dir = repo_dir / "src"
+    include_dir = repo_dir / "src"
+    for src_path in src_dir.glob("**/*.cpp"):
         command = (
             "/usr/bin/c++ "
             f"-I {include_dir} "
