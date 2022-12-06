@@ -70,7 +70,7 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	SMB2PracticeMod.$(GAMECODE)
 BUILD		:=	build.$(GAMECODE)
-SOURCES		:=	src $(shell find src)
+SOURCES		:=	$(shell find src)
 DATA		:=	data  
 INCLUDES	:=	src/include
 
