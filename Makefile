@@ -70,9 +70,9 @@ else
 #---------------------------------------------------------------------------------
 TARGET		:=	SMB2PracticeMod.$(GAMECODE)
 BUILD		:=	build.$(GAMECODE)
-SOURCES		:=	rel $(wildcard rel/*)
+SOURCES		:=	src $(shell find src)
 DATA		:=	data  
-INCLUDES	:=	rel/include
+INCLUDES	:=	src/include
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -83,7 +83,7 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -fmacro-prefix-map=$(abspath $(CURDIR)/../rel)=. $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
@@ -156,7 +156,7 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/rel/include/mkb2.$(REGION).lst
+export MAPFILE		:= $(CURDIR)/src/include/mkb2.$(REGION).lst
 ifeq ($(REGION),us)
 	export BANNERFILE	:= $(CURDIR)/image/banner_us.raw
 	export ICONFILE		:= $(CURDIR)/image/icon_us.raw
