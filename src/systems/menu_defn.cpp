@@ -20,7 +20,7 @@ static const char* inputdisp_colors[] = {
 };
 static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
 
-static Widget inputdisp_widgets[] = {
+static Widget s_inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Show Input Display", pref::get_input_disp, pref::set_input_disp},
@@ -80,7 +80,7 @@ static Widget s_ball_color_widgets[] = {
     },
 };
 
-static Widget rumble_widgets[] = {
+static Widget s_rumble_widgets[] = {
     {.type = WidgetType::Checkbox,
      .checkbox = {
          .label = "Controller 1 Rumble",
@@ -106,7 +106,7 @@ static Widget rumble_widgets[] = {
          .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
      }}};
 
-static Widget about_widgets[] = {
+static Widget s_about_widgets[] = {
     {.type = WidgetType::Header, .header = {"SMB2 Practice Mod"}},
     {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
     {.type = WidgetType::Custom, .custom = {draw::heart}},
@@ -116,12 +116,12 @@ static Widget about_widgets[] = {
     {.type = WidgetType::Text, .text = {s_version_str}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
-     .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
+     .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
 
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
-static Widget cm_seg_widgets[] = {
+static Widget s_cm_seg_widgets[] = {
     // Settings
     {.type = WidgetType::Choose,
      .choose = {
@@ -187,7 +187,7 @@ static Widget cm_seg_widgets[] = {
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}},
 };
 
-static Widget timers_widgets[] = {
+static Widget s_timers_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"RTA+Pause Timer", pref::get_rta_pause_timer, pref::set_rta_pause_timer},
@@ -201,7 +201,7 @@ static Widget timers_widgets[] = {
         .checkbox = {"CM Seg Timer", pref::get_cm_timer, pref::set_cm_timer},
     }};
 
-static Widget help_widgets[] = {
+static Widget s_help_widgets[] = {
     {.type = WidgetType::Header, .header = {"Savestates Bindings"}},
     {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
     {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
@@ -216,7 +216,7 @@ static Widget help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
 };
 
-static Widget sound_widgets[] = {
+static Widget s_sound_widgets[] = {
     {.type = WidgetType::Checkbox,
      .checkbox =
          {
@@ -237,35 +237,10 @@ static Widget sound_widgets[] = {
          }},
 };
 
-static Widget mods_widgets[] = {
+static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
         .checkbox = {"Savestates", pref::get_savestates, pref::set_savestates},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Input Display", inputdisp_widgets, LEN(inputdisp_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Timers", timers_widgets, LEN(timers_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Jump Mod",
-                .get = pref::get_jump_mod,
-                .set = pref::set_jump_mod,
-            },
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Audio", sound_widgets, LEN(sound_widgets)},
     },
     {.type = WidgetType::Checkbox,
      .checkbox =
@@ -276,6 +251,33 @@ static Widget mods_widgets[] = {
          }},
     {.type = WidgetType::Checkbox,
      .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam}},
+    {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Audio", s_sound_widgets, LEN(s_sound_widgets)},
+    },
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Debug Mode",
+             .get = pref::get_debug_mode,
+             .set = pref::set_debug_mode,
+         }},
+};
+
+static Widget s_displays_widgets[] = {
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Input Display", s_inputdisp_widgets, LEN(s_inputdisp_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Timers", s_timers_widgets, LEN(s_timers_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -283,6 +285,18 @@ static Widget mods_widgets[] = {
                 .label = "9999 Banana Counter",
                 .get = pref::get_9999_banana_counter,
                 .set = pref::set_9999_banana_counter,
+            },
+    },
+};
+
+static Widget s_gameplay_mods_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Jump Mod",
+                .get = pref::get_jump_mod,
+                .set = pref::set_jump_mod,
             },
     },
     {
@@ -301,38 +315,39 @@ static Widget mods_widgets[] = {
              .get = pref::get_dpad_controls,
              .set = pref::set_dpad_controls,
          }},
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Debug Mode",
-             .get = pref::get_debug_mode,
-             .set = pref::set_debug_mode,
-         }},
 };
 
-static Widget root_widgets[] = {
+static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Button,
-        .button = {"Go To Story Mode", gotostory::load_storymode},
+        .button = {"Story Mode IW", gotostory::load_storymode},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Challenge Mode Seg", cm_seg_widgets, LEN(cm_seg_widgets)},
+        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
     },
-    {.type = WidgetType::Menu, .menu = {"Mods", mods_widgets, LEN(mods_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"Rumble Settings", rumble_widgets, LEN(rumble_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"Help", help_widgets, LEN(help_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"About", about_widgets, LEN(about_widgets)}},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Tools", s_tools_widgets, LEN(s_tools_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Displays", s_displays_widgets, LEN(s_displays_widgets)},
+    },
+    {.type = WidgetType::Menu,
+     .menu = {"Gameplay Mods", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"Help", s_help_widgets, LEN(s_help_widgets)}},
+    {.type = WidgetType::Menu, .menu = {"About", s_about_widgets, LEN(s_about_widgets)}},
 };
 
 MenuWidget root_menu = {
     .label = "Main Menu",
-    .widgets = root_widgets,
-    .num_widgets = LEN(root_widgets),
+    .widgets = s_root_widgets,
+    .num_widgets = LEN(s_root_widgets),
 };
 
 void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d\n", version::PRACMOD_VERSION.major,
+    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d", version::PRACMOD_VERSION.major,
                  version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
 }
 
