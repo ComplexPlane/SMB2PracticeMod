@@ -11,24 +11,10 @@ include $(DEVKITPPC)/gamecube_rules
 
 ifeq ($(REGION),)
 
-all: us gaiden monkeyed2 deluxein2 commpack2020
 us: elf2rel
 	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2E8P
-gaiden: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EGD
-monkeyed2: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EBJ
-deluxein2: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2EDX
-commpack2020: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2ECP
-
 clean: clean_elf2rel
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EGD
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EBJ
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2EDX
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2ECP
 
 #---------------------------------------------------------------------------------
 # For now, make elf2rel a phony target
@@ -68,8 +54,8 @@ else
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	SMB2PracticeMod.$(GAMECODE)
-BUILD		:=	build.$(GAMECODE)
+TARGET		:=	SMB2PracticeMod
+BUILD		:=	build
 # Find command is invalid during recursive Make execution in build dir, ust ignore it for now
 SOURCES		:=	$(shell find src 2>/dev/null)
 DATA		:=	data  
@@ -89,20 +75,6 @@ CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
-
-# Platform options
-ifeq ($(GAMECODE),GM2E8P)
-	PRINTVER = "US"
-else ifeq ($(GAMECODE),GM2EGD)
-	PRINTVER = "GAIDEN"
-else ifeq ($(GAMECODE),GM2EBJ)
-	PRINTVER = "MONKEYED2"
-else ifeq ($(GAMECODE),GM2EDX)
-	PRINTVER = "DELUXEIN2"
-else ifeq ($(GAMECODE),GM2ECP)
-	PRINTVER = "COMMPACK2020"
-endif
-
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
@@ -221,7 +193,7 @@ $(OFILES_SOURCES) : $(HFILES)
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "ApeSphere ($(PRINTVER))" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
