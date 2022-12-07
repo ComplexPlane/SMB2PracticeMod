@@ -116,7 +116,7 @@ static Widget s_about_widgets[] = {
     {.type = WidgetType::Text, .text = {s_version_str}},
     {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
     {.type = WidgetType::ColoredText,
-     .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
+     .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
 
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
@@ -347,7 +347,7 @@ MenuWidget root_menu = {
 };
 
 void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d\n", version::PRACMOD_VERSION.major,
+    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d", version::PRACMOD_VERSION.major,
                  version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
 }
 
