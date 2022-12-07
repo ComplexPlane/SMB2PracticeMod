@@ -9,7 +9,7 @@ RELLOADER_SRC=relloader/src/iso-rel-loader-us.asm
 DOLPHIN_DIR=~/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu 
 
 echo "Building"
-make us -j
+make -j
 
 echo 'Copying GCI to dolphin emu folder' 
 mkdir -p "$DOLPHIN_DIR/GC/USA/Card B"
