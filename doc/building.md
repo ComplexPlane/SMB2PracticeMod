@@ -27,12 +27,9 @@ See [here](https://devkitpro.org/wiki/devkitPro_pacman) for full details.
 ## Clone and Build
 
 ```sh
-git clone https://github.com/ComplexPlane/ApeSphere.git
-cd ApeSphere
-make us -j # Builds for vanilla SMB2
-# To build versions for all supported SMB2 romhacks as well:
-# make -j
-```
+git clone https://github.com/ComplexPlane/SMB2PracticeMod.git
+cd SMB2PracticeMod
+make -j
 
 I recommend using a script to quickly build and copy the rels/gcis to your Dolphin directories. See the `script` directory for examples meant to be placed at the root of the repo and named `go.sh`.
 
