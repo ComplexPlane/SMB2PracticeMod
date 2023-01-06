@@ -364,7 +364,7 @@ int main(int argc, char **argv)
 					ELFIO::section *targetSection = inputElf.sections[rel.targetSection];
 					if (writtenSections.find(targetSection) == writtenSections.end() && targetSection->get_type() != SHT_NOBITS)
 					{
-						printf("Relocation from section '%s' offset %llx against symbol '%s' in unwritten section '%s'\n",
+						printf("Relocation from section '%s' offset %lx against symbol '%s' in unwritten section '%s'\n",
 							   relocatedSection->get_name().c_str(),
 							   offset,
 							   symbolName.c_str(),
