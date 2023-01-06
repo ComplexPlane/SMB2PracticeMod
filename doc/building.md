@@ -22,6 +22,8 @@ sudo ./install-devkitpro-pacman
 sudo dkp-pacman -S gamecube-dev
 ```
 
+Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc`.
+
 See [here](https://devkitpro.org/wiki/devkitPro_pacman) for full details.
 
 ## Clone and Build
