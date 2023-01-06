@@ -22,25 +22,25 @@ sudo ./install-devkitpro-pacman
 sudo dkp-pacman -S gamecube-dev
 ```
 
+Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc`.
+
 See [here](https://devkitpro.org/wiki/devkitPro_pacman) for full details.
 
 ## Clone and Build
 
 ```sh
-git clone https://github.com/ComplexPlane/ApeSphere.git
-cd ApeSphere
-make us -j # Builds for vanilla SMB2
-# To build versions for all supported SMB2 romhacks as well:
-# make -j
+git clone https://github.com/ComplexPlane/SMB2PracticeMod.git
+cd SMB2PracticeMod
+make -j
 ```
 
-I recommend using a script to quickly build and copy the rels/gcis to your Dolphin directories. See the `script` directory for examples meant to be placed at the root of the repo and named `go.sh`.
+I recommend using a script to quickly build and copy the rels/gcis to your Dolphin directories. See `scripts/go.sh` for an example meant to be placed at the root of the repo as `go.sh`.
 
 ## VSCode Editor Setup
 
 Here's how to set up VSCode with clangd. Clangd provides error checking, autocompletion, formatting, and more. It's faster and more accurate than the Microsoft C++ extension in my experience.
 
-1. Run: `script/gen_compile_commands.json` to generate `compile_commands.json` which clangd needs.
+1. Run: `scripts/gen_compile_commands.py` to generate `compile_commands.json` which clangd needs.
     - You ought to run this every time you add a new `.cpp` file but it may work fine if you forget.
 2. Install the clangd extension. If you see popups for disabling the conflicting Microsoft C++ Intellisense or downloading clangd, go ahead and comply.
 3. Restart your editor and enjoy!
