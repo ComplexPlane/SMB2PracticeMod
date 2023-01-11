@@ -1,11 +1,12 @@
-#include "systems/pref.h"
+#include "pref.h"
 
-#include <optional>
-#include "cardio.h"
 #include "heap.h"
-#include "log.h"
 #include "mkb/mkb.h"
+#include <optional>
+
+#include "cardio.h"
 #include "utils/draw.h"
+#include "log.h"
 #include "utils/macro_utils.h"
 
 namespace pref {
@@ -34,6 +35,9 @@ enum class PrefId : u16 {
     BallColor = 19,
     ApeColor = 20,
     Marathon = 21,
+    Moon = 22,
+    IlBattleDisplay = 23,
+    IlBattleLength = 24,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -55,6 +59,8 @@ enum class BoolPref {
     InputDispRawStickInputs,
     Freecam,
     Marathon,
+    Moon,
+    IlBattleDisplay,
 };
 
 struct Pref {
@@ -63,6 +69,7 @@ struct Pref {
     u8 input_disp_color;
     u8 ball_color;
     u8 ape_color;
+    u8 il_battle_length;
 } s_pref;
 
 struct FileHeader {
@@ -104,6 +111,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::BallColor,
     PrefId::ApeColor,
     PrefId::Marathon,
+    PrefId::Moon,
+    PrefId::IlBattleDisplay,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -166,6 +175,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Freecam;
         case PrefId::Marathon:
             return BoolPref::Marathon;
+        case PrefId::Moon:
+            return BoolPref::Moon;
+        case PrefId::IlBattleDisplay:
+            return BoolPref::IlBattleDisplay;
         default:
             return {};
     }
@@ -181,6 +194,8 @@ static u8* pref_id_to_u8(PrefId id, Pref& pref) {
             return &pref.ball_color;
         case PrefId::ApeColor:
             return &pref.ape_color;
+        case PrefId::IlBattleLength:
+            return &pref.il_battle_length;
         default:
             return nullptr;
     }
@@ -309,6 +324,8 @@ u8 get_ball_color() { return s_pref.ball_color; }
 void set_ball_color(u8 idx) { s_pref.ball_color = idx; }
 u8 get_ape_color() { return s_pref.ape_color; }
 void set_ape_color(u8 idx) { s_pref.ape_color = idx; }
+u8 get_il_battle_length() { return s_pref.il_battle_length; }
+void set_il_battle_length(u8 idx) { s_pref.il_battle_length = idx; }
 bool get_input_disp_notch_indicators() { return get_bool_pref(BoolPref::InputDispNotchIndicators); }
 void set_input_disp_notch_indicators(bool on) {
     set_bool_pref(BoolPref::InputDispNotchIndicators, on);
@@ -319,6 +336,10 @@ void set_input_disp_raw_stick_inputs(bool on) {
 }
 bool get_marathon() { return get_bool_pref(BoolPref::Marathon); }
 void set_marathon(bool on) { set_bool_pref(BoolPref::Marathon, on); }
+bool get_moon() { return get_bool_pref(BoolPref::Moon); }
+void set_moon(bool on) { set_bool_pref(BoolPref::Moon, on); }
+bool get_il_battle_display() { return get_bool_pref(BoolPref::IlBattleDisplay); }
+void set_il_battle_display(bool on) { set_bool_pref(BoolPref::IlBattleDisplay, on); }
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }

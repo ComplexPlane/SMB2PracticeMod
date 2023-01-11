@@ -25,12 +25,18 @@ u8 get_ball_color();
 void set_ball_color(u8 idx);
 u8 get_ape_color();
 void set_ape_color(u8 idx);
+u8 get_il_battle_length();
+void set_il_battle_length(u8 idx);
 bool get_input_disp_notch_indicators();
 void set_input_disp_notch_indicators(bool on);
 bool get_input_disp_raw_stick_inputs();
 void set_input_disp_raw_stick_inputs(bool on);
 bool get_marathon();
 void set_marathon(bool on);
+bool get_moon();
+void set_moon(bool on);;
+bool get_il_battle_display();
+void set_il_battle_display(bool on);
 
 bool get_rta_pause_timer();
 void set_rta_pause_timer(bool on);

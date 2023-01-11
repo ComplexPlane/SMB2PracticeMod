@@ -6,6 +6,7 @@
 #include "mods/gotostory.h"
 #include "mods/inputdisp.h"
 #include "mods/jump.h"
+#include "mods/ilbattle.h"
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
@@ -78,6 +79,39 @@ static Widget s_ball_color_widgets[] = {
             .set = [](u32 color) { pref::set_ape_color(static_cast<u8>(color)); },
         },
     },
+};
+
+static const char* s_il_battle_lengths[] = {
+    "5 min", "7 min", "10 min", "Endless",
+};
+static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
+
+static Widget s_il_battle_widgets[] = {
+    {.type = WidgetType::Button,
+     .button = {.label = "Start New Battle",
+                .push = [] { 
+                    pref::set_il_battle_display(true);
+                    ilbattle::new_battle();
+                }}
+    },
+    {.type = WidgetType::Button,
+     .button = {.label = "Stop Battle",
+                .push = [] { 
+                    pref::set_il_battle_display(false);
+                    ilbattle::new_battle();
+                }}
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose = {
+            .label = "Battle Length",
+            .choices = s_il_battle_lengths,
+            .num_choices = LEN(s_il_battle_lengths),
+            .get = []() { return static_cast<u32>(pref::get_il_battle_length()); },
+            .set = [](u32 color) { pref::set_il_battle_length(static_cast<u8>(color)); },
+        },
+    },
+    {.type = WidgetType::Text, .text = {"Press Y to Reset Battle"}},
 };
 
 static Widget s_rumble_widgets[] = {
@@ -276,6 +310,10 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
+        .menu = {"IL Battles", s_il_battle_widgets, LEN(s_il_battle_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
         .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
     },
     {
@@ -303,7 +341,16 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Marathon Mod",
+                .label = "Moon Gravity",
+                .get = pref::get_moon,
+                .set = pref::set_moon,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Marathon Mode",
                 .get = pref::get_marathon,
                 .set = pref::set_marathon,
             },
