@@ -211,9 +211,15 @@ static Widget s_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
     {.type = WidgetType::Separator},
 
+    {.type = WidgetType::Header, .header = {"Story Mode Individual World (IW)"}},
+    {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on a file"}},
+    {.type = WidgetType::Text, .text = {"  to choose a world"}},
+    {.type = WidgetType::Separator},
+
     {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
     {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
     {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
+    {.type = WidgetType::Separator},
 };
 
 static Widget s_sound_widgets[] = {
@@ -320,7 +326,7 @@ static Widget s_gameplay_mods_widgets[] = {
 static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Button,
-        .button = {"Story Mode IW", gotostory::load_storymode},
+        .button = {"Go To Story Mode", gotostory::load_storymode},
     },
     {
         .type = WidgetType::Menu,
