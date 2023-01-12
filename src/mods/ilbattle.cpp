@@ -40,7 +40,7 @@ static void battle_display(mkb::GXColor color) {
     u32 best_centiseconds = (s_best_frames % SECOND_FRAMES) * 100 / 60;
 
     draw::debug_text(X - 12 * CWIDTH, Y, color, "ELAPSED:");
-    draw::debug_text(X, Y, color, "%02d:%02d", battle_minutes, battle_seconds);
+    draw::debug_text(X, Y, color, "%02d:%02d", battle_minutes, battle_seconds); 
     draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, color, "BEST TIME:");
     draw::debug_text(X, Y + CHEIGHT, color, "%d.%02d", best_seconds, best_centiseconds);
     draw::debug_text(X - 12 * CWIDTH, Y + 2 * CHEIGHT, color, "BEST SCORE:");
@@ -196,11 +196,15 @@ void tick() {
 void disp() {
     if (pref::get_il_battle_display()) {
         if (s_state == IlBattleState::WaitForFirstRetry && mkb::main_mode == mkb::MD_GAME) {
-            battle_display(draw::WHITE);
+            draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
+            draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "(RETRY TO BEGIN)");
         } else if (s_state == IlBattleState::BattleRunning || s_state == IlBattleState::BuzzerBeater) {
             battle_display(draw::LIGHT_GREEN);
         } else if ((s_state == IlBattleState::BattleDone || s_state == IlBattleState::BattleDoneBuzzer) && mkb::main_mode == mkb::MD_GAME){
-            battle_display(draw::RED);
+            if(s_battle_frames == 0){
+                draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "NOT READY");
+                draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::RED, "(DPAD DOWN TO READY)");
+            } else battle_display(draw::RED);
             if (s_state == IlBattleState::BattleDoneBuzzer) {
                 display_buzzer_beater_message();
             }
