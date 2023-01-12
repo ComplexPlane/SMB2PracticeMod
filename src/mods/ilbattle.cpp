@@ -72,13 +72,17 @@ static u32 convert_battle_length(u8 battle_length_choice) {
     return 0;
 }
 
-void new_battle() {
-    s_state = IlBattleState::WaitForFirstRetry;
+void clear_display() {
     s_battle_frames = 0;
     s_best_frames = 0;
     s_best_score = 0;
     s_buzzer_message_count = 0;
     s_battle_length = convert_battle_length(pref::get_il_battle_length());
+}
+
+void new_battle() {
+    clear_display();
+    s_state = IlBattleState::WaitForFirstRetry;
 }
 
 static void track_first_retry() {
@@ -175,6 +179,13 @@ void tick() {
             track_final_attempt();
         }
 
+        // Reset display if menu when battle over
+        if (mkb::main_mode != mkb::MD_GAME && s_state == IlBattleState::BattleDoneBuzzer){
+            s_state = IlBattleState::BattleDone;
+        } if (mkb::main_mode != mkb::MD_GAME && s_state == IlBattleState::BattleDone){
+            clear_display();
+        }
+
         // Resets battles when Dpad Down is pressed
         if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
             new_battle();
@@ -190,7 +201,7 @@ void disp() {
             battle_display(draw::LIGHT_GREEN);
         } else if ((s_state == IlBattleState::BattleDone || s_state == IlBattleState::BattleDoneBuzzer) && mkb::main_mode == mkb::MD_GAME){
             battle_display(draw::RED);
-            if (s_state == IlBattleState::BattleDoneBuzzer && mkb::main_mode == mkb::MD_GAME) {
+            if (s_state == IlBattleState::BattleDoneBuzzer) {
                 display_buzzer_beater_message();
             }
         }
