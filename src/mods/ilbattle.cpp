@@ -202,9 +202,9 @@ void disp() {
             battle_display(draw::LIGHT_GREEN);
         } else if ((s_state == IlBattleState::BattleDone || s_state == IlBattleState::BattleDoneBuzzer) && mkb::main_mode == mkb::MD_GAME){
             if(s_battle_frames == 0){
-                draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "NOT READY");
-                draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::RED, "(DPAD DOWN TO READY)");
-            } else battle_display(draw::RED);
+                draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
+                draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE, "(DPAD DOWN TO READY)");
+            } else battle_display(draw::LIGHT_PURPLE);
             if (s_state == IlBattleState::BattleDoneBuzzer) {
                 display_buzzer_beater_message();
             }
