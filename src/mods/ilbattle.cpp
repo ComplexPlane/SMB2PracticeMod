@@ -15,7 +15,7 @@ enum class IlBattleState {
     BattleDoneBuzzer,   // Final attempt is over, shows times in red &
 };
 
-static IlBattleState s_state = IlBattleState::WaitForFirstRetry;
+static IlBattleState s_state = IlBattleState::BattleDone;
 
 static constexpr s32 X = 160;
 static constexpr s32 Y = 48;
@@ -83,8 +83,7 @@ void new_battle() {
 
 static void track_first_retry() {
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (!paused_now &&
-        (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)) {
+    if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         new_battle();
         s_state = IlBattleState::BattleRunning;
     }
@@ -176,8 +175,8 @@ void tick() {
             track_final_attempt();
         }
 
-        // Resets battles when Y is pressed
-        if (pad::button_pressed(mkb::PAD_BUTTON_Y)) {
+        // Resets battles when Dpad Down is pressed
+        if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
             new_battle();
         }
     }
@@ -185,13 +184,15 @@ void tick() {
 
 void disp() {
     if (pref::get_il_battle_display()) {
-        if (s_state == IlBattleState::BattleDone || s_state == IlBattleState::BattleDoneBuzzer) {
+        if (s_state == IlBattleState::WaitForFirstRetry && mkb::main_mode == mkb::MD_GAME) {
+            battle_display(draw::WHITE);
+        } else if (s_state == IlBattleState::BattleRunning || s_state == IlBattleState::BuzzerBeater) {
+            battle_display(draw::LIGHT_GREEN);
+        } else if ((s_state == IlBattleState::BattleDone || s_state == IlBattleState::BattleDoneBuzzer) && mkb::main_mode == mkb::MD_GAME){
             battle_display(draw::RED);
-            if (s_state == IlBattleState::BattleDoneBuzzer) {
+            if (s_state == IlBattleState::BattleDoneBuzzer && mkb::main_mode == mkb::MD_GAME) {
                 display_buzzer_beater_message();
             }
-        } else {
-            battle_display(draw::LIGHT_GREEN);
         }
     }
 }

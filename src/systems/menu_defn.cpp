@@ -87,19 +87,10 @@ static const char* s_il_battle_lengths[] = {
 static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 
 static Widget s_il_battle_widgets[] = {
-    {.type = WidgetType::Button,
-     .button = {.label = "Start New Battle",
-                .push = [] { 
-                    pref::set_il_battle_display(true);
-                    ilbattle::new_battle();
-                }}
-    },
-    {.type = WidgetType::Button,
-     .button = {.label = "Stop Battle",
-                .push = [] { 
-                    pref::set_il_battle_display(false);
-                    ilbattle::new_battle();
-                }}
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Il Battle Display", pref::get_il_battle_display,
+                     pref::set_il_battle_display},
     },
     {
         .type = WidgetType::Choose,
@@ -111,7 +102,8 @@ static Widget s_il_battle_widgets[] = {
             .set = [](u32 color) { pref::set_il_battle_length(static_cast<u8>(color)); },
         },
     },
-    {.type = WidgetType::Text, .text = {"Press Y to Reset Battle"}},
+    {.type = WidgetType::Text, .text = {"Dpad-down to clear battle"}},
+    {.type = WidgetType::Text, .text = {"Retry after clearing to start a new battle"}},
 };
 
 static Widget s_rumble_widgets[] = {
@@ -310,7 +302,7 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"IL Battles", s_il_battle_widgets, LEN(s_il_battle_widgets)},
+        .menu = {"IL Battle", s_il_battle_widgets, LEN(s_il_battle_widgets)},
     },
     {
         .type = WidgetType::Menu,
