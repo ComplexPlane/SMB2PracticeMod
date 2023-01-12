@@ -102,8 +102,7 @@ static Widget s_il_battle_widgets[] = {
             .set = [](u32 color) { pref::set_il_battle_length(static_cast<u8>(color)); },
         },
     },
-    {.type = WidgetType::Text, .text = {"Dpad-down to clear battle"}},
-    {.type = WidgetType::Text, .text = {"Retry after clearing to start a new battle"}},
+    {.type = WidgetType::Text, .text = {"Dpad-Down then Retry to start a new battle"}},
 };
 
 static Widget s_rumble_widgets[] = {

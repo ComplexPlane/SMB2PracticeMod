@@ -180,7 +180,7 @@ void tick() {
         }
 
         // Reset display if menu when battle over
-        if (mkb::main_mode != mkb::MD_GAME && s_state == IlBattleState::BattleDoneBuzzer){
+        if (mkb::main_mode != mkb::MD_GAME && (s_state == IlBattleState::BattleDoneBuzzer || s_state == IlBattleState::WaitForFirstRetry)){
             s_state = IlBattleState::BattleDone;
         } if (mkb::main_mode != mkb::MD_GAME && s_state == IlBattleState::BattleDone){
             clear_display();
