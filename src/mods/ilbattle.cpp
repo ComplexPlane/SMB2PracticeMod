@@ -89,6 +89,8 @@ void clear_display() {
     s_best_frames = 0;
     s_best_score = 0;
     s_buzzer_message_count = 0;
+    s_best_score_bananas = 0;
+    s_best_score_frames = 0;
     s_battle_length = convert_battle_length(pref::get_il_battle_length());
 }
 
@@ -164,18 +166,20 @@ static void track_final_attempt() {
 
 static void display_buzzer_beater_message() {
     s_buzzer_message_count++;
+    u32 Y2 = Y;
+    if(pref::get_il_battle_breakdown()) Y2 = Y + 3 * CHEIGHT;
     if (s_buzzer_message_count >= 0)
-        draw::debug_text(X - 12 * CWIDTH, Y + 3 * CHEIGHT, draw::RED, "EPIC BUZZER BEATER B)");
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 3 * CHEIGHT, draw::RED, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 5)
-        draw::debug_text(X - 12 * CWIDTH, Y + 4 * CHEIGHT, draw::ORANGE, "EPIC BUZZER BEATER B)");
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 4 * CHEIGHT, draw::ORANGE, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 10)
-        draw::debug_text(X - 12 * CWIDTH, Y + 5 * CHEIGHT, draw::GOLD, "EPIC BUZZER BEATER B)");
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 5 * CHEIGHT, draw::GOLD, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 15)
-        draw::debug_text(X - 12 * CWIDTH, Y + 6 * CHEIGHT, draw::GREEN, "EPIC BUZZER BEATER B)");
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 6 * CHEIGHT, draw::GREEN, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 20)
-        draw::debug_text(X - 12 * CWIDTH, Y + 7 * CHEIGHT, draw::BLUE, "EPIC BUZZER BEATER B)");
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 7 * CHEIGHT, draw::BLUE, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 25)
-        draw::debug_text(X - 12 * CWIDTH, Y + 8 * CHEIGHT, draw::BRIGHT_PURPLE,
+        draw::debug_text(X - 12 * CWIDTH, Y2 + 8 * CHEIGHT, draw::BRIGHT_PURPLE,
                          "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count > 30) s_buzzer_message_count = 0;
 }
