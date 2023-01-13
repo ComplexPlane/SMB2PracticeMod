@@ -38,6 +38,7 @@ struct SeesawState {
     Mtx inv_transform;
     Mtx transform;
 } __attribute__((__packed__));
+static_assert(sizeof(SeesawState) == 0x78);
 
 enum { /* The character associated with an Ape */
     APE_AIAI=0,
@@ -90,6 +91,7 @@ struct CmEntry { /* Challenge Mode Entry, see cmEntryFormat.txt by TwixNinja in 
     u32 value;
     undefined field4_0x8[20];
 } __attribute__((__packed__));
+static_assert(sizeof(CmEntry) == 0x1c);
 
 enum {
     G_STORY_LEVEL_SELECT_NO_BACKGROUND=0,
@@ -141,13 +143,199 @@ typedef struct GoalTape GoalTape, *PGoalTape;
 
 typedef long s32;
 
-struct GoalTape { /* Extra goaltape-specific data pointed to by goaltape StageObjects */
-    undefined field_0x0[0x10];
-    s32 g_timer_frames_remaining;
-    s32 field17_0x14;
-    float field18_0x18;
-    undefined field_0x1c[0x17c];
+typedef struct Stobj Stobj, *PStobj;
+
+typedef struct PhysicsBall PhysicsBall, *PPhysicsBall;
+
+enum {
+    STOBJ_BUMPER=0,
+    STOBJ_JAMABAR=1,
+    STOBJ_GOALTAPE=2,
+    STOBJ_GOALBAG=3,
+    STOBJ_GOALBAG_EXMASTER=4,
+    STOBJ_MF_PNL_BUMPER=5,
+    STOBJ_MF_PNL_ELECTRAP=6,
+    STOBJ_MF_BULLET_TEST=7,
+    STOBJ_MF_BOX=8,
+    STOBJ_BUMPER_BGSPECIAL=9,
+    STOBJ_NAMEENT_BTN=10,
+    STOBJ_BUTTON=11,
+    STOBJ_RETURNGATE=12
+};
+typedef undefined2 StobjType;
+
+typedef struct Vec Vec, *PVec;
+
+typedef struct GmaModel GmaModel, *PGmaModel;
+
+typedef struct S16Vec S16Vec, *PS16Vec;
+
+typedef signed char s8;
+
+enum { /* Per-GMA model attributes */
+    GCMF_ATTR_16BIT=1,
+    GCMF_ATTR_STITCHING_MODEL=4,
+    GCMF_ATTR_SKIN_MODEL=8,
+    GCMF_ATTR_EFFECTIVE_MODEL=16
+};
+typedef undefined4 GcmfAttributes;
+
+typedef ushort u16;
+
+typedef struct GXTexObj GXTexObj, *PGXTexObj;
+
+typedef short s16;
+
+enum {
+    GX_TF_I4=0,
+    GX_TF_I8=1,
+    GX_TF_IA4=2,
+    GX_TF_IA8=3,
+    GX_TF_RGB565=4,
+    GX_TF_RGB5A3=5,
+    GX_TF_RGBA8=6,
+    GX_TF_CMPR=14,
+    GX_CTF_R4=15,
+    GX_CTF_RA4=16,
+    GX_CTF_RA8=17,
+    GX_CTF_YUVA8=18,
+    GX_CTF_A8=19,
+    GX_CTF_R8=20,
+    GX_CTF_G8=21,
+    GX_CTF_B8=22,
+    GX_CTF_RG8=23,
+    GX_CTF_GB8=24,
+    GX_TF_Z8=25,
+    GX_TF_Z16=26,
+    GX_TF_Z24X8=27,
+    GX_CTF_Z4=28,
+    GX_CTF_Z8M=29,
+    GX_CTF_Z8L=30,
+    GX_CTF_Z16L=31,
+    GX_TF_A8=32
+};
+typedef undefined4 GXTexFmt;
+
+struct S16Vec { /* Often used for rotations */
+    s16 x;
+    s16 y;
+    s16 z;
 } __attribute__((__packed__));
+static_assert(sizeof(S16Vec) == 0x6);
+
+struct GoalTape { /* Extra goaltape-specific data pointed to by goaltape StageObjects */
+    undefined field_0x0[0x4];
+    float field4_0x4;
+    float field5_0x8;
+    float field6_0xc;
+    s32 g_timer_frames_remaining;
+    struct Stobj * g_stobj_ptr;
+    float field9_0x18;
+    float field10_0x1c;
+    float field11_0x20;
+    float field12_0x24;
+    float field13_0x28;
+    float field14_0x2c;
+    float field15_0x30;
+    float field16_0x34;
+    float field17_0x38;
+    float field18_0x3c;
+    float field19_0x40;
+    float field20_0x44;
+    undefined field_0x48[0x148];
+    uint field349_0x190;
+    undefined field_0x194[0x4];
+} __attribute__((__packed__));
+static_assert(sizeof(GoalTape) == 0x198);
+
+struct GXTexObj {
+    undefined field_0x0[0x14];
+    GXTexFmt  format; /* Created by retype action */
+    undefined field_0x18[0x8];
+} __attribute__((__packed__));
+static_assert(sizeof(GXTexObj) == 0x20);
+
+struct Vec {
+    float x;
+    float y;
+    float z;
+} __attribute__((__packed__));
+static_assert(sizeof(Vec) == 0xc);
+
+struct PhysicsBall { /* A representation of a Ball with just the physics/collision-related info */
+    dword flags;
+    struct Vec pos;
+    struct Vec prev_pos;
+    struct Vec vel;
+    float radius;
+    float acceleration;
+    float restitution;
+    dword g_jerk;
+    undefined field_0x38[0xc];
+    struct Vec g_some_vec;
+    undefined field_0x50[0x4];
+    dword field25_0x54;
+    float field26_0x58;
+    dword itemgroup_idx; /* The itemgroup that this PhysicsBall is relative to, aka in the local space of */
+} __attribute__((__packed__));
+static_assert(sizeof(PhysicsBall) == 0x60);
+
+struct Stobj { /* A "stage object" which is one of a: bumper, jamabar, goaltape, party ball, wormhole, and others. */
+    word idx;
+    short id;
+    StobjType  type;
+    undefined field_0x6[0x2];
+    uint g_some_bitflag;
+    short g_mode;
+    short g_counter;
+    struct Vec g_model_origin;
+    struct Vec position;
+    struct Vec position_2; /* Copy of position? */
+    float bounding_sphere_radius; /* Has something to do w/ collision */
+    void (* coli_func)(struct Stobj *, struct PhysicsBall *);
+    struct Vec scale;
+    float field14_0x48;
+    float field15_0x4c;
+    float field16_0x50;
+    struct GmaModel * model;
+    struct Vec pos; /* Has something to do w/ position */
+    struct Vec vel;
+    struct S16Vec rot;
+    short field21_0x76;
+    short field22_0x78;
+    undefined field_0x7a[0x2];
+    struct Vec g_prev_pos;
+    struct S16Vec g_prev_rot;
+    undefined field_0x8e[0x2];
+    float field29_0x90;
+    float field30_0x94;
+    float field31_0x98;
+    float field32_0x9c;
+    s8 itemgroup_idx;
+    undefined field_0xa1[0x3];
+    void * extra_data; /* Extra stobj-type-specific data, such as switch stagedef header for switches or goaltape struct for goaltapes. Maybe worth making a union */
+    struct Vec g_some_pos2;
+    struct Vec g_local_position;
+    struct Vec g_local_velocity;
+} __attribute__((__packed__));
+static_assert(sizeof(Stobj) == 0xcc);
+
+struct GmaModel { /* Also known as a GCMF (GameCube Model Format?) */
+    char gcmf_magic[4]; /* Just the string "GCMF" */
+    GcmfAttributes  attrs;
+    struct Vec bound_sphere_center; /* Also the center of the bounding sphere */
+    float bound_sphere_radius;
+    u16 tev_layer_count;
+    u16 opaque_shape_count;
+    u16 translucent_shape_count;
+    s8 mtx_count;
+    undefined field_0x1f[0x1];
+    s32 header_size; /* Memory size of this structure in bytes, including texture description array and transform matrices. */
+    struct GXTexObj * texobjs; /* Array of texobjs, one for each texture in the model */
+    s8 mtx_indexes[8]; /* Default (root?) indices into Transform Matrix array */
+    undefined field_0x30[0x10];
+} __attribute__((__packed__));
+static_assert(sizeof(GmaModel) == 0x40);
 
 typedef struct MenuScreen MenuScreen, *PMenuScreen;
 
@@ -187,6 +375,7 @@ struct MenuScreen {
     u32 g_some_bitflag; /* 0x40 repositions stuff and makes stuff up/down controls */
     undefined field_0xc[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(MenuScreen) == 0x10);
 
 struct MenuEntry {
     MenuScreenID  next_screen_id;
@@ -204,6 +393,7 @@ struct MenuEntry {
     char * description_it;
     char * description_ja;
 } __attribute__((__packed__));
+static_assert(sizeof(MenuEntry) == 0x34);
 
 typedef struct BmpInfo BmpInfo, *PBmpInfo;
 
@@ -215,46 +405,6 @@ typedef int OSHeapHandle;
 
 typedef struct TplTextureHeader TplTextureHeader, *PTplTextureHeader;
 
-typedef struct GXTexObj GXTexObj, *PGXTexObj;
-
-enum {
-    GX_TF_I4=0,
-    GX_TF_I8=1,
-    GX_TF_IA4=2,
-    GX_TF_IA8=3,
-    GX_TF_RGB565=4,
-    GX_TF_RGB5A3=5,
-    GX_TF_RGBA8=6,
-    GX_TF_CMPR=14,
-    GX_CTF_R4=15,
-    GX_CTF_RA4=16,
-    GX_CTF_RA8=17,
-    GX_CTF_YUVA8=18,
-    GX_CTF_A8=19,
-    GX_CTF_R8=20,
-    GX_CTF_G8=21,
-    GX_CTF_B8=22,
-    GX_CTF_RG8=23,
-    GX_CTF_GB8=24,
-    GX_TF_Z8=25,
-    GX_TF_Z16=26,
-    GX_TF_Z24X8=27,
-    GX_CTF_Z4=28,
-    GX_CTF_Z8M=29,
-    GX_CTF_Z8L=30,
-    GX_CTF_Z16L=31,
-    GX_TF_A8=32
-};
-typedef undefined4 GXTexFmt;
-
-typedef ushort u16;
-
-struct GXTexObj {
-    undefined field_0x0[0x14];
-    GXTexFmt  format; /* Created by retype action */
-    undefined field_0x18[0x8];
-} __attribute__((__packed__));
-
 struct TplBuffer { /* Buffer allocated for TPL files (with 32 extra bytes at the beginning compared to the on-disc TPL file). Amusement Vision TPL is different than standard Gamecube TPL */
     s32 texture_count;
     struct TplTextureHeader * texture_headers;
@@ -262,6 +412,7 @@ struct TplBuffer { /* Buffer allocated for TPL files (with 32 extra bytes at the
     struct GXTexObj * texobjs; /* Array of texobjs, one for each texture in the TPL */
     undefined field_0x10[0x10];
 } __attribute__((__packed__));
+static_assert(sizeof(TplBuffer) == 0x20);
 
 struct BmpInfo { /* Bitmap info. Corresponds to a loaded TPL in bmp/ */
     BOOL32 is_loaded;
@@ -271,6 +422,7 @@ struct BmpInfo { /* Bitmap info. Corresponds to a loaded TPL in bmp/ */
     struct TplBuffer * tpl;
     OSHeapHandle heap;
 } __attribute__((__packed__));
+static_assert(sizeof(BmpInfo) == 0x18);
 
 struct TplTextureHeader {
     GXTexFmt  format;
@@ -280,18 +432,9 @@ struct TplTextureHeader {
     u16 mipmap_count;
     u16 always_0x1234;
 } __attribute__((__packed__));
+static_assert(sizeof(TplTextureHeader) == 0x10);
 
 typedef struct CoinType CoinType, *PCoinType;
-
-typedef short s16;
-
-typedef struct S16Vec S16Vec, *PS16Vec;
-
-struct S16Vec { /* Often used for rotations */
-    s16 x;
-    s16 y;
-    s16 z;
-} __attribute__((__packed__));
 
 struct CoinType {
     s16 banana_count;
@@ -300,6 +443,7 @@ struct CoinType {
     struct S16Vec angular_velocity;
     undefined field_0xc[0x8];
 } __attribute__((__packed__));
+static_assert(sizeof(CoinType) == 0x14);
 
 typedef struct GMotionData GMotionData, *PGMotionData;
 
@@ -308,6 +452,7 @@ struct GMotionData {
     float progress;
     float length;
 } __attribute__((__packed__));
+static_assert(sizeof(GMotionData) == 0x54);
 
 enum { /* NULL, INIT, NORMAL, and DEST, and FREEZE seem to be the most common */
     STAT_NULL=0,
@@ -325,14 +470,6 @@ enum { /* NULL, INIT, NORMAL, and DEST, and FREEZE seem to be the most common */
 };
 typedef undefined1 Status;
 
-typedef struct Vec Vec, *PVec;
-
-struct Vec {
-    float x;
-    float y;
-    float z;
-} __attribute__((__packed__));
-
 typedef struct GSomeBgStruct GSomeBgStruct, *PGSomeBgStruct;
 
 struct GSomeBgStruct {
@@ -349,6 +486,7 @@ struct GSomeBgStruct {
     u32 some_counter;
     u32 field11_0x2c;
 } __attribute__((__packed__));
+static_assert(sizeof(GSomeBgStruct) == 0x30);
 
 enum { /* Sourced from 0x80370244 in Ghidra - I'm guessing SMD stands for Sub MoDe here? / Also I added SMD_INVALID, it's `-1` -Crafted */
     SMD_ADV_TOP=0,
@@ -721,6 +859,7 @@ struct Replay { /* Unknown size atm */
     u8 * playableItemgroupAnimFrames;
     u8 * seesawState;
 } __attribute__((__packed__));
+static_assert(sizeof(Replay) == 0xb8);
 
 typedef struct Ape Ape, *PApe;
 
@@ -816,24 +955,13 @@ typedef struct g_thing g_thing, *Pg_thing;
 
 typedef struct GmaModelEntry GmaModelEntry, *PGmaModelEntry;
 
-typedef struct GmaModelHeader GmaModelHeader, *PGmaModelHeader;
-
-enum { /* Per-GMA model attributes */
-    GCMF_ATTR_16BIT=1,
-    GCMF_ATTR_STITCHING_MODEL=4,
-    GCMF_ATTR_SKIN_MODEL=8,
-    GCMF_ATTR_EFFECTIVE_MODEL=16
-};
-typedef undefined4 GcmfAttributes;
-
-typedef signed char s8;
-
 struct Quat {
     f32 x;
     f32 y;
     f32 z;
     f32 w;
 } __attribute__((__packed__));
+static_assert(sizeof(Quat) == 0x10);
 
 struct gFloats {
     short field0_0x0;
@@ -842,6 +970,7 @@ struct gFloats {
     short field3_0x6;
     struct Vec vec3;
 } __attribute__((__packed__));
+static_assert(sizeof(gFloats) == 0x14);
 
 struct SKLRoot {
     ushort bone_count;
@@ -860,6 +989,7 @@ struct SKLRoot {
     struct SKLInfo * gBoneData;
     undefined field_0x74[0x100];
 } __attribute__((__packed__));
+static_assert(sizeof(SKLRoot) == 0x174);
 
 struct SKLBone {
     short parentNumber;
@@ -868,24 +998,28 @@ struct SKLBone {
     struct Quat Rotation2;
     struct Vec Translation;
 } __attribute__((__packed__));
+static_assert(sizeof(SKLBone) == 0x30);
 
 struct SKLFile {
     short bone_count;
     undefined2 padding;
     struct SKLBone bone_section;
 } __attribute__((__packed__));
+static_assert(sizeof(SKLFile) == 0x34);
 
 struct ArcFileInfo {
     struct ARCHandle * Handle;
     int startoffset;
     int length;
 } __attribute__((__packed__));
+static_assert(sizeof(ArcFileInfo) == 0xc);
 
 struct g_thing {
     undefined field_0x0[0x8];
     char * Name;
     undefined field_0xc[0x1c];
 } __attribute__((__packed__));
+static_assert(sizeof(g_thing) == 0x28);
 
 struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for loaded GMA files. The first 32 bytes are extra; not part of the original GMA file */
     s32 model_count;
@@ -895,6 +1029,7 @@ struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for load
     dword g_initially_zero;
     undefined field_0x14[0xc];
 } __attribute__((__packed__));
+static_assert(sizeof(GmaBuffer) == 0x20);
 
 struct SKLInfo {
     char * bone_name;
@@ -913,26 +1048,7 @@ struct SKLInfo {
     float g_float2;
     undefined field_0xd4[0xa0];
 } __attribute__((__packed__));
-
-struct GmaModelHeader { /* Also known as a GCMF (GameCube Model Format?) */
-    char gcmf_magic[4]; /* Just the string "GCMF" */
-    GcmfAttributes  attrs; /* Also called "section flags" */
-    struct Vec origin; /* Also the center of the bounding sphere */
-    float bounding_sphere_radius;
-    u16 texture_count; /* In F-Zero GX this is "texture count" */
-    u16 material_count; /* In F-Zero GX this is "material count" */
-    u16 translucid_material_count; /* In F-Zero GX this is "translucid material count" */
-    s8 transform_mtx_count;
-    undefined field_0x1f[0x1];
-    s32 model_header_size; /* Memory size of this structure in bytes, including texture description array and transform matrices. */
-    struct GXTexObj * texobjs; /* Array of texobjs, one for each texture in the model */
-    s8 default_mtx_indices[8]; /* Default (root?) indices into Transform Matrix array */
-    undefined field_0x30[0x18];
-    struct GXTexObj * g_some_texobjs_ptr;
-    undefined field_0x4c[0x8];
-    void * g_some_ptr;
-    undefined field_0x58[0x8];
-} __attribute__((__packed__));
+static_assert(sizeof(SKLInfo) == 0x174);
 
 struct ARCHandle { /* I don't actually know the struct contents in the slightest */
     void * arc_data;
@@ -943,6 +1059,7 @@ struct ARCHandle { /* I don't actually know the struct contents in the slightest
     s32 f;
     s32 g;
 } __attribute__((__packed__));
+static_assert(sizeof(ARCHandle) == 0x1c);
 
 struct GApeAnim { /* Unknown length -Crafted */
     u8 field0_0x0;
@@ -954,6 +1071,7 @@ struct GApeAnim { /* Unknown length -Crafted */
     s32 g_either_motion_or_skel2;
     undefined field_0x20[0x8];
 } __attribute__((__packed__));
+static_assert(sizeof(GApeAnim) == 0x28);
 
 struct Ape {
     struct SKLRoot * g_maybe_sk;
@@ -1090,11 +1208,13 @@ struct Ape {
     float field220_0x2e8;
     float field221_0x2ec;
 } __attribute__((__packed__));
+static_assert(sizeof(Ape) == 0x2f0);
 
 struct GmaModelEntry {
-    struct GmaModelHeader * model;
+    struct GmaModel * model;
     char * name;
 } __attribute__((__packed__));
+static_assert(sizeof(GmaModelEntry) == 0x8);
 
 typedef struct Camera Camera, *PCamera;
 
@@ -1104,6 +1224,7 @@ struct Vec2d {
     float x;
     float y;
 } __attribute__((__packed__));
+static_assert(sizeof(Vec2d) == 0x8);
 
 struct Camera {
     struct Vec pos; /* Position of the camera */
@@ -1159,6 +1280,7 @@ struct Camera {
     u32 idx;
     undefined field_0x210[0x7c];
 } __attribute__((__packed__));
+static_assert(sizeof(Camera) == 0x28c);
 
 typedef struct Rect Rect, *PRect;
 
@@ -1169,6 +1291,15 @@ struct Rect {
     float width;
     float height;
 } __attribute__((__packed__));
+static_assert(sizeof(Rect) == 0x28);
+
+typedef struct OrdTblNode OrdTblNode, *POrdTblNode;
+
+struct OrdTblNode {
+    struct OrdTblNode * next;
+    void * draw_func;
+} __attribute__((__packed__));
+static_assert(sizeof(OrdTblNode) == 0x8);
 
 enum {
     CHALLENGE_MODE=0,
@@ -1398,6 +1529,7 @@ struct Rgb24 {
     u8 green;
     u8 blue;
 } __attribute__((__packed__));
+static_assert(sizeof(Rgb24) == 0x3);
 
 struct Sprite {
     SpriteType  type; /* Whether it's visible or not? */
@@ -1449,6 +1581,7 @@ struct Sprite {
     f32 v2;
     char text[48]; /* If this sprite displays text, this is what it shows, otherwise this is usually just an identifier name */
 } __attribute__((__packed__));
+static_assert(sizeof(Sprite) == 0xd0);
 
 struct DVDCommandBlock {
     struct DVDCommandBlock * next;
@@ -1464,6 +1597,7 @@ struct DVDCommandBlock {
     void (* callback)(s32, struct DVDCommandBlock *);
     void * userData;
 } __attribute__((__packed__));
+static_assert(sizeof(DVDCommandBlock) == 0x30);
 
 struct DVDFileInfo { /* Not entirely sure about this one... I've filled in some fields that only exist within `#ifdef MACOS` blocks according to the GC SDK on my end. Leaving them out seems wrong if I look at DVDFastOpen. Also I haven't put *all* MACOS fields in there since I don't know the size of IOParam (from a Mac header). */
     struct DVDCommandBlock cb;
@@ -1472,6 +1606,7 @@ struct DVDFileInfo { /* Not entirely sure about this one... I've filled in some 
     struct DVDFileInfo * next;
     void (* callback)(s32, struct DVDFileInfo *);
 } __attribute__((__packed__));
+static_assert(sizeof(DVDFileInfo) == 0x40);
 
 struct DVDDiskID {
     char gameName[4];
@@ -1482,6 +1617,7 @@ struct DVDDiskID {
     u8 streamingBufSize; /* 0 = default */
     u8 padding[22]; /* 0's are stored */
 } __attribute__((__packed__));
+static_assert(sizeof(DVDDiskID) == 0x20);
 
 struct SpriteTex {
     u8 field0_0x0;
@@ -1497,6 +1633,7 @@ struct SpriteTex {
     OSHeapHandle heap;
     struct DVDFileInfo dvd_file;
 } __attribute__((__packed__));
+static_assert(sizeof(SpriteTex) == 0x7c);
 
 typedef struct HeapConfig HeapConfig, *PHeapConfig;
 
@@ -1507,6 +1644,7 @@ struct HeapConfig { /* Set of sizes for game heaps */
     u32 replay_heap_size;
     u32 flags;
 } __attribute__((__packed__));
+static_assert(sizeof(HeapConfig) == 0x14);
 
 typedef struct GSomethingWithPadMotorsStruct GSomethingWithPadMotorsStruct, *PGSomethingWithPadMotorsStruct;
 
@@ -1515,6 +1653,7 @@ struct GSomethingWithPadMotorsStruct {
     undefined field_0x1[0x1];
     undefined2 b;
 } __attribute__((__packed__));
+static_assert(sizeof(GSomethingWithPadMotorsStruct) == 0x4);
 
 typedef struct SpriteDrawRequest SpriteDrawRequest, *PSpriteDrawRequest;
 
@@ -1544,6 +1683,7 @@ struct SpriteDrawRequest { /* Used by Sprite disp() functions to render a textur
     s16 g_some_x_value;
     undefined field_0x42[0xe];
 } __attribute__((__packed__));
+static_assert(sizeof(SpriteDrawRequest) == 0x50);
 
 typedef struct CmPlayerProgress CmPlayerProgress, *PCmPlayerProgress;
 
@@ -1553,6 +1693,7 @@ struct CmStage { /* Stage in Challenge Mode. Stage course number is what's shown
     s32 stage_course_num;
     s32 stage_id;
 } __attribute__((__packed__));
+static_assert(sizeof(CmStage) == 0x8);
 
 struct CmPlayerProgress { /* Seems to be one of these per player, not sure what they are exactly yet */
     struct CmStage curr_stage;
@@ -1560,6 +1701,7 @@ struct CmPlayerProgress { /* Seems to be one of these per player, not sure what 
     s16 field2_0x20;
     s16 g_next_stage_idx;
 } __attribute__((__packed__));
+static_assert(sizeof(CmPlayerProgress) == 0x24);
 
 enum { /* These are normally just #defines in the SDK's PAD library. Also these are supposed to be signed */
     PAD_ERR_NONE=0,
@@ -1571,27 +1713,6 @@ typedef undefined1 PadError;
 
 typedef struct GoalBag GoalBag, *PGoalBag;
 
-typedef struct Stobj Stobj, *PStobj;
-
-typedef struct PhysicsBall PhysicsBall, *PPhysicsBall;
-
-enum {
-    STOBJ_BUMPER=0,
-    STOBJ_JAMABAR=1,
-    STOBJ_GOALTAPE=2,
-    STOBJ_GOALBAG=3,
-    STOBJ_GOALBAG_EXMASTER=4,
-    STOBJ_MF_PNL_BUMPER=5,
-    STOBJ_MF_PNL_ELECTRAP=6,
-    STOBJ_MF_BULLET_TEST=7,
-    STOBJ_MF_BOX=8,
-    STOBJ_BUMPER_BGSPECIAL=9,
-    STOBJ_NAMEENT_BTN=10,
-    STOBJ_BUTTON=11,
-    STOBJ_RETURNGATE=12
-};
-typedef undefined2 StobjType;
-
 struct GoalBag { /* Extra goalbag-specific state pointed to by goalbag StageObjects */
     undefined field_0x0[0x4];
     undefined4 field4_0x4;
@@ -1601,62 +1722,7 @@ struct GoalBag { /* Extra goalbag-specific state pointed to by goalbag StageObje
     undefined field_0x1c[0x8];
     undefined4 field16_0x24;
 } __attribute__((__packed__));
-
-struct PhysicsBall { /* A representation of a Ball with just the physics/collision-related info */
-    dword flags;
-    struct Vec pos;
-    struct Vec prev_pos;
-    struct Vec vel;
-    float radius;
-    float acceleration;
-    float restitution;
-    dword g_jerk;
-    undefined field_0x38[0xc];
-    struct Vec g_some_vec;
-    undefined field_0x50[0x4];
-    dword field25_0x54;
-    float field26_0x58;
-    dword itemgroup_idx; /* The itemgroup that this PhysicsBall is relative to, aka in the local space of */
-} __attribute__((__packed__));
-
-struct Stobj { /* A "stage object" which is one of a: bumper, jamabar, goaltape, party ball, wormhole, and others. */
-    word idx;
-    short id;
-    StobjType  type;
-    undefined field_0x6[0x2];
-    uint g_some_bitflag;
-    short g_mode;
-    short g_counter;
-    struct Vec g_model_origin;
-    struct Vec position;
-    struct Vec position_2; /* Copy of position? */
-    float bounding_sphere_radius; /* Has something to do w/ collision */
-    void (* coli_func)(struct Stobj *, struct PhysicsBall *);
-    struct Vec scale;
-    float field14_0x48;
-    float field15_0x4c;
-    float field16_0x50;
-    struct GmaModelHeader * model;
-    struct Vec pos; /* Has something to do w/ position */
-    struct Vec vel;
-    struct S16Vec rot;
-    short field21_0x76;
-    short field22_0x78;
-    undefined field_0x7a[0x2];
-    struct Vec g_prev_pos;
-    struct S16Vec g_prev_rot;
-    undefined field_0x8e[0x2];
-    float field29_0x90;
-    float field30_0x94;
-    float field31_0x98;
-    float field32_0x9c;
-    s8 itemgroup_idx;
-    undefined field_0xa1[0x3];
-    void * extra_data; /* Extra stobj-type-specific data, such as switch stagedef header for switches or goaltape struct for goaltapes. Maybe worth making a union */
-    struct Vec g_some_pos2;
-    struct Vec g_local_position;
-    struct Vec g_local_velocity;
-} __attribute__((__packed__));
+static_assert(sizeof(GoalBag) == 0x28);
 
 typedef struct WorldInfo WorldInfo, *PWorldInfo;
 
@@ -1665,6 +1731,7 @@ struct WorldInfo {
     s16 stage_tilt_z;
     undefined field_0x4[0x38];
 } __attribute__((__packed__));
+static_assert(sizeof(WorldInfo) == 0x3c);
 
 typedef struct SeesawInfo SeesawInfo, *PSeesawInfo;
 
@@ -1679,6 +1746,7 @@ struct SeesawInfo { /* Allocated on the heap for an itemgroup if it's a seesaw. 
     void * g_some_func5;
     void * g_replay_func;
 } __attribute__((__packed__));
+static_assert(sizeof(SeesawInfo) == 0x20);
 
 enum {
     DATA_SELECT=0,
@@ -1697,6 +1765,7 @@ struct GCachedFileEntry {
     struct DVDCommandBlock * next; /* Created by retype action */
     struct DVDCommandBlock * prev;
 } __attribute__((__packed__));
+static_assert(sizeof(GCachedFileEntry) == 0x10);
 
 enum {
     MF_NONE=0,
@@ -1727,6 +1796,7 @@ struct GSomeSoundStruct {
     char g_sfx_grp;
     int g_player_id;
 } __attribute__((__packed__));
+static_assert(sizeof(GSomeSoundStruct) == 0xc);
 
 typedef struct GSomeSpriteStruct GSomeSpriteStruct, *PGSomeSpriteStruct;
 
@@ -1735,6 +1805,7 @@ struct GSomeSpriteStruct {
     struct GSomeSpriteStruct * g_prev;
     struct GSomeSpriteStruct * g_next;
 } __attribute__((__packed__));
+static_assert(sizeof(GSomeSpriteStruct) == 0xc);
 
 typedef struct Item Item, *PItem;
 
@@ -1791,7 +1862,7 @@ struct Item { /* Represents an item that can be picked up by the player. These a
     s16 g_some_frame_counter;
     struct Vec * g_some_vec3f_ptr;
     undefined4 field25_0x64;
-    struct GmaModelHeader * model_ptr;
+    struct GmaModel * model_ptr;
     float field27_0x6c;
     s16 negative_y_rotation;
     undefined field_0x72[0x2];
@@ -1804,6 +1875,7 @@ struct Item { /* Represents an item that can be picked up by the player. These a
     struct Vec shadow_position;
     struct Vec g_something_with_shadows;
 } __attribute__((__packed__));
+static_assert(sizeof(Item) == 0xb4);
 
 enum { /* Background music tracks by ID */
     BGM_SEL_WORLD=0,
@@ -1972,6 +2044,7 @@ struct RelBufferInfo {
     void * rel_buffer;
     void * bss_buffer;
 } __attribute__((__packed__));
+static_assert(sizeof(RelBufferInfo) == 0x8);
 
 typedef struct UnlockInfo UnlockInfo, *PUnlockInfo;
 
@@ -1988,6 +2061,7 @@ struct UnlockInfo { /* Info about which stuff in the game is unlocked, such as m
     word g_movies_watched; /* Determines whether unlocked movies are grayed out; does this mean "movie watched"? */
     undefined field_0x16[0x6e];
 } __attribute__((__packed__));
+static_assert(sizeof(UnlockInfo) == 0x84);
 
 typedef struct Ball Ball, *PBall;
 
@@ -2025,6 +2099,7 @@ struct RaycastHit {
     struct Vec pos; /* Position of ray-geometry intersection */
     struct Vec normal; /* Geometry normal at point of ray-geometry intersection */
 } __attribute__((__packed__));
+static_assert(sizeof(RaycastHit) == 0x1c);
 
 struct Ball {
     Status  status; /* Actually called just "STAT" in the debug menu */
@@ -2089,6 +2164,7 @@ struct Ball {
     struct RaycastHit raycast_down_hit; /* Result of raycast downward from ball's origin with the stage */
     undefined field_0x198[0x18];
 } __attribute__((__packed__));
+static_assert(sizeof(Ball) == 0x1b0);
 
 typedef struct Itemgroup Itemgroup, *PItemgroup;
 
@@ -2104,6 +2180,7 @@ struct Itemgroup { /* Contains the current animation-related state of each item 
     undefined field_0x8c[0x10];
     struct SeesawInfo * seesaw_info;
 } __attribute__((__packed__));
+static_assert(sizeof(Itemgroup) == 0xa0);
 
 typedef struct StoryModeSaveFile StoryModeSaveFile, *PStoryModeSaveFile;
 
@@ -2121,6 +2198,7 @@ struct StoryModeSaveFile {
     u8 beaten_stage_indices[10];
     undefined field11_0x2f[85];
 } __attribute__((__packed__));
+static_assert(sizeof(StoryModeSaveFile) == 0x84);
 
 typedef struct GBone GBone, *PGBone;
 
@@ -2129,6 +2207,7 @@ struct GBone {
     void * MTAData;
     void * UnknownPtr;
 } __attribute__((__packed__));
+static_assert(sizeof(GBone) == 0xc);
 
 typedef struct RankingEntry RankingEntry, *PRankingEntry;
 
@@ -2141,6 +2220,7 @@ struct RankingEntry {
     undefined4 field11_0x14;
     undefined field_0x18[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(RankingEntry) == 0x1c);
 
 typedef struct GTableEntry GTableEntry, *PGTableEntry;
 
@@ -2149,6 +2229,7 @@ struct GTableEntry {
     byte field3_0x3;
     undefined field_0x4[0x8];
 } __attribute__((__packed__));
+static_assert(sizeof(GTableEntry) == 0xc);
 
 typedef struct OptiGXChanSettings OptiGXChanSettings, *POptiGXChanSettings;
 
@@ -2183,6 +2264,7 @@ struct OptiGXChanSettings { /* Opti = For optimization */
     GXDiffuseFn  diff_fn;
     GXAttnFn  attn_fn;
 } __attribute__((__packed__));
+static_assert(sizeof(OptiGXChanSettings) == 0x18);
 
 typedef struct CmListEntry CmListEntry, *PCmListEntry;
 
@@ -2191,6 +2273,23 @@ struct CmListEntry {
     undefined4 g_stage_id;
     undefined field_0x8[0x64];
 } __attribute__((__packed__));
+static_assert(sizeof(CmListEntry) == 0x6c);
+
+typedef struct NlBuffer NlBuffer, *PNlBuffer;
+
+struct NlBuffer {
+    int field0_0x0;
+    undefined field_0x4[0x14];
+    int * * field21_0x18;
+    undefined field_0x1c[0x4];
+    int * * field26_0x20;
+    struct GXTexObj * field27_0x24;
+    undefined field_0x28[0x10];
+    int * * field44_0x38;
+    undefined field_0x3c[0x28];
+    int * * field85_0x64;
+} __attribute__((__packed__));
+static_assert(sizeof(NlBuffer) == 0x68);
 
 typedef struct GraphicsInfo GraphicsInfo, *PGraphicsInfo;
 
@@ -2204,6 +2303,7 @@ struct GraphicsInfo { /* Is this the right size for the struct? maybe? -Crafted 
     u32 active_framebuffer_index; /* Either 0 or 1, representing framebuffer1 or framebuffer2 */
     struct GXFifoObj * fifos[2];
 } __attribute__((__packed__));
+static_assert(sizeof(GraphicsInfo) == 0x1c);
 
 struct GXFifoObj {
     undefined field_0x0[0x14];
@@ -2211,6 +2311,7 @@ struct GXFifoObj {
     void * write_ptr;
     undefined field_0x1c[0x64];
 } __attribute__((__packed__));
+static_assert(sizeof(GXFifoObj) == 0x80);
 
 enum {
     FONT32_ASCII=0,
@@ -2366,6 +2467,7 @@ typedef struct g_someGameInfo g_someGameInfo, *Pg_someGameInfo;
 struct g_someGameInfo {
     undefined field_0x0[0x50];
 } __attribute__((__packed__));
+static_assert(sizeof(g_someGameInfo) == 0x50);
 
 enum {
     DMD_SCEN_1ST_INIT=0,
@@ -2566,6 +2668,7 @@ struct MemCardInfo { /* Some struct that seems to hold per-memcard info; there a
     dword field43_0x3c;
     dword field44_0x40;
 } __attribute__((__packed__));
+static_assert(sizeof(MemCardInfo) == 0x44);
 
 typedef struct GSomeFileStruct GSomeFileStruct, *PGSomeFileStruct;
 
@@ -2573,6 +2676,7 @@ struct GSomeFileStruct {
     BOOL32 dvd_entrynum;
     struct DVDFileInfo dvdFileInfo;
 } __attribute__((__packed__));
+static_assert(sizeof(GSomeFileStruct) == 0x44);
 
 typedef struct PadStatusGroup PadStatusGroup, *PPadStatusGroup;
 
@@ -2607,6 +2711,7 @@ struct PADStatus {
     PadError  err; /* one of PAD_ERR_* number */
     undefined field_0xb[0x1];
 } __attribute__((__packed__));
+static_assert(sizeof(PADStatus) == 0xc);
 
 struct PadStatusGroup { /* A set of PADStatus structs for a given controller, with each representing a different "filtered" version of the inputs */
     struct PADStatus raw; /* The raw PADStatus read by PADRead() for the controller */
@@ -2615,6 +2720,7 @@ struct PadStatusGroup { /* A set of PADStatus structs for a given controller, wi
     struct PADStatus released; /* PADStatus representing the digital inputs that were released this frame */
     struct PADStatus repeated; /* PADStatus of digital inputs that "repeat" similar to holding a key down on a keyboard: bit is high on first press, then there's a pause of many frames, then the bit is high every 4 frames */
 } __attribute__((__packed__));
+static_assert(sizeof(PadStatusGroup) == 0x3c);
 
 typedef struct DigitalInputGroup DigitalInputGroup, *PDigitalInputGroup;
 
@@ -2625,6 +2731,7 @@ struct DigitalInputGroup { /* Consolidated bitfields for digital button inputs c
     PadDigitalInput  released;
     PadDigitalInput  repeated;
 } __attribute__((__packed__));
+static_assert(sizeof(DigitalInputGroup) == 0xa);
 
 typedef struct AnalogInputGroup AnalogInputGroup, *PAnalogInputGroup;
 
@@ -2649,6 +2756,7 @@ struct AnalogInputGroup { /* Consolidated thresholded analog input bitfields cor
     PadAnalogInput  released;
     PadAnalogInput  repeated;
 } __attribute__((__packed__));
+static_assert(sizeof(AnalogInputGroup) == 0xa);
 
 typedef struct CARDStat CARDStat, *PCARDStat;
 
@@ -2670,6 +2778,7 @@ struct CARDStat {
     u32 offsetIconTlut;
     u32 offsetData;
 } __attribute__((__packed__));
+static_assert(sizeof(CARDStat) == 0x6c);
 
 enum {
     NORMAL=0,
@@ -2689,6 +2798,7 @@ struct CARDFileInfo {
     s32 length;
     u16 iBlock;
 } __attribute__((__packed__));
+static_assert(sizeof(CARDFileInfo) == 0x12);
 
 struct MemCardFile {
     s32 exi_channel_number;
@@ -2697,6 +2807,7 @@ struct MemCardFile {
     undefined field_0x22[0x2];
     char * file_name; /* Struct may be bigger? /shrug */
 } __attribute__((__packed__));
+static_assert(sizeof(MemCardFile) == 0x28);
 
 typedef struct ModeInfo ModeInfo, *PModeInfo;
 
@@ -2734,7 +2845,7 @@ struct ModeInfo { /* I don't know what to call this, but there's some important 
     undefined2 entered_goal_itemgroup_idx;
     struct Vec g_ballVelAtGoal;
     undefined2 g_some_timer_frame_remaining_count;
-    undefined2 field8_0x1e;
+    s16 attempt_count;
     undefined2 cm_course_stage_num; /* Current course stage num, updated immediately after completing stage */
     undefined2 g_some_stage_jump_distance;
     undefined4 bananas_remaining;
@@ -2749,6 +2860,7 @@ struct ModeInfo { /* I don't know what to call this, but there's some important 
     GoalType  entered_goal_type;
     undefined field_0x39[0x3];
 } __attribute__((__packed__));
+static_assert(sizeof(ModeInfo) == 0x3c);
 
 typedef struct Event Event, *PEvent;
 
@@ -2761,6 +2873,7 @@ struct Event { /* A subset of continuously running game functionality that can b
     void (* dest_func)(void); /* "destruct:" or "destroy" function; normally, called once when status is STAT_DEST, then status is set to STAT_NULL */
     u32 tick_time; /* For performance metrics (presumably this is what's seen in the debug overlay performance > event menu) */
 } __attribute__((__packed__));
+static_assert(sizeof(Event) == 0x18);
 
 typedef unsigned short    wchar16;
 enum {
@@ -2814,6 +2927,7 @@ struct __OutStrCtrl {
     size_t MaxCharCount;
     size_t CharsWritten;
 } __attribute__((__packed__));
+static_assert(sizeof(__OutStrCtrl) == 0xc);
 
 typedef struct OptiGXSettings OptiGXSettings, *POptiGXSettings;
 
@@ -2824,6 +2938,7 @@ struct OptiGXSettings { /* Opti = For optimization - I don't actually know how b
     struct OptiGXChanSettings chan_alpha0;
     struct OptiGXChanSettings chan_alpha1;
 } __attribute__((__packed__));
+static_assert(sizeof(OptiGXSettings) == 0xc90);
 
 typedef struct S32Vec S32Vec, *PS32Vec;
 
@@ -2831,6 +2946,7 @@ struct S32Vec {
     s32 x;
     s32 y;
 } __attribute__((__packed__));
+static_assert(sizeof(S32Vec) == 0x8);
 
 enum {
     OF_G_SMTH_WITH_CAMERA=2,
@@ -2845,6 +2961,7 @@ struct Map {
     undefined4 field1_0x4;
     undefined field_0x8[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(Map) == 0xc);
 
 typedef struct gDiscQueueItem gDiscQueueItem, *PgDiscQueueItem;
 
@@ -2853,6 +2970,7 @@ struct gDiscQueueItem {
     int entrynum;
     undefined4 group;
 } __attribute__((__packed__));
+static_assert(sizeof(gDiscQueueItem) == 0xc);
 
 enum {
     MINIMAP_HIDDEN=0,
@@ -2899,6 +3017,7 @@ struct DipSwitchesOld { /* Unused struct - maybe I'll use it once Ghidra support
     u32 DIP_NO_MINIMAP:1; /* Hide minimap */
     u32 DIP_NO_STAGE:1; /* Hide stage */
 } __attribute__((__packed__));
+static_assert(sizeof(DipSwitchesOld) == 0x4);
 
 enum {
     LOCALE_ENGLISH=0,
@@ -3049,6 +3168,7 @@ struct Effect {
     struct Vec g_some_vec3;
     undefined field_0xa4[0xc];
 } __attribute__((__packed__));
+static_assert(sizeof(Effect) == 0xb0);
 
 enum {
     PMT_UNKNOWN0=0,
@@ -3067,6 +3187,7 @@ typedef struct ytgut ytgut, *Pytgut;
 struct ytgut {
     undefined field_0x0[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(ytgut) == 0x4);
 
 typedef struct PoolInfo PoolInfo, *PPoolInfo;
 
@@ -3076,6 +3197,7 @@ struct PoolInfo { /* Metadata and status info for lists of "tickable" objects li
     dword upper_bound; /* Number of objects from the start of the list until the last non-empty object. Usually the list is iterated over from 0 to this value, checking each tickable if it's non-empty. Reset at the start of each frame to one past the last non-empty object in the pool, and increased if the low idx bumps into it */
     u8 * status_list; /* Byte array of same length as the pool, each byte corresponds to some status of the corresponding object. Usually either 0 for "empty slot" and either 1 or 2 for "active". This does not appear to be a Status like Events use. */
 } __attribute__((__packed__));
+static_assert(sizeof(PoolInfo) == 0x10);
 
 enum {
     PIID_LEFT=0,
@@ -3112,6 +3234,7 @@ struct _IO_marker {
     struct _IO_FILE * _sbuf;
     int _pos;
 } __attribute__((__packed__));
+static_assert(sizeof(_IO_marker) == 0xc);
 
 struct _IO_FILE {
     int _flags;
@@ -3144,6 +3267,7 @@ struct _IO_FILE {
     char _unused2[15];
     undefined padding_0x73[0x1];
 } __attribute__((__packed__));
+static_assert(sizeof(_IO_FILE) == 0x74);
 
 typedef double f64;
 
@@ -3186,6 +3310,7 @@ struct gSceneData {
     undefined field_0xb[0x1];
     char * * field12_0xc;
 } __attribute__((__packed__));
+static_assert(sizeof(gSceneData) == 0x10);
 
 typedef struct StagedefBackgroundAnimHeader StagedefBackgroundAnimHeader, *PStagedefBackgroundAnimHeader;
 
@@ -3216,6 +3341,7 @@ struct StagedefBackgroundAnimHeader {
     struct StagedefAnimKeyframe * pos_z_keyframe_list;
     undefined field_0x40[0x10];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefBackgroundAnimHeader) == 0x50);
 
 struct StagedefAnimKeyframe {
     Easing  easing;
@@ -3223,6 +3349,7 @@ struct StagedefAnimKeyframe {
     float value;
     undefined field_0xc[0x8];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefAnimKeyframe) == 0x14);
 
 typedef struct StagedefEffectHeader StagedefEffectHeader, *PStagedefEffectHeader;
 
@@ -3240,6 +3367,7 @@ struct StagedefEffectHeader {
     struct StagedefTextureScroll * texture_scroll;
     undefined field_0x14[0x1c];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefEffectHeader) == 0x30);
 
 struct StagedefEffect1 { /* Likely used for animated textures, such as the silhouettes in Night */
     dword field0_0x0;
@@ -3250,6 +3378,7 @@ struct StagedefEffect1 { /* Likely used for animated textures, such as the silho
     word field5_0x10;
     undefined field_0x12[0x2];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefEffect1) == 0x14);
 
 struct StagedefEffect2 { /* May be used for the flames in Storm? */
     float field0_0x0;
@@ -3257,10 +3386,12 @@ struct StagedefEffect2 { /* May be used for the flames in Storm? */
     float field2_0x8;
     undefined field_0xc[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefEffect2) == 0x10);
 
 struct StagedefTextureScroll {
     struct Vec2d speed;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefTextureScroll) == 0x8);
 
 typedef struct StagedefFogAnimHeader StagedefFogAnimHeader, *PStagedefFogAnimHeader;
 
@@ -3278,6 +3409,7 @@ struct StagedefFogAnimHeader {
     u32 unk_keyframe_count;
     struct StagedefAnimKeyframe * unk_keyframe_list;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefFogAnimHeader) == 0x30);
 
 typedef struct StagedefAnimHeader StagedefAnimHeader, *PStagedefAnimHeader;
 
@@ -3296,6 +3428,7 @@ struct StagedefAnimHeader {
     struct StagedefAnimKeyframe * pos_z_keyframe_list;
     undefined field_0x30[0x10];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefAnimHeader) == 0x40);
 
 typedef struct StagedefFileHeader StagedefFileHeader, *PStagedefFileHeader;
 
@@ -3375,6 +3508,7 @@ struct StagedefStageModelInstance {
     undefined2 g_not_padding;
     struct Vec scale;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefStageModelInstance) == 0x24);
 
 struct StagedefBumper {
     struct Vec position;
@@ -3382,16 +3516,19 @@ struct StagedefBumper {
     undefined2 padding;
     struct Vec scale;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefBumper) == 0x20);
 
 struct StagedefReflectiveStageModel {
     char * model_name;
-    struct GmaModelHeader * g_model_header_ptr;
+    struct GmaModel * g_model_header_ptr;
     undefined field_0x8[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefReflectiveStageModel) == 0xc);
 
 struct StagedefFallout {
     float y;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefFallout) == 0x4);
 
 struct StagedefButton {
     struct Vec position;
@@ -3400,12 +3537,14 @@ struct StagedefButton {
     u16 anim_group_id;
     undefined2 padding;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefButton) == 0x18);
 
 struct StagedefDynamicReflectionPlane {
     char * model_name_ptr;
     struct Vec pos;
     struct S16Vec rot;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefDynamicReflectionPlane) == 0x16);
 
 struct StagedefStageModel {
     undefined field_0x0[0x4];
@@ -3413,12 +3552,14 @@ struct StagedefStageModel {
     uint some_flag;
     undefined field_0xc[0x4];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefStageModel) == 0x10);
 
 struct StagedefColiSphere {
     struct Vec position;
     float radius;
     undefined4 g_not_padding; /* Nullable */
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefColiSphere) == 0x14);
 
 struct StagedefColiCylinder {
     struct Vec position;
@@ -3427,11 +3568,12 @@ struct StagedefColiCylinder {
     struct S16Vec rotation;
     undefined2 g_not_padding;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefColiCylinder) == 0x1c);
 
 struct StagedefBackgroundModel {
     undefined field_0x0[0x4];
     char * model_name;
-    struct GmaModelHeader * gma_model; /* Created by retype action */
+    struct GmaModel * gma_model; /* Created by retype action */
     struct Vec position;
     struct S16Vec rotation;
     undefined2 padding;
@@ -3440,21 +3582,25 @@ struct StagedefBackgroundModel {
     struct StagedefBackgroundAnim2Header * background_anim2_header;
     struct StagedefEffectHeader * effect_header;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefBackgroundModel) == 0x38);
 
 struct StagedefStageModelPtrA {
     StageModelEffectBitfield  some_effect_bitflag;
     uint some_counter;
     struct StagedefStageModel * stage_model;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefStageModelPtrA) == 0xc);
 
 struct StagedefStageModelPtrB {
     struct StagedefStageModelPtrA * stage_model_a;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefStageModelPtrB) == 0x4);
 
 struct StagedefBanana {
     struct Vec position;
     BananaType  type;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefBanana) == 0x10);
 
 struct StagedefMystery5 {
     undefined field_0x0[0x4];
@@ -3463,6 +3609,7 @@ struct StagedefMystery5 {
     float field6_0xc;
     float field7_0x10;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefMystery5) == 0x14);
 
 struct StagedefColiCone {
     struct Vec position;
@@ -3470,6 +3617,7 @@ struct StagedefColiCone {
     undefined2 g_not_padding;
     struct Vec scale;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefColiCone) == 0x20);
 
 struct StagedefJamabar {
     struct Vec position;
@@ -3477,6 +3625,7 @@ struct StagedefJamabar {
     undefined2 padding;
     struct Vec scale;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefJamabar) == 0x20);
 
 struct StagedefMystery3 {
     float field0_0x0;
@@ -3486,6 +3635,7 @@ struct StagedefMystery3 {
     undefined2 field4_0xe;
     undefined field_0x10[0x14];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefMystery3) == 0x24);
 
 struct StagedefFalloutVolume {
     struct Vec position;
@@ -3493,6 +3643,7 @@ struct StagedefFalloutVolume {
     struct S16Vec rotation;
     undefined2 padding;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefFalloutVolume) == 0x20);
 
 struct StagedefColiTri {
     struct Vec vert1;
@@ -3504,6 +3655,7 @@ struct StagedefColiTri {
     struct Vec2d tangent;
     struct Vec2d bitangent;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefColiTri) == 0x40);
 
 struct StagedefGoal {
     struct Vec position;
@@ -3511,6 +3663,7 @@ struct StagedefGoal {
     GoalType  type;
     undefined field_0x13[0x1];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefGoal) == 0x14);
 
 struct StagedefWormhole {
     undefined field_0x0[0x4];
@@ -3519,6 +3672,7 @@ struct StagedefWormhole {
     undefined2 padding;
     struct StagedefWormhole * destination;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefWormhole) == 0x1c);
 
 struct StagedefBackgroundAnim2Header {
     undefined field_0x0[0x4];
@@ -3546,12 +3700,14 @@ struct StagedefBackgroundAnim2Header {
     u32 unk11_keyframe_count;
     struct StagedefAnimKeyframe * unk11_keyframe_list;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefBackgroundAnim2Header) == 0x60);
 
 struct StagedefStart {
     struct Vec position;
     struct S16Vec rotation;
     undefined2 padding;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefStart) == 0x14);
 
 struct StagedefFileHeader {
     u32 magic_number_a;
@@ -3604,6 +3760,7 @@ struct StagedefFileHeader {
     struct StagedefMystery3 * mystery3;
     undefined field_0xd8[0x7c4];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefFileHeader) == 0x89c);
 
 struct StagedefFog {
     GXFogType  type;
@@ -3613,11 +3770,12 @@ struct StagedefFog {
     struct Vec color;
     undefined field_0x18[0xc];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefFog) == 0x24);
 
 struct StagedefForegroundModel {
     undefined4 field0_0x0; /* Unknown - typically 0x0000001F, sometimes 0x00000007 or 0x0000000F */
     char * model_name;
-    struct GmaModelHeader * gma_model;
+    struct GmaModel * gma_model;
     struct Vec position;
     struct S16Vec rotation;
     undefined2 padding;
@@ -3626,6 +3784,7 @@ struct StagedefForegroundModel {
     void * background_anim2_header;
     void * field9_0x34;
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefForegroundModel) == 0x38);
 
 struct StagedefColiHeader {
     struct Vec origin; /* Center of rotation etc. */
@@ -3681,33 +3840,15 @@ struct StagedefColiHeader {
     struct StagedefTextureScroll * texture_scroll;
     undefined field_0xdc[0x3c0];
 } __attribute__((__packed__));
+static_assert(sizeof(StagedefColiHeader) == 0x49c);
 
 typedef void * __gnuc_va_list;
 
 typedef __gnuc_va_list va_list;
 
-typedef struct GmaVertexControlHeader GmaVertexControlHeader, *PGmaVertexControlHeader;
+typedef struct GmaShape GmaShape, *PGmaShape;
 
-struct GmaVertexControlHeader { /* Also called "Model Type 1". This structure appears to outline various information relating to skinned and effective models only. A such, it is assumed that it is data for controlling the vertices. */
-    s32 vertex_count;
-    s32 vertex_control_type1_array_offset;
-    s32 vertex_control_type2_array_offset;
-    s32 vertex_control_type3_offset;
-    s32 vertex_control_type4_offset;
-    dword field5_0x14;
-    undefined field_0x18[0x8];
-} __attribute__((__packed__));
-
-typedef struct GmaHeader GmaHeader, *PGmaHeader;
-
-struct GmaHeader { /* First 8 bytes of a GMA file. Following this is an arbitrary-length list of 8-byte GMA model entries */
-    s32 model_count; /* The number of GCMF models in the file (including null entries) */
-    s32 header_size; /* Size of header including FIFO padding before GCMF models begin. Also called "model base position" */
-} __attribute__((__packed__));
-
-typedef struct GmaSomeStruct GmaSomeStruct, *PGmaSomeStruct;
-
-struct GmaSomeStruct {
+struct GmaShape {
     uint g_some_bitflag;
     short g_some_short;
     short g_some_short2;
@@ -3732,8 +3873,9 @@ struct GmaSomeStruct {
     uint g_some_uint5;
     undefined field_0x44[0x1c];
 } __attribute__((__packed__));
+static_assert(sizeof(GmaShape) == 0x60);
 
-typedef struct GmaTextureDescriptor GmaTextureDescriptor, *PGmaTextureDescriptor;
+typedef struct GmaTevLayer GmaTevLayer, *PGmaTevLayer;
 
 enum {
     TEXFLAG_UNK_BIT0=1,
@@ -3761,7 +3903,7 @@ enum {
     TEXFLAG_UNK_BIT22=4194304,
     TEXFLAG_UNK_BIT23=8388608
 };
-typedef undefined4 GmaTextureFlags;
+typedef undefined4 GmaTevLayerFlags;
 
 enum {
     GX_ANISO_1=0,
@@ -3771,8 +3913,8 @@ enum {
 };
 typedef undefined1 GXAnisotropy;
 
-struct GmaTextureDescriptor {
-    GmaTextureFlags  flags;
+struct GmaTevLayer {
+    GmaTevLayerFlags  flags;
     u16 tpl_texture_idx; /* Index into TPL for which texture is referenced */
     undefined field_0x6[0x1];
     GXAnisotropy  anisotropy; /* Level of anisotropic filtering to use */
@@ -3782,6 +3924,28 @@ struct GmaTextureDescriptor {
     s16 tex_descriptor_idx; /* Texture descriptor index, matches its zero-indexed value in this array */
     undefined field_0x10[0x10];
 } __attribute__((__packed__));
+static_assert(sizeof(GmaTevLayer) == 0x20);
+
+typedef struct GmaVertexControlHeader GmaVertexControlHeader, *PGmaVertexControlHeader;
+
+struct GmaVertexControlHeader { /* Also called "Model Type 1". This structure appears to outline various information relating to skinned and effective models only. A such, it is assumed that it is data for controlling the vertices. */
+    s32 vertex_count;
+    s32 vertex_control_type1_array_offset;
+    s32 vertex_control_type2_array_offset;
+    s32 vertex_control_type3_offset;
+    s32 vertex_control_type4_offset;
+    dword field5_0x14;
+    undefined field_0x18[0x8];
+} __attribute__((__packed__));
+static_assert(sizeof(GmaVertexControlHeader) == 0x20);
+
+typedef struct Gma Gma, *PGma;
+
+struct Gma { /* First 8 bytes of a GMA file. Following this is an arbitrary-length list of 8-byte GMA model entries */
+    s32 model_count; /* The number of GCMF models in the file (including null entries) */
+    s32 header_size; /* Size of header including FIFO padding before GCMF models begin. Also called "model base position" */
+} __attribute__((__packed__));
+static_assert(sizeof(Gma) == 0x8);
 
 typedef struct OSSectionInfo OSSectionInfo, *POSSectionInfo;
 
@@ -3789,6 +3953,7 @@ struct OSSectionInfo {
     u32 offset; /* Bit 31 is whether the section is executable */
     u32 size;
 } __attribute__((__packed__));
+static_assert(sizeof(OSSectionInfo) == 0x8);
 
 typedef struct OSThreadLink OSThreadLink, *POSThreadLink;
 
@@ -3810,16 +3975,19 @@ struct OSThreadLink {
     struct OSThread * next;
     struct OSThread * prev;
 } __attribute__((__packed__));
+static_assert(sizeof(OSThreadLink) == 0x8);
 
 struct OSMutexLink {
     struct OSMutex * next;
     struct OSMutex * prev;
 } __attribute__((__packed__));
+static_assert(sizeof(OSMutexLink) == 0x8);
 
 struct OSThreadQueue {
     struct OSThread * head;
     struct OSThread * tail;
 } __attribute__((__packed__));
+static_assert(sizeof(OSThreadQueue) == 0x8);
 
 struct OSMutex {
     struct OSThreadQueue queue;
@@ -3827,6 +3995,7 @@ struct OSMutex {
     s32 count; /* lock count */
     struct OSMutexLink link; /* for OSThread.queueMutex */
 } __attribute__((__packed__));
+static_assert(sizeof(OSMutex) == 0x18);
 
 struct OSContext {
     u32 gpr[32]; /* General-purpose registers */
@@ -3844,11 +4013,13 @@ struct OSContext {
     u32 gqr[8]; /* Place Gekko regs at the end so we have minimal changes to existing code */
     f64 psf[32];
 } __attribute__((__packed__));
+static_assert(sizeof(OSContext) == 0x2c4);
 
 struct OSMutexQueue {
     struct OSMutex * head;
     struct OSMutex * tail;
 } __attribute__((__packed__));
+static_assert(sizeof(OSMutexQueue) == 0x8);
 
 struct OSThread {
     struct OSContext context; /* register context */
@@ -3867,6 +4038,7 @@ struct OSThread {
     u8 * stackBase; /* the thread's designated stack (high address) */
     u32 * stackEnd; /* last word of stack (low address) */
 } __attribute__((__packed__));
+static_assert(sizeof(OSThread) == 0x304);
 
 enum {
     GX_NONE=0,
@@ -3911,6 +4083,7 @@ union PPCWGPipe { /* PPC Write Gather Pipe. Original field names didn't have v_ 
     f32 v_f32;
     f64 v_f64;
 };
+static_assert(sizeof(PPCWGPipe) == 0x8);
 
 typedef u32 OSTick;
 
@@ -3971,6 +4144,7 @@ struct GXVtxAttrFmtList {
     GXCompType  type;
     u8 frac;
 } __attribute__((__packed__));
+static_assert(sizeof(GXVtxAttrFmtList) == 0xd);
 
 enum {
     GX_QUADS=128,
@@ -4041,6 +4215,7 @@ struct OSModuleLink {
     struct OSModuleInfo * next;
     struct OSModuleInfo * prev;
 } __attribute__((__packed__));
+static_assert(sizeof(OSModuleLink) == 0x8);
 
 struct OSModuleInfo { /* This matches the start of REL file header */
     OSModuleID id; /* unique identifier for the module */
@@ -4051,6 +4226,7 @@ struct OSModuleInfo { /* This matches the start of REL file header */
     u32 nameSize; /* size of module name */
     u32 version; /* version number */
 } __attribute__((__packed__));
+static_assert(sizeof(OSModuleInfo) == 0x20);
 
 enum {
     GX_TF_C4=8,
@@ -4092,6 +4268,7 @@ struct GXColor { /* A generic color structure used by various GX API functions. 
     u8 b;
     u8 a;
 } __attribute__((__packed__));
+static_assert(sizeof(GXColor) == 0x4);
 
 enum {
     GX_COLOR0=0,
@@ -4118,6 +4295,7 @@ typedef struct GXTlutRegion GXTlutRegion, *PGXTlutRegion;
 struct GXTlutRegion {
     u32 dummy[4];
 } __attribute__((__packed__));
+static_assert(sizeof(GXTlutRegion) == 0x10);
 
 enum {
     GX_CLAMP=0,
@@ -4187,6 +4365,7 @@ struct OSRel {
     u8 section;
     u32 addend;
 } __attribute__((__packed__));
+static_assert(sizeof(OSRel) == 0x8);
 
 enum {
     GX_CLAMP_NONE=0,
@@ -4200,6 +4379,7 @@ typedef struct GXTexRegion GXTexRegion, *PGXTexRegion;
 struct GXTexRegion {
     u32 dummy[4];
 } __attribute__((__packed__));
+static_assert(sizeof(GXTexRegion) == 0x10);
 
 enum {
     GX_TEV_ADD=0,
@@ -4222,6 +4402,7 @@ typedef struct GXFogAdjTable GXFogAdjTable, *PGXFogAdjTable;
 struct GXFogAdjTable {
     u16 dummy[10];
 } __attribute__((__packed__));
+static_assert(sizeof(GXFogAdjTable) == 0x14);
 
 enum {
     GX_ZT_DISABLE=0,
@@ -4237,6 +4418,7 @@ struct GXVtxDescList {
     GXAttr  attr;
     GXAttrType  type;
 } __attribute__((__packed__));
+static_assert(sizeof(GXVtxDescList) == 0x8);
 
 enum {
     GX_TB_ZERO=0,
@@ -4263,12 +4445,14 @@ struct ChunkInfo { /* Header data for a heap chunk. The first 32 bytes of a heap
     u32 size;
     u8 padding[20]; /* This is to make the data portion of the chunk 32-bit aligned */
 } __attribute__((__packed__));
+static_assert(sizeof(ChunkInfo) == 0x20);
 
 typedef struct GXLightObj GXLightObj, *PGXLightObj;
 
 struct GXLightObj {
     u32 dummy[16];
 } __attribute__((__packed__));
+static_assert(sizeof(GXLightObj) == 0x40);
 
 enum {
     GX_TLUT_16=1,
@@ -4392,6 +4576,7 @@ typedef struct GXTlutObj GXTlutObj, *PGXTlutObj;
 struct GXTlutObj {
     u32 dummy[3];
 } __attribute__((__packed__));
+static_assert(sizeof(GXTlutObj) == 0xc);
 
 enum {
     GX_VTXFMT0=0,
@@ -4462,6 +4647,7 @@ struct OSModuleHeader {
     u32 align; /* REL versions >=2 only */
     u32 bssAlign; /* REL versions >=2 only */
 } __attribute__((__packed__));
+static_assert(sizeof(OSModuleHeader) == 0x48);
 
 enum {
     GX_TL_IA8=0,
@@ -4483,6 +4669,7 @@ struct ARQRequest {
     u32 length; /* length in bytes */
     void (* callback)(u32); /* user specified callback routine */
 } __attribute__((__packed__));
+static_assert(sizeof(ARQRequest) == 0x20);
 
 enum {
     GX_SP_OFF=0,
@@ -4502,6 +4689,7 @@ struct HeapInfo { /* OS heap info */
     struct ChunkInfo * first_free;
     struct ChunkInfo * first_used;
 } __attribute__((__packed__));
+static_assert(sizeof(HeapInfo) == 0xc);
 
 enum {
     GX_CULL_NONE=0,
@@ -4547,6 +4735,7 @@ struct DVDDirEntry {
     BOOL32 isDir;
     char * name;
 } __attribute__((__packed__));
+static_assert(sizeof(DVDDirEntry) == 0xc);
 
 enum {
     GX_TEVPREV=0,
@@ -4736,6 +4925,7 @@ struct OSImportInfo {
     OSModuleID id;
     u32 offset;
 } __attribute__((__packed__));
+static_assert(sizeof(OSImportInfo) == 0x8);
 
 typedef struct GXRenderModeObj GXRenderModeObj, *PGXRenderModeObj;
 
@@ -4754,6 +4944,7 @@ struct GXRenderModeObj {
     u8 sample_pattern[12][2];
     u8 vfilter[7];
 } __attribute__((__packed__));
+static_assert(sizeof(GXRenderModeObj) == 0x37);
 
 enum {
     GX_XF_FLUSH_NONE=0,
@@ -4815,6 +5006,7 @@ struct OSCalendarTime {
     int msec; /* milliseconds after the second [0,999] */
     int usec; /* microseconds after the millisecond [0,999] */
 } __attribute__((__packed__));
+static_assert(sizeof(OSCalendarTime) == 0x28);
 
 typedef s16 __OSInterrupt;
 
@@ -4834,6 +5026,7 @@ struct DVDDir {
     u32 location;
     u32 next;
 } __attribute__((__packed__));
+static_assert(sizeof(DVDDir) == 0xc);
 
 enum {
     GX_TG_MTX3x4=0,
@@ -4909,6 +5102,7 @@ struct GXColorS10 {
     s16 b;
     s16 a;
 } __attribute__((__packed__));
+static_assert(sizeof(GXColorS10) == 0x8);
 
 enum {
     GX_ITW_OFF=0,
@@ -5241,7 +5435,10 @@ extern "C" {
     extern BOOL32 (* g_some_dvd_open_func_ptr)(char *, struct DVDFileInfo *);
     extern DVDFileInfo * (* g_get_some_dvd_info_func_ptr)(void);
     extern struct GraphicsInfo * graphics_info;
-    extern undefined4 g_motion;
+    extern struct GXColor avdisp_post_add_color;
+    extern struct GXColor avdisp_post_mult_color;
+    extern undefined4 avdisp_use_post_add_color;
+    extern undefined4 avdisp_use_post_mult_color;
     extern undefined4 data_buffer;
     extern undefined8 i2fMagic;
     extern undefined4 value0_6;
@@ -5325,6 +5522,8 @@ extern "C" {
     extern undefined * switchdataD_8037ed54;
     extern pointer switchdataD_8037ed78;
     extern undefined * switchdataD_8037edf8;
+    extern char init_common_p_lz[17];
+    extern char init_common_lz[15];
     extern struct BmpInfo bmp_infos[25];
     extern undefined * bmp_tex_names;
     extern pointer switchdataD_803809d0;
@@ -5411,6 +5610,8 @@ extern "C" {
     extern undefined * stobj_dest_funcs;
     extern undefined * stobj_cb_f_funcs;
     extern undefined * button_type_strs;
+    extern short goal_LCD_small_common_gmatpl_idxes[10];
+    extern short goal_LCD_large_common_gmatpl_idxes[10];
     extern pointer switchdataD_803a7210;
     extern pointer switchdataD_803a7234;
     extern undefined * switchdataD_803a7258;
@@ -5507,6 +5708,10 @@ extern "C" {
     extern struct RelBufferInfo * g_loaded_rel_infos[10];
     extern undefined4 frame_counter;
     extern undefined4 g_font_char_var_3;
+    extern undefined g_some_tpl_buffer;
+    extern undefined g_init_common_tpl_buf;
+    extern undefined g_some_nl_model_buffer_2;
+    extern struct NlBuffer * * g_init_common_gma_buf;
     extern StoryModeFunc  g_storymode_mode;
     extern StoryModeFunc  active_story_mode_func;
     extern undefined2 curr_world;
@@ -5516,7 +5721,7 @@ extern "C" {
     extern undefined4 storymode_bananas;
     extern undefined4 g_some_storymode_func_ptr;
     extern undefined1 curr_storymode_save_file_idx;
-    extern Mtx * g_maybe_related_to_stage_tilt;
+    extern Mtx * g_ord_tbl_stuff;
     extern undefined4 is_more_than_24_mib;
     extern undefined4 g_some_buffer_ptr;
     extern undefined4 g_some_other_heap_lo;
@@ -5685,9 +5890,9 @@ extern "C" {
     extern undefined2 current_stage_id;
     extern char g_current_stage_name[128];
     extern undefined4 worm_surface_gma_model;
-    extern struct GmaModelHeader * wormhole_gma_model;
-    extern struct GmaModelHeader * continue_gma_model;
-    extern struct GmaModelHeader * goal_gma_models[3];
+    extern struct GmaModel * wormhole_gma_model;
+    extern struct GmaModel * continue_gma_model;
+    extern struct GmaModel * goal_gma_models[3];
     extern struct Itemgroup * itemgroups_copy;
     extern undefined2 g_some_stage_id;
     extern undefined2 g_another_stage_id;
@@ -5700,8 +5905,8 @@ extern "C" {
     extern undefined4 replay_frames_remaining;
     extern struct Vec replay_curr_ball_pos;
     extern struct Replay * replay;
-    extern undefined g_loaded_player_score;
-    extern undefined next_effect_id;
+    extern undefined4 g_loaded_player_score;
+    extern undefined2 next_effect_id;
     extern struct Effect effects[512];
     extern Mtx g_related_to_texture_UV_map;
     extern undefined1 cm_unlock_entries[18];
@@ -5720,8 +5925,8 @@ extern "C" {
     extern undefined4 bumper_lods;
     extern struct GoalTape goaltapes[16];
     extern struct GoalBag goalbags[16];
-    extern undefined4 g_some_goalbag1;
-    extern undefined4 g_some_goalbag2;
+    extern struct GmaModel * goal_LCD_small_numbers[10];
+    extern struct GmaModel * goal_LCD_large_numbers[10];
     extern struct Sprite sprites[80];
     extern struct GSomeSpriteStruct g_some_sprite_structs[82];
     extern undefined4 g_some_sprite_width;
@@ -5733,27 +5938,27 @@ extern "C" {
     extern undefined4 g_something_with_fonts3[512];
     extern float g_global_font_sprite_pos_x;
     extern struct Vec2d g_global_font_sprite_pos;
-    extern Font16  global_font_sprite_type;
-    extern undefined4 g_global_font_sprite_mult_color;
-    extern undefined4 g_global_font_sprite_add_color;
-    extern undefined2 global_font_sprite_rot_z;
-    extern float global_font_sprite_depth;
-    extern float global_font_sprite_width;
-    extern float global_font_sprite_height;
-    extern undefined4 global_font_sprite_alpha;
-    extern undefined4 global_font_sprite_flags;
-    extern undefined1 global_font_sprite_alignment;
-    extern undefined2 g_smth_with_letter_spacing_and_alignment;
-    extern undefined2 g_some_data_with_font_drawing_12;
-    extern undefined2 g_some_data_with_font_drawing_13;
-    extern undefined4 g_some_data_with_font_drawing_14;
-    extern undefined4 g_some_data_with_font_drawing_15;
-    extern undefined4 g_some_data_with_font_drawing_16;
-    extern undefined4 g_some_data_with_font_drawing_17;
-    extern undefined1 g_global_font_style;
-    extern struct Vec2d global_font_spacing;
-    extern undefined2 g_global_font_sprite_counter;
-    extern undefined4 g_some_data_with_font_drawing_22;
+    extern Font16  textdraw_font;
+    extern undefined4 textdraw_mul_color;
+    extern undefined4 textdraw_add_color;
+    extern undefined2 textdraw_rot_z;
+    extern float textdraw_depth;
+    extern float textdraw_width;
+    extern float textdraw_height;
+    extern undefined4 textdraw_alpha;
+    extern undefined4 textdraw_flags;
+    extern undefined1 textdraw_alignment;
+    extern undefined2 g_textdraw_smth_with_letter_spacing_and_alignment;
+    extern undefined2 g_textdraw_unk2;
+    extern undefined2 g_textdraw_unk3;
+    extern undefined4 g_textdraw_unk4;
+    extern undefined4 g_textdraw_unk5;
+    extern undefined4 g_textdraw_unk6;
+    extern undefined4 g_textdraw_unk7;
+    extern undefined1 textdraw_style;
+    extern struct Vec2d textdraw_spacing;
+    extern undefined2 g_textdraw_counter;
+    extern undefined4 g_textdraw_unk8;
     extern undefined4 g_font_char_var_1;
     extern undefined4 g_font_char_var_2;
     extern u8 g_banana_disp_efc_req_count;
@@ -5777,6 +5982,9 @@ extern "C" {
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array1[4];
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array2[4];
     extern OSHeapHandle g_some_heap_handle;
+    extern float g_avdisp_bound_sphere_scale;
+    extern float g_avdisp_material_alpha;
+    extern Mtx avdisp_tex_mtx;
     extern undefined main_mta_storage;
     extern struct GBone face_bones[16];
     extern struct GBone handR_bones[16];
@@ -6223,7 +6431,7 @@ extern "C" {
     void DMAErrorHandler(undefined4 param_1, undefined4 * param_2);
     void __OSCacheInit(void);
     void __OSLoadFPUContext(undefined8 param_1, undefined4 param_2, int param_3);
-    void __OSSaveFPUContext(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int param_11);
+    void __OSSaveFPUContext(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined8 param_9, undefined8 param_10, undefined8 param_11_00, undefined8 param_12, undefined8 param_13, undefined4 param_14, undefined4 param_15, int param_16);
     void OSSetCurrentContext(struct OSContext * context);
     OSContext * OSGetCurrentContext(void);
     undefined4 OSSaveContext(int param_1);
@@ -6271,7 +6479,7 @@ extern "C" {
     void OSRegisterResetFunction(int param_1);
     void Reset(undefined4 param_1);
     void __OSDoHotReset(int param_1);
-    void OSResetSystem(int param_1, int param_2, int param_3);
+    bool OSResetSystem(int param_1, int param_2, int param_3);
     uint OSGetResetCode(void);
     void __OSResetSWInterruptHandler(void);
     uint OSGetResetButtonState(void);
@@ -7337,7 +7545,7 @@ extern "C" {
     void g_panic_in_avload(char * param_1, undefined4 param_2);
     void * alloc_from_set_heap(u32 size);
     void g_free_mem_to_heap_via_func_ptr(void * mem);
-    void g_init_gma_texture(struct GmaTextureDescriptor * tex_desc, struct TplTextureHeader * tpl_texture, struct TplBuffer * tpl);
+    void g_init_gma_texture(struct GmaTevLayer * tex_desc, struct TplTextureHeader * tpl_texture, struct TplBuffer * tpl);
     void os_alloc_from_heap_wrapper(u32 size);
     void os_free_to_heap_wrapper(void * ptr);
     DVDFileInfo * g_get_some_dvd_file_info(void);
@@ -7357,34 +7565,37 @@ extern "C" {
     void g_load_gpu_transform_mtx(Mtx * mtx, int param_2);
     undefined8 g_smth_with_gpu_and_locked_cache_mtx(void);
     void g_something_with_texture_scroll_3(undefined4 param_1, Mtx * param_2);
-    void g_some_GmaSomeStruct_func7(struct GmaSomeStruct * gma_struct, GXTevStageID  * param_2);
-    double g_some_GmaSomeStruct_func(struct GmaSomeStruct * param_1);
-    double g_avdisp_smth_with_tex_materials(struct GmaModelHeader * gma_header, struct GmaSomeStruct * gma_struct);
-    void g_some_GmaSomeStruct_func3(struct GmaSomeStruct * gma_struct, int g_some_gma_value);
-    void g_something_with_GmaSomeStruct_GXBlendFactor(struct GmaSomeStruct * gma_struct);
-    void g_some_GmaSomeStruct_func5_GXSetChanCtrl(struct GmaSomeStruct * gma_struct);
-    void g_some_GmaSomeStruct_func6(struct GmaSomeStruct * gma_struct, int param_2);
-    undefined8 g_some_GmaSomeStruct_func5(struct GmaSomeStruct * gma_struct);
-    void g_some_GmaSomeStruct_func4(struct GmaSomeStruct * param_1);
+    void avdisp_set_post_mult_color(double red, double green, double blue, double alpha);
+    void avdisp_set_post_add_color(double red, double green, double blue, double alpha);
+    void g_avdisp_set_ambient(double g_red, double g_green, double g_blue);
+    void g_some_GmaSomeStruct_func7(struct GmaShape * gma_struct, GXTevStageID  * param_2);
+    double g_some_GmaSomeStruct_func(struct GmaShape * param_1);
+    double g_avdisp_smth_with_tex_materials(struct GmaModel * gma_header, struct GmaShape * gma_struct);
+    void g_some_GmaSomeStruct_func3(struct GmaShape * shape, int g_some_gma_value);
+    void g_something_with_GmaSomeStruct_GXBlendFactor(struct GmaShape * gma_struct);
+    void g_some_GmaSomeStruct_func5_GXSetChanCtrl(struct GmaShape * gma_struct);
+    void g_some_GmaSomeStruct_func6(struct GmaShape * gma_struct, int param_2);
+    undefined8 g_some_GmaSomeStruct_func5(struct GmaShape * gma_struct);
+    void g_some_GmaSomeStruct_func4(struct GmaShape * param_1);
     void g_free_some_memory(void);
     Mtx * draw_poly(int param_1, Mtx * * param_2);
     uint pointer_range_advance(byte * g_frame_pointer, int * toset);
-    void g_avdisp_root_func1(struct GmaModelHeader * gma_header);
-    void g_avdisp_root_func2(struct GmaModelHeader * gma_model);
-    void g_avdisp_root_func3(struct GmaModelHeader * param_1);
-    void g_write_to_gfx_fifos(struct GmaSomeStruct * param_1, undefined4 param_2);
-    int * g_some_GmaSomeStruct_func8(uint * param_1, int param_2, struct GmaSomeStruct * gma_struct, int param_4, struct GmaModelHeader * gma_header);
-    undefined8 g_avdisp_smth_with_transforms(struct GmaSomeStruct * vert_control);
-    void g_avdisp_smth_with_skin_effective_model(struct GmaModelHeader * gma_header, struct GmaSomeStruct * gma_struct, int param_3);
-    void g_avdisp_func9(struct GmaModelHeader * param_1, struct GmaSomeStruct * param_2, int param_3, int param_4);
-    uint * g_avdisp_static_models(struct GmaModelHeader * gma_model, struct GmaSomeStruct * gma_struct, int g_some_gma_field_value);
-    void g_some_GmaSomeStruct_func2(struct GmaSomeStruct * param_1);
-    void g_smth_with_gma_model_matrices(struct GmaModelHeader * gma_model);
+    void g_avdisp_draw_model_now1(struct GmaModel * model);
+    void g_avdisp_draw_model_now2(struct GmaModel * model);
+    void g_avdisp_draw_model_now3(struct GmaModel * model);
+    void g_write_to_gfx_fifos(struct GmaShape * param_1, undefined4 param_2);
+    int * avdisp_draw_deformable_shape(uint * param_1, int param_2, struct GmaShape * gma_struct, int param_4, struct GmaModel * gma_header);
+    undefined8 g_avdisp_smth_with_transforms(struct GmaShape * vert_control);
+    void avdisp_draw_deformable_model(struct GmaModel * model, struct GmaShape * first_shape, int param_3);
+    void g_avdisp_draw_deformable_model2(struct GmaModel * model, struct GmaShape * shape, int param_3, int param_4);
+    GmaShape * avdisp_draw_static_shape_now(struct GmaModel * model, struct GmaShape * shape, struct GmaTevLayer * tev_layers);
+    void g_some_GmaSomeStruct_func2(void * param_1);
+    void g_iteratively_multiply_model_matrices(struct GmaModel * model);
     void g_avdisp_func8(int param_1);
     void g_maybe_something_with_normals(int param_1);
-    void g_init_gma(struct GmaBuffer * gma_buffer, struct GmaHeader * gma_header, struct TplBuffer * tpl);
-    int g_init_gma_model_materials(struct GmaModelHeader * model, struct TplBuffer * tpl, struct GXTexObj * texobj_array);
-    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1, size_t count);
+    void g_init_gma(struct GmaBuffer * gma_buffer, struct Gma * gma_header, struct TplBuffer * tpl);
+    int g_init_gma_model_materials(struct GmaModel * model, struct TplBuffer * tpl, struct GXTexObj * texobj_array);
+    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1_1_1, size_t count);
     void g_something_with_locked_cache_2(void * param_1, uint param_2, uint param_3);
     void memcpy2(void * dest, void * src, size_t count);
     int * __va_arg(char * param_1, int param_2);
@@ -7751,8 +7962,8 @@ extern "C" {
     void event_freeze(EventID  event_id);
     void event_restart(EventID  event_id);
     void dest_all_events(void);
-    void g_draw_3d(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void draw_mode(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void g_draw_3d(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void draw_mode(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void draw_mode_adv(void);
     void g_draw_world(void);
     void g_set_clear_color(void);
@@ -7908,6 +8119,7 @@ extern "C" {
     undefined4 g_get_maybe_something_with_lights(void);
     void g_push_light_group(void);
     void g_pop_light_group(void);
+    void g_smth_with_avdisp_globals(double param_1, double param_2, double param_3);
     void g_something_with_gx_modes_and_compare(void);
     void gx_finish_frame_and_reset_z_and_alpha_compare_modes(void);
     void g_something_with_graphics_processor2(void);
@@ -7930,7 +8142,7 @@ extern "C" {
     void g_something_with_goals_and_ball(struct Ball * ball, int goal_idx, int ig_idx, undefined param_4);
     BOOL32 did_ball_fallout(struct Ball * ball);
     void g_something_playing_soundeffects(struct Ball * ball);
-    void g_something_with_init_common(void);
+    void g_load_init_common(void);
     void g_load_minigame_gma_tpl(int param_1);
     void g_something_with_loading_wl_tpls(int world_number);
     void g_load_efcmdl_gmatpl(void);
@@ -7943,6 +8155,7 @@ extern "C" {
     TplBuffer * load_bmp(char * filepath);
     void g_something_with_bmp_bmp_com(int g_idx);
     void g_something_with_freeing_memory(int param_1);
+    void free_nl2ngc_tpl_buf_to_heap(struct TplBuffer * param_1);
     void g_zero_some_sprite_related_state(void);
     void draw_ui(void);
     void g_draw_sprite_requests_from_buffer(void);
@@ -8078,7 +8291,10 @@ extern "C" {
     int pool_alloc(struct PoolInfo * tlm, u8 status);
     void pool_clear(struct PoolInfo * info);
     void g_set_some_draw_values(float param_1, float param_2, float param_3);
-    void g_something_with_some_sort_of_lzs(undefined4 param_1, undefined4 param_2, char * p_lz_path, char * lz_path);
+    void nl2ngc(struct NlBuffer * * out_nl_buffer, undefined4 out_tpl_buffer, char * p_lz_path, char * lz_path);
+    undefined4 g_nl2ngc_gma_func(struct NlBuffer * nl_buf);
+    void g_nl2ngc_tpl_func(struct NlBuffer * param_1, struct TplBuffer * param_2);
+    void g_smth_with_some_nl_model_buffer(struct GmaModel * param_1);
     void empty_function(void);
     void g_ape_upright(struct Ape * ball);
     void g_move_ape_into_ball(struct Ape * ape);
@@ -8158,7 +8374,7 @@ extern "C" {
     double g_advance_itemgroup_anim_frame(struct Itemgroup * itemgroup, struct StagedefColiHeader * colis_header);
     void g_advance_stage_animation(void);
     void g_transform_some_itemgroup_vec(void);
-    GmaModelHeader * get_GmaBuffer_entry(struct GmaBuffer * buffer, char * name);
+    GmaModel * get_GmaBuffer_entry(struct GmaBuffer * buffer, char * name);
     void g_something_with_stgname3(void);
     void init_itemgroups(void);
     void empty_function(void);
@@ -8199,7 +8415,7 @@ extern "C" {
     int g_something_with_shadow_cast(void);
     void g_something_with_stgname(int locale_index);
     undefined4 g_read_stage_names_from_name_list_file(s32 stgname_dvd_entrynum);
-    void g_queue_stage_name_load(void);
+    bool g_queue_stage_name_load(void);
     char * g_read_stage_name_from_file(int stage_id, char * stage_name_buf, int param_3);
     void load_stage_models(void);
     void init_seesaws(void);
@@ -8255,7 +8471,7 @@ extern "C" {
     void effect_paperfrag_disp(int param_1);
     void effect_paperfrag_dest(struct Effect * effect);
     void effect_get_banana_init(struct Effect * effect);
-    void effect_get_banana_tick(int param_1);
+    void effect_get_banana_tick(struct Effect * effect);
     void effect_get_banana_disp(int param_1);
     void effect_get_banana_dest(struct Effect * effect);
     void effect_particle_init_coli(int param_1);
@@ -8560,7 +8776,7 @@ extern "C" {
     void clear_cm_player_progress(void);
     void update_course_progress(void);
     void g_something_with_cm_player_progress(void);
-    void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_save_cm_unlock_entries(void);
     void g_load_cm_unlock_entries(void);
     int get_world_beaten_stage_count(int world);
@@ -8591,7 +8807,7 @@ extern "C" {
     void item_coin_dest(void);
     void item_coin_replay_init(struct Item * item);
     void item_debug_coin(struct Item * item);
-    GmaModelHeader * g_something_with_coins(int * * param_1);
+    GmaModel * g_something_with_coins(int * * param_1);
     void event_stobj_collision_init(void);
     void event_stobj_collision_tick(void);
     void event_stobj_collision_dest(void);
@@ -8678,31 +8894,37 @@ extern "C" {
     void destroy_sprite_with_unique_id(SpriteUniqueID  unique_id);
     void dest_all_sprites(void);
     Sprite * get_sprite_with_unique_id(SpriteUniqueID  unique_id);
-    void init_global_font_sprite_vars_with_defaults(void);
-    void set_global_font_sprite_type(Font32  font_type);
-    void g_set_global_font_sprite_mult_color(uint param_1);
-    void set_global_font_sprite_add_color(undefined4 param_1);
-    void set_global_font_sprite_rot_z(undefined2 param_1);
-    void set_global_font_sprite_depth(float param_1);
-    void set_global_font_sprite_scale(float width, float height);
-    void set_global_font_sprite_alpha(double alpha);
-    void set_global_font_sprite_flags(uint param_1);
-    void set_global_font_sprite_alignment(SpriteAlignment  alignment);
-    void set_global_font_sprite_drop_shadow_flag(void);
-    void g_set_some_global_font_sprite_flag_2(void);
-    void g_set_some_global_font_sprite_flag(void);
-    void g_set_global_font_style(FontStyle  style);
-    void set_global_font_spacing(double x, double y);
-    void g_set_global_font_sprite_counter(undefined2 param_1);
-    void set_global_font_sprite_pos(float x, float y);
-    void draw_text_sprite_string(byte * string);
-    void g_printf_draw_with_font(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, char * g_format, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void textdraw_reset(void);
+    void textdraw_set_font(Font32  font_type);
+    void textdraw_set_mul_color(uint param_1);
+    void textdraw_set_add_color(undefined4 param_1);
+    void textdraw_set_rot_z(undefined2 param_1);
+    void textdraw_set_depth(float param_1);
+    void textdraw_set_scale(float width, float height);
+    void textdraw_set_alpha(double alpha);
+    void textdraw_set_flags(uint param_1);
+    void textdraw_clear_flags(uint param_1);
+    void textdraw_set_alignment(SpriteAlignment  alignment);
+    void g_textdraw_set_unk2_unk3_unk4(double param_1, undefined2 param_2, undefined2 param_3);
+    void textdraw_set_drop_shadow(void);
+    void g_textdraw_clear_unk_flag2(void);
+    void g_textdraw_set_unk_flag3(void);
+    void g_textdraw_clear_unk_flag3(void);
+    void g_textdraw_set_unk6(double param_1);
+    void g_textdraw_set_unk7(undefined4 param_1);
+    void textdraw_set_font_style(FontStyle  style);
+    void textdraw_set_spacing(double x, double y);
+    void g_textdraw_set_counter(undefined2 param_1);
+    void g_textdraw_set_smth_with_pos(double param_1, double param_2);
+    void textdraw_set_pos(float x, float y);
+    void textdraw_print(char * string);
+    void textdraw_printf(char * format, ...);
     void draw_text_sprite(struct Sprite * sprite);
     void draw_bmp_sprite(struct Sprite * sprite);
     void draw_texture_sprite(struct Sprite * sprite);
     void g_draw_text_sprite_string_within_width(double width, byte * string);
     void g_some_printf_function_3(double param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void g_get_string_sprite_width_2(int param_1);
+    void g_get_string_sprite_width_2(byte * param_1);
     void g_call_call_smth_with_fonts_chara_load_w_defaults(byte * param_1);
     void g_call_get_string_sprite_width(byte * string);
     void g_smth_with_screen_fading(void);
@@ -8818,8 +9040,9 @@ extern "C" {
     void toggle_minimap_zoom(void);
     void g_draw_minimap(void);
     void g_smth_with_rendefc_reflective_height(double height);
+    OrdTblNode * ord_tbl_get_entry_for_pos(struct Vec * pos);
     void g_some_perf_timer_function(void);
-    int g_maybe_req_model_to_be_drawn(uint param_1);
+    void * ord_tbl_alloc_node(u32 size);
     void g_replay_screen_stage_name(void);
     void empty_function(void);
     void set_global_ape_LOD_1(void);
@@ -8854,6 +9077,7 @@ extern "C" {
     int g_get_debug_level_select_loading_left_asterisks(void);
     undefined4 g_swapDiscQueueGroup(undefined4 newValue);
     void g_fill_some_memory_with_0x0_and_0xff(void * ptr);
+    void g_some_shadow_draw_func(int * param_1);
     undefined4 g_check_some_condition(ushort param_1);
     void debug_draw_shadow_textures(void);
     void md_mini_func(void);
@@ -8930,7 +9154,7 @@ extern "C" {
     void event_name_entry_init(void);
     void event_name_entry_tick(void);
     void event_name_entry_dest(void);
-    void g_something_with_name_entry(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8);
+    void g_something_with_name_entry(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_smb1_ranking_main_game_defaults(void);
     void empty_function(void);
     void effect_nameent_code_init(int param_1);
@@ -8963,17 +9187,20 @@ extern "C" {
     void effect_ending_ballfrag_dest(struct Effect * effect);
     void g_init_something_with_heaps(void);
     void g_free_some_memory2(void);
-    void g_something_w_drawing_bgs_and_stobjs(struct GmaModelHeader * gma_model);
-    void g_another_draw_func(struct GmaModelHeader * gma_model);
-    void g_draw_non_translucid_gma_model(struct GmaModelHeader * gma_model);
-    void g_unk_draw_func3(struct GmaModelHeader * gma_model);
-    void g_smth_important_related_to_drawing(struct GmaModelHeader * gma_model);
-    void g_smth_with_effect_drawing(struct GmaModelHeader * gma_model);
-    void g_related_to_drawing_transparent_things(int param_1);
+    void avdisp_draw_model_unculled_sort_auto(struct GmaModel * model);
+    void avdisp_draw_model_culled_sort_auto(struct GmaModel * model);
+    void avdisp_draw_model_unculled_sort_never(struct GmaModel * gma_model);
+    void avdisp_draw_model_culled_sort_never(struct GmaModel * model);
+    void avdisp_draw_model_unculled_sort_always(struct GmaModel * model);
+    void avdisp_draw_model_culled_sort_always(struct GmaModel * gma_model);
+    void g_some_ord_node_func1(int param_1);
+    void g_some_ord_node_func2(int param_1);
+    void call_g_avdisp_set_ambient(double param_1, double param_2, double param_3);
     undefined4 g_something_with_texture_scroll_2(int param_1);
     void g_stores_doubles(double param_1, double param_2, double param_3, double param_4);
     void g_stores_doubles2(double param_1, double param_2, double param_3, double param_4);
     void g_yet_another_unk_draw_func(undefined4 param_1);
+    void g_avdisp_reset_alpha_and_bound_sphere_scale(void);
     DVDFileInfo * g_get_some_dvd_file_info2(void);
     void empty_function(void);
     void * alloc_from_current_heap(u32 size);
@@ -9044,7 +9271,7 @@ extern "C" {
     void g_nameentry2_init(void);
     void ape_assignment(void);
     void sprite_rank_tick(void);
-    void sprite_rank_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8);
+    void sprite_rank_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_name_entry_get_course(int param_1);
     void g_some_ape_anim_func1(struct Ape * ape);
     void set_ape_anim(struct Ape * ape, undefined animationType);
@@ -9184,6 +9411,7 @@ extern "C" {
     undefined4 get_storymode_score(void);
     void set_storymode_score(int value);
     undefined4 get_storymode_banana_count(void);
+    void set_storymode_bananas(int banana_count);
     void g_preload_ape_model_for_stageselect(void);
     void g_save_storymode_progress(void * param_1);
     int g_is_timer_30s_or_60s_current_stage(void);
@@ -9274,7 +9502,7 @@ extern "C" {
     void g_menu_main_handler(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_menu_party_mode_handler(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void switch_mode_to_smd_adv_title_reinit(void);
-    void g_something_with_menus2(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, int * param_11, MenuScreenID  * param_12, u8 * param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void g_something_with_menus2(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int * param_11, MenuScreenID  * param_12, u8 * param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_something_with_menus3(void);
     void g_on_main_menu_pressed(void);
     void g_something_with_menus4(void);
@@ -9297,7 +9525,7 @@ extern "C" {
     void sprite_game_settings_tick(u8 * status, struct Sprite * sprite);
     void sprite_game_settings_disp(struct Sprite * param_1);
     void sprite_practice_stage_select_tick(u8 * status, struct Sprite * sprite);
-    void sprite_practice_stage_select_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void sprite_practice_stage_select_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void sprite_fight_stage_select_tick(u8 * status, struct Sprite * sprite);
     void sprite_fight_stage_select_disp(struct Sprite * param_1);
     void sprite_button_tick(u8 * status, struct Sprite * sprite);
@@ -9342,7 +9570,7 @@ extern "C" {
     void smd_test_input_main(void);
     void smd_test_sound_init(void);
     void smd_test_sound_main(void);
-    void g_draw_debug_mode_sound_screen(undefined8 param_1, undefined8 param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, int param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void g_draw_debug_mode_sound_screen(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_test_adx_init(void);
     void smd_test_adx_main(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, uint * param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_test_blur_init(void);
