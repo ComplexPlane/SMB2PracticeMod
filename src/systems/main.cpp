@@ -23,6 +23,8 @@
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
+#include "mods/moon.h"
+#include "mods/ilbattle.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
@@ -101,11 +103,12 @@ void init() {
         timer::disp();
         iw::disp();
         Tetris::get_instance().disp();
-        scratch::disp();
+        ilbattle::disp();
         cmseg::disp();
         inputdisp::disp();
         menu_impl::disp();
         draw::disp();
+        scratch::disp();
 
         s_draw_debug_text_tramp.dest();
     });
@@ -129,6 +132,8 @@ void init() {
         marathon::tick();
         ballcolor::tick();
         freecam::tick();
+        moon::tick();
+        ilbattle::tick();
         scratch::tick();
     });
 
