@@ -92,7 +92,7 @@ static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 static Widget s_il_battle_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Il Battle Display", pref::get_il_battle_display, pref::set_il_battle_display},
+        .checkbox = {"IL Battle Display", pref::get_il_battle_display, pref::set_il_battle_display},
     },
     {
         .type = WidgetType::Choose,
@@ -109,7 +109,7 @@ static Widget s_il_battle_widgets[] = {
         .checkbox = {"Score Breakdown Info", pref::get_il_battle_breakdown,
                      pref::set_il_battle_breakdown},
     },
-    {.type = WidgetType::Text, .text = {"Dpad-Down then Retry to start a new battle"}},
+    {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
 };
 
 static Widget s_rumble_widgets[] = {
