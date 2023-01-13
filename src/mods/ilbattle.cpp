@@ -22,6 +22,8 @@ static constexpr s32 Y = 48;
 static u32 s_battle_frames = 0;
 static u32 s_best_frames = 0;
 static u32 s_best_score = 0;
+static u32 s_best_score_bananas = 0;
+static u32 s_best_score_frames = 0;
 static constexpr u32 SECOND_FRAMES = 60;
 static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
@@ -39,12 +41,22 @@ static void battle_display(mkb::GXColor color) {
     u32 best_seconds = s_best_frames / SECOND_FRAMES;
     u32 best_centiseconds = (s_best_frames % SECOND_FRAMES) * 100 / 60;
 
+    u32 best_score_seconds = s_best_score_frames / SECOND_FRAMES;
+    u32 best_score_centiseconds = (s_best_score_frames % SECOND_FRAMES) * 100 / 60;
+
     draw::debug_text(X - 12 * CWIDTH, Y, color, "ELAPSED:");
     draw::debug_text(X, Y, color, "%02d:%02d", battle_minutes, battle_seconds); 
     draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, color, "BEST TIME:");
     draw::debug_text(X, Y + CHEIGHT, color, "%d.%02d", best_seconds, best_centiseconds);
     draw::debug_text(X - 12 * CWIDTH, Y + 2 * CHEIGHT, color, "BEST SCORE:");
     draw::debug_text(X, Y + 2 * CHEIGHT, color, "%d", s_best_score);
+    if(pref::get_il_battle_breakdown()){
+        draw::debug_text(X - 12 * CWIDTH, Y + 3 * CHEIGHT, draw::GOLD, "SCORE BREAKDOWN");
+        draw::debug_text(X - 12 * CWIDTH, Y + 4 * CHEIGHT, color, "BANANAS:");
+        draw::debug_text(X, Y + 4 * CHEIGHT, color, "%d", s_best_score_bananas);
+        draw::debug_text(X - 12 * CWIDTH, Y + 5 * CHEIGHT, color, "TIMER:");
+        draw::debug_text(X, Y + 5 * CHEIGHT, color, "%d.%02d", best_score_seconds, best_score_centiseconds);
+    }
 }
 
 static u32 score_calc(u32 score) {
@@ -116,6 +128,8 @@ static void track_best() {
                                                                              // &
                                                                              // invalid pause test
             s_best_score = score_calc(current_score);
+            s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
+            s_best_score_frames = current_frames;
         }
     }
 }

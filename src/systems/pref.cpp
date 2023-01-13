@@ -38,6 +38,7 @@ enum class PrefId : u16 {
     Moon = 22,
     IlBattleDisplay = 23,
     IlBattleLength = 24,
+    IlBattleBreakdown = 25,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -61,6 +62,7 @@ enum class BoolPref {
     Marathon,
     Moon,
     IlBattleDisplay,
+    IlBattleBreakdown,
 };
 
 struct Pref {
@@ -113,6 +115,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Marathon,
     PrefId::Moon,
     PrefId::IlBattleDisplay,
+    PrefId::IlBattleBreakdown,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -179,6 +182,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Moon;
         case PrefId::IlBattleDisplay:
             return BoolPref::IlBattleDisplay;
+        case PrefId::IlBattleBreakdown:
+            return BoolPref::IlBattleBreakdown;
         default:
             return {};
     }
@@ -340,6 +345,8 @@ bool get_moon() { return get_bool_pref(BoolPref::Moon); }
 void set_moon(bool on) { set_bool_pref(BoolPref::Moon, on); }
 bool get_il_battle_display() { return get_bool_pref(BoolPref::IlBattleDisplay); }
 void set_il_battle_display(bool on) { set_bool_pref(BoolPref::IlBattleDisplay, on); }
+bool get_il_battle_breakdown() { return get_bool_pref(BoolPref::IlBattleBreakdown); }
+void set_il_battle_breakdown(bool on) { set_bool_pref(BoolPref::IlBattleBreakdown, on); }
 bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
 void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
 bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }

@@ -102,6 +102,11 @@ static Widget s_il_battle_widgets[] = {
             .set = [](u32 color) { pref::set_il_battle_length(static_cast<u8>(color)); },
         },
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"Score Breakdown Info", pref::get_il_battle_breakdown,
+                     pref::set_il_battle_breakdown},
+    },
     {.type = WidgetType::Text, .text = {"Dpad-Down then Retry to start a new battle"}},
 };
 
