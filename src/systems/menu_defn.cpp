@@ -4,9 +4,9 @@
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
 #include "mods/gotostory.h"
+#include "mods/ilbattle.h"
 #include "mods/inputdisp.h"
 #include "mods/jump.h"
-#include "mods/ilbattle.h"
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
@@ -82,15 +82,17 @@ static Widget s_ball_color_widgets[] = {
 };
 
 static const char* s_il_battle_lengths[] = {
-    "5 min", "7 min", "10 min", "Endless",
+    "5 min",
+    "7 min",
+    "10 min",
+    "Endless",
 };
 static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 
 static Widget s_il_battle_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Il Battle Display", pref::get_il_battle_display,
-                     pref::set_il_battle_display},
+        .checkbox = {"Il Battle Display", pref::get_il_battle_display, pref::set_il_battle_display},
     },
     {
         .type = WidgetType::Choose,

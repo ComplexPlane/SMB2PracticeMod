@@ -10,4 +10,4 @@ void tick();
 void disp();
 void new_battle();
 
-} // namespace ilbattle
+}  // namespace ilbattle
