@@ -3221,6 +3221,13 @@ enum {
 };
 typedef undefined2 PlaybackState;
 
+enum { /* Options for rendering text with font */
+    TEXTDRAW_FLAG_BORDER=536870912,
+    TEXTDRAW_FLAG_DROP_SHADOW=1073741824,
+    TEXTDRAW_FLAG_PROPORTIONAL=2147483648
+};
+typedef undefined4 TextDrawFlags;
+
 typedef void _IO_lock_t;
 
 typedef struct _IO_marker _IO_marker, *P_IO_marker;
@@ -5946,12 +5953,12 @@ extern "C" {
     extern float textdraw_width;
     extern float textdraw_height;
     extern undefined4 textdraw_alpha;
-    extern undefined4 textdraw_flags;
+    extern TextDrawFlags  textdraw_flags;
     extern undefined1 textdraw_alignment;
     extern undefined2 g_textdraw_smth_with_letter_spacing_and_alignment;
-    extern undefined2 g_textdraw_unk2;
-    extern undefined2 g_textdraw_unk3;
-    extern undefined4 g_textdraw_unk4;
+    extern undefined2 textdraw_drop_shadow_offset_x;
+    extern undefined2 textdraw_drop_shadow_offset_y;
+    extern float textdraw_shadow_alpha;
     extern undefined4 g_textdraw_unk5;
     extern undefined4 g_textdraw_unk6;
     extern undefined4 g_textdraw_unk7;
@@ -8905,15 +8912,15 @@ extern "C" {
     void textdraw_set_flags(uint param_1);
     void textdraw_clear_flags(uint param_1);
     void textdraw_set_alignment(SpriteAlignment  alignment);
-    void g_textdraw_set_unk2_unk3_unk4(double param_1, undefined2 param_2, undefined2 param_3);
+    void textdraw_set_drop_shadow_with_params(float alpha, s16 offset_x, s16 offset_y);
     void textdraw_set_drop_shadow(void);
-    void g_textdraw_clear_unk_flag2(void);
-    void g_textdraw_set_unk_flag3(void);
-    void g_textdraw_clear_unk_flag3(void);
+    void textdraw_unset_drop_shadow(void);
+    void textdraw_set_border(void);
+    void textdraw_unset_border(void);
     void g_textdraw_set_unk6(double param_1);
     void g_textdraw_set_unk7(undefined4 param_1);
     void textdraw_set_font_style(FontStyle  style);
-    void textdraw_set_spacing(double x, double y);
+    void textdraw_set_spacing(float x, float y);
     void g_textdraw_set_counter(undefined2 param_1);
     void g_textdraw_set_smth_with_pos(double param_1, double param_2);
     void textdraw_set_pos(float x, float y);
