@@ -45,6 +45,7 @@ s32 get_cstick_dir(bool priority = false);
 bool dir_down(Dir dir, bool priority = false);     // Only works for cardinal directions
 bool dir_pressed(Dir dir, bool priority = false);  // Only works for cardinal directions
 bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal directions
+void reset_dir_repeat();
 bool konami_pressed();
 
 }  // namespace pad

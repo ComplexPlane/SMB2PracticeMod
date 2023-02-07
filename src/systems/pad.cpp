@@ -213,6 +213,10 @@ bool dir_repeat(Dir dir, bool priority) {
     return t == 1 || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
+void reset_dir_repeat() {
+    mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
+}
+
 bool konami_pressed() { return s_konami_progress == 11; }
 
 void set_exclusive_mode(bool enabled) { s_exclusive_mode_request = enabled; }

@@ -81,6 +81,7 @@ static void handle_widget_bind() {
     } else if (selected->type == WidgetType::Menu && a_pressed) {
         push_menu(&selected->menu);
         s_cursor_frame = 0;
+        pad::reset_dir_repeat();
     } else if (selected->type == WidgetType::Choose) {
         auto& choose = selected->choose;
         if (a_pressed) {
@@ -105,11 +106,16 @@ void tick() {
     if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
         pop_menu();
         s_cursor_frame = 0;
+        pad::reset_dir_repeat();
     } else {
         toggle = pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true);
         s_visible ^= toggle;
     }
     bool just_opened = s_visible && toggle;
+    if (just_opened) {
+        pad::reset_dir_repeat();
+        s_cursor_frame = 0;
+    }
 
     pad::set_exclusive_mode(s_visible);
 
