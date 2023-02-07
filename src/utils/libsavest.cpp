@@ -21,6 +21,8 @@ enum Flags {
 };
 
 static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
+static patch::Tramp<decltype(&mkb::call_SoundReqID_arg_0)> s_call_SoundReqID_arg_0_tramp;
+static bool s_state_loaded_this_frame = false;
 
 void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
@@ -33,6 +35,14 @@ void init() {
                 s_set_minimap_mode_tramp.dest(mode);
             }
         });
+
+    // Prevent sound effects from playing while loading states
+    patch::hook_function(s_call_SoundReqID_arg_0_tramp, mkb::call_SoundReqID_arg_0,
+                         [](u32 g_sfx_idx) {
+                             if (!s_state_loaded_this_frame) {
+                                 s_call_SoundReqID_arg_0_tramp.dest(g_sfx_idx);
+                             }
+                         });
 }
 
 // For all memory regions that involve just saving/loading to the same region...
@@ -49,9 +59,11 @@ void SaveState::pass_over_regions() {
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
-    mkb::Ape *ape = mkb::balls[0].ape;
+    mkb::Ape* ape = mkb::balls[0].ape;
     m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
-    m_store.do_region(ape->g_some_ape_state->g_buf5, 0x100); // The full size of this buffer is ~10kb, but hopefully this is all we need
+    m_store.do_region(
+        ape->g_some_ape_state->g_buf5,
+        0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
 
     // Itemgroups
     m_store.do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
@@ -300,10 +312,12 @@ SaveState::LoadResult SaveState::load() {
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 
+    s_state_loaded_this_frame = true;
     return LoadResult::Ok;
 }
 
 void SaveState::tick() {
+    s_state_loaded_this_frame = false;
     if (m_flags & FLAG_RELOAD_STATE) {
         load();  // Ignore result, spooky!
     }
