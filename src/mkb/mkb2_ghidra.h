@@ -977,10 +977,17 @@ struct SKLRoot {
 static_assert(sizeof(SKLRoot) == 0x174);
 
 struct SomeApeState {
-    undefined field_0x0[0x2c];
+    u8 g_chara_idx;
+    undefined field_0x1[0x7];
+    void * g_buf5;
+    undefined field_0xc[0x10];
+    struct ArcFileInfo * g_arc;
+    undefined field_0x20[0x8];
+    void * g_buf3;
     void * g_buf1;
     void * g_buf2;
-    undefined field_0x34[0x2c];
+    void * g_buf4;
+    undefined field_0x38[0x28];
 } __attribute__((__packed__));
 static_assert(sizeof(SomeApeState) == 0x60);
 
@@ -1067,7 +1074,7 @@ struct GApeAnim { /* Unknown length -Crafted */
 static_assert(sizeof(GApeAnim) == 0x28);
 
 struct Ape {
-    struct SomeApeState * g_maybe_sk;
+    struct SomeApeState * g_some_ape_state;
     struct Mal * common_mal; /* Was originally ushort -Crafted */
     void * game_mal; /* It's not, a lot of these labels were confusingly wrong?? - bomb Is this even a float? -Crafted */
     struct SKLRoot * frame_ptr;
@@ -9260,6 +9267,7 @@ extern "C" {
     void gan_setanim_edance(undefined4 param_1, undefined param_2, uint param_3, uint param_4, uint param_5);
     void g_init_floatthing(struct gFloats * param_1);
     void gan_incframe(double g_speed, struct Ape * ape);
+    void g_set_more_ape_state(undefined2 * param_1, undefined2 * param_2);
     void g_smth_with_quat_slerp(ushort * param_1);
     void g_something_arc(struct ArcFileInfo * fileInfo);
     uint g_table_index(struct SKLRoot * param1, char * str);
@@ -9303,7 +9311,10 @@ extern "C" {
     SomeApeState * g_get_structure_from_ape_common_mal_struct(struct Mal * common_mal);
     void g_something_freeing_heap_3(void * param_1);
     int g_get_ape_flag(struct Ape * ape, undefined4 g_something_with_game, int param_3);
+    undefined4 g_alloc_some_ape_state_0x8(struct SomeApeState * g_some_ape_state, int chara_idx);
     void gan_setanim_e4(struct Ape * ape);
+    void g_set_ape_dance_state1(int param_1, int param_2, undefined2 param_3, int param_4, undefined4 param_5, undefined4 param_6, int param_7);
+    void g_set_ape_dance_state2(struct SomeApeState * g_some_ape_state, uint param_2, uint param_3, int param_4, int param_5, undefined4 param_6, undefined4 param_7, int param_8);
     void gan_setAnim2(struct Ape * ape, int param_2, short * param_3);
     int g_some_ape_anim_func2(int param_1, int param_2, undefined4 param_3, undefined4 param_4, int param_5);
     void g_set_ape_stuff_in_chara_heap(undefined2 * param_1, undefined2 * param_2);
