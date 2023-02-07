@@ -47,8 +47,14 @@ void SaveState::pass_over_regions() {
     m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     m_store.do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
-    m_store.do_region(mkb::balls[0].ape,
-                      sizeof(*mkb::balls[0].ape));  // Store entire ape struct for now
+
+    // Ape state (goal is to only save stuff that affects physics)
+    mkb::Ape *ape = mkb::balls[0].ape;
+    m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
+    m_store.do_region(ape->g_maybe_sk, sizeof(*ape->g_maybe_sk)); // Another ape region, see 0x80384f30
+    u32 some_ape_buf_size = mkb::OSRoundUp32B(ape->common_mal->g_some_count * 0x10);
+    m_store.do_region(ape->g_maybe_sk->g_buf1, some_ape_buf_size);
+    m_store.do_region(ape->g_maybe_sk->g_buf2, some_ape_buf_size);
 
     // Itemgroups
     m_store.do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
