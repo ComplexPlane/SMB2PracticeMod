@@ -22,11 +22,6 @@ enum Flags {
 
 static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
 
-static u32 get_heap_chunk_size(void* allocated_ptr) {
-    mkb::ChunkInfo *chunk = reinterpret_cast<mkb::ChunkInfo*>(reinterpret_cast<u32>(allocated_ptr) - 0x20);
-    return chunk->size;
-}
-
 void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
