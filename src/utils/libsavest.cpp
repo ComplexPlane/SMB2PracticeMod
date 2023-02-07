@@ -56,7 +56,7 @@ void SaveState::pass_over_regions() {
     // Ape state (goal is to only save stuff that affects physics)
     mkb::Ape *ape = mkb::balls[0].ape;
     m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
-    m_store.do_region(ape->g_some_ape_state->g_buf5, get_heap_chunk_size(ape->g_some_ape_state->g_buf5));
+    m_store.do_region(ape->g_some_ape_state->g_buf5, 0x100); // The full size of this buffer is ~10kb, but hopefully this is all we need
 
     // Itemgroups
     m_store.do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
