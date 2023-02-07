@@ -25,35 +25,35 @@ static u32 s_seg_time;
 
 static patch::Tramp<decltype(&mkb::g_reset_cm_course)> s_reset_cm_course_tramp;
 
-static mkb::CmEntry* s_overwritten_entry;
-static mkb::CmEntryType s_overwritten_entry_type;
+static mkb::CourseCommand* s_overwritten_entry;
+static mkb::CourseCommandOpcode s_overwritten_entry_type;
 static s8 s_overwritten_starting_monkeys;
 
 static u32 s_pbs[13];
 
-// static void debug_print_course(mkb::CmEntry *course, u32 entry_count)
+// static void debug_print_course(mkb::CourseCommand *course, u32 entry_count)
 //{
-//     static const char *type_strs[] = {"CMET_IF", "CMET_THEN", "CMET_INFO", "CMET_END"};
+//     static const char *type_strs[] = {"COURSE_CMD_IF", "COURSE_CMD_THEN", "COURSE_CMD_INFO", "COURSE_CMD_END"};
 //
 //     mkb::OSReport("Course entry count: %d\n", entry_count);
 //     for (u32 i = 0; i < entry_count; i++)
 //     {
-//         mkb::CmEntry &entry = course[i];
-//         mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.type], entry.arg, entry.value);
+//         mkb::CourseCommand &entry = course[i];
+//         mkb::OSReport("%s: n = %d, v = %d\n", type_strs[entry.opcode], entry.arg, entry.value);
 //     }
 //     mkb::OSReport("\n");
 // }
 
 /**
- * Create a new course in an existing one by inserting a CMET_END entry
+ * Create a new course in an existing one by inserting a COURSE_CMD_END entry
  */
-static void gen_course(mkb::CmEntry* course, u32 start_course_stage_num, u32 stage_count) {
+static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u32 stage_count) {
     s32 start_entry_idx = -1;
     s32 end_entry_idx = -1;
 
     u32 curr_stage_count = 0;
     for (s32 i = 0;; i++) {
-        if (course[i].type == mkb::CMET_INFO && course[i].arg == 0) {
+        if (course[i].opcode == mkb::COURSE_CMD_INFO && course[i].type == 0) {
             curr_stage_count++;
             if (curr_stage_count == start_course_stage_num) {
                 start_entry_idx = i;
@@ -61,10 +61,10 @@ static void gen_course(mkb::CmEntry* course, u32 start_course_stage_num, u32 sta
                 end_entry_idx = i;
                 break;
             }
-        } else if (course[i].type == mkb::CMET_END) {
+        } else if (course[i].opcode == mkb::COURSE_CMD_END) {
             if (curr_stage_count == start_course_stage_num + stage_count - 1) {
                 end_entry_idx =
-                    i;  // This CmEntry is one past the end - we tack on a CMET_END entry ourselves
+                    i;  // This CourseCommand is one past the end - we tack on a COURSE_CMD_END entry ourselves
             }
             break;
         }
@@ -76,8 +76,8 @@ static void gen_course(mkb::CmEntry* course, u32 start_course_stage_num, u32 sta
 
     // Write new course end marker
     s_overwritten_entry = &course[end_entry_idx];
-    s_overwritten_entry_type = course[end_entry_idx].type;
-    course[end_entry_idx].type = mkb::CMET_END;
+    s_overwritten_entry_type = course[end_entry_idx].opcode;
+    course[end_entry_idx].opcode = mkb::COURSE_CMD_END;
 
     s16 first_stage_id = static_cast<s16>(course[start_entry_idx].value);
     mkb::mode_info.cm_course_stage_num = start_course_stage_num;
@@ -156,7 +156,7 @@ static void state_seg_active() {
     }
 
     // Nuke "Final Stage" sprite
-    if (s_overwritten_entry_type != mkb::CMET_END) {
+    if (s_overwritten_entry_type != mkb::COURSE_CMD_END) {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
             mkb::Sprite& sprite = mkb::sprites[i];
@@ -210,7 +210,7 @@ void state_seg_complete() {
 }
 
 void init_seg() {
-    mkb::CmEntry* course = nullptr;
+    mkb::CourseCommand* course = nullptr;
     u32 start_course_stage_num = 0;
     mkb::mode_flags &= ~(mkb::MF_G_PLAYING_MASTER_COURSE | mkb::MF_PLAYING_EXTRA_COURSE |
                          mkb::MF_PLAYING_MASTER_NOEX_COURSE | mkb::MF_PLAYING_MASTER_EX_COURSE);

@@ -22,6 +22,11 @@ enum Flags {
 
 static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
 
+static u32 get_heap_chunk_size(void* allocated_ptr) {
+    mkb::ChunkInfo *chunk = reinterpret_cast<mkb::ChunkInfo*>(reinterpret_cast<u32>(allocated_ptr) - 0x20);
+    return chunk->size;
+}
+
 void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
@@ -47,8 +52,11 @@ void SaveState::pass_over_regions() {
     m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     m_store.do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
-    m_store.do_region(mkb::balls[0].ape,
-                      sizeof(*mkb::balls[0].ape));  // Store entire ape struct for now
+
+    // Ape state (goal is to only save stuff that affects physics)
+    mkb::Ape *ape = mkb::balls[0].ape;
+    m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
+    m_store.do_region(ape->g_some_ape_state->g_buf5, 0x100); // The full size of this buffer is ~10kb, but hopefully this is all we need
 
     // Itemgroups
     m_store.do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);

@@ -68,31 +68,6 @@ enum { /* When we're in Master, current difficulty is still 0x2 */
 };
 typedef undefined4 Difficulty;
 
-typedef struct CmEntry CmEntry, *PCmEntry;
-
-enum { /* See cmEntryFormat.txt notes */
-    CMET_IF=0,
-    CMET_THEN=1,
-    CMET_INFO=2,
-    CMET_END=3
-};
-typedef undefined1 CmEntryType;
-
-typedef uchar u8;
-
-typedef uint uint32_t;
-
-typedef uint32_t u32;
-
-struct CmEntry { /* Challenge Mode Entry, see cmEntryFormat.txt by TwixNinja in notes for more info */
-    CmEntryType  type;
-    u8 arg;
-    undefined field2_0x2[2];
-    u32 value;
-    undefined field4_0x8[20];
-} __attribute__((__packed__));
-static_assert(sizeof(CmEntry) == 0x1c);
-
 enum {
     G_STORY_LEVEL_SELECT_NO_BACKGROUND=0,
     G_LAVA_NO_BACKGROUND=1,
@@ -340,6 +315,10 @@ static_assert(sizeof(GmaModel) == 0x40);
 typedef struct MenuScreen MenuScreen, *PMenuScreen;
 
 typedef struct MenuEntry MenuEntry, *PMenuEntry;
+
+typedef uint uint32_t;
+
+typedef uint32_t u32;
 
 enum {
     MODE_SELECT_MENU=0,
@@ -810,6 +789,8 @@ typedef undefined4 DipSwitch;
 
 typedef struct Replay Replay, *PReplay;
 
+typedef uchar u8;
+
 struct Replay { /* Unknown size atm */
     undefined field_0x0[0x4];
     u8 difficulty;
@@ -862,6 +843,10 @@ struct Replay { /* Unknown size atm */
 static_assert(sizeof(Replay) == 0xb8);
 
 typedef struct Ape Ape, *PApe;
+
+typedef struct SomeApeState SomeApeState, *PSomeApeState;
+
+typedef struct Mal Mal, *PMal;
 
 typedef struct SKLRoot SKLRoot, *PSKLRoot;
 
@@ -991,6 +976,21 @@ struct SKLRoot {
 } __attribute__((__packed__));
 static_assert(sizeof(SKLRoot) == 0x174);
 
+struct SomeApeState {
+    u8 g_chara_idx;
+    undefined field_0x1[0x7];
+    void * g_buf5;
+    undefined field_0xc[0x10];
+    struct ArcFileInfo * g_arc;
+    undefined field_0x20[0x8];
+    void * g_buf3;
+    void * g_buf1;
+    void * g_buf2;
+    void * g_buf4;
+    undefined field_0x38[0x28];
+} __attribute__((__packed__));
+static_assert(sizeof(SomeApeState) == 0x60);
+
 struct SKLBone {
     short parentNumber;
     short g_maybe_flag;
@@ -1074,8 +1074,8 @@ struct GApeAnim { /* Unknown length -Crafted */
 static_assert(sizeof(GApeAnim) == 0x28);
 
 struct Ape {
-    struct SKLRoot * g_maybe_sk;
-    void * common_mal; /* Was originally ushort -Crafted */
+    struct SomeApeState * g_some_ape_state;
+    struct Mal * common_mal; /* Was originally ushort -Crafted */
     void * game_mal; /* It's not, a lot of these labels were confusingly wrong?? - bomb Is this even a float? -Crafted */
     struct SKLRoot * frame_ptr;
     struct ArcFileInfo * arc_location;
@@ -1209,6 +1209,13 @@ struct Ape {
     float field221_0x2ec;
 } __attribute__((__packed__));
 static_assert(sizeof(Ape) == 0x2f0);
+
+struct Mal { /* Structure of common_mal ape animation files? Header size unknown atm */
+    undefined field_0x0[0x21];
+    u8 g_some_count;
+    undefined field_0x22[0xe];
+} __attribute__((__packed__));
+static_assert(sizeof(Mal) == 0x30);
 
 struct GmaModelEntry {
     struct GmaModel * model;
@@ -2038,6 +2045,25 @@ enum {
 };
 typedef undefined1 FontStyle;
 
+typedef struct CourseCommand CourseCommand, *PCourseCommand;
+
+enum { /* See cmEntryFormat.txt notes */
+    COURSE_CMD_IF=0,
+    COURSE_CMD_THEN=1,
+    COURSE_CMD_INFO=2,
+    COURSE_CMD_END=3
+};
+typedef undefined1 CourseCommandOpcode;
+
+struct CourseCommand { /* Challenge Mode Entry, see cmEntryFormat.txt by TwixNinja or SMB1 decompilation for more info */
+    CourseCommandOpcode  opcode;
+    u8 type;
+    undefined field2_0x2[2];
+    s32 value;
+    undefined field4_0x8[20];
+} __attribute__((__packed__));
+static_assert(sizeof(CourseCommand) == 0x1c);
+
 typedef struct RelBufferInfo RelBufferInfo, *PRelBufferInfo;
 
 struct RelBufferInfo {
@@ -2165,6 +2191,23 @@ struct Ball {
     undefined field_0x198[0x18];
 } __attribute__((__packed__));
 static_assert(sizeof(Ball) == 0x1b0);
+
+typedef struct SmWorldInfo SmWorldInfo, *PSmWorldInfo;
+
+typedef struct SmStageInfo SmStageInfo, *PSmStageInfo;
+
+struct SmWorldInfo {
+    s16 stage_count; /* Number of stages in world */
+    undefined field_0x2[0x2];
+    struct SmStageInfo * stages; /* List of infos for each stage in world */
+} __attribute__((__packed__));
+static_assert(sizeof(SmWorldInfo) == 0x8);
+
+struct SmStageInfo { /* A list of 10 of these is used to define a world */
+    s16 stage_id;
+    s16 difficulty;
+} __attribute__((__packed__));
+static_assert(sizeof(SmStageInfo) == 0x4);
 
 typedef struct Itemgroup Itemgroup, *PItemgroup;
 
@@ -3277,22 +3320,6 @@ struct _IO_FILE {
 static_assert(sizeof(_IO_FILE) == 0x74);
 
 typedef double f64;
-
-#define _M_IX86 500
-
-#define _USE_ATTRIBUTES_FOR_SAL 0
-
-#define _WIN32_WINNT 1024
-
-#define _USE_DECLSPECS_FOR_SAL 0
-
-#define _WIN32_WINDOWS 1024
-
-#define WINVER 1536
-
-#define _MSC_VER 9090
-
-#define _INTEGRAL_MAX_BITS 32
 
 typedef struct _IO_FILE __FILE;
 
@@ -5469,7 +5496,7 @@ extern "C" {
     extern float FLOAT0_2;
     extern float FLOAT480;
     extern float FLOAT640;
-    extern BgmTrack  g_bgm_id_lookup_table[42];
+    extern BgmTrack  g_bgm_id_lookup_table[43];
     extern struct GXColor debugtext_bg_color;
     extern float MAX_GX_FIFO_BUF_SIZE;
     extern float visual_ball_size;
@@ -5478,7 +5505,7 @@ extern "C" {
     extern float g_goal_post_vertical_offset;
     extern undefined8 g_itemgroup_anim_rate_post_dropin;
     extern float g_bg_animation_timescale;
-    extern undefined4 g_bonus_stage_list;
+    extern undefined4 bonus_stage_id_list;
     extern double jamabar_sensitivity;
     extern double jamabar_friction;
     extern double jamabar_lower_bound;
@@ -5536,6 +5563,7 @@ extern "C" {
     extern pointer switchdataD_803809d0;
     extern struct SpriteDrawRequest ui_sprite_draw_req;
     extern undefined4 monkey_flags;
+    extern undefined g_some_music_status_array;
     extern undefined * switchdataD_80391aa0;
     extern undefined * switchdataD_80391ad8;
     extern undefined * switchdataD_80391be8;
@@ -5590,18 +5618,27 @@ extern "C" {
     extern undefined * switchdataD_803a0864;
     extern pointer cm_entry_if_funcs;
     extern pointer cm_entry_then_funcs;
-    extern struct CmEntry beginner_noex_cm_entries[31];
-    extern struct CmEntry advanced_noex_cm_entries[120];
-    extern struct CmEntry expert_noex_cm_entries[208];
-    extern struct CmEntry beginner_ex_cm_entries[35];
-    extern struct CmEntry advanced_ex_cm_entries[32];
-    extern struct CmEntry expert_ex_cm_entries[42];
-    extern struct CmEntry master_noex_cm_entries[35];
-    extern struct CmEntry master_ex_cm_entries[50];
-    extern struct CmEntry g_cm_entry_list9[16];
-    extern undefined * cm_courses;
-    extern pointer g_some_cm_entry_table2;
-    extern undefined * g_some_cm_entry_table3;
+    extern struct CourseCommand beginner_noex_cm_entries[31];
+    extern struct CourseCommand advanced_noex_cm_entries[120];
+    extern struct CourseCommand expert_noex_cm_entries[208];
+    extern struct CourseCommand beginner_ex_cm_entries[35];
+    extern struct CourseCommand advanced_ex_cm_entries[32];
+    extern struct CourseCommand expert_ex_cm_entries[42];
+    extern struct CourseCommand master_noex_cm_entries[35];
+    extern struct CourseCommand master_ex_cm_entries[50];
+    extern struct CourseCommand g_cm_entry_list9[16];
+    extern struct CourseCommand * cm_courses[12];
+    extern struct SmStageInfo sm_stage_infos_world1[10];
+    extern struct SmStageInfo sm_stage_infos_world2[10];
+    extern struct SmStageInfo sm_stage_infos_world3[10];
+    extern struct SmStageInfo sm_stage_infos_world4[10];
+    extern struct SmStageInfo sm_stage_infos_world5[10];
+    extern struct SmStageInfo sm_stage_infos_world6[10];
+    extern struct SmStageInfo sm_stage_infos_world7[10];
+    extern struct SmStageInfo sm_stage_infos_world8[10];
+    extern struct SmStageInfo sm_stage_infos_world9[10];
+    extern struct SmStageInfo sm_stage_infos_world10[10];
+    extern struct SmWorldInfo sm_world_info[10];
     extern undefined * item_init_funcs;
     extern undefined * item_tick_funcs;
     extern undefined * item_disp_funcs;
@@ -5841,7 +5878,7 @@ extern "C" {
     extern undefined4 g_some_perf_timer16;
     extern undefined4 g_debug_sound_ram_usage;
     extern undefined4 g_debug_sound_aram_usage;
-    extern undefined2 g_active_music_tracks[10];
+    extern s16 g_active_music_tracks[10];
     extern undefined1 g_something_related_to_bgm_track_id;
     extern undefined1 g_some_music_related_counter;
     extern undefined4 current_bgm_volume;
@@ -5906,7 +5943,7 @@ extern "C" {
     extern s32 LOCALE_STGNAME_DVD_ENTRYNUMS[6];
     extern undefined4 g_current_stagename_dvd_entry_number;
     extern undefined4 stage_name_list_file_size;
-    extern undefined4 g_something_with_stgname4_maybe;
+    extern int stage_name_offsets[422];
     extern u8 g_some_32byte_lz_buffer[32];
     extern undefined4 g_some_replay_data4;
     extern undefined4 replay_frames_remaining;
@@ -5917,7 +5954,7 @@ extern "C" {
     extern struct Effect effects[512];
     extern Mtx g_related_to_texture_UV_map;
     extern undefined1 cm_unlock_entries[18];
-    extern struct CmEntry * current_cm_entry;
+    extern struct CourseCommand * current_cm_entry;
     extern int stage_jump_distance;
     extern BOOL32 in_practice_mode;
     extern undefined2 g_stage_id_in_practice_mode;
@@ -6101,6 +6138,8 @@ extern "C" {
     extern undefined * switchdataD_805437cc;
     extern undefined * switchdataD_80543840;
     extern undefined * switchdataD_80543868;
+    extern undefined4 scen_stgname_buffer;
+    extern undefined4 g_scen_stage_names_loaded;
     extern float some_ape_float;
     extern float some_ape_float2;
     extern undefined4 some_ape_float3;
@@ -7734,7 +7773,7 @@ extern "C" {
     void __sinit_AILoader_cpp(void);
     int sprintf(char * buffer, char * format, ...);
     s32 vsprintf(char * out_str, char * format_str, va_list args);
-    int vprintf(char * format, char * param_2);
+    int vprintf(char * format, va_list args);
     int printf(char * format, ...);
     void * __StringWrite(struct __OutStrCtrl * osc, char * Buffer, size_t NumChars);
     FILE * __FileWrite(FILE * File, char * Buffer, size_t NumChars);
@@ -8382,7 +8421,7 @@ extern "C" {
     void g_advance_stage_animation(void);
     void g_transform_some_itemgroup_vec(void);
     GmaModel * get_GmaBuffer_entry(struct GmaBuffer * buffer, char * name);
-    void g_something_with_stgname3(void);
+    void g_stgname_init(void);
     void init_itemgroups(void);
     void empty_function(void);
     void g_load_stage_2(u32 stage_id);
@@ -8420,10 +8459,12 @@ extern "C" {
     void g_init_shadows(void);
     void g_smth_with_viewstage_and_whs(void);
     int g_something_with_shadow_cast(void);
-    void g_something_with_stgname(int locale_index);
-    undefined4 g_read_stage_names_from_name_list_file(s32 stgname_dvd_entrynum);
+    void g_load_stgname_file(int locale_index);
+    undefined4 g_load_stgname_dvd_entrynum(s32 stgname_dvd_entrynum);
+    int g_get_storymode_stage_name_buf_size(void);
     bool g_queue_stage_name_load(void);
-    char * g_read_stage_name_from_file(int stage_id, char * stage_name_buf, int param_3);
+    undefined4 g_read_storymode_select_stage_names_from_dvd(int * param_1);
+    char * read_stage_name_from_dvd(int stage_id, char * out_stage_name, int out_stage_name_buf_size);
     void load_stage_models(void);
     void init_seesaws(void);
     void load_stagedef(u32 stage_id);
@@ -8765,17 +8806,17 @@ extern "C" {
     void event_course_init(void);
     void event_course_tick(void);
     void event_course_dest(void);
-    bool is_stage_complete(struct CmEntry * entry);
-    bool entered_goal_has_type(struct CmEntry * entry);
-    bool did_beat_stage_faster_than(struct CmEntry * entry);
-    void calc_stage_jump_distance(struct CmEntry * entry);
-    void clear_next_cm_stage_id2(struct CmEntry * entry);
-    void clear_next_cm_stage_id(struct CmEntry * entry);
-    s32 g_get_current_cm_stage_time_limit(void);
+    bool is_stage_complete(struct CourseCommand * entry);
+    bool entered_goal_has_type(struct CourseCommand * entry);
+    bool did_beat_stage_faster_than(struct CourseCommand * entry);
+    void calc_stage_jump_distance(struct CourseCommand * entry);
+    void clear_next_cm_stage_id2(struct CourseCommand * entry);
+    void clear_next_cm_stage_id(struct CourseCommand * entry);
+    s32 get_current_cm_stage_time_limit(void);
     u32 g_update_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
     int calc_course_idx(Difficulty  difficulty, ModeFlag  mode_flags);
     bool g_are_on_final_course_level(int difficulty_id, int course_stage, uint difficulty_flags);
-    undefined4 is_bonus_stage_being_played(int param_1);
+    bool is_bonus_stage(int stage_id);
     void g_something_with_cm_entries_practice_mode(void);
     undefined4 g_smth_with_cm_entries_in_main_menu(int param_1, int param_2, uint param_3);
     void empty_function(void);
@@ -8786,13 +8827,14 @@ extern "C" {
     void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_save_cm_unlock_entries(void);
     void g_load_cm_unlock_entries(void);
-    int get_world_beaten_stage_count(int world);
-    int g_lookup_storymode_stage_id(int world_idx, int world_stage_idx);
-    int g_get_storymode_stage_id(int world, int stage);
+    int get_world_stage_count(int world);
+    int get_world_unbeaten_stage_count(int world);
+    int get_story_mode_stage_id(int world_idx, int world_stage_idx);
+    int get_story_mode_stage_difficulty(int world, int stage);
     void clear_unlocked_storymode_stages(void);
     void g_save_storymode_unlock_entries(void);
     void g_load_storymode_unlock_entries(void);
-    int is_timer_30s_or_60s(int param_1, int param_2);
+    int get_storymode_stage_time_limit(int world, int world_stage);
     void event_item_init(void);
     void event_item_tick(void);
     void event_item_dest(void);
@@ -8914,9 +8956,9 @@ extern "C" {
     void textdraw_set_alignment(SpriteAlignment  alignment);
     void textdraw_set_drop_shadow_with_params(float alpha, s16 offset_x, s16 offset_y);
     void textdraw_set_drop_shadow(void);
-    void textdraw_unset_drop_shadow(void);
+    void textdraw_clear_drop_shadow(void);
     void textdraw_set_border(void);
-    void textdraw_unset_border(void);
+    void textdraw_clear_border(void);
     void g_textdraw_set_unk6(double param_1);
     void g_textdraw_set_unk7(undefined4 param_1);
     void textdraw_set_font_style(FontStyle  style);
@@ -8933,7 +8975,7 @@ extern "C" {
     void g_some_printf_function_3(double param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_get_string_sprite_width_2(byte * param_1);
     void g_call_call_smth_with_fonts_chara_load_w_defaults(byte * param_1);
-    void g_call_get_string_sprite_width(byte * string);
+    float g_call_get_string_sprite_width(char * str);
     void g_smth_with_screen_fading(void);
     void fade_screen_to_color(uint flags, u32 color, uint frames);
     undefined4 draw_sprite_draw_request(struct SpriteDrawRequest * request);
@@ -8944,9 +8986,9 @@ extern "C" {
     void g_smth_with_sprite_draw_request(struct SpriteDrawRequest * request);
     int g_get_tex_id(undefined4 param_1, ushort param_2, ushort * param_3, int param_4);
     void g_smth_with_font_drawing(byte * string);
-    double g_smth_with_fonts_chara_load(byte * string, int param_2, char param_3);
+    float g_smth_with_fonts_chara_load(byte * string, int param_2, char param_3);
     void g_call_smth_with_fonts_chara_load_w_defaults(byte * string);
-    double g_get_string_sprite_width(byte * string);
+    float g_get_string_sprite_width(char * string);
     void g_display_playpoint_or_gift_message_child(int param_1, int param_2, int * param_3);
     void g_smth_with_playpoint_or_gift_msg(int param_1, char * param_2);
     void g_some_printf_function_4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
@@ -9225,6 +9267,7 @@ extern "C" {
     void gan_setanim_edance(undefined4 param_1, undefined param_2, uint param_3, uint param_4, uint param_5);
     void g_init_floatthing(struct gFloats * param_1);
     void gan_incframe(double g_speed, struct Ape * ape);
+    void g_set_more_ape_state(undefined2 * param_1, undefined2 * param_2);
     void g_smth_with_quat_slerp(ushort * param_1);
     void g_something_arc(struct ArcFileInfo * fileInfo);
     uint g_table_index(struct SKLRoot * param1, char * str);
@@ -9265,11 +9308,16 @@ extern "C" {
     char * get_ape_face_string(struct Ape * ape);
     int seek(char * param_1);
     void g_load_models(struct Ape * ape);
+    SomeApeState * g_get_structure_from_ape_common_mal_struct(struct Mal * common_mal);
     void g_something_freeing_heap_3(void * param_1);
     int g_get_ape_flag(struct Ape * ape, undefined4 g_something_with_game, int param_3);
+    undefined4 g_alloc_some_ape_state_0x8(struct SomeApeState * g_some_ape_state, int chara_idx);
     void gan_setanim_e4(struct Ape * ape);
+    void g_set_ape_dance_state1(int param_1, int param_2, undefined2 param_3, int param_4, undefined4 param_5, undefined4 param_6, int param_7);
+    void g_set_ape_dance_state2(struct SomeApeState * g_some_ape_state, uint param_2, uint param_3, int param_4, int param_5, undefined4 param_6, undefined4 param_7, int param_8);
     void gan_setAnim2(struct Ape * ape, int param_2, short * param_3);
     int g_some_ape_anim_func2(int param_1, int param_2, undefined4 param_3, undefined4 param_4, int param_5);
+    void g_set_ape_stuff_in_chara_heap(undefined2 * param_1, undefined2 * param_2);
     void g_something_with_GXPeekZ(void);
     void empty_function(void);
     void g_init_rankings_to_defaults_wrapper(void);
@@ -9421,8 +9469,8 @@ extern "C" {
     void set_storymode_bananas(int banana_count);
     void g_preload_ape_model_for_stageselect(void);
     void g_save_storymode_progress(void * param_1);
-    int g_is_timer_30s_or_60s_current_stage(void);
-    int is_timer_30s_or_60s_wrapper(int param_1, int param_2);
+    int get_current_storymode_stage_time_limit(void);
+    int get_storymode_stage_time_limit_wrapper(int world, int world_stage);
     void g_some_scenario_init_func_1(void);
     void g_some_storymode_mode_handler(void);
     void g_get_storymode_playtime_frames(void);
@@ -9456,13 +9504,15 @@ extern "C" {
     void g_some_storymode_mode_func(void);
     StoryModeSaveFile * get_current_storymode_save_file(void);
     void g_some_scenario_init_func_4(void);
-    void g_something_freeing_something_from_main_heap(void);
+    void g_free_scen_stage_name_buffer(void);
     void empty_function(void);
     void empty_function(void);
     void g_create_storymode_select_sprites(uint param_1);
     void g_related_to_loading_story_stageselect(uint param_1);
     void g_draw_ape_storymode_select_screen(int param_1);
     void empty_function(void);
+    void sprite_scen_stagesel_stage_name_tick(undefined4 param_1, int param_2);
+    void sprite_scen_stagesel_stage_name_disp(struct Sprite * sprite);
     void g_preload_all_story_preview_images(void);
     void g_draw_now_loading_text(void);
     uint g_get_storymode_next_world(void);
