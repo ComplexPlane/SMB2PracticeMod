@@ -3054,7 +3054,7 @@
 8007F184:return_0
 80081A8C:switchdataD_80081a8c
 80081D80:g_some_font_array
-80083F60:g_some_texture_data
+80083F60:fullscreen_texture_buf
 80110C1C:switchdataD_80110c1c
 80111E20:switchdataD_80111e20
 80111E3C:switchdataD_80111e3c

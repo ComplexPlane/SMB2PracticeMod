@@ -19,12 +19,12 @@
 #include "mods/freecam.h"
 #include "mods/freeze.h"
 #include "mods/gotostory.h"
+#include "mods/ilbattle.h"
 #include "mods/inputdisp.h"
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
 #include "mods/moon.h"
-#include "mods/ilbattle.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
@@ -51,6 +51,8 @@ static void perform_assembly_patches() {
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
     patch::write_nop(reinterpret_cast<void*>(0x80299f54));
+    // Nop this pausemenu screenshot call so we can call it when we want to
+    patch::write_nop(reinterpret_cast<void*>(0x80270aac));
 
     // Titlescreen patches
     mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
@@ -99,6 +101,16 @@ void init() {
         // Gets run at the start of smb2's function which draws debug text windows,
         // which is called at the end of smb2's function which draws the UI in general.
 
+        s_draw_debug_text_tramp.dest();
+
+        // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
+        // elements. The original screenshot call is nopped.
+        if (mkb::g_pause_status == 1) {
+            mkb::take_pausemenu_screenshot(&mkb::fullscreen_texture_buf, 0, 0,
+                                           mkb::current_render_mode->fbWidth,
+                                           mkb::current_render_mode->efbHeight, mkb::GX_TF_RGB5A3);
+        }
+
         draw::predraw();
         timer::disp();
         iw::disp();
@@ -109,8 +121,6 @@ void init() {
         menu_impl::disp();
         draw::disp();
         scratch::disp();
-
-        s_draw_debug_text_tramp.dest();
     });
 
     patch::hook_function(s_process_inputs_tramp, mkb::process_inputs, []() {

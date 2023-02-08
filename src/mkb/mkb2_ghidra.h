@@ -5279,7 +5279,7 @@ extern "C" {
     extern undefined4 osStringTablePtr;
     extern pointer switchdataD_80081a8c;
     extern undefined2 g_some_font_array;
-    extern undefined g_some_texture_data;
+    extern undefined fullscreen_texture_buf;
     extern pointer switchdataD_80110c1c;
     extern undefined * switchdataD_80111e20;
     extern pointer switchdataD_80111e3c;
