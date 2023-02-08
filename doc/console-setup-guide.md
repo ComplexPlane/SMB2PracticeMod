@@ -24,3 +24,7 @@
 If you see the "SMB2 Practice Mod" text in place of the normal "Press Start" text on the title screen when you start the
 game, you've loaded the mod successfully. If you don't see this, the mod is definitely not loaded correctly, go back and check to make sure you didn't miss a step. If you can't figure it out, feel free to message me on
 Discord (`ComplexPlane#3111`) or email (`complexplanegames@gmail.com`), or file a Github issue.
+
+## Troubleshooting
+
+One person reported having trouble loading the practice mod when there were other memory card savefiles in `saves/` besides `GM2E_B.raw`. If you're having trouble, try putting only `GM2E_B.raw` in your `saves/` folder. I'm not sure exactly what circumstances cause this issue, let me know if you run into it so I can take a closer look.
