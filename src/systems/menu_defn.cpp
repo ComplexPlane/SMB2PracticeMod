@@ -233,25 +233,69 @@ static Widget s_timers_widgets[] = {
         .checkbox = {"CM Seg Timer", pref::get_cm_timer, pref::set_cm_timer},
     }};
 
-static Widget s_help_widgets[] = {
-    {.type = WidgetType::Header, .header = {"Savestates Bindings"}},
+static Widget s_savestates_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
     {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
     {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
     // TODO replace this feature with a better one that works in-menu
     {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
     {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
-    {.type = WidgetType::Separator},
+};
 
-    {.type = WidgetType::Header, .header = {"Story Mode Individual World (IW)"}},
+static Widget s_iw_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on a file"}},
-    {.type = WidgetType::Text, .text = {"  to choose a world"}},
-    {.type = WidgetType::Separator},
+    {.type = WidgetType::Text, .text = {"  to choose a world."}},
+};
 
-    {.type = WidgetType::Header, .header = {"Jump Mod Bindings"}},
+static Widget s_jump_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
     {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
-    {.type = WidgetType::Separator},
+};
+
+static Widget s_freecam_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  Left Stick \x1c Pan"}},
+    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Rotate"}},
+    {.type = WidgetType::Text, .text = {"  L          \x1c Down"}},
+    {.type = WidgetType::Text, .text = {"  R          \x1c Up"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Fast"}},
+};
+
+static Widget s_iw_mark_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  The IL validation mark is shown after"}},
+    {.type = WidgetType::Text, .text = {"  completing a level. It is green only if no "}},
+    {.type = WidgetType::Text, .text = {"  gameplay-altering mods were used during the "}},
+    {.type = WidgetType::Text, .text = {"  level completion, and red otherwise."}},
+    {.type = WidgetType::Separator },
+
+    {.type = WidgetType::Text, .text = {"  Showing this watermark is currently required"}},
+    {.type = WidgetType::Text, .text = {"  to submit IL speedruns of vanilla SMB2 to the"}},
+    {.type = WidgetType::Text, .text = {"  official leaderboards if you are using the"}},
+    {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
+    {.type = WidgetType::Separator },
+
+    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, such as raw"}},
+    {.type = WidgetType::Text, .text = {"  input display, may also be disallowed for"}},
+    {.type = WidgetType::Text, .text = {"  IL leaderboard submissions. The IL validation"}},
+    {.type = WidgetType::Text, .text = {"  mark does not account for visual-only mods."}},
+    {.type = WidgetType::Separator },
+
+    {.type = WidgetType::Text, .text = {"  If you complete a stage without the watermark"}},
+    {.type = WidgetType::Text, .text = {"  enabled, you can still enable it post-goal to"}},
+    {.type = WidgetType::Text, .text = {"  validate your run."}},
+    {.type = WidgetType::Separator },
+};
+
+static Widget s_help_widgets[] = {
+    {.type = WidgetType::Menu,
+     .menu = {"Savestates Bindings", s_savestates_help_widgets, LEN(s_savestates_help_widgets)}},
+    {.type = WidgetType::Menu,
+     .menu = {"Jump Mod Bindings", s_jump_help_widgets, LEN(s_jump_help_widgets)}},
+    {.type = WidgetType::Menu,
+     .menu = {"Freecam Bindings", s_freecam_help_widgets, LEN(s_freecam_help_widgets)}},
+    {.type = WidgetType::Menu,
+     .menu = {"Story Mode IWs", s_iw_help_widgets, LEN(s_iw_help_widgets)}},
+    {.type = WidgetType::Menu,
+     .menu = {"IL Validation Mark", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)}},
 };
 
 static Widget s_sound_widgets[] = {
