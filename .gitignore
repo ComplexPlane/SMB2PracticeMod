@@ -264,7 +264,6 @@ __pycache__/
 *.pyc
 
 # Build artifacts
-/build.*/
 /SMB2PracticeMod.rel
 /SMB2PracticeMod.gci
 /SMB2PracticeMod.elf
