@@ -75,8 +75,9 @@ static void unlock_everything() {
 }
 
 void init() {
-    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n", version::PRACMOD_VERSION.major,
-                  version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
+    char version_str[16] = {};
+    version::get_version_str(version_str);
+    mkb::OSReport("[pracmod] SMB2 Practice Mod v%s loaded\n", version_str);
 
     perform_assembly_patches();
 
