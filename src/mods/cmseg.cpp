@@ -217,76 +217,76 @@ void init_seg() {
     switch (s_seg_request) {
         case Seg::Beginner1: {
             mkb::curr_difficulty = mkb::DIFF_BEGINNER;
-            course = mkb::beginner_noex_cm_entries;
+            course = mkb::cm_courses[0];
             start_course_stage_num = 1;
             break;
         }
         case Seg::BeginnerExtra: {
             mkb::curr_difficulty = mkb::DIFF_BEGINNER;
             mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
-            course = mkb::beginner_ex_cm_entries;
+            course = mkb::cm_courses[3];
             start_course_stage_num = 1;
             break;
         }
         case Seg::Advanced1: {
             mkb::curr_difficulty = mkb::DIFF_ADVANCED;
-            course = mkb::advanced_noex_cm_entries;
+            course = mkb::cm_courses[1];
             start_course_stage_num = 1;
             break;
         }
         case Seg::Advanced11: {
             mkb::curr_difficulty = mkb::DIFF_ADVANCED;
-            course = mkb::advanced_noex_cm_entries;
+            course = mkb::cm_courses[1];
             start_course_stage_num = 11;
             break;
         }
         case Seg::Advanced21: {
             mkb::curr_difficulty = mkb::DIFF_ADVANCED;
-            course = mkb::advanced_noex_cm_entries;
+            course = mkb::cm_courses[1];
             start_course_stage_num = 21;
             break;
         }
         case Seg::AdvancedExtra: {
             mkb::curr_difficulty = mkb::DIFF_ADVANCED;
             mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
-            course = mkb::advanced_ex_cm_entries;
+            course = mkb::cm_courses[4];
             start_course_stage_num = 1;
             break;
         }
         case Seg::Expert1: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            course = mkb::expert_noex_cm_entries;
+            course = mkb::cm_courses[2];
             start_course_stage_num = 1;
             break;
         }
         case Seg::Expert11: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            course = mkb::expert_noex_cm_entries;
+            course = mkb::cm_courses[2];
             start_course_stage_num = 11;
             break;
         }
         case Seg::Expert21: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            course = mkb::expert_noex_cm_entries;
+            course = mkb::cm_courses[2];
             start_course_stage_num = 21;
             break;
         }
         case Seg::Expert31: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            course = mkb::expert_noex_cm_entries;
+            course = mkb::cm_courses[2];
             start_course_stage_num = 31;
             break;
         }
         case Seg::Expert41: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
-            course = mkb::expert_noex_cm_entries;
+            course = mkb::cm_courses[2];
             start_course_stage_num = 41;
             break;
         }
         case Seg::ExpertExtra: {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
             mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
-            course = mkb::expert_ex_cm_entries;
+            course = mkb::cm_courses[5];
             start_course_stage_num = 1;
             break;
         }
@@ -294,7 +294,7 @@ void init_seg() {
             mkb::curr_difficulty = mkb::DIFF_EXPERT;
             mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE | mkb::MF_G_PLAYING_MASTER_COURSE |
                                mkb::MF_PLAYING_MASTER_NOEX_COURSE;
-            course = mkb::master_noex_cm_entries;
+            course = mkb::cm_courses[6];
             start_course_stage_num = 1;
             break;
         }
@@ -303,7 +303,7 @@ void init_seg() {
             // Magic set of flags used in Master Extra,
             // can't be bothered to reverse all of them
             mkb::mode_flags = 0x0280071D;
-            course = mkb::master_ex_cm_entries;
+            course = mkb::cm_courses[7];
             start_course_stage_num = 1;
             break;
         }
