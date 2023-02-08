@@ -303,6 +303,30 @@ static Widget s_tools_widgets[] = {
          }},
 };
 
+static Widget s_il_mark_widgets[] = {
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Practice Mode",
+             .get = pref::get_il_mark_practice,
+             .set = pref::set_il_mark_practice,
+         }},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Story Mode",
+             .get = pref::get_il_mark_story,
+             .set = pref::set_il_mark_story,
+         }},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Challenge Mode",
+             .get = pref::get_il_mark_challenge,
+             .set = pref::set_il_mark_challenge,
+         }},
+};
+
 static Widget s_displays_widgets[] = {
     {
         .type = WidgetType::Menu,
@@ -320,13 +344,10 @@ static Widget s_displays_widgets[] = {
         .type = WidgetType::Menu,
         .menu = {"IL Battle", s_il_battle_widgets, LEN(s_il_battle_widgets)},
     },
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "IL Validation Mark",
-             .get = pref::get_il_mark,
-             .set = pref::set_il_mark,
-         }},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"IL Validation Mark", s_il_mark_widgets, LEN(s_il_mark_widgets)},
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox =

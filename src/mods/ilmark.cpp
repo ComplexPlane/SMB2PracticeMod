@@ -38,7 +38,17 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get_il_mark()) return;
+    if (mkb::main_mode != mkb::MD_GAME) return;
+
+    if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
+        if (!pref::get_il_mark_practice()) return;
+    } else if (mkb::main_game_mode == mkb::STORY_MODE) {
+        if (!pref::get_il_mark_story()) return;
+    } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
+        if (!pref::get_il_mark_challenge()) return;
+    } else {
+        return;
+    }
 
     bool in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                            mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||

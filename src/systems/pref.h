@@ -39,8 +39,12 @@ bool get_il_battle_display();
 void set_il_battle_display(bool on);
 bool get_il_battle_breakdown();
 void set_il_battle_breakdown(bool on);
-bool get_il_mark();
-void set_il_mark(bool on);
+bool get_il_mark_practice();
+void set_il_mark_practice(bool on);
+bool get_il_mark_story();
+void set_il_mark_story(bool on);
+bool get_il_mark_challenge();
+void set_il_mark_challenge(bool on);
 
 bool get_rta_pause_timer();
 void set_rta_pause_timer(bool on);

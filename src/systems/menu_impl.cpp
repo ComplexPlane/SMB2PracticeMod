@@ -194,7 +194,7 @@ void draw_menu_widget(MenuWidget* menu) {
                                  "  %s", widget.checkbox.label);
                 draw::debug_text(MARGIN + PAD, y,
                                  menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "                        %s",
+                                 "                         %s",
                                  widget.checkbox.get() ? "On" : "Off");
 
                 if (menu->selected_idx == selectable_idx) cursor_y = y;
@@ -214,7 +214,7 @@ void draw_menu_widget(MenuWidget* menu) {
                 // Draw "..." with dots closer together
                 for (s32 i = 0; i < 3; i++) {
                     draw::debug_text(
-                        MARGIN + PAD + 24 * draw::DEBUG_CHAR_WIDTH + i * 6, y,
+                        MARGIN + PAD + 25 * draw::DEBUG_CHAR_WIDTH + i * 6, y,
                         menu->selected_idx == selectable_idx ? lerped_color : unfocused, ".");
                 }
 
@@ -225,7 +225,7 @@ void draw_menu_widget(MenuWidget* menu) {
             }
             case WidgetType::FloatView: {
                 draw::debug_text(MARGIN + PAD, y, draw::WHITE, "%s", widget.checkbox.label);
-                draw::debug_text(MARGIN + PAD, y, draw::GREEN, "                        %.3Ef",
+                draw::debug_text(MARGIN + PAD, y, draw::GREEN, "                         %.3Ef",
                                  widget.float_view.get());
                 y += LINE_HEIGHT;
                 break;
@@ -236,7 +236,7 @@ void draw_menu_widget(MenuWidget* menu) {
                                  "  %s", widget.choose.label);
                 draw::debug_text(MARGIN + PAD, y,
                                  menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "                        (%d/%d) %s", widget.choose.get() + 1,
+                                 "                         (%d/%d) %s", widget.choose.get() + 1,
                                  widget.choose.num_choices,
                                  widget.choose.choices[widget.choose.get()]);
 
