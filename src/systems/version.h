@@ -18,8 +18,9 @@ struct PracmodVersion {
 
 extern const PracmodVersion PRACMOD_VERSION;
 
+void init();
 s32 compare(const SemVer& v1, const SemVer& v2);
 s32 compare(const PracmodVersion& v1, const PracmodVersion &v2);
-void get_version_str(char *out_str);
+const char *get_version_str();
 
 }

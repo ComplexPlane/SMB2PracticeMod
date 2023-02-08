@@ -82,9 +82,7 @@ void disp() {
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
-    char version_str[16] = {};
-    version::get_version_str(version_str);
-    mkb::textdraw_print(version_str);
+    mkb::textdraw_print(const_cast<char*>(version::get_version_str()));
 }
 
 }  // namespace ilmark

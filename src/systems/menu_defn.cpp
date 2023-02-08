@@ -470,9 +470,7 @@ MenuWidget root_menu = {
 };
 
 void init() {
-    char version_str[16];
-    version::get_version_str(version_str);
-    mkb::sprintf(s_version_str, "  Current version: v%s", version_str);
+    mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str());
 }
 
 }  // namespace menu_defn
