@@ -146,7 +146,7 @@ static Widget s_about_widgets[] = {
 
     {.type = WidgetType::Header, .header = {"Updates"}},
     {.type = WidgetType::Text, .text = {s_version_str}},
-    {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
+    {.type = WidgetType::Text, .text = {"  For the latest version of SMB2 Practice Mod:"}},
     {.type = WidgetType::ColoredText,
      .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
@@ -303,6 +303,30 @@ static Widget s_tools_widgets[] = {
          }},
 };
 
+static Widget s_il_mark_widgets[] = {
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Practice Mode",
+             .get = pref::get_il_mark_practice,
+             .set = pref::set_il_mark_practice,
+         }},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Story Mode",
+             .get = pref::get_il_mark_story,
+             .set = pref::set_il_mark_story,
+         }},
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "Show in Challenge Mode",
+             .get = pref::get_il_mark_challenge,
+             .set = pref::set_il_mark_challenge,
+         }},
+};
+
 static Widget s_displays_widgets[] = {
     {
         .type = WidgetType::Menu,
@@ -314,11 +338,15 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
         .menu = {"IL Battle", s_il_battle_widgets, LEN(s_il_battle_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+        .menu = {"IL Validation Mark", s_il_mark_widgets, LEN(s_il_mark_widgets)},
     },
     {
         .type = WidgetType::Checkbox,
@@ -398,8 +426,9 @@ MenuWidget root_menu = {
 };
 
 void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%d.%d.%d", version::PRACMOD_VERSION.major,
-                 version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
+    char version_str[16];
+    version::get_version_str(version_str);
+    mkb::sprintf(s_version_str, "  Current version: v%s", version_str);
 }
 
 }  // namespace menu_defn

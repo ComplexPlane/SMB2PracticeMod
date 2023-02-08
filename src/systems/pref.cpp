@@ -39,6 +39,9 @@ enum class PrefId : u16 {
     IlBattleDisplay = 23,
     IlBattleLength = 24,
     IlBattleBreakdown = 25,
+    IlMarkPractice = 26,
+    IlMarkStory = 27,
+    IlMarkChallenge = 28,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file
@@ -63,6 +66,9 @@ enum class BoolPref {
     Moon,
     IlBattleDisplay,
     IlBattleBreakdown,
+    IlMarkPractice,
+    IlMarkStory,
+    IlMarkChallenge,
 };
 
 struct Pref {
@@ -116,6 +122,9 @@ static const PrefId s_pref_ids[] = {
     PrefId::Moon,
     PrefId::IlBattleDisplay,
     PrefId::IlBattleBreakdown,
+    PrefId::IlMarkPractice,
+    PrefId::IlMarkStory,
+    PrefId::IlMarkChallenge,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -184,6 +193,12 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlBattleDisplay;
         case PrefId::IlBattleBreakdown:
             return BoolPref::IlBattleBreakdown;
+        case PrefId::IlMarkPractice:
+            return BoolPref::IlMarkPractice;
+        case PrefId::IlMarkStory:
+            return BoolPref::IlMarkStory;
+        case PrefId::IlMarkChallenge:
+            return BoolPref::IlMarkChallenge;
         default:
             return {};
     }
@@ -243,6 +258,7 @@ static void load_default_prefs() {
     set_bool_pref(BoolPref::IwTimer, true);
     set_bool_pref(BoolPref::CmTimer, true);
     set_bool_pref(BoolPref::InputDispNotchIndicators, true);
+    set_bool_pref(BoolPref::IlMarkPractice, true);
 }
 
 static void pref_struct_to_card_buf() {
@@ -353,6 +369,12 @@ bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }
 void set_iw_timer(bool on) { set_bool_pref(BoolPref::IwTimer, on); }
 bool get_cm_timer() { return get_bool_pref(BoolPref::CmTimer); }
 void set_cm_timer(bool on) { set_bool_pref(BoolPref::CmTimer, on); }
+bool get_il_mark_practice() { return get_bool_pref(BoolPref::IlMarkPractice); }
+void set_il_mark_practice(bool on) { set_bool_pref(BoolPref::IlMarkPractice, on); }
+bool get_il_mark_story() { return get_bool_pref(BoolPref::IlMarkStory); }
+void set_il_mark_story(bool on) { set_bool_pref(BoolPref::IlMarkStory, on); }
+bool get_il_mark_challenge() { return get_bool_pref(BoolPref::IlMarkChallenge); }
+void set_il_mark_challenge(bool on) { set_bool_pref(BoolPref::IlMarkChallenge, on); }
 
 bool get_jump_mod() { return get_bool_pref(BoolPref::JumpMod); }
 void set_jump_mod(bool on) { set_bool_pref(BoolPref::JumpMod, on); }

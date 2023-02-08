@@ -30,6 +30,7 @@
 #include "mods/sfx.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
+#include "mods/ilmark.h"
 
 namespace main {
 
@@ -75,8 +76,9 @@ static void unlock_everything() {
 }
 
 void init() {
-    mkb::OSReport("[pracmod] SMB2 Practice Mod v%d.%d.%d loaded\n", version::PRACMOD_VERSION.major,
-                  version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
+    char version_str[16] = {};
+    version::get_version_str(version_str);
+    mkb::OSReport("[pracmod] SMB2 Practice Mod v%s loaded\n", version_str);
 
     perform_assembly_patches();
 
@@ -95,6 +97,41 @@ void init() {
     menu_defn::init();
     freecam::init();
     scratch::init();
+
+    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
+        u32 ret = s_PADRead_tramp.dest(statuses);
+
+        // Dpad can modify effective stick input, shown by input display
+        dpad::on_PADRead(statuses);
+        inputdisp::on_PADRead(statuses);
+
+        return ret;
+    });
+
+    patch::hook_function(s_process_inputs_tramp, mkb::process_inputs, []() {
+        s_process_inputs_tramp.dest();
+
+        // These run after all controller inputs have been processed on the current frame,
+        // to ensure lowest input delay
+        pad::tick();
+        cardio::tick();
+        unlock_everything();
+        iw::tick();
+        savest_ui::tick();
+        menu_impl::tick();
+        jump::tick();
+        inputdisp::tick();
+        gotostory::tick();
+        cmseg::tick();
+        banans::tick();
+        marathon::tick();
+        ballcolor::tick();
+        freecam::tick();
+        moon::tick();
+        ilbattle::tick();
+        ilmark::tick();
+        scratch::tick();
+    });
 
     patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
         // Drawing hook for UI elements.
@@ -120,41 +157,8 @@ void init() {
         inputdisp::disp();
         menu_impl::disp();
         draw::disp();
+        ilmark::disp();
         scratch::disp();
-    });
-
-    patch::hook_function(s_process_inputs_tramp, mkb::process_inputs, []() {
-        s_process_inputs_tramp.dest();
-
-        // These run after all controller inputs have been processed on the current frame,
-        // to ensure lowest input delay
-        pad::tick();
-        cardio::tick();
-        unlock_everything();
-        iw::tick();
-        savest_ui::tick();
-        menu_impl::tick();
-        jump::tick();
-        inputdisp::tick();
-        gotostory::tick();
-        cmseg::tick();
-        banans::tick();
-        marathon::tick();
-        ballcolor::tick();
-        freecam::tick();
-        moon::tick();
-        ilbattle::tick();
-        scratch::tick();
-    });
-
-    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
-        u32 ret = s_PADRead_tramp.dest(statuses);
-
-        // Dpad can modify effective stick input, shown by input display
-        dpad::on_PADRead(statuses);
-        inputdisp::on_PADRead(statuses);
-
-        return ret;
     });
 }
 
