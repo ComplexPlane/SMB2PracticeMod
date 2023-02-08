@@ -22,6 +22,5 @@
 10. Boot the game from disc or ISO file like usual.
 
 If you see the "SMB2 Practice Mod" text in place of the normal "Press Start" text on the title screen when you start the
-game, you've loaded the mod successfully. If you don't see this, the mod is definitely not loaded correctly, go back and
-and check to make sure you didn't miss a step. If you can't figure it out, feel free to message me on
+game, you've loaded the mod successfully. If you don't see this, the mod is definitely not loaded correctly, go back and check to make sure you didn't miss a step. If you can't figure it out, feel free to message me on
 Discord (`ComplexPlane#3111`) or email (`complexplanegames@gmail.com`), or file a Github issue.
