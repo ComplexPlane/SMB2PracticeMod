@@ -210,7 +210,7 @@ bool dir_repeat(Dir dir, bool priority) {
     if (s_exclusive_mode && !priority) return false;
 
     u32 t = s_dir_down_time[dir];
-    return t == 1 || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
+    return dir_pressed(dir, priority) || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
 void reset_dir_repeat() {
