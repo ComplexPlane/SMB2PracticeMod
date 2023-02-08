@@ -3,6 +3,7 @@
 #include "mkb/mkb.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/version.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 
@@ -36,6 +37,8 @@ void tick() {
 }
 
 void disp() {
+    if (!pref::get_il_mark()) return;
+
     mkb::textdraw_reset();
     // Some good fonts that seem to be always loaded:
     // FONT32_ASC_8x16,
@@ -50,7 +53,17 @@ void disp() {
     mkb::textdraw_set_scale(1, 1);
     mkb::textdraw_set_mul_color(RGBA(0xFF, 0x60, 0xFF, 0xFF));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
-    mkb::textdraw_printf("Hello monkey. %d:%d\n", 30, 25);
+
+    char version_str[16] = {};
+    if (version::PRACMOD_VERSION.release_cand > 0) {
+        mkb::sprintf(version_str, "%d.%d.%d-rc%d", version::PRACMOD_VERSION.major,
+                     version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch,
+                     version::PRACMOD_VERSION.release_cand);
+    } else {
+        mkb::sprintf(version_str, "%d.%d.%d", version::PRACMOD_VERSION.major,
+                     version::PRACMOD_VERSION.minor, version::PRACMOD_VERSION.patch);
+    }
+    mkb::textdraw_print(version_str);
 }
 
 }  // namespace ilmark
