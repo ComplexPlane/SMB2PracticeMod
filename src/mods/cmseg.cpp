@@ -26,7 +26,7 @@ static u32 s_seg_time;
 static patch::Tramp<decltype(&mkb::g_reset_cm_course)> s_reset_cm_course_tramp;
 
 static mkb::CourseCommand* s_overwritten_entry;
-static mkb::CourseCommandOpcode s_overwritten_entry_type;
+static mkb::CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
 
 static u32 s_pbs[13];
@@ -76,7 +76,7 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
 
     // Write new course end marker
     s_overwritten_entry = &course[end_entry_idx];
-    s_overwritten_entry_type = course[end_entry_idx].opcode;
+    s_overwritten_opcode = course[end_entry_idx].opcode;
     course[end_entry_idx].opcode = mkb::COURSE_CMD_END;
 
     s16 first_stage_id = static_cast<s16>(course[start_entry_idx].value);
@@ -130,7 +130,7 @@ static void state_enter_cm() {
 }
 
 static void restore_overwritten_state() {
-    s_overwritten_entry->type = s_overwritten_entry_type;  // Restore original challenge mode course
+    s_overwritten_entry->opcode = s_overwritten_opcode;  // Restore original challenge mode course
     mkb::number_of_starting_monkeys = s_overwritten_starting_monkeys;
 }
 
@@ -156,7 +156,7 @@ static void state_seg_active() {
     }
 
     // Nuke "Final Stage" sprite
-    if (s_overwritten_entry_type != mkb::COURSE_CMD_END) {
+    if (s_overwritten_opcode != mkb::COURSE_CMD_END) {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
             mkb::Sprite& sprite = mkb::sprites[i];
