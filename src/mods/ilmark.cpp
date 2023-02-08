@@ -4,6 +4,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/version.h"
+#include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 
@@ -39,6 +40,14 @@ void tick() {
 void disp() {
     if (!pref::get_il_mark()) return;
 
+    bool in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
+                           mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||
+                           mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT ||
+                           mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN ||
+                           mkb::sub_mode == mkb::SMD_GAME_BONUS_CLEAR_INIT ||
+                           mkb::sub_mode == mkb::SMD_GAME_BONUS_CLEAR_MAIN;
+    if (!in_show_submode) return;
+
     mkb::textdraw_reset();
     // Some good fonts that seem to be always loaded:
     // FONT32_ASC_8x16,
@@ -48,10 +57,19 @@ void disp() {
     // FONT32_ASC_16x16,  // Doesn't support lowercase letters? Monospace
     mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);
     // mkb::textdraw_set_flags(mkb::TEXTDRAW_FLAG_BORDER | mkb::TEXTDRAW_FLAG_PROPORTIONAL);
-    mkb::textdraw_set_pos(450, 300);
-    mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_RIGHT);
-    mkb::textdraw_set_scale(1, 1);
-    mkb::textdraw_set_mul_color(RGBA(0xFF, 0x60, 0xFF, 0xFF));
+
+    u32 x = 634;
+    u32 y = 474;
+    if (!s_valid_run) {
+        x -= 4;
+        y -= 4;
+    }
+
+    mkb::textdraw_set_pos(x, y);
+    mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
+    mkb::textdraw_set_scale(0.8, 0.8);
+    mkb::GXColor color = s_valid_run ? draw::LIGHT_GREEN : draw::LIGHT_RED;
+    mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
     char version_str[16] = {};
