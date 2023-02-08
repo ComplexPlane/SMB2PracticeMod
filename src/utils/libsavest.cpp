@@ -45,6 +45,10 @@ void init() {
                          });
 }
 
+bool state_loaded_this_frame() {
+    return s_state_loaded_this_frame;
+}
+
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in

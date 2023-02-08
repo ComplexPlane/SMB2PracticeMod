@@ -49,7 +49,7 @@ class SaveState {
     bool handle_load_state_from_nonplay_submode();
 };
 
-// Global initialization for savestates
-void init();
+void init(); // Global initialization for savestates
+bool state_loaded_this_frame();
 
 }  // namespace libsavest

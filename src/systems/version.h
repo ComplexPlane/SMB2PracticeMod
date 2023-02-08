@@ -8,6 +8,7 @@ struct SemVer {
     u16 major;
     u16 minor;
     u16 patch;
+    u16 release_cand;
 };
 
 extern const SemVer PRACMOD_VERSION;

@@ -146,7 +146,7 @@ static Widget s_about_widgets[] = {
 
     {.type = WidgetType::Header, .header = {"Updates"}},
     {.type = WidgetType::Text, .text = {s_version_str}},
-    {.type = WidgetType::Text, .text = {"  For the latest version of this mod:"}},
+    {.type = WidgetType::Text, .text = {"  For the latest version of SMB2 Practice Mod:"}},
     {.type = WidgetType::ColoredText,
      .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
 };
@@ -314,12 +314,19 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"IL Battle", s_il_battle_widgets, LEN(s_il_battle_widgets)},
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+        .menu = {"IL Battle", s_il_battle_widgets, LEN(s_il_battle_widgets)},
     },
+    {.type = WidgetType::Checkbox,
+     .checkbox =
+         {
+             .label = "IL Validation Mark",
+             .get = pref::get_il_mark,
+             .set = pref::set_il_mark,
+         }},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
