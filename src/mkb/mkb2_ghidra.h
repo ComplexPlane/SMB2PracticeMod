@@ -3197,9 +3197,7 @@ struct Effect {
     undefined2 g_ball_idx;
     s16 field15_0x16;
     undefined field_0x18[0xc];
-    float field28_0x24;
-    undefined4 field29_0x28;
-    float field30_0x2c;
+    struct Vec g_scale;
     s32 g_pointer_to_some_struct;
     struct Vec g_pos;
     struct Vec g_some_vec;
@@ -8528,7 +8526,7 @@ extern "C" {
     void effect_particle_dest_coli(struct Effect * effect);
     void effect_holding_banana_init(struct Effect * effect);
     void effect_holding_banana_tick(struct Effect * effect);
-    void effect_holding_banana_disp(int param_1);
+    void effect_holding_banana_disp(struct Effect * effect);
     void effect_holding_banana_dest(struct Effect * effect);
     void effect_levitate_init(struct Effect * effect);
     void effect_levitate_tick(short * param_1);
