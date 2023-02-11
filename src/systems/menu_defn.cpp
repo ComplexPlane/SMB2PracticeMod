@@ -24,12 +24,21 @@ static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
 static Widget s_inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Show Input Display", pref::get_input_disp, pref::set_input_disp},
+        .checkbox =
+            {
+                "Show Input Display",
+                pref::get_input_disp,
+                pref::set_input_disp,
+            },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Use Center Location", pref::get_input_disp_center_location,
-                     pref::set_input_disp_center_location},
+        .checkbox =
+            {
+                "Use Center Location",
+                pref::get_input_disp_center_location,
+                pref::set_input_disp_center_location,
+            },
     },
     {
         .type = WidgetType::Choose,
@@ -43,13 +52,21 @@ static Widget s_inputdisp_widgets[] = {
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Notch Indicators", pref::get_input_disp_notch_indicators,
-                     pref::set_input_disp_notch_indicators},
+        .checkbox =
+            {
+                "Notch Indicators",
+                pref::get_input_disp_notch_indicators,
+                pref::set_input_disp_notch_indicators,
+            },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Raw Stick Inputs", pref::get_input_disp_raw_stick_inputs,
-                     pref::set_input_disp_raw_stick_inputs},
+        .checkbox =
+            {
+                "Raw Stick Inputs",
+                pref::get_input_disp_raw_stick_inputs,
+                pref::set_input_disp_raw_stick_inputs,
+            },
     },
 };
 
@@ -92,7 +109,12 @@ static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 static Widget s_il_battle_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"IL Battle Display", pref::get_il_battle_display, pref::set_il_battle_display},
+        .checkbox =
+            {
+                "IL Battle Display",
+                pref::get_il_battle_display,
+                pref::set_il_battle_display,
+            },
     },
     {
         .type = WidgetType::Choose,
@@ -106,49 +128,81 @@ static Widget s_il_battle_widgets[] = {
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Score Breakdown Info", pref::get_il_battle_breakdown,
-                     pref::set_il_battle_breakdown},
+        .checkbox =
+            {
+                "Score Breakdown Info",
+                pref::get_il_battle_breakdown,
+                pref::set_il_battle_breakdown,
+            },
     },
     {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
 };
 
 static Widget s_rumble_widgets[] = {
-    {.type = WidgetType::Checkbox,
-     .checkbox = {
-         .label = "Controller 1 Rumble",
-         .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
-         .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
-     }},
-    {.type = WidgetType::Checkbox,
-     .checkbox = {
-         .label = "Controller 2 Rumble",
-         .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
-         .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 1); },
-     }},
-    {.type = WidgetType::Checkbox,
-     .checkbox = {
-         .label = "Controller 3 Rumble",
-         .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
-         .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 2); },
-     }},
-    {.type = WidgetType::Checkbox,
-     .checkbox = {
-         .label = "Controller 4 Rumble",
-         .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
-         .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
-     }}};
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 1 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
+        },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 2 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 1); },
+        },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 3 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 2); },
+        },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {
+            .label = "Controller 4 Rumble",
+            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
+            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
+        },
+    }};
 
 static Widget s_about_widgets[] = {
-    {.type = WidgetType::Header, .header = {"SMB2 Practice Mod"}},
-    {.type = WidgetType::Text, .text = {"  Made with   by ComplexPlane"}},
-    {.type = WidgetType::Custom, .custom = {draw::heart}},
+    {
+        .type = WidgetType::Header,
+        .header = {"SMB2 Practice Mod"},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  Made with   by ComplexPlane"},
+    },
+    {
+        .type = WidgetType::Custom,
+        .custom = {draw::heart},
+    },
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Header, .header = {"Updates"}},
-    {.type = WidgetType::Text, .text = {s_version_str}},
-    {.type = WidgetType::Text, .text = {"  For the latest version of SMB2 Practice Mod:"}},
-    {.type = WidgetType::ColoredText,
-     .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE}},
+    {
+        .type = WidgetType::Header,
+        .header = {"Updates"},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {s_version_str},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  For the latest version of SMB2 Practice Mod:"},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE},
+    },
 };
 
 static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
@@ -166,57 +220,127 @@ static Widget s_cm_seg_widgets[] = {
     {.type = WidgetType::Separator},
 
     // Beginner
-    {.type = WidgetType::Button,
-     .button = {.label = "Beginner 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Beginner Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); }}},
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Beginner 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Beginner Extra 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); },
+            },
+    },
     {.type = WidgetType::Separator},
 
     // Advanced
-    {.type = WidgetType::Button,
-     .button = {.label = "Advanced 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Advanced 11-20",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Advanced 21-30",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Advanced Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); }}},
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Advanced 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Advanced 11-20",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Advanced 21-30",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Advanced Extra 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); },
+            },
+    },
     {.type = WidgetType::Separator},
 
     // Expert
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert 11-20",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert 21-30",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert 31-40",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert 41-50",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Expert Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); }}},
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert 11-20",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert 21-30",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert 31-40",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert 41-50",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Expert Extra 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); },
+            },
+    },
     {.type = WidgetType::Separator},
 
     // Master
-    {.type = WidgetType::Button,
-     .button = {.label = "Master 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); }}},
-    {.type = WidgetType::Button,
-     .button = {.label = "Master Extra 1-10",
-                .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); }}},
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Master 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); },
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Master Extra 1-10",
+                .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); },
+            },
+    },
 };
 
 static Widget s_timers_widgets[] = {
@@ -265,58 +389,72 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  completing a level. It is green only if no "}},
     {.type = WidgetType::Text, .text = {"  gameplay-altering mods were used during the "}},
     {.type = WidgetType::Text, .text = {"  level completion, and red otherwise."}},
-    {.type = WidgetType::Separator },
+    {.type = WidgetType::Separator},
 
     {.type = WidgetType::Text, .text = {"  Showing this watermark is currently required"}},
     {.type = WidgetType::Text, .text = {"  to submit IL speedruns of vanilla SMB2 to the"}},
     {.type = WidgetType::Text, .text = {"  official leaderboards if you are using the"}},
     {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
-    {.type = WidgetType::Separator },
+    {.type = WidgetType::Separator},
 
     {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, such as raw"}},
     {.type = WidgetType::Text, .text = {"  input display, may also be disallowed for"}},
     {.type = WidgetType::Text, .text = {"  IL leaderboard submissions. The IL validation"}},
     {.type = WidgetType::Text, .text = {"  mark does not account for visual-only mods."}},
-    {.type = WidgetType::Separator },
+    {.type = WidgetType::Separator},
 
     {.type = WidgetType::Text, .text = {"  If you complete a stage without the watermark"}},
     {.type = WidgetType::Text, .text = {"  enabled, you can still enable it post-goal to"}},
     {.type = WidgetType::Text, .text = {"  validate your run."}},
-    {.type = WidgetType::Separator },
+    {.type = WidgetType::Separator},
 };
 
 static Widget s_help_widgets[] = {
-    {.type = WidgetType::Menu,
-     .menu = {"Savestates Bindings", s_savestates_help_widgets, LEN(s_savestates_help_widgets)}},
-    {.type = WidgetType::Menu,
-     .menu = {"Jump Mod Bindings", s_jump_help_widgets, LEN(s_jump_help_widgets)}},
-    {.type = WidgetType::Menu,
-     .menu = {"Freecam Bindings", s_freecam_help_widgets, LEN(s_freecam_help_widgets)}},
-    {.type = WidgetType::Menu,
-     .menu = {"Story Mode IWs", s_iw_help_widgets, LEN(s_iw_help_widgets)}},
-    {.type = WidgetType::Menu,
-     .menu = {"IL Validation Mark", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)}},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Savestates Bindings", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Jump Mod Bindings", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Freecam Bindings", s_freecam_help_widgets, LEN(s_freecam_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Story Mode IWs", s_iw_help_widgets, LEN(s_iw_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"IL Validation Mark", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)},
+    },
 };
 
 static Widget s_sound_widgets[] = {
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Mute Background Music",
-             .get = pref::get_mute_bgm,
-             .set = pref::set_mute_bgm,
-         }},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Mute Background Music",
+                .get = pref::get_mute_bgm,
+                .set = pref::set_mute_bgm,
+            },
+    },
     {.type = WidgetType::Text, .text = {"  To apply background music setting:"}},
     {.type = WidgetType::Text, .text = {"  Wait 2s then reset console"}},
-
     {.type = WidgetType::Separator},
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Mute Timer Ding",
-             .get = pref::get_mute_timer_ding,
-             .set = pref::set_mute_timer_ding,
-         }},
+
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Mute Timer Ding",
+                .get = pref::get_mute_timer_ding,
+                .set = pref::set_mute_timer_ding,
+            },
+    },
 };
 
 static Widget s_tools_widgets[] = {
@@ -324,51 +462,63 @@ static Widget s_tools_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox = {"Savestates", pref::get_savestates, pref::set_savestates},
     },
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Freeze Timer",
-             .get = pref::get_freeze_timer,
-             .set = pref::set_freeze_timer,
-         }},
-    {.type = WidgetType::Checkbox,
-     .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freeze Timer",
+                .get = pref::get_freeze_timer,
+                .set = pref::set_freeze_timer,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam},
+    },
     {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},
     {
         .type = WidgetType::Menu,
         .menu = {"Audio", s_sound_widgets, LEN(s_sound_widgets)},
     },
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Debug Mode",
-             .get = pref::get_debug_mode,
-             .set = pref::set_debug_mode,
-         }},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Debug Mode",
+                .get = pref::get_debug_mode,
+                .set = pref::set_debug_mode,
+            },
+    },
 };
 
 static Widget s_il_mark_widgets[] = {
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Show in Practice Mode",
-             .get = pref::get_il_mark_practice,
-             .set = pref::set_il_mark_practice,
-         }},
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Show in Story Mode",
-             .get = pref::get_il_mark_story,
-             .set = pref::set_il_mark_story,
-         }},
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "Show in Challenge Mode",
-             .get = pref::get_il_mark_challenge,
-             .set = pref::set_il_mark_challenge,
-         }},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show in Practice Mode",
+                .get = pref::get_il_mark_practice,
+                .set = pref::set_il_mark_practice,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show in Story Mode",
+                .get = pref::get_il_mark_story,
+                .set = pref::set_il_mark_story,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show in Challenge Mode",
+                .get = pref::get_il_mark_challenge,
+                .set = pref::set_il_mark_challenge,
+            },
+    },
 };
 
 static Widget s_displays_widgets[] = {
@@ -457,10 +607,18 @@ static Widget s_root_widgets[] = {
         .type = WidgetType::Menu,
         .menu = {"Displays", s_displays_widgets, LEN(s_displays_widgets)},
     },
-    {.type = WidgetType::Menu,
-     .menu = {"Gameplay Mods", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"Help", s_help_widgets, LEN(s_help_widgets)}},
-    {.type = WidgetType::Menu, .menu = {"About", s_about_widgets, LEN(s_about_widgets)}},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Gameplay Mods", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Help", s_help_widgets, LEN(s_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"About", s_about_widgets, LEN(s_about_widgets)},
+    },
 };
 
 MenuWidget root_menu = {
@@ -469,8 +627,6 @@ MenuWidget root_menu = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str());
-}
+void init() { mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str()); }
 
 }  // namespace menu_defn
