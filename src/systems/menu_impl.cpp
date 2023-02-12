@@ -12,11 +12,14 @@ using namespace menu_defn;
 
 namespace menu_impl {
 
-constexpr s32 SCREEN_WIDTH = 640;
-constexpr s32 SCREEN_HEIGHT = 480;
-constexpr s32 MARGIN = 20;
-constexpr s32 PAD = 8;
-constexpr s32 LINE_HEIGHT = 20;
+static constexpr s32 SCREEN_WIDTH = 640;
+static constexpr s32 SCREEN_HEIGHT = 480;
+static constexpr s32 MARGIN = 20;
+static constexpr s32 PAD = 8;
+static constexpr s32 LINE_HEIGHT = 20;
+
+static const mkb::GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
+static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
 
 static bool s_visible;
 static u32 s_cursor_frame = 0;
@@ -159,14 +162,19 @@ static f32 sin_lerp(s32 period_frames) {
     return lerp;
 }
 
+static void draw_selectable_highlight(float y) {
+    float new_y = y * 1.072 - 3; // Do NOT ask why we need this
+    draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
+
+    // Draw selection arrow
+    draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
+}
+
 void draw_menu_widget(MenuWidget* menu) {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
-    s32 cursor_y = -1;
 
-    mkb::GXColor focused = draw::LIGHT_GREEN;
-    mkb::GXColor unfocused = draw::LIGHT_PURPLE;
-    mkb::GXColor lerped_color = lerp_colors(focused, unfocused, sin_lerp(40));
+    mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
 
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget& widget = menu->widgets[i];
@@ -189,15 +197,18 @@ void draw_menu_widget(MenuWidget* menu) {
                 break;
             }
             case WidgetType::Checkbox: {
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "  %s", widget.checkbox.label);
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "                         %s",
-                                 widget.checkbox.get() ? "On" : "Off");
+                if (menu->selected_idx == selectable_idx) {
+                    draw_selectable_highlight(y);
+                }
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                    widget.checkbox.label);
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                    "                         %s", widget.checkbox.get() ? "On" : "Off");
 
-                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
@@ -207,18 +218,21 @@ void draw_menu_widget(MenuWidget* menu) {
                 break;
             }
             case WidgetType::Menu: {
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "  %s", widget.menu.label);
+                if (menu->selected_idx == selectable_idx) {
+                    draw_selectable_highlight(y);
+                }
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                    widget.menu.label);
 
                 // Draw "..." with dots closer together
                 for (s32 i = 0; i < 3; i++) {
                     draw::debug_text(
                         MARGIN + PAD + 25 * draw::DEBUG_CHAR_WIDTH + i * 6, y,
-                        menu->selected_idx == selectable_idx ? lerped_color : unfocused, ".");
+                        menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, ".");
                 }
 
-                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 selectable_idx++;
                 y += LINE_HEIGHT;
                 break;
@@ -231,26 +245,32 @@ void draw_menu_widget(MenuWidget* menu) {
                 break;
             }
             case WidgetType::Choose: {
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "  %s", widget.choose.label);
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "                         (%d/%d) %s", widget.choose.get() + 1,
-                                 widget.choose.num_choices,
-                                 widget.choose.choices[widget.choose.get()]);
+                if (menu->selected_idx == selectable_idx) {
+                    draw_selectable_highlight(y);
+                }
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                    widget.choose.label);
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                    "                         (%d/%d) %s", widget.choose.get() + 1,
+                    widget.choose.num_choices, widget.choose.choices[widget.choose.get()]);
 
-                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
             }
             case WidgetType::Button: {
-                draw::debug_text(MARGIN + PAD, y,
-                                 menu->selected_idx == selectable_idx ? lerped_color : unfocused,
-                                 "  %s", widget.button.label);
+                if (menu->selected_idx == selectable_idx) {
+                    draw_selectable_highlight(y);
+                }
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                    widget.button.label);
 
-                if (menu->selected_idx == selectable_idx) cursor_y = y;
                 y += LINE_HEIGHT;
                 selectable_idx++;
                 break;
@@ -261,9 +281,6 @@ void draw_menu_widget(MenuWidget* menu) {
             }
         }
     }
-
-    // Draw selection arrow
-    if (cursor_y != -1) draw::debug_text(MARGIN + PAD + 2, cursor_y, focused, "\x1c");
 }
 
 static void draw_breadcrumbs() {
