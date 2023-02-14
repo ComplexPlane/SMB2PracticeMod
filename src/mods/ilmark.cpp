@@ -1,6 +1,7 @@
 #include "ilmark.h"
 
 #include "mkb/mkb.h"
+#include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/version.h"
@@ -20,10 +21,10 @@ void tick() {
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
         if (paused_now) s_valid_run = false;
 
-        // Loading savestate disallowed
+        // Loading savestates is disallowed
         if (libsavest::state_loaded_this_frame()) s_valid_run = false;
 
-        // Using dpad controls disallowed
+        // Using dpad controls is disallowed
         bool dpad_down =
             pad::button_down(mkb::PAD_BUTTON_DOWN) || pad::button_down(mkb::PAD_BUTTON_LEFT) ||
             pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
@@ -34,6 +35,9 @@ void tick() {
                                     pref::get_debug_mode() || pref::get_jump_mod() ||
                                     pref::get_moon() || pref::get_marathon();
         if (using_disallowed_mod) s_valid_run = false;
+
+        // Opening the mod menu is disallowed
+        if (menu_impl::is_visible()) s_valid_run = false;
     }
 }
 

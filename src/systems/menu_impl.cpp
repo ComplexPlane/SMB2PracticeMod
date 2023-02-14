@@ -312,4 +312,8 @@ void disp() {
     draw_menu_widget(s_menu_stack[s_menu_stack_ptr]);
 }
 
+bool is_visible() {
+    return s_visible;
+}
+
 }  // namespace menu_impl
