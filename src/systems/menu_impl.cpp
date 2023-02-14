@@ -163,8 +163,8 @@ static f32 sin_lerp(s32 period_frames) {
 }
 
 static void draw_selectable_highlight(float y) {
-    float new_y = y * 1.072 - 3; // Do NOT ask why we need this
-    draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
+    // float new_y = y * 1.072 - 3; // Do NOT ask why we need this
+    // draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
 
     // Draw selection arrow
     draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
