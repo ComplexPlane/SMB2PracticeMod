@@ -18,8 +18,9 @@ static constexpr s32 MARGIN = 20;
 static constexpr s32 PAD = 8;
 static constexpr s32 LINE_HEIGHT = 20;
 
-static const mkb::GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
+static const mkb::GXColor FOCUSED_COLOR = {0x9d, 0xd4, 0xff, 0xff};
 static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
+static const mkb::GXColor MENU_HIGHLIGHT_COLOR = {0x56, 0x6a, 0xff, 0x9f};
 
 static bool s_visible;
 static u32 s_cursor_frame = 0;
@@ -163,18 +164,19 @@ static f32 sin_lerp(s32 period_frames) {
 }
 
 static void draw_selectable_highlight(float y) {
-    // float new_y = y * 1.072 - 3; // Do NOT ask why we need this
-    // draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
+    float new_y = y * 1.072 - 3; // Do NOT ask why we need this
+    draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), MENU_HIGHLIGHT_COLOR);
 
     // Draw selection arrow
-    draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
+    // draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
 }
 
 void draw_menu_widget(MenuWidget* menu) {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
 
-    mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+    // mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+    mkb::GXColor lerped_color = FOCUSED_COLOR;
 
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget& widget = menu->widgets[i];
