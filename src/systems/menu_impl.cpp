@@ -18,9 +18,14 @@ static constexpr s32 MARGIN = 20;
 static constexpr s32 PAD = 8;
 static constexpr s32 LINE_HEIGHT = 20;
 
-static const mkb::GXColor FOCUSED_COLOR = {0x9d, 0xd4, 0xff, 0xff};
-static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
-static const mkb::GXColor MENU_HIGHLIGHT_COLOR = {0x56, 0x6a, 0xff, 0x9f};
+// static const mkb::GXColor FOCUSED_COLOR = {0x9d, 0xd4, 0xff, 0xff};
+// static const mkb::GXColor FOCUSED_COLOR = {0x9d, 0xd4, 0xff, 0xff};
+static const mkb::GXColor FOCUSED_COLOR = {0xb5, 0xd0, 0xff, 0xff};
+// static const mkb::GXColor UNFOCUSED_COLOR = {0x4e, 0x81, 0xf9, 0xff};
+static const mkb::GXColor UNFOCUSED_COLOR = {0x54, 0x86, 0xff, 0xff};
+static const mkb::GXColor LINE_HIGHLIGHT_COLOR = {0x56, 0x6a, 0xff, 0xff};
+// static const mkb::GXColor LINE_HIGHLIGHT_COLOR = {0x3d, 0x54, 0xff, 0x9f};
+// static const mkb::GXColor LINE_HIGHLIGHT_COLOR = {0x84, 0x4c, 0xff, 0x9f};
 
 static bool s_visible;
 static u32 s_cursor_frame = 0;
@@ -165,7 +170,7 @@ static f32 sin_lerp(s32 period_frames) {
 
 static void draw_selectable_highlight(float y) {
     float new_y = y * 1.072 - 3; // Do NOT ask why we need this
-    draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), MENU_HIGHLIGHT_COLOR);
+    draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), LINE_HIGHLIGHT_COLOR);
 
     // Draw selection arrow
     // draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
