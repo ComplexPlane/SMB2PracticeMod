@@ -18,7 +18,7 @@ enum class WidgetType {
 };
 
 struct TextWidget {
-    const char* label;  // For static text
+    const char* label;            // For static text
     const char* (*label_func)();  // For dynamic text
 };
 
@@ -61,9 +61,17 @@ struct ChooseWidget {
     void (*set)(u32);
 };
 
+namespace ButtonFlags {
+enum {
+    CloseMenu,  // Close menu after pushed
+    GoBack,     // Go back to parent menu after pushed
+};
+}
+
 struct ButtonWidget {
     const char* label;
-    void (*push)();
+    void (*push)();  // Runs when pushed. Can be null
+    u32 flags;
 };
 
 struct CustomWidget {

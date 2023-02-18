@@ -1,12 +1,12 @@
 #include "pref.h"
 
+#include <optional>
 #include "heap.h"
 #include "mkb/mkb.h"
-#include <optional>
 
 #include "cardio.h"
-#include "utils/draw.h"
 #include "log.h"
+#include "utils/draw.h"
 #include "utils/macro_utils.h"
 
 namespace pref {
@@ -42,9 +42,11 @@ enum class PrefId : u16 {
     IlMarkPractice = 26,
     IlMarkStory = 27,
     IlMarkChallenge = 28,
+    UnlockVanilla = 29,
+    UnlockRomhacks = 30,
 };
 
-// Bit index into Pref struct (not ID of preference itself as stored in memcard file
+// Bit index into Pref struct (not ID of preference itself as stored in memcard file)
 enum class BoolPref {
     Savestates,
     InputDisp,
@@ -69,6 +71,8 @@ enum class BoolPref {
     IlMarkPractice,
     IlMarkStory,
     IlMarkChallenge,
+    UnlockVanilla,
+    UnlockRomhacks,
 };
 
 struct Pref {
@@ -125,6 +129,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
     PrefId::IlMarkChallenge,
+    PrefId::UnlockVanilla,
+    PrefId::UnlockRomhacks,
 };
 
 static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
@@ -199,6 +205,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlMarkStory;
         case PrefId::IlMarkChallenge:
             return BoolPref::IlMarkChallenge;
+        case PrefId::UnlockVanilla:
+            return BoolPref::UnlockVanilla;
+        case PrefId::UnlockRomhacks:
+            return BoolPref::UnlockRomhacks;
         default:
             return {};
     }
@@ -259,6 +269,7 @@ static void load_default_prefs() {
     set_bool_pref(BoolPref::CmTimer, true);
     set_bool_pref(BoolPref::InputDispNotchIndicators, true);
     set_bool_pref(BoolPref::IlMarkPractice, true);
+    set_bool_pref(BoolPref::UnlockVanilla, true);
 }
 
 static void pref_struct_to_card_buf() {
@@ -298,19 +309,18 @@ static void pref_struct_to_card_buf() {
     }
 }
 
-constexpr char* PREF_FILENAME = "apmp";
+static constexpr char* PREF_FILENAME = "apmp";
 
 void init() {
+    load_default_prefs();
+
     FileHeader* header = nullptr;
     s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void**>(&header));
     if (result == mkb::CARD_RESULT_READY) {
         card_buf_to_pref_struct(header);
         heap::free(header);
-    } else {
-        if (result != mkb::CARD_RESULT_NOFILE) {
-            draw::notify(draw::RED, "Error loading settings from Card A, loading defaults");
-        }
-        load_default_prefs();
+    } else if (result != mkb::CARD_RESULT_NOFILE) {
+        draw::notify(draw::RED, "Error loading settings from Card A, setting defaults");
     }
 }
 
@@ -392,5 +402,9 @@ bool get_mute_timer_ding() { return get_bool_pref(BoolPref::MuteTimerDing); }
 void set_mute_timer_ding(bool on) { set_bool_pref(BoolPref::MuteTimerDing, on); }
 bool get_freecam() { return get_bool_pref(BoolPref::Freecam); }
 void set_freecam(bool on) { return set_bool_pref(BoolPref::Freecam, on); }
+bool get_unlock_vanilla() { return get_bool_pref(BoolPref::UnlockVanilla); }
+void set_unlock_vanilla(bool on) { set_bool_pref(BoolPref::UnlockVanilla, on); }
+bool get_unlock_romhacks() { return get_bool_pref(BoolPref::UnlockRomhacks); }
+void set_unlock_romhacks(bool on) { set_bool_pref(BoolPref::UnlockRomhacks, on); }
 
 }  // namespace pref

@@ -69,5 +69,9 @@ bool get_mute_timer_ding();
 void set_mute_timer_ding(bool on);
 bool get_freecam();
 void set_freecam(bool on);
+bool get_unlock_vanilla();
+void set_unlock_vanilla(bool on);
+bool get_unlock_romhacks();
+void set_unlock_romhacks(bool on);
 
 }  // namespace pref

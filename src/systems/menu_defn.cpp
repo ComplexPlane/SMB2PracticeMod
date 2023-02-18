@@ -12,6 +12,9 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 
+// TODO update buttons with close menu flag
+// TODO let buttons have null push()
+
 namespace menu_defn {
 
 static char s_version_str[30];
@@ -457,6 +460,54 @@ static Widget s_sound_widgets[] = {
     },
 };
 
+static Widget s_unlock_confirm_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  This will unlock all levels, lives, etc."},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  Save your game to make this persistent."},
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Cancel", .push = nullptr, .flags = ButtonFlags::GoBack},
+    },
+    {
+        .type = WidgetType::Button,
+        .button = {.label = "Confirm", .push = nullptr, .flags = ButtonFlags::GoBack},
+    },
+};
+
+static Widget s_unlock_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Unlock Progress For This Session"},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Unlock Everything Now", s_unlock_confirm_widgets, LEN(s_unlock_confirm_widgets)},
+    },
+    {.type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::Header,
+        .header = {"Always Unlock Progress"},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"For Vanilla SMB2", pref::get_unlock_vanilla, pref::set_unlock_vanilla},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox = {"For Romhacks", pref::get_unlock_romhacks, pref::set_unlock_romhacks},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  Takes effect on next game start."},
+    },
+};
+
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -479,6 +530,10 @@ static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Audio", s_sound_widgets, LEN(s_sound_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Progress Unlock", s_unlock_widgets, LEN(s_unlock_widgets)},
     },
     {
         .type = WidgetType::Checkbox,
