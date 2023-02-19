@@ -487,15 +487,6 @@ static Widget s_unlock_widgets[] = {
         .type = WidgetType::Header,
         .header = {"Unlock Progress For This Session"},
     },
-    // {
-    //     .type = WidgetType::Checkbox,
-    //     .checkbox =
-    //         {
-    //             .label = "Unlock Everything",
-    //             .get = unlock::get_unlock_everything,
-    //             .set = unlock::set_unlock_everything,
-    //         },
-    // },
     {
         .type = WidgetType::Menu,
         .menu = {"Unlock Everything Now", s_unlock_confirm_widgets, LEN(s_unlock_confirm_widgets)},
@@ -504,7 +495,7 @@ static Widget s_unlock_widgets[] = {
 
     {
         .type = WidgetType::Header,
-        .header = {"Unlock Progress By Default"},
+        .header = {"Always Unlock Progress"},
     },
     {
         .type = WidgetType::Checkbox,
@@ -516,7 +507,7 @@ static Widget s_unlock_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  Controls the default value of the Unlock Everything toggle."},
+        .text = {"  Applied on game startup."},
     },
 };
 
