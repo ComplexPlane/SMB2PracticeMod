@@ -7,6 +7,7 @@
 #include "mods/ilbattle.h"
 #include "mods/inputdisp.h"
 #include "mods/jump.h"
+#include "mods/unlock.h"
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
@@ -475,7 +476,9 @@ static Widget s_unlock_confirm_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Confirm", .push = nullptr, .flags = ButtonFlags::GoBack},
+        .button = {.label = "Confirm",
+                   .push = unlock::unlock_everything,
+                   .flags = ButtonFlags::GoBack},
     },
 };
 
@@ -484,6 +487,15 @@ static Widget s_unlock_widgets[] = {
         .type = WidgetType::Header,
         .header = {"Unlock Progress For This Session"},
     },
+    // {
+    //     .type = WidgetType::Checkbox,
+    //     .checkbox =
+    //         {
+    //             .label = "Unlock Everything",
+    //             .get = unlock::get_unlock_everything,
+    //             .set = unlock::set_unlock_everything,
+    //         },
+    // },
     {
         .type = WidgetType::Menu,
         .menu = {"Unlock Everything Now", s_unlock_confirm_widgets, LEN(s_unlock_confirm_widgets)},
@@ -492,7 +504,7 @@ static Widget s_unlock_widgets[] = {
 
     {
         .type = WidgetType::Header,
-        .header = {"Always Unlock Progress"},
+        .header = {"Unlock Progress By Default"},
     },
     {
         .type = WidgetType::Checkbox,
@@ -504,7 +516,7 @@ static Widget s_unlock_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  Takes effect on next game start."},
+        .text = {"  Controls the default value of the Unlock Everything toggle."},
     },
 };
 

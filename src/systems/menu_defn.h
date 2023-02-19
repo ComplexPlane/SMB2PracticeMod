@@ -63,8 +63,8 @@ struct ChooseWidget {
 
 namespace ButtonFlags {
 enum {
-    CloseMenu,  // Close menu after pushed
-    GoBack,     // Go back to parent menu after pushed
+    CloseMenu = 1 << 0,  // Close menu after pushed
+    GoBack = 1 << 1,     // Go back to parent menu after pushed
 };
 }
 

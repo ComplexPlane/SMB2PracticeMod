@@ -1,10 +1,19 @@
 #include "unlock.h"
 
 #include "mkb/mkb.h"
+#include "systems/pref.h"
 
 namespace unlock {
 
-static void unlock_everything() {
+namespace Flags {
+enum {
+    ShouldUnlock = 1 << 0,
+};
+}
+
+static u32 s_flags;
+
+static void do_unlock() {
     // Don't yet know how to unlock the staff credits game from a fresh save...
     mkb::unlock_info.master_unlocked = true;
     mkb::unlock_info.monkeys = 99;
@@ -18,8 +27,36 @@ static void unlock_everything() {
     mkb::memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
 }
 
-void tick() {
-    
+void init() {
+    // Unlock progress every frame (so it works even if a saved game is loaded), but only enact this
+    // policy if the corresponding setting was enabled on startup.
+    char gamecode[7] = {};
+    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
+    if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
+        if (pref::get_unlock_vanilla()) {
+            s_flags |= Flags::ShouldUnlock;
+        }
+    } else if (pref::get_unlock_romhacks()) {
+        s_flags |= Flags::ShouldUnlock;
+    }
 }
 
+void tick() {
+    if (s_flags & Flags::ShouldUnlock) {
+        do_unlock();
+    }
+
+    char gamecode[7] = {};
+    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
+    mkb::OSReport("DEBUG: %s\n", gamecode);
+    if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
+    } else if (pref::get_unlock_romhacks()) {
+        s_flags |= Flags::ShouldUnlock;
+    }
 }
+
+void unlock_everything() {
+    s_flags |= Flags::ShouldUnlock;
+}
+
+}  // namespace unlock
