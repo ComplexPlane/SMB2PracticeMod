@@ -45,14 +45,6 @@ void tick() {
     if (s_flags & Flags::ShouldUnlock) {
         do_unlock();
     }
-
-    char gamecode[7] = {};
-    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
-    mkb::OSReport("DEBUG: %s\n", gamecode);
-    if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
-    } else if (pref::get_unlock_romhacks()) {
-        s_flags |= Flags::ShouldUnlock;
-    }
 }
 
 void unlock_everything() {
