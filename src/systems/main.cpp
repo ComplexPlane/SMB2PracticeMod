@@ -70,8 +70,8 @@ void init() {
     perform_assembly_patches();
 
     heap::init();
-    pref::init();
     cardio::init();
+    pref::init();
     unlock::init();
     draw::init();
     Tetris::get_instance().init();
