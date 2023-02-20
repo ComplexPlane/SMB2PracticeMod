@@ -400,6 +400,11 @@ freeMemory:
 # Restore the Arena Low
 stw r25,-0x7f50(r13) # Arena Low
 
+# Restore original game ID before running REL prolog
+lis r3,0x8000
+stw r19,0x0(r3)
+sth r18,0x4(r3)
+
 # Run the REL Prolog if the load was successful
 cmpwi r27,0
 beq- exit
@@ -408,7 +413,7 @@ bctrl
 
 exit:
 
-# Restore original game ID
+# Restore original game ID again, in case we errored
 lis r3,0x8000
 stw r19,0x0(r3)
 sth r18,0x4(r3)
