@@ -8202,7 +8202,7 @@
 80473F5C:effect_dest_funcs
 80474218:world_theme
 8047421C:tex_scroll_timer
-80474224:g_something_with_world_theme_1
+80474224:g_some_theme_color
 80474290:g_something_with_world_theme_2
 80474294:g_something_with_world_theme_3
 804742A4:g_smth_for_drawing
@@ -9196,7 +9196,7 @@
 809138A4:FUN_804eb82c
 809138C0:FUN_804eb848
 809138E8:FUN_804eb870
-80913904:FUN_804eb88c
+80913904:view_stage_draw_bananas
 80913ACC:FUN_804eba54
 80913DB4:g_smth_with_rendering_models_for_reflective_surfaces
 8091411C:g_draw_stobjs_in_viewstage

@@ -5594,7 +5594,7 @@ extern "C" {
     extern void (* effect_dest_funcs[71])(struct Effect *);
     extern WorldTheme  world_theme;
     extern float tex_scroll_timer;
-    extern struct GXColor g_something_with_world_theme_1;
+    extern struct GXColor g_some_theme_color;
     extern undefined4 g_something_with_world_theme_2;
     extern undefined4 g_something_with_world_theme_3;
     extern s32 g_smth_for_drawing;
@@ -8011,7 +8011,7 @@ extern "C" {
     void draw_mode_adv(void);
     void g_draw_world(void);
     void g_set_clear_color(void);
-    void g_smth_with_bg_color_drawing(struct GXColor * param_1);
+    void g_smth_with_bg_color_drawing(struct GXColor param_1);
     void g_something_with_view_stage(void);
     void take_pausemenu_screenshot(void * out_image_buffer, undefined4 src_left_px, undefined4 src_top_px, short width_px, short height_px, GXTexFmt  fmt);
     void init_pausemenu_screenshot_texobj(struct GXTexObj * param_1);
@@ -9538,6 +9538,7 @@ extern "C" {
     void event_view_dest(void);
     void g_something_with_view_stage2(void);
     void draw_reflective_objects_in_viewstage(void);
+    void view_stage_draw_bananas(void);
     void g_smth_with_rendering_models_for_reflective_surfaces(void);
     void g_draw_stobjs_in_viewstage(void);
     void g_something_with_view_stage_camera(struct Camera * camera);
