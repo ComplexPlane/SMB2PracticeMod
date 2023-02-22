@@ -31,6 +31,7 @@
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/ilmark.h"
+#include "mods/hidebg.h"
 
 namespace main {
 
@@ -96,6 +97,7 @@ void init() {
     sfx::init();
     menu_defn::init();
     freecam::init();
+    hidebg::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
