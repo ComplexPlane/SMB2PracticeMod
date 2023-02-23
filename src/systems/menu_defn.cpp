@@ -230,6 +230,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Beginner 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Beginner1); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -238,6 +239,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Beginner Extra 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {.type = WidgetType::Separator},
@@ -249,6 +251,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Advanced 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced1); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -257,6 +260,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Advanced 11-20",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced11); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -265,6 +269,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Advanced 21-30",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Advanced21); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -273,6 +278,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Advanced Extra 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {.type = WidgetType::Separator},
@@ -284,6 +290,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert1); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -292,6 +299,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert 11-20",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert11); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -300,6 +308,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert 21-30",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert21); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -308,6 +317,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert 31-40",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert31); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -316,6 +326,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert 41-50",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Expert41); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -324,6 +335,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Expert Extra 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::ExpertExtra); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {.type = WidgetType::Separator},
@@ -335,6 +347,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Master 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::Master1); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
     {
@@ -343,6 +356,7 @@ static Widget s_cm_seg_widgets[] = {
             {
                 .label = "Master Extra 1-10",
                 .push = [] { cmseg::request_cm_seg(cmseg::Seg::MasterExtra); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
 };
@@ -472,13 +486,21 @@ static Widget s_unlock_confirm_widgets[] = {
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Cancel", .push = nullptr, .flags = ButtonFlags::GoBack},
+        .button =
+            {
+                .label = "Cancel",
+                .push = nullptr,
+                .flags = ButtonFlags::GoBack,
+            },
     },
     {
         .type = WidgetType::Button,
-        .button = {.label = "Confirm",
-                   .push = unlock::unlock_everything,
-                   .flags = ButtonFlags::GoBack},
+        .button =
+            {
+                .label = "Confirm",
+                .push = unlock::unlock_everything,
+                .flags = ButtonFlags::GoBack,
+            },
     },
 };
 
@@ -660,7 +682,12 @@ static Widget s_gameplay_mods_widgets[] = {
 static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Button,
-        .button = {"Go To Story Mode", gotostory::load_storymode},
+        .button =
+            {
+                .label = "Go To Story Mode",
+                .push = gotostory::load_storymode,
+                .flags = ButtonFlags::CloseMenu,
+            },
     },
     {
         .type = WidgetType::Menu,
