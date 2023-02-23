@@ -489,7 +489,7 @@ static Widget s_unlock_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Unlock Everything Now", s_unlock_confirm_widgets, LEN(s_unlock_confirm_widgets)},
+        .menu = {"Unlock Now", s_unlock_confirm_widgets, LEN(s_unlock_confirm_widgets)},
     },
     {.type = WidgetType::Separator},
 
