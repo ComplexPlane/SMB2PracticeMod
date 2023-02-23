@@ -42,8 +42,9 @@ enum class PrefId : u16 {
     IlMarkPractice = 26,
     IlMarkStory = 27,
     IlMarkChallenge = 28,
-    UnlockVanilla = 29,
-    UnlockRomhacks = 30,
+    HideBg = 29,
+    UnlockVanilla = 30,
+    UnlockRomhacks = 31,
 };
 
 // Bit index into Pref struct (not ID of preference itself as stored in memcard file)
@@ -71,6 +72,7 @@ enum class BoolPref {
     IlMarkPractice,
     IlMarkStory,
     IlMarkChallenge,
+    HideBg,
     UnlockVanilla,
     UnlockRomhacks,
 };
@@ -129,6 +131,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
     PrefId::IlMarkChallenge,
+    PrefId::HideBg,
     PrefId::UnlockVanilla,
     PrefId::UnlockRomhacks,
 };
@@ -205,6 +208,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlMarkStory;
         case PrefId::IlMarkChallenge:
             return BoolPref::IlMarkChallenge;
+        case PrefId::HideBg:
+            return BoolPref::HideBg;
         case PrefId::UnlockVanilla:
             return BoolPref::UnlockVanilla;
         case PrefId::UnlockRomhacks:
@@ -402,6 +407,8 @@ bool get_mute_timer_ding() { return get_bool_pref(BoolPref::MuteTimerDing); }
 void set_mute_timer_ding(bool on) { set_bool_pref(BoolPref::MuteTimerDing, on); }
 bool get_freecam() { return get_bool_pref(BoolPref::Freecam); }
 void set_freecam(bool on) { return set_bool_pref(BoolPref::Freecam, on); }
+bool get_hide_bg() { return get_bool_pref(BoolPref::HideBg); }
+void set_hide_bg(bool on) { set_bool_pref(BoolPref::HideBg, on); }
 bool get_unlock_vanilla() { return get_bool_pref(BoolPref::UnlockVanilla); }
 void set_unlock_vanilla(bool on) { set_bool_pref(BoolPref::UnlockVanilla, on); }
 bool get_unlock_romhacks() { return get_bool_pref(BoolPref::UnlockRomhacks); }

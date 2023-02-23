@@ -529,6 +529,15 @@ static Widget s_tools_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam},
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Background",
+                .get = pref::get_hide_bg,
+                .set = pref::set_hide_bg,
+            },
+    },
     {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},
     {
         .type = WidgetType::Menu,
