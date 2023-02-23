@@ -8,7 +8,6 @@ namespace hidebg {
 
 static patch::Tramp<decltype(&mkb::g_draw_bg)> s_draw_bg_tramp;
 static patch::Tramp<decltype(&mkb::g_set_clear_color)> s_clear_tramp;
-static patch::Tramp<decltype(&mkb::GXSetCopyClear_cached)> s_gxclear_tramp;
 
 static bool should_hide_bg() { return pref::get_hide_bg() && mkb::main_mode != mkb::MD_ADV; }
 
@@ -26,11 +25,6 @@ static void nl2ngc_set_fog_color_hook(u8 r, u8 g, u8 b) {
     } else {
         mkb::nl2ngc_set_fog_color(r, g, b);
     }
-}
-
-static void GXSetCopyClear_hook(mkb::GXColor color, u32 clear_z) {
-    mkb::OSReport("GXSetCopyClear({%d, %d, %d, %d}, %d)\n", color.r, color.g, color.b, color.a, clear_z);
-    s_gxclear_tramp.dest(color, clear_z);
 }
 
 void init() {
