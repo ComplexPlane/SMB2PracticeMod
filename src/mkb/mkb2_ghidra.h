@@ -5594,7 +5594,7 @@ extern "C" {
     extern void (* effect_dest_funcs[71])(struct Effect *);
     extern WorldTheme  world_theme;
     extern float tex_scroll_timer;
-    extern struct GXColor g_something_with_world_theme_1;
+    extern struct GXColor g_some_theme_color;
     extern undefined4 g_something_with_world_theme_2;
     extern undefined4 g_something_with_world_theme_3;
     extern s32 g_smth_for_drawing;
@@ -6015,6 +6015,9 @@ extern "C" {
     extern undefined4 g_last_filename_attempted_to_open;
     extern undefined4 g_minigame_tick_func;
     extern undefined1 g_haze_type;
+    extern undefined1 g_override_clear_r;
+    extern undefined1 g_override_clear_g;
+    extern undefined1 g_override_clear_b;
     extern undefined4 g_maybe_smth_related_to_pausing;
     extern struct MemCardInfo memcard_infos[2];
     extern struct StoryModeSaveFile storymode_save_files[3];
@@ -8006,12 +8009,12 @@ extern "C" {
     void event_freeze(EventID  event_id);
     void event_restart(EventID  event_id);
     void dest_all_events(void);
-    void g_draw_3d(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void polydisp_main(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void draw_mode(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void draw_mode_adv(void);
     void g_draw_world(void);
     void g_set_clear_color(void);
-    void g_smth_with_bg_color_drawing(struct GXColor * param_1);
+    void g_smth_with_bg_color_drawing(struct GXColor param_1);
     void g_something_with_view_stage(void);
     void take_pausemenu_screenshot(void * out_image_buffer, undefined4 src_left_px, undefined4 src_top_px, short width_px, short height_px, GXTexFmt  fmt);
     void init_pausemenu_screenshot_texobj(struct GXTexObj * param_1);
@@ -8339,6 +8342,8 @@ extern "C" {
     undefined4 g_nl2ngc_gma_func(struct NlBuffer * nl_buf);
     void g_nl2ngc_tpl_func(struct NlBuffer * param_1, struct TplBuffer * param_2);
     void g_smth_with_some_nl_model_buffer(struct GmaModel * param_1);
+    void nl2ngc_set_fog_params(double param_1, double param_2, undefined4 param_3);
+    void nl2ngc_set_fog_color(u8 r, u8 g, u8 b);
     void empty_function(void);
     void g_ape_upright(struct Ape * ball);
     void g_move_ape_into_ball(struct Ape * ape);
@@ -9155,7 +9160,7 @@ extern "C" {
     void g_some_rendefc_func_2(int param_1, int param_2);
     void g_smth_with_reflective_models(undefined4 param_1, int param_2);
     void g_smth_with_wormhole_surfaces(undefined * param_1);
-    void g_something_to_do_with_fog(void);
+    void fog_main(void);
     void g_set_something3(char param_1);
     void smd_mini_commend_init(void);
     void smd_mini_commend_tick(void);
@@ -9246,6 +9251,8 @@ extern "C" {
     undefined4 g_something_with_texture_scroll_2(int param_1);
     void g_stores_doubles(double param_1, double param_2, double param_3, double param_4);
     void g_stores_doubles2(double param_1, double param_2, double param_3, double param_4);
+    void avdisp_set_fog_params(double param_1, double param_2, undefined param_3);
+    void avdisp_set_fog_color(u8 r, u8 g, u8 b);
     void g_yet_another_unk_draw_func(undefined4 param_1);
     void g_avdisp_reset_alpha_and_bound_sphere_scale(void);
     DVDFileInfo * g_get_some_dvd_file_info2(void);
@@ -9538,6 +9545,7 @@ extern "C" {
     void event_view_dest(void);
     void g_something_with_view_stage2(void);
     void draw_reflective_objects_in_viewstage(void);
+    void view_stage_draw_bananas(void);
     void g_smth_with_rendering_models_for_reflective_surfaces(void);
     void g_draw_stobjs_in_viewstage(void);
     void g_something_with_view_stage_camera(struct Camera * camera);
