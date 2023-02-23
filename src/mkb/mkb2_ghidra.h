@@ -6051,6 +6051,7 @@ extern "C" {
     extern struct Ape * registered_apes[64];
     extern undefined4 total_apes_registered;
     extern undefined4 g_ptr_to_something;
+    extern undefined1 g_some_gift_menu_flags;
     extern undefined4 g_something_with_cutscenes3;
     extern undefined2 g_author_frame;
     extern undefined2 g_author_frame_max;
@@ -6195,6 +6196,7 @@ extern "C" {
     extern struct Ape * menu_apes[4];
     extern undefined4 g_menu_color_overlay_timer;
     extern undefined g_something_with_preview_textures;
+    extern undefined1 g_gift_menu_cursor_pos;
     extern undefined * switchdataD_80590050;
     extern pointer switchdataD_805b1fc6;
     extern pointer switchdataD_805b20d2;
@@ -9608,6 +9610,7 @@ extern "C" {
     void sprite_practice_stage_preview_mask_disp(u8 * status, struct Sprite * sprite);
     void g_create_some_practice_mode_preview_sprites(void);
     void g_draw_controller_sprites(void);
+    void g_draw_gift_menu(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, u32 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void empty_function(void);
     void sel_stage_unlinked_func(void);
     void g_references_420_03(void);

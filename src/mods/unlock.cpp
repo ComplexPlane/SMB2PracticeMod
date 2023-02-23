@@ -1,6 +1,7 @@
 #include "unlock.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 #include "systems/pref.h"
 
 namespace unlock {
@@ -25,6 +26,8 @@ static void do_unlock() {
     mkb::unlock_info.g_movies_watched = 0x0fff;
     mkb::memset(mkb::cm_unlock_entries, 0xff, sizeof(mkb::cm_unlock_entries));
     mkb::memset(mkb::storymode_unlock_entries, 0xff, sizeof(mkb::storymode_unlock_entries));
+    // Magic flag that allows staff credit game to be selected, ???
+    mkb::g_some_gift_menu_flags |= 8;
 }
 
 void init() {
@@ -47,8 +50,6 @@ void tick() {
     }
 }
 
-void unlock_everything() {
-    s_flags |= Flags::ShouldUnlock;
-}
+void unlock_everything() { s_flags |= Flags::ShouldUnlock; }
 
 }  // namespace unlock
