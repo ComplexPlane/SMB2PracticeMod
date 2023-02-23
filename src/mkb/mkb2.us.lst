@@ -3423,7 +3423,7 @@
 8027540C:event_restart
 8027548C:dest_all_events
 80275540:FUN_8019f308
-80275560:g_draw_3d
+80275560:polydisp_main
 80275870:draw_mode
 802758A8:switchD
 802758AC:caseD_8
@@ -4327,8 +4327,8 @@
 802B4760:FUN_801de528
 802B4770:FUN_801de538
 802B4798:FUN_801de560
-802B47A8:FUN_801de570
-802B47C0:FUN_801de588
+802B47A8:nl2ngc_set_fog_params
+802B47C0:nl2ngc_set_fog_color
 802B47E8:FUN_801de5b0
 802B491C:FUN_801de6e4
 802B4A58:FUN_801de820
@@ -6493,7 +6493,7 @@
 8035233C:FUN_8027c104
 8035258C:FUN_8027c354
 80352AF0:FUN_8027c8b8
-80352CFC:g_something_to_do_with_fog
+80352CFC:fog_main
 80352EC0:g_set_something3
 80352EF8:FUN_8027ccc0
 80352F3C:FUN_8027cd04
@@ -7055,8 +7055,8 @@
 8037A74C:g_stores_doubles2
 8037A79C:FUN_802a4564
 8037A7E0:FUN_802a45a8
-8037A7F4:FUN_802a45bc
-8037A820:FUN_802a45e8
+8037A7F4:avdisp_set_fog_params
+8037A820:avdisp_set_fog_color
 8037A848:g_yet_another_unk_draw_func
 8037A874:FUN_802a463c
 8037A8A0:FUN_802a4668
@@ -8681,6 +8681,9 @@
 806162B4:g_last_filename_attempted_to_open
 8061A994:g_minigame_tick_func
 8061BA68:g_haze_type
+8061BB18:g_override_clear_r
+8061BB19:g_override_clear_g
+8061BB1A:g_override_clear_b
 8061BB20:g_maybe_smth_related_to_pausing
 8061BBC0:memcard_infos
 8061BBC1:g_card_channel_maybe
