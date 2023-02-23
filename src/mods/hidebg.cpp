@@ -62,9 +62,6 @@ void init() {
                            reinterpret_cast<void*>(avdisp_set_fog_color_hook));
     patch::write_branch_bl(reinterpret_cast<void*>(0x80352eac),
                            reinterpret_cast<void*>(nl2ngc_set_fog_color_hook));
-
-    // Test
-    // patch::hook_function(s_gxclear_tramp, mkb::GXSetCopyClear_cached, GXSetCopyClear_hook);
 }
 
 }  // namespace hidebg

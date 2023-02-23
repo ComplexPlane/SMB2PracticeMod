@@ -8723,6 +8723,7 @@
 8062204C:registered_apes
 8062214C:total_apes_registered
 80622154:g_ptr_to_something
+80622880:g_some_gift_menu_flags
 80629DC8:g_something_with_cutscenes3
 80629DE6:g_author_frame
 80629DE8:g_author_frame_max
@@ -9877,7 +9878,7 @@
 8091B79C:FUN_80571704
 8091B838:FUN_805717a0
 8091B85C:FUN_805717c4
-8091B968:FUN_805718d0
+8091B968:g_draw_gift_menu
 8091CDE8:FUN_80572d50
 8091D184:FUN_805730ec
 8091E59C:switchdataD_80574504
@@ -9909,6 +9910,7 @@
 80949E38:menu_apes
 80949E50:g_menu_color_overlay_timer
 80949E58:g_something_with_preview_textures
+80952863:g_gift_menu_cursor_pos
 808F40B0:FUN_8058e5e0
 808F40FC:empty_function
 808F4100:sel_stage_unlinked_func

@@ -32,6 +32,8 @@ static void push_menu(MenuWidget* menu) {
     MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
     s_menu_stack_ptr++;
     s_menu_stack[s_menu_stack_ptr] = menu;
+    s_cursor_frame = 0;
+    pad::reset_dir_repeat();
 }
 
 static void pop_menu() {
@@ -40,6 +42,8 @@ static void pop_menu() {
     } else {
         s_menu_stack_ptr--;
     }
+    s_cursor_frame = 0;
+    pad::reset_dir_repeat();
 }
 
 static Widget* get_selected_widget() {
@@ -83,8 +87,6 @@ static void handle_widget_bind() {
         pref::save();
     } else if (selected->type == WidgetType::Menu && a_pressed) {
         push_menu(&selected->menu);
-        s_cursor_frame = 0;
-        pad::reset_dir_repeat();
     } else if (selected->type == WidgetType::Choose) {
         auto& choose = selected->choose;
         if (a_pressed) {
@@ -95,10 +97,17 @@ static void handle_widget_bind() {
             choose.set((choose.get() + choose.num_choices - 1) % choose.num_choices);
             pref::save();
         }
-        // TODO handle setting default value
     } else if (selected->type == WidgetType::Button && a_pressed) {
-        selected->button.push();
-        s_visible = false;
+        auto& button = selected->button;
+        if (button.push != nullptr) {
+            selected->button.push();
+        }
+        if (button.flags & ButtonFlags::CloseMenu) {
+            s_visible = false;
+        }
+        if (button.flags & ButtonFlags::GoBack) {
+            pop_menu();
+        }
     }
 }
 
@@ -108,8 +117,6 @@ void tick() {
     bool toggle = false;
     if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
         pop_menu();
-        s_cursor_frame = 0;
-        pad::reset_dir_repeat();
     } else {
         toggle = pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true);
         s_visible ^= toggle;
