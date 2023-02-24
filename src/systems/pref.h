@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  * Mod user preferences, backed by memory card save file
  */

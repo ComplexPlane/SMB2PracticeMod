@@ -8,7 +8,6 @@
 #include "mods/inputdisp.h"
 #include "mods/jump.h"
 #include "mods/unlock.h"
-#include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
@@ -30,46 +29,47 @@ static Widget s_inputdisp_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                "Show Input Display",
-                pref::get_input_disp,
-                pref::set_input_disp,
+                .label = "Show Input Display",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::InputDisp,
             },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                "Use Center Location",
-                pref::get_input_disp_center_location,
-                pref::set_input_disp_center_location,
+                .label = "Use Center Location",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::InputDispCenterLocation,
             },
     },
     {
         .type = WidgetType::Choose,
-        .choose = {
-            .label = "Color",
-            .choices = inputdisp_colors,
-            .num_choices = LEN(inputdisp_colors),
-            .get = []() { return static_cast<u32>(pref::get_input_disp_color()); },
-            .set = [](u32 color) { pref::set_input_disp_color(static_cast<u8>(color)); },
-        },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .choose =
             {
-                "Notch Indicators",
-                pref::get_input_disp_notch_indicators,
-                pref::set_input_disp_notch_indicators,
+                .label = "Color",
+                .choices = inputdisp_colors,
+                .num_choices = LEN(inputdisp_colors),
+                .flags = ChooseFlags::Pref,
+                .pref = pref::U8Pref::InputDispColor,
             },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                "Raw Stick Inputs",
-                pref::get_input_disp_raw_stick_inputs,
-                pref::set_input_disp_raw_stick_inputs,
+                .label = "Notch Indicators",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::InputDispNotchIndicators,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Raw Stick Inputs",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::InputDispRawStickInputs,
             },
     },
 };
@@ -82,23 +82,25 @@ static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
 static Widget s_ball_color_widgets[] = {
     {
         .type = WidgetType::Choose,
-        .choose = {
-            .label = "Ball Color",
-            .choices = s_ball_colors,
-            .num_choices = LEN(s_ball_colors),
-            .get = []() { return static_cast<u32>(pref::get_ball_color()); },
-            .set = [](u32 color) { pref::set_ball_color(static_cast<u8>(color)); },
-        },
+        .choose =
+            {
+                .label = "Ball Color",
+                .choices = s_ball_colors,
+                .num_choices = LEN(s_ball_colors),
+                .flags = ChooseFlags::Pref,
+                .pref = pref::U8Pref::BallColor,
+            },
     },
     {
         .type = WidgetType::Choose,
-        .choose = {
-            .label = "Ape Color",
-            .choices = s_ball_colors,
-            .num_choices = LEN(s_ball_colors),
-            .get = []() { return static_cast<u32>(pref::get_ape_color()); },
-            .set = [](u32 color) { pref::set_ape_color(static_cast<u8>(color)); },
-        },
+        .choose =
+            {
+                .label = "Ape Color",
+                .choices = s_ball_colors,
+                .num_choices = LEN(s_ball_colors),
+                .flags = ChooseFlags::Pref,
+                .pref = pref::U8Pref::ApeColor,
+            },
     },
 };
 
@@ -115,66 +117,77 @@ static Widget s_il_battle_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                "IL Battle Display",
-                pref::get_il_battle_display,
-                pref::set_il_battle_display,
+                .label = "IL Battle Display",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IlBattleDisplay,
             },
     },
     {
         .type = WidgetType::Choose,
-        .choose = {
-            .label = "Battle Length",
-            .choices = s_il_battle_lengths,
-            .num_choices = LEN(s_il_battle_lengths),
-            .get = []() { return static_cast<u32>(pref::get_il_battle_length()); },
-            .set = [](u32 color) { pref::set_il_battle_length(static_cast<u8>(color)); },
-        },
+        .choose =
+            {
+                .label = "Battle Length",
+                .choices = s_il_battle_lengths,
+                .num_choices = LEN(s_il_battle_lengths),
+                .flags = ChooseFlags::Pref,
+                .pref = pref::U8Pref::IlBattleLength,
+            },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                "Score Breakdown Info",
-                pref::get_il_battle_breakdown,
-                pref::set_il_battle_breakdown,
+                .label = "Score Breakdown Info",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IlBattleBreakdown,
             },
     },
     {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
 };
 
 static Widget s_rumble_widgets[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox = {
-            .label = "Controller 1 Rumble",
-            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
-            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
-        },
-    },
+    {.type = WidgetType::Checkbox,
+     .checkbox = {
+         .label = "Controller 1 Rumble",
+         .flags = CheckboxFlags::GetterSetter,
+         .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
+         .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
+         .get_default = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
+     }},
     {
         .type = WidgetType::Checkbox,
         .checkbox = {
             .label = "Controller 2 Rumble",
+            .flags = CheckboxFlags::GetterSetter,
             .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
             .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 1); },
+            .get_default =
+                []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
         },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox = {
             .label = "Controller 3 Rumble",
+            .flags = CheckboxFlags::GetterSetter,
             .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
             .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 2); },
+            .get_default =
+                []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
         },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox = {
             .label = "Controller 4 Rumble",
+            .flags = CheckboxFlags::GetterSetter,
             .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
             .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
+            .get_default =
+                []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
         },
-    }};
+    },
+};
 
 static Widget s_about_widgets[] = {
     {
@@ -214,13 +227,14 @@ static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Rando
 static Widget s_cm_seg_widgets[] = {
     // Settings
     {.type = WidgetType::Choose,
-     .choose = {
-         .label = "Character",
-         .choices = chara_choices,
-         .num_choices = LEN(chara_choices),
-         .get = [] { return static_cast<u32>(pref::get_cm_chara()); },
-         .set = [](u32 choice) { pref::set_cm_chara(static_cast<u8>(choice)); },
-     }},
+     .choose =
+         {
+             .label = "Character",
+             .choices = chara_choices,
+             .num_choices = LEN(chara_choices),
+             .flags = ChooseFlags::Pref,
+             .pref = pref::U8Pref::CmChara,
+         }},
     {.type = WidgetType::Separator},
 
     // Beginner
@@ -364,16 +378,32 @@ static Widget s_cm_seg_widgets[] = {
 static Widget s_timers_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"RTA+Pause Timer", pref::get_rta_pause_timer, pref::set_rta_pause_timer},
+        .checkbox =
+            {
+                .label = "RTA+Pause Timer",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::RtaPauseTimer,
+            },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Story Mode IW Timer", pref::get_iw_timer, pref::set_iw_timer},
+        .checkbox =
+            {
+                .label = "Story Mode IW Timer",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IwTimer,
+            },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"CM Seg Timer", pref::get_cm_timer, pref::set_cm_timer},
-    }};
+        .checkbox =
+            {
+                .label = "CM Seg Timer",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::CmTimer,
+            },
+    },
+};
 
 static Widget s_savestates_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
@@ -456,8 +486,8 @@ static Widget s_sound_widgets[] = {
         .checkbox =
             {
                 .label = "Mute Background Music",
-                .get = pref::get_mute_bgm,
-                .set = pref::set_mute_bgm,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::MuteBgm,
             },
     },
     {.type = WidgetType::Text, .text = {"  To apply background music setting:"}},
@@ -469,8 +499,8 @@ static Widget s_sound_widgets[] = {
         .checkbox =
             {
                 .label = "Mute Timer Ding",
-                .get = pref::get_mute_timer_ding,
-                .set = pref::set_mute_timer_ding,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::MuteTimerDing,
             },
     },
 };
@@ -521,11 +551,21 @@ static Widget s_unlock_widgets[] = {
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"For Vanilla SMB2", pref::get_unlock_vanilla, pref::set_unlock_vanilla},
+        .checkbox =
+            {
+                .label = "For Vanilla SMB2",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::UnlockVanilla,
+            },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"For Romhacks", pref::get_unlock_romhacks, pref::set_unlock_romhacks},
+        .checkbox =
+            {
+                .label = "For Romhacks",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::UnlockRomhacks,
+            },
     },
     {
         .type = WidgetType::Text,
@@ -536,28 +576,38 @@ static Widget s_unlock_widgets[] = {
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {"Savestates", pref::get_savestates, pref::set_savestates},
+        .checkbox =
+            {
+                .label = "Savestates",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::Savestates,
+            },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
                 .label = "Freeze Timer",
-                .get = pref::get_freeze_timer,
-                .set = pref::set_freeze_timer,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::FreezeTimer,
             },
     },
     {
         .type = WidgetType::Checkbox,
-        .checkbox = {.label = "Freecam", .get = pref::get_freecam, .set = pref::set_freecam},
+        .checkbox =
+            {
+                .label = "Freecam",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::Freecam,
+            },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
                 .label = "Hide Background",
-                .get = pref::get_hide_bg,
-                .set = pref::set_hide_bg,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::HideBg,
             },
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},
@@ -574,8 +624,8 @@ static Widget s_tools_widgets[] = {
         .checkbox =
             {
                 .label = "Debug Mode",
-                .get = pref::get_debug_mode,
-                .set = pref::set_debug_mode,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::DebugMode,
             },
     },
 };
@@ -586,8 +636,8 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Show in Practice Mode",
-                .get = pref::get_il_mark_practice,
-                .set = pref::set_il_mark_practice,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IlMarkPractice,
             },
     },
     {
@@ -595,8 +645,8 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Show in Story Mode",
-                .get = pref::get_il_mark_story,
-                .set = pref::set_il_mark_story,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IlMarkStory,
             },
     },
     {
@@ -604,8 +654,8 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Show in Challenge Mode",
-                .get = pref::get_il_mark_challenge,
-                .set = pref::set_il_mark_challenge,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::IlMarkChallenge,
             },
     },
 };
@@ -636,8 +686,8 @@ static Widget s_displays_widgets[] = {
         .checkbox =
             {
                 .label = "9999 Banana Counter",
-                .get = pref::get_9999_banana_counter,
-                .set = pref::set_9999_banana_counter,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::BananaCounter9999,
             },
     },
 };
@@ -648,8 +698,8 @@ static Widget s_gameplay_mods_widgets[] = {
         .checkbox =
             {
                 .label = "Jump Mod",
-                .get = pref::get_jump_mod,
-                .set = pref::set_jump_mod,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::JumpMod,
             },
     },
     {
@@ -657,8 +707,8 @@ static Widget s_gameplay_mods_widgets[] = {
         .checkbox =
             {
                 .label = "Moon Gravity",
-                .get = pref::get_moon,
-                .set = pref::set_moon,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::Moon,
             },
     },
     {
@@ -666,17 +716,19 @@ static Widget s_gameplay_mods_widgets[] = {
         .checkbox =
             {
                 .label = "Marathon Mode",
-                .get = pref::get_marathon,
-                .set = pref::set_marathon,
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::Marathon,
             },
     },
-    {.type = WidgetType::Checkbox,
-     .checkbox =
-         {
-             .label = "D-pad Controls",
-             .get = pref::get_dpad_controls,
-             .set = pref::set_dpad_controls,
-         }},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "D-pad Controls",
+                .flags = CheckboxFlags::Pref,
+                .pref = pref::BoolPref::DpadControls,
+            },
+    },
 };
 
 static Widget s_root_widgets[] = {

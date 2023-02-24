@@ -2,6 +2,8 @@
 
 #include "mkb/mkb.h"
 
+#include "pref.h"
+
 namespace menu_defn {
 
 enum class WidgetType {
@@ -32,11 +34,25 @@ struct HeaderWidget {
     const char* label;
 };
 
+namespace CheckboxFlags {
+enum {
+    Pref = 1 << 0,          // Use bool preference ID
+    GetterSetter = 1 << 1,  // Use manual getters/setters
+};
+}
+
 struct CheckboxWidget {
     const char* label;
-    // We can't use std::function due to destructors in unions stuff
-    bool (*get)();
-    void (*set)(bool);
+    u32 flags;
+    union {
+        pref::BoolPref pref;
+        struct {
+            // We can't use std::function due to destructors in unions stuff
+            bool (*get)();
+            void (*set)(bool);
+            bool (*get_default)();
+        };
+    };
 };
 
 struct MenuWidget {
@@ -53,12 +69,26 @@ struct FloatViewWidget {
     f32 (*get)();
 };
 
+namespace ChooseFlags {
+enum {
+    Pref,          // Use u8 preference ID
+    GetterSetter,  // Use manual getters/setters
+};
+}
+
 struct ChooseWidget {
     const char* label;
     const char** choices;
-    u32 num_choices;
-    u32 (*get)();
-    void (*set)(u32);
+    u16 num_choices;
+    u16 flags;
+    union {
+        pref::U8Pref pref;
+        struct {
+            u32 (*get)();
+            void (*set)(u32);
+            u32 (*get_default)();
+        };
+    };
 };
 
 namespace ButtonFlags {
