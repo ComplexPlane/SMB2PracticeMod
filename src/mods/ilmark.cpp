@@ -8,6 +8,7 @@
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
+#include "mods/freecam.h"
 
 namespace ilmark {
 
@@ -31,7 +32,7 @@ void tick() {
         if (pref::get_dpad_controls() && dpad_down) s_valid_run = false;
 
         // Using these tools/mods at all is disallowed
-        bool using_disallowed_mod = pref::get_freeze_timer() || pref::get_freecam() ||
+        bool using_disallowed_mod = pref::get_freeze_timer() || freecam::enabled() ||
                                     pref::get_debug_mode() || pref::get_jump_mod() ||
                                     pref::get_moon() || pref::get_marathon();
         if (using_disallowed_mod) s_valid_run = false;
