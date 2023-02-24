@@ -53,5 +53,7 @@ bool get(BoolPref bool_pref);
 u8 get(U8Pref u8_pref);
 void set(BoolPref bool_pref, bool value);
 void set(U8Pref u8_pref, u8 value);
+bool get_default(BoolPref bool_pref);
+u8 get_default(U8Pref u8_pref);
 
 }  // namespace pref

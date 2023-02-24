@@ -84,9 +84,9 @@ struct ChooseWidget {
     union {
         pref::U8Pref pref;
         struct {
-            u32 (*get)();
-            void (*set)(u32);
-            u32 (*get_default)();
+            u8 (*get)();
+            void (*set)(u8);
+            u8 (*get_default)();
         };
     };
 };
