@@ -32,7 +32,6 @@ static constexpr u32 CHEIGHT = 16;
 static bool s_invalid_pause = false;
 static u32 s_buzzer_message_count = 0;
 static u32 s_battle_length = 0;
-// static u32 battle_length = pref::get_ilbattle_length();
 
 static void battle_display(mkb::GXColor color) {
     u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
@@ -50,7 +49,7 @@ static void battle_display(mkb::GXColor color) {
     draw::debug_text(X, Y + CHEIGHT, color, "%d.%02d", best_seconds, best_centiseconds);
     draw::debug_text(X - 12 * CWIDTH, Y + 2 * CHEIGHT, color, "BEST SCORE:");
     draw::debug_text(X, Y + 2 * CHEIGHT, color, "%d", s_best_score);
-    if (pref::get_il_battle_breakdown()) {
+    if (pref::get(pref::BoolPref::IlBattleBreakdown)) {
         draw::debug_text(X - 12 * CWIDTH, Y + 3 * CHEIGHT, draw::GOLD, "SCORE BREAKDOWN");
         draw::debug_text(X - 12 * CWIDTH, Y + 4 * CHEIGHT, color, "BANANAS:");
         draw::debug_text(X, Y + 4 * CHEIGHT, color, "%d", s_best_score_bananas);
@@ -89,7 +88,7 @@ void clear_display() {
     s_buzzer_message_count = 0;
     s_best_score_bananas = 0;
     s_best_score_frames = 0;
-    s_battle_length = convert_battle_length(pref::get_il_battle_length());
+    s_battle_length = convert_battle_length(pref::get(pref::U8Pref::IlBattleLength));
 }
 
 void new_battle() {
@@ -106,7 +105,7 @@ static void track_first_retry() {
 }
 
 static void run_battle_timer() {
-    if (pref::get_il_battle_length() != 3) {  // If the timer isnt endless
+    if (pref::get(pref::U8Pref::IlBattleLength) != 3) {  // If the timer isnt endless
         if (s_battle_frames < s_battle_length) {
             s_battle_frames++;
         } else
@@ -167,7 +166,7 @@ static void track_final_attempt() {
 static void display_buzzer_beater_message() {
     s_buzzer_message_count++;
     u32 Y2 = Y;
-    if (pref::get_il_battle_breakdown()) Y2 = Y + 3 * CHEIGHT;
+    if (pref::get(pref::BoolPref::IlBattleBreakdown)) Y2 = Y + 3 * CHEIGHT;
     if (s_buzzer_message_count >= 0)
         draw::debug_text(X - 12 * CWIDTH, Y2 + 3 * CHEIGHT, draw::RED, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 5)
@@ -185,7 +184,7 @@ static void display_buzzer_beater_message() {
 }
 
 void tick() {
-    if (pref::get_il_battle_display()) {
+    if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry) {
             track_first_retry();
         } else if (s_state == IlBattleState::BattleRunning) {
@@ -214,7 +213,7 @@ void tick() {
 }
 
 void disp() {
-    if (pref::get_il_battle_display()) {
+    if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry && mkb::main_mode == mkb::MD_GAME) {
             draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
             draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "(RETRY TO BEGIN)");

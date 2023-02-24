@@ -2,10 +2,10 @@
 
 #include "mkb/mkb.h"
 
-#include "utils/draw.h"
 #include "systems/pad.h"
-#include "utils/patch.h"
 #include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/patch.h"
 
 namespace inputdisp {
 
@@ -131,8 +131,9 @@ void on_PADRead(mkb::PADStatus* statuses) {
 }
 
 void tick() {
-    set_sprite_visible(!pref::get_input_disp() || (pref::get_input_disp_center_location() &&
-                                                   !pref::get_input_disp_raw_stick_inputs()));
+    set_sprite_visible(!pref::get(pref::BoolPref::InputDisp) ||
+                       (pref::get(pref::BoolPref::InputDispCenterLocation) &&
+                        !pref::get(pref::BoolPref::InputDispRawStickInputs)));
 }
 
 static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2d* out_pos) {
@@ -180,7 +181,7 @@ static const mkb::GXColor s_color_map[] = {
 };
 
 static void draw_stick(const MergedStickInputs& stickInputs, const Vec2d& center, f32 scale) {
-    mkb::GXColor chosen_color = s_color_map[pref::get_input_disp_color()];
+    mkb::GXColor chosen_color = s_color_map[pref::get(pref::U8Pref::InputDispColor)];
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
@@ -223,7 +224,7 @@ static void draw_buttons(const Vec2d& center, f32 scale) {
 
 static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Vec2d& center,
                                   f32 scale) {
-    if (!pref::get_input_disp_notch_indicators()) return;
+    if (!pref::get(pref::BoolPref::InputDispNotchIndicators)) return;
 
     Vec2d notch_norm = {};
     if (get_notch_pos(stickInputs, &notch_norm)) {
@@ -236,10 +237,10 @@ static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Ve
 }
 
 static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
-    if (!pref::get_input_disp_raw_stick_inputs()) return;
+    if (!pref::get(pref::BoolPref::InputDispRawStickInputs)) return;
 
     Vec2d center = {
-        .x = pref::get_input_disp_center_location() ? 540.f : 390.f,
+        .x = pref::get(pref::BoolPref::InputDispCenterLocation) ? 540.f : 390.f,
         .y = 28.f,
     };
 
@@ -250,9 +251,10 @@ static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
 }
 
 void disp() {
-    if (!pref::get_input_disp()) return;
+    if (!pref::get(pref::BoolPref::InputDisp)) return;
 
-    Vec2d center = pref::get_input_disp_center_location() ? Vec2d{430, 60} : Vec2d{534, 60};
+    Vec2d center =
+        pref::get(pref::BoolPref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
     f32 scale = 0.6f;
 
     MergedStickInputs stickInputs;

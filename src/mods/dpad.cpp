@@ -7,7 +7,7 @@
 namespace dpad {
 
 void on_PADRead(mkb::PADStatus* statuses) {
-    if (!pref::get_dpad_controls()) return;
+    if (!pref::get(pref::BoolPref::DpadControls)) return;
 
     for (u32 i = 0; i < 4; i++) {
         mkb::PADStatus& status = statuses[i];

@@ -51,7 +51,7 @@ void disp() {
         }
     }
 
-    if (pref::get_rta_pause_timer()) {
+    if (pref::get(pref::BoolPref::RtaPauseTimer)) {
         timerdisp::draw_timer(s_rta_timer, "RTA:", 1, draw::WHITE, true);
         timerdisp::draw_timer(s_pause_timer, "PAU:", 2, draw::WHITE, true);
     }

@@ -30,9 +30,9 @@ void tick() {
     // Set ball & ape color to color ID
     if (mkb::balls[mkb::curr_player_idx].ape != nullptr) {  // Check for nullpointers first
         mkb::balls[mkb::curr_player_idx].ape->color_index =
-            convert_to_ape_color_id(pref::get_ape_color());
+            convert_to_ape_color_id(pref::get(pref::U8Pref::ApeColor));
         mkb::balls[mkb::curr_player_idx].g_ball_color_index =
-            convert_to_ball_color_id(pref::get_ball_color());
+            convert_to_ball_color_id(pref::get(pref::U8Pref::BallColor));
     }
 }
 

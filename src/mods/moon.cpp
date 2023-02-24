@@ -12,7 +12,7 @@ static void moon_gravity() {
 }
 
 void tick() {
-    if (pref::get_moon()) {
+    if (pref::get(pref::BoolPref::Moon)) {
         moon_gravity();
     }
 }

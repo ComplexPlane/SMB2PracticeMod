@@ -9,7 +9,9 @@ namespace hidebg {
 static patch::Tramp<decltype(&mkb::g_draw_bg)> s_draw_bg_tramp;
 static patch::Tramp<decltype(&mkb::g_set_clear_color)> s_clear_tramp;
 
-static bool should_hide_bg() { return pref::get_hide_bg() && mkb::main_mode != mkb::MD_ADV; }
+static bool should_hide_bg() {
+    return pref::get(pref::BoolPref::HideBg) && mkb::main_mode != mkb::MD_ADV;
+}
 
 static void avdisp_set_fog_color_hook(u8 r, u8 g, u8 b) {
     if (should_hide_bg()) {
