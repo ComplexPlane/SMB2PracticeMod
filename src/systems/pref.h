@@ -6,74 +6,50 @@
 
 namespace pref {
 
+// Bit index into Pref struct (not ID of preference itself as stored in memcard file)
+enum class BoolPref {
+    Savestates,
+    InputDisp,
+    InputDispCenterLocation,
+    RtaPauseTimer,
+    InputDispNotchIndicators,
+    IwTimer,
+    CmTimer,
+    JumpMod,
+    BananaCounter9999,
+    DpadControls,
+    DebugMode,
+    FreezeTimer,
+    MuteBgm,
+    MuteTimerDing,
+    InputDispRawStickInputs,
+    Freecam,
+    Marathon,
+    Moon,
+    IlBattleDisplay,
+    IlBattleBreakdown,
+    IlMarkPractice,
+    IlMarkStory,
+    IlMarkChallenge,
+    HideBg,
+    UnlockVanilla,
+    UnlockRomhacks,
+};
+
+enum class U8Pref {
+    CmChara,
+    InputDispColor,
+    BallColor,
+    ApeColor,
+    IlBattleLength,
+};
+
 void init();
 void save();
 
-u8 get_cm_chara();
-void set_cm_chara(u8 idx);
-
-bool get_savestates();
-void set_savestates(bool on);
-
-bool get_input_disp();
-void set_input_disp(bool on);
-bool get_input_disp_center_location();
-void set_input_disp_center_location(bool on);
-u8 get_input_disp_color();
-void set_input_disp_color(u8 idx);
-u8 get_ball_color();
-void set_ball_color(u8 idx);
-u8 get_ape_color();
-void set_ape_color(u8 idx);
-u8 get_il_battle_length();
-void set_il_battle_length(u8 idx);
-bool get_input_disp_notch_indicators();
-void set_input_disp_notch_indicators(bool on);
-bool get_input_disp_raw_stick_inputs();
-void set_input_disp_raw_stick_inputs(bool on);
-bool get_marathon();
-void set_marathon(bool on);
-bool get_moon();
-void set_moon(bool on);;
-bool get_il_battle_display();
-void set_il_battle_display(bool on);
-bool get_il_battle_breakdown();
-void set_il_battle_breakdown(bool on);
-bool get_il_mark_practice();
-void set_il_mark_practice(bool on);
-bool get_il_mark_story();
-void set_il_mark_story(bool on);
-bool get_il_mark_challenge();
-void set_il_mark_challenge(bool on);
-
-bool get_rta_pause_timer();
-void set_rta_pause_timer(bool on);
-bool get_iw_timer();
-void set_iw_timer(bool on);
-bool get_cm_timer();
-void set_cm_timer(bool on);
-
-bool get_jump_mod();
-void set_jump_mod(bool on);
-bool get_9999_banana_counter();
-void set_9999_banana_counter(bool on);
-bool get_dpad_controls();
-void set_dpad_controls(bool on);
-bool get_debug_mode();
-void set_debug_mode(bool on);
-bool get_freeze_timer();
-void set_freeze_timer(bool on);
-bool get_mute_bgm();
-void set_mute_bgm(bool on);
-bool get_mute_timer_ding();
-void set_mute_timer_ding(bool on);
-bool get_freecam();
-void set_freecam(bool on);
-bool get_hide_bg();
-void set_hide_bg(bool on);
-bool get_unlock_vanilla();
-void set_unlock_vanilla(bool on);
-bool get_unlock_romhacks();
-void set_unlock_romhacks(bool on);
+bool get(BoolPref bool_pref);
+u8 get(U8Pref u8_pref);
+void set(BoolPref bool_pref, bool value);
+void set(U8Pref u8_pref, u8 value);
 
 }  // namespace pref
