@@ -17,8 +17,8 @@ enum {
 }
 
 static u32 s_flags;
-static Vec s_fcEye = {};
-static S16Vec s_fcRot = {};
+static Vec s_eye = {};
+static S16Vec s_rot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
@@ -29,41 +29,41 @@ bool enabled() {
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     if (!(s_flags & Flags::EnabledPrevTick)) {
-        s_fcEye = mkb::cameras[0].pos;
-        s_fcRot = mkb::cameras[0].rot;
+        s_eye = mkb::cameras[0].pos;
+        s_rot = mkb::cameras[0].rot;
     }
 
-    float stickX = mkb::pad_status_groups[0].raw.stickX / 60.f;
-    float stickY = mkb::pad_status_groups[0].raw.stickY / 60.f;
-    float substickX = mkb::pad_status_groups[0].raw.substickX / 60.f;
-    float substickY = mkb::pad_status_groups[0].raw.substickY / 60.f;
-    float triggerLeft = mkb::pad_status_groups[0].raw.triggerLeft / 128.f;
-    float triggerRight = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
+    float stick_x = mkb::pad_status_groups[0].raw.stickX / 60.f;
+    float stick_y = mkb::pad_status_groups[0].raw.stickY / 60.f;
+    float substick_x = mkb::pad_status_groups[0].raw.substickX / 60.f;
+    float substick_y = mkb::pad_status_groups[0].raw.substickY / 60.f;
+    float trigger_left = mkb::pad_status_groups[0].raw.triggerLeft / 128.f;
+    float trigger_right = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
 
-    float speedMult = fast ? 3.0f : 1.0f;
+    float speed_mult = fast ? 3.0f : 1.0f;
 
     // New rotation
     bool invert_yaw = pref::get(pref::BoolPref::FreecamInvertYaw);
     bool invert_pitch = pref::get(pref::BoolPref::FreecamInvertPitch);
-    s_fcRot.x -= substickY * 300 * (invert_pitch ? -1 : 1);
-    s_fcRot.y += substickX * 470 * (invert_yaw ? -1 : 1);
-    s_fcRot.z = 0;
+    s_rot.x -= substick_y * 300 * (invert_pitch ? -1 : 1);
+    s_rot.y += substick_x * 470 * (invert_yaw ? -1 : 1);
+    s_rot.z = 0;
 
     // New position
-    Vec deltaPos = {stickX * speedMult, 0, -stickY * speedMult};
+    Vec deltaPos = {stick_x * speed_mult, 0, -stick_y * speed_mult};
     mkb::mtxa_push();
-    mkb::mtxa_from_rotate_y(s_fcRot.y);
-    mkb::mtxa_rotate_x(s_fcRot.x);
-    mkb::mtxa_rotate_z(s_fcRot.z);
+    mkb::mtxa_from_rotate_y(s_rot.y);
+    mkb::mtxa_rotate_x(s_rot.x);
+    mkb::mtxa_rotate_z(s_rot.z);
     mkb::mtxa_tf_vec(&deltaPos, &deltaPos);
     mkb::mtxa_pop();
-    s_fcEye.x += deltaPos.x;
-    s_fcEye.y += deltaPos.y - triggerLeft + triggerRight;
-    s_fcEye.z += deltaPos.z;
+    s_eye.x += deltaPos.x;
+    s_eye.y += deltaPos.y - trigger_left + trigger_right;
+    s_eye.z += deltaPos.z;
 
-    camera->pos = s_fcEye;
-    camera->rot = s_fcRot;
+    camera->pos = s_eye;
+    camera->rot = s_rot;
 
     // Lock ball in place
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN || mkb::main_mode == mkb::MD_MINI) {
