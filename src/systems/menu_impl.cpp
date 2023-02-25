@@ -75,70 +75,6 @@ static u32 get_menu_selectable_widget_count(MenuWidget* menu) {
     return selectable;
 }
 
-static bool checkbox_get(const CheckboxWidget& checkbox) {
-    if (checkbox.flags & CheckboxFlags::Pref) {
-        return pref::get(checkbox.pref);
-    }
-    if (checkbox.flags & CheckboxFlags::GetterSetter) {
-        return checkbox.get();
-    }
-    MOD_ASSERT(false);
-    return false;
-}
-
-static void checkbox_set(const CheckboxWidget& checkbox, bool value) {
-    if (checkbox.flags & CheckboxFlags::Pref) {
-        pref::set(checkbox.pref, value);
-    } else if (checkbox.flags & CheckboxFlags::GetterSetter) {
-        checkbox.set(value);
-    } else {
-        MOD_ASSERT(false);
-    }
-}
-
-static bool checkbox_get_default(const CheckboxWidget& checkbox) {
-    if (checkbox.flags & CheckboxFlags::Pref) {
-        return pref::get_default(checkbox.pref);
-    }
-    if (checkbox.flags & CheckboxFlags::GetterSetter) {
-        return checkbox.get_default();
-    }
-    MOD_ASSERT(false);
-    return false;
-}
-
-static u8 choose_get(const ChooseWidget& choose) {
-    if (choose.flags & ChooseFlags::Pref) {
-        return pref::get(choose.pref);
-    }
-    if (choose.flags & ChooseFlags::GetterSetter) {
-        return choose.get();
-    }
-    MOD_ASSERT(false);
-    return 0;
-}
-
-static void choose_set(const ChooseWidget& choose, u8 value) {
-    if (choose.flags & ChooseFlags::Pref) {
-        pref::set(choose.pref, value);
-    } else if (choose.flags & ChooseFlags::GetterSetter) {
-        choose.set(value);
-    } else {
-        MOD_ASSERT(false);
-    }
-}
-
-static u8 choose_get_default(const ChooseWidget& choose) {
-    if (choose.flags & ChooseFlags::Pref) {
-        return pref::get_default(choose.pref);
-    }
-    if (choose.flags & ChooseFlags::GetterSetter) {
-        return choose.get_default();
-    }
-    MOD_ASSERT(false);
-    return 0;
-}
-
 static void handle_widget_bind() {
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
     bool x_pressed = pad::button_pressed(mkb::PAD_BUTTON_X, true);
@@ -150,12 +86,18 @@ static void handle_widget_bind() {
     if (selected->type == WidgetType::Checkbox) {
         auto& checkbox = selected->checkbox;
         if (a_pressed) {
-            checkbox_set(checkbox, !checkbox_get(checkbox));
+            pref::set(checkbox.pref, !pref::get(checkbox.pref));
             pref::save();
         }
         if (x_pressed) {
-            checkbox_set(checkbox, checkbox_get_default(checkbox));
+            pref::set(checkbox.pref, pref::get_default(checkbox.pref));
             pref::save();
+        }
+
+    } else if (selected->type == WidgetType::GetSetCheckbox) {
+        auto& get_set_checkbox = selected->get_set_checkbox;
+        if (a_pressed) {
+            get_set_checkbox.set(!get_set_checkbox.get());
         }
 
     } else if (selected->type == WidgetType::Menu && a_pressed) {
@@ -164,15 +106,18 @@ static void handle_widget_bind() {
     } else if (selected->type == WidgetType::Choose) {
         auto& choose = selected->choose;
         if (a_pressed) {
-            choose_set(choose, (choose_get(choose) + 1) % choose.num_choices);
+            u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + 1) % choose.num_choices;
+            pref::set(choose.pref, new_value);
             pref::save();
         }
         if (y_pressed) {
-            choose_set(choose, (choose_get(choose) + choose.num_choices - 1) & choose.num_choices);
+            u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + choose.num_choices - 1) %
+                           choose.num_choices;
+            pref::set(choose.pref, new_value);
             pref::save();
         }
         if (x_pressed) {
-            choose_set(choose, choose_get_default(choose));
+            pref::set(choose.pref, pref::get_default(choose.pref));
             pref::save();
         }
 
@@ -293,7 +238,7 @@ void draw_menu_widget(MenuWidget* menu) {
                 draw::debug_text(
                     MARGIN + PAD, y,
                     menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                    "                         %s", checkbox_get(widget.checkbox) ? "On" : "Off");
+                    "                         %s", pref::get(widget.checkbox.pref) ? "On" : "Off");
 
                 y += LINE_HEIGHT;
                 selectable_idx++;
@@ -341,8 +286,9 @@ void draw_menu_widget(MenuWidget* menu) {
                 draw::debug_text(
                     MARGIN + PAD, y,
                     menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                    "                         (%d/%d) %s", widget.choose.get() + 1,
-                    widget.choose.num_choices, widget.choose.choices[choose_get(widget.choose)]);
+                    "                         (%d/%d) %s", pref::get(widget.choose.pref) + 1,
+                    widget.choose.num_choices,
+                    widget.choose.choices[pref::get(widget.choose.pref)]);
 
                 y += LINE_HEIGHT;
                 selectable_idx++;

@@ -11,6 +11,7 @@ enum class WidgetType {
     ColoredText,
     Header,
     Checkbox,
+    GetSetCheckbox,
     Separator,
     Menu,
     FloatView,
@@ -43,16 +44,14 @@ enum {
 
 struct CheckboxWidget {
     const char* label;
-    u32 flags;
-    union {
-        pref::BoolPref pref;
-        struct {
-            // We can't use std::function due to destructors in unions stuff
-            bool (*get)();
-            void (*set)(bool);
-            bool (*get_default)();
-        };
-    };
+    pref::BoolPref pref;
+};
+
+// For the rare cases a checkbox doesn't correspond to a preference
+struct GetSetCheckboxWidget {
+    const char *label;
+    bool (*get)();
+    void (*set)(bool);
 };
 
 struct MenuWidget {
@@ -80,15 +79,7 @@ struct ChooseWidget {
     const char* label;
     const char** choices;
     u16 num_choices;
-    u16 flags;
-    union {
-        pref::U8Pref pref;
-        struct {
-            u8 (*get)();
-            void (*set)(u8);
-            u8 (*get_default)();
-        };
-    };
+    pref::U8Pref pref;
 };
 
 namespace ButtonFlags {
@@ -115,6 +106,7 @@ struct Widget {
         ColoredTextWidget colored_text;
         HeaderWidget header;
         CheckboxWidget checkbox;
+        GetSetCheckboxWidget get_set_checkbox;
         MenuWidget menu;
         FloatViewWidget float_view;
         ChooseWidget choose;
