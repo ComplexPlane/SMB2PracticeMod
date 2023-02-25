@@ -560,6 +560,33 @@ static Widget s_unlock_widgets[] = {
     },
 };
 
+static Widget s_freecam_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freecam",
+                .pref = pref::BoolPref::Freecam,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Invert Yaw",
+                .pref = pref::BoolPref::FreecamInvertYaw,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Invert Pitch",
+                .pref = pref::BoolPref::FreecamInvertPitch,
+            },
+    },
+};
+
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -578,11 +605,12 @@ static Widget s_tools_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Menu,
+        .menu =
             {
                 .label = "Freecam",
-                .pref = pref::BoolPref::Freecam,
+                .widgets = s_freecam_widgets,
+                .num_widgets = LEN(s_freecam_widgets),
             },
     },
     {

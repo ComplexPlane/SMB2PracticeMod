@@ -44,8 +44,10 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     float speedMult = fast ? 3.0f : 1.0f;
 
     // New rotation
-    s_fcRot.x -= substickY * 300;
-    s_fcRot.y += substickX * 500;
+    bool invert_yaw = pref::get(pref::BoolPref::FreecamInvertYaw);
+    bool invert_pitch = pref::get(pref::BoolPref::FreecamInvertPitch);
+    s_fcRot.x -= substickY * 300 * (invert_pitch ? -1 : 1);
+    s_fcRot.y += substickX * 470 * (invert_yaw ? -1 : 1);
     s_fcRot.z = 0;
 
     // New position
@@ -76,11 +78,14 @@ static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
     if (s_flags & Flags::EnabledThisTick) {
         update_cam(camera, ball);
     } else {
-       mkb::camera_funcs[camera->mode](camera, ball);
+        mkb::camera_funcs[camera->mode](camera, ball);
     }
 }
 
 void init() {
+    patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
+                           reinterpret_cast<void*>(call_camera_func_hook));
+
     patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
         if (enabled()) {
             for (u32 i = 0; i < LEN(mkb::world_infos); i++) {
@@ -101,9 +106,6 @@ void tick() {
     if (enabled()) {
         s_flags |= Flags::EnabledThisTick;
     }
-
-    patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
-                           reinterpret_cast<void*>(call_camera_func_hook));
 }
 
 }  // namespace freecam

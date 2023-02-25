@@ -33,6 +33,8 @@ enum class BoolPref {
     HideBg,
     UnlockVanilla,
     UnlockRomhacks,
+    FreecamInvertYaw,
+    FreecamInvertPitch,
 };
 
 enum class U8Pref {
