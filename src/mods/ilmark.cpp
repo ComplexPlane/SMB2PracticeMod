@@ -1,6 +1,7 @@
 #include "ilmark.h"
 
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -8,7 +9,6 @@
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
-#include "mods/freecam.h"
 
 namespace ilmark {
 
