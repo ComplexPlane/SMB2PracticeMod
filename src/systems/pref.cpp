@@ -50,6 +50,7 @@ enum class PrefId : u16 {
     UnlockRomhacks = 31,
     FreecamInvertYaw = 32,
     FreecamInvertPitch = 33,
+    FreecamToggleWithZ = 34,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -86,6 +87,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::UnlockRomhacks,
     PrefId::FreecamInvertYaw,
     PrefId::FreecamInvertPitch,
+    PrefId::FreecamToggleWithZ,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -146,6 +148,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::FreecamInvertYaw;
         case PrefId::FreecamInvertPitch:
             return BoolPref::FreecamInvertPitch;
+        case PrefId::FreecamToggleWithZ:
+            return BoolPref::FreecamToggleWithZ;
         default:
             return {};
     }

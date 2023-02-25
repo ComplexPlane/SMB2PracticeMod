@@ -9,6 +9,8 @@
 
 namespace freecam {
 
+enum class ToggleBind { None, Z };
+
 namespace Flags {
 enum {
     EnabledThisTick = 1 << 0,
@@ -102,6 +104,12 @@ void tick() {
     if (s_flags & Flags::EnabledThisTick) {
         s_flags |= Flags::EnabledPrevTick;
     }
+
+    bool can_toggle = pref::get(pref::BoolPref::FreecamToggleWithZ);
+    if (can_toggle && pad::button_pressed(mkb::PAD_TRIGGER_Z)) {
+        pref::set(pref::BoolPref::Freecam, !pref::get(pref::BoolPref::Freecam));
+    }
+
     s_flags &= ~Flags::EnabledThisTick;
     if (enabled()) {
         s_flags |= Flags::EnabledThisTick;

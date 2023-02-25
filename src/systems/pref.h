@@ -35,6 +35,7 @@ enum class BoolPref {
     UnlockRomhacks,
     FreecamInvertYaw,
     FreecamInvertPitch,
+    FreecamToggleWithZ,
 };
 
 enum class U8Pref {
