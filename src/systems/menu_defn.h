@@ -19,21 +19,6 @@ enum class WidgetType {
     Custom,
 };
 
-// Something we can get/set/get default
-// I'm probably going to regret this...
-template <typename ValueType, typename PrefType>
-class PrefLike {
- public:
-    PrefLike(ValueType (*get)(), void (*set)(ValueType), ValueType (*get_default)()) {}
-    PrefLike(PrefType pref);
-
- private:
-    bool is_pref;
-    union {
-        PrefType pref;
-    }
-};
-
 struct TextWidget {
     const char* label;            // For static text
     const char* (*label_func)();  // For dynamic text
@@ -84,11 +69,26 @@ struct FloatViewWidget {
     f32 (*get)();
 };
 
+namespace ChooseFlags {
+enum {
+    Pref,          // Use u8 preference ID
+    GetterSetter,  // Use manual getters/setters
+};
+}
+
 struct ChooseWidget {
     const char* label;
     const char** choices;
     u16 num_choices;
-    pref::U8Pref pref;
+    u16 flags;
+    union {
+        pref::U8Pref pref;
+        struct {
+            u8 (*get)();
+            void (*set)(u8);
+            u8 (*get_default)();
+        };
+    };
 };
 
 namespace ButtonFlags {

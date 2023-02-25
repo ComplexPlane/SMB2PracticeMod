@@ -50,6 +50,7 @@ static Widget s_inputdisp_widgets[] = {
                 .label = "Color",
                 .choices = inputdisp_colors,
                 .num_choices = LEN(inputdisp_colors),
+                .flags = ChooseFlags::Pref,
                 .pref = pref::U8Pref::InputDispColor,
             },
     },
