@@ -10,9 +10,6 @@
 
 namespace freecam {
 
-static constexpr int TURBO_SPEED_MULT_MIN = 2;
-static constexpr int TURBO_SPEED_MULT_MAX = 200;
-
 enum class ToggleBind { None, Z };
 
 namespace Flags {
@@ -132,9 +129,9 @@ void tick() {
             speed_mult++;
             input_made = true;
         }
-        speed_mult = CLAMP(speed_mult, TURBO_SPEED_MULT_MIN, TURBO_SPEED_MULT_MAX);
+        speed_mult = CLAMP(speed_mult, TURBO_SPEED_MIN, TURBO_SPEED_MAX);
         if (input_made) {
-            draw::notify(draw::WHITE, "Freecam Turbo Speed: %dX", speed_mult);
+            draw::notify(draw::WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
             pref::set(pref::U8Pref::FreecamSpeedMult, speed_mult);
             pref::save();
         }

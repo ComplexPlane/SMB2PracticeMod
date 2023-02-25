@@ -4,6 +4,7 @@
 #include "mkb/mkb2_ghidra.h"
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
+#include "mods/freecam.h"
 #include "mods/gotostory.h"
 #include "mods/ilbattle.h"
 #include "mods/inputdisp.h"
@@ -575,6 +576,16 @@ static Widget s_freecam_widgets[] = {
             {
                 .label = "Toggle With Z",
                 .pref = pref::BoolPref::FreecamToggleWithZ,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Turbo Speed Factor",
+                .pref = pref::U8Pref::FreecamSpeedMult,
+                .min = freecam::TURBO_SPEED_MIN,
+                .max = freecam::TURBO_SPEED_MAX,
             },
     },
     {
