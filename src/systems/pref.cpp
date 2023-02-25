@@ -51,6 +51,7 @@ enum class PrefId : u16 {
     FreecamInvertYaw = 32,
     FreecamInvertPitch = 33,
     FreecamToggleWithZ = 34,
+    FreecamSpeedMult = 35,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -88,6 +89,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamInvertYaw,
     PrefId::FreecamInvertPitch,
     PrefId::FreecamToggleWithZ,
+    PrefId::FreecamSpeedMult,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -167,6 +169,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::ApeColor;
         case PrefId::IlBattleLength:
             return U8Pref::IlBattleLength;
+        case PrefId::FreecamSpeedMult:
+            return U8Pref::FreecamSpeedMult;
         default:
             return {};
     }
@@ -180,6 +184,7 @@ struct PrefState {
 static PrefState s_pref_state, s_default_pref_state;
 
 static void set_bool_pref(BoolPref bp, bool value, PrefState& state);
+static void set_u8_pref(U8Pref u8_pref, u8 value, PrefState& state);
 
 static void load_default_prefs() {
     mkb::memset(&s_pref_state, 0, sizeof(s_pref_state));
@@ -191,6 +196,7 @@ static void load_default_prefs() {
     set_bool_pref(BoolPref::InputDispNotchIndicators, true, s_pref_state);
     set_bool_pref(BoolPref::IlMarkPractice, true, s_pref_state);
     set_bool_pref(BoolPref::UnlockVanilla, true, s_pref_state);
+    set_u8_pref(U8Pref::FreecamSpeedMult, 3, s_pref_state);
 
     mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
 }

@@ -44,6 +44,7 @@ enum class U8Pref {
     BallColor,
     ApeColor,
     IlBattleLength,
+    FreecamSpeedMult,
 };
 
 void init();

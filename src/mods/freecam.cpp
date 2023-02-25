@@ -4,10 +4,14 @@
 
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
 namespace freecam {
+
+static constexpr int TURBO_SPEED_MULT_MIN = 2;
+static constexpr int TURBO_SPEED_MULT_MAX = 200;
 
 enum class ToggleBind { None, Z };
 
@@ -43,13 +47,13 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     float trigger_right = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
 
-    float speed_mult = fast ? 3.0f : 1.0f;
+    float speed_mult = fast ? pref::get(pref::U8Pref::FreecamSpeedMult) : 1;
 
     // New rotation
     bool invert_yaw = pref::get(pref::BoolPref::FreecamInvertYaw);
     bool invert_pitch = pref::get(pref::BoolPref::FreecamInvertPitch);
     s_rot.x -= substick_y * 300 * (invert_pitch ? -1 : 1);
-    s_rot.y += substick_x * 470 * (invert_yaw ? -1 : 1);
+    s_rot.y += substick_x * 490 * (invert_yaw ? -1 : 1);
     s_rot.z = 0;
 
     // New position
@@ -61,7 +65,7 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     mkb::mtxa_tf_vec(&deltaPos, &deltaPos);
     mkb::mtxa_pop();
     s_eye.x += deltaPos.x;
-    s_eye.y += deltaPos.y - trigger_left + trigger_right;
+    s_eye.y += deltaPos.y + (-trigger_left + trigger_right) * speed_mult;
     s_eye.z += deltaPos.z;
 
     camera->pos = s_eye;
@@ -100,19 +104,40 @@ void init() {
 }
 
 void tick() {
+    // Compute enabled on previous tick
     s_flags &= ~Flags::EnabledPrevTick;
     if (s_flags & Flags::EnabledThisTick) {
         s_flags |= Flags::EnabledPrevTick;
     }
 
+    // Optionally toggle freecam with Z
     bool can_toggle = pref::get(pref::BoolPref::FreecamToggleWithZ);
     if (can_toggle && pad::button_pressed(mkb::PAD_TRIGGER_Z)) {
         pref::set(pref::BoolPref::Freecam, !pref::get(pref::BoolPref::Freecam));
+        pref::save();
     }
 
     s_flags &= ~Flags::EnabledThisTick;
     if (enabled()) {
         s_flags |= Flags::EnabledThisTick;
+
+        // Adjust turbo speed multiplier
+        int speed_mult = pref::get(pref::U8Pref::FreecamSpeedMult);
+        bool input_made = false;
+        if (pad::button_repeat(mkb::PAD_BUTTON_DOWN)) {
+            speed_mult--;
+            input_made = true;
+        }
+        if (pad::button_repeat(mkb::PAD_BUTTON_UP)) {
+            speed_mult++;
+            input_made = true;
+        }
+        speed_mult = CLAMP(speed_mult, TURBO_SPEED_MULT_MIN, TURBO_SPEED_MULT_MAX);
+        if (input_made) {
+            draw::notify(draw::WHITE, "Freecam Turbo Speed: %dX", speed_mult);
+            pref::set(pref::U8Pref::FreecamSpeedMult, speed_mult);
+            pref::save();
+        }
     }
 }
 
