@@ -11,6 +11,9 @@
 
 namespace pref {
 
+//
+// Preferences definition
+
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
 enum class PrefId : u16 {
@@ -157,10 +160,32 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
     }
 }
 
-struct Pref {
+struct PrefState {
     u8 bool_prefs[8];
     u8 u8_prefs[8];
-} s_pref;
+};
+
+static PrefState s_pref_state, s_default_pref_state;
+
+static void set_bool_pref(BoolPref bp, bool value, PrefState& state);
+
+static void load_default_prefs() {
+    mkb::memset(&s_pref_state, 0, sizeof(s_pref_state));
+
+    set_bool_pref(BoolPref::Savestates, true, s_pref_state);
+    set_bool_pref(BoolPref::RtaPauseTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::IwTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::CmTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::InputDispNotchIndicators, true, s_pref_state);
+    set_bool_pref(BoolPref::IlMarkPractice, true, s_pref_state);
+    set_bool_pref(BoolPref::UnlockVanilla, true, s_pref_state);
+
+    mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
+}
+
+//
+// End preferences definition
+//
 
 struct FileHeader {
     char magic[4];  // "APMP"
@@ -181,34 +206,38 @@ static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
 
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(s_pref.bool_prefs));  // Out of room for bool
-                                                                     // prefs
+    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(PrefState{}.bool_prefs));  // Out of room for bool
+                                                                          // prefs
     return bpi;
 }
 
-static bool get_bool_pref(BoolPref bp) {
+static bool get_bool_pref(BoolPref bp, const PrefState& state) {
     u16 bpi = validate_bool_pref(bp);
-    return s_pref.bool_prefs[bpi / 8] & (1 << (bpi % 8));
+    return state.bool_prefs[bpi / 8] & (1 << (bpi % 8));
 }
 
-static void set_bool_pref(BoolPref bp, bool value) {
+static void set_bool_pref(BoolPref bp, bool value, PrefState& state) {
     u16 bpi = validate_bool_pref(bp);
     if (value) {
-        s_pref.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
+        state.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
     } else {
-        s_pref.bool_prefs[bpi / 8] &= ~(1 << (bpi % 8));
+        state.bool_prefs[bpi / 8] &= ~(1 << (bpi % 8));
     }
 }
 
 static u32 validate_u8_pref(U8Pref pref) {
     u32 idx = static_cast<u32>(pref);
-    MOD_ASSERT(idx < LEN(s_pref.u8_prefs));
+    MOD_ASSERT(idx < LEN(PrefState{}.u8_prefs));
     return idx;
 }
 
-static u8 get_u8_pref(U8Pref pref) { return s_pref.u8_prefs[validate_u8_pref(pref)]; }
+static u8 get_u8_pref(U8Pref pref, const PrefState& state) {
+    return state.u8_prefs[validate_u8_pref(pref)];
+}
 
-static void set_u8_pref(U8Pref pref, u8 value) { s_pref.u8_prefs[validate_u8_pref(pref)] = value; }
+static void set_u8_pref(U8Pref pref, u8 value, PrefState& state) {
+    state.u8_prefs[validate_u8_pref(pref)] = value;
+}
 
 static void card_buf_to_pref_struct(void* card_buf) {
     FileHeader* header = static_cast<FileHeader*>(card_buf);
@@ -224,30 +253,19 @@ static void card_buf_to_pref_struct(void* card_buf) {
         // If it's a boolean preference, copy it from the memcard file
         std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
         if (bool_pref.has_value()) {
-            set_bool_pref(bool_pref.value(), pref_data);
+            set_bool_pref(bool_pref.value(), pref_data, s_pref_state);
             continue;
         }
 
         // For u8 preferences, copy them to struct fields directly
         std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
         if (u8_pref.has_value()) {
-            set_u8_pref(u8_pref.value(), static_cast<u8>(pref_data));
+            set_u8_pref(u8_pref.value(), static_cast<u8>(pref_data), s_pref_state);
             continue;
         }
 
         // Ignore all other setting IDs we aren't aware of
     }
-}
-
-static void load_default_prefs() {
-    mkb::memset(&s_pref, 0, sizeof(s_pref));
-    set_bool_pref(BoolPref::Savestates, true);
-    set_bool_pref(BoolPref::RtaPauseTimer, true);
-    set_bool_pref(BoolPref::IwTimer, true);
-    set_bool_pref(BoolPref::CmTimer, true);
-    set_bool_pref(BoolPref::InputDispNotchIndicators, true);
-    set_bool_pref(BoolPref::IlMarkPractice, true);
-    set_bool_pref(BoolPref::UnlockVanilla, true);
 }
 
 static void pref_struct_to_card_buf() {
@@ -271,14 +289,14 @@ static void pref_struct_to_card_buf() {
         // Write out boolean preference if this is a boolean
         std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
         if (bool_pref.has_value()) {
-            entry_list[i].data = get_bool_pref(bool_pref.value());
+            entry_list[i].data = get_bool_pref(bool_pref.value(), s_pref_state);
             continue;
         }
 
         // Write out u8 preference if this is a u8
         std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
         if (u8_pref.has_value()) {
-            entry_list[i].data = get_u8_pref(u8_pref.value());
+            entry_list[i].data = get_u8_pref(u8_pref.value(), s_pref_state);
             continue;
         }
 
@@ -314,5 +332,12 @@ void save() {
         }
     });
 }
+
+bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }
+u8 get(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_pref_state); }
+void set(BoolPref bool_pref, bool value) { set_bool_pref(bool_pref, value, s_pref_state); };
+void set(U8Pref u8_pref, u8 value) { set_u8_pref(u8_pref, value, s_pref_state); }
+bool get_default(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_default_pref_state); }
+u8 get_default(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_default_pref_state); }
 
 }  // namespace pref

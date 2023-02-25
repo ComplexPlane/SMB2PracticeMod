@@ -1,14 +1,11 @@
 #pragma once
 
-/*
- * Mod user preferences, backed by memory card save file
- */
+// Mod user preferences, backed by memory card save file
 
 #include "mkb/mkb.h"
 
 namespace pref {
 
-// Bit index into Pref struct (not ID of preference itself as stored in memcard file)
 enum class BoolPref {
     Savestates,
     InputDisp,
