@@ -8,7 +8,7 @@ namespace banans {
 static bool s_prev_enabled = false;
 
 void tick() {
-    bool enabled = pref::get_9999_banana_counter();
+    bool enabled = pref::get(pref::BoolPref::BananaCounter9999);
     if (enabled != s_prev_enabled) {
         s_prev_enabled = enabled;
         if (enabled) {

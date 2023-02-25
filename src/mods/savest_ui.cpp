@@ -25,7 +25,7 @@ static bool is_either_trigger_held() {
 }
 
 void tick() {
-    if (!pref::get_savestates()) return;
+    if (!pref::get(pref::BoolPref::Savestates)) return;
 
     // Must tick savestates every frame
     for (u32 i = 0; i < LEN(s_states); i++) {

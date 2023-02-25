@@ -11,6 +11,9 @@
 
 namespace pref {
 
+//
+// Preferences definition
+
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
 enum class PrefId : u16 {
@@ -47,62 +50,7 @@ enum class PrefId : u16 {
     UnlockRomhacks = 31,
 };
 
-// Bit index into Pref struct (not ID of preference itself as stored in memcard file)
-enum class BoolPref {
-    Savestates,
-    InputDisp,
-    InputDispCenterLocation,
-    RtaPauseTimer,
-    InputDispNotchIndicators,
-    IwTimer,
-    CmTimer,
-    JumpMod,
-    BananaCounter9999,
-    DpadControls,
-    DebugMode,
-    FreezeTimer,
-    MuteBgm,
-    MuteTimerDing,
-    InputDispRawStickInputs,
-    Freecam,
-    Marathon,
-    Moon,
-    IlBattleDisplay,
-    IlBattleBreakdown,
-    IlMarkPractice,
-    IlMarkStory,
-    IlMarkChallenge,
-    HideBg,
-    UnlockVanilla,
-    UnlockRomhacks,
-};
-
-struct Pref {
-    u8 bool_prefs[8];
-    u8 cm_chara;
-    u8 input_disp_color;
-    u8 ball_color;
-    u8 ape_color;
-    u8 il_battle_length;
-} s_pref;
-
-struct FileHeader {
-    char magic[4];  // "APMP"
-    u16 semver_major;
-    u16 semver_minor;
-    u16 semver_patch;
-    u16 num_prefs;
-} __attribute__((__packed__));
-
-struct IdEntry {
-    u16 id;
-    u16 data;  // Either the preference value itself (if <= 2 bytes), or offset into buffer
-               // prefs, etc
-} __attribute((__packed__));
-
-/*
- * Verbatim list of preference IDs we iterate over when writing savefile back out
- */
+// Verbatim list of preference IDs we iterate over when writing savefile back out
 static const PrefId s_pref_ids[] = {
     PrefId::Savestates,
     PrefId::InputDisp,
@@ -135,30 +83,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::UnlockVanilla,
     PrefId::UnlockRomhacks,
 };
-
-static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
-    __attribute__((__aligned__(32)));  // CARD API requires 32-byte alignment
-
-static inline u16 validate_bool_pref(BoolPref bp) {
-    u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(s_pref.bool_prefs));  // Out of room for bool
-                                                                     // prefs
-    return bpi;
-}
-
-static bool get_bool_pref(BoolPref bp) {
-    u16 bpi = validate_bool_pref(bp);
-    return s_pref.bool_prefs[bpi / 8] & (1 << (bpi % 8));
-}
-
-static void set_bool_pref(BoolPref bp, bool value) {
-    u16 bpi = validate_bool_pref(bp);
-    if (value) {
-        s_pref.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
-    } else {
-        s_pref.bool_prefs[bpi / 8] &= ~(1 << (bpi % 8));
-    }
-}
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
     switch (id) {
@@ -219,21 +143,100 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
     }
 }
 
-static u8* pref_id_to_u8(PrefId id, Pref& pref) {
+static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
     switch (id) {
         case PrefId::CmChara:
-            return &pref.cm_chara;
+            return U8Pref::CmChara;
         case PrefId::InputDispColor:
-            return &pref.input_disp_color;
+            return U8Pref::InputDispColor;
         case PrefId::BallColor:
-            return &pref.ball_color;
+            return U8Pref::BallColor;
         case PrefId::ApeColor:
-            return &pref.ape_color;
+            return U8Pref::ApeColor;
         case PrefId::IlBattleLength:
-            return &pref.il_battle_length;
+            return U8Pref::IlBattleLength;
         default:
-            return nullptr;
+            return {};
     }
+}
+
+struct PrefState {
+    u8 bool_prefs[8];
+    u8 u8_prefs[8];
+};
+
+static PrefState s_pref_state, s_default_pref_state;
+
+static void set_bool_pref(BoolPref bp, bool value, PrefState& state);
+
+static void load_default_prefs() {
+    mkb::memset(&s_pref_state, 0, sizeof(s_pref_state));
+
+    set_bool_pref(BoolPref::Savestates, true, s_pref_state);
+    set_bool_pref(BoolPref::RtaPauseTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::IwTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::CmTimer, true, s_pref_state);
+    set_bool_pref(BoolPref::InputDispNotchIndicators, true, s_pref_state);
+    set_bool_pref(BoolPref::IlMarkPractice, true, s_pref_state);
+    set_bool_pref(BoolPref::UnlockVanilla, true, s_pref_state);
+
+    mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
+}
+
+//
+// End preferences definition
+//
+
+struct FileHeader {
+    char magic[4];  // "APMP"
+    u16 semver_major;
+    u16 semver_minor;
+    u16 semver_patch;
+    u16 num_prefs;
+} __attribute__((__packed__));
+
+struct IdEntry {
+    u16 id;
+    u16 data;  // Either the preference value itself (if <= 2 bytes), or offset into buffer
+               // prefs, etc
+} __attribute((__packed__));
+
+static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
+    __attribute__((__aligned__(32)));  // CARD API requires 32-byte alignment
+
+static inline u16 validate_bool_pref(BoolPref bp) {
+    u16 bpi = static_cast<u16>(bp);
+    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(PrefState{}.bool_prefs));  // Out of room for bool
+                                                                          // prefs
+    return bpi;
+}
+
+static bool get_bool_pref(BoolPref bp, const PrefState& state) {
+    u16 bpi = validate_bool_pref(bp);
+    return state.bool_prefs[bpi / 8] & (1 << (bpi % 8));
+}
+
+static void set_bool_pref(BoolPref bp, bool value, PrefState& state) {
+    u16 bpi = validate_bool_pref(bp);
+    if (value) {
+        state.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
+    } else {
+        state.bool_prefs[bpi / 8] &= ~(1 << (bpi % 8));
+    }
+}
+
+static u32 validate_u8_pref(U8Pref pref) {
+    u32 idx = static_cast<u32>(pref);
+    MOD_ASSERT(idx < LEN(PrefState{}.u8_prefs));
+    return idx;
+}
+
+static u8 get_u8_pref(U8Pref pref, const PrefState& state) {
+    return state.u8_prefs[validate_u8_pref(pref)];
+}
+
+static void set_u8_pref(U8Pref pref, u8 value, PrefState& state) {
+    state.u8_prefs[validate_u8_pref(pref)] = value;
 }
 
 static void card_buf_to_pref_struct(void* card_buf) {
@@ -248,33 +251,21 @@ static void card_buf_to_pref_struct(void* card_buf) {
         u16 pref_data = entry_list[i].data;
 
         // If it's a boolean preference, copy it from the memcard file
-        std::optional<BoolPref> bool_pref_idx = pref_id_to_bool_pref(id);
-        if (bool_pref_idx.has_value()) {
-            set_bool_pref(bool_pref_idx.value(), pref_data);
+        std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
+        if (bool_pref.has_value()) {
+            set_bool_pref(bool_pref.value(), pref_data, s_pref_state);
             continue;
         }
 
         // For u8 preferences, copy them to struct fields directly
-        u8* u8_pref = pref_id_to_u8(id, s_pref);
-        if (u8_pref != nullptr) {
-            // File data offset is in bytes
-            *u8_pref = static_cast<u8>(pref_data);
+        std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
+        if (u8_pref.has_value()) {
+            set_u8_pref(u8_pref.value(), static_cast<u8>(pref_data), s_pref_state);
             continue;
         }
 
         // Ignore all other setting IDs we aren't aware of
     }
-}
-
-static void load_default_prefs() {
-    mkb::memset(&s_pref, 0, sizeof(s_pref));
-    set_bool_pref(BoolPref::Savestates, true);
-    set_bool_pref(BoolPref::RtaPauseTimer, true);
-    set_bool_pref(BoolPref::IwTimer, true);
-    set_bool_pref(BoolPref::CmTimer, true);
-    set_bool_pref(BoolPref::InputDispNotchIndicators, true);
-    set_bool_pref(BoolPref::IlMarkPractice, true);
-    set_bool_pref(BoolPref::UnlockVanilla, true);
 }
 
 static void pref_struct_to_card_buf() {
@@ -296,16 +287,16 @@ static void pref_struct_to_card_buf() {
         entry_list[i].id = static_cast<u16>(id);
 
         // Write out boolean preference if this is a boolean
-        std::optional<BoolPref> bool_pref_idx = pref_id_to_bool_pref(id);
-        if (bool_pref_idx.has_value()) {
-            entry_list[i].data = get_bool_pref(bool_pref_idx.value());
+        std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
+        if (bool_pref.has_value()) {
+            entry_list[i].data = get_bool_pref(bool_pref.value(), s_pref_state);
             continue;
         }
 
         // Write out u8 preference if this is a u8
-        const u8* u8_pref = pref_id_to_u8(id, s_pref);
-        if (u8_pref != nullptr) {
-            entry_list[i].data = *u8_pref;
+        std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
+        if (u8_pref.has_value()) {
+            entry_list[i].data = get_u8_pref(u8_pref.value(), s_pref_state);
             continue;
         }
 
@@ -342,76 +333,11 @@ void save() {
     });
 }
 
-u8 get_cm_chara() { return s_pref.cm_chara; }
-void set_cm_chara(u8 idx) { s_pref.cm_chara = idx; }
-
-bool get_savestates() { return get_bool_pref(BoolPref::Savestates); }
-void set_savestates(bool on) { set_bool_pref(BoolPref::Savestates, on); }
-
-bool get_input_disp() { return get_bool_pref(BoolPref::InputDisp); }
-void set_input_disp(bool on) { set_bool_pref(BoolPref::InputDisp, on); }
-bool get_input_disp_center_location() { return get_bool_pref(BoolPref::InputDispCenterLocation); }
-void set_input_disp_center_location(bool on) {
-    set_bool_pref(BoolPref::InputDispCenterLocation, on);
-};
-u8 get_input_disp_color() { return s_pref.input_disp_color; }
-void set_input_disp_color(u8 idx) { s_pref.input_disp_color = idx; }
-u8 get_ball_color() { return s_pref.ball_color; }
-void set_ball_color(u8 idx) { s_pref.ball_color = idx; }
-u8 get_ape_color() { return s_pref.ape_color; }
-void set_ape_color(u8 idx) { s_pref.ape_color = idx; }
-u8 get_il_battle_length() { return s_pref.il_battle_length; }
-void set_il_battle_length(u8 idx) { s_pref.il_battle_length = idx; }
-bool get_input_disp_notch_indicators() { return get_bool_pref(BoolPref::InputDispNotchIndicators); }
-void set_input_disp_notch_indicators(bool on) {
-    set_bool_pref(BoolPref::InputDispNotchIndicators, on);
-}
-bool get_input_disp_raw_stick_inputs() { return get_bool_pref(BoolPref::InputDispRawStickInputs); }
-void set_input_disp_raw_stick_inputs(bool on) {
-    set_bool_pref(BoolPref::InputDispRawStickInputs, on);
-}
-bool get_marathon() { return get_bool_pref(BoolPref::Marathon); }
-void set_marathon(bool on) { set_bool_pref(BoolPref::Marathon, on); }
-bool get_moon() { return get_bool_pref(BoolPref::Moon); }
-void set_moon(bool on) { set_bool_pref(BoolPref::Moon, on); }
-bool get_il_battle_display() { return get_bool_pref(BoolPref::IlBattleDisplay); }
-void set_il_battle_display(bool on) { set_bool_pref(BoolPref::IlBattleDisplay, on); }
-bool get_il_battle_breakdown() { return get_bool_pref(BoolPref::IlBattleBreakdown); }
-void set_il_battle_breakdown(bool on) { set_bool_pref(BoolPref::IlBattleBreakdown, on); }
-bool get_rta_pause_timer() { return get_bool_pref(BoolPref::RtaPauseTimer); }
-void set_rta_pause_timer(bool on) { set_bool_pref(BoolPref::RtaPauseTimer, on); }
-bool get_iw_timer() { return get_bool_pref(BoolPref::IwTimer); }
-void set_iw_timer(bool on) { set_bool_pref(BoolPref::IwTimer, on); }
-bool get_cm_timer() { return get_bool_pref(BoolPref::CmTimer); }
-void set_cm_timer(bool on) { set_bool_pref(BoolPref::CmTimer, on); }
-bool get_il_mark_practice() { return get_bool_pref(BoolPref::IlMarkPractice); }
-void set_il_mark_practice(bool on) { set_bool_pref(BoolPref::IlMarkPractice, on); }
-bool get_il_mark_story() { return get_bool_pref(BoolPref::IlMarkStory); }
-void set_il_mark_story(bool on) { set_bool_pref(BoolPref::IlMarkStory, on); }
-bool get_il_mark_challenge() { return get_bool_pref(BoolPref::IlMarkChallenge); }
-void set_il_mark_challenge(bool on) { set_bool_pref(BoolPref::IlMarkChallenge, on); }
-
-bool get_jump_mod() { return get_bool_pref(BoolPref::JumpMod); }
-void set_jump_mod(bool on) { set_bool_pref(BoolPref::JumpMod, on); }
-bool get_9999_banana_counter() { return get_bool_pref(BoolPref::BananaCounter9999); }
-void set_9999_banana_counter(bool on) { set_bool_pref(BoolPref::BananaCounter9999, on); }
-bool get_dpad_controls() { return get_bool_pref(BoolPref::DpadControls); }
-void set_dpad_controls(bool on) { set_bool_pref(BoolPref::DpadControls, on); }
-bool get_debug_mode() { return get_bool_pref(BoolPref::DebugMode); }
-void set_debug_mode(bool on) { set_bool_pref(BoolPref::DebugMode, on); }
-bool get_freeze_timer() { return get_bool_pref(BoolPref::FreezeTimer); }
-void set_freeze_timer(bool on) { set_bool_pref(BoolPref::FreezeTimer, on); }
-bool get_mute_bgm() { return get_bool_pref(BoolPref::MuteBgm); }
-void set_mute_bgm(bool on) { set_bool_pref(BoolPref::MuteBgm, on); }
-bool get_mute_timer_ding() { return get_bool_pref(BoolPref::MuteTimerDing); }
-void set_mute_timer_ding(bool on) { set_bool_pref(BoolPref::MuteTimerDing, on); }
-bool get_freecam() { return get_bool_pref(BoolPref::Freecam); }
-void set_freecam(bool on) { return set_bool_pref(BoolPref::Freecam, on); }
-bool get_hide_bg() { return get_bool_pref(BoolPref::HideBg); }
-void set_hide_bg(bool on) { set_bool_pref(BoolPref::HideBg, on); }
-bool get_unlock_vanilla() { return get_bool_pref(BoolPref::UnlockVanilla); }
-void set_unlock_vanilla(bool on) { set_bool_pref(BoolPref::UnlockVanilla, on); }
-bool get_unlock_romhacks() { return get_bool_pref(BoolPref::UnlockRomhacks); }
-void set_unlock_romhacks(bool on) { set_bool_pref(BoolPref::UnlockRomhacks, on); }
+bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }
+u8 get(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_pref_state); }
+void set(BoolPref bool_pref, bool value) { set_bool_pref(bool_pref, value, s_pref_state); };
+void set(U8Pref u8_pref, u8 value) { set_u8_pref(u8_pref, value, s_pref_state); }
+bool get_default(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_default_pref_state); }
+u8 get_default(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_default_pref_state); }
 
 }  // namespace pref

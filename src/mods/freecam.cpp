@@ -20,7 +20,7 @@ static S16Vec s_fcRot = {};
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
-    bool enabledNow = pref::get_freecam();
+    bool enabledNow = pref::get(pref::BoolPref::Freecam);
     if (enabledNow != s_enabledPrevTick) {
         s_enabledPrevTick = enabledNow;
         if (enabledNow) {
@@ -72,7 +72,7 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
 
 void init() {
     patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
-        if (pref::get_freecam()) {
+        if (pref::get(pref::BoolPref::Freecam)) {
             for (u32 i = 0; i < LEN(mkb::world_infos); i++) {
                 mkb::world_infos[i].stage_tilt_x = 0;
                 mkb::world_infos[i].stage_tilt_z = 0;
@@ -83,7 +83,7 @@ void init() {
 }
 
 void tick() {
-    bool enabledNow = pref::get_freecam();
+    bool enabledNow = pref::get(pref::BoolPref::Freecam);
     if (enabledNow != s_enabledPrevTick) {
         s_enabledPrevTick = enabledNow;
         if (enabledNow) {

@@ -29,7 +29,7 @@ void init() {
     // This way the minimap is unaffected when loading savestates after goal/fallout
     patch::hook_function(
         s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
-            if (!pref::get_savestates() ||
+            if (!pref::get(pref::BoolPref::Savestates) ||
                 !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
                   mode == mkb::MINIMAP_SHRINK)) {
                 s_set_minimap_mode_tramp.dest(mode);
