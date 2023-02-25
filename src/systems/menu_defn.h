@@ -35,13 +35,6 @@ struct HeaderWidget {
     const char* label;
 };
 
-namespace CheckboxFlags {
-enum {
-    Pref = 1 << 0,          // Use bool preference ID
-    GetterSetter = 1 << 1,  // Use manual getters/setters
-};
-}
-
 struct CheckboxWidget {
     const char* label;
     pref::BoolPref pref;
@@ -67,13 +60,6 @@ struct FloatViewWidget {
     const char* label;
     f32 (*get)();
 };
-
-namespace ChooseFlags {
-enum {
-    Pref,          // Use u8 preference ID
-    GetterSetter,  // Use manual getters/setters
-};
-}
 
 struct ChooseWidget {
     const char* label;
