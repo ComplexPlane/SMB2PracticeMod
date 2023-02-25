@@ -5543,10 +5543,7 @@ extern "C" {
     extern undefined * switchdataD_80372878;
     extern pointer switchdataD_80374aac;
     extern u8 g_active_players[4];
-/* Attempting output of invalid function pointer type declaration: CameraFunc *[93] * */    extern void (* camera_funcs)(struct Camera *, struct Ball *);
-    extern pointer g_some_camera_func_table2;
-    extern undefined * g_some_camera_func_table3;
-    extern undefined * g_some_camera_func_table4;
+    extern void (* camera_funcs[93])(struct Camera *, struct Ball *);
     extern undefined * switchdataD_80374e54;
     extern pointer switchdataD_80375030;
     extern pointer switchdataD_8037ed0c;

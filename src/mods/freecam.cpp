@@ -4,32 +4,34 @@
 
 #include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/patch.h"
 #include "utils/macro_utils.h"
+#include "utils/patch.h"
 
 namespace freecam {
 
-static bool s_enabledPrevTick = false;
+namespace Flags {
+enum {
+    EnabledThisTick = 1 << 0,
+    EnabledPrevTick = 1 << 1,
+};
+}
+
+static u32 s_flags;
 static Vec s_fcEye = {};
 static S16Vec s_fcRot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
 bool enabled() {
-    return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL;
+    return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL &&
+           mkb::main_mode_request != mkb::MD_SEL && mkb::main_mode_request;
 }
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
-    bool enabledNow = enabled();
-    if (enabledNow != s_enabledPrevTick) {
-        s_enabledPrevTick = enabledNow;
-        if (enabledNow) {
-            s_fcEye = mkb::cameras[0].pos;
-            s_fcRot = mkb::cameras[0].rot;
-        }
+    if (!(s_flags & Flags::EnabledPrevTick)) {
+        s_fcEye = mkb::cameras[0].pos;
+        s_fcRot = mkb::cameras[0].rot;
     }
-
-    if (!enabledNow) return;
 
     float stickX = mkb::pad_status_groups[0].raw.stickX / 60.f;
     float stickY = mkb::pad_status_groups[0].raw.stickY / 60.f;
@@ -70,6 +72,14 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     }
 }
 
+static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
+    if (s_flags & Flags::EnabledThisTick) {
+        update_cam(camera, ball);
+    } else {
+       mkb::camera_funcs[camera->mode](camera, ball);
+    }
+}
+
 void init() {
     patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
         if (enabled()) {
@@ -83,21 +93,17 @@ void init() {
 }
 
 void tick() {
-    bool enabledNow = enabled();
-    if (enabledNow != s_enabledPrevTick) {
-        s_enabledPrevTick = enabledNow;
-        if (enabledNow) {
-            s_fcEye = mkb::cameras[0].pos;
-            s_fcRot = mkb::cameras[0].rot;
-
-            // Patch camera update function with our own
-            patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
-                                   reinterpret_cast<void*>(update_cam));
-        } else {
-            // Original camera update blctrl
-            patch::write_word(reinterpret_cast<void*>(0x8028353c), 0x4e800421);
-        }
+    s_flags &= ~Flags::EnabledPrevTick;
+    if (s_flags & Flags::EnabledThisTick) {
+        s_flags |= Flags::EnabledPrevTick;
     }
+    s_flags &= ~Flags::EnabledThisTick;
+    if (enabled()) {
+        s_flags |= Flags::EnabledThisTick;
+    }
+
+    patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
+                           reinterpret_cast<void*>(call_camera_func_hook));
 }
 
 }  // namespace freecam

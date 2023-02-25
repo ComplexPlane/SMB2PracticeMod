@@ -8114,9 +8114,6 @@
 8044ACF4:switchdataD_80374aac
 8044AF20:g_active_players
 8044AF28:camera_funcs
-8044AF30:g_some_camera_func_table2
-8044AF3C:g_some_camera_func_table3
-8044AF68:g_some_camera_func_table4
 8044B09C:switchdataD_80374e54
 8044B278:switchdataD_80375030
 80450770:cPlayer::PostPhysicsUpdate(void)
