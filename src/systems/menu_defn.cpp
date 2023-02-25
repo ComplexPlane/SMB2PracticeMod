@@ -1,6 +1,7 @@
 #include "menu_defn.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
 #include "mods/gotostory.h"
@@ -135,37 +136,50 @@ static Widget s_il_battle_widgets[] = {
     {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
 };
 
+// Forgive me for putting code in the menu definition
+static bool rumble_get(int controller_idx) {
+    return mkb::rumble_enabled_bitflag & (1 << controller_idx);
+}
+
+static void rumble_set(int controller_idx, bool value) {
+    if (value) {
+        mkb::rumble_enabled_bitflag |= 1 << controller_idx;
+    } else {
+        mkb::rumble_enabled_bitflag &= ~(1 << controller_idx);
+    }
+}
+
 static Widget s_rumble_widgets[] = {
     {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 1 Rumble",
-            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 0)); },
-            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 0); },
+            .get = []() { return rumble_get(0); },
+            .set = [](bool enable) { rumble_set(0, enable); },
         },
     },
     {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 2 Rumble",
-            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 1)); },
-            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 1); },
+            .get = []() { return rumble_get(1); },
+            .set = [](bool enable) { rumble_set(1, enable); },
         },
     },
     {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 3 Rumble",
-            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 2)); },
-            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 2); },
+            .get = []() { return rumble_get(2); },
+            .set = [](bool enable) { rumble_set(2, enable); },
         },
     },
     {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 4 Rumble",
-            .get = []() { return static_cast<bool>(mkb::rumble_enabled_bitflag & (1 << 3)); },
-            .set = [](bool enable) { mkb::rumble_enabled_bitflag ^= (1 << 3); },
+            .get = []() { return rumble_get(3); },
+            .set = [](bool enable) { rumble_set(3, enable); },
         },
     },
 };

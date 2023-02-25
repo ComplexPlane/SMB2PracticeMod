@@ -46,6 +46,11 @@ static void pop_menu() {
     pad::reset_dir_repeat();
 }
 
+static bool is_widget_selectable(WidgetType type) {
+    return type == WidgetType::Checkbox || type == WidgetType::GetSetCheckbox ||
+           type == WidgetType::Menu || type == WidgetType::Choose || type == WidgetType::Button;
+}
+
 static Widget* get_selected_widget() {
     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
     s32 sel = menu->selected_idx;
@@ -53,8 +58,7 @@ static Widget* get_selected_widget() {
     s32 selectable = -1;
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget* child = &menu->widgets[i];
-        if (child->type == WidgetType::Checkbox || child->type == WidgetType::Menu ||
-            child->type == WidgetType::Choose || child->type == WidgetType::Button) {
+        if (is_widget_selectable(child->type)) {
             selectable++;
             if (selectable == sel) return child;
         }
@@ -67,8 +71,7 @@ static u32 get_menu_selectable_widget_count(MenuWidget* menu) {
     u32 selectable = 0;
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget* child = &menu->widgets[i];
-        if (child->type == WidgetType::Checkbox || child->type == WidgetType::Menu ||
-            child->type == WidgetType::Choose || child->type == WidgetType::Button) {
+        if (is_widget_selectable(child->type)) {
             selectable++;
         }
     }
