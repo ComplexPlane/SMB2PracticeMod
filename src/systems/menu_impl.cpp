@@ -227,18 +227,29 @@ void draw_menu_widget(MenuWidget* menu) {
                 y += LINE_HEIGHT;
                 break;
             }
-            case WidgetType::Checkbox: {
+            case WidgetType::Checkbox:
+            case WidgetType::GetSetCheckbox: {
+                const char* label = nullptr;
+                bool value = false;
+                if (widget.type == WidgetType::Checkbox) {
+                    label = widget.checkbox.label;
+                    value = pref::get(widget.checkbox.pref);
+                } else {
+                    label = widget.get_set_checkbox.label;
+                    value = widget.get_set_checkbox.get();
+                }
+
                 if (menu->selected_idx == selectable_idx) {
                     draw_selectable_highlight(y);
                 }
                 draw::debug_text(
                     MARGIN + PAD, y,
                     menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                    widget.checkbox.label);
+                    label);
                 draw::debug_text(
                     MARGIN + PAD, y,
                     menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                    "                         %s", pref::get(widget.checkbox.pref) ? "On" : "Off");
+                    "                         %s", value ? "On" : "Off");
 
                 y += LINE_HEIGHT;
                 selectable_idx++;
