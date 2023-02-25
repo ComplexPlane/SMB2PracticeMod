@@ -29,12 +29,13 @@ void tick() {
         bool dpad_down =
             pad::button_down(mkb::PAD_BUTTON_DOWN) || pad::button_down(mkb::PAD_BUTTON_LEFT) ||
             pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
-        if (pref::get_dpad_controls() && dpad_down) s_valid_run = false;
+        if (pref::get(pref::BoolPref::DpadControls) && dpad_down) s_valid_run = false;
 
         // Using these tools/mods at all is disallowed
-        bool using_disallowed_mod = pref::get_freeze_timer() || freecam::enabled() ||
-                                    pref::get_debug_mode() || pref::get_jump_mod() ||
-                                    pref::get_moon() || pref::get_marathon();
+        bool using_disallowed_mod =
+            pref::get(pref::BoolPref::FreezeTimer) || freecam::enabled() ||
+            pref::get(pref::BoolPref::DebugMode) || pref::get(pref::BoolPref::JumpMod) ||
+            pref::get(pref::BoolPref::Moon) || pref::get(pref::BoolPref::Marathon);
         if (using_disallowed_mod) s_valid_run = false;
 
         // Opening the mod menu is disallowed
@@ -46,11 +47,11 @@ void disp() {
     if (mkb::main_mode != mkb::MD_GAME) return;
 
     if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        if (!pref::get_il_mark_practice()) return;
+        if (!pref::get(pref::BoolPref::IlMarkPractice)) return;
     } else if (mkb::main_game_mode == mkb::STORY_MODE) {
-        if (!pref::get_il_mark_story()) return;
+        if (!pref::get(pref::BoolPref::IlMarkStory)) return;
     } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-        if (!pref::get_il_mark_challenge()) return;
+        if (!pref::get(pref::BoolPref::IlMarkChallenge)) return;
     } else {
         return;
     }

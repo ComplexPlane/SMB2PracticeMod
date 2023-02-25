@@ -145,12 +145,12 @@ static void check_exit_seg() {
 static void state_seg_active() {
     // Set character
     if (mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT) {
-        Chara ch = static_cast<Chara>(pref::get_cm_chara());
+        Chara ch = static_cast<Chara>(pref::get(pref::U8Pref::CmChara));
         mkb::ApeCharacter real_chara;
         if (ch == Chara::Random) {
             real_chara = s_ape_charas[mkb::rand() % 4];
         } else {
-            real_chara = s_ape_charas[pref::get_cm_chara()];
+            real_chara = s_ape_charas[pref::get(pref::U8Pref::CmChara)];
         }
         mkb::active_monkey_id[0] = real_chara;
     }
@@ -348,7 +348,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get_cm_timer()) return;
+    if (!pref::get(pref::BoolPref::CmTimer)) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);

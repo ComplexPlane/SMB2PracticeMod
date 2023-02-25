@@ -16,7 +16,7 @@ static S16Vec s_fcRot = {};
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
 bool enabled() {
-    return pref::get_freecam() && mkb::main_mode != mkb::MD_SEL;
+    return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL;
 }
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {

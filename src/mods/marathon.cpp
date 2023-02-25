@@ -98,7 +98,7 @@ static void wait_for_apply() {
 }
 
 void tick() {
-    if (pref::get_marathon()) {
+    if (pref::get(pref::BoolPref::Marathon)) {
         if (s_state == MarathonState::WaitForGoal) {
             wait_for_goal();
         } else if (s_state == MarathonState::StoringVel) {

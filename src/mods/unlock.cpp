@@ -36,10 +36,10 @@ void init() {
     char gamecode[7] = {};
     mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
     if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
-        if (pref::get_unlock_vanilla()) {
+        if (pref::get(pref::BoolPref::UnlockVanilla)) {
             s_flags |= Flags::ShouldUnlock;
         }
-    } else if (pref::get_unlock_romhacks()) {
+    } else if (pref::get(pref::BoolPref::UnlockRomhacks)) {
         s_flags |= Flags::ShouldUnlock;
     }
 }

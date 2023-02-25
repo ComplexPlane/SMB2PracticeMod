@@ -2,6 +2,8 @@
 
 #include "mkb/mkb.h"
 
+#include "pref.h"
+
 namespace menu_defn {
 
 enum class WidgetType {
@@ -9,6 +11,7 @@ enum class WidgetType {
     ColoredText,
     Header,
     Checkbox,
+    GetSetCheckbox,
     Separator,
     Menu,
     FloatView,
@@ -34,7 +37,12 @@ struct HeaderWidget {
 
 struct CheckboxWidget {
     const char* label;
-    // We can't use std::function due to destructors in unions stuff
+    pref::BoolPref pref;
+};
+
+// For the rare cases a checkbox doesn't correspond to a preference
+struct GetSetCheckboxWidget {
+    const char *label;
     bool (*get)();
     void (*set)(bool);
 };
@@ -56,9 +64,8 @@ struct FloatViewWidget {
 struct ChooseWidget {
     const char* label;
     const char** choices;
-    u32 num_choices;
-    u32 (*get)();
-    void (*set)(u32);
+    u16 num_choices;
+    pref::U8Pref pref;
 };
 
 namespace ButtonFlags {
@@ -85,6 +92,7 @@ struct Widget {
         ColoredTextWidget colored_text;
         HeaderWidget header;
         CheckboxWidget checkbox;
+        GetSetCheckboxWidget get_set_checkbox;
         MenuWidget menu;
         FloatViewWidget float_view;
         ChooseWidget choose;

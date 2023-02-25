@@ -12,7 +12,7 @@ void init() {
     // TODO use a generic pre-draw hook instead of hooking this important function?
     patch::hook_function(s_event_info_tick_tramp, mkb::event_info_tick, []() {
         s_event_info_tick_tramp.dest();
-        if (pref::get_freeze_timer()) {
+        if (pref::get(pref::BoolPref::FreezeTimer)) {
             mkb::mode_info.stage_time_frames_remaining = mkb::mode_info.stage_time_limit;
         }
     });
