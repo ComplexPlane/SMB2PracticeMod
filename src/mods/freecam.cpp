@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mkb/mkb2_ghidra.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -27,7 +28,9 @@ static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp
 
 bool enabled() {
     return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL &&
-           mkb::main_mode_request != mkb::MD_SEL && mkb::main_mode_request;
+           mkb::main_mode_request != mkb::MD_SEL && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT &&
+           mkb::sub_mode != mkb::SMD_GAME_SCENARIO_MAIN &&
+           mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN;
 }
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
