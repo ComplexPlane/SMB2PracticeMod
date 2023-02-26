@@ -46,8 +46,10 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     float trigger_left = mkb::pad_status_groups[0].raw.triggerLeft / 128.f;
     float trigger_right = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
+    bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 
     float speed_mult = fast ? pref::get(pref::U8Pref::FreecamSpeedMult) : 1;
+    speed_mult = slow ? 0.15 : speed_mult;
 
     // New rotation
     bool invert_yaw = pref::get(pref::BoolPref::FreecamInvertYaw);
