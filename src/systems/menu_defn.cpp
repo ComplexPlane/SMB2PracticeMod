@@ -604,6 +604,22 @@ static Widget s_freecam_widgets[] = {
                 .pref = pref::BoolPref::FreecamInvertPitch,
             },
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freeze Timer",
+                .pref = pref::BoolPref::FreecamFreezeTimer,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide HUD",
+                .pref = pref::BoolPref::FreecamHideHud,
+            },
+    },
 };
 
 static Widget s_tools_widgets[] = {

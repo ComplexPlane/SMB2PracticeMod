@@ -8,5 +8,6 @@ constexpr int TURBO_SPEED_MAX = 200;
 void init();
 void tick();
 bool enabled();
+bool should_freeze_timer();
 
 }  // namespace freecam

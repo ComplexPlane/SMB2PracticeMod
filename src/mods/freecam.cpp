@@ -11,8 +11,6 @@
 
 namespace freecam {
 
-enum class ToggleBind { None, Z };
-
 namespace Flags {
 enum {
     EnabledThisTick = 1 << 0,
@@ -31,6 +29,10 @@ bool enabled() {
            mkb::main_mode_request != mkb::MD_SEL && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT &&
            mkb::sub_mode != mkb::SMD_GAME_SCENARIO_MAIN &&
            mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN;
+}
+
+bool should_freeze_timer() {
+    return enabled() && pref::get(pref::BoolPref::FreecamFreezeTimer);
 }
 
 static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
