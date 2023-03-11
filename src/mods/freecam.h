@@ -9,5 +9,6 @@ void init();
 void tick();
 bool enabled();
 bool should_freeze_timer();
+bool should_hide_hud();
 
 }  // namespace freecam

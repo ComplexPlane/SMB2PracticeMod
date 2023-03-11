@@ -51,5 +51,6 @@ class SaveState {
 
 void init(); // Global initialization for savestates
 bool state_loaded_this_frame();
+bool savestates_enabled();
 
 }  // namespace libsavest
