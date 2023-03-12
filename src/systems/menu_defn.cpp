@@ -416,11 +416,15 @@ static Widget s_jump_help_widgets[] = {
 };
 
 static Widget s_freecam_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  Left Stick \x1c Pan"}},
+    {.type = WidgetType::Text, .text = {"  Left Stick \x1c Move"}},
     {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Rotate"}},
     {.type = WidgetType::Text, .text = {"  L          \x1c Down"}},
     {.type = WidgetType::Text, .text = {"  R          \x1c Up"}},
-    {.type = WidgetType::Text, .text = {"  Y          \x1c Fast"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Turbo Speed"}},
+    {.type = WidgetType::Text, .text = {"  X          \x1c Slow Speed"}},
+    {.type = WidgetType::Text, .text = {"  D-pad Up   \x1c Increase Turbo Speed"}},
+    {.type = WidgetType::Text, .text = {"  D-pad Down \x1c Decrease Turbo Speed"}},
+    {.type = WidgetType::Text, .text = {"  Z          \x1c Toggle (If Enabled)"}},
 };
 
 static Widget s_iw_mark_help_widgets[] = {
