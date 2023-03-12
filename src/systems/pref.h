@@ -6,7 +6,7 @@
 
 namespace pref {
 
-enum class BoolPref {
+enum class BoolPref : u8 {
     Savestates,
     InputDisp,
     InputDispCenterLocation,
@@ -33,14 +33,21 @@ enum class BoolPref {
     HideBg,
     UnlockVanilla,
     UnlockRomhacks,
+    FreecamInvertYaw,
+    FreecamInvertPitch,
+    FreecamToggleWithZ,
+    FreecamFreezeTimer,
+    FreecamHideHud,
+    HideHud,
 };
 
-enum class U8Pref {
+enum class U8Pref : u8 {
     CmChara,
     InputDispColor,
     BallColor,
     ApeColor,
     IlBattleLength,
+    FreecamSpeedMult,
 };
 
 void init();

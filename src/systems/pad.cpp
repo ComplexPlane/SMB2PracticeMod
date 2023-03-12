@@ -31,6 +31,10 @@ bool button_released(mkb::PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.released & digital_input;
 }
 
+bool button_repeat(mkb::PadDigitalInput digital_input, bool priority) {
+    return (!s_exclusive_mode || priority) && s_merged_digital_inputs.repeated & digital_input;
+}
+
 bool analog_down(mkb::PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.raw & analog_input;
 }

@@ -17,6 +17,7 @@ enum class WidgetType {
     FloatView,
     Choose,
     Button,
+    IntEdit,
     Custom,
 };
 
@@ -81,6 +82,14 @@ struct ButtonWidget {
     u32 flags;
 };
 
+// Pretty limited for now
+struct IntEditWidget {
+    const char *label;
+    pref::U8Pref pref;
+    u8 min;
+    u8 max;
+};
+
 struct CustomWidget {
     void (*draw)();
 };
@@ -97,6 +106,7 @@ struct Widget {
         FloatViewWidget float_view;
         ChooseWidget choose;
         ButtonWidget button;
+        IntEditWidget int_edit;
         CustomWidget custom;
     };
 };

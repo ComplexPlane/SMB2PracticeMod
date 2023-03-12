@@ -13,6 +13,7 @@ namespace pref {
 
 //
 // Preferences definition
+//
 
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
@@ -48,6 +49,13 @@ enum class PrefId : u16 {
     HideBg = 29,
     UnlockVanilla = 30,
     UnlockRomhacks = 31,
+    FreecamInvertYaw = 32,
+    FreecamInvertPitch = 33,
+    FreecamToggleWithZ = 34,
+    FreecamSpeedMult = 35,
+    FreecamFreezeTimer = 36,
+    FreecamHideHud = 37,
+    HideHud = 38,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -82,6 +90,13 @@ static const PrefId s_pref_ids[] = {
     PrefId::HideBg,
     PrefId::UnlockVanilla,
     PrefId::UnlockRomhacks,
+    PrefId::FreecamInvertYaw,
+    PrefId::FreecamInvertPitch,
+    PrefId::FreecamToggleWithZ,
+    PrefId::FreecamSpeedMult,
+    PrefId::FreecamFreezeTimer,
+    PrefId::FreecamHideHud,
+    PrefId::HideHud,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -138,6 +153,18 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UnlockVanilla;
         case PrefId::UnlockRomhacks:
             return BoolPref::UnlockRomhacks;
+        case PrefId::FreecamInvertYaw:
+            return BoolPref::FreecamInvertYaw;
+        case PrefId::FreecamInvertPitch:
+            return BoolPref::FreecamInvertPitch;
+        case PrefId::FreecamToggleWithZ:
+            return BoolPref::FreecamToggleWithZ;
+        case PrefId::FreecamFreezeTimer:
+            return BoolPref::FreecamFreezeTimer;
+        case PrefId::FreecamHideHud:
+            return BoolPref::FreecamHideHud;
+        case PrefId::HideHud:
+            return BoolPref::HideHud;
         default:
             return {};
     }
@@ -155,10 +182,39 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::ApeColor;
         case PrefId::IlBattleLength:
             return U8Pref::IlBattleLength;
+        case PrefId::FreecamSpeedMult:
+            return U8Pref::FreecamSpeedMult;
         default:
             return {};
     }
 }
+
+// Boolean preferences that should default to true
+static BoolPref s_default_on_bool_prefs[] = {
+    BoolPref::Savestates,
+    BoolPref::RtaPauseTimer,
+    BoolPref::IwTimer,
+    BoolPref::CmTimer,
+    BoolPref::InputDispNotchIndicators,
+    BoolPref::IlMarkPractice,
+    BoolPref::UnlockVanilla,
+    BoolPref::FreecamFreezeTimer,
+    BoolPref::FreecamHideHud,
+};
+
+struct DefaultU8Pref {
+    U8Pref pref;
+    u8 value;
+};
+
+// Non-zero default values of u8 preferences
+static DefaultU8Pref s_default_u8_prefs[] = {
+    {U8Pref::FreecamSpeedMult, 3},
+};
+
+//
+// End preferences definition
+//
 
 struct PrefState {
     u8 bool_prefs[8];
@@ -166,26 +222,6 @@ struct PrefState {
 };
 
 static PrefState s_pref_state, s_default_pref_state;
-
-static void set_bool_pref(BoolPref bp, bool value, PrefState& state);
-
-static void load_default_prefs() {
-    mkb::memset(&s_pref_state, 0, sizeof(s_pref_state));
-
-    set_bool_pref(BoolPref::Savestates, true, s_pref_state);
-    set_bool_pref(BoolPref::RtaPauseTimer, true, s_pref_state);
-    set_bool_pref(BoolPref::IwTimer, true, s_pref_state);
-    set_bool_pref(BoolPref::CmTimer, true, s_pref_state);
-    set_bool_pref(BoolPref::InputDispNotchIndicators, true, s_pref_state);
-    set_bool_pref(BoolPref::IlMarkPractice, true, s_pref_state);
-    set_bool_pref(BoolPref::UnlockVanilla, true, s_pref_state);
-
-    mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
-}
-
-//
-// End preferences definition
-//
 
 struct FileHeader {
     char magic[4];  // "APMP"
@@ -237,6 +273,19 @@ static u8 get_u8_pref(U8Pref pref, const PrefState& state) {
 
 static void set_u8_pref(U8Pref pref, u8 value, PrefState& state) {
     state.u8_prefs[validate_u8_pref(pref)] = value;
+}
+
+static void load_default_prefs() {
+    mkb::memset(&s_pref_state, 0, sizeof(s_pref_state));
+
+    for (u32 i = 0; i < LEN(s_default_on_bool_prefs); i++) {
+        set_bool_pref(s_default_on_bool_prefs[i], true, s_pref_state);
+    }
+    for (u32 i = 0; i < LEN(s_default_u8_prefs); i++) {
+        set_u8_pref(s_default_u8_prefs[i].pref, s_default_u8_prefs[i].value, s_pref_state);
+    }
+
+    mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
 }
 
 static void card_buf_to_pref_struct(void* card_buf) {
