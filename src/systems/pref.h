@@ -38,6 +38,7 @@ enum class BoolPref : u8 {
     FreecamToggleWithZ,
     FreecamFreezeTimer,
     FreecamHideHud,
+    HideHud,
 };
 
 enum class U8Pref : u8 {

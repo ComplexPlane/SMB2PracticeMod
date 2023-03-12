@@ -19,7 +19,10 @@
 #include "mods/freecam.h"
 #include "mods/freeze.h"
 #include "mods/gotostory.h"
+#include "mods/hidebg.h"
+#include "mods/hidehud.h"
 #include "mods/ilbattle.h"
+#include "mods/ilmark.h"
 #include "mods/inputdisp.h"
 #include "mods/iw.h"
 #include "mods/jump.h"
@@ -30,9 +33,7 @@
 #include "mods/sfx.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
-#include "mods/ilmark.h"
 #include "mods/unlock.h"
-#include "mods/hidebg.h"
 
 namespace main {
 
@@ -85,6 +86,7 @@ void init() {
     sfx::init();
     menu_defn::init();
     freecam::init();
+    hidehud::init();
     hidebg::init();
     scratch::init();
 

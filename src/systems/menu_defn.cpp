@@ -643,6 +643,14 @@ static Widget s_tools_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Hide HUD",
+                .pref = pref::BoolPref::HideHud,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Hide Background",
                 .pref = pref::BoolPref::HideBg,
             },

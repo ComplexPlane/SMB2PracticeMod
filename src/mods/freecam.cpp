@@ -23,8 +23,6 @@ static Vec s_eye = {};
 static S16Vec s_rot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
-static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp;
-static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp;
 
 bool enabled() {
     return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL &&
@@ -106,20 +104,6 @@ void init() {
             }
         }
         s_event_camera_tick_tramp.dest();
-    });
-
-    patch::hook_function(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite* sprite) {
-        // Hide every sprite except the pause menu
-        bool is_pausemenu_sprite = sprite->disp_func == mkb::sprite_pausemenu_disp;
-        if (!(enabled() && pref::get(pref::BoolPref::FreecamHideHud) && !is_pausemenu_sprite)) {
-            s_draw_sprite_tramp.dest(sprite);
-        }
-    });
-
-    patch::hook_function(s_draw_minimap_tramp, mkb::g_draw_minimap, []() {
-        if (!(enabled() && pref::get(pref::BoolPref::FreecamHideHud))) {
-            s_draw_minimap_tramp.dest();
-        }
     });
 }
 
