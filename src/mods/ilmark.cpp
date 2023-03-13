@@ -1,6 +1,7 @@
 #include "ilmark.h"
 
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -32,7 +33,7 @@ void tick() {
 
         // Using these tools/mods at all is disallowed
         bool using_disallowed_mod =
-            pref::get(pref::BoolPref::FreezeTimer) || pref::get(pref::BoolPref::Freecam) ||
+            pref::get(pref::BoolPref::FreezeTimer) || freecam::enabled() ||
             pref::get(pref::BoolPref::DebugMode) || pref::get(pref::BoolPref::JumpMod) ||
             pref::get(pref::BoolPref::Moon) || pref::get(pref::BoolPref::Marathon);
         if (using_disallowed_mod) s_valid_run = false;

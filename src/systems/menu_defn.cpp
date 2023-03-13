@@ -4,6 +4,7 @@
 #include "mkb/mkb2_ghidra.h"
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
+#include "mods/freecam.h"
 #include "mods/gotostory.h"
 #include "mods/ilbattle.h"
 #include "mods/inputdisp.h"
@@ -20,10 +21,10 @@ namespace menu_defn {
 
 static char s_version_str[30];
 
-static const char* inputdisp_colors[] = {
+static const char* s_inputdisp_colors[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
-static_assert(LEN(inputdisp_colors) == inputdisp::NUM_COLORS);
+static_assert(LEN(s_inputdisp_colors) == inputdisp::NUM_COLORS);
 
 static Widget s_inputdisp_widgets[] = {
     {
@@ -47,8 +48,8 @@ static Widget s_inputdisp_widgets[] = {
         .choose =
             {
                 .label = "Color",
-                .choices = inputdisp_colors,
-                .num_choices = LEN(inputdisp_colors),
+                .choices = s_inputdisp_colors,
+                .num_choices = LEN(s_inputdisp_colors),
                 .pref = pref::U8Pref::InputDispColor,
             },
     },
@@ -217,7 +218,7 @@ static Widget s_about_widgets[] = {
     },
 };
 
-static const char* chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
+static const char* s_chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget s_cm_seg_widgets[] = {
     // Settings
@@ -225,8 +226,8 @@ static Widget s_cm_seg_widgets[] = {
      .choose =
          {
              .label = "Character",
-             .choices = chara_choices,
-             .num_choices = LEN(chara_choices),
+             .choices = s_chara_choices,
+             .num_choices = LEN(s_chara_choices),
              .pref = pref::U8Pref::CmChara,
          }},
     {.type = WidgetType::Separator},
@@ -564,6 +565,67 @@ static Widget s_unlock_widgets[] = {
     },
 };
 
+static Widget s_freecam_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freecam",
+                .pref = pref::BoolPref::Freecam,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Toggle With Z",
+                .pref = pref::BoolPref::FreecamToggleWithZ,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Turbo Speed Factor",
+                .pref = pref::U8Pref::FreecamSpeedMult,
+                .min = freecam::TURBO_SPEED_MIN,
+                .max = freecam::TURBO_SPEED_MAX,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Invert Yaw",
+                .pref = pref::BoolPref::FreecamInvertYaw,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Invert Pitch",
+                .pref = pref::BoolPref::FreecamInvertPitch,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freeze Timer",
+                .pref = pref::BoolPref::FreecamFreezeTimer,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide HUD",
+                .pref = pref::BoolPref::FreecamHideHud,
+            },
+    },
+};
+
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -585,8 +647,8 @@ static Widget s_tools_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Freecam",
-                .pref = pref::BoolPref::Freecam,
+                .label = "Hide HUD",
+                .pref = pref::BoolPref::HideHud,
             },
     },
     {
@@ -595,6 +657,15 @@ static Widget s_tools_widgets[] = {
             {
                 .label = "Hide Background",
                 .pref = pref::BoolPref::HideBg,
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Freecam",
+                .widgets = s_freecam_widgets,
+                .num_widgets = LEN(s_freecam_widgets),
             },
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},

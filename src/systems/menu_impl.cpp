@@ -48,7 +48,8 @@ static void pop_menu() {
 
 static bool is_widget_selectable(WidgetType type) {
     return type == WidgetType::Checkbox || type == WidgetType::GetSetCheckbox ||
-           type == WidgetType::Menu || type == WidgetType::Choose || type == WidgetType::Button;
+           type == WidgetType::Menu || type == WidgetType::Choose || type == WidgetType::Button ||
+           type == WidgetType::IntEdit;
 }
 
 static Widget* get_selected_widget() {
@@ -82,6 +83,8 @@ static void handle_widget_bind() {
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
     bool x_pressed = pad::button_pressed(mkb::PAD_BUTTON_X, true);
     bool y_pressed = pad::button_pressed(mkb::PAD_BUTTON_Y, true);
+    bool a_repeat = pad::button_repeat(mkb::PAD_BUTTON_A, true);
+    bool y_repeat = pad::button_repeat(mkb::PAD_BUTTON_Y, true);
 
     Widget* selected = get_selected_widget();
     if (selected == nullptr) return;
@@ -134,6 +137,24 @@ static void handle_widget_bind() {
         }
         if (button.flags & ButtonFlags::GoBack) {
             pop_menu();
+        }
+
+    } else if (selected->type == WidgetType::IntEdit) {
+        auto& int_edit = selected->int_edit;
+        int next = pref::get(int_edit.pref);
+        if (a_repeat) {
+            next++;
+        }
+        if (y_repeat) {
+            next--;
+        }
+        if (x_pressed) {
+            next = pref::get_default(int_edit.pref);
+        }
+        next = CLAMP(next, int_edit.min, int_edit.max);
+        if (next != pref::get(int_edit.pref)) {
+            pref::set(int_edit.pref, next);
+            pref::save();
         }
     }
 }
@@ -316,6 +337,23 @@ void draw_menu_widget(MenuWidget* menu) {
                     MARGIN + PAD, y,
                     menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
                     widget.button.label);
+
+                y += LINE_HEIGHT;
+                selectable_idx++;
+                break;
+            }
+            case WidgetType::IntEdit: {
+                if (menu->selected_idx == selectable_idx) {
+                    draw_selectable_highlight(y);
+                }
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                    widget.int_edit.label);
+                draw::debug_text(
+                    MARGIN + PAD, y,
+                    menu->selected_idx == selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                    "                         %d", pref::get(widget.int_edit.pref));
 
                 y += LINE_HEIGHT;
                 selectable_idx++;

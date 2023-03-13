@@ -33,6 +33,7 @@ bool get_exclusive_mode();
 bool button_down(u16 digital_input, bool priority = false);
 bool button_pressed(u16 digital_input, bool priority = false);
 bool button_released(u16 digital_input, bool priority = false);
+bool button_repeat(mkb::PadDigitalInput digital_input, bool priority = false);
 bool button_chord_pressed(u16 btn1, u16 btn2, bool priority = false);
 
 // Accept a mkb::PadAnalogInput

@@ -29,7 +29,7 @@ void init() {
     // This way the minimap is unaffected when loading savestates after goal/fallout
     patch::hook_function(
         s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
-            if (!pref::get(pref::BoolPref::Savestates) ||
+            if (!savestates_enabled() ||
                 !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
                   mode == mkb::MINIMAP_SHRINK)) {
                 s_set_minimap_mode_tramp.dest(mode);
@@ -325,6 +325,10 @@ void SaveState::tick() {
     if (m_flags & FLAG_RELOAD_STATE) {
         load();  // Ignore result, spooky!
     }
+}
+
+bool savestates_enabled() {
+    return pref::get(pref::BoolPref::Savestates) && !pref::get(pref::BoolPref::Freecam);
 }
 
 }  // namespace libsavest
