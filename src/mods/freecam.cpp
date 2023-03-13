@@ -25,7 +25,9 @@ static S16Vec s_rot = {};
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
 bool enabled() {
-    return pref::get(pref::BoolPref::Freecam) && mkb::main_mode != mkb::MD_SEL &&
+    bool correct_main_mode = mkb::main_mode == mkb::MD_GAME || mkb::main_mode == mkb::MD_ADV ||
+                             mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR;
+    return pref::get(pref::BoolPref::Freecam) && correct_main_mode &&
            mkb::main_mode_request != mkb::MD_SEL && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT &&
            mkb::sub_mode != mkb::SMD_GAME_SCENARIO_MAIN &&
            mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN;
