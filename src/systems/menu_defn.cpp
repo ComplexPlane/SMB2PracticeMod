@@ -780,6 +780,40 @@ static Widget s_gameplay_mods_widgets[] = {
     },
 };
 
+static Widget s_reset_prefs_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Reset all preferences to defaults?"},
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Cancel",
+                .push = nullptr,
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Confirm",
+                .push =
+                    [] {
+                        pref::reset_all_defaults();
+                        pref::save();
+                    },
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+};
+
+static Widget s_pracmod_settings_widgets[] = {{
+    .type = WidgetType::Menu,
+    .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},
+}};
+
 static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Button,
@@ -805,6 +839,11 @@ static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Gameplay Mods", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Practice Mod Settings", s_pracmod_settings_widgets,
+                 LEN(s_pracmod_settings_widgets)},
     },
     {
         .type = WidgetType::Menu,

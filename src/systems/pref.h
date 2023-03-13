@@ -52,6 +52,7 @@ enum class U8Pref : u8 {
 
 void init();
 void save();
+void reset_all_defaults();
 
 bool get(BoolPref bool_pref);
 u8 get(U8Pref u8_pref);

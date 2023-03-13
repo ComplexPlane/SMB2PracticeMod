@@ -382,6 +382,10 @@ void save() {
     });
 }
 
+void reset_all_defaults() {
+    mkb::memcpy(&s_pref_state, &s_default_pref_state, sizeof(s_pref_state));
+}
+
 bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }
 u8 get(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_pref_state); }
 void set(BoolPref bool_pref, bool value) { set_bool_pref(bool_pref, value, s_pref_state); };
