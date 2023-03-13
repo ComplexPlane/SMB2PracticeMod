@@ -80,18 +80,18 @@ static u32 get_menu_selectable_widget_count(MenuWidget* menu) {
 }
 
 static void handle_widget_bind() {
+    Widget* selected = get_selected_widget();
+    if (selected == nullptr) return;
+
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
     bool x_pressed = pad::button_pressed(mkb::PAD_BUTTON_X, true);
     bool y_pressed = pad::button_pressed(mkb::PAD_BUTTON_Y, true);
     bool a_repeat = pad::button_repeat(mkb::PAD_BUTTON_A, true);
     bool y_repeat = pad::button_repeat(mkb::PAD_BUTTON_Y, true);
 
-    Widget* selected = get_selected_widget();
-    if (selected == nullptr) return;
-
     if (selected->type == WidgetType::Checkbox) {
         auto& checkbox = selected->checkbox;
-        if (a_pressed) {
+        if (a_pressed || y_pressed) {
             pref::set(checkbox.pref, !pref::get(checkbox.pref));
             pref::save();
         }
@@ -102,7 +102,7 @@ static void handle_widget_bind() {
 
     } else if (selected->type == WidgetType::GetSetCheckbox) {
         auto& get_set_checkbox = selected->get_set_checkbox;
-        if (a_pressed) {
+        if (a_pressed || y_pressed) {
             get_set_checkbox.set(!get_set_checkbox.get());
         }
 

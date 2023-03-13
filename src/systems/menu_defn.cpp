@@ -453,18 +453,30 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Separator},
 };
 
+static Widget s_pracmod_menu_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  L+R        \x1c Toggle Menu"}},
+    {.type = WidgetType::Text, .text = {"  A          \x1c Select/Next Value"}},
+    {.type = WidgetType::Text, .text = {"  B          \x1c Back"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Previous Value"}},
+    {.type = WidgetType::Text, .text = {"  X          \x1c Reset to Default"}},
+};
+
 static Widget s_help_widgets[] = {
     {
         .type = WidgetType::Menu,
-        .menu = {"Savestates Bindings", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
+        .menu = {"Practice Mod Menu", s_pracmod_menu_widgets, LEN(s_pracmod_menu_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Jump Mod Bindings", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+        .menu = {"Savestates", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Freecam Bindings", s_freecam_help_widgets, LEN(s_freecam_help_widgets)},
+        .menu = {"Jump Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Freecam", s_freecam_help_widgets, LEN(s_freecam_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
