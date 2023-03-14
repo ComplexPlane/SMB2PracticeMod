@@ -41,6 +41,8 @@ enum class BoolPref : u8 {
     HideHud,
     HideStage,
     HideBall,
+    HideItems,
+    HideStobjs,
 };
 
 enum class U8Pref : u8 {

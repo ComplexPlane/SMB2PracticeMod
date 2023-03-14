@@ -58,6 +58,8 @@ enum class PrefId : u16 {
     HideHud = 38,
     HideStage = 39,
     HideBall = 40,
+    HideItems = 41,
+    HideStobjs = 42,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -101,6 +103,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::HideHud,
     PrefId::HideStage,
     PrefId::HideBall,
+    PrefId::HideItems,
+    PrefId::HideStobjs,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -173,6 +177,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::HideStage;
         case PrefId::HideBall:
             return BoolPref::HideBall;
+        case PrefId::HideItems:
+            return BoolPref::HideItems;
+        case PrefId::HideStobjs:
+            return BoolPref::HideStobjs;
         default:
             return {};
     }

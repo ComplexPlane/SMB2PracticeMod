@@ -11,16 +11,17 @@ namespace hide {
 // BG
 static patch::Tramp<decltype(&mkb::g_draw_bg)> s_draw_bg_tramp;
 static patch::Tramp<decltype(&mkb::g_set_clear_color)> s_clear_tramp;
-
 // HUD
 static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp;
 static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp;
-
 // Stage
 static patch::Tramp<decltype(&mkb::g_draw_stage)> s_draw_stage_tramp;
-
 // Ball
 static patch::Tramp<decltype(&mkb::g_draw_ball_and_ape)> s_draw_ball_tramp;
+// Items
+static patch::Tramp<decltype(&mkb::draw_items)> s_draw_items_tramp;
+// Stage objects
+static patch::Tramp<decltype(&mkb::draw_items)> s_draw_stobjs_tramp;
 
 static bool should_hide_bg() {
     return pref::get(pref::BoolPref::HideBg) && mkb::main_mode != mkb::MD_ADV;
@@ -109,6 +110,16 @@ static void init_hide_misc() {
     patch::hook_function(s_draw_ball_tramp, mkb::g_draw_ball_and_ape, [] {
         if (!pref::get(pref::BoolPref::HideBall)) {
             s_draw_ball_tramp.dest();
+        }
+    });
+    patch::hook_function(s_draw_items_tramp, mkb::draw_items, [] {
+        if (!pref::get(pref::BoolPref::HideItems)) {
+            s_draw_items_tramp.dest();
+        }
+    });
+    patch::hook_function(s_draw_stobjs_tramp, mkb::g_draw_stobjs, [] {
+        if (!pref::get(pref::BoolPref::HideStobjs)) {
+            s_draw_stobjs_tramp.dest();
         }
     });
 }

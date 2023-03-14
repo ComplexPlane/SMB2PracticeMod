@@ -651,7 +651,15 @@ static Widget s_hide_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Hide Stage",
+                .label = "Hide Ball",
+                .pref = pref::BoolPref::HideBall,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Stage Models",
                 .pref = pref::BoolPref::HideStage,
             },
     },
@@ -659,8 +667,16 @@ static Widget s_hide_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Hide Ball",
-                .pref = pref::BoolPref::HideBall,
+                .label = "Hide Stage Items",
+                .pref = pref::BoolPref::HideItems,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Stage Objects",
+                .pref = pref::BoolPref::HideStobjs,
             },
     },
     {
