@@ -316,6 +316,11 @@ SaveState::LoadResult SaveState::load() {
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 
+    // If a state is loaded on first spin-in, minimap may never be shown
+    if (mkb::g_minimap_mode == mkb::MINIMAP_HIDDEN) {
+        mkb::set_minimap_mode(mkb::MINIMAP_EXPAND);
+    }
+
     s_state_loaded_this_frame = true;
     return LoadResult::Ok;
 }
