@@ -1,13 +1,26 @@
-#include "hidebg.h"
+#include "hide.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
+#include "mods/freecam.h"
 #include "systems/pref.h"
 #include "utils/patch.h"
 
-namespace hidebg {
+namespace hide {
 
+// BG
 static patch::Tramp<decltype(&mkb::g_draw_bg)> s_draw_bg_tramp;
 static patch::Tramp<decltype(&mkb::g_set_clear_color)> s_clear_tramp;
+
+// HUD
+static patch::Tramp<decltype(&mkb::draw_sprite)> s_draw_sprite_tramp;
+static patch::Tramp<decltype(&mkb::g_draw_minimap)> s_draw_minimap_tramp;
+
+// Stage
+static patch::Tramp<decltype(&mkb::g_draw_stage)> s_draw_stage_tramp;
+
+// Ball
+static patch::Tramp<decltype(&mkb::g_draw_ball_and_ape)> s_draw_ball_tramp;
 
 static bool should_hide_bg() {
     return pref::get(pref::BoolPref::HideBg) && mkb::main_mode != mkb::MD_ADV;
@@ -29,7 +42,7 @@ static void nl2ngc_set_fog_color_hook(u8 r, u8 g, u8 b) {
     }
 }
 
-void init() {
+static void init_hide_bg() {
     patch::hook_function(s_draw_bg_tramp, mkb::g_draw_bg, []() {
         if (!should_hide_bg()) {
             s_draw_bg_tramp.dest();
@@ -64,6 +77,46 @@ void init() {
                            reinterpret_cast<void*>(avdisp_set_fog_color_hook));
     patch::write_branch_bl(reinterpret_cast<void*>(0x80352eac),
                            reinterpret_cast<void*>(nl2ngc_set_fog_color_hook));
+
 }
 
-}  // namespace hidebg
+static void init_hide_hud() {
+    patch::hook_function(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite* sprite) {
+        // Hide every sprite except the pause menu
+        bool hide_hud = pref::get(pref::BoolPref::HideHud);
+        bool freecam_hide = freecam::should_hide_hud();
+        bool is_pausemenu_sprite = sprite->disp_func == mkb::sprite_pausemenu_disp;
+        if (!((hide_hud || freecam_hide) && !is_pausemenu_sprite)) {
+            s_draw_sprite_tramp.dest(sprite);
+        }
+    });
+
+    patch::hook_function(s_draw_minimap_tramp, mkb::g_draw_minimap, []() {
+        bool hide_hud = pref::get(pref::BoolPref::HideHud);
+        bool freecam_hide = freecam::should_hide_hud();
+        if (!(hide_hud || freecam_hide)) {
+            s_draw_minimap_tramp.dest();
+        }
+    });
+}
+
+static void init_hide_misc() {
+    patch::hook_function(s_draw_stage_tramp, mkb::g_draw_stage, [] {
+        if (!pref::get(pref::BoolPref::HideStage)) {
+            s_draw_stage_tramp.dest();
+        }
+    });
+    patch::hook_function(s_draw_ball_tramp, mkb::g_draw_ball_and_ape, [] {
+        if (!pref::get(pref::BoolPref::HideBall)) {
+            s_draw_ball_tramp.dest();
+        }
+    });
+}
+
+void init() {
+    init_hide_bg();
+    init_hide_hud();
+    init_hide_misc();
+}
+
+}  // namespace hide

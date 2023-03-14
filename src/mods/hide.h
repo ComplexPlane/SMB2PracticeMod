@@ -1,6 +1,6 @@
 #pragma once
 
-namespace hidebg {
+namespace hide {
 
 void init();
 
