@@ -22,6 +22,8 @@ static patch::Tramp<decltype(&mkb::g_draw_ball_and_ape)> s_draw_ball_tramp;
 static patch::Tramp<decltype(&mkb::draw_items)> s_draw_items_tramp;
 // Stage objects
 static patch::Tramp<decltype(&mkb::draw_items)> s_draw_stobjs_tramp;
+// Effects
+static patch::Tramp<decltype(&mkb::g_draw_effects)> s_draw_effects_tramp;
 
 static bool should_hide_bg() {
     return pref::get(pref::BoolPref::HideBg) && mkb::main_mode != mkb::MD_ADV;
@@ -120,6 +122,11 @@ static void init_hide_misc() {
     patch::hook_function(s_draw_stobjs_tramp, mkb::g_draw_stobjs, [] {
         if (!pref::get(pref::BoolPref::HideStobjs)) {
             s_draw_stobjs_tramp.dest();
+        }
+    });
+    patch::hook_function(s_draw_effects_tramp, mkb::g_draw_effects, [] {
+        if (!pref::get(pref::BoolPref::HideEffects)) {
+            s_draw_effects_tramp.dest();
         }
     });
 }

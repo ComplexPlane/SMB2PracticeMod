@@ -683,6 +683,14 @@ static Widget s_hide_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Hide Effects",
+                .pref = pref::BoolPref::HideEffects,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Hide Background",
                 .pref = pref::BoolPref::HideBg,
             },
