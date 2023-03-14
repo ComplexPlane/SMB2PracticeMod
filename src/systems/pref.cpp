@@ -56,6 +56,11 @@ enum class PrefId : u16 {
     FreecamFreezeTimer = 36,
     FreecamHideHud = 37,
     HideHud = 38,
+    HideStage = 39,
+    HideBall = 40,
+    HideItems = 41,
+    HideStobjs = 42,
+    HideEffects = 43,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -97,6 +102,11 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamFreezeTimer,
     PrefId::FreecamHideHud,
     PrefId::HideHud,
+    PrefId::HideStage,
+    PrefId::HideBall,
+    PrefId::HideItems,
+    PrefId::HideStobjs,
+    PrefId::HideEffects,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -165,6 +175,16 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::FreecamHideHud;
         case PrefId::HideHud:
             return BoolPref::HideHud;
+        case PrefId::HideStage:
+            return BoolPref::HideStage;
+        case PrefId::HideBall:
+            return BoolPref::HideBall;
+        case PrefId::HideItems:
+            return BoolPref::HideItems;
+        case PrefId::HideStobjs:
+            return BoolPref::HideStobjs;
+        case PrefId::HideEffects:
+            return BoolPref::HideEffects;
         default:
             return {};
     }

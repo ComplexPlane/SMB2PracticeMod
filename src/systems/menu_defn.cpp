@@ -638,6 +638,65 @@ static Widget s_freecam_widgets[] = {
     },
 };
 
+static Widget s_hide_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide HUD",
+                .pref = pref::BoolPref::HideHud,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Ball",
+                .pref = pref::BoolPref::HideBall,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Stage Models",
+                .pref = pref::BoolPref::HideStage,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Stage Items",
+                .pref = pref::BoolPref::HideItems,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Stage Objects",
+                .pref = pref::BoolPref::HideStobjs,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Effects",
+                .pref = pref::BoolPref::HideEffects,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Background",
+                .pref = pref::BoolPref::HideBg,
+            },
+    },
+};
+
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -656,28 +715,21 @@ static Widget s_tools_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Hide HUD",
-                .pref = pref::BoolPref::HideHud,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Hide Background",
-                .pref = pref::BoolPref::HideBg,
-            },
-    },
-    {
         .type = WidgetType::Menu,
         .menu =
             {
                 .label = "Freecam",
                 .widgets = s_freecam_widgets,
                 .num_widgets = LEN(s_freecam_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Hide Elements",
+                .widgets = s_hide_widgets,
+                .num_widgets = LEN(s_hide_widgets),
             },
     },
     {.type = WidgetType::Menu, .menu = {"Rumble", s_rumble_widgets, LEN(s_rumble_widgets)}},

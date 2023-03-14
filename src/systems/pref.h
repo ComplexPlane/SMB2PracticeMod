@@ -39,6 +39,11 @@ enum class BoolPref : u8 {
     FreecamFreezeTimer,
     FreecamHideHud,
     HideHud,
+    HideStage,
+    HideBall,
+    HideItems,
+    HideStobjs,
+    HideEffects,
 };
 
 enum class U8Pref : u8 {

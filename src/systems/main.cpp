@@ -19,8 +19,7 @@
 #include "mods/freecam.h"
 #include "mods/freeze.h"
 #include "mods/gotostory.h"
-#include "mods/hidebg.h"
-#include "mods/hidehud.h"
+#include "mods/hide.h"
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
@@ -86,8 +85,7 @@ void init() {
     sfx::init();
     menu_defn::init();
     freecam::init();
-    hidehud::init();
-    hidebg::init();
+    hide::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
