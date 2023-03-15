@@ -9,10 +9,18 @@
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
+#include "utils/patch.h"
 
 namespace ilmark {
 
 static bool s_valid_run = false;
+static bool s_is_romhack = false;
+
+void init() {
+    char gamecode[7] = {};
+    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
+    s_is_romhack = mkb::strcmp(gamecode, "GM2E8P") != 0;
+}
 
 void tick() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
@@ -43,18 +51,28 @@ void tick() {
     }
 }
 
-void disp() {
-    if (mkb::main_mode != mkb::MD_GAME) return;
+bool is_ilmark_enabled() {
+    if (mkb::main_mode != mkb::MD_GAME) return false;
 
     if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkPractice)) return;
+        if (!pref::get(pref::BoolPref::IlMarkPractice)) return false;
     } else if (mkb::main_game_mode == mkb::STORY_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkStory)) return;
+        if (!pref::get(pref::BoolPref::IlMarkStory)) return false;
     } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkChallenge)) return;
+        if (!pref::get(pref::BoolPref::IlMarkChallenge)) return false;
     } else {
-        return;
+        return false;
     }
+
+    if (s_is_romhack && !pref::get(pref::BoolPref::IlMarkRomhacks)) {
+        return false;
+    }
+
+    return true;
+}
+
+void disp() {
+    if (!is_ilmark_enabled()) return;
 
     bool in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                            mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||

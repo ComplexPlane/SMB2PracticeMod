@@ -86,6 +86,7 @@ void init() {
     menu_defn::init();
     freecam::init();
     hide::init();
+    ilmark::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {

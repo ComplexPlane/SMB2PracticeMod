@@ -8968,6 +8968,7 @@ extern "C" {
     void g_textdraw_set_counter(undefined2 param_1);
     void g_textdraw_set_smth_with_pos(double param_1, double param_2);
     void textdraw_set_pos(float x, float y);
+    void textdraw_putchar(char ch);
     void textdraw_print(char * string);
     void textdraw_printf(char * format, ...);
     void draw_text_sprite(struct Sprite * sprite);

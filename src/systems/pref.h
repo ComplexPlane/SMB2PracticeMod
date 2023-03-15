@@ -44,6 +44,7 @@ enum class BoolPref : u8 {
     HideItems,
     HideStobjs,
     HideEffects,
+    IlMarkRomhacks,
 };
 
 enum class U8Pref : u8 {

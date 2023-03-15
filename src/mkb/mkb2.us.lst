@@ -5659,7 +5659,7 @@
 80320B38:g_textdraw_set_counter
 80320B48:g_textdraw_set_smth_with_pos
 80320BF4:textdraw_set_pos
-80320C1C:FUN_8024a9e4
+80320C1C:textdraw_putchar
 8032102C:textdraw_print
 803213D4:handle_boat_speedometer
 80321400:handle_dogfight_mscore

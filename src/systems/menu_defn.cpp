@@ -776,6 +776,14 @@ static Widget s_il_mark_widgets[] = {
                 .pref = pref::BoolPref::IlMarkChallenge,
             },
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show in Romhacks",
+                .pref = pref::BoolPref::IlMarkRomhacks,
+            },
+    },
 };
 
 static Widget s_displays_widgets[] = {
