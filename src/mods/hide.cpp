@@ -88,8 +88,9 @@ static void init_hide_hud() {
         // Hide every sprite except the pause menu
         bool hide_hud = pref::get(pref::BoolPref::HideHud);
         bool freecam_hide = freecam::should_hide_hud();
+        bool correct_mode = mkb::main_mode == mkb::MD_GAME;
         bool is_pausemenu_sprite = sprite->disp_func == mkb::sprite_pausemenu_disp;
-        if (!((hide_hud || freecam_hide) && !is_pausemenu_sprite)) {
+        if (!((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite)) {
             s_draw_sprite_tramp.dest(sprite);
         }
     });
