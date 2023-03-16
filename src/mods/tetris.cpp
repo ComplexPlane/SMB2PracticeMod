@@ -8,8 +8,10 @@ Non shit RNG
 
 #include "mkb/mkb.h"
 
-#include "utils/draw.h"
 #include "systems/pad.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
+#include "utils/patch.h"
 
 static constexpr s32 NUM_TETRADS = 7;
 static constexpr s32 NUM_CELL_TYPES = 8;
@@ -72,13 +74,6 @@ static const float TETRAD_CENTER_NUDGE[NUM_TETRADS][2] = {
     {0.5, -1},  // T
     {0.5, -1},  // Z
 };
-
-void Tetris::init() {
-    m_hidden = true;
-    m_ever_shown = false;
-    m_high_score = 0;
-    new_game();
-}
 
 void Tetris::new_game() {
     m_score = 0;
@@ -284,7 +279,9 @@ void Tetris::try_transition_to_dropping() {
 
 Tetris::Cell Tetris::gen_random_cell() { return static_cast<Cell>(mkb::rand() % NUM_CELL_TYPES); }
 
-Tetris::Tetrad Tetris::gen_random_tetrad() { return static_cast<Tetrad>(mkb::rand() % NUM_TETRADS); }
+Tetris::Tetrad Tetris::gen_random_tetrad() {
+    return static_cast<Tetrad>(mkb::rand() % NUM_TETRADS);
+}
 
 Tetris::Tetrad Tetris::pop_tetrad_queue() {
     Tetrad ret = m_tetrad_queue[0];
@@ -450,6 +447,62 @@ void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation) {
     }
 }
 
+static patch::Tramp<decltype(&mkb::sprite_go_disp)> s_sprite_go_disp_tramp;
+
+namespace ilmark {
+bool is_ilmark_enabled();
+}
+
+static void sprite_go_disp_hook(mkb::Sprite* sprite) {
+    int i;
+    int t;
+    int x_offset;
+    int y_offset;
+    float x_add;
+    float y_add;
+    float phi_f30_2;
+
+    t = sprite->para1 - sprite->g_counter;
+    mkb::textdraw_reset();
+    mkb::textdraw_set_font(sprite->font);
+    mkb::textdraw_set_depth(sprite->depth);
+    mkb::textdraw_set_flags(sprite->g_flags1);
+    mkb::textdraw_set_alpha(sprite->alpha);
+    mkb::textdraw_set_mul_color(
+        RGBA(sprite->mult_color.red, sprite->mult_color.green, sprite->mult_color.blue, 0));
+    mkb::textdraw_set_add_color(
+        RGBA(sprite->add_color.red, sprite->add_color.green, sprite->add_color.blue, 0));
+    mkb::textdraw_set_scale(1.5f * sprite->width, 1.5f * sprite->height);
+    x_offset = 1.5f * (36.0f * sprite->width);
+    y_offset = 1.5f * (32.0f * sprite->height);
+
+    for (i = 0; i < 2; i++) {
+        if (t < 15) {
+            phi_f30_2 = (i == 0) ? -320.0f : 320.0f;
+            x_add = phi_f30_2 * mkb::math_sin((0xF - t) * 0x444);
+            y_add = 0.0f;
+        } else if (t < 30) {
+            x_add = 0.0f;
+            y_add = 0.0f;
+        } else if (t < 45) {
+            x_add = 0.0f;
+            y_add = 0.0f;
+        } else {
+            float x_fudge = 0;
+            if (ilmark::is_ilmark_enabled()) {
+                x_fudge = (t - 45) / 15.f * 5;
+            }
+            x_add = i == 0 ? -x_fudge : x_fudge;
+            phi_f30_2 = (i == 0) ? -240.0f : 240.0f;
+            y_add = phi_f30_2 * mkb::math_sin((0xF - sprite->g_counter) * 0x444);
+        }
+        mkb::textdraw_set_pos(
+            (sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
+            (sprite->pos.y + y_add) - y_offset);
+        mkb::textdraw_putchar((i == 0) ? 0x47 : 0x4F);
+    }
+}
+
 void Tetris::draw_tetrad_queue() {
     constexpr s32 STARTX = 370;
     constexpr s32 STARTY = 32;
@@ -559,6 +612,15 @@ bool Tetris::is_row_full(s32 y) {
     }
 
     return true;
+}
+
+void Tetris::init() {
+    m_hidden = true;
+    m_ever_shown = false;
+    m_high_score = 0;
+    new_game();
+
+    patch::hook_function(s_sprite_go_disp_tramp, mkb::sprite_go_disp, sprite_go_disp_hook);
 }
 
 Tetris& Tetris::get_instance() {
