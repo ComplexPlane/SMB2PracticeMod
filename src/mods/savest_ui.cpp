@@ -109,8 +109,12 @@ void tick() {
                 MOD_ASSERT(false);
                 // Unreachable
             }
-            case LoadResult::ErrorPostTimeout: {
-                draw::notify(draw::RED, "Cannot Load Savestate After Timeout");
+            case LoadResult::ErrorSubMode: {
+                draw::notify(draw::RED, "Cannot Load Savestate Here");
+                return;
+            }
+            case LoadResult::ErrorTimeOver: {
+                draw::notify(draw::RED, "Cannot Load Savestate After Time Over");
                 return;
             }
             case LoadResult::ErrorEmpty: {

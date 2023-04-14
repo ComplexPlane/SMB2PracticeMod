@@ -45,9 +45,7 @@ void init() {
                          });
 }
 
-bool state_loaded_this_frame() {
-    return s_state_loaded_this_frame;
-}
+bool state_loaded_this_frame() { return s_state_loaded_this_frame; }
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
@@ -289,7 +287,13 @@ SaveState::LoadResult SaveState::load() {
     // TODO allow loading savestate during timeover
     if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
-        return LoadResult::ErrorPostTimeout;
+        return LoadResult::ErrorTimeOver;
+    }
+    if (mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_MAIN ||
+        mkb::sub_mode == mkb::SMD_GAME_SUGG_SAVE_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_SUGG_SAVE_MAIN) {
+        return LoadResult::ErrorSubMode;
     }
     if (!(m_flags & FLAG_ACTIVE)) {
         return LoadResult::ErrorEmpty;

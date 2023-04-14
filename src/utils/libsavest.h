@@ -23,7 +23,8 @@ class SaveState {
     enum class LoadResult {
         Ok,
         ErrorMainMode,
-        ErrorPostTimeout,
+        ErrorSubMode,
+        ErrorTimeOver,
         ErrorEmpty,
         ErrorWrongStage,
         ErrorWrongMonkey,
