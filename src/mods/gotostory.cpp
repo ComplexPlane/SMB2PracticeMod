@@ -52,6 +52,12 @@ void tick() {
     } else if (s_state == State::LoadStoryReq) {
         mkb::main_mode_request = mkb::MD_GAME;
         mkb::sub_mode_request = mkb::SMD_GAME_SCENARIO_INIT;
+
+        // Reset this timer to prevent dark pause menu when leaving an Exit Game menu. The game
+        // draws the pause menu sprite at a different depth depending on this global, which can
+        // incorrectly place it behind the pause menu dim quad.
+        mkb::g_playpoint_msg_counter = 0;
+
         s_state = State::Default;
         reset_screenfade_state();
     }

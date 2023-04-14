@@ -33,7 +33,8 @@ static u32 s_pbs[13];
 
 // static void debug_print_course(mkb::CourseCommand *course, u32 entry_count)
 //{
-//     static const char *type_strs[] = {"COURSE_CMD_IF", "COURSE_CMD_THEN", "COURSE_CMD_INFO", "COURSE_CMD_END"};
+//     static const char *type_strs[] = {"COURSE_CMD_IF", "COURSE_CMD_THEN", "COURSE_CMD_INFO",
+//     "COURSE_CMD_END"};
 //
 //     mkb::OSReport("Course entry count: %d\n", entry_count);
 //     for (u32 i = 0; i < entry_count; i++)
@@ -63,8 +64,8 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
             }
         } else if (course[i].opcode == mkb::COURSE_CMD_END) {
             if (curr_stage_count == start_course_stage_num + stage_count - 1) {
-                end_entry_idx =
-                    i;  // This CourseCommand is one past the end - we tack on a COURSE_CMD_END entry ourselves
+                end_entry_idx = i;  // This CourseCommand is one past the end - we tack on a
+                                    // COURSE_CMD_END entry ourselves
             }
             break;
         }
@@ -125,6 +126,12 @@ static void state_enter_cm() {
     s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     mkb::number_of_starting_monkeys = 100;
     mkb::enter_challenge_mode();
+
+    // Reset this timer to prevent dark pause menu when leaving an Exit Game menu. The game draws
+    // the pause menu sprite at a different depth depending on this global, which can incorrectly
+    // place it behind the pause menu dim quad.
+    mkb::g_playpoint_msg_counter = 0;
+
     s_start_time = mkb::VIGetRetraceCount();
     s_state = State::SegActive;
 }
