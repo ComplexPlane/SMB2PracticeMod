@@ -453,9 +453,14 @@ static Widget s_iw_mark_help_widgets[] = {
 };
 
 static Widget s_pracmod_menu_widgets[] = {
+    {.type = WidgetType::Header, .text = {"Navigation"}},
     {.type = WidgetType::Text, .text = {"  L+R        \x1c Toggle Menu"}},
-    {.type = WidgetType::Text, .text = {"  A          \x1c Select/Next Value"}},
+    {.type = WidgetType::Text, .text = {"  A          \x1c Select"}},
     {.type = WidgetType::Text, .text = {"  B          \x1c Back"}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Header, .text = {"Preferences"}},
+    {.type = WidgetType::Text, .text = {"  A          \x1c Next Value"}},
     {.type = WidgetType::Text, .text = {"  Y          \x1c Previous Value"}},
     {.type = WidgetType::Text, .text = {"  X          \x1c Reset to Default"}},
 };
