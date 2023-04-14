@@ -225,8 +225,9 @@ void disp() {
             if (s_battle_stage_id != mkb::current_stage_id && mkb::main_mode == mkb::MD_GAME) {
                 s_invalid_run = true;
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
-            } else
+            } else {
                 battle_display(draw::LIGHT_GREEN);
+            }
         } else if ((s_state == IlBattleState::BattleDone ||
                     s_state == IlBattleState::BattleDoneBuzzer) &&
                    mkb::main_mode == mkb::MD_GAME) {
