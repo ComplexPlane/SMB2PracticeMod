@@ -193,6 +193,11 @@ void tick() {
     } else {
         s_main_mode_play_timer = 0;
     }
+    if (mkb::main_mode == mkb::MD_GAME &&
+        (mkb::main_game_mode == mkb::STORY_MODE || mkb::main_game_mode == mkb::CHALLENGE_MODE)) {
+        new_battle();
+        return;
+    }
 
     if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry) {
@@ -223,6 +228,11 @@ void tick() {
 }
 
 void disp() {
+    if (mkb::main_mode == mkb::MD_GAME &&
+        (mkb::main_game_mode == mkb::STORY_MODE || mkb::main_game_mode == mkb::CHALLENGE_MODE)) {
+        return;
+    }
+
     if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry && mkb::main_mode == mkb::MD_GAME) {
             draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
