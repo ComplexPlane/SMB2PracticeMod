@@ -29,9 +29,11 @@ static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static constexpr u32 CWIDTH = 12;
 static constexpr u32 CHEIGHT = 16;
-static bool s_invalid_pause = false;
+static bool s_invalid_run = false;
 static u32 s_buzzer_message_count = 0;
 static u32 s_battle_length = 0;
+static u32 s_battle_stage_id = 0;
+// static u32 battle_length = pref::get_ilbattle_length();
 
 static void battle_display(mkb::GXColor color) {
     u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
@@ -101,6 +103,7 @@ static void track_first_retry() {
     if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         new_battle();
         s_state = IlBattleState::BattleRunning;
+        s_battle_stage_id = mkb::current_stage_id;
     }
 }
 
@@ -118,14 +121,14 @@ static void track_best() {
     u32 current_frames = mkb::mode_info.stage_time_frames_remaining;
     u32 current_score = mkb::balls[mkb::curr_player_idx].score;
     if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {                // Goal test
-        if (current_frames > s_best_frames && !s_invalid_pause) {  // New best time test, & invalid
-                                                                   // pause test
+        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {              // Goal test
+        if (current_frames > s_best_frames && !s_invalid_run) {  // New best time test, & invalid
+                                                                 // pause test
             s_best_frames = current_frames;
         }
-        if (score_calc(current_score) > s_best_score && !s_invalid_pause) {  // New best score test,
-                                                                             // &
-                                                                             // invalid pause test
+        if (score_calc(current_score) > s_best_score && !s_invalid_run) {  // New best score test,
+                                                                           // &
+                                                                           // invalid pause test
             s_best_score = score_calc(current_score);
             s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
             s_best_score_frames = current_frames;
@@ -136,10 +139,10 @@ static void track_best() {
 static void track_invalid_pauses() {
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
     if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-        s_invalid_pause = false;
+        s_invalid_run = false;
     }
     if (paused_now) {
-        s_invalid_pause = true;
+        s_invalid_run = true;
     }
 }
 
@@ -219,7 +222,11 @@ void disp() {
             draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "(RETRY TO BEGIN)");
         } else if (s_state == IlBattleState::BattleRunning ||
                    s_state == IlBattleState::BuzzerBeater) {
-            battle_display(draw::LIGHT_GREEN);
+            if (s_battle_stage_id != mkb::current_stage_id && mkb::main_mode == mkb::MD_GAME) {
+                s_invalid_run = true;
+                draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
+            } else
+                battle_display(draw::LIGHT_GREEN);
         } else if ((s_state == IlBattleState::BattleDone ||
                     s_state == IlBattleState::BattleDoneBuzzer) &&
                    mkb::main_mode == mkb::MD_GAME) {
