@@ -406,8 +406,8 @@ static Widget s_savestates_help_widgets[] = {
 };
 
 static Widget s_iw_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on a file"}},
-    {.type = WidgetType::Text, .text = {"  to choose a world."}},
+    {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on"}},
+    {.type = WidgetType::Text, .text = {"  a file to choose a world."}},
 };
 
 static Widget s_jump_help_widgets[] = {
