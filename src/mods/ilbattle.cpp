@@ -33,6 +33,7 @@ static bool s_invalid_run = false;
 static u32 s_buzzer_message_count = 0;
 static u32 s_battle_length = 0;
 static u32 s_battle_stage_id = 0;
+static u32 s_main_mode_play_timer = 0;
 // static u32 battle_length = pref::get_ilbattle_length();
 
 static void battle_display(mkb::GXColor color) {
@@ -187,6 +188,12 @@ static void display_buzzer_beater_message() {
 }
 
 void tick() {
+    if (mkb::main_mode == mkb::MD_GAME) {
+        s_main_mode_play_timer++;
+    } else {
+        s_main_mode_play_timer = 0;
+    }
+
     if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry) {
             track_first_retry();
@@ -222,7 +229,8 @@ void disp() {
             draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "(RETRY TO BEGIN)");
         } else if (s_state == IlBattleState::BattleRunning ||
                    s_state == IlBattleState::BuzzerBeater) {
-            if (s_battle_stage_id != mkb::current_stage_id && mkb::main_mode == mkb::MD_GAME) {
+            if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb::current_stage_id &&
+                mkb::main_mode == mkb::MD_GAME) {
                 s_invalid_run = true;
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
             } else {
