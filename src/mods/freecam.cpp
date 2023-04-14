@@ -73,18 +73,22 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     mkb::mtxa_rotate_z(s_rot.z);
     mkb::mtxa_tf_vec(&deltaPos, &deltaPos);
     mkb::mtxa_pop();
-    s_eye.x += deltaPos.x;
-    s_eye.y += deltaPos.y + (-trigger_left + trigger_right) * speed_mult;
-    s_eye.z += deltaPos.z;
+
+    // += leads to a crash on console! Compiler bug?
+    s_eye.x = s_eye.x + deltaPos.x;
+    s_eye.y = s_eye.y + deltaPos.y + (-trigger_left + trigger_right) * speed_mult;
+    s_eye.z = s_eye.z + deltaPos.z;
 
     camera->pos = s_eye;
     camera->rot = s_rot;
 
     // Lock ball in place
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN || mkb::main_mode == mkb::MD_MINI) {
-        ball->pos = mkb::stagedef->start->position;
+    bool lock_ball = mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN || mkb::main_mode == mkb::MD_MINI;
+    if (lock_ball) {
+        if (mkb::stagedef != nullptr && mkb::stagedef->start != nullptr) {
+            ball->pos = mkb::stagedef->start->position;
+        }
         ball->vel.x = 0;
-        ball->vel.y = 0;
         ball->vel.z = 0;
     }
 }
