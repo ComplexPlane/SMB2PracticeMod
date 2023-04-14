@@ -2,7 +2,7 @@
 
 namespace version {
 
-const PracmodVersion PRACMOD_VERSION = {1, 0, 0, 1};
+const PracmodVersion PRACMOD_VERSION = {1, 0, 0, 0};
 
 static char s_version_str[16];
 
