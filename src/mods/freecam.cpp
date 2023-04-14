@@ -89,6 +89,7 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
             ball->pos = mkb::stagedef->start->position;
         }
         ball->vel.x = 0;
+        ball->vel.y = 0;
         ball->vel.z = 0;
     }
 }
