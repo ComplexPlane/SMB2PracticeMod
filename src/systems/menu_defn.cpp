@@ -1,7 +1,6 @@
 #include "menu_defn.h"
 
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
 #include "mods/freecam.h"

@@ -2,7 +2,6 @@
 
 #include "mkb/mkb.h"
 
-#include "mkb/mkb2_ghidra.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"

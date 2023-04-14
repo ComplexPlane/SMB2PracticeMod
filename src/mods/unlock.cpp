@@ -1,7 +1,6 @@
 #include "unlock.h"
 
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 #include "systems/pref.h"
 
 namespace unlock {

@@ -1,7 +1,6 @@
 #include "hide.h"
 
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 #include "mods/freecam.h"
 #include "systems/pref.h"
 #include "utils/patch.h"
