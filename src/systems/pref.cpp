@@ -216,7 +216,6 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
 // Boolean preferences that should default to true
 static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::Savestates,
-    BoolPref::RtaPauseTimer,
     BoolPref::IwTimer,
     BoolPref::CmTimer,
     BoolPref::InputDispNotchIndicators,
