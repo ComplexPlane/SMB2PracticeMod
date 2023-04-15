@@ -36,7 +36,11 @@ static void apply_saved_vel() {
     mkb::mtxa_rotate_x(mkb::stagedef->start->rotation.x);
     // Applies this TF ^^^
     Vec entered_goal_vel_rt_start = {};
-    mkb::mtxa_tf_vec(&s_saved_vel, &entered_goal_vel_rt_start);
+
+    // This prevents a console-only crash... ?!?!? Another compiler bug?
+    Vec saved_vel = s_saved_vel;
+
+    mkb::mtxa_tf_vec(&saved_vel, &entered_goal_vel_rt_start);
     // We now have figured out what velocity to apply to the start ball, called
     // entered_goal_vel_rt_start
 
