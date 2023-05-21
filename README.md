@@ -69,4 +69,6 @@ Thank you to:
 
 **Alist** and **PetresInc** for providing insightful feedback on a pre-release alpha needed before publishing an initial beta version of the mod.
 
+**Nambo** for suggesting and implementing numerous features of their own!
+
 **The Monkey Ball Speedrunning Scene** for inspiring this mod! Thank you for being so fun to be a part of.
