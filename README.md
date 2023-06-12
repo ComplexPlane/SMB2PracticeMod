@@ -35,7 +35,7 @@ Be sure to look for the Easter egg!
 
 # Building
 
-To build from source, see [this guide](doc/building.md).
+See [Building from Source](doc/building.md).
 
 # Contact
 
