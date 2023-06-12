@@ -23,16 +23,12 @@ A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It 
 
 # Install
 
-To install the mod on a **Wii console**, follow [this guide](doc/console-setup-guide.md). There's also
-a [video guide](https://www.youtube.com/watch?v=BwI_HtiMUiQ&list=PL7BL-I_VX5tNeBwc7jlweIXvf59QG_dMG&index=1) but it's a
-bit out-of-date.
-
-To install the mod on **Dolphin Emulator**, follow [this guide](doc/dolphin-setup-guide.md).
+To install the Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc/console-setup-guide.md). For [Dolphin Emulator](https://dolphin-emu.org/), follow the [Dolphin Setup Guide](doc/dolphin-setup-guide.md).
 
 # Usage
 
 Press L+R at the same time on your controller to toggle the in-game menu. Go to the Help menu to see controller bindings
-for savestates and for other features. For individual-world practice, head to Story Mode and press Up/Down on a savefile
+for savestates and other features. For individual-world practice, head to Story Mode and press Up/Down on a savefile
 to change world.
 
 Be sure to look for the Easter egg!
