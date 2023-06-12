@@ -1,4 +1,4 @@
-# Console Setup Guide
+# Wii Setup Guide
 
 ## Install Homebrew Software
 
