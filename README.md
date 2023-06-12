@@ -23,7 +23,7 @@ A Super Monkey Ball 2 mod for speedrun practice and general experimentation. It 
 
 # Install
 
-To install the Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc/console-setup-guide.md). For [Dolphin Emulator](https://dolphin-emu.org/), follow the [Dolphin Setup Guide](doc/dolphin-setup-guide.md).
+To install the Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc/wii-setup-guide.md). For [Dolphin Emulator](https://dolphin-emu.org/), follow the [Dolphin Setup Guide](doc/dolphin-setup-guide.md).
 
 # Usage
 
