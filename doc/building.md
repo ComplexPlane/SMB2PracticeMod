@@ -1,15 +1,21 @@
 # Building from Source
 
+## Dev Container
+
+This project includes a VSCode [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) configuration, which basically sets up everything you need to edit and build. It should work on Windows, macOS, and Linux. So yeah, that's one convenient option.
+
+## Manual Setup
+
 You will need a Linux environment. A native Linux install or Windows+WSL works. The following assumes Ubuntu 22.04 LTS.
 
-## Install Linux Dependencies
+### Install Linux Dependencies
 
 ```sh
 sudo apt update
 sudo apt install build-essential pkg-config cmake libboost-dev libboost-program-options-dev
 ```
 
-## Install devkitPro
+### Install devkitPro
 
 devkitPro is a gcc-based compiler suite for GameCube and other consoles.
 
@@ -26,7 +32,7 @@ Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc`. Restar
 
 See [here](https://devkitpro.org/wiki/devkitPro_pacman) for full details.
 
-## Clone and Build
+### Clone and Build
 
 ```sh
 git clone https://github.com/ComplexPlane/SMB2PracticeMod.git
@@ -36,7 +42,7 @@ make -j
 
 I recommend using a script to quickly build and copy the rels/gcis to your Dolphin directories. See `scripts/go.sh` for an example meant to be placed at the root of the repo as `go.sh`.
 
-## VSCode Editor Setup
+### VSCode Editor Setup
 
 Here's how to set up VSCode with clangd. Clangd provides error checking, autocompletion, formatting, and more. It's faster and more accurate than the Microsoft C++ extension in my experience.
 
