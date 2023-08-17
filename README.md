@@ -39,7 +39,7 @@ See [Building from Source](doc/building.md).
 
 # Contact
 
-If you have any questions, bugs, or feature requests, feel free to message me on Discord (`ComplexPlane#3111`) or
+If you have any questions, bugs, or feature requests, feel free to message me on Discord (`complexplane`) or
 email (`complexplanegames@gmail.com`). You can also file a GitHub issue.
 
 # Credits

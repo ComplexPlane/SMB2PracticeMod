@@ -2,7 +2,7 @@
 
 ## Set up the GCI
 
-* Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/complexplane/apesphere/releases).
+* Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases).
 * Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_.
 * Copy the `.gci` files in the release into the appropriate folder, which you may need to create yourself if it doesn't exist
   * On Windows the folder is `Documents\Dolphin Emulator\GC\USA\Card B\`
@@ -30,5 +30,5 @@ your save data, it doesn't matter.
 If the game does not progress past the Presented By Sega screen, try upgrading your version of Dolphin Emulator 
 (download [here](https://dolphin-emu.org/download/)). Using at least the latest beta is recommended.
 
-If you still can't figure it out, feel free to message me on Discord (`ComplexPlane#3111`) or
+If you still can't figure it out, feel free to message me on Discord (`complexplane`) or
 email (`complexplanegames@gmail.com`), or file a GitHub issue.

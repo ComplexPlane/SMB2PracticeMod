@@ -13,7 +13,7 @@ You will need a homebrewed Wii with **up-to-date** Nintendont installed.
 ## Install the Practice Mod
 
 * Download the `.zip` file containing the release (_not_ the source code). Releases are
-   found [here](https://github.com/complexplane/apesphere/releases). Open up the `.zip` file (you don't necessarily need
+   found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases). Open up the `.zip` file (you don't necessarily need
    to extract it).
 * Plug in your SD card, flash drive, hard drive, etc. which has your homebrew files on it. If you intend to play a ISO
    file, the practice mod must go on the same SD card/flash drive/etc. as the ISO file.
@@ -37,6 +37,6 @@ game, you've loaded the mod successfully.
 ## Troubleshooting
 
 If you don't see the "SMB2 Practice Mod" text, the mod is definitely not loaded correctly, go back and check to make sure you didn't miss a step. If you can't figure it out, feel free to message me on
-Discord (`ComplexPlane#3111`) or email (`complexplanegames@gmail.com`), or [file a GitHub issue](https://github.com/ComplexPlane/SMB2PracticeMod/issues).
+Discord (`complexplane`) or email (`complexplanegames@gmail.com`), or [file a GitHub issue](https://github.com/ComplexPlane/SMB2PracticeMod/issues).
 
 One person reported having trouble loading the practice mod when there were other memory card savefiles in `saves/` besides `GM2E_B.raw`. If you're having trouble, try putting only `GM2E_B.raw` in your `saves/` folder. I'm not sure exactly what circumstances cause this issue, let me know if you run into it so I can take a closer look.
