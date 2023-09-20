@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mods/freecam.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -251,7 +252,16 @@ static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
 }
 
 void disp() {
-    if (!pref::get(pref::BoolPref::InputDisp)) return;
+    bool in_replay = mkb::sub_mode == mkb::SMD_OPTION_REPLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_MAIN ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_MAIN ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_INIT ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_MAIN ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN;
+
+    if (!pref::get(pref::BoolPref::InputDisp) || freecam::should_hide_hud() || in_replay) return;
 
     Vec2d center =
         pref::get(pref::BoolPref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};

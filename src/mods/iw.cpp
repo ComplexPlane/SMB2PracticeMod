@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mods/freecam.h"
 #include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -119,7 +120,8 @@ void tick() {
 
 void disp() {
     if (!pref::get(pref::BoolPref::IwTimer) || mkb::main_mode != mkb::MD_GAME ||
-        mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw)
+        mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw ||
+        freecam::should_hide_hud())
         return;
     timerdisp::draw_timer(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
 }

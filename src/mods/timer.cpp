@@ -1,6 +1,7 @@
 #include "timer.h"
 
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/timerdisp.h"
@@ -51,7 +52,7 @@ void disp() {
         }
     }
 
-    if (pref::get(pref::BoolPref::RtaPauseTimer)) {
+    if (pref::get(pref::BoolPref::RtaPauseTimer) && !freecam::should_hide_hud()) {
         timerdisp::draw_timer(s_rta_timer, "RTA:", 1, draw::WHITE, true);
         timerdisp::draw_timer(s_pause_timer, "PAU:", 2, draw::WHITE, true);
     }

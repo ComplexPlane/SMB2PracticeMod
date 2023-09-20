@@ -16,6 +16,45 @@ namespace ilmark {
 static bool s_valid_run = false;
 static bool s_is_romhack = false;
 
+void disable_invalidating_settings() {
+    // * Pausing obviously isn't allowed but that's not a setting
+    // * Loading a savestate isn't allowed, but having the setting on is allowed
+
+    // * Using dpad controls is not allowed, but having the setting on is allowed
+    //   (I'll disable it here anyways because it doesn't see as much use as savestates and may be
+    //   forgotten)
+    pref::set(pref::BoolPref::DpadControls, false);
+
+    // * Raw stick input display is not allowed
+    pref::set(pref::BoolPref::InputDispRawStickInputs, false);
+
+    // Disable hidden elements?
+
+    // Disable assist features
+    pref::set(pref::U8Pref::TimerType, 0);
+    pref::set(pref::BoolPref::DisableFallouts, false);
+    pref::set(pref::BoolPref::BouncyFalloutPlane, false);
+
+    // Disable custom physics
+    pref::set(pref::BoolPref::UseCustomPhysics, false);
+    pref::set(pref::U8Pref::Friction, 10);
+    pref::set(pref::U8Pref::Restitution, 50);
+
+    // Reset camera to default
+    pref::set(pref::U8Pref::Camera, 0);
+    // pref::set(pref::U8Pref::CameraMode, false);
+    // pref::set(pref::U8Pref::CameraAngle, false);
+    // pref::set(pref::U8Pref::CameraTurnRateScale, false);
+    // pref::set(pref::U8Pref::CameraHeight, false);
+
+    // Disable fun mods
+    pref::set(pref::BoolPref::JumpMod, false);
+    pref::set(pref::BoolPref::Moon, false);
+    pref::set(pref::BoolPref::Marathon, false);
+
+    pref::save();
+}
+
 void init() {
     char gamecode[7] = {};
     mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
@@ -72,7 +111,7 @@ bool is_ilmark_enabled() {
 }
 
 void disp() {
-    if (!is_ilmark_enabled()) return;
+    if (!is_ilmark_enabled() || freecam::should_hide_hud()) return;
 
     bool in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                            mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||

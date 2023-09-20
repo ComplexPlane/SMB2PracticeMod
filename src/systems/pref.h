@@ -26,7 +26,7 @@ enum class BoolPref : u8 {
     Marathon,
     Moon,
     IlBattleDisplay,
-    IlBattleBreakdown,
+    IlBattleShowBreakdown,
     IlMarkPractice,
     IlMarkStory,
     IlMarkChallenge,
@@ -45,6 +45,15 @@ enum class BoolPref : u8 {
     HideStobjs,
     HideEffects,
     IlMarkRomhacks,
+    DisableWarps,
+    DisableFallouts,
+    BouncyFalloutPlane,
+    IlBattleShowTime,
+    IlBattleShowScore,
+    IlBattleBuzzerOld,
+    IlBattleMinimalBreakdown,
+    UseCustomPhysics,
+    SavestateSwitchToUnused
 };
 
 enum class U8Pref : u8 {
@@ -54,6 +63,20 @@ enum class U8Pref : u8 {
     ApeColor,
     IlBattleLength,
     FreecamSpeedMult,
+    Camera,
+    BallRed,
+    BallGreen,
+    BallBlue,
+    BallColorType,
+    MenuBind,
+    TimerType,
+    Friction,
+    Restitution,
+    CameraMode,
+    CameraAngle,
+    CameraTurnRateScale,
+    CameraPivotHeight,
+    CameraHeight,
 };
 
 void init();

@@ -1,9 +1,10 @@
 #include "ilbattle.h"
-#include "mkb/mkb.h"
-#include "systems/pad.h"
-#include "systems/pref.h"
-#include "utils/draw.h"
-#include "utils/timerdisp.h"
+#include "../mkb/mkb.h"
+#include "../systems/pad.h"
+#include "../systems/pref.h"
+#include "../utils/draw.h"
+#include "../utils/patch.h"
+#include "../utils/timerdisp.h"
 
 namespace ilbattle {
 
@@ -24,19 +25,21 @@ static u32 s_best_frames = 0;
 static u32 s_best_score = 0;
 static u32 s_best_score_bananas = 0;
 static u32 s_best_score_frames = 0;
-static constexpr u32 SECOND_FRAMES = 60;
-static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
-static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
+static constexpr u32 SECOND_FRAMES = 60;                  // frames per second
+static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;  // frames per minute
+static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
 static constexpr u32 CWIDTH = 12;
 static constexpr u32 CHEIGHT = 16;
 static bool s_invalid_run = false;
 static u32 s_buzzer_message_count = 0;
+static u32 s_rainbow = 0;
 static u32 s_battle_length = 0;
 static u32 s_battle_stage_id = 0;
 static u32 s_main_mode_play_timer = 0;
 // static u32 battle_length = pref::get_ilbattle_length();
 
-static void battle_display(mkb::GXColor color) {
+static u32 battle_display(mkb::GXColor text, mkb::GXColor times) {
+    u32 battle_hours = s_battle_frames / HOUR_FRAMES;
     u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
     u32 battle_seconds = s_battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
 
@@ -46,20 +49,46 @@ static void battle_display(mkb::GXColor color) {
     u32 best_score_seconds = s_best_score_frames / SECOND_FRAMES;
     u32 best_score_centiseconds = (s_best_score_frames % SECOND_FRAMES) * 100 / 60;
 
-    draw::debug_text(X - 12 * CWIDTH, Y, color, "ELAPSED:");
-    draw::debug_text(X, Y, color, "%02d:%02d", battle_minutes, battle_seconds);
-    draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, color, "BEST TIME:");
-    draw::debug_text(X, Y + CHEIGHT, color, "%d.%02d", best_seconds, best_centiseconds);
-    draw::debug_text(X - 12 * CWIDTH, Y + 2 * CHEIGHT, color, "BEST SCORE:");
-    draw::debug_text(X, Y + 2 * CHEIGHT, color, "%d", s_best_score);
-    if (pref::get(pref::BoolPref::IlBattleBreakdown)) {
-        draw::debug_text(X - 12 * CWIDTH, Y + 3 * CHEIGHT, draw::GOLD, "SCORE BREAKDOWN");
-        draw::debug_text(X - 12 * CWIDTH, Y + 4 * CHEIGHT, color, "BANANAS:");
-        draw::debug_text(X, Y + 4 * CHEIGHT, color, "%d", s_best_score_bananas);
-        draw::debug_text(X - 12 * CWIDTH, Y + 5 * CHEIGHT, color, "TIMER:");
-        draw::debug_text(X, Y + 5 * CHEIGHT, color, "%d.%02d", best_score_seconds,
-                         best_score_centiseconds);
+    u32 current_y = Y;
+
+    draw::debug_text(X - 12 * CWIDTH, Y, text, "ELAPSED:");
+    if (battle_hours > 0) {
+        draw::debug_text(X, Y, times, "%d:%02d:%02d", battle_hours, battle_minutes, battle_seconds);
+    } else {
+        draw::debug_text(X, Y, times, "%02d:%02d", battle_minutes, battle_seconds);
     }
+
+    if (pref::get(pref::BoolPref::IlBattleShowTime)) {
+        current_y += CHEIGHT;
+        draw::debug_text(X - 12 * CWIDTH, current_y, text, "BEST TIME:");
+        draw::debug_text(X, current_y, times, "%d.%02d", best_seconds, best_centiseconds);
+    }
+    if (pref::get(pref::BoolPref::IlBattleShowScore)) {
+        current_y += CHEIGHT;
+        draw::debug_text(X - 12 * CWIDTH, current_y, text, "BEST SCORE:");
+        draw::debug_text(X, current_y, times, "%d", s_best_score);
+
+        // breakdown
+        if (pref::get(pref::BoolPref::IlBattleShowBreakdown)) {
+            current_y += CHEIGHT;
+            if (!pref::get(pref::BoolPref::IlBattleMinimalBreakdown)) {
+                draw::debug_text(X - 12 * CWIDTH, current_y, times, "BREAKDOWN:");
+                draw::debug_text(X, current_y, times, "%d.%02d [%d]", best_score_seconds,
+                                 best_score_centiseconds, s_best_score_bananas);
+            } else {
+                draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
+                current_y += CHEIGHT;
+                draw::debug_text(X - 12 * CWIDTH, current_y, text, "BANANAS:");
+                draw::debug_text(X, current_y, times, "%d", s_best_score_bananas);
+                current_y += CHEIGHT;
+                draw::debug_text(X - 12 * CWIDTH, current_y, text, "TIMER:");
+                draw::debug_text(X, current_y, times, "%d.%02d", best_score_seconds,
+                                 best_score_centiseconds);
+            }
+        }
+    }
+
+    return current_y + CHEIGHT;
 }
 
 static u32 score_calc(u32 score) {
@@ -167,27 +196,74 @@ static void track_final_attempt() {
     }
 }
 
-static void display_buzzer_beater_message() {
-    s_buzzer_message_count++;
-    u32 Y2 = Y;
-    if (pref::get(pref::BoolPref::IlBattleBreakdown)) Y2 = Y + 3 * CHEIGHT;
+static constexpr u8 LOW_COLOR = 0x42;   // 0x41
+static constexpr u8 HIGH_COLOR = 0xf5;  // 0xf5
+
+static mkb::GXColor get_color(int num) {
+    int state = num / 180;
+    int loc = num % 180;
+    mkb::GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
+    switch (state) {
+        case 0: {  // R-G^B
+            color.r = HIGH_COLOR;
+            color.g += loc;
+            break;
+        }
+        case 1: {  // RvG-B
+            color.r = HIGH_COLOR - loc;
+            color.g = HIGH_COLOR;
+            break;
+        }
+        case 2: {  // R G-B^
+            color.g = HIGH_COLOR;
+            color.b += loc;
+            break;
+        }
+        case 3: {  // R GvB-
+            color.g = HIGH_COLOR - loc;
+            color.b = HIGH_COLOR;
+            break;
+        }
+        case 4: {  // R^G B-
+            color.r += loc;
+            color.b = HIGH_COLOR;
+            break;
+        }
+        case 5: {  // R-G Bv
+            color.r = HIGH_COLOR;
+            color.b = HIGH_COLOR - loc;
+            break;
+        }
+    }
+
+    return color;
+}
+
+static void display_buzzer_beater_message(u32 start_y) {
+    s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 3 * CHEIGHT, draw::RED, "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count >= 5)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 4 * CHEIGHT, draw::ORANGE, "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count >= 10)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 5 * CHEIGHT, draw::GOLD, "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count >= 15)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 6 * CHEIGHT, draw::GREEN, "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count >= 20)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 7 * CHEIGHT, draw::BLUE, "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count >= 25)
-        draw::debug_text(X - 12 * CWIDTH, Y2 + 8 * CHEIGHT, draw::BRIGHT_PURPLE,
+        draw::debug_text(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, draw::RED,
                          "EPIC BUZZER BEATER B)");
-    if (s_buzzer_message_count > 30) s_buzzer_message_count = 0;
+    if (s_buzzer_message_count >= 5)
+        draw::debug_text(X - 12 * CWIDTH, start_y + 2 * CHEIGHT, draw::ORANGE,
+                         "EPIC BUZZER BEATER B)");
+    if (s_buzzer_message_count >= 10)
+        draw::debug_text(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, draw::GOLD,
+                         "EPIC BUZZER BEATER B)");
+    if (s_buzzer_message_count >= 15)
+        draw::debug_text(X - 12 * CWIDTH, start_y + 4 * CHEIGHT, draw::GREEN,
+                         "EPIC BUZZER BEATER B)");
+    if (s_buzzer_message_count >= 20)
+        draw::debug_text(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, draw::BLUE,
+                         "EPIC BUZZER BEATER B)");
+    if (s_buzzer_message_count >= 25)
+        draw::debug_text(X - 12 * CWIDTH, start_y + 6 * CHEIGHT, draw::BRIGHT_PURPLE,
+                         "EPIC BUZZER BEATER B)");
 }
 
 void tick() {
+    s_rainbow = (s_rainbow + 11) % 1080;
+
     if (mkb::main_mode == mkb::MD_GAME) {
         s_main_mode_play_timer++;
     } else {
@@ -199,6 +275,7 @@ void tick() {
         return;
     }
 
+    // possible incorrect ordering here for pause tracking?
     if (pref::get(pref::BoolPref::IlBattleDisplay)) {
         if (s_state == IlBattleState::WaitForFirstRetry) {
             track_first_retry();
@@ -206,6 +283,9 @@ void tick() {
             track_invalid_pauses();
             track_best();
             run_battle_timer();  // To-Do: Implement realtime timer (without loads), if I figure how
+            if (pad::button_down(mkb::PAD_BUTTON_UP)) {  // REMOVE
+                s_battle_frames += 60 * 15;
+            }
         } else if (s_state == IlBattleState::BuzzerBeater) {
             track_invalid_pauses();
             track_final_attempt();
@@ -244,7 +324,7 @@ void disp() {
                 s_invalid_run = true;
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
             } else {
-                battle_display(draw::LIGHT_GREEN);
+                battle_display(draw::LIGHT_GREEN, draw::LIGHT_GREEN);
             }
         } else if ((s_state == IlBattleState::BattleDone ||
                     s_state == IlBattleState::BattleDoneBuzzer) &&
@@ -253,10 +333,15 @@ void disp() {
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
                 draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE,
                                  "(DPAD DOWN TO READY)");
-            } else
-                battle_display(draw::LIGHT_PURPLE);
-            if (s_state == IlBattleState::BattleDoneBuzzer) {
-                display_buzzer_beater_message();
+            } else if (s_state == IlBattleState::BattleDoneBuzzer) {
+                if (!pref::get(pref::BoolPref::IlBattleBuzzerOld)) {
+                    battle_display(draw::LIGHT_PURPLE, get_color(s_rainbow));
+                } else {
+                    u32 start_y = battle_display(draw::LIGHT_PURPLE, draw::LIGHT_PURPLE);
+                    display_buzzer_beater_message(start_y);
+                }
+            } else {
+                battle_display(draw::LIGHT_PURPLE, draw::LIGHT_PURPLE);
             }
         }
     }

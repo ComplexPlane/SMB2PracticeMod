@@ -1,17 +1,18 @@
 #include "menu_defn.h"
 
-#include "mkb/mkb.h"
-#include "mods/ballcolor.h"
-#include "mods/cmseg.h"
-#include "mods/freecam.h"
-#include "mods/gotostory.h"
-#include "mods/ilbattle.h"
-#include "mods/inputdisp.h"
-#include "mods/jump.h"
-#include "mods/unlock.h"
-#include "systems/version.h"
-#include "utils/draw.h"
-#include "utils/macro_utils.h"
+#include "../mkb/mkb.h"
+#include "../mods/ballcolor.h"
+#include "../mods/cmseg.h"
+#include "../mods/freecam.h"
+#include "../mods/gotostory.h"
+#include "../mods/ilbattle.h"
+#include "../mods/inputdisp.h"
+#include "../mods/unlock.h"
+#include "../systems/version.h"
+#include "../utils/draw.h"
+#include "../utils/macro_utils.h"
+#include "mods/ilmark.h"
+#include "systems/pref.h"
 
 // TODO update buttons with close menu flag
 // TODO let buttons have null push()
@@ -24,6 +25,8 @@ static const char* s_inputdisp_colors[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
 static_assert(LEN(s_inputdisp_colors) == inputdisp::NUM_COLORS);
+
+static const char* s_camera_options[] = {"Default", "Force SMB2", "Force SMB1", "Custom"};
 
 static Widget s_inputdisp_widgets[] = {
     {
@@ -75,22 +78,105 @@ static const char* s_ball_colors[] = {
 };
 static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
 
-static Widget s_ball_color_widgets[] = {
+static const char* s_ball_color_types[] = {
+    "Preset Color",
+    "RGB Selector",
+    "Rainbow",
+    "Random",
+};
+
+static Widget s_preset_widgets[] = {
     {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Ball Color",
+                .label = "Preset Color",
                 .choices = s_ball_colors,
                 .num_choices = LEN(s_ball_colors),
                 .pref = pref::U8Pref::BallColor,
             },
     },
+};
+
+static Widget s_hex_widgets[] = {
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Red Value",
+                .pref = pref::U8Pref::BallRed,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Green Value",
+                .pref = pref::U8Pref::BallGreen,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Blue Value",
+                .pref = pref::U8Pref::BallBlue,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+};
+
+static Widget s_ball_color_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Ball Color"},
+    },
     {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Ape Color",
+                .label = "Ball Color Type",
+                .choices = s_ball_color_types,
+                .num_choices = LEN(s_ball_color_types),
+                .pref = pref::U8Pref::BallColorType,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_preset_widgets,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::BallColorType,
+                .show_if = 0,
+                .num_widgets = LEN(s_preset_widgets),
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_hex_widgets,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::BallColorType,
+                .show_if = 1,
+                .num_widgets = LEN(s_hex_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Header,
+        .header = {"Monkey Color"},
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Clothing Color",
                 .choices = s_ball_colors,
                 .num_choices = LEN(s_ball_colors),
                 .pref = pref::U8Pref::ApeColor,
@@ -129,8 +215,40 @@ static Widget s_il_battle_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Show Time",
+                .pref = pref::BoolPref::IlBattleShowTime,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Score",
+                .pref = pref::BoolPref::IlBattleShowScore,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Score Breakdown Info",
-                .pref = pref::BoolPref::IlBattleBreakdown,
+                .pref = pref::BoolPref::IlBattleShowBreakdown,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Minimal Breakdown",
+                .pref = pref::BoolPref::IlBattleMinimalBreakdown,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Old Buzzer Message",
+                .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
     },
     {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
@@ -701,21 +819,69 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static Widget s_tools_widgets[] = {
+static const char* s_timer_types[] = {"Default", "Freeze at max", "Stop at 0", "Count up from 0"};
+
+static Widget s_assist_widgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Savestates",
-                .pref = pref::BoolPref::Savestates,
+                .label = "Timer Type",
+                .choices = s_timer_types,
+                .num_choices = LEN(s_timer_types),
+                .pref = pref::U8Pref::TimerType,
             },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Freeze Timer",
-                .pref = pref::BoolPref::FreezeTimer,
+                .label = "Disable Fallouts",
+                .pref = pref::BoolPref::DisableFallouts,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Bouncy Fallout Plane",
+                .pref = pref::BoolPref::BouncyFalloutPlane,
+            },
+    },
+};
+
+static Widget s_savestate_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Enable Savestates",
+                .pref = pref::BoolPref::Savestates,
+            },
+    },
+};
+
+static Widget s_tools_widgets[] = {
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Go To Story Mode",
+                .push = gotostory::load_storymode,
+                .flags = ButtonFlags::CloseMenu,
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Savestate",
+                .widgets = s_savestate_widgets,
+                .num_widgets = LEN(s_savestate_widgets),
             },
     },
     {
@@ -788,6 +954,15 @@ static Widget s_il_mark_widgets[] = {
                 .pref = pref::BoolPref::IlMarkRomhacks,
             },
     },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Disable Invalidating Settings",
+                .push = [] { ilmark::disable_invalidating_settings(); },
+                .flags = ButtonFlags::GoBack,
+            },
+    },
 };
 
 static Widget s_displays_widgets[] = {
@@ -797,11 +972,11 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Timers", s_timers_widgets, LEN(s_timers_widgets)},
+        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
+        .menu = {"Timers", s_timers_widgets, LEN(s_timers_widgets)},
     },
     {
         .type = WidgetType::Menu,
@@ -821,7 +996,161 @@ static Widget s_displays_widgets[] = {
     },
 };
 
+static Widget s_enabled_physics_widgets[] = {
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Friction",
+                .pref = pref::U8Pref::Friction,
+                .precision = 1000,
+                .min = 0,
+                .max = 255,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Restitution",
+                .pref = pref::U8Pref::Restitution,
+                .precision = 100,
+                .min = 0,
+                .max = 255,
+            },
+    },
+};
+
+static Widget s_physics_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Use Custom Physics",
+                .pref = pref::BoolPref::UseCustomPhysics,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_enabled_physics_widgets,
+                .hideable_type = HideableType::BoolHideable,
+                .bool_pref = pref::BoolPref::UseCustomPhysics,
+                .show_if = true,
+                .num_widgets = LEN(s_enabled_physics_widgets),
+            },
+    },
+};
+
+static Widget s_custom_camera_widgets[] = {
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Mode",
+                .pref = pref::U8Pref::CameraMode,
+                .min = 0,
+                .max = 255,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Angle",
+                .pref = pref::U8Pref::CameraAngle,
+                .min = 0,
+                .max = 255,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Turn Rate Scale",
+                .pref = pref::U8Pref::CameraTurnRateScale,
+                .precision = 100,
+                .min = 0,
+                .max = 255,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Pivot Height",
+                .pref = pref::U8Pref::CameraPivotHeight,
+                .precision = 100,
+                .min = 0,
+                .max = 255,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Height",
+                .pref = pref::U8Pref::CameraHeight,
+                .precision = 100,
+                .min = 0,
+                .max = 255,
+            },
+    },
+};
+
+static Widget s_camera_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Camera Type",
+                .choices = s_camera_options,
+                .num_choices = LEN(s_camera_options),
+                .pref = pref::U8Pref::Camera,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_custom_camera_widgets,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::Camera,
+                .show_if = 3,
+                .num_widgets = LEN(s_custom_camera_widgets),
+            },
+    },
+};
+
 static Widget s_gameplay_mods_widgets[] = {
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Camera",
+                .widgets = s_camera_widgets,
+                .num_widgets = LEN(s_camera_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Physics Inspector",
+                .widgets = s_physics_widgets,
+                .num_widgets = LEN(s_physics_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Assist",
+                .widgets = s_assist_widgets,
+                .num_widgets = LEN(s_assist_widgets),
+            },
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -885,25 +1214,22 @@ static Widget s_reset_prefs_widgets[] = {
     },
 };
 
-static Widget s_pracmod_settings_widgets[] = {{
-    .type = WidgetType::Menu,
-    .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},
-}};
-
-static Widget s_root_widgets[] = {
+static Widget s_pracmod_settings_widgets[] = {
     {
-        .type = WidgetType::Button,
-        .button =
+        .type = WidgetType::InputSelect,
+        .input_select =
             {
-                .label = "Go To Story Mode",
-                .push = gotostory::load_storymode,
-                .flags = ButtonFlags::CloseMenu,
+                .label = "Menu Bind",
+                .pref = pref::U8Pref::MenuBind,
             },
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
+        .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},
     },
+};
+
+static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Tools", s_tools_widgets, LEN(s_tools_widgets)},
@@ -914,12 +1240,11 @@ static Widget s_root_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Gameplay Mods", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)},
+        .menu = {"Variants", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)},
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Practice Mod Settings", s_pracmod_settings_widgets,
-                 LEN(s_pracmod_settings_widgets)},
+        .menu = {"Settings", s_pracmod_settings_widgets, LEN(s_pracmod_settings_widgets)},
     },
     {
         .type = WidgetType::Menu,

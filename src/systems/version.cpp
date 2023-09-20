@@ -2,7 +2,7 @@
 
 namespace version {
 
-const PracmodVersion PRACMOD_VERSION = {1, 0, 2, 0};
+const PracmodVersion PRACMOD_VERSION = {1, 1, 0, 1};
 
 static char s_version_str[16];
 
@@ -43,8 +43,6 @@ s32 compare(const PracmodVersion& v1, const PracmodVersion& v2) {
     return 0;
 }
 
-const char* get_version_str() {
-    return s_version_str;
-}
+const char* get_version_str() { return s_version_str; }
 
 }  // namespace version

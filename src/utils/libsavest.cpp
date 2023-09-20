@@ -2,15 +2,14 @@
 
 #include "libsavest.h"
 
-#include "mkb/mkb.h"
-
-#include "mods/timer.h"
-#include "systems/heap.h"
-#include "systems/pad.h"
-#include "systems/pref.h"
-#include "utils/draw.h"
-#include "utils/memstore.h"
-#include "utils/patch.h"
+#include "../mkb/mkb.h"
+#include "../mods/timer.h"
+#include "../systems/heap.h"
+#include "../systems/pad.h"
+#include "../systems/pref.h"
+#include "../utils/draw.h"
+#include "../utils/memstore.h"
+#include "../utils/patch.h"
 
 namespace libsavest {
 
@@ -81,7 +80,8 @@ void SaveState::pass_over_regions() {
             case mkb::STOBJ_GOALTAPE:
             case mkb::STOBJ_GOALBAG:
             case mkb::STOBJ_GOALBAG_EXMASTER:
-            case mkb::STOBJ_BUTTON: {
+            case mkb::STOBJ_BUTTON:
+            case mkb::STOBJ_JAMABAR: {
                 m_store.do_region(&mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
@@ -117,6 +117,9 @@ void SaveState::pass_over_regions() {
             m_store.do_region(&sprite->fpara1, sizeof(sprite->fpara1));
         }
     }
+
+    // Replays
+    // m_store.do_region(mkb::replay, sizeof(mkb::Replay));
 
     // RTA timer
     timer::save_state(&m_store);
@@ -328,6 +331,8 @@ SaveState::LoadResult SaveState::load() {
     s_state_loaded_this_frame = true;
     return LoadResult::Ok;
 }
+
+bool SaveState::isEmpty() { return !(m_flags & FLAG_ACTIVE); }
 
 void SaveState::tick() {
     s_state_loaded_this_frame = false;

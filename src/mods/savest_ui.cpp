@@ -1,16 +1,16 @@
 #include "savest_ui.h"
 
-#include "mkb/mkb.h"
+#include "../mkb/mkb.h"
 
-#include "systems/heap.h"
-#include "systems/log.h"
-#include "systems/pad.h"
-#include "systems/pref.h"
-#include "utils/draw.h"
-#include "utils/libsavest.h"
-#include "utils/macro_utils.h"
-#include "utils/memstore.h"
-#include "utils/patch.h"
+#include "../systems/heap.h"
+#include "../systems/log.h"
+#include "../systems/pad.h"
+#include "../systems/pref.h"
+#include "../utils/draw.h"
+#include "../utils/libsavest.h"
+#include "../utils/macro_utils.h"
+#include "../utils/memstore.h"
+#include "../utils/patch.h"
 
 namespace savest_ui {
 
@@ -45,9 +45,23 @@ void tick() {
         s_active_state_slot = cstick_dir;
         draw::notify(draw::WHITE, "Slot %d Selected", cstick_dir + 1);
     }
-    auto& state = s_states[s_active_state_slot];
 
     if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
+        // dont override current slot unless all full
+        if (pref::get(pref::BoolPref::SavestateSwitchToUnused)) {
+            bool changed_state = false;
+            for (u32 i = 0; i < 8; i++) {
+                auto& state = s_states[(s_active_state_slot + i) % 8];
+                if (state.isEmpty()) {
+                    s_active_state_slot = (s_active_state_slot + i) % 8;
+                    changed_state = true;
+                    break;
+                }
+            }
+        }
+
+        auto& state = s_states[s_active_state_slot];
+
         using SaveResult = libsavest::SaveState::SaveResult;
         switch (state.save()) {
             case SaveResult::Ok: {
@@ -100,6 +114,7 @@ void tick() {
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {
+        auto& state = s_states[s_active_state_slot];
         using LoadResult = libsavest::SaveState::LoadResult;
         switch (state.load()) {
             case LoadResult::Ok: {

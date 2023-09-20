@@ -475,7 +475,7 @@ enum { /* Sourced from 0x80370244 in Ghidra - I'm guessing SMD stands for Sub Mo
     SMD_ADV_LOGO_MAIN=4,
     SMD_ADV_WARNING_INIT=5,
     SMD_ADV_WARNING_MAIN=6,
-    SMD_ADV_DEMO_INIT=7,
+    SMD_ADV_DEMO_INIT=7, 
     SMD_ADV_DEMO_MAIN=8,
     SMD_ADV_START_INIT=9,
     SMD_ADV_START_MAIN=10,

@@ -42,7 +42,7 @@ enum class PrefId : u16 {
     Moon = 22,
     IlBattleDisplay = 23,
     IlBattleLength = 24,
-    IlBattleBreakdown = 25,
+    IlBattleShowBreakdown = 25,
     IlMarkPractice = 26,
     IlMarkStory = 27,
     IlMarkChallenge = 28,
@@ -62,6 +62,28 @@ enum class PrefId : u16 {
     HideStobjs = 42,
     HideEffects = 43,
     IlMarkRomhacks = 44,
+    Camera = 45,
+    BallRed = 46,
+    BallGreen = 47,
+    BallBlue = 48,
+    BallColorType = 49,
+    DisableWarps = 50,
+    MenuBind = 51,
+    TimerType = 52,
+    DisableFallouts = 53,
+    BouncyFalloutPlane = 54,
+    IlBattleShowTime = 55,
+    IlBattleShowScore = 56,
+    IlBattleBuzzerOld = 57,
+    Friction = 58,
+    Restitution = 59,
+    CameraMode = 60,
+    CameraAngle = 61,
+    CameraTurnRateScale = 62,
+    CameraPivotHeight = 63,
+    CameraHeight = 64,
+    UseCustomPhysics = 65,
+    SavestateSwitchToUnused = 66,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -89,7 +111,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Marathon,
     PrefId::Moon,
     PrefId::IlBattleDisplay,
-    PrefId::IlBattleBreakdown,
+    PrefId::IlBattleShowBreakdown,
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
     PrefId::IlMarkChallenge,
@@ -109,6 +131,28 @@ static const PrefId s_pref_ids[] = {
     PrefId::HideStobjs,
     PrefId::HideEffects,
     PrefId::IlMarkRomhacks,
+    PrefId::Camera,
+    PrefId::BallRed,
+    PrefId::BallGreen,
+    PrefId::BallBlue,
+    PrefId::BallColorType,
+    PrefId::DisableWarps,
+    PrefId::MenuBind,
+    PrefId::TimerType,
+    PrefId::DisableFallouts,
+    PrefId::BouncyFalloutPlane,
+    PrefId::IlBattleShowTime,
+    PrefId::IlBattleShowScore,
+    PrefId::IlBattleBuzzerOld,
+    PrefId::Friction,
+    PrefId::Restitution,
+    PrefId::CameraMode,
+    PrefId::CameraAngle,
+    PrefId::CameraTurnRateScale,
+    PrefId::CameraPivotHeight,
+    PrefId::CameraHeight,
+    PrefId::UseCustomPhysics,
+    PrefId::SavestateSwitchToUnused,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -151,8 +195,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Moon;
         case PrefId::IlBattleDisplay:
             return BoolPref::IlBattleDisplay;
-        case PrefId::IlBattleBreakdown:
-            return BoolPref::IlBattleBreakdown;
+        case PrefId::IlBattleShowBreakdown:
+            return BoolPref::IlBattleShowBreakdown;
         case PrefId::IlMarkPractice:
             return BoolPref::IlMarkPractice;
         case PrefId::IlMarkStory:
@@ -189,6 +233,22 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::HideEffects;
         case PrefId::IlMarkRomhacks:
             return BoolPref::IlMarkRomhacks;
+        case PrefId::DisableWarps:
+            return BoolPref::DisableWarps;
+        case PrefId::DisableFallouts:
+            return BoolPref::DisableFallouts;
+        case PrefId::BouncyFalloutPlane:
+            return BoolPref::BouncyFalloutPlane;
+        case PrefId::IlBattleShowTime:
+            return BoolPref::IlBattleShowTime;
+        case PrefId::IlBattleShowScore:
+            return BoolPref::IlBattleShowScore;
+        case PrefId::IlBattleBuzzerOld:
+            return BoolPref::IlBattleBuzzerOld;
+        case PrefId::UseCustomPhysics:
+            return BoolPref::UseCustomPhysics;
+        case PrefId::SavestateSwitchToUnused:
+            return BoolPref::SavestateSwitchToUnused;
         default:
             return {};
     }
@@ -208,6 +268,34 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::IlBattleLength;
         case PrefId::FreecamSpeedMult:
             return U8Pref::FreecamSpeedMult;
+        case PrefId::Camera:
+            return U8Pref::Camera;
+        case PrefId::BallRed:
+            return U8Pref::BallRed;
+        case PrefId::BallGreen:
+            return U8Pref::BallGreen;
+        case PrefId::BallBlue:
+            return U8Pref::BallBlue;
+        case PrefId::BallColorType:
+            return U8Pref::BallColorType;
+        case PrefId::MenuBind:
+            return U8Pref::MenuBind;
+        case PrefId::TimerType:
+            return U8Pref::TimerType;
+        case PrefId::Friction:
+            return U8Pref::Friction;
+        case PrefId::Restitution:
+            return U8Pref::Restitution;
+        case PrefId::CameraMode:
+            return U8Pref::CameraMode;
+        case PrefId::CameraAngle:
+            return U8Pref::CameraAngle;
+        case PrefId::CameraTurnRateScale:
+            return U8Pref::CameraTurnRateScale;
+        case PrefId::CameraPivotHeight:
+            return U8Pref::CameraPivotHeight;
+        case PrefId::CameraHeight:
+            return U8Pref::CameraHeight;
         default:
             return {};
     }
@@ -232,7 +320,9 @@ struct DefaultU8Pref {
 
 // Non-zero default values of u8 preferences
 static DefaultU8Pref s_default_u8_prefs[] = {
-    {U8Pref::FreecamSpeedMult, 3},
+    {U8Pref::FreecamSpeedMult, 3},     {U8Pref::MenuBind, 64},          {U8Pref::Friction, 10},
+    {U8Pref::Restitution, 50},         {U8Pref::CameraMode, 0x4c},      {U8Pref::CameraAngle, 0},
+    {U8Pref::CameraTurnRateScale, 75}, {U8Pref::CameraPivotHeight, 18}, {U8Pref::CameraHeight, 80},
 };
 
 //
@@ -240,8 +330,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[8];
-    u8 u8_prefs[8];
+    u8 bool_prefs[8];  // up to 64 bool prefs
+    u8 u8_prefs[20];   // 20 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

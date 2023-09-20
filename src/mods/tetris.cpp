@@ -94,17 +94,9 @@ void Tetris::new_game() {
 }
 
 void Tetris::disp() {
-    // Binding to open menu used to be R+Z, but I found it uncomfortable over time. Now it's used to
-    // open Tetris if it's been unlocked
-    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_TRIGGER_Z, true) && !m_ever_shown) {
-        draw::notify(draw::RED, "Use L+R to toggle menu");
-    }
-
     bool konami_pressed = pad::konami_pressed();
-    bool trig_chord_pressed = pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_TRIGGER_Z);
-    if (konami_pressed || (m_ever_shown && trig_chord_pressed)) {
+    if (konami_pressed) {
         m_hidden = !m_hidden;
-        if (!m_hidden) m_ever_shown = true;
         if (!m_hidden) return;  // Come back next frame when your inputs won't be reused
     }
 
@@ -616,7 +608,6 @@ bool Tetris::is_row_full(s32 y) {
 
 void Tetris::init() {
     m_hidden = true;
-    m_ever_shown = false;
     m_high_score = 0;
     new_game();
 
