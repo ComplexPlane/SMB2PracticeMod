@@ -30,7 +30,7 @@ static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;  // frames per minute
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
 static constexpr u32 CWIDTH = 12;
 static constexpr u32 CHEIGHT = 16;
-static bool s_invalid_run = false;
+static u32 s_paused_frame = 0;
 static u32 s_buzzer_message_count = 0;
 static u32 s_rainbow = 0;
 static u32 s_battle_length = 0;
@@ -151,14 +151,16 @@ static void track_best() {
     u32 current_frames = mkb::mode_info.stage_time_frames_remaining;
     u32 current_score = mkb::balls[mkb::curr_player_idx].score;
     if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {              // Goal test
-        if (current_frames > s_best_frames && !s_invalid_run) {  // New best time test, & invalid
-                                                                 // pause test
+        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {  // Goal test
+        if (current_frames > s_best_frames &&
+            s_paused_frame <= current_frames) {  // New best time test, & invalid
+                                                 // pause test
             s_best_frames = current_frames;
         }
-        if (score_calc(current_score) > s_best_score && !s_invalid_run) {  // New best score test,
-                                                                           // &
-                                                                           // invalid pause test
+        if (score_calc(current_score) > s_best_score &&
+            s_paused_frame <= current_frames) {  // New best score test,
+                                                 // &
+                                                 // invalid pause test
             s_best_score = score_calc(current_score);
             s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
             s_best_score_frames = current_frames;
@@ -168,11 +170,11 @@ static void track_best() {
 
 static void track_invalid_pauses() {
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (mkb::mode_info.stage_time_frames_remaining == mkb::mode_info.stage_time_limit - 1) {
-        s_invalid_run = false;
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
+        s_paused_frame = 0;
     }
-    if (paused_now) {
-        s_invalid_run = true;
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) {
+        s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
     }
 }
 
@@ -283,9 +285,6 @@ void tick() {
             track_invalid_pauses();
             track_best();
             run_battle_timer();  // To-Do: Implement realtime timer (without loads), if I figure how
-            if (pad::button_down(mkb::PAD_BUTTON_UP)) {  // REMOVE
-                s_battle_frames += 60 * 15;
-            }
         } else if (s_state == IlBattleState::BuzzerBeater) {
             track_invalid_pauses();
             track_final_attempt();
@@ -321,7 +320,7 @@ void disp() {
                    s_state == IlBattleState::BuzzerBeater) {
             if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb::current_stage_id &&
                 mkb::main_mode == mkb::MD_GAME) {
-                s_invalid_run = true;
+                s_paused_frame = 2147483647;  // max
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
             } else {
                 battle_display(draw::LIGHT_GREEN, draw::LIGHT_GREEN);
