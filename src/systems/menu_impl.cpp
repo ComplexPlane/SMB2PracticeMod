@@ -491,15 +491,15 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                 draw_selectable_highlight(*y);
             }
 
-            float display =
-                (float)pref::get(widget.float_edit.pref) / (float)widget.float_edit.precision;
+            float display = ((float)(pref::get(widget.float_edit.pref) + widget.float_edit.floor) /
+                             (float)widget.float_edit.precision);
 
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                              "  %s", widget.float_edit.label);
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                             "                         %0.3f", display);
+                             "                         %0.4f", display);
 
             *y += LINE_HEIGHT;
             *selectable_idx += 1;

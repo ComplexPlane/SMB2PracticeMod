@@ -1006,6 +1006,7 @@ static Widget s_enabled_physics_widgets[] = {
                 .precision = 1000,
                 .min = 0,
                 .max = 255,
+                .floor = -100,
             },
     },
     {
@@ -1017,6 +1018,31 @@ static Widget s_enabled_physics_widgets[] = {
                 .precision = 100,
                 .min = 0,
                 .max = 255,
+                .floor = -100,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Gravity",
+                .pref = pref::U8Pref::Gravity,
+                .precision = 10000,
+                .min = 0,
+                .max = 255,
+                .floor = -100,
+            },
+    },
+    {
+        .type = WidgetType::FloatEdit,
+        .float_edit =
+            {
+                .label = "Ball Scale",
+                .pref = pref::U8Pref::BallScale,
+                .precision = 50,
+                .min = 0,
+                .max = 255,
+                .floor = 0,
             },
     },
 };
@@ -1073,6 +1099,7 @@ static Widget s_custom_camera_widgets[] = {
                 .precision = 100,
                 .min = 0,
                 .max = 255,
+                .floor = 0,
             },
     },
     {
@@ -1084,6 +1111,7 @@ static Widget s_custom_camera_widgets[] = {
                 .precision = 100,
                 .min = 0,
                 .max = 255,
+                .floor = 0,
             },
     },
     {
@@ -1095,6 +1123,7 @@ static Widget s_custom_camera_widgets[] = {
                 .precision = 100,
                 .min = 0,
                 .max = 255,
+                .floor = 0,
             },
     },
 };

@@ -100,6 +100,8 @@ struct FloatEditWidget {
     u32 precision;  // denominator, 100
     u8 min;
     u8 max;
+    s32 floor;
+    u32 decimals;
 };
 
 struct InputSelectWidget {

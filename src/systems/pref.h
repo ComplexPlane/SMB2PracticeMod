@@ -53,7 +53,7 @@ enum class BoolPref : u8 {
     IlBattleBuzzerOld,
     IlBattleMinimalBreakdown,
     UseCustomPhysics,
-    SavestateSwitchToUnused
+    SavestateSwitchToUnused,
 };
 
 enum class U8Pref : u8 {
@@ -77,6 +77,9 @@ enum class U8Pref : u8 {
     CameraTurnRateScale,
     CameraPivotHeight,
     CameraHeight,
+    Gravity,
+    BallScale,
+    Acceleration,
 };
 
 void init();
