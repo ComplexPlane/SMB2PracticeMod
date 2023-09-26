@@ -69,22 +69,24 @@ static u32 battle_display(mkb::GXColor text, mkb::GXColor times) {
         draw::debug_text(X, current_y, times, "%d", s_best_score);
 
         // breakdown
-        if (pref::get(pref::BoolPref::IlBattleShowBreakdown)) {
+        u8 breakdown_value = pref::get(pref::U8Pref::IlBattleBreakdown);
+        if (breakdown_value == 1) {
+            // minimal
             current_y += CHEIGHT;
-            if (!pref::get(pref::BoolPref::IlBattleMinimalBreakdown)) {
-                draw::debug_text(X - 12 * CWIDTH, current_y, times, "BREAKDOWN:");
-                draw::debug_text(X, current_y, times, "%d.%02d [%d]", best_score_seconds,
-                                 best_score_centiseconds, s_best_score_bananas);
-            } else {
-                draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
-                current_y += CHEIGHT;
-                draw::debug_text(X - 12 * CWIDTH, current_y, text, "BANANAS:");
-                draw::debug_text(X, current_y, times, "%d", s_best_score_bananas);
-                current_y += CHEIGHT;
-                draw::debug_text(X - 12 * CWIDTH, current_y, text, "TIMER:");
-                draw::debug_text(X, current_y, times, "%d.%02d", best_score_seconds,
-                                 best_score_centiseconds);
-            }
+            draw::debug_text(X - 12 * CWIDTH, current_y, text, "BREAKDOWN:");
+            draw::debug_text(X, current_y, times, "%d.%02d [%d]", best_score_seconds,
+                             best_score_centiseconds, s_best_score_bananas);
+        } else if (breakdown_value == 2) {
+            // full
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, text, "BANANAS:");
+            draw::debug_text(X, current_y, times, "%d", s_best_score_bananas);
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, text, "TIMER:");
+            draw::debug_text(X, current_y, times, "%d.%02d", best_score_seconds,
+                             best_score_centiseconds);
         }
     }
 
@@ -198,49 +200,6 @@ static void track_final_attempt() {
     }
 }
 
-static constexpr u8 LOW_COLOR = 0x42;   // 0x41
-static constexpr u8 HIGH_COLOR = 0xf5;  // 0xf5
-
-static mkb::GXColor get_color(int num) {
-    int state = num / 180;
-    int loc = num % 180;
-    mkb::GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
-    switch (state) {
-        case 0: {  // R-G^B
-            color.r = HIGH_COLOR;
-            color.g += loc;
-            break;
-        }
-        case 1: {  // RvG-B
-            color.r = HIGH_COLOR - loc;
-            color.g = HIGH_COLOR;
-            break;
-        }
-        case 2: {  // R G-B^
-            color.g = HIGH_COLOR;
-            color.b += loc;
-            break;
-        }
-        case 3: {  // R GvB-
-            color.g = HIGH_COLOR - loc;
-            color.b = HIGH_COLOR;
-            break;
-        }
-        case 4: {  // R^G B-
-            color.r += loc;
-            color.b = HIGH_COLOR;
-            break;
-        }
-        case 5: {  // R-G Bv
-            color.r = HIGH_COLOR;
-            color.b = HIGH_COLOR - loc;
-            break;
-        }
-    }
-
-    return color;
-}
-
 static void display_buzzer_beater_message(u32 start_y) {
     s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
@@ -334,7 +293,7 @@ void disp() {
                                  "(DPAD DOWN TO READY)");
             } else if (s_state == IlBattleState::BattleDoneBuzzer) {
                 if (!pref::get(pref::BoolPref::IlBattleBuzzerOld)) {
-                    battle_display(draw::LIGHT_PURPLE, get_color(s_rainbow));
+                    battle_display(draw::LIGHT_PURPLE, draw::num_to_rainbow(s_rainbow));
                 } else {
                     u32 start_y = battle_display(draw::LIGHT_PURPLE, draw::LIGHT_PURPLE);
                     display_buzzer_beater_message(start_y);

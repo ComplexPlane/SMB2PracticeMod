@@ -8,24 +8,9 @@
 
 namespace camera {
 
-// non functional "warp disable" code
-// static patch::Tramp<decltype(&mkb::calc_stage_jump_distance)> s_calc_stage_jump_distance;
 static bool s_prev_value;
 
-void init() {
-    // non functional "warp disable" code
-    // patch::hook_function(s_calc_stage_jump_distance, mkb::calc_stage_jump_distance,
-    //                      [](mkb::CourseCommand* cmd) {
-    //                          s_calc_stage_jump_distance.dest(cmd);
-    //                          if (pref::get(pref::BoolPref::DisableWarps)) {
-    //                              mkb::stage_jump_distance = 1;
-    //                              mkb::mode_info.g_some_stage_jump_distance = 1;
-    //                              mkb::mode_info.entered_goal_type = 0;
-    //                              mkb::mode_info.cm_course_stage_num -= 1;
-    //                              mkb::mode_info.entered_goal_type = 0;
-    //                          }
-    //                      });
-}
+void init() {}
 
 void tick() {
     u8 value = pref::get(pref::U8Pref::Camera);
@@ -55,6 +40,7 @@ void tick() {
             mkb::g_camera_turn_rate_scale = 0.75;
             mkb::camera_pivot_height = 0.18;
             mkb::camera_height = 0.8;
+            break;
         }
         case 2: {  // force smb1 cam
             // write every frame to force the values
@@ -69,6 +55,7 @@ void tick() {
             mkb::g_camera_turn_rate_scale = 0.6875;
             mkb::camera_pivot_height = -0.5;
             mkb::camera_height = 1;
+            break;
         }
         case 3: {  // custom values
             // if (mkb::cameras[0].mode != pref::get(pref::U8Pref::CameraMode)) {
@@ -91,6 +78,7 @@ void tick() {
             // extern double camera_height;
             // extern double camera_pivot_height;
             // extern float camera_distance;
+            break;
         }
     }
     s_prev_value = value;

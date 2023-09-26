@@ -12,6 +12,7 @@ u32 write_branch_bl(void* ptr, void* destination);
 u32 write_blr(void* ptr);
 u32 write_branch_main(void* ptr, void* destination, u32 branch);
 u32 write_word(void* ptr, u32 data);
+u32 read_word(void* ptr);
 u32 write_nop(void* ptr);
 
 template <typename T>

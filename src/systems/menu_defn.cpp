@@ -28,6 +28,59 @@ static_assert(LEN(s_inputdisp_colors) == inputdisp::NUM_COLORS);
 
 static const char* s_camera_options[] = {"Default", "Force SMB2", "Force SMB1", "Custom"};
 
+static const char* s_inputdisp_color_type_options[] = {
+    "Preset",
+    "RGB Selector",
+    "Rainbow",
+    "Match Ball",
+};
+
+static Widget s_input_preset[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Color Preset",
+                .choices = s_inputdisp_colors,
+                .num_choices = LEN(s_inputdisp_colors),
+                .pref = pref::U8Pref::InputDispColor,
+            },
+    },
+};
+
+static Widget s_input_hex[] = {
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Red Value",
+                .pref = pref::U8Pref::InputDispRed,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Green Value",
+                .pref = pref::U8Pref::InputDispGreen,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Blue Value",
+                .pref = pref::U8Pref::InputDispBlue,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+            },
+    },
+};
+
 static Widget s_inputdisp_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -49,10 +102,32 @@ static Widget s_inputdisp_widgets[] = {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Color",
-                .choices = s_inputdisp_colors,
-                .num_choices = LEN(s_inputdisp_colors),
-                .pref = pref::U8Pref::InputDispColor,
+                .label = "Color Type",
+                .choices = s_inputdisp_color_type_options,
+                .num_choices = LEN(s_inputdisp_color_type_options),
+                .pref = pref::U8Pref::InputDispColorType,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_input_preset,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::InputDispColorType,
+                .show_if = 0,
+                .num_widgets = LEN(s_input_preset),
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_input_hex,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::InputDispColorType,
+                .show_if = 1,
+                .num_widgets = LEN(s_input_hex),
             },
     },
     {
@@ -85,6 +160,11 @@ static const char* s_ball_color_types[] = {
     "Random",
 };
 
+static const char* s_ape_color_types[] = {
+    "Preset Color",
+    "Random",
+};
+
 static Widget s_preset_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -94,6 +174,19 @@ static Widget s_preset_widgets[] = {
                 .choices = s_ball_colors,
                 .num_choices = LEN(s_ball_colors),
                 .pref = pref::U8Pref::BallColor,
+            },
+    },
+};
+
+static Widget s_preset_ape_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Preset Outfit",
+                .choices = s_ball_colors,
+                .num_choices = LEN(s_ball_colors),
+                .pref = pref::U8Pref::ApeColor,
             },
     },
 };
@@ -170,16 +263,27 @@ static Widget s_ball_color_widgets[] = {
     },
     {
         .type = WidgetType::Header,
-        .header = {"Monkey Color"},
+        .header = {"Clothing Color"},
     },
     {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Clothing Color",
-                .choices = s_ball_colors,
-                .num_choices = LEN(s_ball_colors),
-                .pref = pref::U8Pref::ApeColor,
+                .label = "Ball Color Type",
+                .choices = s_ape_color_types,
+                .num_choices = LEN(s_ape_color_types),
+                .pref = pref::U8Pref::ApeColorType,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_preset_ape_widgets,
+                .hideable_type = HideableType::U8Hideable,
+                .u8_pref = pref::U8Pref::ApeColorType,
+                .show_if = 0,
+                .num_widgets = LEN(s_preset_ape_widgets),
             },
     },
 };
@@ -189,6 +293,11 @@ static const char* s_il_battle_lengths[] = {
     "7 min",
     "10 min",
     "Endless",
+};
+static const char* s_score_breakdown_options[] = {
+    "Off",
+    "Minimal",
+    "Full",
 };
 static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 
@@ -228,19 +337,13 @@ static Widget s_il_battle_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Score Breakdown Info",
-                .pref = pref::BoolPref::IlBattleShowBreakdown,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Minimal Breakdown",
-                .pref = pref::BoolPref::IlBattleMinimalBreakdown,
+                .label = "Score Breakdown",
+                .choices = s_score_breakdown_options,
+                .num_choices = LEN(s_score_breakdown_options),
+                .pref = pref::U8Pref::IlBattleBreakdown,
             },
     },
     {
@@ -1178,6 +1281,14 @@ static Widget s_gameplay_mods_widgets[] = {
                 .label = "Assist",
                 .widgets = s_assist_widgets,
                 .num_widgets = LEN(s_assist_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Randomizer",
+                .pref = pref::BoolPref::Randomizer,
             },
     },
     {

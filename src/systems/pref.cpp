@@ -87,6 +87,13 @@ enum class PrefId : u16 {
     Gravity = 67,
     BallScale = 68,
     Acceleration = 69,
+    Randomizer = 70,
+    ApeColorType = 71,
+    IlBattleBreakdown = 72,
+    InputDispColorType = 73,
+    InputDispRed = 74,
+    InputDispGreen = 75,
+    InputDispBlue = 76,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -158,6 +165,13 @@ static const PrefId s_pref_ids[] = {
     PrefId::SavestateSwitchToUnused,
     PrefId::BallScale,
     PrefId::Acceleration,
+    PrefId::Randomizer,
+    PrefId::ApeColorType,
+    PrefId::IlBattleBreakdown,
+    PrefId::InputDispColorType,
+    PrefId::InputDispRed,
+    PrefId::InputDispGreen,
+    PrefId::InputDispBlue,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -254,6 +268,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateSwitchToUnused:
             return BoolPref::SavestateSwitchToUnused;
+        case PrefId::Randomizer:
+            return BoolPref::Randomizer;
         default:
             return {};
     }
@@ -307,6 +323,18 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::BallScale;
         case PrefId::Acceleration:
             return U8Pref::Acceleration;
+        case PrefId::ApeColorType:
+            return U8Pref::ApeColorType;
+        case PrefId::IlBattleBreakdown:
+            return U8Pref::IlBattleBreakdown;
+        case PrefId::InputDispColorType:
+            return U8Pref::InputDispColorType;
+        case PrefId::InputDispRed:
+            return U8Pref::InputDispRed;
+        case PrefId::InputDispGreen:
+            return U8Pref::InputDispGreen;
+        case PrefId::InputDispBlue:
+            return U8Pref::InputDispBlue;
         default:
             return {};
     }
@@ -350,7 +378,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[23];   // 23 u8 prefs
+    u8 u8_prefs[29];   // 29 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

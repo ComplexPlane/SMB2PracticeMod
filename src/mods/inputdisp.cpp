@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mods/ballcolor.h"
 #include "mods/freecam.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -20,6 +21,8 @@ struct MergedStickInputs {
 static patch::Tramp<decltype(&mkb::create_speed_sprites)> s_create_speed_sprites_tramp;
 
 static mkb::PADStatus s_raw_inputs[4];
+
+static u32 s_rainbow;
 
 static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
     outInputs = {};
@@ -132,6 +135,7 @@ void on_PADRead(mkb::PADStatus* statuses) {
 }
 
 void tick() {
+    s_rainbow = (s_rainbow + 3) % 1080;
     set_sprite_visible(!pref::get(pref::BoolPref::InputDisp) ||
                        (pref::get(pref::BoolPref::InputDispCenterLocation) &&
                         !pref::get(pref::BoolPref::InputDispRawStickInputs)));
@@ -171,18 +175,49 @@ static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2d* out_pos) 
 }
 
 static const mkb::GXColor s_color_map[] = {
-    {0xb1, 0x5a, 0xff, 0xff},  // Purple
+    draw::PURPLE,              // Purple
     draw::RED,                 // Red
     draw::ORANGE,              // Orange
     {0xfd, 0xfb, 0x78, 0xff},  // Yellow
     {0x78, 0xfd, 0x85, 0xff},  // Green
     {0x78, 0xca, 0xfd, 0xff},  // Blue
     draw::PINK,                // Pink
-    {0x00, 0x00, 0x00, 0xff},  // Black
+    draw::BLACK,               // Black
 };
 
+static mkb::GXColor get_color() {
+    switch (pref::get(pref::U8Pref::InputDispColorType)) {
+        case 0: {
+            return s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+        }
+        case 1: {  // rgb
+            return {
+                .r = pref::get(pref::U8Pref::InputDispRed),
+                .g = pref::get(pref::U8Pref::InputDispGreen),
+                .b = pref::get(pref::U8Pref::InputDispBlue),
+                .a = 0xff,
+            };
+        }
+        case 2: {  // rainbow
+            return draw::num_to_rainbow(s_rainbow);
+        }
+        case 3: {  // match ball
+            u32 ball_color = ballcolor::get_current_color();
+            return {
+                .r = static_cast<u8>((ball_color & 0xff000000) >> 24),
+                .g = static_cast<u8>((ball_color & 0x00ff0000) >> 16),
+                .b = static_cast<u8>((ball_color & 0x0000ff00) >> 8),
+                .a = 0xff,
+            };
+        }
+        default: {
+            return s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+        }
+    }
+}
+
 static void draw_stick(const MergedStickInputs& stickInputs, const Vec2d& center, f32 scale) {
-    mkb::GXColor chosen_color = s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+    mkb::GXColor chosen_color = get_color();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});

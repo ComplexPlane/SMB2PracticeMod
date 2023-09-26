@@ -54,6 +54,8 @@ enum class BoolPref : u8 {
     IlBattleMinimalBreakdown,
     UseCustomPhysics,
     SavestateSwitchToUnused,
+    Randomizer,
+
 };
 
 enum class U8Pref : u8 {
@@ -80,6 +82,12 @@ enum class U8Pref : u8 {
     Gravity,
     BallScale,
     Acceleration,
+    ApeColorType,
+    IlBattleBreakdown,
+    InputDispColorType,
+    InputDispRed,
+    InputDispGreen,
+    InputDispBlue,
 };
 
 void init();

@@ -359,6 +359,83 @@ static void draw_selectable_highlight(float y) {
     draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
 }
 
+static constexpr s32 X_HELP = SCREEN_WIDTH - MARGIN - 110;
+static constexpr s32 X_BUTTON = SCREEN_WIDTH - MARGIN - 25;
+
+static void draw_help(Widget widget) {
+    switch (widget.type) {
+        case WidgetType::Checkbox:
+        case WidgetType::GetSetCheckbox: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Toggle:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::Menu: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Open:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::Choose: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::Button: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Open:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::IntEdit: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::FloatEdit: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        case WidgetType::InputSelect: {
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Bind:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Unbind:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
+            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
+            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
+
 void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
                      mkb::GXColor lerped_color) {
     switch (widget.type) {
@@ -401,6 +478,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
 
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -420,6 +498,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::Menu: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -446,6 +525,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::Choose: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -462,6 +542,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::Button: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -474,6 +555,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::IntEdit: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -489,6 +571,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::FloatEdit: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
 
             float display = ((float)(pref::get(widget.float_edit.pref) + widget.float_edit.floor) /
@@ -508,6 +591,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
         case WidgetType::InputSelect: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
+                draw_help(widget);
             }
             u8 input = pref::get(widget.input_select.pref);
             if (s_binding) {
@@ -562,7 +646,7 @@ static void draw_breadcrumbs() {
 
     // Draw line under breadcrumbs. You can draw lines directly with GX but I couldn't get it
     // working
-    draw::rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, {0x70, 0x70, 0x70, 0xFF});
+    draw::rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, draw::GRAY);
 }
 
 void disp() {
