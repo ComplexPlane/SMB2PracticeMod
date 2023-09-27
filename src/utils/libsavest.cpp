@@ -332,6 +332,11 @@ SaveState::LoadResult SaveState::load() {
     return LoadResult::Ok;
 }
 
+void SaveState::clear() {
+    m_flags &= ~FLAG_ACTIVE;
+    m_store.enter_prealloc_mode();
+}
+
 bool SaveState::isEmpty() { return !(m_flags & FLAG_ACTIVE); }
 
 void SaveState::tick() {

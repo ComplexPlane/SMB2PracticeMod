@@ -55,7 +55,6 @@ enum class BoolPref : u8 {
     UseCustomPhysics,
     SavestateSwitchToUnused,
     Randomizer,
-
 };
 
 enum class U8Pref : u8 {
@@ -88,6 +87,9 @@ enum class U8Pref : u8 {
     InputDispRed,
     InputDispGreen,
     InputDispBlue,
+    IlBattleReadyBind,
+    FreecamToggleBind,
+    SavestateClearBind,
 };
 
 void init();

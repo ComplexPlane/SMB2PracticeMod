@@ -5,202 +5,40 @@
 #include "../utils/draw.h"
 #include "../utils/patch.h"
 #include "../utils/timerdisp.h"
+#include "systems/binds.h"
 
 namespace ilbattle {
 
-enum class IlBattleState {
-    WaitForFirstRetry,  // Mod is enabled but first retry hasnt ocurred
-    BattleRunning,      // Battle is running
-    BuzzerBeater,       // Time has run out, but an attempt is still going
-    BattleDone,         // Final attempt is over, show times in red
-    BattleDoneBuzzer,   // Final attempt is over, shows times in red &
-};
-
-static IlBattleState s_state = IlBattleState::BattleDone;
-
+// main state
+static IlBattleState s_state = IlBattleState::NotReady;
+// ui constants
 static constexpr s32 X = 160;
 static constexpr s32 Y = 48;
+static constexpr u32 CWIDTH = 12;
+static constexpr u32 CHEIGHT = 16;
+// time constants
+static constexpr u32 SECOND_FRAMES = 60;                  // frames per second
+static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;  // frames per minute
+static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
+// battle trackers
 static u32 s_battle_frames = 0;
+static bool s_valid_run = false;
+static u32 s_paused_frame = 0;
+static u32 s_battle_length = 0;
+static u32 s_battle_stage_id = 0;
+static u32 s_main_mode_play_timer = 0;
+// best time/score
 static u32 s_best_frames = 0;
 static u32 s_best_score = 0;
 static u32 s_best_score_bananas = 0;
 static u32 s_best_score_frames = 0;
-static constexpr u32 SECOND_FRAMES = 60;                  // frames per second
-static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;  // frames per minute
-static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
-static constexpr u32 CWIDTH = 12;
-static constexpr u32 CHEIGHT = 16;
-static u32 s_paused_frame = 0;
+// buzzer beaters
 static u32 s_buzzer_message_count = 0;
 static u32 s_rainbow = 0;
-static u32 s_battle_length = 0;
-static u32 s_battle_stage_id = 0;
-static u32 s_main_mode_play_timer = 0;
-// static u32 battle_length = pref::get_ilbattle_length();
+static bool s_time_buzzer = false;
+static bool s_score_buzzer = false;
 
-static u32 battle_display(mkb::GXColor text, mkb::GXColor times) {
-    u32 battle_hours = s_battle_frames / HOUR_FRAMES;
-    u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
-    u32 battle_seconds = s_battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
-
-    u32 best_seconds = s_best_frames / SECOND_FRAMES;
-    u32 best_centiseconds = (s_best_frames % SECOND_FRAMES) * 100 / 60;
-
-    u32 best_score_seconds = s_best_score_frames / SECOND_FRAMES;
-    u32 best_score_centiseconds = (s_best_score_frames % SECOND_FRAMES) * 100 / 60;
-
-    u32 current_y = Y;
-
-    draw::debug_text(X - 12 * CWIDTH, Y, text, "ELAPSED:");
-    if (battle_hours > 0) {
-        draw::debug_text(X, Y, times, "%d:%02d:%02d", battle_hours, battle_minutes, battle_seconds);
-    } else {
-        draw::debug_text(X, Y, times, "%02d:%02d", battle_minutes, battle_seconds);
-    }
-
-    if (pref::get(pref::BoolPref::IlBattleShowTime)) {
-        current_y += CHEIGHT;
-        draw::debug_text(X - 12 * CWIDTH, current_y, text, "BEST TIME:");
-        draw::debug_text(X, current_y, times, "%d.%02d", best_seconds, best_centiseconds);
-    }
-    if (pref::get(pref::BoolPref::IlBattleShowScore)) {
-        current_y += CHEIGHT;
-        draw::debug_text(X - 12 * CWIDTH, current_y, text, "BEST SCORE:");
-        draw::debug_text(X, current_y, times, "%d", s_best_score);
-
-        // breakdown
-        u8 breakdown_value = pref::get(pref::U8Pref::IlBattleBreakdown);
-        if (breakdown_value == 1) {
-            // minimal
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text, "BREAKDOWN:");
-            draw::debug_text(X, current_y, times, "%d.%02d [%d]", best_score_seconds,
-                             best_score_centiseconds, s_best_score_bananas);
-        } else if (breakdown_value == 2) {
-            // full
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text, "BANANAS:");
-            draw::debug_text(X, current_y, times, "%d", s_best_score_bananas);
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text, "TIMER:");
-            draw::debug_text(X, current_y, times, "%d.%02d", best_score_seconds,
-                             best_score_centiseconds);
-        }
-    }
-
-    return current_y + CHEIGHT;
-}
-
-static u32 score_calc(u32 score) {
-    u32 igt_score = mkb::mode_info.stage_time_frames_remaining * 100 / 60;  // Score from timer
-    u32 goal_bonus = 0;                                                     // Blue goal (no bonus)
-    if (mkb::mode_info.entered_goal_type == 1) {
-        goal_bonus = 10000;  // Green goal bonus
-    } else if (mkb::mode_info.entered_goal_type == 2) {
-        goal_bonus = 20000;  // Red goal bonus
-    }
-    if (mkb::mode_info.stage_time_frames_remaining >
-        mkb::mode_info.stage_time_limit / 2) {  // With time bonus
-        return score + (igt_score + goal_bonus) * 2;
-    }
-    return score + (igt_score + goal_bonus);  // Without time bonus
-}
-
-static u32 convert_battle_length(u8 battle_length_choice) {
-    if (battle_length_choice == 0) return 5 * 60 * 60;
-    if (battle_length_choice == 1) return 7 * 60 * 60;
-    if (battle_length_choice == 2) return 10 * 60 * 60;
-    return 0;
-}
-
-void clear_display() {
-    s_battle_frames = 0;
-    s_best_frames = 0;
-    s_best_score = 0;
-    s_buzzer_message_count = 0;
-    s_best_score_bananas = 0;
-    s_best_score_frames = 0;
-    s_battle_length = convert_battle_length(pref::get(pref::U8Pref::IlBattleLength));
-}
-
-void new_battle() {
-    clear_display();
-    s_state = IlBattleState::WaitForFirstRetry;
-}
-
-static void track_first_retry() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
-        new_battle();
-        s_state = IlBattleState::BattleRunning;
-        s_battle_stage_id = mkb::current_stage_id;
-    }
-}
-
-static void run_battle_timer() {
-    if (pref::get(pref::U8Pref::IlBattleLength) != 3) {  // If the timer isnt endless
-        if (s_battle_frames < s_battle_length) {
-            s_battle_frames++;
-        } else
-            s_state = IlBattleState::BuzzerBeater;
-    } else
-        s_battle_frames++;  // If the timer is endless
-}
-
-static void track_best() {
-    u32 current_frames = mkb::mode_info.stage_time_frames_remaining;
-    u32 current_score = mkb::balls[mkb::curr_player_idx].score;
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {  // Goal test
-        if (current_frames > s_best_frames &&
-            s_paused_frame <= current_frames) {  // New best time test, & invalid
-                                                 // pause test
-            s_best_frames = current_frames;
-        }
-        if (score_calc(current_score) > s_best_score &&
-            s_paused_frame <= current_frames) {  // New best score test,
-                                                 // &
-                                                 // invalid pause test
-            s_best_score = score_calc(current_score);
-            s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
-            s_best_score_frames = current_frames;
-        }
-    }
-}
-
-static void track_invalid_pauses() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
-        s_paused_frame = 0;
-    }
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) {
-        s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
-    }
-}
-
-static void track_final_attempt() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    // Save time & end battle if: Goal
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-        u32 pre_buzzer_time = s_best_frames;
-        track_best();
-        if (pre_buzzer_time < s_best_frames)
-            s_state = IlBattleState::BattleDoneBuzzer;
-        else
-            s_state = IlBattleState::BattleDone;
-    }
-    // End battle if: Paused, Fallout, or Time Over,
-    else if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
-             mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
-             mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
-             mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
-        s_state = IlBattleState::BattleDone;
-    }
-}
-
-static void display_buzzer_beater_message(u32 start_y) {
+static void old_buzzer_display(u32 start_y) {
     s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
         draw::debug_text(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, draw::RED,
@@ -222,6 +60,202 @@ static void display_buzzer_beater_message(u32 start_y) {
                          "EPIC BUZZER BEATER B)");
 }
 
+static void battle_display(mkb::GXColor text_color) {
+    u32 battle_hours = s_battle_frames / HOUR_FRAMES;
+    u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
+    u32 battle_seconds = s_battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
+
+    u32 best_seconds = s_best_frames / SECOND_FRAMES;
+    u32 best_centiseconds = (s_best_frames % SECOND_FRAMES) * 100 / 60;
+
+    u32 best_score_seconds = s_best_score_frames / SECOND_FRAMES;
+    u32 best_score_centiseconds = (s_best_score_frames % SECOND_FRAMES) * 100 / 60;
+
+    u32 current_y = Y;
+
+    mkb::GXColor time_color = s_time_buzzer ? draw::num_to_rainbow(s_rainbow) : text_color;
+    mkb::GXColor score_color = s_score_buzzer ? draw::num_to_rainbow(s_rainbow) : text_color;
+
+    draw::debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
+    if (battle_hours > 0) {
+        draw::debug_text(X, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
+                         battle_seconds);
+    } else {
+        draw::debug_text(X, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
+    }
+
+    if (pref::get(pref::BoolPref::IlBattleShowTime)) {
+        current_y += CHEIGHT;
+        draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
+        draw::debug_text(X, current_y, time_color, "%d.%02d", best_seconds, best_centiseconds);
+    }
+    if (pref::get(pref::BoolPref::IlBattleShowScore)) {
+        current_y += CHEIGHT;
+        draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
+        draw::debug_text(X, current_y, score_color, "%d", s_best_score);
+
+        // breakdown
+        u8 breakdown_value = pref::get(pref::U8Pref::IlBattleBreakdown);
+        if (breakdown_value == 1) {
+            // minimal
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
+            draw::debug_text(X, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
+                             best_score_centiseconds, s_best_score_bananas);
+        } else if (breakdown_value == 2) {
+            // full
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BANANAS:");
+            draw::debug_text(X, current_y, text_color, "%d", s_best_score_bananas);
+            current_y += CHEIGHT;
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "TIMER:");
+            draw::debug_text(X, current_y, text_color, "%d.%02d", best_score_seconds,
+                             best_score_centiseconds);
+        }
+    }
+
+    if (pref::get(pref::BoolPref::IlBattleBuzzerOld) &&
+        ((s_time_buzzer && pref::get(pref::BoolPref::IlBattleShowTime)) ||
+         (s_score_buzzer && pref::get(pref::BoolPref::IlBattleShowScore)))) {
+        old_buzzer_display(current_y + CHEIGHT);
+    }
+}
+
+static u32 score_calc(u32 score) {
+    u32 igt_score = mkb::mode_info.stage_time_frames_remaining * 100 / 60;  // Score from timer
+    u32 goal_bonus = 0;                                                     // Blue goal (no bonus)
+    if (mkb::mode_info.entered_goal_type == 1) {
+        goal_bonus = 10000;  // Green goal bonus
+    } else if (mkb::mode_info.entered_goal_type == 2) {
+        goal_bonus = 20000;  // Red goal bonus
+    }
+    if (mkb::mode_info.stage_time_frames_remaining >
+        mkb::mode_info.stage_time_limit / 2) {  // With time bonus
+        return score + (igt_score + goal_bonus) * 2;
+    }
+    return score + (igt_score + goal_bonus);  // Without time bonus
+}
+
+static u32 convert_battle_length(u8 battle_length_choice) {
+    if (battle_length_choice == 0) return 5 * 60 * 60;
+    if (battle_length_choice == 1) return 7 * 60 * 60;
+    if (battle_length_choice == 2) return 10 * 60 * 60;
+    return 0;  // endless battle
+}
+
+void clear_display() {
+    s_battle_frames = 0;
+    s_best_frames = 0;
+    s_best_score = 0;
+    s_buzzer_message_count = 0;
+    s_best_score_bananas = 0;
+    s_best_score_frames = 0;
+    s_time_buzzer = false;
+    s_score_buzzer = false;
+    s_battle_length = convert_battle_length(pref::get(pref::U8Pref::IlBattleLength));
+}
+
+void new_battle() {
+    clear_display();
+    s_state = IlBattleState::WaitForFirstRetry;
+}
+
+static void track_first_retry() {
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
+        new_battle();
+        s_state = IlBattleState::BattleRunning;
+        s_battle_stage_id = mkb::current_stage_id;
+    }
+}
+
+static void run_battle_timer() {
+    if (pref::get(pref::U8Pref::IlBattleLength) == 3) {
+        // timer is endless
+        s_battle_frames++;
+    } else if (s_battle_frames < s_battle_length) {
+        s_battle_frames++;
+    } else {
+        s_state = IlBattleState::BuzzerBeater;
+    }
+}
+
+static void track_best() {
+    s16 current_frames = mkb::mode_info.stage_time_frames_remaining;
+    u32 current_score = mkb::balls[mkb::curr_player_idx].score;
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {  // Goal test
+        bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
+                     s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
+        if (current_frames > s_best_frames && valid) {  // New best time test,
+                                                        // & invalid pause test
+            s_best_frames = current_frames;
+        }
+        if (score_calc(current_score) > s_best_score && valid) {  // New best score test & invalid
+                                                                  // pause test
+            s_best_score = score_calc(current_score);
+            s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
+            s_best_score_frames = current_frames;
+        }
+    }
+}
+
+static void track_invalid_pauses() {
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
+        s_valid_run = true;
+        s_paused_frame = 0;  // attempt is valid
+    }
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
+        s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
+    } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) {
+        s_valid_run = false;
+    }
+}
+
+static void track_final_attempt() {
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    // End battle if: Paused, Fallout, or Time Over
+    if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
+        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
+        s_state = IlBattleState::BattleDone;
+    }
+    // Player has entered goal...
+    // Save time & enter postgoal phase for score
+    else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+        u32 pre_buzzer_time = s_best_frames;
+        u32 pre_buzzer_score = s_best_score;
+        track_best();
+        s_state = IlBattleState::BuzzerBeaterPostgoal;
+        // time buzzer beater
+        if (pre_buzzer_time < s_best_frames) {
+            s_time_buzzer = true;
+        }
+        // score buzzer beater
+        if (pre_buzzer_score < s_best_score) {
+            s_score_buzzer = true;
+        }
+
+    }
+    // Game is no longer in goal phase...
+    // Save score and end battle
+    else if (s_state == IlBattleState::BuzzerBeaterPostgoal &&
+             !(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
+               mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN)) {
+        u32 pre_buzzer_score = s_best_score;
+        track_best();
+        s_state = IlBattleState::BattleDone;
+        // score buzzer beater (track again if there are post goals)
+        if (pre_buzzer_score < s_best_score) {
+            s_score_buzzer = true;
+        }
+    }
+}
+
 void tick() {
     s_rainbow = (s_rainbow + 11) % 1080;
 
@@ -230,38 +264,51 @@ void tick() {
     } else {
         s_main_mode_play_timer = 0;
     }
+
     if (mkb::main_mode == mkb::MD_GAME &&
         (mkb::main_game_mode == mkb::STORY_MODE || mkb::main_game_mode == mkb::CHALLENGE_MODE)) {
         new_battle();
         return;
     }
 
-    // possible incorrect ordering here for pause tracking?
-    if (pref::get(pref::BoolPref::IlBattleDisplay)) {
-        if (s_state == IlBattleState::WaitForFirstRetry) {
+    if (!pref::get(pref::BoolPref::IlBattleDisplay)) return;
+
+    switch (s_state) {
+        case IlBattleState::WaitForFirstRetry: {
             track_first_retry();
-        } else if (s_state == IlBattleState::BattleRunning) {
+            break;
+        }
+        case IlBattleState::BattleRunning: {
             track_invalid_pauses();
             track_best();
-            run_battle_timer();  // To-Do: Implement realtime timer (without loads), if I figure how
-        } else if (s_state == IlBattleState::BuzzerBeater) {
+            run_battle_timer();  // TODO: Implement realtime timer (without loads), if I figure how
+            break;
+        }
+        case IlBattleState::BuzzerBeater: {
             track_invalid_pauses();
             track_final_attempt();
+            break;
         }
+        case IlBattleState::BuzzerBeaterPostgoal: {
+            track_invalid_pauses();
+            track_final_attempt();
+            break;
+        }
+        default: {
+        }
+    }
 
-        // Reset display if menu when battle over
-        if (mkb::main_mode != mkb::MD_GAME && (s_state == IlBattleState::BattleDoneBuzzer ||
-                                               s_state == IlBattleState::WaitForFirstRetry)) {
-            s_state = IlBattleState::BattleDone;
-        }
-        if (mkb::main_mode != mkb::MD_GAME && s_state == IlBattleState::BattleDone) {
-            clear_display();
-        }
+    // Reset display if menu when battle over
+    if (mkb::main_mode != mkb::MD_GAME &&
+        (s_state == IlBattleState::WaitForFirstRetry || s_state == IlBattleState::BattleDone)) {
+        s_state = IlBattleState::NotReady;
+        clear_display();
+    }
 
-        // Resets battles when Dpad Down is pressed
-        if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
-            new_battle();
-        }
+    // Resets battles when Dpad Down is pressed
+    if (mkb::main_mode == mkb::MD_GAME &&
+        binds::bind_pressed(pref::get(pref::U8Pref::IlBattleReadyBind))) {
+        new_battle();
     }
 }
 
@@ -271,36 +318,46 @@ void disp() {
         return;
     }
 
-    if (pref::get(pref::BoolPref::IlBattleDisplay)) {
-        if (s_state == IlBattleState::WaitForFirstRetry && mkb::main_mode == mkb::MD_GAME) {
-            draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
-            draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "(RETRY TO BEGIN)");
-        } else if (s_state == IlBattleState::BattleRunning ||
-                   s_state == IlBattleState::BuzzerBeater) {
+    if (!pref::get(pref::BoolPref::IlBattleDisplay)) return;
+
+    switch (s_state) {
+        case IlBattleState::NotReady: {
+            if (mkb::main_mode != mkb::MD_GAME) return;
+            u8 input = pref::get(pref::U8Pref::IlBattleReadyBind);
+            draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
+            draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE, "%s to ready",
+                             binds::get_bind_str(input));
+            break;
+        }
+        case IlBattleState::WaitForFirstRetry: {
+            if (mkb::main_mode == mkb::MD_GAME) {
+                draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
+                draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "Retry to begin");
+            }
+            break;
+        }
+        case IlBattleState::BattleRunning:
+        case IlBattleState::BuzzerBeater: {
             if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb::current_stage_id &&
                 mkb::main_mode == mkb::MD_GAME) {
-                s_paused_frame = 2147483647;  // max
+                s_valid_run = false;
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
             } else {
-                battle_display(draw::LIGHT_GREEN, draw::LIGHT_GREEN);
+                battle_display(draw::LIGHT_GREEN);
             }
-        } else if ((s_state == IlBattleState::BattleDone ||
-                    s_state == IlBattleState::BattleDoneBuzzer) &&
-                   mkb::main_mode == mkb::MD_GAME) {
-            if (s_battle_frames == 0) {
-                draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
-                draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE,
-                                 "(DPAD DOWN TO READY)");
-            } else if (s_state == IlBattleState::BattleDoneBuzzer) {
-                if (!pref::get(pref::BoolPref::IlBattleBuzzerOld)) {
-                    battle_display(draw::LIGHT_PURPLE, draw::num_to_rainbow(s_rainbow));
-                } else {
-                    u32 start_y = battle_display(draw::LIGHT_PURPLE, draw::LIGHT_PURPLE);
-                    display_buzzer_beater_message(start_y);
-                }
+            break;
+        }
+        case IlBattleState::BuzzerBeaterPostgoal: {
+            if (pref::get(pref::BoolPref::IlBattleShowScore)) {
+                battle_display(draw::LIGHT_GREEN);
             } else {
-                battle_display(draw::LIGHT_PURPLE, draw::LIGHT_PURPLE);
+                battle_display(draw::LIGHT_PURPLE);
             }
+            break;
+        }
+        case IlBattleState::BattleDone: {
+            battle_display(draw::LIGHT_PURPLE);
+            break;
         }
     }
 }

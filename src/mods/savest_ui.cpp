@@ -11,6 +11,7 @@
 #include "../utils/macro_utils.h"
 #include "../utils/memstore.h"
 #include "../utils/patch.h"
+#include "systems/binds.h"
 
 namespace savest_ui {
 
@@ -47,14 +48,13 @@ void tick() {
     }
 
     if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
-        // dont override current slot unless all full
+        // switch to unused slot if pref is active
         if (pref::get(pref::BoolPref::SavestateSwitchToUnused)) {
-            bool changed_state = false;
+            // dont override current slot unless all full
             for (u32 i = 0; i < 8; i++) {
                 auto& state = s_states[(s_active_state_slot + i) % 8];
                 if (state.isEmpty()) {
                     s_active_state_slot = (s_active_state_slot + i) % 8;
-                    changed_state = true;
                     break;
                 }
             }
@@ -111,6 +111,10 @@ void tick() {
 
         s_created_state_last_frame = true;
 
+    } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearBind))) {
+        auto& state = s_states[s_active_state_slot];
+        state.clear();
+        draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {

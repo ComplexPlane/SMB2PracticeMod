@@ -36,6 +36,7 @@ class SaveState {
     SaveResult save();
     LoadResult load();
     bool isEmpty();
+    void clear();
 
  private:
     u32 m_flags = 0;

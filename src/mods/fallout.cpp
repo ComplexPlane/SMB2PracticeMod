@@ -9,6 +9,7 @@ namespace fallout {
 static patch::Tramp<decltype(&mkb::did_ball_fallout)> s_did_ball_fallout;
 
 static u8 s_prev_pref;
+static u8 s_prev_freecam = 255;
 
 static bool s_halted;  // timer cannot move
 
@@ -73,13 +74,25 @@ void freeze_timer() {
         // add 1 to timer each frame
         patch::write_word(reinterpret_cast<void*>(0x80297534), 0x38030001);
     }
+
+    if (current_pref == 3 && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
+        mkb::mode_info.stage_time_frames_remaining = 0;
+    }
     s_prev_pref = current_pref;
 }
 
 void tick() {
+    if (freecam::should_freeze_timer() && s_prev_freecam == 255) {
+        s_prev_freecam = pref::get(pref::U8Pref::TimerType);
+        pref::set(pref::U8Pref::TimerType, 1);
+    } else if (!freecam::should_freeze_timer() && s_prev_freecam != 255) {
+        pref::set(pref::U8Pref::TimerType, s_prev_freecam);
+        s_prev_freecam = 255;
+    }
     freeze_timer();
 
-    if (pref::get(pref::BoolPref::BouncyFalloutPlane)) {
+    if (pref::get(pref::BoolPref::DisableFallouts) &&
+        pref::get(pref::BoolPref::BouncyFalloutPlane)) {
         float ball_y = mkb::balls[mkb::curr_player_idx].pos.y;
         float fallout_plane = mkb::stagedef->fallout->y;
         if (ball_y < fallout_plane) {
@@ -87,7 +100,7 @@ void tick() {
                 mkb::balls[mkb::curr_player_idx].vel.y *= -1;
             mkb::balls[mkb::curr_player_idx].vel.y =
                 ABS(mkb::balls[mkb::curr_player_idx].vel.y) +
-                ABS(mkb::balls[mkb::curr_player_idx].vel.y * 0.05);
+                ABS(mkb::balls[mkb::curr_player_idx].vel.y * 0.075);
         }
     }
 }

@@ -301,13 +301,28 @@ static const char* s_score_breakdown_options[] = {
 };
 static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
 
-static Widget s_il_battle_widgets[] = {
+static Widget s_il_battle_score_widgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "IL Battle Display",
-                .pref = pref::BoolPref::IlBattleDisplay,
+                .label = "Score Breakdown",
+                .choices = s_score_breakdown_options,
+                .num_choices = LEN(s_score_breakdown_options),
+                .pref = pref::U8Pref::IlBattleBreakdown,
+            },
+    },
+};
+
+static Widget s_il_battle_subwidgets[] = {
+    {
+        .type = WidgetType::InputSelect,
+        .input_select =
+            {
+                .label = "Ready Bind",
+                .pref = pref::U8Pref::IlBattleReadyBind,
+                .required_chord = false,
+                .can_unbind = true,
             },
     },
     {
@@ -337,13 +352,13 @@ static Widget s_il_battle_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Choose,
-        .choose =
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
             {
-                .label = "Score Breakdown",
-                .choices = s_score_breakdown_options,
-                .num_choices = LEN(s_score_breakdown_options),
-                .pref = pref::U8Pref::IlBattleBreakdown,
+                .widget = s_il_battle_score_widgets,
+                .hideable_type = HideableType::BoolHideable,
+                .bool_pref = pref::BoolPref::IlBattleShowScore,
+                .num_widgets = LEN(s_il_battle_score_widgets),
             },
     },
     {
@@ -354,7 +369,28 @@ static Widget s_il_battle_widgets[] = {
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
     },
-    {.type = WidgetType::Text, .text = {"  Dpad-Down then Retry to start a new battle"}},
+    {.type = WidgetType::Text, .text = {"  Press the Ready bind then Retry to start a new battle"}},
+};
+
+static Widget s_il_battle_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "IL Battle Display",
+                .pref = pref::BoolPref::IlBattleDisplay,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_il_battle_subwidgets,
+                .hideable_type = HideableType::BoolHideable,
+                .bool_pref = pref::BoolPref::IlBattleDisplay,
+                .num_widgets = LEN(s_il_battle_subwidgets),
+            },
+    },
 };
 
 // Forgive me for putting code in the menu definition
@@ -417,6 +453,10 @@ static Widget s_about_widgets[] = {
     {
         .type = WidgetType::Custom,
         .custom = {draw::heart},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  With contributions from Nambo & rehtrop"},
     },
     {.type = WidgetType::Separator},
 
@@ -802,23 +842,7 @@ static Widget s_unlock_widgets[] = {
     },
 };
 
-static Widget s_freecam_widgets[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Freecam",
-                .pref = pref::BoolPref::Freecam,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Toggle With Z",
-                .pref = pref::BoolPref::FreecamToggleWithZ,
-            },
-    },
+static Widget s_freecam_subwidgets[] = {
     {
         .type = WidgetType::IntEdit,
         .int_edit =
@@ -859,6 +883,37 @@ static Widget s_freecam_widgets[] = {
             {
                 .label = "Hide HUD",
                 .pref = pref::BoolPref::FreecamHideHud,
+            },
+    },
+};
+
+static Widget s_freecam_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Freecam",
+                .pref = pref::BoolPref::Freecam,
+            },
+    },
+    {
+        .type = WidgetType::InputSelect,
+        .input_select =
+            {
+                .label = "Toggle Freecam Bind",
+                .pref = pref::U8Pref::FreecamToggleBind,
+                .required_chord = false,
+                .can_unbind = true,
+            },
+    },
+    {
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
+            {
+                .widget = s_freecam_subwidgets,
+                .hideable_type = HideableType::BoolHideable,
+                .bool_pref = pref::BoolPref::Freecam,
+                .num_widgets = LEN(s_freecam_subwidgets),
             },
     },
 };
@@ -922,7 +977,18 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static const char* s_timer_types[] = {"Default", "Freeze at max", "Stop at 0", "Count up from 0"};
+static const char* s_timer_types[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
+
+static Widget s_bouncy_fallout_widget[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Bouncy Fallout Plane",
+                .pref = pref::BoolPref::BouncyFalloutPlane,
+            },
+    },
+};
 
 static Widget s_assist_widgets[] = {
     {
@@ -944,11 +1010,13 @@ static Widget s_assist_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::HideableWidget,
+        .hideable_widget =
             {
-                .label = "Bouncy Fallout Plane",
-                .pref = pref::BoolPref::BouncyFalloutPlane,
+                .widget = s_bouncy_fallout_widget,
+                .hideable_type = HideableType::BoolHideable,
+                .bool_pref = pref::BoolPref::DisableFallouts,
+                .num_widgets = LEN(s_bouncy_fallout_widget),
             },
     },
 };
@@ -960,6 +1028,24 @@ static Widget s_savestate_widgets[] = {
             {
                 .label = "Enable Savestates",
                 .pref = pref::BoolPref::Savestates,
+            },
+    },
+    {
+        .type = WidgetType::InputSelect,
+        .input_select =
+            {
+                .label = "Clear Savestate Bind",
+                .pref = pref::U8Pref::SavestateClearBind,
+                .required_chord = false,
+                .can_unbind = true,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Auto-Switch to Empty Slot",
+                .pref = pref::BoolPref::SavestateSwitchToUnused,
             },
     },
 };
@@ -1026,10 +1112,23 @@ static Widget s_tools_widgets[] = {
 
 static Widget s_il_mark_widgets[] = {
     {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Disable Invalidating Settings",
+                .push = [] { ilmark::disable_invalidating_settings(); },
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+    {
+        .type = WidgetType::Header,
+        .header = {"Show IL Verification Mark in..."},
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Show in Practice Mode",
+                .label = "  Practice Mode",
                 .pref = pref::BoolPref::IlMarkPractice,
             },
     },
@@ -1037,7 +1136,7 @@ static Widget s_il_mark_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Show in Story Mode",
+                .label = "  Story Mode",
                 .pref = pref::BoolPref::IlMarkStory,
             },
     },
@@ -1045,7 +1144,7 @@ static Widget s_il_mark_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Show in Challenge Mode",
+                .label = "  Challenge Mode",
                 .pref = pref::BoolPref::IlMarkChallenge,
             },
     },
@@ -1053,17 +1152,8 @@ static Widget s_il_mark_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Show in Romhacks",
+                .label = "  Romhacks",
                 .pref = pref::BoolPref::IlMarkRomhacks,
-            },
-    },
-    {
-        .type = WidgetType::Button,
-        .button =
-            {
-                .label = "Disable Invalidating Settings",
-                .push = [] { ilmark::disable_invalidating_settings(); },
-                .flags = ButtonFlags::GoBack,
             },
     },
 };
@@ -1124,30 +1214,6 @@ static Widget s_enabled_physics_widgets[] = {
                 .floor = -100,
             },
     },
-    {
-        .type = WidgetType::FloatEdit,
-        .float_edit =
-            {
-                .label = "Gravity",
-                .pref = pref::U8Pref::Gravity,
-                .precision = 10000,
-                .min = 0,
-                .max = 255,
-                .floor = -100,
-            },
-    },
-    {
-        .type = WidgetType::FloatEdit,
-        .float_edit =
-            {
-                .label = "Ball Scale",
-                .pref = pref::U8Pref::BallScale,
-                .precision = 50,
-                .min = 0,
-                .max = 255,
-                .floor = 0,
-            },
-    },
 };
 
 static Widget s_physics_widgets[] = {
@@ -1166,7 +1232,6 @@ static Widget s_physics_widgets[] = {
                 .widget = s_enabled_physics_widgets,
                 .hideable_type = HideableType::BoolHideable,
                 .bool_pref = pref::BoolPref::UseCustomPhysics,
-                .show_if = true,
                 .num_widgets = LEN(s_enabled_physics_widgets),
             },
     },
@@ -1287,14 +1352,6 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Randomizer",
-                .pref = pref::BoolPref::Randomizer,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
                 .label = "Jump Mod",
                 .pref = pref::BoolPref::JumpMod,
             },
@@ -1361,6 +1418,8 @@ static Widget s_pracmod_settings_widgets[] = {
             {
                 .label = "Menu Bind",
                 .pref = pref::U8Pref::MenuBind,
+                .required_chord = true,
+                .can_unbind = false,
             },
     },
     {

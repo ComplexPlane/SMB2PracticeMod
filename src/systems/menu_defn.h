@@ -107,6 +107,8 @@ struct FloatEditWidget {
 struct InputSelectWidget {
     const char* label;
     pref::U8Pref pref;
+    bool required_chord;  // must be a 2 button bind if true
+    bool can_unbind;
 };
 
 enum class HideableType : u8 { U8Hideable, BoolHideable };

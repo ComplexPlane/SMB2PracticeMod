@@ -94,6 +94,9 @@ enum class PrefId : u16 {
     InputDispRed = 74,
     InputDispGreen = 75,
     InputDispBlue = 76,
+    IlBattleReadyBind = 77,
+    FreecamToggleBind = 78,
+    SavestateClearBind = 79,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -172,6 +175,9 @@ static const PrefId s_pref_ids[] = {
     PrefId::InputDispRed,
     PrefId::InputDispGreen,
     PrefId::InputDispBlue,
+    PrefId::IlBattleReadyBind,
+    PrefId::FreecamToggleBind,
+    PrefId::SavestateClearBind,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -335,6 +341,12 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::InputDispGreen;
         case PrefId::InputDispBlue:
             return U8Pref::InputDispBlue;
+        case PrefId::IlBattleReadyBind:
+            return U8Pref::IlBattleReadyBind;
+        case PrefId::FreecamToggleBind:
+            return U8Pref::FreecamToggleBind;
+        case PrefId::SavestateClearBind:
+            return U8Pref::SavestateClearBind;
         default:
             return {};
     }
@@ -360,7 +372,7 @@ struct DefaultU8Pref {
 // Non-zero default values of u8 preferences
 static DefaultU8Pref s_default_u8_prefs[] = {
     {.pref = U8Pref::FreecamSpeedMult, .value = 3},
-    {U8Pref::MenuBind, 64},
+    {U8Pref::MenuBind, 64},  // L + R
     {U8Pref::Friction, 110},
     {U8Pref::Restitution, 150},
     {U8Pref::CameraMode, 0x4c},
@@ -370,6 +382,9 @@ static DefaultU8Pref s_default_u8_prefs[] = {
     {U8Pref::CameraHeight, 80},
     {U8Pref::Gravity, 198},
     {U8Pref::BallScale, 50},
+    {U8Pref::IlBattleReadyBind, 104},   // dpad-down
+    {U8Pref::FreecamToggleBind, 255},   // unbound
+    {U8Pref::SavestateClearBind, 255},  // unbound
 };
 
 //
@@ -378,7 +393,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[29];   // 29 u8 prefs
+    u8 u8_prefs[32];   // 32 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

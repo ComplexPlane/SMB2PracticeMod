@@ -8,6 +8,7 @@
 #include "../systems/pref.h"
 #include "../utils/draw.h"
 #include "../utils/macro_utils.h"
+#include "mkb/mkb2_ghidra.h"
 
 using namespace menu_defn;
 
@@ -31,10 +32,9 @@ static u32 s_menu_stack_ptr = 0;
 
 static s32 s_intedit_tick = 0;
 
+static bool s_binding_request = false;
 static bool s_binding = false;
 static u32 s_delay_frames = 0;
-static const char* INPUT_STRINGS[] = {
-    "A", "B", "X", "Y", "L", "R", "Z", "Dpad-Up", "Dpad-Down", "Dpad-Left", "Dpad-Right", "Start"};
 
 static void push_menu(MenuWidget* menu) {
     MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
@@ -268,18 +268,29 @@ static void handle_widget_bind() {
         }
     } else if (selected->type == WidgetType::InputSelect) {
         auto& input_select = selected->input_select;
-        if (s_binding) {
+        if (s_binding_request && pad::button_released(mkb::PAD_BUTTON_A, true)) {
+            s_binding_request = false;
+            s_binding = true;
+        } else if (s_binding) {
             // set new bind
-            u8 new_value = binds::get_current_encoding();
-            if (new_value != 0) {
-                pref::set(input_select.pref, new_value);
-                pref::save();
-                s_binding = false;
-            }
+            binds::EncodingType type = binds::get_encoding_type();
+            if (type == binds::EncodingType::Invalid ||
+                (type == binds::EncodingType::SinglePress && input_select.required_chord))
+                return;
+            u8 value = binds::get_current_encoding();
+            pref::set(input_select.pref, value);
+            pref::save();
+            s_binding = false;
         } else if (a_pressed) {
             // enter rebind mode
-            s_binding = true;
+            s_binding_request = true;
+        } else if (y_pressed) {
+            // unbind
+            if (!input_select.can_unbind) return;
+            pref::set(input_select.pref, 255);
+            pref::save();
         } else if (x_pressed) {
+            // reset default bind
             pref::set(input_select.pref, pref::get_default(input_select.pref));
             pref::save();
         }
@@ -293,7 +304,7 @@ void tick() {
     }
     // TODO save settings on close
     // TODO save menu position as settings
-    bool toggle = binds::button_chord_pressed(pref::get(pref::U8Pref::MenuBind), true);
+    bool toggle = binds::bind_pressed(pref::get(pref::U8Pref::MenuBind), true);
     if (toggle) {
         s_visible ^= toggle;
     } else if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
@@ -303,7 +314,7 @@ void tick() {
     if (just_opened) {
         pad::reset_dir_repeat();
         s_cursor_frame = 0;
-        s_delay_frames = 15;
+        s_delay_frames = 8;
     }
     if (s_delay_frames > 0) {
         s_delay_frames--;
@@ -311,7 +322,10 @@ void tick() {
 
     pad::set_exclusive_mode(s_visible);
 
-    if (!s_visible || s_delay_frames > 0) return;
+    if (!s_visible
+        // || s_delay_frames > 0
+    )
+        return;
 
     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
 
@@ -361,73 +375,61 @@ static void draw_selectable_highlight(float y) {
 
 static constexpr s32 X_HELP = SCREEN_WIDTH - MARGIN - 110;
 static constexpr s32 X_BUTTON = SCREEN_WIDTH - MARGIN - 25;
+static constexpr s32 BLOCK_WIDTH = 150;
+static constexpr s32 START = MARGIN + 35;
+// static constexpr s32 BUTTON_START = -20;
+static constexpr s32 BUTTON_START = -70;
+static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
+static constexpr s32 TEXT_START = SCREEN_HEIGHT - MARGIN - 52;
 
 static void draw_help(Widget widget) {
+    draw::rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
+               SCREEN_HEIGHT - MARGIN - 30, draw::GRAY);
     switch (widget.type) {
         case WidgetType::Checkbox:
         case WidgetType::GetSetCheckbox: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Toggle:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Toggle");
+            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
+            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
             break;
         }
         case WidgetType::Menu: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Open:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
-            break;
-        }
-        case WidgetType::Choose: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Open");
+            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
+            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
             break;
         }
         case WidgetType::Button: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Open:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Activate");
+            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
+            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
             break;
         }
-        case WidgetType::IntEdit: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
-            break;
-        }
+        case WidgetType::Choose:
+        case WidgetType::IntEdit:
         case WidgetType::FloatEdit: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Next:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Prev:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Next");
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y:");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Prev");
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X:");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Reset");
+            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
+            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
             break;
         }
         case WidgetType::InputSelect: {
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 100, draw::WHITE, "Bind:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 100, draw::LIGHT_GREEN, "A");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 85, draw::WHITE, "Unbind:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 85, draw::GRAY, "Y");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 70, draw::WHITE, "Reset:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 70, draw::GRAY, "X");
-            draw::debug_text(X_HELP, SCREEN_HEIGHT - MARGIN - 55, draw::WHITE, "Close:");
-            draw::debug_text(X_BUTTON, SCREEN_HEIGHT - MARGIN - 55, draw::LIGHT_RED, "B");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Bind");
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y:");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Unbind");
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X:");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Reset");
+            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
+            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
             break;
         }
         default: {
@@ -593,18 +595,22 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                 draw_selectable_highlight(*y);
                 draw_help(widget);
             }
-            u8 input = pref::get(widget.input_select.pref);
-            if (s_binding) {
-                draw::debug_text(MARGIN + PAD, *y, draw::GOLD, "  %s", widget.input_select.label);
+            if (s_binding && selected_idx == *selectable_idx) {
+                draw::debug_text(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s",
+                                 widget.input_select.label);
             } else {
                 draw::debug_text(MARGIN + PAD, *y,
                                  selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                                  "  %s", widget.input_select.label);
             }
-            draw::debug_text(MARGIN + PAD, *y,
-                             selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                             "                         (%s+%s)", INPUT_STRINGS[input % 12],
-                             INPUT_STRINGS[(input - (input % 12)) / 12]);
+            mkb::GXColor bind_color =
+                selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
+            if (s_binding && selected_idx == *selectable_idx) {
+                bind_color = draw::GOLD;
+            }
+            u8 input = pref::get(widget.input_select.pref);
+            draw::debug_text(MARGIN + PAD, *y, bind_color, "                         %s",
+                             binds::get_bind_str(input));
 
             *y += LINE_HEIGHT;
             *selectable_idx += 1;
@@ -656,8 +662,7 @@ void disp() {
         u8 input = pref::get(pref::U8Pref::MenuBind);
         if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
             input != 64) {
-            draw::notify(draw::RED, "Use %s+%s to toggle menu", INPUT_STRINGS[input % 12],
-                         INPUT_STRINGS[(input - (input % 12)) / 12]);
+            draw::notify(draw::RED, "Use %s to toggle menu", binds::get_bind_str(input));
         }
         return;
     }

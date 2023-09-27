@@ -14,6 +14,7 @@
 namespace ilmark {
 
 static bool s_valid_run = false;
+static u32 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
 void disable_invalidating_settings() {
@@ -64,10 +65,15 @@ void init() {
 void tick() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
+        s_paused_frame = 0;
 
     } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-        if (paused_now) s_valid_run = false;
+        if (paused_now && s_paused_frame == 0) {
+            s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
+        } else if (paused_now) {
+            s_valid_run = false;
+        }
 
         // Loading savestates is disallowed
         if (libsavest::state_loaded_this_frame()) s_valid_run = false;
@@ -133,7 +139,9 @@ void disp() {
 
     u32 x = 634;
     u32 y = 474;
-    if (!s_valid_run) {
+    bool valid = (s_valid_run && s_paused_frame <= mkb::mode_info.stage_time_frames_remaining) ||
+                 s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
+    if (!valid) {
         x -= 4;
         y -= 4;
     }
@@ -141,7 +149,7 @@ void disp() {
     mkb::textdraw_set_pos(x, y);
     mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
     mkb::textdraw_set_scale(0.8, 0.8);
-    mkb::GXColor color = s_valid_run ? draw::LIGHT_GREEN : draw::LIGHT_RED;
+    mkb::GXColor color = valid ? draw::LIGHT_GREEN : draw::LIGHT_RED;
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
