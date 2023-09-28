@@ -86,7 +86,7 @@ void tick() {
 
         // Using these tools/mods at all is disallowed
         bool using_disallowed_mod =
-            pref::get(pref::BoolPref::FreezeTimer) || freecam::enabled() ||
+            pref::get(pref::U8Pref::TimerType) != 0 || freecam::enabled() ||
             pref::get(pref::BoolPref::DebugMode) || pref::get(pref::BoolPref::JumpMod) ||
             pref::get(pref::BoolPref::Moon) || pref::get(pref::BoolPref::Marathon);
         if (using_disallowed_mod) s_valid_run = false;
