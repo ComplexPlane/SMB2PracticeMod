@@ -57,27 +57,7 @@ void tick() {
             mkb::camera_height = 1;
             break;
         }
-        case 3: {  // custom values
-            // if (mkb::cameras[0].mode != pref::get(pref::U8Pref::CameraMode)) {
-            //     mkb::cameras[0].mode = pref::get(pref::U8Pref::CameraMode);
-            // }
-            // patch::write_word(reinterpret_cast<void*>(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
-            // mkb::g_camera_turn_rate_scale =
-            //     (float)pref::get(pref::U8Pref::CameraTurnRateScale) / 100.0;
-            // mkb::camera_pivot_height = (float)pref::get(pref::U8Pref::CameraPivotHeight) / 100.0;
-            // mkb::camera_height = (float)pref::get(pref::U8Pref::CameraHeight) / 100.0;
-
-            // more potential custom values?
-            // mkb::g_camera_aspect_ratio ??
-            // extern undefined4 g_something_with_camera;
-            // extern double g_related_to_camera_turn_rate_and_stage_tilt;
-            // extern float camera_near_clip_z;
-            // extern float camera_far_clip_z;
-            // extern undefined4 g_camera_fov;
-            // extern double g_camera_turn_rate_scale;
-            // extern double camera_height;
-            // extern double camera_pivot_height;
-            // extern float camera_distance;
+        case 3: {  // TODO: custom values
             break;
         }
     }

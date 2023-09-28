@@ -14,7 +14,7 @@
 namespace ilmark {
 
 static bool s_valid_run = false;
-static u32 s_paused_frame = 0;
+static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
 void disable_invalidating_settings() {
@@ -43,10 +43,6 @@ void disable_invalidating_settings() {
 
     // Reset camera to default
     pref::set(pref::U8Pref::Camera, 0);
-    // pref::set(pref::U8Pref::CameraMode, false);
-    // pref::set(pref::U8Pref::CameraAngle, false);
-    // pref::set(pref::U8Pref::CameraTurnRateScale, false);
-    // pref::set(pref::U8Pref::CameraHeight, false);
 
     // Disable fun mods
     pref::set(pref::BoolPref::JumpMod, false);

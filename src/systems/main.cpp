@@ -29,7 +29,6 @@
 #include "mods/marathon.h"
 #include "mods/moon.h"
 #include "mods/physics.h"
-#include "mods/randomizer.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
@@ -94,7 +93,6 @@ void init() {
     ilmark::init();
     camera::init();
     fallout::init();
-    randomizer::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
@@ -133,7 +131,6 @@ void init() {
         ilbattle::tick();
         ilmark::tick();
         camera::tick();
-        randomizer::tick();
         scratch::tick();
     });
 
@@ -162,7 +159,6 @@ void init() {
         menu_impl::disp();
         draw::disp();
         ilmark::disp();
-        randomizer::disp();
         scratch::disp();
     });
 }

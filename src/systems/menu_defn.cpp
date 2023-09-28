@@ -961,7 +961,7 @@ static Widget s_freecam_widgets[] = {
 };
 
 static Widget s_hide_widgets[] = {
-    {.type = WidgetType::Header, .header = {"Hide..."}},
+    {.type = WidgetType::Header, .header = {"Hide Elements"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -1226,10 +1226,6 @@ static Widget s_displays_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Ball & Ape Color", s_ball_color_widgets, LEN(s_ball_color_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
         .menu = {"Timers", s_timers_widgets, LEN(s_timers_widgets)},
     },
     {
@@ -1415,6 +1411,10 @@ static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Displays", s_displays_widgets, LEN(s_displays_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Customization", s_ball_color_widgets, LEN(s_ball_color_widgets)},
     },
     {
         .type = WidgetType::Menu,

@@ -23,12 +23,12 @@ static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
 // battle trackers
 static u32 s_battle_frames = 0;
 static bool s_valid_run = false;
-static u32 s_paused_frame = 0;
+static s16 s_paused_frame = 0;
 static u32 s_battle_length = 0;
 static u32 s_battle_stage_id = 0;
 static u32 s_main_mode_play_timer = 0;
 // best time/score
-static u32 s_best_frames = 0;
+static s16 s_best_frames = 0;
 static u32 s_best_score = 0;
 static u32 s_best_score_bananas = 0;
 static u32 s_best_score_frames = 0;
@@ -227,7 +227,7 @@ static void track_final_attempt() {
     // Player has entered goal...
     // Save time & enter postgoal phase for score
     else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-        u32 pre_buzzer_time = s_best_frames;
+        s16 pre_buzzer_time = s_best_frames;
         u32 pre_buzzer_score = s_best_score;
         track_best();
         s_state = IlBattleState::BuzzerBeaterPostgoal;

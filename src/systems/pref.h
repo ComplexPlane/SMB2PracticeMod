@@ -18,7 +18,6 @@ enum class BoolPref : u8 {
     BananaCounter9999,
     DpadControls,
     DebugMode,
-    FreezeTimer,  // SAFE TO DELETE
     MuteBgm,
     MuteTimerDing,
     InputDispRawStickInputs,
@@ -26,7 +25,6 @@ enum class BoolPref : u8 {
     Marathon,
     Moon,
     IlBattleDisplay,
-    IlBattleShowBreakdown,  // SAFE TO DELETE
     IlMarkPractice,
     IlMarkStory,
     IlMarkChallenge,
@@ -45,16 +43,13 @@ enum class BoolPref : u8 {
     HideStobjs,
     HideEffects,
     IlMarkRomhacks,
-    DisableWarps,
     DisableFallouts,
     BouncyFalloutPlane,
     IlBattleShowTime,
     IlBattleShowScore,
     IlBattleBuzzerOld,
-    IlBattleMinimalBreakdown,
     UseCustomPhysics,
     SavestateSwitchToUnused,
-    Randomizer,  // NEED TO DELETE
 };
 
 enum class U8Pref : u8 {
@@ -69,24 +64,16 @@ enum class U8Pref : u8 {
     BallGreen,
     BallBlue,
     BallColorType,
-    MenuBind,
-    TimerType,
-    Friction,
-    Restitution,
-    CameraMode,           // NEED TO DELETE
-    CameraAngle,          // NEED TO DELETE
-    CameraTurnRateScale,  // NEED TO DELETE
-    CameraPivotHeight,    // NEED TO DELETE
-    CameraHeight,         // NEED TO DELETE
-    Gravity,
-    BallScale,     // NEED TO DELETE
-    Acceleration,  // NEED TO DELETE
     ApeColorType,
-    IlBattleBreakdown,
     InputDispColorType,
     InputDispRed,
     InputDispGreen,
     InputDispBlue,
+    TimerType,
+    Friction,
+    Restitution,
+    IlBattleBreakdown,
+    MenuBind,
     IlBattleReadyBind,
     FreecamToggleBind,
     SavestateClearBind,
