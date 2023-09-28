@@ -373,63 +373,54 @@ static void draw_selectable_highlight(float y) {
     draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
 }
 
-static constexpr s32 X_HELP = SCREEN_WIDTH - MARGIN - 110;
-static constexpr s32 X_BUTTON = SCREEN_WIDTH - MARGIN - 25;
 static constexpr s32 BLOCK_WIDTH = 150;
 static constexpr s32 START = MARGIN + 35;
-// static constexpr s32 BUTTON_START = -20;
-static constexpr s32 BUTTON_START = -70;
+static constexpr s32 BUTTON_START = -83;
 static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
-static constexpr s32 TEXT_START = SCREEN_HEIGHT - MARGIN - 52;
 
 static void draw_help(Widget widget) {
+    // draw seperator
     draw::rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
                SCREEN_HEIGHT - MARGIN - 30, draw::GRAY);
+    // draw b: back
+    draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B");
+    draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Back");
+    // draw relevant controls for current widget
     switch (widget.type) {
         case WidgetType::Checkbox:
         case WidgetType::GetSetCheckbox: {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Toggle");
-            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
-            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Toggle");
             break;
         }
         case WidgetType::Menu: {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Open");
-            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
-            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Open");
             break;
         }
         case WidgetType::Button: {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Activate");
-            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
-            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Activate");
             break;
         }
         case WidgetType::Choose:
         case WidgetType::IntEdit:
         case WidgetType::FloatEdit: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Next");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Next");
             draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y:");
-            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Prev");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Prev");
             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X:");
-            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Reset");
-            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
-            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
             break;
         }
         case WidgetType::InputSelect: {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Bind");
-            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y:");
-            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Unbind");
-            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X:");
-            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Reset");
-            draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B:");
-            draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, "Back");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Bind");
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Unbind");
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
             break;
         }
         default: {
