@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 
 namespace draw {
 

@@ -1,17 +1,17 @@
 #include "savest_ui.h"
 
-#include "../mkb/mkb.h"
+#include "mkb/mkb.h"
 
-#include "../systems/heap.h"
-#include "../systems/log.h"
-#include "../systems/pad.h"
-#include "../systems/pref.h"
-#include "../utils/draw.h"
-#include "../utils/libsavest.h"
-#include "../utils/macro_utils.h"
-#include "../utils/memstore.h"
-#include "../utils/patch.h"
 #include "systems/binds.h"
+#include "systems/heap.h"
+#include "systems/log.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/libsavest.h"
+#include "utils/macro_utils.h"
+#include "utils/memstore.h"
+#include "utils/patch.h"
 
 namespace savest_ui {
 

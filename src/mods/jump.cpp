@@ -1,10 +1,10 @@
 #include "jump.h"
 
-#include "../utils/macro_utils.h"
 #include "mkb/mkb.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/macro_utils.h"
 #include "utils/patch.h"
 
 namespace jump {

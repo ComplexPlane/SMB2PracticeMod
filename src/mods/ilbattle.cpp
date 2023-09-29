@@ -1,11 +1,11 @@
 #include "ilbattle.h"
-#include "../mkb/mkb.h"
-#include "../systems/pad.h"
-#include "../systems/pref.h"
-#include "../utils/draw.h"
-#include "../utils/patch.h"
-#include "../utils/timerdisp.h"
+#include "mkb/mkb.h"
 #include "systems/binds.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/patch.h"
+#include "utils/timerdisp.h"
 
 namespace ilbattle {
 

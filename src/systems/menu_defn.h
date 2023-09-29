@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../mkb/mkb.h"
-
+#include "mkb/mkb.h"
 #include "pref.h"
 
 namespace menu_defn {
