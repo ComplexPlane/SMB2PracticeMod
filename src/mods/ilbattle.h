@@ -6,15 +6,6 @@ namespace ilbattle {
 
 static constexpr u32 NUM_LENGTHS = 4;
 
-enum class IlBattleState {
-    NotReady,
-    WaitForFirstRetry,     // Mod is enabled but first retry hasn't occurred
-    BattleRunning,         // Battle is running
-    BuzzerBeater,          // Time has run out, but an attempt is still going
-    BuzzerBeaterPostgoal,  // Final attempt is over, wait for postgoals for score
-    BattleDone,            // Final attempt is over, show times in blue
-};
-
 void tick();
 void disp();
 void new_battle();
