@@ -27,7 +27,6 @@
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
-#include "mods/moon.h"
 #include "mods/physics.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
@@ -127,7 +126,6 @@ void init() {
         marathon::tick();
         ballcolor::tick();
         freecam::tick();
-        moon::tick();
         ilbattle::tick();
         ilmark::tick();
         camera::tick();

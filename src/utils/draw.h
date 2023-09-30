@@ -39,7 +39,7 @@ void debug_text_palette();
 void debug_text(s32 x, s32 y, mkb::GXColor color, const char* format, ...);
 void heart();
 
-// allows a color to cycle through a rainbow gradient, have num value be...
+// allows a color to cycle through a rainbow animation, have num value be...
 // num = (num + gradient_speed) % 1080;
 mkb::GXColor num_to_rainbow(int num);
 

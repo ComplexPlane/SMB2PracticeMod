@@ -118,9 +118,6 @@ void SaveState::pass_over_regions() {
         }
     }
 
-    // Replays
-    // m_store.do_region(mkb::replay, sizeof(mkb::Replay));
-
     // RTA timer
     timer::save_state(&m_store);
 }
@@ -333,7 +330,7 @@ SaveState::LoadResult SaveState::load() {
 }
 
 void SaveState::clear() {
-    m_flags &= ~FLAG_ACTIVE;
+    m_flags = 0;
     m_store.enter_prealloc_mode();
 }
 

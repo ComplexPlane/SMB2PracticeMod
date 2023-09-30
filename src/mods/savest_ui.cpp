@@ -51,7 +51,7 @@ void tick() {
         // switch to unused slot if pref is active
         if (pref::get(pref::BoolPref::SavestateSwitchToUnused)) {
             // dont override current slot unless all full
-            for (u32 i = 0; i < 8; i++) {
+            for (u32 i = 0; i < LEN(s_states); i++) {
                 auto& state = s_states[(s_active_state_slot + i) % 8];
                 if (state.isEmpty()) {
                     s_active_state_slot = (s_active_state_slot + i) % 8;
