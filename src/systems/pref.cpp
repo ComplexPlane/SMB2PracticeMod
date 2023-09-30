@@ -326,7 +326,7 @@ struct DefaultU8Pref {
 
 // Non-zero default values of u8 preferences
 static DefaultU8Pref s_default_u8_prefs[] = {
-    {.pref = U8Pref::FreecamSpeedMult, .value = 3},
+    {U8Pref::FreecamSpeedMult, 3},      // 3
     {U8Pref::MenuBind, 64},             // L + R
     {U8Pref::Friction, 110},            // 0.10
     {U8Pref::Restitution, 150},         // 0.5

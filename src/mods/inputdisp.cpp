@@ -202,13 +202,9 @@ static mkb::GXColor get_color() {
             return draw::num_to_rainbow(s_rainbow);
         }
         case 3: {  // match ball
-            u32 ball_color = ballcolor::get_current_color();
-            return {
-                .r = static_cast<u8>((ball_color & 0xff000000) >> 24),
-                .g = static_cast<u8>((ball_color & 0x00ff0000) >> 16),
-                .b = static_cast<u8>((ball_color & 0x0000ff00) >> 8),
-                .a = 0xff,
-            };
+            mkb::GXColor current = ballcolor::get_current_color();
+            current.a = 0xff;
+            return current;
         }
         default: {
             return s_color_map[pref::get(pref::U8Pref::InputDispColor)];
