@@ -19,7 +19,7 @@ enum class WidgetType {
     IntEdit,
     FloatEdit,
     InputSelect,
-    HideableWidget,
+    HideableGroupWidget,
     Custom,
 };
 
@@ -112,15 +112,10 @@ struct InputSelectWidget {
 
 enum class HideableType : u8 { U8Hideable, BoolHideable };
 
-struct HideableWidget {
-    struct Widget* widget;
-    HideableType hideable_type;
-    union {
-        pref::U8Pref u8_pref;
-        pref::BoolPref bool_pref;
-    };
-    u8 show_if;  // show widget if this u8 is equal to u8_pref value
+struct HideableGroupWidget {
+    struct Widget* widgets;
     u32 num_widgets;
+    bool (*show_if)();  // show if function returns true
 };
 
 struct CustomWidget {
@@ -142,7 +137,7 @@ struct Widget {
         IntEditWidget int_edit;
         FloatEditWidget float_edit;
         InputSelectWidget input_select;
-        HideableWidget hideable_widget;
+        HideableGroupWidget hideable_group;
         CustomWidget custom;
     };
 };

@@ -117,25 +117,21 @@ static Widget s_inputdisp_subwidgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_input_preset,
-                .hideable_type = HideableType::U8Hideable,
-                .u8_pref = pref::U8Pref::InputDispColorType,
-                .show_if = 0,
+                .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
+                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_input_hex,
-                .hideable_type = HideableType::U8Hideable,
-                .u8_pref = pref::U8Pref::InputDispColorType,
-                .show_if = 1,
+                .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
+                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
             },
     },
 };
@@ -150,13 +146,12 @@ static Widget s_inputdisp_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_inputdisp_subwidgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::InputDisp,
+                .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
+                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
             },
     },
 };
@@ -253,25 +248,21 @@ static Widget s_ball_color_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_preset_widgets,
-                .hideable_type = HideableType::U8Hideable,
-                .u8_pref = pref::U8Pref::BallColorType,
-                .show_if = 0,
+                .widgets = s_preset_widgets,
                 .num_widgets = LEN(s_preset_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 0; },
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_hex_widgets,
-                .hideable_type = HideableType::U8Hideable,
-                .u8_pref = pref::U8Pref::BallColorType,
-                .show_if = 1,
+                .widgets = s_hex_widgets,
                 .num_widgets = LEN(s_hex_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 1; },
             },
     },
     {WidgetType::Separator},
@@ -290,14 +281,12 @@ static Widget s_ball_color_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_preset_ape_widgets,
-                .hideable_type = HideableType::U8Hideable,
-                .u8_pref = pref::U8Pref::ApeColorType,
-                .show_if = 0,
+                .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::ApeColorType) == 0; },
             },
     },
 };
@@ -366,13 +355,12 @@ static Widget s_il_battle_subwidgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_il_battle_score_widgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::IlBattleShowScore,
+                .widgets = s_il_battle_score_widgets,
                 .num_widgets = LEN(s_il_battle_score_widgets),
+                .show_if = []() { return pref::get(pref::BoolPref::IlBattleShowScore); },
             },
     },
     {
@@ -396,13 +384,12 @@ static Widget s_il_battle_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_il_battle_subwidgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::IlBattleDisplay,
+                .widgets = s_il_battle_subwidgets,
                 .num_widgets = LEN(s_il_battle_subwidgets),
+                .show_if = []() { return pref::get(pref::BoolPref::IlBattleDisplay); },
             },
     },
 };
@@ -949,13 +936,12 @@ static Widget s_freecam_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_freecam_subwidgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::Freecam,
+                .widgets = s_freecam_subwidgets,
                 .num_widgets = LEN(s_freecam_subwidgets),
+                .show_if = []() { return pref::get(pref::BoolPref::Freecam); },
             },
     },
 };
@@ -1053,13 +1039,12 @@ static Widget s_assist_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_bouncy_fallout_widget,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::DisableFallouts,
+                .widgets = s_bouncy_fallout_widget,
                 .num_widgets = LEN(s_bouncy_fallout_widget),
+                .show_if = []() { return pref::get(pref::BoolPref::DisableFallouts); },
             },
     },
 };
@@ -1095,13 +1080,12 @@ static Widget s_savestate_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_savestate_subwidgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::Savestates,
+                .widgets = s_savestate_subwidgets,
                 .num_widgets = LEN(s_savestate_subwidgets),
+                .show_if = []() { return pref::get(pref::BoolPref::Savestates); },
             },
     },
 };
@@ -1291,13 +1275,12 @@ static Widget s_physics_widgets[] = {
             },
     },
     {
-        .type = WidgetType::HideableWidget,
-        .hideable_widget =
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
             {
-                .widget = s_enabled_physics_widgets,
-                .hideable_type = HideableType::BoolHideable,
-                .bool_pref = pref::BoolPref::UseCustomPhysics,
+                .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
+                .show_if = []() { return pref::get(pref::BoolPref::UseCustomPhysics); },
             },
     },
 };

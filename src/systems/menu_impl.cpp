@@ -55,18 +55,8 @@ static void pop_menu() {
 }
 
 static bool show_hideable_widget(Widget* widget) {
-    HideableWidget hideable = widget->hideable_widget;
-    switch (hideable.hideable_type) {
-        case HideableType::BoolHideable: {
-            return pref::get(hideable.bool_pref);
-        }
-        case HideableType::U8Hideable: {
-            return pref::get(hideable.u8_pref) == hideable.show_if;
-        }
-        default: {
-            return false;
-        }
-    }
+    HideableGroupWidget hideable = widget->hideable_group;
+    return hideable.show_if();
 }
 
 static bool is_widget_selectable(WidgetType type) {
@@ -76,15 +66,15 @@ static bool is_widget_selectable(WidgetType type) {
            type == WidgetType::InputSelect;
 }
 
-static Widget* get_sub_selected_widget(HideableWidget* widget, s32* selectable, s32* sel) {
+static Widget* get_sub_selected_widget(HideableGroupWidget* widget, s32* selectable, s32* sel) {
     for (u32 i = 0; i < widget->num_widgets; i++) {
-        Widget* child = &widget->widget[i];
+        Widget* child = &widget->widgets[i];
         if (is_widget_selectable(child->type)) {
             *selectable += 1;
             if (*selectable == *sel) return child;
-        } else if (child->type == WidgetType::HideableWidget && show_hideable_widget(child)) {
+        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
             Widget* possible_selection =
-                get_sub_selected_widget(&child->hideable_widget, selectable, sel);
+                get_sub_selected_widget(&child->hideable_group, selectable, sel);
             if (possible_selection != nullptr) {
                 return possible_selection;
             }
@@ -104,9 +94,9 @@ static Widget* get_selected_widget() {
         if (is_widget_selectable(child->type)) {
             selectable++;
             if (selectable == sel) return child;
-        } else if (child->type == WidgetType::HideableWidget && show_hideable_widget(child)) {
+        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
             Widget* possible_selection =
-                get_sub_selected_widget(&child->hideable_widget, &selectable, &sel);
+                get_sub_selected_widget(&child->hideable_group, &selectable, &sel);
             if (possible_selection != nullptr) {
                 return possible_selection;
             }
@@ -116,14 +106,14 @@ static Widget* get_selected_widget() {
     return nullptr;
 }
 
-static u32 get_submenu_selectable_widget_count(HideableWidget widget) {
+static u32 get_submenu_selectable_widget_count(HideableGroupWidget widget) {
     u32 selectable = 0;
     for (u32 i = 0; i < widget.num_widgets; i++) {
-        Widget child = widget.widget[i];
+        Widget child = widget.widgets[i];
         if (is_widget_selectable(child.type)) {
             selectable++;
-        } else if (child.type == WidgetType::HideableWidget && show_hideable_widget(&child)) {
-            selectable += get_submenu_selectable_widget_count(child.hideable_widget);
+        } else if (child.type == WidgetType::HideableGroupWidget && show_hideable_widget(&child)) {
+            selectable += get_submenu_selectable_widget_count(child.hideable_group);
         }
     }
     return selectable;
@@ -136,8 +126,8 @@ static u32 get_menu_selectable_widget_count(MenuWidget* menu) {
         Widget* child = &menu->widgets[i];
         if (is_widget_selectable(child->type)) {
             selectable++;
-        } else if (child->type == WidgetType::HideableWidget && show_hideable_widget(child)) {
-            selectable += get_submenu_selectable_widget_count(child->hideable_widget);
+        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
+            selectable += get_submenu_selectable_widget_count(child->hideable_group);
         }
     }
     return selectable;
@@ -432,10 +422,10 @@ static void draw_help(Widget widget) {
 void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
                      mkb::GXColor lerped_color) {
     switch (widget.type) {
-        case WidgetType::HideableWidget: {
+        case WidgetType::HideableGroupWidget: {
             if (show_hideable_widget(&widget)) {
-                for (u32 i = 0; i < widget.hideable_widget.num_widgets; i++) {
-                    Widget& w = widget.hideable_widget.widget[i];
+                for (u32 i = 0; i < widget.hideable_group.num_widgets; i++) {
+                    Widget& w = widget.hideable_group.widgets[i];
                     draw_sub_widget(w, selected_idx, selectable_idx, y, lerped_color);
                 }
             }
