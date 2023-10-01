@@ -346,9 +346,10 @@ void disp() {
         case IlBattleState::NotReady: {
             if (mkb::main_mode != mkb::MD_GAME) return;
             u8 input = pref::get(pref::U8Pref::IlBattleReadyBind);
+            char buf[25];
+            binds::get_bind_str(input, buf);
             draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
-            draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE, "%s to ready",
-                             binds::get_bind_str(input));
+            draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::LIGHT_PURPLE, "%s to ready", buf);
             break;
         }
         case IlBattleState::WaitForFirstRetry: {

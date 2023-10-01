@@ -583,8 +583,9 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                 bind_color = draw::GOLD;
             }
             u8 input = pref::get(widget.input_select.pref);
-            draw::debug_text(MARGIN + PAD, *y, bind_color, "                         %s",
-                             binds::get_bind_str(input));
+            char buf[25];
+            binds::get_bind_str(input, buf);
+            draw::debug_text(MARGIN + PAD, *y, bind_color, "                         %s", buf);
 
             *y += LINE_HEIGHT;
             (*selectable_idx)++;
@@ -636,7 +637,9 @@ void disp() {
         u8 input = pref::get(pref::U8Pref::MenuBind);
         if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
             input != L_R_BIND) {
-            draw::notify(draw::RED, "Use %s to toggle menu", binds::get_bind_str(input));
+            char buf[25];
+            binds::get_bind_str(input, buf);
+            draw::notify(draw::RED, "Use %s to toggle menu", buf);
         }
         return;
     }

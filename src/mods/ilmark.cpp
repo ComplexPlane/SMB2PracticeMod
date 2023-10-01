@@ -17,37 +17,32 @@ static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
+static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
+    pref::BoolPref::DisableFallouts,
+    pref::BoolPref::BouncyFalloutPlane,
+    pref::BoolPref::UseCustomPhysics,
+    pref::BoolPref::JumpMod,
+    pref::BoolPref::Moon,
+    pref::BoolPref::Marathon,
+    pref::BoolPref::DebugMode,
+};
+
+static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
+    pref::U8Pref::TimerType,
+    pref::U8Pref::Friction,
+    pref::U8Pref::Restitution,
+    pref::U8Pref::Camera,
+};
+
 void disable_invalidating_settings() {
-    // * Pausing obviously isn't allowed but that's not a setting
-    // * Loading a savestate isn't allowed, but having the setting on is allowed
-
-    // * Using dpad controls is not allowed, but having the setting on is allowed
-    //   (I'll disable it here anyways because it doesn't see as much use as savestates and may be
-    //   forgotten)
-    pref::set(pref::BoolPref::DpadControls, false);
-
-    // * Raw stick input display is not allowed
-    pref::set(pref::BoolPref::InputDispRawStickInputs, false);
-
-    // Disable hidden elements?
-
-    // Disable assist features
-    pref::set(pref::U8Pref::TimerType, 0);
-    pref::set(pref::BoolPref::DisableFallouts, false);
-    pref::set(pref::BoolPref::BouncyFalloutPlane, false);
-
-    // Disable custom physics
-    pref::set(pref::BoolPref::UseCustomPhysics, false);
-    pref::set(pref::U8Pref::Friction, 10);
-    pref::set(pref::U8Pref::Restitution, 50);
-
-    // Reset camera to default
-    pref::set(pref::U8Pref::Camera, 0);
-
-    // Disable fun mods
-    pref::set(pref::BoolPref::JumpMod, false);
-    pref::set(pref::BoolPref::Moon, false);
-    pref::set(pref::BoolPref::Marathon, false);
+    // set all bool prefs to default
+    for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
+        pref::set(INVALID_BOOL_PREFS[i], pref::get_default(INVALID_BOOL_PREFS[i]));
+    }
+    // set all u8 prefs to default
+    for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
+        pref::set(INVALID_U8_PREFS[i], pref::get_default(INVALID_U8_PREFS[i]));
+    }
 
     pref::save();
 }
@@ -65,12 +60,13 @@ void tick() {
 
     } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-        if (paused_now && s_paused_frame == 0) {
-            s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
-        } else if (paused_now) {
-            s_valid_run = false;
+        if (paused_now) {
+            if (s_paused_frame == 0) {
+                s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
+            } else {
+                s_valid_run = false;
+            }
         }
-
         // Loading savestates is disallowed
         if (libsavest::state_loaded_this_frame()) s_valid_run = false;
 
@@ -80,15 +76,23 @@ void tick() {
             pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
         if (pref::get(pref::BoolPref::DpadControls) && dpad_down) s_valid_run = false;
 
-        // Using these tools/mods at all is disallowed
-        bool using_disallowed_mod =
-            pref::get(pref::U8Pref::TimerType) != 0 || freecam::enabled() ||
-            pref::get(pref::BoolPref::DebugMode) || pref::get(pref::BoolPref::JumpMod) ||
-            pref::get(pref::BoolPref::Moon) || pref::get(pref::BoolPref::Marathon);
-        if (using_disallowed_mod) s_valid_run = false;
-
         // Opening the mod menu is disallowed
         if (menu_impl::is_visible()) s_valid_run = false;
+
+        // Invalid bool prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
+            if (pref::get(INVALID_BOOL_PREFS[i]) != pref::get_default(INVALID_BOOL_PREFS[i])) {
+                s_valid_run = false;
+            }
+        }
+        // Invalid u8 prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
+            if (pref::get(INVALID_U8_PREFS[i]) != pref::get_default(INVALID_U8_PREFS[i])) {
+                s_valid_run = false;
+            }
+        }
+    } else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
+        s_valid_run = s_valid_run && s_paused_frame <= mkb::mode_info.stage_time_frames_remaining;
     }
 }
 
@@ -135,9 +139,7 @@ void disp() {
 
     u32 x = 634;
     u32 y = 474;
-    bool valid = (s_valid_run && s_paused_frame <= mkb::mode_info.stage_time_frames_remaining) ||
-                 s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
-    if (!valid) {
+    if (!s_valid_run) {
         x -= 4;
         y -= 4;
     }
@@ -145,7 +147,7 @@ void disp() {
     mkb::textdraw_set_pos(x, y);
     mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
     mkb::textdraw_set_scale(0.8, 0.8);
-    mkb::GXColor color = valid ? draw::LIGHT_GREEN : draw::LIGHT_RED;
+    mkb::GXColor color = s_valid_run ? draw::LIGHT_GREEN : draw::LIGHT_RED;
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
