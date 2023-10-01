@@ -1,14 +1,13 @@
 #include "menu_impl.h"
 
-#include "../mkb/mkb.h"
-#include "../systems/binds.h"
-#include "../systems/log.h"
-#include "../systems/menu_defn.h"
-#include "../systems/pad.h"
-#include "../systems/pref.h"
-#include "../utils/draw.h"
-#include "../utils/macro_utils.h"
-#include "mkb/mkb2_ghidra.h"
+#include "mkb/mkb.h"
+#include "systems/binds.h"
+#include "systems/log.h"
+#include "systems/menu_defn.h"
+#include "systems/pad.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
 
 using namespace menu_defn;
 
@@ -34,7 +33,6 @@ static s32 s_intedit_tick = 0;
 
 static bool s_binding_request = false;
 static bool s_binding = false;
-static u32 s_delay_frames = 0;
 
 static void push_menu(MenuWidget* menu) {
     MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
@@ -70,7 +68,7 @@ static Widget* get_sub_selected_widget(HideableGroupWidget* widget, s32* selecta
     for (u32 i = 0; i < widget->num_widgets; i++) {
         Widget* child = &widget->widgets[i];
         if (is_widget_selectable(child->type)) {
-            *selectable += 1;
+            (*selectable)++;
             if (*selectable == *sel) return child;
         } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
             Widget* possible_selection =
@@ -304,18 +302,11 @@ void tick() {
     if (just_opened) {
         pad::reset_dir_repeat();
         s_cursor_frame = 0;
-        s_delay_frames = 8;
-    }
-    if (s_delay_frames > 0) {
-        s_delay_frames--;
     }
 
     pad::set_exclusive_mode(s_visible);
 
-    if (!s_visible
-        // || s_delay_frames > 0
-    )
-        return;
+    if (!s_visible) return;
 
     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
 
@@ -471,7 +462,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                              "                         %s", value ? "On" : "Off");
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::Separator: {
@@ -494,7 +485,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                                  ".");
             }
 
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             *y += LINE_HEIGHT;
             break;
         }
@@ -519,7 +510,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                 widget.choose.num_choices, widget.choose.choices[pref::get(widget.choose.pref)]);
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::Button: {
@@ -532,7 +523,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                              "  %s", widget.button.label);
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::IntEdit: {
@@ -548,7 +539,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                              "                         %d", pref::get(widget.int_edit.pref));
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::FloatEdit: {
@@ -568,7 +559,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                              "                         %0.4f", display);
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::InputSelect: {
@@ -594,7 +585,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                              binds::get_bind_str(input));
 
             *y += LINE_HEIGHT;
-            *selectable_idx += 1;
+            (*selectable_idx)++;
             break;
         }
         case WidgetType::Custom: {
