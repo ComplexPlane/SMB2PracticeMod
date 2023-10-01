@@ -19,6 +19,8 @@ static constexpr s32 MARGIN = 20;
 static constexpr s32 PAD = 8;
 static constexpr s32 LINE_HEIGHT = 20;
 
+static constexpr s32 L_R_BIND = 64;  // bind id for an L+R bind
+
 static const mkb::GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
 static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
 
@@ -633,7 +635,7 @@ void disp() {
         // what you changed it to
         u8 input = pref::get(pref::U8Pref::MenuBind);
         if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
-            input != 64) {
+            input != L_R_BIND) {
             draw::notify(draw::RED, "Use %s to toggle menu", binds::get_bind_str(input));
         }
         return;
