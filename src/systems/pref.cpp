@@ -82,7 +82,7 @@ enum class PrefId : u16 {
     UseCustomPhysics = 62,
     Friction = 63,
     Restitution = 64,
-    SavestateSwitchToUnused = 65,
+    SavestateDisableOverwrite = 65,
     MenuBind = 66,
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
@@ -147,7 +147,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Friction,
     PrefId::Restitution,
     PrefId::UseCustomPhysics,
-    PrefId::SavestateSwitchToUnused,
+    PrefId::SavestateDisableOverwrite,
     PrefId::ApeColorType,
     PrefId::IlBattleBreakdown,
     PrefId::InputDispColorType,
@@ -245,8 +245,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlBattleBuzzerOld;
         case PrefId::UseCustomPhysics:
             return BoolPref::UseCustomPhysics;
-        case PrefId::SavestateSwitchToUnused:
-            return BoolPref::SavestateSwitchToUnused;
+        case PrefId::SavestateDisableOverwrite:
+            return BoolPref::SavestateDisableOverwrite;
         default:
             return {};
     }

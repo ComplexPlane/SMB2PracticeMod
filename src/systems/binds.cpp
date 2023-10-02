@@ -143,4 +143,16 @@ bool bind_pressed(u8 bind_id, bool priority) {
     }
 }
 
+bool bind_down(u8 bind_id, bool priority) {
+    if (bind_id == INVALID) return false;
+    mkb::PadDigitalInput input1 = INPUT_LIST[get_input1(bind_id)];
+    mkb::PadDigitalInput input2 = INPUT_LIST[get_input2(bind_id)];
+
+    if (input1 == input2) {
+        return pad::button_down(input1, priority);
+    } else {
+        return pad::button_down(input1, priority) && pad::button_down(input2, priority);
+    }
+}
+
 }  // namespace binds

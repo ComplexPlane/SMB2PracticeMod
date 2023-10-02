@@ -13,6 +13,13 @@ using namespace menu_defn;
 
 namespace menu_impl {
 
+enum class BindingState {
+    Inactive,   // not currently binding
+    Requested,  // will bind as soon as all buttons are released
+    Active,     // currently binding
+};
+static BindingState s_binding = BindingState::Inactive;
+
 static constexpr s32 SCREEN_WIDTH = 640;
 static constexpr s32 SCREEN_HEIGHT = 480;
 static constexpr s32 MARGIN = 20;
@@ -32,9 +39,6 @@ static MenuWidget* s_menu_stack[MENU_STACK_SIZE] = {&root_menu};
 static u32 s_menu_stack_ptr = 0;
 
 static s32 s_intedit_tick = 0;
-
-static bool s_binding_request = false;
-static bool s_binding = false;
 
 static void push_menu(MenuWidget* menu) {
     MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
@@ -66,19 +70,14 @@ static bool is_widget_selectable(WidgetType type) {
            type == WidgetType::InputSelect;
 }
 
-static Widget* get_sub_selected_widget(HideableGroupWidget* widget, s32* selectable, s32* sel) {
-    for (u32 i = 0; i < widget->num_widgets; i++) {
-        Widget* child = &widget->widgets[i];
-        if (is_widget_selectable(child->type)) {
-            (*selectable)++;
-            if (*selectable == *sel) return child;
-        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
-            Widget* possible_selection =
-                get_sub_selected_widget(&child->hideable_group, selectable, sel);
-            if (possible_selection != nullptr) {
-                return possible_selection;
-            }
-        }
+// declare here so it can be used in get_selected_widget functions
+static Widget* find_widget(Widget* widgets, s32& selectable, s32 sel);
+
+static Widget* get_sub_selected_widget(HideableGroupWidget* hideable, s32& curr_sel_idx,
+                                       s32 target_sel_idx) {
+    for (u32 i = 0; i < hideable->num_widgets; i++) {
+        Widget* result = find_widget(&hideable->widgets[i], curr_sel_idx, target_sel_idx);
+        if (result != nullptr) return result;
     }
 
     return nullptr;
@@ -86,48 +85,40 @@ static Widget* get_sub_selected_widget(HideableGroupWidget* widget, s32* selecta
 
 static Widget* get_selected_widget() {
     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
-    s32 sel = menu->selected_idx;
-
-    s32 selectable = -1;
+    s32 target_sel_idx = menu->selected_idx;
+    s32 curr_sel_idx = -1;
     for (u32 i = 0; i < menu->num_widgets; i++) {
-        Widget* child = &menu->widgets[i];
-        if (is_widget_selectable(child->type)) {
-            selectable++;
-            if (selectable == sel) return child;
-        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
-            Widget* possible_selection =
-                get_sub_selected_widget(&child->hideable_group, &selectable, &sel);
-            if (possible_selection != nullptr) {
-                return possible_selection;
-            }
-        }
+        Widget* result = find_widget(&menu->widgets[i], curr_sel_idx, target_sel_idx);
+        if (result != nullptr) return result;
     }
 
     return nullptr;
 }
 
-static u32 get_submenu_selectable_widget_count(HideableGroupWidget widget) {
+static Widget* find_widget(Widget* widget, s32& curr_sel_idx, s32 target_sel_idx) {
+    if (is_widget_selectable(widget->type)) {
+        curr_sel_idx++;
+        if (curr_sel_idx == target_sel_idx) return widget;
+    } else if (widget->type == WidgetType::HideableGroupWidget && show_hideable_widget(widget)) {
+        Widget* possible_selection =
+            get_sub_selected_widget(&widget->hideable_group, curr_sel_idx, target_sel_idx);
+        if (possible_selection != nullptr) {
+            return possible_selection;
+        }
+    }
+    return nullptr;
+}
+
+static u32 get_selectable_widget_count(Widget* widgets, u32 num_widgets) {
     u32 selectable = 0;
-    for (u32 i = 0; i < widget.num_widgets; i++) {
-        Widget child = widget.widgets[i];
+
+    for (u32 i = 0; i < num_widgets; i++) {
+        Widget child = widgets[i];
         if (is_widget_selectable(child.type)) {
             selectable++;
         } else if (child.type == WidgetType::HideableGroupWidget && show_hideable_widget(&child)) {
-            selectable += get_submenu_selectable_widget_count(child.hideable_group);
-        }
-    }
-    return selectable;
-}
-
-static u32 get_menu_selectable_widget_count(MenuWidget* menu) {
-    u32 selectable = 0;
-
-    for (u32 i = 0; i < menu->num_widgets; i++) {
-        Widget* child = &menu->widgets[i];
-        if (is_widget_selectable(child->type)) {
-            selectable++;
-        } else if (child->type == WidgetType::HideableGroupWidget && show_hideable_widget(child)) {
-            selectable += get_submenu_selectable_widget_count(child->hideable_group);
+            selectable += get_selectable_widget_count(child.hideable_group.widgets,
+                                                      child.hideable_group.num_widgets);
         }
     }
     return selectable;
@@ -258,10 +249,9 @@ static void handle_widget_bind() {
         }
     } else if (selected->type == WidgetType::InputSelect) {
         auto& input_select = selected->input_select;
-        if (s_binding_request && pad::button_released(mkb::PAD_BUTTON_A, true)) {
-            s_binding_request = false;
-            s_binding = true;
-        } else if (s_binding) {
+        if (s_binding == BindingState::Requested && pad::button_released(mkb::PAD_BUTTON_A, true)) {
+            s_binding = BindingState::Active;
+        } else if (s_binding == BindingState::Active) {
             // set new bind
             binds::EncodingType type = binds::get_encoding_type();
             if (type == binds::EncodingType::Invalid ||
@@ -270,10 +260,10 @@ static void handle_widget_bind() {
             u8 value = binds::get_current_encoding();
             pref::set(input_select.pref, value);
             pref::save();
-            s_binding = false;
+            s_binding = BindingState::Inactive;
         } else if (a_pressed) {
             // enter rebind mode
-            s_binding_request = true;
+            s_binding = BindingState::Requested;
         } else if (y_pressed) {
             // unbind
             if (!input_select.can_unbind) return;
@@ -288,10 +278,11 @@ static void handle_widget_bind() {
 }
 
 void tick() {
-    if (s_binding) {
+    if (s_binding == BindingState::Active) {
         handle_widget_bind();
         return;
     }
+
     // TODO save settings on close
     // TODO save menu position as settings
     bool toggle = binds::bind_pressed(pref::get(pref::U8Pref::MenuBind), true);
@@ -308,13 +299,24 @@ void tick() {
 
     pad::set_exclusive_mode(s_visible);
 
-    if (!s_visible) return;
+    if (!s_visible) {
+        // Default binding is L+R, but this lets you know the current binding in case you forget
+        // what you changed it to
+        u8 input = pref::get(pref::U8Pref::MenuBind);
+        if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
+            input != L_R_BIND) {
+            char buf[25];
+            binds::get_bind_str(input, buf);
+            draw::notify(draw::RED, "Use %s to toggle menu", buf);
+        }
+        return;
+    }
 
     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
 
     // Update selected menu item
     s32 dir_delta = pad::dir_repeat(pad::DIR_DOWN, true) - pad::dir_repeat(pad::DIR_UP, true);
-    u32 selectable = get_menu_selectable_widget_count(menu);
+    u32 selectable = get_selectable_widget_count(menu->widgets, menu->num_widgets);
     menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
 
     // Make selected menu item green if selection changed or menu opened
@@ -361,7 +363,7 @@ static constexpr s32 START = MARGIN + 35;
 static constexpr s32 BUTTON_START = -83;
 static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
 
-static void draw_help(Widget widget) {
+static void draw_help(const Widget& widget) {
     // draw seperator
     draw::rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
                SCREEN_HEIGHT - MARGIN - 30, draw::GRAY);
@@ -406,20 +408,26 @@ static void draw_help(Widget widget) {
             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
             break;
         }
-        default: {
+        case WidgetType::Text:
+        case WidgetType::ColoredText:
+        case WidgetType::Header:
+        case WidgetType::Separator:
+        case WidgetType::FloatView:
+        case WidgetType::HideableGroupWidget:
+        case WidgetType::Custom: {
             break;
         }
     }
 }
 
-void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
-                     mkb::GXColor lerped_color) {
+void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
+                 mkb::GXColor lerped_color) {
     switch (widget.type) {
         case WidgetType::HideableGroupWidget: {
             if (show_hideable_widget(&widget)) {
                 for (u32 i = 0; i < widget.hideable_group.num_widgets; i++) {
                     Widget& w = widget.hideable_group.widgets[i];
-                    draw_sub_widget(w, selected_idx, selectable_idx, y, lerped_color);
+                    draw_widget(w, selected_idx, selectable_idx, y, lerped_color);
                 }
             }
             break;
@@ -569,7 +577,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
                 draw_selectable_highlight(*y);
                 draw_help(widget);
             }
-            if (s_binding && selected_idx == *selectable_idx) {
+            if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
                 draw::debug_text(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s",
                                  widget.input_select.label);
             } else {
@@ -579,7 +587,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
             }
             mkb::GXColor bind_color =
                 selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
-            if (s_binding && selected_idx == *selectable_idx) {
+            if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
                 bind_color = draw::GOLD;
             }
             u8 input = pref::get(widget.input_select.pref);
@@ -598,7 +606,7 @@ void draw_sub_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32*
     }
 }
 
-void draw_menu_widget(MenuWidget* menu) {
+void draw_menu_widgets(MenuWidget* menu) {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
 
@@ -606,7 +614,7 @@ void draw_menu_widget(MenuWidget* menu) {
 
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget& widget = menu->widgets[i];
-        draw_sub_widget(widget, menu->selected_idx, &selectable_idx, &y, lerped_color);
+        draw_widget(widget, menu->selected_idx, &selectable_idx, &y, lerped_color);
     }
 }
 
@@ -631,23 +639,11 @@ static void draw_breadcrumbs() {
 }
 
 void disp() {
-    if (!s_visible) {
-        // Default binding is L+R, but this lets you know the current binding in case you forget
-        // what you changed it to
-        u8 input = pref::get(pref::U8Pref::MenuBind);
-        if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
-            input != L_R_BIND) {
-            char buf[25];
-            binds::get_bind_str(input, buf);
-            draw::notify(draw::RED, "Use %s to toggle menu", buf);
-        }
-        return;
-    }
-
+    if (!s_visible) return;
     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
                {0x00, 0x00, 0x00, 0xe0});
     draw_breadcrumbs();
-    draw_menu_widget(s_menu_stack[s_menu_stack_ptr]);
+    draw_menu_widgets(s_menu_stack[s_menu_stack_ptr]);
 }
 
 bool is_visible() { return s_visible; }

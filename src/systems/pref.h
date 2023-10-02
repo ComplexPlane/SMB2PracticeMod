@@ -49,7 +49,7 @@ enum class BoolPref : u8 {
     IlBattleShowScore,
     IlBattleBuzzerOld,
     UseCustomPhysics,
-    SavestateSwitchToUnused,
+    SavestateDisableOverwrite,
 };
 
 enum class U8Pref : u8 {

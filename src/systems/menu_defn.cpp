@@ -151,7 +151,7 @@ static Widget s_inputdisp_widgets[] = {
             {
                 .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+                .show_if = []() { return pref::get(pref::BoolPref::InputDisp); },
             },
     },
 };
@@ -1064,8 +1064,8 @@ static Widget s_savestate_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Switch to Empty Slots",
-                .pref = pref::BoolPref::SavestateSwitchToUnused,
+                .label = "Prevent Overriding Saves",
+                .pref = pref::BoolPref::SavestateDisableOverwrite,
             },
     },
 };
