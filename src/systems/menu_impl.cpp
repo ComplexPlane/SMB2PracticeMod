@@ -70,40 +70,20 @@ static bool is_widget_selectable(WidgetType type) {
            type == WidgetType::InputSelect;
 }
 
-// declare here so it can be used in get_selected_widget functions
-static Widget* find_widget(Widget* widgets, s32& selectable, s32 sel);
-
-static Widget* get_sub_selected_widget(HideableGroupWidget* hideable, s32& curr_sel_idx,
-                                       s32 target_sel_idx) {
-    for (u32 i = 0; i < hideable->num_widgets; i++) {
-        Widget* result = find_widget(&hideable->widgets[i], curr_sel_idx, target_sel_idx);
-        if (result != nullptr) return result;
-    }
-
-    return nullptr;
-}
-
-static Widget* get_selected_widget() {
-    MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
-    s32 target_sel_idx = menu->selected_idx;
-    s32 curr_sel_idx = -1;
-    for (u32 i = 0; i < menu->num_widgets; i++) {
-        Widget* result = find_widget(&menu->widgets[i], curr_sel_idx, target_sel_idx);
-        if (result != nullptr) return result;
-    }
-
-    return nullptr;
-}
-
-static Widget* find_widget(Widget* widget, s32& curr_sel_idx, s32 target_sel_idx) {
-    if (is_widget_selectable(widget->type)) {
-        curr_sel_idx++;
-        if (curr_sel_idx == target_sel_idx) return widget;
-    } else if (widget->type == WidgetType::HideableGroupWidget && show_hideable_widget(widget)) {
-        Widget* possible_selection =
-            get_sub_selected_widget(&widget->hideable_group, curr_sel_idx, target_sel_idx);
-        if (possible_selection != nullptr) {
-            return possible_selection;
+static Widget* get_selected_widget(Widget* widgets, u32 num_widgets, s32& curr_idx,
+                                   s32 target_idx) {
+    for (u32 i = 0; i < num_widgets; i++) {
+        if (is_widget_selectable(widgets[i].type)) {
+            curr_idx++;
+            if (curr_idx == target_idx) return &widgets[i];
+        } else if (widgets[i].type == WidgetType::HideableGroupWidget &&
+                   show_hideable_widget(&widgets[i])) {
+            Widget* possible_selection =
+                get_selected_widget(widgets[i].hideable_group.widgets,
+                                    widgets[i].hideable_group.num_widgets, curr_idx, target_idx);
+            if (possible_selection != nullptr) {
+                return possible_selection;
+            }
         }
     }
     return nullptr;
@@ -125,7 +105,10 @@ static u32 get_selectable_widget_count(Widget* widgets, u32 num_widgets) {
 }
 
 static void handle_widget_bind() {
-    Widget* selected = get_selected_widget();
+    MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
+    s32 target_idx = menu->selected_idx;
+    s32 curr_idx = -1;
+    Widget* selected = get_selected_widget(menu->widgets, menu->num_widgets, curr_idx, target_idx);
     if (selected == nullptr) return;
 
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
