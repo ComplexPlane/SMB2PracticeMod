@@ -82,7 +82,11 @@ void tick() {
         }
         case BallColorType::Rainbow: {
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = convert_to_ball_color_id(0);
-            s_rainbow = (s_rainbow + 3) % 1080;
+
+            bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+            if (!paused_now) {
+                s_rainbow = (s_rainbow + 3) % 1080;
+            }
             s_current_color = draw::num_to_rainbow(s_rainbow);
             *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_current_color;
             break;

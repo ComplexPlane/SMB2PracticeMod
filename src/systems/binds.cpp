@@ -21,7 +21,6 @@ static constexpr s32 INVALID = 255;
 // all input's current states
 static bool s_pressed[12];
 // first two pressed inputs
-static u8 s_current_pressed[2] = {INVALID, INVALID};
 static u8 s_prev_pressed[2] = {INVALID, INVALID};
 // current bind encoded to u8
 static u8 s_encoding = 0;
@@ -76,12 +75,11 @@ void tick() {
     get_button_values();
 
     u8 pressed_count = 0;
-    s_current_pressed[0] = INVALID;
-    s_current_pressed[1] = INVALID;
+    u8 current_pressed[2] = {INVALID, INVALID};
     for (u8 i = 0; i < LEN(s_pressed); i++) {
         bool pressed = is_num_pressed(i);
         if (pressed && pressed_count < 2) {
-            s_current_pressed[pressed_count] = i;
+            current_pressed[pressed_count] = i;
             pressed_count++;
         } else if (pressed) {
             pressed_count++;
@@ -100,8 +98,8 @@ void tick() {
     }
 
     s_num_prev_held = pressed_count;
-    s_prev_pressed[0] = s_current_pressed[0];
-    s_prev_pressed[1] = s_current_pressed[1];
+    s_prev_pressed[0] = current_pressed[0];
+    s_prev_pressed[1] = current_pressed[1];
 }
 
 u8 get_current_encoding() {
