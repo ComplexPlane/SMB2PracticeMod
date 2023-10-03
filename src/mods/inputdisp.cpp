@@ -4,6 +4,7 @@
 
 #include "mods/ballcolor.h"
 #include "mods/freecam.h"
+#include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -215,7 +216,10 @@ static mkb::GXColor get_color() {
             return current;
         }
     }
-    return draw::BLACK;  // shouldnt reach
+
+    // shouldn't reach
+    MOD_ASSERT(false);
+    return {};
 }
 
 static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {

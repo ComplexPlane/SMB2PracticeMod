@@ -1,5 +1,5 @@
 #include "fallout.h"
-#include "mkb/mkb2_ghidra.h"
+#include "mkb/mkb.h"
 #include "mods/freecam.h"
 #include "systems/pref.h"
 #include "utils/macro_utils.h"

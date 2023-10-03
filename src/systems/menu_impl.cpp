@@ -391,13 +391,7 @@ static void draw_help(const Widget& widget) {
             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
             break;
         }
-        case WidgetType::Text:
-        case WidgetType::ColoredText:
-        case WidgetType::Header:
-        case WidgetType::Separator:
-        case WidgetType::FloatView:
-        case WidgetType::HideableGroupWidget:
-        case WidgetType::Custom: {
+        default: {
             break;
         }
     }

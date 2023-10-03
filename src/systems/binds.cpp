@@ -1,6 +1,5 @@
 #include "binds.h"
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 #include "pad.h"
 #include "utils/macro_utils.h"
 
