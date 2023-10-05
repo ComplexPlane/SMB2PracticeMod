@@ -43,8 +43,7 @@ enum class BoolPref : u8 {
     HideStobjs,
     HideEffects,
     IlMarkRomhacks,
-    DisableFallouts,
-    BouncyFalloutPlane,
+    DisableFalloutVolumes,
     IlBattleShowTime,
     IlBattleShowScore,
     IlBattleBuzzerOld,
@@ -77,6 +76,7 @@ enum class U8Pref : u8 {
     IlBattleReadyBind,
     FreecamToggleBind,
     SavestateClearBind,
+    FalloutPlaneType,
 };
 
 void init();

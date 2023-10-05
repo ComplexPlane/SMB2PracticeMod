@@ -100,7 +100,7 @@ struct FloatEditWidget {
     u8 min;
     u8 max;
     s32 floor;
-    u32 decimals;
+    u8 decimals;
 };
 
 struct InputSelectWidget {

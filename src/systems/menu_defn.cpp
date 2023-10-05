@@ -40,7 +40,7 @@ static Widget s_input_preset[] = {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Color Preset",
+                .label = "Preset Color",
                 .choices = s_inputdisp_colors,
                 .num_choices = LEN(s_inputdisp_colors),
                 .pref = pref::U8Pref::InputDispColor,
@@ -162,14 +162,14 @@ static const char* s_ball_colors[] = {
 static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
 
 static const char* s_ball_color_types[] = {
-    "Preset Color",
+    "Preset",
     "RGB Selector",
     "Rainbow",
     "Random",
 };
 
 static const char* s_ape_color_types[] = {
-    "Preset Color",
+    "Preset",
     "Random",
 };
 
@@ -191,7 +191,7 @@ static Widget s_preset_ape_widgets[] = {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Preset Outfit",
+                .label = "Preset Color",
                 .choices = s_ball_colors,
                 .num_choices = LEN(s_ball_colors),
                 .pref = pref::U8Pref::ApeColor,
@@ -371,7 +371,7 @@ static Widget s_il_battle_subwidgets[] = {
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
     },
-    {.type = WidgetType::Text, .text = {"  Press Ready bind then Retry to start a battle"}},
+    {.type = WidgetType::Text, .text = {"  Press Ready Bind then Retry to start a battle"}},
 };
 
 static Widget s_il_battle_widgets[] = {
@@ -457,7 +457,7 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  With contributions from Nambo & rehtrop"},
+        .text = {"  With contributions from rehtrop & Nambo"},
     },
     {.type = WidgetType::Separator},
 
@@ -713,7 +713,6 @@ static Widget s_freecam_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  X          \x1c Slow Speed"}},
     {.type = WidgetType::Text, .text = {"  D-pad Up   \x1c Increase Turbo Speed"}},
     {.type = WidgetType::Text, .text = {"  D-pad Down \x1c Decrease Turbo Speed"}},
-    {.type = WidgetType::Text, .text = {"  Z          \x1c Toggle (If Enabled)"}},
 };
 
 static Widget s_iw_mark_help_widgets[] = {
@@ -741,25 +740,7 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Separator},
 };
 
-static Widget s_pracmod_menu_widgets[] = {
-    {.type = WidgetType::Header, .text = {"Navigation"}},
-    {.type = WidgetType::Text, .text = {"  L+R        \x1c Default Menu Toggle"}},
-    {.type = WidgetType::Text, .text = {"  Change this bind in the Settings tab"}},
-    {.type = WidgetType::Text, .text = {"  A          \x1c Select"}},
-    {.type = WidgetType::Text, .text = {"  B          \x1c Back"}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Header, .text = {"Preferences"}},
-    {.type = WidgetType::Text, .text = {"  A          \x1c Next Value"}},
-    {.type = WidgetType::Text, .text = {"  Y          \x1c Previous Value"}},
-    {.type = WidgetType::Text, .text = {"  X          \x1c Reset to Default"}},
-};
-
 static Widget s_help_widgets[] = {
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Practice Mod Menu", s_pracmod_menu_widgets, LEN(s_pracmod_menu_widgets)},
-    },
     {
         .type = WidgetType::Menu,
         .menu = {"Savestates", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
@@ -929,7 +910,7 @@ static Widget s_freecam_widgets[] = {
         .type = WidgetType::InputSelect,
         .input_select =
             {
-                .label = "Toggle Freecam Bind",
+                .label = "Freecam Toggle Bind",
                 .pref = pref::U8Pref::FreecamToggleBind,
                 .required_chord = false,
                 .can_unbind = true,
@@ -1007,17 +988,7 @@ static Widget s_hide_widgets[] = {
 };
 
 static const char* s_timer_types[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
-
-static Widget s_bouncy_fallout_widget[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Bouncy Fallout Plane",
-                .pref = pref::BoolPref::BouncyFalloutPlane,
-            },
-    },
-};
+static const char* s_fallout_plane_type[] = {"Normal", "Disabled", "Bouncy"};
 
 static Widget s_assist_widgets[] = {
     {
@@ -1031,20 +1002,21 @@ static Widget s_assist_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Disable Fallouts",
-                .pref = pref::BoolPref::DisableFallouts,
+                .label = "Fallout Plane Type",
+                .choices = s_fallout_plane_type,
+                .num_choices = LEN(s_fallout_plane_type),
+                .pref = pref::U8Pref::FalloutPlaneType,
             },
     },
     {
-        .type = WidgetType::HideableGroupWidget,
-        .hideable_group =
+        .type = WidgetType::Checkbox,
+        .checkbox =
             {
-                .widgets = s_bouncy_fallout_widget,
-                .num_widgets = LEN(s_bouncy_fallout_widget),
-                .show_if = []() { return pref::get(pref::BoolPref::DisableFallouts); },
+                .label = "Disable Fallout Volume",
+                .pref = pref::BoolPref::DisableFalloutVolumes,
             },
     },
 };
@@ -1064,7 +1036,7 @@ static Widget s_savestate_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Prevent Overriding Saves",
+                .label = "Prevent Overriding",
                 .pref = pref::BoolPref::SavestateDisableOverwrite,
             },
     },
@@ -1108,7 +1080,7 @@ static Widget s_tools_widgets[] = {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Savestate",
+                .label = "Savestates",
                 .widgets = s_savestate_widgets,
                 .num_widgets = LEN(s_savestate_widgets),
             },
@@ -1167,7 +1139,7 @@ static Widget s_il_mark_widgets[] = {
     {.type = WidgetType::Separator},
     {
         .type = WidgetType::Header,
-        .header = {"Show IL Verification Mark in..."},
+        .header = {"Show IL Validation Mark in..."},
     },
     {
         .type = WidgetType::Checkbox,
@@ -1241,6 +1213,7 @@ static Widget s_enabled_physics_widgets[] = {
                 .min = 0,
                 .max = 255,
                 .floor = -100,
+                .decimals = 3,
             },
     },
     {
@@ -1253,6 +1226,7 @@ static Widget s_enabled_physics_widgets[] = {
                 .min = 0,
                 .max = 255,
                 .floor = -100,
+                .decimals = 2,
             },
     },
     {
@@ -1300,7 +1274,7 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Physics Inspector",
+                .label = "Physics",
                 .widgets = s_physics_widgets,
                 .num_widgets = LEN(s_physics_widgets),
             },
@@ -1380,6 +1354,7 @@ static Widget s_pracmod_settings_widgets[] = {
                 .can_unbind = false,
             },
     },
+    {.text = {"  Menu Bind Requires 2 Buttons"}},
     {
         .type = WidgetType::Menu,
         .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},

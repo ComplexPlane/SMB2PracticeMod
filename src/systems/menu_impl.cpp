@@ -1,6 +1,7 @@
 #include "menu_impl.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 #include "systems/binds.h"
 #include "systems/log.h"
 #include "systems/menu_defn.h"
@@ -39,6 +40,7 @@ static MenuWidget* s_menu_stack[MENU_STACK_SIZE] = {&root_menu};
 static u32 s_menu_stack_ptr = 0;
 
 static s32 s_intedit_tick = 0;
+static s32 s_edit_tick = 0;
 
 static void push_menu(MenuWidget* menu) {
     MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
@@ -118,144 +120,150 @@ static void handle_widget_bind() {
     bool y_repeat = pad::button_repeat(mkb::PAD_BUTTON_Y, true);
 
     // slow down scroll
+    if (s_edit_tick > 0) {
+        s_edit_tick--;
+    } else if (s_edit_tick < 0) {
+        s_edit_tick++;
+    }
     if (s_intedit_tick > 0) {
         s_intedit_tick--;
     }
 
-    if (selected->type == WidgetType::Checkbox) {
-        auto& checkbox = selected->checkbox;
-        if (a_pressed || y_pressed) {
-            pref::set(checkbox.pref, !pref::get(checkbox.pref));
-            pref::save();
+    switch (selected->type) {
+        case WidgetType::Checkbox: {
+            auto& checkbox = selected->checkbox;
+            if (a_pressed || y_pressed) {
+                pref::set(checkbox.pref, !pref::get(checkbox.pref));
+                pref::save();
+            }
+            if (x_pressed) {
+                pref::set(checkbox.pref, pref::get_default(checkbox.pref));
+                pref::save();
+            }
+            break;
         }
-        if (x_pressed) {
-            pref::set(checkbox.pref, pref::get_default(checkbox.pref));
-            pref::save();
+        case WidgetType::GetSetCheckbox: {
+            auto& get_set_checkbox = selected->get_set_checkbox;
+            if (a_pressed || y_pressed) {
+                get_set_checkbox.set(!get_set_checkbox.get());
+            }
+            break;
         }
+        case WidgetType::Menu: {
+            if (a_pressed) {
+                push_menu(&selected->menu);
+            }
+            break;
+        }
+        case WidgetType::Choose: {
+            auto& choose = selected->choose;
+            if (a_pressed) {
+                u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + 1) % choose.num_choices;
+                pref::set(choose.pref, new_value);
+                pref::save();
+            }
+            if (y_pressed) {
+                u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + choose.num_choices - 1) %
+                               choose.num_choices;
+                pref::set(choose.pref, new_value);
+                pref::save();
+            }
+            if (x_pressed) {
+                pref::set(choose.pref, pref::get_default(choose.pref));
+                pref::save();
+            }
+            break;
+        }
+        case WidgetType::Button: {
+            if (a_pressed) {
+                auto& button = selected->button;
+                if (button.push != nullptr) {
+                    selected->button.push();
+                }
+                if (button.flags & ButtonFlags::CloseMenu) {
+                    s_visible = false;
+                }
+                if (button.flags & ButtonFlags::GoBack) {
+                    pop_menu();
+                }
+            }
+            break;
+        }
+        case WidgetType::IntEdit:
+        case WidgetType::FloatEdit: {
+            int next;
+            pref::U8Pref edit_pref;
+            u8 min, max;
+            if (selected->type == WidgetType::IntEdit) {
+                auto& int_edit = selected->int_edit;
+                next = pref::get(int_edit.pref);
+                edit_pref = int_edit.pref;
+                min = int_edit.min;
+                max = int_edit.max;
+            } else {
+                auto& float_edit = selected->float_edit;
+                next = pref::get(float_edit.pref);
+                edit_pref = float_edit.pref;
+                min = float_edit.min;
+                max = float_edit.max;
+            }
 
-    } else if (selected->type == WidgetType::GetSetCheckbox) {
-        auto& get_set_checkbox = selected->get_set_checkbox;
-        if (a_pressed || y_pressed) {
-            get_set_checkbox.set(!get_set_checkbox.get());
-        }
+            if (pad::button_released(mkb::PAD_BUTTON_A) && s_edit_tick > 0) {
+                s_edit_tick = 0;
+            } else if (pad::button_released(mkb::PAD_BUTTON_Y) && s_edit_tick < 0) {
+                s_edit_tick = 0;
+            }
 
-    } else if (selected->type == WidgetType::Menu && a_pressed) {
-        push_menu(&selected->menu);
-
-    } else if (selected->type == WidgetType::Choose) {
-        auto& choose = selected->choose;
-        if (a_pressed) {
-            u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + 1) % choose.num_choices;
-            pref::set(choose.pref, new_value);
-            pref::save();
+            if (a_repeat) {
+                s_edit_tick += 5;
+                next += (s_edit_tick / 5);
+            }
+            if (y_repeat) {
+                s_edit_tick -= 5;
+                next += (s_edit_tick / 5);
+            }
+            if (x_pressed) {
+                next = pref::get_default(edit_pref);
+            }
+            next = CLAMP(next, min, max);
+            if (next != pref::get(edit_pref)) {
+                pref::set(edit_pref, next);
+                pref::save();
+            }
+            break;
         }
-        if (y_pressed) {
-            u8 new_value = (static_cast<u32>(pref::get(choose.pref)) + choose.num_choices - 1) %
-                           choose.num_choices;
-            pref::set(choose.pref, new_value);
-            pref::save();
+        case WidgetType::InputSelect: {
+            auto& input_select = selected->input_select;
+            if (s_binding == BindingState::Requested &&
+                pad::button_released(mkb::PAD_BUTTON_A, true)) {
+                s_binding = BindingState::Active;
+            } else if (s_binding == BindingState::Active) {
+                // set new bind
+                binds::EncodingType type = binds::get_encoding_type();
+                if (type == binds::EncodingType::Invalid ||
+                    (type == binds::EncodingType::SinglePress && input_select.required_chord))
+                    return;
+                u8 value = binds::get_current_encoding();
+                pref::set(input_select.pref, value);
+                pref::save();
+                s_binding = BindingState::Inactive;
+            } else if (a_pressed) {
+                // enter rebind mode
+                s_binding = BindingState::Requested;
+            } else if (y_pressed) {
+                // unbind
+                if (!input_select.can_unbind) return;
+                pref::set(input_select.pref, 255);
+                pref::save();
+            } else if (x_pressed) {
+                // reset default bind
+                pref::set(input_select.pref, pref::get_default(input_select.pref));
+                pref::save();
+            }
+            break;
         }
-        if (x_pressed) {
-            pref::set(choose.pref, pref::get_default(choose.pref));
-            pref::save();
-        }
-
-    } else if (selected->type == WidgetType::Button && a_pressed) {
-        auto& button = selected->button;
-        if (button.push != nullptr) {
-            selected->button.push();
-        }
-        if (button.flags & ButtonFlags::CloseMenu) {
-            s_visible = false;
-        }
-        if (button.flags & ButtonFlags::GoBack) {
-            pop_menu();
-        }
-
-    } else if (selected->type == WidgetType::IntEdit) {
-        auto& int_edit = selected->int_edit;
-        int next = pref::get(int_edit.pref);
-        if (a_repeat || y_repeat) {
-            s_intedit_tick += 5;
-        }
-        u8 edit_speed = 1;
-        if (s_intedit_tick < 15) {
-            edit_speed = 1;
-        } else if (s_intedit_tick < 25) {
-            edit_speed = 2;
-        } else {
-            edit_speed = 5;
-        }
-
-        if (a_repeat) {
-            next += edit_speed;
-        }
-        if (y_repeat) {
-            next -= edit_speed;
-        }
-        if (x_pressed) {
-            next = pref::get_default(int_edit.pref);
-        }
-        next = CLAMP(next, int_edit.min, int_edit.max);
-        if (next != pref::get(int_edit.pref)) {
-            pref::set(int_edit.pref, next);
-            pref::save();
-        }
-    } else if (selected->type == WidgetType::FloatEdit) {
-        auto& float_edit = selected->float_edit;
-        int next = pref::get(float_edit.pref);
-        if (a_repeat || y_repeat) {
-            s_intedit_tick += 5;
-        }
-        u8 edit_speed = 1;
-        if (s_intedit_tick < 15) {
-            edit_speed = 1;
-        } else if (s_intedit_tick < 25) {
-            edit_speed = 2;
-        } else {
-            edit_speed = 5;
-        }
-
-        if (a_repeat) {
-            next += edit_speed;
-        }
-        if (y_repeat) {
-            next -= edit_speed;
-        }
-        if (x_pressed) {
-            next = pref::get_default(float_edit.pref);
-        }
-        next = CLAMP(next, float_edit.min, float_edit.max);
-        if (next != pref::get(float_edit.pref)) {
-            pref::set(float_edit.pref, next);
-            pref::save();
-        }
-    } else if (selected->type == WidgetType::InputSelect) {
-        auto& input_select = selected->input_select;
-        if (s_binding == BindingState::Requested && pad::button_released(mkb::PAD_BUTTON_A, true)) {
-            s_binding = BindingState::Active;
-        } else if (s_binding == BindingState::Active) {
-            // set new bind
-            binds::EncodingType type = binds::get_encoding_type();
-            if (type == binds::EncodingType::Invalid ||
-                (type == binds::EncodingType::SinglePress && input_select.required_chord))
-                return;
-            u8 value = binds::get_current_encoding();
-            pref::set(input_select.pref, value);
-            pref::save();
-            s_binding = BindingState::Inactive;
-        } else if (a_pressed) {
-            // enter rebind mode
-            s_binding = BindingState::Requested;
-        } else if (y_pressed) {
-            // unbind
-            if (!input_select.can_unbind) return;
-            pref::set(input_select.pref, 255);
-            pref::save();
-        } else if (x_pressed) {
-            // reset default bind
-            pref::set(input_select.pref, pref::get_default(input_select.pref));
-            pref::save();
+        default: {
+            break;
         }
     }
 }
@@ -345,50 +353,76 @@ static constexpr s32 BLOCK_WIDTH = 150;
 static constexpr s32 START = MARGIN + 35;
 static constexpr s32 BUTTON_START = -83;
 static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
+static constexpr s32 HALF_SPACE = 12;
 
-static void draw_help(const Widget& widget) {
+static void draw_help_layout() {
     // draw seperator
     draw::rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
                SCREEN_HEIGHT - MARGIN - 30, draw::GRAY);
     // draw b: back
     draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B");
-    draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Back");
+    draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+    draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE, "Back");
+}
+
+static void draw_help(const Widget& widget) {
+    draw_help_layout();
     // draw relevant controls for current widget
     switch (widget.type) {
         case WidgetType::Checkbox:
         case WidgetType::GetSetCheckbox: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Toggle");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Toggle");
             break;
         }
         case WidgetType::Menu: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Open");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Open");
             break;
         }
         case WidgetType::Button: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Activate");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Activate");
             break;
         }
         case WidgetType::Choose:
         case WidgetType::IntEdit:
         case WidgetType::FloatEdit: {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A:");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Next");
-            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y:");
-            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Prev");
-            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X:");
-            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Next");
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Prev");
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Reset");
             break;
         }
         case WidgetType::InputSelect: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Bind");
-            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Unbind");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Bind");
+            if (widget.input_select.can_unbind) {
+                draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+                draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+                draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                                 "Unbind");
+            }
             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ": Reset");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Reset");
             break;
         }
         default: {
@@ -541,9 +575,22 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                              "  %s", widget.float_edit.label);
-            draw::debug_text(MARGIN + PAD, *y,
-                             selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                             "                         %0.4f", display);
+            switch (widget.float_edit.decimals) {
+                case 2: {
+                    draw ::debug_text(
+                        MARGIN + PAD, *y,
+                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                        "                         %0.2f", display);
+                    break;
+                }
+                default: {
+                    draw ::debug_text(
+                        MARGIN + PAD, *y,
+                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                        "                         %0.3f", display);
+                    break;
+                }
+            }
 
             *y += LINE_HEIGHT;
             (*selectable_idx)++;
@@ -592,6 +639,10 @@ void draw_menu_widgets(MenuWidget* menu) {
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget& widget = menu->widgets[i];
         draw_widget(widget, menu->selected_idx, &selectable_idx, &y, lerped_color);
+    }
+
+    if (selectable_idx == 0) {
+        draw_help_layout();
     }
 }
 

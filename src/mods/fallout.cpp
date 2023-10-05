@@ -1,11 +1,18 @@
 #include "fallout.h"
 #include "mkb/mkb.h"
 #include "mods/freecam.h"
+#include "systems/log.h"
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
 namespace fallout {
+
+enum class FalloutPlaneType {
+    Normal,
+    Disabled,
+    Bouncy,
+};
 
 enum class TimerType {
     Default,
@@ -25,11 +32,39 @@ static bool s_halted;  // freeze timer for TimerType::FreezeAtZero
 void init() {
     // stop fallouts
     patch::hook_function(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
-        if (pref::get(pref::BoolPref::DisableFallouts)) {
-            return static_cast<mkb::BOOL32>(false);
+        mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.dest(ball);
+        bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
+        bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
+
+        switch (FalloutPlaneType(pref::get(pref::U8Pref::FalloutPlaneType))) {
+            case FalloutPlaneType::Normal: {
+                if (volumes_disabled) {
+                    return static_cast<mkb::BOOL32>(below_fallout);
+                } else {
+                    return static_cast<mkb::BOOL32>(orig_result);
+                }
+                break;
+            }
+            case FalloutPlaneType::Disabled: {
+                if (below_fallout) {
+                    return static_cast<mkb::BOOL32>(false);
+                } else if (volumes_disabled) {
+                    return static_cast<mkb::BOOL32>(false);
+                }
+                break;
+            }
+            case FalloutPlaneType::Bouncy: {
+                if (below_fallout) {
+                    ball->vel.y = ABS(ball->vel.y) * 1.05;
+                    return static_cast<mkb::BOOL32>(false);
+                } else if (volumes_disabled) {
+                    return static_cast<mkb::BOOL32>(false);
+                }
+                break;
+            }
         }
 
-        return static_cast<mkb::BOOL32>(s_did_ball_fallout_tramp.dest(ball));
+        return orig_result;
     });
 }
 
@@ -105,16 +140,6 @@ void tick() {
         s_prev_freecam = TimerType::Invalid;
     }
     freeze_timer();
-
-    if (pref::get(pref::BoolPref::DisableFallouts) &&
-        pref::get(pref::BoolPref::BouncyFalloutPlane) && mkb::stagedef != nullptr) {
-        float ball_y = mkb::balls[mkb::curr_player_idx].pos.y;
-        float fallout_plane = mkb::stagedef->fallout->y;
-        if (ball_y < fallout_plane) {
-            mkb::balls[mkb::curr_player_idx].vel.y =
-                ABS(mkb::balls[mkb::curr_player_idx].vel.y) * 1.05;
-        }
-    }
 }
 void disp() {}
 

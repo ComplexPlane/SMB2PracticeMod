@@ -73,8 +73,8 @@ enum class PrefId : u16 {
     InputDispGreen = 53,
     InputDispBlue = 54,
     TimerType = 55,
-    DisableFallouts = 56,
-    BouncyFalloutPlane = 57,
+    DisableFalloutVolumes = 56,
+    FalloutPlaneType = 57,
     IlBattleShowTime = 58,
     IlBattleShowScore = 59,
     IlBattleBuzzerOld = 60,
@@ -139,8 +139,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::BallColorType,
     PrefId::MenuBind,
     PrefId::TimerType,
-    PrefId::DisableFallouts,
-    PrefId::BouncyFalloutPlane,
+    PrefId::DisableFalloutVolumes,
     PrefId::IlBattleShowTime,
     PrefId::IlBattleShowScore,
     PrefId::IlBattleBuzzerOld,
@@ -157,6 +156,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleReadyBind,
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
+    PrefId::FalloutPlaneType,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -233,10 +233,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::HideEffects;
         case PrefId::IlMarkRomhacks:
             return BoolPref::IlMarkRomhacks;
-        case PrefId::DisableFallouts:
-            return BoolPref::DisableFallouts;
-        case PrefId::BouncyFalloutPlane:
-            return BoolPref::BouncyFalloutPlane;
+        case PrefId::DisableFalloutVolumes:
+            return BoolPref::DisableFalloutVolumes;
         case PrefId::IlBattleShowTime:
             return BoolPref::IlBattleShowTime;
         case PrefId::IlBattleShowScore:
@@ -302,6 +300,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::FreecamToggleBind;
         case PrefId::SavestateClearBind:
             return U8Pref::SavestateClearBind;
+        case PrefId::FalloutPlaneType:
+            return U8Pref::FalloutPlaneType;
         default:
             return {};
     }
@@ -317,6 +317,8 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::UnlockVanilla,
     BoolPref::FreecamFreezeTimer,
     BoolPref::FreecamHideHud,
+    BoolPref::IlBattleShowTime,
+    BoolPref::IlBattleShowScore,
 };
 
 struct DefaultU8Pref {
@@ -341,7 +343,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[24];   // 24 u8 prefs
+    u8 u8_prefs[25];   // 25 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

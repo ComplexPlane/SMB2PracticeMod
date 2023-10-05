@@ -18,8 +18,7 @@ static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
 static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
-    pref::BoolPref::DisableFallouts,
-    pref::BoolPref::BouncyFalloutPlane,
+    pref::BoolPref::DisableFalloutVolumes,
     pref::BoolPref::UseCustomPhysics,
     pref::BoolPref::JumpMod,
     pref::BoolPref::Moon,
@@ -28,10 +27,8 @@ static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
 };
 
 static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
-    pref::U8Pref::TimerType,
-    pref::U8Pref::Friction,
-    pref::U8Pref::Restitution,
-    pref::U8Pref::Camera,
+    pref::U8Pref::TimerType, pref::U8Pref::Friction,         pref::U8Pref::Restitution,
+    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType,
 };
 
 void disable_invalidating_settings() {
