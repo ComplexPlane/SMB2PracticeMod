@@ -661,7 +661,9 @@ void disp() {
     s32 curr_idx = -1;
     Widget* selected =
         get_selected_widget(menu->widgets, menu->num_widgets, curr_idx, menu->selected_idx);
-    draw_help(*selected);
+    if (selected != nullptr) {
+        draw_help(*selected);
+    }
 }
 
 bool is_visible() { return s_visible; }
