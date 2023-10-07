@@ -60,11 +60,6 @@ static void pop_menu() {
     pad::reset_dir_repeat();
 }
 
-static bool show_hideable_widget(Widget* widget) {
-    HideableGroupWidget hideable = widget->hideable_group;
-    return hideable.show_if();
-}
-
 static bool is_widget_selectable(WidgetType type) {
     return type == WidgetType::Checkbox || type == WidgetType::GetSetCheckbox ||
            type == WidgetType::Menu || type == WidgetType::Choose || type == WidgetType::Button ||
@@ -79,7 +74,7 @@ static Widget* get_selected_widget(Widget* widgets, u32 num_widgets, s32& curr_i
             curr_idx++;
             if (curr_idx == target_idx) return &widgets[i];
         } else if (widgets[i].type == WidgetType::HideableGroupWidget &&
-                   show_hideable_widget(&widgets[i])) {
+                   widgets[i].hideable_group.show_if()) {
             Widget* possible_selection =
                 get_selected_widget(widgets[i].hideable_group.widgets,
                                     widgets[i].hideable_group.num_widgets, curr_idx, target_idx);
@@ -98,7 +93,8 @@ static u32 get_selectable_widget_count(Widget* widgets, u32 num_widgets) {
         Widget child = widgets[i];
         if (is_widget_selectable(child.type)) {
             selectable++;
-        } else if (child.type == WidgetType::HideableGroupWidget && show_hideable_widget(&child)) {
+        } else if (child.type == WidgetType::HideableGroupWidget &&
+                   child.hideable_group.show_if()) {
             selectable += get_selectable_widget_count(child.hideable_group.widgets,
                                                       child.hideable_group.num_widgets);
         }
@@ -366,7 +362,6 @@ static void draw_help_layout() {
 }
 
 static void draw_help(const Widget& widget) {
-    draw_help_layout();
     // draw relevant controls for current widget
     switch (widget.type) {
         case WidgetType::Checkbox:
@@ -435,7 +430,7 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
                  mkb::GXColor lerped_color) {
     switch (widget.type) {
         case WidgetType::HideableGroupWidget: {
-            if (show_hideable_widget(&widget)) {
+            if (widget.hideable_group.show_if()) {
                 for (u32 i = 0; i < widget.hideable_group.num_widgets; i++) {
                     Widget& w = widget.hideable_group.widgets[i];
                     draw_widget(w, selected_idx, selectable_idx, y, lerped_color);
@@ -473,7 +468,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
 
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -493,7 +487,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::Menu: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -520,7 +513,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::Choose: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -537,7 +529,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::Button: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -550,7 +541,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::IntEdit: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             draw::debug_text(MARGIN + PAD, *y,
                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
@@ -566,7 +556,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::FloatEdit: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
 
             float display = ((float)(pref::get(widget.float_edit.pref) + widget.float_edit.floor) /
@@ -599,7 +588,6 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
         case WidgetType::InputSelect: {
             if (selected_idx == *selectable_idx) {
                 draw_selectable_highlight(*y);
-                draw_help(widget);
             }
             if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
                 draw::debug_text(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s",
@@ -640,10 +628,6 @@ void draw_menu_widgets(MenuWidget* menu) {
         Widget& widget = menu->widgets[i];
         draw_widget(widget, menu->selected_idx, &selectable_idx, &y, lerped_color);
     }
-
-    if (selectable_idx == 0) {
-        draw_help_layout();
-    }
 }
 
 static void draw_breadcrumbs() {
@@ -668,10 +652,16 @@ static void draw_breadcrumbs() {
 
 void disp() {
     if (!s_visible) return;
+    MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
                {0x00, 0x00, 0x00, 0xe0});
     draw_breadcrumbs();
-    draw_menu_widgets(s_menu_stack[s_menu_stack_ptr]);
+    draw_menu_widgets(menu);
+    draw_help_layout();
+    s32 curr_idx = -1;
+    Widget* selected =
+        get_selected_widget(menu->widgets, menu->num_widgets, curr_idx, menu->selected_idx);
+    draw_help(*selected);
 }
 
 bool is_visible() { return s_visible; }

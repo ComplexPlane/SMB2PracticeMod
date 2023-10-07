@@ -21,14 +21,14 @@ namespace menu_defn {
 
 static char s_version_str[30];
 
-static const char* s_inputdisp_colors[] = {
+static const char* INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
-static_assert(LEN(s_inputdisp_colors) == inputdisp::NUM_COLORS);
+static_assert(LEN(INPUTDISP_COLORS) == inputdisp::NUM_COLORS);
 
-static const char* s_camera_options[] = {"Default", "Force SMB2", "Force SMB1"};
+static const char* CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
-static const char* s_inputdisp_color_type_options[] = {
+static const char* INPUTDISP_COLOR_TYPE_OPTIONS[] = {
     "Preset",
     "RGB Selector",
     "Rainbow",
@@ -41,8 +41,8 @@ static Widget s_input_preset[] = {
         .choose =
             {
                 .label = "Preset Color",
-                .choices = s_inputdisp_colors,
-                .num_choices = LEN(s_inputdisp_colors),
+                .choices = INPUTDISP_COLORS,
+                .num_choices = LEN(INPUTDISP_COLORS),
                 .pref = pref::U8Pref::InputDispColor,
             },
     },
@@ -111,8 +111,8 @@ static Widget s_inputdisp_subwidgets[] = {
         .choose =
             {
                 .label = "Color Type",
-                .choices = s_inputdisp_color_type_options,
-                .num_choices = LEN(s_inputdisp_color_type_options),
+                .choices = INPUTDISP_COLOR_TYPE_OPTIONS,
+                .num_choices = LEN(INPUTDISP_COLOR_TYPE_OPTIONS),
                 .pref = pref::U8Pref::InputDispColorType,
             },
     },
@@ -156,19 +156,19 @@ static Widget s_inputdisp_widgets[] = {
     },
 };
 
-static const char* s_ball_colors[] = {
+static const char* BALL_COLORS[] = {
     "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
 };
-static_assert(LEN(s_ball_colors) == ballcolor::NUM_COLORS);
+static_assert(LEN(BALL_COLORS) == ballcolor::NUM_COLORS);
 
-static const char* s_ball_color_types[] = {
+static const char* BALL_COLOR_TYPES[] = {
     "Preset",
     "RGB Selector",
     "Rainbow",
     "Random",
 };
 
-static const char* s_ape_color_types[] = {
+static const char* CLOTHING_COLOR_TYPES[] = {
     "Preset",
     "Random",
 };
@@ -179,8 +179,8 @@ static Widget s_preset_widgets[] = {
         .choose =
             {
                 .label = "Preset Color",
-                .choices = s_ball_colors,
-                .num_choices = LEN(s_ball_colors),
+                .choices = BALL_COLORS,
+                .num_choices = LEN(BALL_COLORS),
                 .pref = pref::U8Pref::BallColor,
             },
     },
@@ -192,8 +192,8 @@ static Widget s_preset_ape_widgets[] = {
         .choose =
             {
                 .label = "Preset Color",
-                .choices = s_ball_colors,
-                .num_choices = LEN(s_ball_colors),
+                .choices = BALL_COLORS,
+                .num_choices = LEN(BALL_COLORS),
                 .pref = pref::U8Pref::ApeColor,
             },
     },
@@ -242,8 +242,8 @@ static Widget s_ball_color_widgets[] = {
         .choose =
             {
                 .label = "Ball Color Type",
-                .choices = s_ball_color_types,
-                .num_choices = LEN(s_ball_color_types),
+                .choices = BALL_COLOR_TYPES,
+                .num_choices = LEN(BALL_COLOR_TYPES),
                 .pref = pref::U8Pref::BallColorType,
             },
     },
@@ -275,8 +275,8 @@ static Widget s_ball_color_widgets[] = {
         .choose =
             {
                 .label = "Clothing Color Type",
-                .choices = s_ape_color_types,
-                .num_choices = LEN(s_ape_color_types),
+                .choices = CLOTHING_COLOR_TYPES,
+                .num_choices = LEN(CLOTHING_COLOR_TYPES),
                 .pref = pref::U8Pref::ApeColorType,
             },
     },
@@ -291,18 +291,18 @@ static Widget s_ball_color_widgets[] = {
     },
 };
 
-static const char* s_il_battle_lengths[] = {
+static const char* IL_BATTLE_LENGTHS[] = {
     "5 min",
     "7 min",
     "10 min",
     "Endless",
 };
-static const char* s_score_breakdown_options[] = {
+static const char* SCORE_BREAKDOWN_OPTIONS[] = {
     "Off",
     "Minimal",
     "Full",
 };
-static_assert(LEN(s_il_battle_lengths) == ilbattle::NUM_LENGTHS);
+static_assert(LEN(IL_BATTLE_LENGTHS) == ilbattle::NUM_LENGTHS);
 
 static Widget s_il_battle_score_widgets[] = {
     {
@@ -310,8 +310,8 @@ static Widget s_il_battle_score_widgets[] = {
         .choose =
             {
                 .label = "Score Breakdown",
-                .choices = s_score_breakdown_options,
-                .num_choices = LEN(s_score_breakdown_options),
+                .choices = SCORE_BREAKDOWN_OPTIONS,
+                .num_choices = LEN(SCORE_BREAKDOWN_OPTIONS),
                 .pref = pref::U8Pref::IlBattleBreakdown,
             },
     },
@@ -333,8 +333,8 @@ static Widget s_il_battle_subwidgets[] = {
         .choose =
             {
                 .label = "Battle Length",
-                .choices = s_il_battle_lengths,
-                .num_choices = LEN(s_il_battle_lengths),
+                .choices = IL_BATTLE_LENGTHS,
+                .num_choices = LEN(IL_BATTLE_LENGTHS),
                 .pref = pref::U8Pref::IlBattleLength,
             },
     },
@@ -479,7 +479,7 @@ static Widget s_about_widgets[] = {
     },
 };
 
-static const char* s_chara_choices[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
+static const char* CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget s_cm_beg_widgets[] = {
     {
@@ -651,8 +651,8 @@ static Widget s_cm_seg_widgets[] = {
         .choose =
             {
                 .label = "Character",
-                .choices = s_chara_choices,
-                .num_choices = LEN(s_chara_choices),
+                .choices = CHARA_CHOICES,
+                .num_choices = LEN(CHARA_CHOICES),
                 .pref = pref::U8Pref::CmChara,
             },
     },
@@ -987,8 +987,8 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static const char* s_timer_types[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
-static const char* s_fallout_plane_type[] = {"Normal", "Disabled", "Bouncy"};
+static const char* TIMER_TYPES[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
+static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
 
 static Widget s_assist_widgets[] = {
     {
@@ -996,8 +996,8 @@ static Widget s_assist_widgets[] = {
         .choose =
             {
                 .label = "Timer Type",
-                .choices = s_timer_types,
-                .num_choices = LEN(s_timer_types),
+                .choices = TIMER_TYPES,
+                .num_choices = LEN(TIMER_TYPES),
                 .pref = pref::U8Pref::TimerType,
             },
     },
@@ -1006,8 +1006,8 @@ static Widget s_assist_widgets[] = {
         .choose =
             {
                 .label = "Fallout Plane Type",
-                .choices = s_fallout_plane_type,
-                .num_choices = LEN(s_fallout_plane_type),
+                .choices = FALLOUT_PLANE_TYPE,
+                .num_choices = LEN(FALLOUT_PLANE_TYPE),
                 .pref = pref::U8Pref::FalloutPlaneType,
             },
     },
@@ -1265,8 +1265,8 @@ static Widget s_gameplay_mods_widgets[] = {
         .choose =
             {
                 .label = "Camera Type",
-                .choices = s_camera_options,
-                .num_choices = LEN(s_camera_options),
+                .choices = CAMERA_OPTIONS,
+                .num_choices = LEN(CAMERA_OPTIONS),
                 .pref = pref::U8Pref::Camera,
             },
     },
