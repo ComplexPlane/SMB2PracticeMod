@@ -367,6 +367,22 @@ static Widget s_il_battle_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Show Subtick",
+                .pref = pref::BoolPref::IlBattleShowSubtick,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Framesave",
+                .pref = pref::BoolPref::IlBattleShowFramesave,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Old Buzzer Message",
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
