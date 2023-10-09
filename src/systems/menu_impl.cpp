@@ -386,9 +386,7 @@ static void draw_help(const Widget& widget) {
                              "Activate");
             break;
         }
-        case WidgetType::Choose:
-        case WidgetType::IntEdit:
-        case WidgetType::FloatEdit: {
+        case WidgetType::Choose: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
@@ -396,7 +394,23 @@ static void draw_help(const Widget& widget) {
             draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-                             "Prev");
+                             "Previous");
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Reset");
+            break;
+        }
+        case WidgetType::IntEdit:
+        case WidgetType::FloatEdit: {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Increase");
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
+                             "Decrease");
             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
