@@ -367,22 +367,6 @@ static Widget s_il_battle_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Show Subtick",
-                .pref = pref::BoolPref::IlBattleShowSubtick,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Show Framesave",
-                .pref = pref::BoolPref::IlBattleShowFramesave,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
                 .label = "Old Buzzer Message",
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
@@ -675,14 +659,59 @@ static Widget s_cm_seg_widgets[] = {
 };
 
 static Widget s_timers_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "RTA+Pause Timer",
-                .pref = pref::BoolPref::RtaPauseTimer,
+                .label = "Show Real Time",
+                .pref = pref::BoolPref::TimerShowRTA,
             },
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Pause Time",
+                .pref = pref::BoolPref::TimerShowPause,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Subtick Timers"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Framesave",
+                .pref = pref::BoolPref::TimerShowFramesave,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Subtick",
+                .pref = pref::BoolPref::TimerShowSubtick,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Unrounded",
+                .pref = pref::BoolPref::TimerShowUnrounded,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Extra Precision",
+                .pref = pref::BoolPref::TimerExtraSubtickPrecision,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Segment Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -695,7 +724,7 @@ static Widget s_timers_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "CM Seg Timer",
+                .label = "CM Segment Timer",
                 .pref = pref::BoolPref::CmTimer,
             },
     },

@@ -63,4 +63,10 @@ void draw_subtick_timer(s32 frames, const char* prefix, u32 row, mkb::GXColor co
     }
 }
 
+void draw_percentage(s32 fsave, const char* prefix, u32 row, mkb::GXColor color) {
+    s32 y = Y + row * 16;
+    draw::debug_text(X, y, color, prefix);
+    draw::debug_text(X + 54, y, color, "%2d%", fsave);
+}
+
 }  // namespace timerdisp

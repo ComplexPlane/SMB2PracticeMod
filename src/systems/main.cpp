@@ -92,7 +92,6 @@ void init() {
     ilmark::init();
     camera::init();
     fallout::init();
-    ilbattle::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {

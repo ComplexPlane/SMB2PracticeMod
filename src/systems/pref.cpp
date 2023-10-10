@@ -21,7 +21,7 @@ enum class PrefId : u16 {
     Savestates = 1,
     InputDisp = 2,
     InputDispCenterLocation = 3,
-    RtaPauseTimer = 4,
+    TimerShowRTA = 4,
     CmChara = 5,
     InputDispColor = 6,
     InputDispNotchIndicators = 7,
@@ -87,8 +87,11 @@ enum class PrefId : u16 {
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
-    IlBattleShowSubtick = 70,
-    IlBattleShowFramesave = 71,
+    TimerShowSubtick = 70,
+    TimerExtraSubtickPrecision = 71,
+    TimerShowFramesave = 72,
+    TimerShowUnrounded = 73,
+    TimerShowPause = 74,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -96,7 +99,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Savestates,
     PrefId::InputDisp,
     PrefId::InputDispCenterLocation,
-    PrefId::RtaPauseTimer,
+    PrefId::TimerShowRTA,
     PrefId::CmChara,
     PrefId::InputDispColor,
     PrefId::InputDispNotchIndicators,
@@ -159,8 +162,11 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
-    PrefId::IlBattleShowSubtick,
-    PrefId::IlBattleShowFramesave,
+    PrefId::TimerShowSubtick,
+    PrefId::TimerExtraSubtickPrecision,
+    PrefId::TimerShowFramesave,
+    PrefId::TimerShowUnrounded,
+    PrefId::TimerShowPause,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -171,8 +177,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::InputDisp;
         case PrefId::InputDispCenterLocation:
             return BoolPref::InputDispCenterLocation;
-        case PrefId::RtaPauseTimer:
-            return BoolPref::RtaPauseTimer;
+        case PrefId::TimerShowRTA:
+            return BoolPref::TimerShowRTA;
         case PrefId::InputDispNotchIndicators:
             return BoolPref::InputDispNotchIndicators;
         case PrefId::IwTimer:
@@ -249,10 +255,16 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
-        case PrefId::IlBattleShowSubtick:
-            return BoolPref::IlBattleShowSubtick;
-        case PrefId::IlBattleShowFramesave:
-            return BoolPref::IlBattleShowFramesave;
+        case PrefId::TimerShowSubtick:
+            return BoolPref::TimerShowSubtick;
+        case PrefId::TimerExtraSubtickPrecision:
+            return BoolPref::TimerExtraSubtickPrecision;
+        case PrefId::TimerShowFramesave:
+            return BoolPref::TimerShowFramesave;
+        case PrefId::TimerShowUnrounded:
+            return BoolPref::TimerShowUnrounded;
+        case PrefId::TimerShowPause:
+            return BoolPref::TimerShowPause;
         default:
             return {};
     }
