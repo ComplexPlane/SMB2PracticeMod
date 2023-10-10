@@ -48,7 +48,6 @@ void draw_subtick_timer(s32 frames, const char* prefix, u32 row, mkb::GXColor co
     u32 hours = frames / HOUR_FRAMES;
     u32 minutes = frames % HOUR_FRAMES / MINUTE_FRAMES;
     u32 seconds = frames % MINUTE_FRAMES / SECOND_FRAMES;
-    u32 centiseconds = (frames % SECOND_FRAMES) * 100 / 60;               // 2 digit
     u32 milliseconds = ((frames % SECOND_FRAMES) * 100 + framesave) / 6;  // 3 digit
     u32 extra = (((frames % SECOND_FRAMES) * 100 + framesave) * 10) / 6;  // 4 digit
 
