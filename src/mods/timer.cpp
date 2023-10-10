@@ -50,7 +50,12 @@ bool line_intersects(Vec* lineStart, Vec* lineEnd, mkb::Rect* rect) {
         } else if ((end.y < -half_height) || (half_height < end.y)) {
             return false;
         } else {
-            s_framesave = static_cast<u32>((start.z / (start.z - end.z)) * 100);
+            if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
+                mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN &&
+                mkb::sub_mode != mkb::SMD_GAME_GOAL_REPLAY_INIT &&
+                mkb::sub_mode != mkb::SMD_GAME_GOAL_REPLAY_MAIN) {
+                s_framesave = static_cast<u32>((start.z / (start.z - end.z)) * 100);
+            }
             return true;
         }
     }
