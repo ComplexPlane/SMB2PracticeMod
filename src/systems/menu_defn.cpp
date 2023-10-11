@@ -1259,6 +1259,8 @@ static Widget s_physics_widgets[] = {
     },
 };
 
+static const char* BANANA_TYPES[] = {"Normal", "Golden", "Dark"};
+
 static Widget s_gameplay_mods_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -1302,6 +1304,24 @@ static Widget s_gameplay_mods_widgets[] = {
             {
                 .label = "Marathon Mode",
                 .pref = pref::BoolPref::Marathon,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Reverse Mode",
+                .pref = pref::BoolPref::ReverseMode,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Banana Type",
+                .choices = BANANA_TYPES,
+                .num_choices = LEN(BANANA_TYPES),
+                .pref = pref::U8Pref::BananaType,
             },
     },
     {

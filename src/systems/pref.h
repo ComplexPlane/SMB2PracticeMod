@@ -49,6 +49,7 @@ enum class BoolPref : u8 {
     IlBattleBuzzerOld,
     UseCustomPhysics,
     SavestateDisableOverwrite,
+    ReverseMode,
 };
 
 enum class U8Pref : u8 {
@@ -77,6 +78,7 @@ enum class U8Pref : u8 {
     FreecamToggleBind,
     SavestateClearBind,
     FalloutPlaneType,
+    BananaType,
 };
 
 void init();
