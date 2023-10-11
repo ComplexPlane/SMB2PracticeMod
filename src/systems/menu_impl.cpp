@@ -211,10 +211,10 @@ static void handle_widget_bind() {
 
             if (x_pressed) {
                 next = pref::get_default(edit_pref);
-            } else if (a_repeat && !y_repeat) {
+            } else if (a_repeat && !pad::button_down(mkb::PAD_BUTTON_Y, true)) {
                 s_edit_tick += 5;
                 next += (s_edit_tick / 5);
-            } else if (y_repeat && !a_repeat) {
+            } else if (y_repeat && !pad::button_down(mkb::PAD_BUTTON_A, true)) {
                 s_edit_tick -= 5;
                 next += (s_edit_tick / 5);
             }
