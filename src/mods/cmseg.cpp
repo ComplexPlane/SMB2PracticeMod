@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mods/freecam.h"
 #include "systems/log.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -355,7 +356,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get(pref::BoolPref::CmTimer)) return;
+    if (!pref::get(pref::BoolPref::CmTimer) || freecam::should_hide_hud()) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);

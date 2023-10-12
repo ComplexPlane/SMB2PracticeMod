@@ -14,7 +14,35 @@
 namespace ilmark {
 
 static bool s_valid_run = false;
+static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
+
+static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
+    pref::BoolPref::DisableFalloutVolumes,
+    pref::BoolPref::UseCustomPhysics,
+    pref::BoolPref::JumpMod,
+    pref::BoolPref::Moon,
+    pref::BoolPref::Marathon,
+    pref::BoolPref::DebugMode,
+};
+
+static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
+    pref::U8Pref::TimerType, pref::U8Pref::Friction,         pref::U8Pref::Restitution,
+    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType,
+};
+
+void disable_invalidating_settings() {
+    // set all bool prefs to default
+    for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
+        pref::set(INVALID_BOOL_PREFS[i], pref::get_default(INVALID_BOOL_PREFS[i]));
+    }
+    // set all u8 prefs to default
+    for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
+        pref::set(INVALID_U8_PREFS[i], pref::get_default(INVALID_U8_PREFS[i]));
+    }
+
+    pref::save();
+}
 
 void init() {
     char gamecode[7] = {};
@@ -25,11 +53,17 @@ void init() {
 void tick() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
+        s_paused_frame = 0;
 
     } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-        if (paused_now) s_valid_run = false;
-
+        if (paused_now) {
+            if (s_paused_frame == 0) {
+                s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
+            } else {
+                s_valid_run = false;
+            }
+        }
         // Loading savestates is disallowed
         if (libsavest::state_loaded_this_frame()) s_valid_run = false;
 
@@ -39,15 +73,23 @@ void tick() {
             pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
         if (pref::get(pref::BoolPref::DpadControls) && dpad_down) s_valid_run = false;
 
-        // Using these tools/mods at all is disallowed
-        bool using_disallowed_mod =
-            pref::get(pref::BoolPref::FreezeTimer) || freecam::enabled() ||
-            pref::get(pref::BoolPref::DebugMode) || pref::get(pref::BoolPref::JumpMod) ||
-            pref::get(pref::BoolPref::Moon) || pref::get(pref::BoolPref::Marathon);
-        if (using_disallowed_mod) s_valid_run = false;
-
         // Opening the mod menu is disallowed
         if (menu_impl::is_visible()) s_valid_run = false;
+
+        // Invalid bool prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
+            if (pref::get(INVALID_BOOL_PREFS[i]) != pref::get_default(INVALID_BOOL_PREFS[i])) {
+                s_valid_run = false;
+            }
+        }
+        // Invalid u8 prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
+            if (pref::get(INVALID_U8_PREFS[i]) != pref::get_default(INVALID_U8_PREFS[i])) {
+                s_valid_run = false;
+            }
+        }
+    } else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
+        s_valid_run = s_valid_run && s_paused_frame <= mkb::mode_info.stage_time_frames_remaining;
     }
 }
 
@@ -72,7 +114,7 @@ bool is_ilmark_enabled() {
 }
 
 void disp() {
-    if (!is_ilmark_enabled()) return;
+    if (!is_ilmark_enabled() || freecam::should_hide_hud()) return;
 
     bool in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
                            mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||

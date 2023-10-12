@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -124,8 +125,7 @@ void tick() {
     }
 
     // Optionally toggle freecam with Z
-    bool can_toggle = pref::get(pref::BoolPref::FreecamToggleWithZ);
-    if (can_toggle && pad::button_pressed(mkb::PAD_TRIGGER_Z)) {
+    if (binds::bind_pressed(pref::get(pref::U8Pref::FreecamToggleBind))) {
         pref::set(pref::BoolPref::Freecam, !pref::get(pref::BoolPref::Freecam));
         pref::save();
     }

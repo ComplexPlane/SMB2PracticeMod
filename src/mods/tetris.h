@@ -23,7 +23,6 @@ class Tetris {
         GAMEOVER,
         NEWGAME,
     };
-    bool m_ever_shown;
     bool m_hidden;
 
     State m_state;

@@ -3,7 +3,6 @@
 #include "libsavest.h"
 
 #include "mkb/mkb.h"
-
 #include "mods/timer.h"
 #include "systems/heap.h"
 #include "systems/pad.h"
@@ -81,7 +80,8 @@ void SaveState::pass_over_regions() {
             case mkb::STOBJ_GOALTAPE:
             case mkb::STOBJ_GOALBAG:
             case mkb::STOBJ_GOALBAG_EXMASTER:
-            case mkb::STOBJ_BUTTON: {
+            case mkb::STOBJ_BUTTON:
+            case mkb::STOBJ_JAMABAR: {
                 m_store.do_region(&mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
@@ -328,6 +328,13 @@ SaveState::LoadResult SaveState::load() {
     s_state_loaded_this_frame = true;
     return LoadResult::Ok;
 }
+
+void SaveState::clear() {
+    m_flags = 0;
+    m_store.enter_prealloc_mode();
+}
+
+bool SaveState::isEmpty() { return !(m_flags & FLAG_ACTIVE); }
 
 void SaveState::tick() {
     s_state_loaded_this_frame = false;

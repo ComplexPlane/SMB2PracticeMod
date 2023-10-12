@@ -2,6 +2,9 @@
 
 #include "mkb/mkb.h"
 
+#include "mods/ballcolor.h"
+#include "mods/freecam.h"
+#include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -16,9 +19,18 @@ struct MergedStickInputs {
     s32 gameY;
 };
 
+enum class InputDispColorType {
+    Default = 0,
+    RGB = 1,
+    Rainbow = 2,
+    MatchBall = 3,
+};
+
 static patch::Tramp<decltype(&mkb::create_speed_sprites)> s_create_speed_sprites_tramp;
 
 static mkb::PADStatus s_raw_inputs[4];
+
+static u32 s_rainbow;
 
 static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
     outInputs = {};
@@ -131,37 +143,38 @@ void on_PADRead(mkb::PADStatus* statuses) {
 }
 
 void tick() {
+    s_rainbow = (s_rainbow + 3) % 1080;
     set_sprite_visible(!pref::get(pref::BoolPref::InputDisp) ||
                        (pref::get(pref::BoolPref::InputDispCenterLocation) &&
                         !pref::get(pref::BoolPref::InputDispRawStickInputs)));
 }
 
-static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2d* out_pos) {
+static bool get_notch_pos(const MergedStickInputs& stick_inputs, Vec2d* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
-    if (stickInputs.gameX == 0 && stickInputs.gameY == 60) {
+    if (stick_inputs.gameX == 0 && stick_inputs.gameY == 60) {
         *out_pos = {0, 1};
         notch_found = true;
-    } else if (stickInputs.gameX == 0 && stickInputs.gameY == -60) {
+    } else if (stick_inputs.gameX == 0 && stick_inputs.gameY == -60) {
         *out_pos = {0, -1};
         notch_found = true;
-    } else if (stickInputs.gameX == 60 && stickInputs.gameY == 0) {
+    } else if (stick_inputs.gameX == 60 && stick_inputs.gameY == 0) {
         *out_pos = {1, 0};
         notch_found = true;
-    } else if (stickInputs.gameX == -60 && stickInputs.gameY == 0) {
+    } else if (stick_inputs.gameX == -60 && stick_inputs.gameY == 0) {
         *out_pos = {-1, 0};
         notch_found = true;
-    } else if (stickInputs.gameX == 60 && stickInputs.gameY == 60) {
+    } else if (stick_inputs.gameX == 60 && stick_inputs.gameY == 60) {
         *out_pos = {DIAG, DIAG};
         notch_found = true;
-    } else if (stickInputs.gameX == 60 && stickInputs.gameY == -60) {
+    } else if (stick_inputs.gameX == 60 && stick_inputs.gameY == -60) {
         *out_pos = {DIAG, -DIAG};
         notch_found = true;
-    } else if (stickInputs.gameX == -60 && stickInputs.gameY == 60) {
+    } else if (stick_inputs.gameX == -60 && stick_inputs.gameY == 60) {
         *out_pos = {-DIAG, DIAG};
         notch_found = true;
-    } else if (stickInputs.gameX == -60 && stickInputs.gameY == -60) {
+    } else if (stick_inputs.gameX == -60 && stick_inputs.gameY == -60) {
         *out_pos = {-DIAG, -DIAG};
         notch_found = true;
     }
@@ -170,26 +183,55 @@ static bool get_notch_pos(const MergedStickInputs& stickInputs, Vec2d* out_pos) 
 }
 
 static const mkb::GXColor s_color_map[] = {
-    {0xb1, 0x5a, 0xff, 0xff},  // Purple
+    draw::PURPLE,              // Purple
     draw::RED,                 // Red
     draw::ORANGE,              // Orange
     {0xfd, 0xfb, 0x78, 0xff},  // Yellow
     {0x78, 0xfd, 0x85, 0xff},  // Green
     {0x78, 0xca, 0xfd, 0xff},  // Blue
     draw::PINK,                // Pink
-    {0x00, 0x00, 0x00, 0xff},  // Black
+    draw::BLACK,               // Black
 };
 
-static void draw_stick(const MergedStickInputs& stickInputs, const Vec2d& center, f32 scale) {
-    mkb::GXColor chosen_color = s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+static mkb::GXColor get_color() {
+    InputDispColorType color_pref = InputDispColorType(pref::get(pref::U8Pref::InputDispColorType));
+    switch (color_pref) {
+        case InputDispColorType::Default: {
+            return s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+        }
+        case InputDispColorType::RGB: {
+            return {
+                .r = pref::get(pref::U8Pref::InputDispRed),
+                .g = pref::get(pref::U8Pref::InputDispGreen),
+                .b = pref::get(pref::U8Pref::InputDispBlue),
+                .a = 0xff,
+            };
+        }
+        case InputDispColorType::Rainbow: {
+            return draw::num_to_rainbow(s_rainbow);
+        }
+        case InputDispColorType::MatchBall: {
+            mkb::GXColor current = ballcolor::get_current_color();
+            current.a = 0xff;
+            return current;
+        }
+    }
+
+    // shouldn't reach
+    MOD_ASSERT(false);
+    return {};
+}
+
+static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {
+    mkb::GXColor chosen_color = get_color();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
     draw_ring(8, center, 50 * scale, 58 * scale, chosen_color);
 
     Vec2d scaled_input = {
-        center.x + static_cast<f32>(stickInputs.rawX) / 2.7f * scale,
-        center.y - static_cast<f32>(stickInputs.rawY) / 2.7f * scale,
+        center.x + static_cast<f32>(stick_inputs.rawX) / 2.7f * scale,
+        center.y - static_cast<f32>(stick_inputs.rawY) / 2.7f * scale,
     };
 
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
@@ -222,12 +264,12 @@ static void draw_buttons(const Vec2d& center, f32 scale) {
     }
 }
 
-static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Vec2d& center,
+static void draw_notch_indicators(const MergedStickInputs& stick_inputs, const Vec2d& center,
                                   f32 scale) {
     if (!pref::get(pref::BoolPref::InputDispNotchIndicators)) return;
 
     Vec2d notch_norm = {};
-    if (get_notch_pos(stickInputs, &notch_norm)) {
+    if (get_notch_pos(stick_inputs, &notch_norm)) {
         Vec2d notch_pos = {
             .x = notch_norm.x * 60 * scale + center.x,
             .y = -notch_norm.y * 60 * scale + center.y,
@@ -236,7 +278,7 @@ static void draw_notch_indicators(const MergedStickInputs& stickInputs, const Ve
     }
 }
 
-static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
+static void draw_raw_stick_inputs(const MergedStickInputs& stick_inputs) {
     if (!pref::get(pref::BoolPref::InputDispRawStickInputs)) return;
 
     Vec2d center = {
@@ -244,26 +286,35 @@ static void draw_raw_stick_inputs(const MergedStickInputs& stickInputs) {
         .y = 28.f,
     };
 
-    draw::debug_text(center.x, center.y + 0 * 14, draw::WHITE, "rX: %d", stickInputs.rawX);
-    draw::debug_text(center.x, center.y + 1 * 14, draw::WHITE, "rY: %d", stickInputs.rawY);
-    draw::debug_text(center.x, center.y + 2 * 14, draw::WHITE, "gX: %d", stickInputs.gameX);
-    draw::debug_text(center.x, center.y + 3 * 14, draw::WHITE, "gY: %d", stickInputs.gameY);
+    draw::debug_text(center.x, center.y + 0 * 14, draw::WHITE, "rX: %d", stick_inputs.rawX);
+    draw::debug_text(center.x, center.y + 1 * 14, draw::WHITE, "rY: %d", stick_inputs.rawY);
+    draw::debug_text(center.x, center.y + 2 * 14, draw::WHITE, "gX: %d", stick_inputs.gameX);
+    draw::debug_text(center.x, center.y + 3 * 14, draw::WHITE, "gY: %d", stick_inputs.gameY);
 }
 
 void disp() {
-    if (!pref::get(pref::BoolPref::InputDisp)) return;
+    bool in_replay = mkb::sub_mode == mkb::SMD_OPTION_REPLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_MAIN ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_MAIN ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_INIT ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_MAIN ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_INIT ||
+                     mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN;
+
+    if (!pref::get(pref::BoolPref::InputDisp) || freecam::should_hide_hud() || in_replay) return;
 
     Vec2d center =
         pref::get(pref::BoolPref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
     f32 scale = 0.6f;
 
-    MergedStickInputs stickInputs;
-    get_merged_stick_inputs(stickInputs);
+    MergedStickInputs stick_inputs;
+    get_merged_stick_inputs(stick_inputs);
 
-    draw_stick(stickInputs, center, scale);
+    draw_stick(stick_inputs, center, scale);
     draw_buttons(center, scale);
-    draw_notch_indicators(stickInputs, center, scale);
-    draw_raw_stick_inputs(stickInputs);
+    draw_notch_indicators(stick_inputs, center, scale);
+    draw_raw_stick_inputs(stick_inputs);
 }
 
 }  // namespace inputdisp

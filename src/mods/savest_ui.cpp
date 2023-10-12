@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "systems/binds.h"
 #include "systems/heap.h"
 #include "systems/log.h"
 #include "systems/pad.h"
@@ -45,9 +46,15 @@ void tick() {
         s_active_state_slot = cstick_dir;
         draw::notify(draw::WHITE, "Slot %d Selected", cstick_dir + 1);
     }
-    auto& state = s_states[s_active_state_slot];
 
     if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
+        auto& state = s_states[s_active_state_slot];
+
+        if (!state.isEmpty() && pref::get(pref::BoolPref::SavestateDisableOverwrite)) {
+            draw::notify(draw::RED, "Slot %d Full", s_active_state_slot + 1);
+            return;
+        }
+
         using SaveResult = libsavest::SaveState::SaveResult;
         switch (state.save()) {
             case SaveResult::Ok: {
@@ -97,9 +104,14 @@ void tick() {
 
         s_created_state_last_frame = true;
 
+    } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearBind))) {
+        auto& state = s_states[s_active_state_slot];
+        state.clear();
+        draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {
+        auto& state = s_states[s_active_state_slot];
         using LoadResult = libsavest::SaveState::LoadResult;
         switch (state.load()) {
             case LoadResult::Ok: {

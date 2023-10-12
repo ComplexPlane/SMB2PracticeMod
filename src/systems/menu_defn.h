@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mkb/mkb.h"
-
 #include "pref.h"
 
 namespace menu_defn {
@@ -18,6 +17,9 @@ enum class WidgetType {
     Choose,
     Button,
     IntEdit,
+    FloatEdit,
+    InputSelect,
+    HideableGroupWidget,
     Custom,
 };
 
@@ -43,7 +45,7 @@ struct CheckboxWidget {
 
 // For the rare cases a checkbox doesn't correspond to a preference
 struct GetSetCheckboxWidget {
-    const char *label;
+    const char* label;
     bool (*get)();
     void (*set)(bool);
 };
@@ -84,10 +86,36 @@ struct ButtonWidget {
 
 // Pretty limited for now
 struct IntEditWidget {
-    const char *label;
+    const char* label;
     pref::U8Pref pref;
     u8 min;
     u8 max;
+};
+
+// even more limited for now
+struct FloatEditWidget {
+    const char* label;
+    pref::U8Pref pref;
+    u32 precision;  // denominator, 100
+    u8 min;
+    u8 max;
+    s32 floor;
+    u8 decimals;
+};
+
+struct InputSelectWidget {
+    const char* label;
+    pref::U8Pref pref;
+    bool required_chord;  // must be a 2 button bind if true
+    bool can_unbind;
+};
+
+enum class HideableType : u8 { U8Hideable, BoolHideable };
+
+struct HideableGroupWidget {
+    struct Widget* widgets;
+    u32 num_widgets;
+    bool (*show_if)();  // show if function returns true
 };
 
 struct CustomWidget {
@@ -107,6 +135,9 @@ struct Widget {
         ChooseWidget choose;
         ButtonWidget button;
         IntEditWidget int_edit;
+        FloatEditWidget float_edit;
+        InputSelectWidget input_select;
+        HideableGroupWidget hideable_group;
         CustomWidget custom;
     };
 };

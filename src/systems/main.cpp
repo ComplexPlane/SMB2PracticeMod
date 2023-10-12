@@ -14,10 +14,11 @@
 
 #include "mods/ballcolor.h"
 #include "mods/banans.h"
+#include "mods/camera.h"
 #include "mods/cmseg.h"
 #include "mods/dpad.h"
+#include "mods/fallout.h"
 #include "mods/freecam.h"
-#include "mods/freeze.h"
 #include "mods/gotostory.h"
 #include "mods/hide.h"
 #include "mods/ilbattle.h"
@@ -26,13 +27,14 @@
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
-#include "mods/moon.h"
+#include "mods/physics.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
+#include "systems/binds.h"
 
 namespace main {
 
@@ -76,17 +78,20 @@ void init() {
     unlock::init();
     draw::init();
     Tetris::get_instance().init();
+    physics::init();
     iw::init();
     libsavest::init();
     timer::init();
     inputdisp::init();
     cmseg::init();
-    freeze::init();
+    ballcolor::init();
     sfx::init();
     menu_defn::init();
     freecam::init();
     hide::init();
     ilmark::init();
+    camera::init();
+    fallout::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
@@ -105,8 +110,11 @@ void init() {
         // These run after all controller inputs have been processed on the current frame,
         // to ensure lowest input delay
         pad::tick();
+        binds::tick();
         cardio::tick();
         unlock::tick();
+        fallout::tick();
+        physics::tick();
         iw::tick();
         savest_ui::tick();
         menu_impl::tick();
@@ -118,9 +126,9 @@ void init() {
         marathon::tick();
         ballcolor::tick();
         freecam::tick();
-        moon::tick();
         ilbattle::tick();
         ilmark::tick();
+        camera::tick();
         scratch::tick();
     });
 

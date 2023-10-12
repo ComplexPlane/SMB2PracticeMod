@@ -31,7 +31,7 @@ enum class PrefId : u16 {
     BananaCounter9999 = 11,
     DpadControls = 12,
     DebugMode = 13,
-    FreezeTimer = 14,
+    // Do not reuse 14, it belonged to old timer freezing BoolPref
     MuteBgm = 15,
     MuteTimerDing = 16,
     InputDispRawStickInputs = 17,
@@ -42,7 +42,7 @@ enum class PrefId : u16 {
     Moon = 22,
     IlBattleDisplay = 23,
     IlBattleLength = 24,
-    IlBattleBreakdown = 25,
+    // Do not reuse 25, it belonged to old IL Battle Score Breakdown BoolPref
     IlMarkPractice = 26,
     IlMarkStory = 27,
     IlMarkChallenge = 28,
@@ -62,6 +62,31 @@ enum class PrefId : u16 {
     HideStobjs = 42,
     HideEffects = 43,
     IlMarkRomhacks = 44,
+    Camera = 45,
+    BallRed = 46,
+    BallGreen = 47,
+    BallBlue = 48,
+    BallColorType = 49,
+    ApeColorType = 50,
+    InputDispColorType = 51,
+    InputDispRed = 52,
+    InputDispGreen = 53,
+    InputDispBlue = 54,
+    TimerType = 55,
+    DisableFalloutVolumes = 56,
+    FalloutPlaneType = 57,
+    IlBattleShowTime = 58,
+    IlBattleShowScore = 59,
+    IlBattleBuzzerOld = 60,
+    IlBattleBreakdown = 61,
+    UseCustomPhysics = 62,
+    Friction = 63,
+    Restitution = 64,
+    SavestateDisableOverwrite = 65,
+    MenuBind = 66,
+    IlBattleReadyBind = 67,
+    FreecamToggleBind = 68,
+    SavestateClearBind = 69,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -79,7 +104,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::BananaCounter9999,
     PrefId::DpadControls,
     PrefId::DebugMode,
-    PrefId::FreezeTimer,
     PrefId::MuteBgm,
     PrefId::MuteTimerDing,
     PrefId::InputDispRawStickInputs,
@@ -89,7 +113,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::Marathon,
     PrefId::Moon,
     PrefId::IlBattleDisplay,
-    PrefId::IlBattleBreakdown,
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
     PrefId::IlMarkChallenge,
@@ -109,6 +132,31 @@ static const PrefId s_pref_ids[] = {
     PrefId::HideStobjs,
     PrefId::HideEffects,
     PrefId::IlMarkRomhacks,
+    PrefId::Camera,
+    PrefId::BallRed,
+    PrefId::BallGreen,
+    PrefId::BallBlue,
+    PrefId::BallColorType,
+    PrefId::MenuBind,
+    PrefId::TimerType,
+    PrefId::DisableFalloutVolumes,
+    PrefId::IlBattleShowTime,
+    PrefId::IlBattleShowScore,
+    PrefId::IlBattleBuzzerOld,
+    PrefId::Friction,
+    PrefId::Restitution,
+    PrefId::UseCustomPhysics,
+    PrefId::SavestateDisableOverwrite,
+    PrefId::ApeColorType,
+    PrefId::IlBattleBreakdown,
+    PrefId::InputDispColorType,
+    PrefId::InputDispRed,
+    PrefId::InputDispGreen,
+    PrefId::InputDispBlue,
+    PrefId::IlBattleReadyBind,
+    PrefId::FreecamToggleBind,
+    PrefId::SavestateClearBind,
+    PrefId::FalloutPlaneType,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -135,8 +183,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::DpadControls;
         case PrefId::DebugMode:
             return BoolPref::DebugMode;
-        case PrefId::FreezeTimer:
-            return BoolPref::FreezeTimer;
         case PrefId::MuteBgm:
             return BoolPref::MuteBgm;
         case PrefId::MuteTimerDing:
@@ -151,8 +197,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Moon;
         case PrefId::IlBattleDisplay:
             return BoolPref::IlBattleDisplay;
-        case PrefId::IlBattleBreakdown:
-            return BoolPref::IlBattleBreakdown;
         case PrefId::IlMarkPractice:
             return BoolPref::IlMarkPractice;
         case PrefId::IlMarkStory:
@@ -189,6 +233,18 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::HideEffects;
         case PrefId::IlMarkRomhacks:
             return BoolPref::IlMarkRomhacks;
+        case PrefId::DisableFalloutVolumes:
+            return BoolPref::DisableFalloutVolumes;
+        case PrefId::IlBattleShowTime:
+            return BoolPref::IlBattleShowTime;
+        case PrefId::IlBattleShowScore:
+            return BoolPref::IlBattleShowScore;
+        case PrefId::IlBattleBuzzerOld:
+            return BoolPref::IlBattleBuzzerOld;
+        case PrefId::UseCustomPhysics:
+            return BoolPref::UseCustomPhysics;
+        case PrefId::SavestateDisableOverwrite:
+            return BoolPref::SavestateDisableOverwrite;
         default:
             return {};
     }
@@ -208,6 +264,44 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::IlBattleLength;
         case PrefId::FreecamSpeedMult:
             return U8Pref::FreecamSpeedMult;
+        case PrefId::Camera:
+            return U8Pref::Camera;
+        case PrefId::BallRed:
+            return U8Pref::BallRed;
+        case PrefId::BallGreen:
+            return U8Pref::BallGreen;
+        case PrefId::BallBlue:
+            return U8Pref::BallBlue;
+        case PrefId::BallColorType:
+            return U8Pref::BallColorType;
+        case PrefId::MenuBind:
+            return U8Pref::MenuBind;
+        case PrefId::TimerType:
+            return U8Pref::TimerType;
+        case PrefId::Friction:
+            return U8Pref::Friction;
+        case PrefId::Restitution:
+            return U8Pref::Restitution;
+        case PrefId::ApeColorType:
+            return U8Pref::ApeColorType;
+        case PrefId::IlBattleBreakdown:
+            return U8Pref::IlBattleBreakdown;
+        case PrefId::InputDispColorType:
+            return U8Pref::InputDispColorType;
+        case PrefId::InputDispRed:
+            return U8Pref::InputDispRed;
+        case PrefId::InputDispGreen:
+            return U8Pref::InputDispGreen;
+        case PrefId::InputDispBlue:
+            return U8Pref::InputDispBlue;
+        case PrefId::IlBattleReadyBind:
+            return U8Pref::IlBattleReadyBind;
+        case PrefId::FreecamToggleBind:
+            return U8Pref::FreecamToggleBind;
+        case PrefId::SavestateClearBind:
+            return U8Pref::SavestateClearBind;
+        case PrefId::FalloutPlaneType:
+            return U8Pref::FalloutPlaneType;
         default:
             return {};
     }
@@ -223,6 +317,8 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::UnlockVanilla,
     BoolPref::FreecamFreezeTimer,
     BoolPref::FreecamHideHud,
+    BoolPref::IlBattleShowTime,
+    BoolPref::IlBattleShowScore,
 };
 
 struct DefaultU8Pref {
@@ -232,7 +328,13 @@ struct DefaultU8Pref {
 
 // Non-zero default values of u8 preferences
 static DefaultU8Pref s_default_u8_prefs[] = {
-    {U8Pref::FreecamSpeedMult, 3},
+    {U8Pref::FreecamSpeedMult, 3},      // 3
+    {U8Pref::MenuBind, 64},             // L + R
+    {U8Pref::Friction, 110},            // 0.10
+    {U8Pref::Restitution, 150},         // 0.5
+    {U8Pref::IlBattleReadyBind, 104},   // dpad-down
+    {U8Pref::FreecamToggleBind, 255},   // unbound
+    {U8Pref::SavestateClearBind, 255},  // unbound
 };
 
 //
@@ -240,8 +342,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[8];
-    u8 u8_prefs[8];
+    u8 bool_prefs[8];  // up to 64 bool prefs
+    u8 u8_prefs[25];   // 25 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

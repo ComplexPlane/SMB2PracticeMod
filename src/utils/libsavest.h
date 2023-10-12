@@ -35,6 +35,8 @@ class SaveState {
     void tick();
     SaveResult save();
     LoadResult load();
+    bool isEmpty();
+    void clear();
 
  private:
     u32 m_flags = 0;
@@ -50,7 +52,7 @@ class SaveState {
     bool handle_load_state_from_nonplay_submode();
 };
 
-void init(); // Global initialization for savestates
+void init();  // Global initialization for savestates
 bool state_loaded_this_frame();
 bool savestates_enabled();
 

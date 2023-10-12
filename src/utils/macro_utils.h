@@ -6,7 +6,8 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define CLAMP(x, min, max) (MIN((max), MAX((min), (x))))
-#define RGBA(r, g, b, a)  (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
+#define RGBA(r, g, b, a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
+#define ABS(x) ((x) < 0 ? (-x) : (x))
 
 /*
  * Vector macros which may have existed in the original source in some form.

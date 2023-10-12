@@ -125,6 +125,47 @@ void heart() {
     }
 }
 
+static constexpr u8 LOW_COLOR = 0x41;
+static constexpr u8 HIGH_COLOR = 0xf5;
+mkb::GXColor num_to_rainbow(int num) {
+    int state = num / 180;
+    int loc = num % 180;
+    mkb::GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
+    switch (state) {
+        case 0: {  // R-G^B
+            color.r = HIGH_COLOR;
+            color.g += loc;
+            break;
+        }
+        case 1: {  // RvG-B
+            color.r = HIGH_COLOR - loc;
+            color.g = HIGH_COLOR;
+            break;
+        }
+        case 2: {  // R G-B^
+            color.g = HIGH_COLOR;
+            color.b += loc;
+            break;
+        }
+        case 3: {  // R GvB-
+            color.g = HIGH_COLOR - loc;
+            color.b = HIGH_COLOR;
+            break;
+        }
+        case 4: {  // R^G B-
+            color.r += loc;
+            color.b = HIGH_COLOR;
+            break;
+        }
+        case 5: {  // R-G Bv
+            color.r = HIGH_COLOR;
+            color.b = HIGH_COLOR - loc;
+            break;
+        }
+    }
+    return color;
+}
+
 void disp() {
     s32 notify_len = mkb::strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
