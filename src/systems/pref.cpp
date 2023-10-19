@@ -88,10 +88,9 @@ enum class PrefId : u16 {
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
     TimerShowSubtick = 70,
-    TimerExtraSubtickPrecision = 71,
-    TimerShowFramesave = 72,
-    TimerShowUnrounded = 73,
-    TimerShowPause = 74,
+    TimerShowFramesave = 71,
+    TimerShowUnrounded = 72,
+    TimerShowPause = 73,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -163,7 +162,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
     PrefId::TimerShowSubtick,
-    PrefId::TimerExtraSubtickPrecision,
     PrefId::TimerShowFramesave,
     PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
@@ -257,8 +255,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::SavestateDisableOverwrite;
         case PrefId::TimerShowSubtick:
             return BoolPref::TimerShowSubtick;
-        case PrefId::TimerExtraSubtickPrecision:
-            return BoolPref::TimerExtraSubtickPrecision;
         case PrefId::TimerShowFramesave:
             return BoolPref::TimerShowFramesave;
         case PrefId::TimerShowUnrounded:

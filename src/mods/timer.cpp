@@ -177,22 +177,20 @@ void disp() {
             return;
     }
 
-    bool precision = pref::get(pref::BoolPref::TimerExtraSubtickPrecision);
-
     if (pref::get(pref::BoolPref::TimerShowSubtick) && !freecam::should_hide_hud()) {
         timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                      draw::WHITE, true, s_framesave, precision);
+                                      draw::WHITE, true, s_framesave, false);
     }
 
     if (pref::get(pref::BoolPref::TimerShowUnrounded) && !freecam::should_hide_hud()) {
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CURR:", row++,
-                                      draw::WHITE, true, 0, precision);
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "NEXT:", row++,
-                                      draw::WHITE, true, 100, precision);
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
+                                      draw::WHITE, true, 0, false);
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "NXT:", row++,
+                                      draw::WHITE, true, 100, false);
     }
 
     if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        timerdisp::draw_percentage(s_framesave, "SAVE:", row++, draw::WHITE);
+        timerdisp::draw_percentage(s_framesave, "FSV:", row++, draw::WHITE);
     }
 }
 

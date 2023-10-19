@@ -50,7 +50,6 @@ enum class BoolPref : u8 {
     UseCustomPhysics,
     SavestateDisableOverwrite,
     TimerShowSubtick,
-    TimerExtraSubtickPrecision,
     TimerShowFramesave,
     TimerShowUnrounded,
     TimerShowPause,
