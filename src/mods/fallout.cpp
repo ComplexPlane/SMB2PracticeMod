@@ -102,12 +102,12 @@ void freeze_timer() {
             }
 
             // when timer hits 0, add 0 to timer each frame
-            if (mkb::mode_info.stage_time_frames_remaining == 0 && !s_halted) {
+            if (mkb::mode_info.stage_time_frames_remaining <= 0 && !s_halted) {
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
                 s_halted = true;
             }
             // when timer is reset on retry, add -1 to timer each frame
-            else if (mkb::mode_info.stage_time_frames_remaining != 0 && s_halted) {
+            else if (mkb::mode_info.stage_time_frames_remaining > 0 && s_halted) {
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
                 s_halted = false;
             }

@@ -209,16 +209,14 @@ static void handle_widget_bind() {
                 s_edit_tick = 0;
             }
 
-            if (a_repeat) {
-                s_edit_tick += 5;
-                next += (s_edit_tick / 5);
-            }
-            if (y_repeat) {
-                s_edit_tick -= 5;
-                next += (s_edit_tick / 5);
-            }
             if (x_pressed) {
                 next = pref::get_default(edit_pref);
+            } else if (a_repeat && !pad::button_down(mkb::PAD_BUTTON_Y, true)) {
+                s_edit_tick += 5;
+                next += (s_edit_tick / 5);
+            } else if (y_repeat && !pad::button_down(mkb::PAD_BUTTON_A, true)) {
+                s_edit_tick -= 5;
+                next += (s_edit_tick / 5);
             }
             next = CLAMP(next, min, max);
             if (next != pref::get(edit_pref)) {
