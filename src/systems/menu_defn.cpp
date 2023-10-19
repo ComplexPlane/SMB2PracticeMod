@@ -658,6 +658,43 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
+static const char* FULLGAME_TIMER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+    "End of run",
+};
+
+static const char* SEGMENT_TIMER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+    "End of run",
+};
+
+static Widget s_loadless_timers_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Fullgame Timer",
+                .choices = FULLGAME_TIMER_OPTIONS,
+                .num_choices = LEN(FULLGAME_TIMER_OPTIONS),
+                .pref = pref::U8Pref::FullgameTimerOptions,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Segment Timer",
+                .choices = SEGMENT_TIMER_OPTIONS,
+                .num_choices = LEN(SEGMENT_TIMER_OPTIONS),
+                .pref = pref::U8Pref::SegmentTimerOptions,
+            },
+    },
+};
+
 static Widget s_timers_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -682,6 +719,10 @@ static Widget s_timers_widgets[] = {
                 .label = "CM Seg Timer",
                 .pref = pref::BoolPref::CmTimer,
             },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Loadless Timers", s_loadless_timers_widgets, LEN(s_loadless_timers_widgets)},
     },
 };
 

@@ -31,6 +31,7 @@
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
+#include "mods/storytimer.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
@@ -116,6 +117,7 @@ void init() {
         fallout::tick();
         physics::tick();
         iw::tick();
+        storytimer::tick();
         savest_ui::tick();
         menu_impl::tick();
         jump::tick();
@@ -150,6 +152,7 @@ void init() {
         draw::predraw();
         timer::disp();
         iw::disp();
+        storytimer::disp();
         Tetris::get_instance().disp();
         ilbattle::disp();
         cmseg::disp();

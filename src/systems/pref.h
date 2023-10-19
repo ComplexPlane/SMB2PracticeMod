@@ -77,6 +77,8 @@ enum class U8Pref : u8 {
     FreecamToggleBind,
     SavestateClearBind,
     FalloutPlaneType,
+    FullgameTimerOptions,
+    SegmentTimerOptions,
 };
 
 void init();

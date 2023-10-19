@@ -87,6 +87,8 @@ enum class PrefId : u16 {
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
+    FullgameTimerOptions = 70,
+    SegmentTimerOptions = 71,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -302,6 +304,10 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::SavestateClearBind;
         case PrefId::FalloutPlaneType:
             return U8Pref::FalloutPlaneType;
+        case PrefId::FullgameTimerOptions:
+            return U8Pref::FullgameTimerOptions;
+        case PrefId::SegmentTimerOptions:
+            return U8Pref::SegmentTimerOptions;
         default:
             return {};
     }
@@ -343,7 +349,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[25];   // 25 u8 prefs
+    u8 u8_prefs[27];   // 27 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;
