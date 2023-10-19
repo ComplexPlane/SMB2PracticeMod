@@ -49,6 +49,8 @@ enum class BoolPref : u8 {
     IlBattleBuzzerOld,
     UseCustomPhysics,
     SavestateDisableOverwrite,
+    IlBattleTieCount,
+    IlBattleAttemptCount,
 };
 
 enum class U8Pref : u8 {

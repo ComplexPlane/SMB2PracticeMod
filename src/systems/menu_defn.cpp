@@ -367,6 +367,22 @@ static Widget s_il_battle_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Show Tie Count",
+                .pref = pref::BoolPref::IlBattleTieCount,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Attempts",
+                .pref = pref::BoolPref::IlBattleAttemptCount,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Old Buzzer Message",
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
