@@ -61,6 +61,56 @@ bool line_intersects(Vec* lineStart, Vec* lineEnd, mkb::Rect* rect) {
     }
 }
 
+void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
+                    mkb::byte* out_goal_flags) {
+    int itemgroup_goal_idx;
+    mkb::StagedefGoal* goal;
+    mkb::dword itemgroup_idx;
+    int stage_goal_idx;
+    mkb::StagedefColiHeader* itemgroup;
+    mkb::Rect goal_trigger;
+    mkb::PhysicsBall physicsball;
+
+    mkb::init_physicsball_from_ball(ball, &physicsball);
+    stage_goal_idx = 0;
+    itemgroup = mkb::stagedef->coli_header_list;
+    itemgroup_idx = 0;
+    do {
+        if ((int)mkb::stagedef->coli_header_count <= (int)itemgroup_idx) {
+            break;
+        }
+        if (0 < (int)itemgroup->goal_count) {
+            if (itemgroup_idx != physicsball.itemgroup_idx) {
+                mkb::tf_physball_to_itemgroup_space(&physicsball, itemgroup_idx);
+            }
+            goal = itemgroup->goal_list;
+            for (itemgroup_goal_idx = 0; itemgroup_goal_idx < (int)itemgroup->goal_count;
+                 itemgroup_goal_idx = itemgroup_goal_idx + 1) {
+                mkb::mtxa_from_translate(&goal->position);
+                mkb::mtxa_rotate_z((goal->rotation).z);
+                mkb::mtxa_rotate_y((goal->rotation).y);
+                mkb::mtxa_rotate_x((goal->rotation).x);
+                goal_trigger.pos.x = 0.0;
+                goal_trigger.pos.y = 1.5;
+                goal_trigger.pos.z = 0.0;
+                mkb::mtxa_tf_point(&goal_trigger.pos, &goal_trigger.pos);
+                goal_trigger.rot.x = (goal->rotation).x;
+                goal_trigger.rot.y = (goal->rotation).y;
+                goal_trigger.rot.z = (goal->rotation).z;
+                goal_trigger.width = 3.0;
+                goal_trigger.height = 3.0;
+                if (line_intersects(&physicsball.pos, &physicsball.prev_pos, &goal_trigger)) {
+                    return;
+                }
+                stage_goal_idx = stage_goal_idx + 1;
+                goal = goal + 1;
+            }
+        }
+        itemgroup_idx = itemgroup_idx + 1;
+        itemgroup = itemgroup + 1;
+    } while (true);
+}
+
 void init() {
     s_retrace_count = mkb::VIGetRetraceCount();
 
@@ -68,55 +118,13 @@ void init() {
         s_goal_tramp, &mkb::did_ball_enter_goal,
         [](mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
            mkb::byte* out_goal_flags) {
-            int itemgroup_goal_idx;
-            mkb::StagedefGoal* goal;
-            mkb::dword itemgroup_idx;
-            int stage_goal_idx;
-            mkb::StagedefColiHeader* itemgroup;
-            mkb::Rect goal_trigger;
-            mkb::PhysicsBall physicsball;
-
-            mkb::init_physicsball_from_ball(ball, &physicsball);
-            stage_goal_idx = 0;
-            itemgroup = mkb::stagedef->coli_header_list;
-            itemgroup_idx = 0;
-            do {
-                if ((int)mkb::stagedef->coli_header_count <= (int)itemgroup_idx) {
-                    break;
-                }
-                if (0 < (int)itemgroup->goal_count) {
-                    if (itemgroup_idx != physicsball.itemgroup_idx) {
-                        mkb::tf_physball_to_itemgroup_space(&physicsball, itemgroup_idx);
-                    }
-                    goal = itemgroup->goal_list;
-                    for (itemgroup_goal_idx = 0; itemgroup_goal_idx < (int)itemgroup->goal_count;
-                         itemgroup_goal_idx = itemgroup_goal_idx + 1) {
-                        mkb::mtxa_from_translate(&goal->position);
-                        mkb::mtxa_rotate_z((goal->rotation).z);
-                        mkb::mtxa_rotate_y((goal->rotation).y);
-                        mkb::mtxa_rotate_x((goal->rotation).x);
-                        goal_trigger.pos.x = 0.0;
-                        goal_trigger.pos.y = 1.5;
-                        goal_trigger.pos.z = 0.0;
-                        mkb::mtxa_tf_point(&goal_trigger.pos, &goal_trigger.pos);
-                        goal_trigger.rot.x = (goal->rotation).x;
-                        goal_trigger.rot.y = (goal->rotation).y;
-                        goal_trigger.rot.z = (goal->rotation).z;
-                        goal_trigger.width = 3.0;
-                        goal_trigger.height = 3.0;
-                        if (line_intersects(&physicsball.pos, &physicsball.prev_pos,
-                                            &goal_trigger)) {
-                            break;
-                        }
-                        stage_goal_idx = stage_goal_idx + 1;
-                        goal = goal + 1;
-                    }
-                }
-                itemgroup_idx = itemgroup_idx + 1;
-                itemgroup = itemgroup + 1;
-            } while (true);
-
-            return s_goal_tramp.dest(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+            bool result =
+                s_goal_tramp.dest(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+            if (result) {
+                // determine framesave percentage
+                find_framesave(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+            }
+            return result;
         });
 }
 
@@ -185,8 +193,8 @@ void disp() {
     if (pref::get(pref::BoolPref::TimerShowUnrounded) && !freecam::should_hide_hud()) {
         timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
                                       draw::WHITE, true, 0, false);
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "NXT:", row++,
-                                      draw::WHITE, true, 100, false);
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:", row++,
+                                      draw::WHITE, true, 0, false);
     }
 
     if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {

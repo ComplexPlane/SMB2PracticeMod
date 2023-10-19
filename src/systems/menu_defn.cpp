@@ -19,7 +19,7 @@
 
 namespace menu_defn {
 
-static char s_version_str[30];
+static char s_version_str[36];
 
 static const char* INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
