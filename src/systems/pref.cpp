@@ -21,7 +21,7 @@ enum class PrefId : u16 {
     Savestates = 1,
     InputDisp = 2,
     InputDispCenterLocation = 3,
-    RtaPauseTimer = 4,
+    TimerShowRTA = 4,
     CmChara = 5,
     InputDispColor = 6,
     InputDispNotchIndicators = 7,
@@ -87,8 +87,14 @@ enum class PrefId : u16 {
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
-    BananaType = 70,
-    ReverseMode = 71,
+    IlBattleTieCount = 70,
+    IlBattleAttemptCount = 71,
+    TimerShowSubtick = 72,
+    TimerShowFramesave = 73,
+    TimerShowUnrounded = 74,
+    TimerShowPause = 75,
+    BananaType = 76,
+    ReverseMode = 77,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -96,7 +102,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Savestates,
     PrefId::InputDisp,
     PrefId::InputDispCenterLocation,
-    PrefId::RtaPauseTimer,
+    PrefId::TimerShowRTA,
     PrefId::CmChara,
     PrefId::InputDispColor,
     PrefId::InputDispNotchIndicators,
@@ -159,6 +165,12 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
+    PrefId::IlBattleTieCount,
+    PrefId::IlBattleAttemptCount,
+    PrefId::TimerShowSubtick,
+    PrefId::TimerShowFramesave,
+    PrefId::TimerShowUnrounded,
+    PrefId::TimerShowPause,
     PrefId::ReverseMode,
 };
 
@@ -170,8 +182,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::InputDisp;
         case PrefId::InputDispCenterLocation:
             return BoolPref::InputDispCenterLocation;
-        case PrefId::RtaPauseTimer:
-            return BoolPref::RtaPauseTimer;
+        case PrefId::TimerShowRTA:
+            return BoolPref::TimerShowRTA;
         case PrefId::InputDispNotchIndicators:
             return BoolPref::InputDispNotchIndicators;
         case PrefId::IwTimer:
@@ -248,6 +260,18 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
+        case PrefId::IlBattleTieCount:
+            return BoolPref::IlBattleTieCount;
+        case PrefId::IlBattleAttemptCount:
+            return BoolPref::IlBattleAttemptCount;
+        case PrefId::TimerShowSubtick:
+            return BoolPref::TimerShowSubtick;
+        case PrefId::TimerShowFramesave:
+            return BoolPref::TimerShowFramesave;
+        case PrefId::TimerShowUnrounded:
+            return BoolPref::TimerShowUnrounded;
+        case PrefId::TimerShowPause:
+            return BoolPref::TimerShowPause;
         case PrefId::ReverseMode:
             return BoolPref::ReverseMode;
         default:
