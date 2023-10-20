@@ -101,30 +101,31 @@ static void battle_display(mkb::GXColor text_color) {
 
     draw::debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
     if (battle_hours > 0) {
-        draw::debug_text(X, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
+        draw::debug_text(X - 6, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
                          battle_seconds);
     } else {
-        draw::debug_text(X, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
+        draw::debug_text(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
     }
 
     if (pref::get(pref::BoolPref::IlBattleShowTime)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
         if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_frames_ties > 0) {
-            draw::debug_text(X, current_y, time_color, "%d.%02d (%d)", best_seconds,
+            draw::debug_text(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
                              best_centiseconds, s_best_frames_ties + 1);
         } else {
-            draw::debug_text(X, current_y, time_color, "%d.%02d", best_seconds, best_centiseconds);
+            draw::debug_text(X - 6, current_y, time_color, "%d.%02d", best_seconds,
+                             best_centiseconds);
         }
     }
     if (pref::get(pref::BoolPref::IlBattleShowScore)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
         if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_score_ties > 0) {
-            draw::debug_text(X, current_y, score_color, "%d (%d)", s_best_score,
+            draw::debug_text(X - 6, current_y, score_color, "%d (%d)", s_best_score,
                              s_best_score_ties + 1);
         } else {
-            draw::debug_text(X, current_y, score_color, "%d", s_best_score);
+            draw::debug_text(X - 6, current_y, score_color, "%d", s_best_score);
         }
 
         // breakdown
@@ -133,25 +134,23 @@ static void battle_display(mkb::GXColor text_color) {
             // minimal
             current_y += CHEIGHT;
             draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
-            draw::debug_text(X, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
+            draw::debug_text(X - 6, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
                              best_score_centiseconds, s_best_score_bananas);
         } else if (breakdown_value == 2) {
             // full
             current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "  BANANAS:");
+            draw::debug_text(X - 6, current_y, text_color, "%d", s_best_score_bananas);
             current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BANANAS:");
-            draw::debug_text(X, current_y, text_color, "%d", s_best_score_bananas);
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "TIMER:");
-            draw::debug_text(X, current_y, text_color, "%d.%02d", best_score_seconds,
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "  TIMER:");
+            draw::debug_text(X - 6, current_y, text_color, "%d.%02d", best_score_seconds,
                              best_score_centiseconds);
         }
     }
     if (pref::get(pref::BoolPref::IlBattleAttemptCount)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
-        draw::debug_text(X, current_y, text_color, "%d", s_attempts);
+        draw::debug_text(X - 6, current_y, text_color, "%d", s_attempts);
     }
 
     if (pref::get(pref::BoolPref::IlBattleBuzzerOld) &&
