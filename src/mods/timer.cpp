@@ -17,7 +17,7 @@ static s32 s_pause_timer;
 static u32 s_framesave;
 static patch::Tramp<decltype(&mkb::did_ball_enter_goal)> s_goal_tramp;
 
-static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, mkb::Rect& rect) {
+static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb::Rect& rect) {
     Vec end;
     Vec start;
     float half_height;
@@ -29,7 +29,7 @@ static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, mkb::Rect&
     end.x = lineEnd.x;
     end.y = lineEnd.y;
     end.z = lineEnd.z;
-    mkb::mtxa_from_translate(&rect.pos);
+    mkb::mtxa_from_translate(&const_cast<Vec&>(rect.pos));
     mkb::mtxa_rotate_z((rect.rot).z);
     mkb::mtxa_rotate_y((rect.rot).y);
     mkb::mtxa_rotate_x((rect.rot).x);
