@@ -49,6 +49,8 @@ enum class BoolPref : u8 {
     IlBattleBuzzerOld,
     UseCustomPhysics,
     SavestateDisableOverwrite,
+    IlBattleTieCount,
+    IlBattleAttemptCount,
     TimerShowSubtick,
     TimerShowFramesave,
     TimerShowUnrounded,

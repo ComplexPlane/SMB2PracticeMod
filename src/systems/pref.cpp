@@ -87,10 +87,12 @@ enum class PrefId : u16 {
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
-    TimerShowSubtick = 70,
-    TimerShowFramesave = 71,
-    TimerShowUnrounded = 72,
-    TimerShowPause = 73,
+    IlBattleTieCount = 70,
+    IlBattleAttemptCount = 71,
+    TimerShowSubtick = 72,
+    TimerShowFramesave = 73,
+    TimerShowUnrounded = 74,
+    TimerShowPause = 75,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -161,6 +163,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
+    PrefId::IlBattleTieCount,
+    PrefId::IlBattleAttemptCount,
     PrefId::TimerShowSubtick,
     PrefId::TimerShowFramesave,
     PrefId::TimerShowUnrounded,
@@ -253,6 +257,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
+        case PrefId::IlBattleTieCount:
+            return BoolPref::IlBattleTieCount;
+        case PrefId::IlBattleAttemptCount:
+            return BoolPref::IlBattleAttemptCount;
         case PrefId::TimerShowSubtick:
             return BoolPref::TimerShowSubtick;
         case PrefId::TimerShowFramesave:
