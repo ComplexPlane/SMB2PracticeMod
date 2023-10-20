@@ -19,7 +19,7 @@
 
 namespace menu_defn {
 
-static char s_version_str[30];
+static char s_version_str[36];
 
 static const char* INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
@@ -675,19 +675,56 @@ static Widget s_cm_seg_widgets[] = {
 };
 
 static Widget s_timers_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "RTA+Pause Timer",
-                .pref = pref::BoolPref::RtaPauseTimer,
+                .label = "Realtime (RTA)",
+                .pref = pref::BoolPref::TimerShowRTA,
             },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Story Mode IW Timer",
+                .label = "Pausetime (PAU)",
+                .pref = pref::BoolPref::TimerShowPause,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Subtick Timers"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Framesave (FSV)",
+                .pref = pref::BoolPref::TimerShowFramesave,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Subtick (SUB)",
+                .pref = pref::BoolPref::TimerShowSubtick,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Unrounded (CUR/NXT)",
+                .pref = pref::BoolPref::TimerShowUnrounded,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Segment Timers"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Story Mode IWs (IW)",
                 .pref = pref::BoolPref::IwTimer,
             },
     },
@@ -695,7 +732,7 @@ static Widget s_timers_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "CM Seg Timer",
+                .label = "CM Segments (SEG)",
                 .pref = pref::BoolPref::CmTimer,
             },
     },
