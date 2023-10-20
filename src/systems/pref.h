@@ -10,7 +10,7 @@ enum class BoolPref : u8 {
     Savestates,
     InputDisp,
     InputDispCenterLocation,
-    RtaPauseTimer,
+    TimerShowRTA,
     InputDispNotchIndicators,
     IwTimer,
     CmTimer,
@@ -51,6 +51,10 @@ enum class BoolPref : u8 {
     SavestateDisableOverwrite,
     IlBattleTieCount,
     IlBattleAttemptCount,
+    TimerShowSubtick,
+    TimerShowFramesave,
+    TimerShowUnrounded,
+    TimerShowPause,
 };
 
 enum class U8Pref : u8 {
