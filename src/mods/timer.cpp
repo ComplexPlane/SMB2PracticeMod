@@ -17,22 +17,22 @@ static s32 s_pause_timer;
 static u32 s_framesave;
 static patch::Tramp<decltype(&mkb::did_ball_enter_goal)> s_goal_tramp;
 
-bool line_intersects(Vec* lineStart, Vec* lineEnd, mkb::Rect* rect) {
+static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, mkb::Rect& rect) {
     Vec end;
     Vec start;
     float half_height;
     float half_width;
 
-    start.x = lineStart->x;
-    start.y = lineStart->y;
-    start.z = lineStart->z;
-    end.x = lineEnd->x;
-    end.y = lineEnd->y;
-    end.z = lineEnd->z;
-    mkb::mtxa_from_translate(&rect->pos);
-    mkb::mtxa_rotate_z((rect->rot).z);
-    mkb::mtxa_rotate_y((rect->rot).y);
-    mkb::mtxa_rotate_x((rect->rot).x);
+    start.x = lineStart.x;
+    start.y = lineStart.y;
+    start.z = lineStart.z;
+    end.x = lineEnd.x;
+    end.y = lineEnd.y;
+    end.z = lineEnd.z;
+    mkb::mtxa_from_translate(&rect.pos);
+    mkb::mtxa_rotate_z((rect.rot).z);
+    mkb::mtxa_rotate_y((rect.rot).y);
+    mkb::mtxa_rotate_x((rect.rot).x);
     mkb::mtxa_rigid_inv_tf_point(&start, &start);
     mkb::mtxa_rigid_inv_tf_point(&end, &end);
     if (((end.z < 0.0) && (start.z < 0.0)) || ((0.0 < end.z && (0.0 < start.z)))) {
@@ -43,13 +43,14 @@ bool line_intersects(Vec* lineStart, Vec* lineEnd, mkb::Rect* rect) {
             end.x = end.x - (start.x - end.x) * (end.z / half_width);
             end.y = end.y - (start.y - end.y) * (end.z / half_width);
         }
-        half_width = rect->width * 0.5;
-        half_height = rect->height * 0.5;
+        half_width = rect.width * 0.5;
+        half_height = rect.height * 0.5;
         if ((end.x < -half_width) || (half_width < end.x)) {
             return false;
         } else if ((end.y < -half_height) || (half_height < end.y)) {
             return false;
         } else {
+            // update framesave if first goal entered
             if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
                 mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN &&
                 mkb::sub_mode != mkb::SMD_GAME_GOAL_REPLAY_INIT &&
@@ -63,6 +64,7 @@ bool line_intersects(Vec* lineStart, Vec* lineEnd, mkb::Rect* rect) {
 
 void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
                     mkb::byte* out_goal_flags) {
+    // mostly a ghidra copy-paste
     int itemgroup_goal_idx;
     mkb::StagedefGoal* goal;
     mkb::dword itemgroup_idx;
@@ -99,8 +101,8 @@ void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup
                 goal_trigger.rot.z = (goal->rotation).z;
                 goal_trigger.width = 3.0;
                 goal_trigger.height = 3.0;
-                if (line_intersects(&physicsball.pos, &physicsball.prev_pos, &goal_trigger)) {
-                    return;
+                if (line_intersects(physicsball.pos, physicsball.prev_pos, goal_trigger)) {
+                    return;  // found a goal that ball travelled thru
                 }
                 stage_goal_idx = stage_goal_idx + 1;
                 goal = goal + 1;
