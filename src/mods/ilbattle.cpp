@@ -225,40 +225,40 @@ static void run_battle_timer() {
 }
 
 static void track_best() {
+    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) return;
+
     s16 current_frames = mkb::mode_info.stage_time_frames_remaining;
     u32 current_score = mkb::balls[mkb::curr_player_idx].score;
-    bool entered_goal = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT;
-    if (entered_goal) {
-        bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
-                                  s_battle_stage_id != mkb::current_stage_id &&
-                                  mkb::main_mode == mkb::MD_GAME;
-        bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
-                     s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
-        u32 calculated_score = score_calc(current_score);
+    bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
+                              s_battle_stage_id != mkb::current_stage_id &&
+                              mkb::main_mode == mkb::MD_GAME;
+    bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
+                 s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
+    if (!valid || on_incorrect_stage) return;
 
-        // increment ties
-        bool tie = false;
-        if (current_frames == s_best_frames && valid && !on_incorrect_stage && !s_accepted_tie) {
+    u32 calculated_score = score_calc(current_score);
+
+    // increment ties
+    if (!s_accepted_tie) {
+        if (current_frames == s_best_frames) {
             s_best_frames_ties++;
-            tie = true;
         }
-        if (calculated_score == s_best_score && valid && !on_incorrect_stage && !s_accepted_tie) {
+        if (calculated_score == s_best_score) {
             s_best_score_ties++;
-            tie = true;
         }
-        s_accepted_tie = tie;
+        s_accepted_tie = true;
+    }
 
-        // update times
-        if (current_frames > s_best_frames && valid && !on_incorrect_stage) {
-            s_best_frames_ties = 0;
-            s_best_frames = current_frames;
-        }
-        if (calculated_score > s_best_score && valid && !on_incorrect_stage) {
-            s_best_score_ties = 0;
-            s_best_score = calculated_score;
-            s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
-            s_best_score_frames = current_frames;
-        }
+    // update times
+    if (current_frames > s_best_frames) {
+        s_best_frames_ties = 0;
+        s_best_frames = current_frames;
+    }
+    if (calculated_score > s_best_score) {
+        s_best_score_ties = 0;
+        s_best_score = calculated_score;
+        s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
+        s_best_score_frames = current_frames;
     }
 }
 
@@ -268,8 +268,8 @@ static void track_invalid_pauses() {
         s_valid_run = true;
         s_paused_frame = 0;       // attempt is now valid
         if (!s_accepted_retry) {  // track attempt counts
-            s_accepted_retry = true;
             s_attempts++;
+            s_accepted_retry = true;
         }
     }
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
