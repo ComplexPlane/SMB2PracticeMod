@@ -2,8 +2,8 @@
 
 #include "mkb/mkb.h"
 
-namespace bananatype {
+namespace stage_edits {
 void init();
 void tick();
 
-}  // namespace bananatype
+}  // namespace stage_edits

@@ -672,6 +672,11 @@ static Widget s_cm_seg_widgets[] = {
                 .pref = pref::U8Pref::CmChara,
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Text,
+        .text = {"Segments may crash in romhacks!"},
+    },
 };
 
 static Widget s_timers_widgets[] = {
@@ -1313,6 +1318,54 @@ static Widget s_physics_widgets[] = {
 };
 
 static const char* BANANA_TYPES[] = {"Normal", "Golden", "Dark"};
+static const char* GOAL_TYPES[] = {"Any", "Blue", "Green", "Red"};
+
+static Widget s_reverse_goal_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Force Goal Type",
+                .choices = GOAL_TYPES,
+                .num_choices = LEN(GOAL_TYPES),
+                .pref = pref::U8Pref::ReverseGoalType,
+            },
+    },
+};
+
+static Widget s_stage_edit_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Banana Type",
+                .choices = BANANA_TYPES,
+                .num_choices = LEN(BANANA_TYPES),
+                .pref = pref::U8Pref::BananaType,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Reverse Mode",
+                .pref = pref::BoolPref::ReverseMode,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_reverse_goal_widgets,
+                .num_widgets = LEN(s_reverse_goal_widgets),
+                .show_if = []() { return pref::get(pref::BoolPref::ReverseMode); },
+            },
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"Stage Edits are activated on load-in"},
+    },
+};
 
 static Widget s_gameplay_mods_widgets[] = {
     {
@@ -1344,6 +1397,15 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Stage Edits",
+                .widgets = s_stage_edit_widgets,
+                .num_widgets = LEN(s_stage_edit_widgets),
+            },
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -1357,24 +1419,6 @@ static Widget s_gameplay_mods_widgets[] = {
             {
                 .label = "Marathon Mode",
                 .pref = pref::BoolPref::Marathon,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Reverse Mode",
-                .pref = pref::BoolPref::ReverseMode,
-            },
-    },
-    {
-        .type = WidgetType::Choose,
-        .choose =
-            {
-                .label = "Banana Type",
-                .choices = BANANA_TYPES,
-                .num_choices = LEN(BANANA_TYPES),
-                .pref = pref::U8Pref::BananaType,
             },
     },
     {

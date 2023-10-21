@@ -85,6 +85,7 @@ enum class U8Pref : u8 {
     SavestateClearBind,
     FalloutPlaneType,
     BananaType,
+    ReverseGoalType,
 };
 
 void init();

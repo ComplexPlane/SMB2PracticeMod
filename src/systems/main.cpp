@@ -13,7 +13,6 @@
 #include "utils/patch.h"
 
 #include "mods/ballcolor.h"
-#include "mods/bananatype.h"
 #include "mods/banans.h"
 #include "mods/camera.h"
 #include "mods/cmseg.h"
@@ -32,6 +31,7 @@
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
+#include "mods/stage_edits.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
@@ -93,7 +93,7 @@ void init() {
     ilmark::init();
     camera::init();
     fallout::init();
-    bananatype::init();
+    stage_edits::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
@@ -131,7 +131,7 @@ void init() {
         ilbattle::tick();
         ilmark::tick();
         camera::tick();
-        bananatype::tick();
+        stage_edits::tick();
         scratch::tick();
     });
 
