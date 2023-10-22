@@ -4,7 +4,7 @@
 
 namespace stage_edits {
 
-enum class BananaType {
+enum class BananaVariant {
     Normal = 0,
     Golden = 1,  // collect all bananas for a perfect
     Dark = 2,    // colect a banana and die!
@@ -19,7 +19,7 @@ enum class GoalType {
 
 static patch::Tramp<decltype(&mkb::load_stagedef)> load_stagedef_tramp;
 
-u32 count_goals(u32 type) {
+static u32 count_goals(u32 type) {
     u32 count = 0;
     for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
         if (mkb::stagedef->goal_list[i].type == type) count++;
@@ -69,7 +69,7 @@ void init() {
             mkb::stagedef->goal_list[goal_num].rotation.x = sx;
             mkb::stagedef->goal_list[goal_num].rotation.y = sy - 32766;
             mkb::stagedef->goal_list[goal_num].rotation.z = sz;
-        } else if (BananaType(pref::get(pref::U8Pref::BananaType)) == BananaType::Golden) {
+        } else if (BananaVariant(pref::get(pref::U8Pref::BananaVariant)) == BananaVariant::Golden) {
             // disable goals somehow
             for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
                 mkb::stagedef->goal_list[i].position.y = -10000;
@@ -79,24 +79,22 @@ void init() {
 }
 
 void tick() {
-    BananaType type = BananaType(pref::get(pref::U8Pref::BananaType));
+    BananaVariant type = BananaVariant(pref::get(pref::U8Pref::BananaVariant));
     switch (type) {
-        case BananaType::Golden: {
-            if (mkb::stagedef != nullptr) {
-            }
+        case BananaVariant::Golden: {
             if (mkb::mode_info.bananas_remaining == 0) {
                 mkb::mode_info.g_ball_mode |= 0x228;
             }
             break;
         }
-        case BananaType::Dark: {
+        case BananaVariant::Dark: {
             if (mkb::stagedef != nullptr &&
                 mkb::mode_info.bananas_remaining != mkb::stagedef->banana_count) {
                 mkb::mode_info.g_ball_mode |= mkb::BALLMODE_FALLEN_OUT;
             }
             break;
         }
-        case BananaType::Normal: {
+        case BananaVariant::Normal: {
             break;
         }
     }

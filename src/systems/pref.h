@@ -84,7 +84,7 @@ enum class U8Pref : u8 {
     FreecamToggleBind,
     SavestateClearBind,
     FalloutPlaneType,
-    BananaType,
+    BananaVariant,
     ReverseGoalType,
 };
 

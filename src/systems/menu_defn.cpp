@@ -675,7 +675,7 @@ static Widget s_cm_seg_widgets[] = {
     {.type = WidgetType::Separator},
     {
         .type = WidgetType::Text,
-        .text = {"Segments may crash in romhacks!"},
+        .text = {"Segments may crash in some romhacks"},
     },
 };
 
@@ -1341,7 +1341,7 @@ static Widget s_stage_edit_widgets[] = {
                 .label = "Banana Type",
                 .choices = BANANA_TYPES,
                 .num_choices = LEN(BANANA_TYPES),
-                .pref = pref::U8Pref::BananaType,
+                .pref = pref::U8Pref::BananaVariant,
             },
     },
     {

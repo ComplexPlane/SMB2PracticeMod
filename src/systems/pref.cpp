@@ -93,7 +93,7 @@ enum class PrefId : u16 {
     TimerShowFramesave = 73,
     TimerShowUnrounded = 74,
     TimerShowPause = 75,
-    BananaType = 76,
+    BananaVariant = 76,
     ReverseMode = 77,
     ReverseGoalType = 78,
 };
@@ -333,8 +333,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::SavestateClearBind;
         case PrefId::FalloutPlaneType:
             return U8Pref::FalloutPlaneType;
-        case PrefId::BananaType:
-            return U8Pref::BananaType;
+        case PrefId::BananaVariant:
+            return U8Pref::BananaVariant;
         case PrefId::ReverseGoalType:
             return U8Pref::ReverseGoalType;
         default:
