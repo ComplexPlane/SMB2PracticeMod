@@ -8,6 +8,7 @@
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
+#include "mods/stage_edits.h"
 #include "mods/unlock.h"
 #include "systems/pref.h"
 #include "systems/version.h"
@@ -672,6 +673,11 @@ static Widget s_cm_seg_widgets[] = {
                 .pref = pref::U8Pref::CmChara,
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Text,
+        .text = {"Segments may crash in some romhacks"},
+    },
 };
 
 static Widget s_timers_widgets[] = {
@@ -1312,6 +1318,46 @@ static Widget s_physics_widgets[] = {
     },
 };
 
+static const char* STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
+
+static Widget s_reverse_goal_widgets[] = {
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Select New Goal",
+                .push = [] { stage_edits::select_new_goal(); },
+                .flags = ButtonFlags::CloseMenu,
+            },
+    },
+};
+
+static Widget s_stage_edit_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Stage Edit Mode",
+                .choices = STAGE_EDIT_VARIANTS,
+                .num_choices = LEN(STAGE_EDIT_VARIANTS),
+                .pref = pref::U8Pref::StageEditVariant,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_reverse_goal_widgets,
+                .num_widgets = LEN(s_reverse_goal_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
+            },
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"Stage Edits are activated on retry"},
+    },
+};
+
 static Widget s_gameplay_mods_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -1339,6 +1385,15 @@ static Widget s_gameplay_mods_widgets[] = {
                 .label = "Assist",
                 .widgets = s_assist_widgets,
                 .num_widgets = LEN(s_assist_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Stage Edits",
+                .widgets = s_stage_edit_widgets,
+                .num_widgets = LEN(s_stage_edit_widgets),
             },
     },
     {

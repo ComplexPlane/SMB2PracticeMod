@@ -93,6 +93,7 @@ enum class PrefId : u16 {
     TimerShowFramesave = 73,
     TimerShowUnrounded = 74,
     TimerShowPause = 75,
+    StageEditVariant = 76,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -169,6 +170,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::TimerShowFramesave,
     PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
+    PrefId::StageEditVariant,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -326,6 +328,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::SavestateClearBind;
         case PrefId::FalloutPlaneType:
             return U8Pref::FalloutPlaneType;
+        case PrefId::StageEditVariant:
+            return U8Pref::StageEditVariant;
         default:
             return {};
     }
@@ -367,7 +371,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[25];   // 25 u8 prefs
+    u8 u8_prefs[26];   // 26 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

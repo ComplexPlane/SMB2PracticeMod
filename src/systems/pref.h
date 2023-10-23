@@ -55,6 +55,7 @@ enum class BoolPref : u8 {
     TimerShowFramesave,
     TimerShowUnrounded,
     TimerShowPause,
+    ReverseMode,
 };
 
 enum class U8Pref : u8 {
@@ -83,6 +84,7 @@ enum class U8Pref : u8 {
     FreecamToggleBind,
     SavestateClearBind,
     FalloutPlaneType,
+    StageEditVariant,
 };
 
 void init();
