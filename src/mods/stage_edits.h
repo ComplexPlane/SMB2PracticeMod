@@ -4,7 +4,7 @@
 
 namespace stage_edits {
 
-void game_ready_init();
+void main_game_init();
 void init();
 void tick();
 void select_new_goal();

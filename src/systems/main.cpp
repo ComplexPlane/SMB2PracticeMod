@@ -173,7 +173,7 @@ void init() {
 
             // Main game init functions
             if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
-                stage_edits::game_ready_init();
+                stage_edits::main_game_init();
             }
             // Sel_ngc init functions
             // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {

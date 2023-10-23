@@ -67,8 +67,7 @@ void tick() {
             *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_default_color;  // reset default color
             u8 color_id = convert_to_ball_color_id(pref::get(pref::U8Pref::BallColor));
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = color_id;
-            s_current_color =
-                *reinterpret_cast<mkb::GXColor*>(0x80472a28 + (color_id) * sizeof(mkb::GXColor));
+            s_current_color = reinterpret_cast<mkb::GXColor*>(0x80472a28)[color_id];
             break;
         }
         case BallColorType::RGB: {
