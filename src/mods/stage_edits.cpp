@@ -4,49 +4,84 @@
 
 namespace stage_edits {
 
-enum class BananaVariant {
-    Normal = 0,
-    Golden = 1,  // collect all bananas for a perfect
-    Dark = 2,    // colect a banana and die!
+enum class ActiveMode {
+    None = 0,
+    Golden = 1,
+    Dark = 2,
+    Reverse = 3,
 };
 
-enum class GoalType {
-    Any = 0,
-    Blue = 1,
-    Green = 2,
-    Red = 3,
-};
+static ActiveMode s_current_mode = ActiveMode::None;
+static u32 s_rev_goal_idx = 0;
+static bool s_new_goal = false;
 
+static patch::Tramp<decltype(&mkb::smd_game_ready_init)> ready_init_tramp;
 static patch::Tramp<decltype(&mkb::load_stagedef)> load_stagedef_tramp;
 
-static u32 count_goals(u32 type) {
-    u32 count = 0;
-    for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
-        if (mkb::stagedef->goal_list[i].type == type) count++;
+void select_new_goal() { s_new_goal = true; }
+
+static void undo_mode(ActiveMode mode) {
+    switch (mode) {
+        case ActiveMode::None: {
+            break;
+        }
+        case ActiveMode::Golden: {
+            // disable goals somehow
+            for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
+                mkb::stagedef->goal_list[i].position.y += 10000;
+            }
+            break;
+        }
+        case ActiveMode::Dark: {
+            break;
+        }
+        case ActiveMode::Reverse: {
+            if (mkb::stagedef->goal_count < 1) return;
+            float x = mkb::stagedef->start->position.x;
+            float y = mkb::stagedef->start->position.y;
+            float z = mkb::stagedef->start->position.z;
+            s16 sx = mkb::stagedef->start->rotation.x;
+            s16 sy = mkb::stagedef->start->rotation.y;
+            s16 sz = mkb::stagedef->start->rotation.z;
+
+            mkb::stagedef->start->position.x = mkb::stagedef->goal_list[s_rev_goal_idx].position.x;
+            mkb::stagedef->start->position.y =
+                mkb::stagedef->goal_list[s_rev_goal_idx].position.y + 0.5;
+            mkb::stagedef->start->position.z = mkb::stagedef->goal_list[s_rev_goal_idx].position.z;
+            mkb::stagedef->start->rotation.x = mkb::stagedef->goal_list[s_rev_goal_idx].rotation.x;
+            mkb::stagedef->start->rotation.y =
+                mkb::stagedef->goal_list[s_rev_goal_idx].rotation.y + 32766;
+            mkb::stagedef->start->rotation.z = mkb::stagedef->goal_list[s_rev_goal_idx].rotation.z;
+
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.x = x;
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.y = y - 0.5;
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.z = z;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.x = sx;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.y = sy - 32766;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.z = sz;
+            break;
+        }
     }
-    return count;
 }
 
-void init() {
-    patch::hook_function(load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
-        load_stagedef_tramp.dest(stage_id);
-        if (pref::get(pref::BoolPref::ReverseMode) && mkb::stagedef->goal_count > 0) {
-            u32 goal_num = mkb::rand() % mkb::stagedef->goal_count;
-            u8 type = pref::get(pref::U8Pref::ReverseGoalType);
-            if (type != 0) {
-                u32 count = count_goals(type - 1);
-                if (count > 0) {
-                    u32 target = mkb::rand() % count;
-                    for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
-                        if (mkb::stagedef->goal_list[i].type != type - 1) continue;
-                        if (target == 0) {
-                            goal_num = i;
-                        } else {
-                            target--;
-                        }
-                    }
-                }
+static void set_mode(ActiveMode mode) {
+    switch (mode) {
+        case ActiveMode::None: {
+            break;
+        }
+        case ActiveMode::Golden: {
+            // disable goals somehow
+            for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
+                mkb::stagedef->goal_list[i].position.y -= 10000;
             }
+            break;
+        }
+        case ActiveMode::Dark: {
+            break;
+        }
+        case ActiveMode::Reverse: {
+            if (mkb::stagedef->goal_count < 1) return;
+            s_rev_goal_idx %= mkb::stagedef->goal_count;
             // switch goal and start
             float x = mkb::stagedef->start->position.x;
             float y = mkb::stagedef->start->position.y;
@@ -55,46 +90,70 @@ void init() {
             s16 sy = mkb::stagedef->start->rotation.y;
             s16 sz = mkb::stagedef->start->rotation.z;
 
-            mkb::stagedef->start->position.x = mkb::stagedef->goal_list[goal_num].position.x;
-            mkb::stagedef->start->position.y = mkb::stagedef->goal_list[goal_num].position.y + 0.5;
-            mkb::stagedef->start->position.z = mkb::stagedef->goal_list[goal_num].position.z;
-            mkb::stagedef->start->rotation.x = mkb::stagedef->goal_list[goal_num].rotation.x;
+            mkb::stagedef->start->position.x = mkb::stagedef->goal_list[s_rev_goal_idx].position.x;
+            mkb::stagedef->start->position.y =
+                mkb::stagedef->goal_list[s_rev_goal_idx].position.y + 0.5;
+            mkb::stagedef->start->position.z = mkb::stagedef->goal_list[s_rev_goal_idx].position.z;
+            mkb::stagedef->start->rotation.x = mkb::stagedef->goal_list[s_rev_goal_idx].rotation.x;
             mkb::stagedef->start->rotation.y =
-                mkb::stagedef->goal_list[goal_num].rotation.y - 32766;
-            mkb::stagedef->start->rotation.z = mkb::stagedef->goal_list[goal_num].rotation.z;
+                mkb::stagedef->goal_list[s_rev_goal_idx].rotation.y + 32766;
+            mkb::stagedef->start->rotation.z = mkb::stagedef->goal_list[s_rev_goal_idx].rotation.z;
 
-            mkb::stagedef->goal_list[goal_num].position.x = x;
-            mkb::stagedef->goal_list[goal_num].position.y = y - 0.5;
-            mkb::stagedef->goal_list[goal_num].position.z = z;
-            mkb::stagedef->goal_list[goal_num].rotation.x = sx;
-            mkb::stagedef->goal_list[goal_num].rotation.y = sy - 32766;
-            mkb::stagedef->goal_list[goal_num].rotation.z = sz;
-        } else if (BananaVariant(pref::get(pref::U8Pref::BananaVariant)) == BananaVariant::Golden) {
-            // disable goals somehow
-            for (u32 i = 0; i < mkb::stagedef->goal_count; i++) {
-                mkb::stagedef->goal_list[i].position.y = -10000;
-            }
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.x = x;
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.y = y - 0.5;
+            mkb::stagedef->goal_list[s_rev_goal_idx].position.z = z;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.x = sx;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.y = sy - 32766;
+            mkb::stagedef->goal_list[s_rev_goal_idx].rotation.z = sz;
+            break;
         }
+    }
+}
+
+void game_ready_init() {
+    patch::hook_function(ready_init_tramp, mkb::smd_game_ready_init, []() {
+        ActiveMode next_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+        if (s_current_mode != next_mode) {
+            undo_mode(s_current_mode);
+            s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+            set_mode(s_current_mode);
+        } else if (s_current_mode == ActiveMode::Reverse && s_new_goal) {
+            undo_mode(ActiveMode::Reverse);
+            s_rev_goal_idx++;
+            set_mode(ActiveMode::Reverse);
+        }
+        s_new_goal = false;
+        ready_init_tramp.dest();
+    });
+}
+
+void init() {
+    patch::hook_function(load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
+        load_stagedef_tramp.dest(stage_id);
+        s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+        set_mode(s_current_mode);
     });
 }
 
 void tick() {
-    BananaVariant type = BananaVariant(pref::get(pref::U8Pref::BananaVariant));
-    switch (type) {
-        case BananaVariant::Golden: {
+    switch (s_current_mode) {
+        case ActiveMode::None: {
+            break;
+        }
+        case ActiveMode::Golden: {
             if (mkb::mode_info.bananas_remaining == 0) {
                 mkb::mode_info.g_ball_mode |= 0x228;
             }
             break;
         }
-        case BananaVariant::Dark: {
+        case ActiveMode::Dark: {
             if (mkb::stagedef != nullptr &&
                 mkb::mode_info.bananas_remaining != mkb::stagedef->banana_count) {
                 mkb::mode_info.g_ball_mode |= mkb::BALLMODE_FALLEN_OUT;
             }
             break;
         }
-        case BananaVariant::Normal: {
+        case ActiveMode::Reverse: {
             break;
         }
     }

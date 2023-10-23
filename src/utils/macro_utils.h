@@ -8,6 +8,7 @@
 #define CLAMP(x, min, max) (MIN((max), MAX((min), (x))))
 #define RGBA(r, g, b, a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
 #define ABS(x) ((x) < 0 ? (-x) : (x))
+#define STREQ(x, y) (mkb::strcmp(const_cast<char*>(x), const_cast<char*>(y)) == 0)
 
 /*
  * Vector macros which may have existed in the original source in some form.

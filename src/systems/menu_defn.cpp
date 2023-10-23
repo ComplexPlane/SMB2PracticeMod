@@ -8,6 +8,7 @@
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
+#include "mods/stage_edits.h"
 #include "mods/unlock.h"
 #include "systems/pref.h"
 #include "systems/version.h"
@@ -1317,18 +1318,16 @@ static Widget s_physics_widgets[] = {
     },
 };
 
-static const char* BANANA_TYPES[] = {"Normal", "Golden", "Dark"};
-static const char* GOAL_TYPES[] = {"Any", "Blue", "Green", "Red"};
+static const char* STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
 
 static Widget s_reverse_goal_widgets[] = {
     {
-        .type = WidgetType::Choose,
-        .choose =
+        .type = WidgetType::Button,
+        .button =
             {
-                .label = "Force Goal Type",
-                .choices = GOAL_TYPES,
-                .num_choices = LEN(GOAL_TYPES),
-                .pref = pref::U8Pref::ReverseGoalType,
+                .label = "Select New Goal",
+                .push = [] { stage_edits::select_new_goal(); },
+                .flags = ButtonFlags::CloseMenu,
             },
     },
 };
@@ -1338,18 +1337,10 @@ static Widget s_stage_edit_widgets[] = {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Banana Type",
-                .choices = BANANA_TYPES,
-                .num_choices = LEN(BANANA_TYPES),
-                .pref = pref::U8Pref::BananaVariant,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Reverse Mode",
-                .pref = pref::BoolPref::ReverseMode,
+                .label = "Stage Edit Mode",
+                .choices = STAGE_EDIT_VARIANTS,
+                .num_choices = LEN(STAGE_EDIT_VARIANTS),
+                .pref = pref::U8Pref::StageEditVariant,
             },
     },
     {
@@ -1358,12 +1349,12 @@ static Widget s_stage_edit_widgets[] = {
             {
                 .widgets = s_reverse_goal_widgets,
                 .num_widgets = LEN(s_reverse_goal_widgets),
-                .show_if = []() { return pref::get(pref::BoolPref::ReverseMode); },
+                .show_if = []() { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
             },
     },
     {
         .type = WidgetType::Text,
-        .text = {"Stage Edits are activated on load-in"},
+        .text = {"Stage Edits are activated on retry"},
     },
 };
 
