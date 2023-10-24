@@ -36,7 +36,9 @@ void tick() {
     }
 
     if (pref::get(pref::U8Pref::Restitution) != pref::get_default(pref::U8Pref::Restitution)) {
-        mkb::ball_restitution = ((float)pref::get(pref::U8Pref::Restitution) - 100) / 100.0;
+        f32 new_restitution = ((float)pref::get(pref::U8Pref::Restitution) - 100) / 100.0;
+        mkb::ball_restitution = new_restitution;
+        mkb::balls[mkb::curr_player_idx].restitution = new_restitution;
     }
 }
 void disp() {}

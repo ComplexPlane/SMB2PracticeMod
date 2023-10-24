@@ -56,6 +56,8 @@ enum class BoolPref : u8 {
     TimerShowUnrounded,
     TimerShowPause,
     ReverseMode,
+    JumpChangePhysics,
+    JumpAllowWalljumps,
 };
 
 enum class U8Pref : u8 {
@@ -85,6 +87,7 @@ enum class U8Pref : u8 {
     SavestateClearBind,
     FalloutPlaneType,
     StageEditVariant,
+    JumpCount,
 };
 
 void init();

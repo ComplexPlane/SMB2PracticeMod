@@ -9,48 +9,39 @@
 
 namespace jump {
 
+enum class JumpCount {
+    One,
+    Two,
+    Infinite,
+};
+
 constexpr s32 JUMP_FRAMES = 15;
 
 static bool s_prev_enabled = false;
 static u32 s_patch1;
 static u32 s_patch2;
-static f32 s_orig_friction;
-static f32 s_orig_restitution;
 
 static s32 s_jump_frames = 0;
 static bool s_jumping = false;
 static s32 s_ticks_since_jump_input = -1;
 static s32 s_ticks_since_ground = -1;
-static s32 s_ticks_since_jump = 1000;
-
-static s32 s_sfx_idx = 0;
-
-const s32 JUMP_SOUNDS[] = {268, 50, 52, 55, 295, 500, -1};
 
 static void reset() {
-    s_ticks_since_jump_input = -1;
-    s_ticks_since_ground = -1;
+    s_ticks_since_jump_input = 10;
+    s_ticks_since_ground = 10;
     s_jumping = false;
     s_jump_frames = 0;
-    s_ticks_since_jump = 1000;
 }
 
 static void enable() {
-    constexpr f32 FRICTION = 0.015;
-    constexpr f32 RESTITUTION = 0.25f;
-
-    s_orig_friction = mkb::ball_friction;
-    s_orig_restitution = mkb::ball_restitution;
-    mkb::ball_friction = FRICTION;
-    mkb::ball_restitution = RESTITUTION;
-    mkb::balls[mkb::curr_player_idx].restitution = RESTITUTION;
+    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
+        pref::set(pref::BoolPref::UseCustomPhysics, true);
+        // FRICTION = 0.015;
+        pref::set(pref::U8Pref::Friction, 115);
+        // RESTITUTION = 0.25f;
+        pref::set(pref::U8Pref::Restitution, 125);
+    }
     reset();
-
-    // Don't lock camera pitch at start of level
-    //    patch::write_nop(reinterpret_cast<void *>(0x802916c4));
-    //    patch::write_nop(reinterpret_cast<void *>(0x802916c8));
-    //    patch::write_nop(reinterpret_cast<void *>(0x802916cc));
-    //    patch::write_nop(reinterpret_cast<void *>(0x802916d0));
 }
 
 static void disable() {
@@ -59,12 +50,28 @@ static void disable() {
         patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
         patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
     }
-    mkb::ball_friction = s_orig_friction;
-    mkb::ball_restitution = s_orig_restitution;
-    mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
+
+    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
+        pref::set(pref::BoolPref::UseCustomPhysics, false);
+        // FRICTION = 0.015;
+        pref::set(pref::U8Pref::Friction, pref::get_default(pref::U8Pref::Friction));
+        // RESTITUTION = 0.25f;
+        pref::set(pref::U8Pref::Restitution, pref::get_default(pref::U8Pref::Restitution));
+    }
+}
+
+static void end_jump() {
+    s_jumping = false;
+    s_jump_frames = 0;
+}
+
+static f32 lerp(s32 current, s32 max) {
+    f32 lerp = static_cast<f32>(max - current) / max;
+    return lerp * lerp * lerp;
 }
 
 static void jumping() {
+    // Patch out Minimap Toggle
     if (mkb::main_mode == mkb::MD_GAME) {
         u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
         u32* patch2_loc = reinterpret_cast<u32*>(0x808f5168);
@@ -78,14 +85,18 @@ static void jumping() {
         }
     }
 
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
-    if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) &&
-        !paused_now) {
+    // Don't run while paused
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    if (paused_now) return;
+
+    // Minimap Toggle with B
+    if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
             mkb::toggle_minimap_zoom();
         }
     }
 
+    // Reset state on READY_INIT
     if (mkb::sub_mode != mkb::SMD_GAME_READY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT &&
         mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
         mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
@@ -95,99 +106,68 @@ static void jumping() {
 
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
 
-    bool jump_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
-    bool ground_touched = ball.phys_flags & mkb::PHYS_ON_GROUND;
+    bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
+    bool a_down = pad::button_down(mkb::PAD_BUTTON_A);
+    bool a_released = pad::button_released(mkb::PAD_BUTTON_A);
+    bool ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND);
+    Vec normal_vec = mkb::balls[mkb::curr_player_idx].g_last_collision_normal;
 
-    if (jump_pressed) {
+    if (a_pressed) {
         s_ticks_since_jump_input = 0;
+    } else {
+        s_ticks_since_jump_input++;
     }
+
     if (ground_touched) {
         s_ticks_since_ground = 0;
+    } else {
+        s_ticks_since_ground++;
     }
 
-    bool before = ground_touched && s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
-    bool after = jump_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
-    bool go_buffered_press =
-        mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && pad::button_down(mkb::PAD_BUTTON_A);
+    bool before =
+        (ground_touched || JumpCount(pref::get(pref::U8Pref::JumpCount)) == JumpCount::Infinite) &&
+        s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
+    bool after = a_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
+    bool go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && a_down;
 
-    if (before || after || go_buffered_press) s_jumping = true;
-
-    if (pad::button_released(mkb::PAD_BUTTON_A)) {
-        s_jumping = false;
-        s_jump_frames = 0;
-        s_ticks_since_jump = 0;
+    if ((before || after || go_buffered_press) &&
+        (normal_vec.y < -0.5 || pref::get(pref::BoolPref::JumpAllowWalljumps))) {
+        s_jumping = true;
     }
 
+    // end jump
+    if (a_released) {
+        end_jump();
+    }
+
+    // first frame of jump
     if (s_jumping && s_jump_frames == 0) {
-        mkb::call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
-    }
-
-    if (s_jumping) {
-        s_jump_frames++;
-        if (s_jump_frames > JUMP_FRAMES) {
-            s_jumping = false;
-            s_jump_frames = 0;
-            s_ticks_since_jump = 0;
+        mkb::call_SoundReqID_arg_0(268);
+        if (ball.vel.y < 0) {
+            ball.vel.y = 0;
         }
     }
 
-    if (s_jumping && !paused_now) {
-        f32 lerp = static_cast<f32>(JUMP_FRAMES - s_jump_frames) / JUMP_FRAMES;
-        lerp = lerp * lerp * lerp;
-        ball.vel.y += lerp * 0.1;
+    // tick jump frames
+    if (s_jumping) {
+        s_jump_frames++;
+        // end jump
+        if (s_jump_frames > JUMP_FRAMES) {
+            end_jump();
+        }
     }
 
-    //    // Turn on ball sparkles while jumping
-    //    if (s_jumping || s_ticks_since_jump < 6)
-    //    {
-    //        s32 sparkles = -1;
-    //        if (s_jumping) sparkles = JUMP_FRAMES - s_jump_frames;
-    //        else sparkles = 1;
-    //        for (s32 i = 0; i < sparkles; i++)
-    //        {
-    //            mkb::Effect effect;
-    //            memset(&effect, 0, sizeof(effect));
-    //            effect.type = mkb::EFFECT_LEVITATE;
-    //            effect.g_ball_idx = ball.idx;
-    //            effect.g_pos.x = ball.pos.x;
-    //            effect.g_pos.y = ball.pos.y;
-    //            effect.g_pos.z = ball.pos.z;
-    //            mkb::spawn_effect(&effect);
-    //        }
-    //    }
-
-    if (s_ticks_since_jump_input > -1) {
-        s_ticks_since_jump_input++;
-        if (s_ticks_since_jump_input >= 3) s_ticks_since_jump_input = -1;
+    // affect jump velocity
+    if (s_jumping) {
+        if (s_ticks_since_ground < 10) {
+            ball.vel.x += lerp(s_jump_frames, JUMP_FRAMES) * (0.05 * -normal_vec.x);
+            ball.vel.z += lerp(s_jump_frames, JUMP_FRAMES) * (0.05 * -normal_vec.z);
+        }
+        ball.vel.y += lerp(s_jump_frames, JUMP_FRAMES) * 0.1;
     }
-
-    if (s_ticks_since_ground > -1) {
-        s_ticks_since_ground++;
-        if (s_ticks_since_ground >= 7) s_ticks_since_ground = -1;
-    }
-
-    s_ticks_since_jump++;
-    if (s_ticks_since_jump > 1000) s_ticks_since_jump = 1000;
 }
 
 void tick() {
-    // TODO add back SFX customization
-    //    // Allow changing the sfx
-    //    if (pad::button_chord_pressed(mkb::PAD_TRIGGER_R, mkb::PAD_BUTTON_X))
-    //    {
-    //        s_sfx_idx = (s_sfx_idx + 1) % NUM_JUMP_SOUNDS;
-    //
-    //        if (JUMP_SOUNDS[s_sfx_idx] != -1)
-    //        {
-    //            draw::notify(draw::Color::WHITE, "Jump sound: %d", s_sfx_idx + 1);
-    //            mkb::g_call_SoundReqID_arg_0(JUMP_SOUNDS[s_sfx_idx]);
-    //        }
-    //        else
-    //        {
-    //            draw::notify(draw::Color::WHITE, "Jump sound: OFF");
-    //        }
-    //    }
-
     bool enabled = pref::get(pref::BoolPref::JumpMod);
     if (enabled != s_prev_enabled) {
         s_prev_enabled = enabled;

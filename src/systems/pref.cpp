@@ -94,6 +94,9 @@ enum class PrefId : u16 {
     TimerShowUnrounded = 74,
     TimerShowPause = 75,
     StageEditVariant = 76,
+    JumpChangePhysics = 77,
+    JumpAllowWalljumps = 78,
+    JumpCount = 79,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -171,6 +174,9 @@ static const PrefId s_pref_ids[] = {
     PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
     PrefId::StageEditVariant,
+    PrefId::JumpChangePhysics,
+    PrefId::JumpAllowWalljumps,
+    PrefId::JumpCount,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -271,6 +277,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::TimerShowUnrounded;
         case PrefId::TimerShowPause:
             return BoolPref::TimerShowPause;
+        case PrefId::JumpChangePhysics:
+            return BoolPref::JumpChangePhysics;
+        case PrefId::JumpAllowWalljumps:
+            return BoolPref::JumpAllowWalljumps;
         default:
             return {};
     }
@@ -330,6 +340,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::FalloutPlaneType;
         case PrefId::StageEditVariant:
             return U8Pref::StageEditVariant;
+        case PrefId::JumpCount:
+            return U8Pref::JumpCount;
         default:
             return {};
     }
@@ -347,6 +359,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::FreecamHideHud,
     BoolPref::IlBattleShowTime,
     BoolPref::IlBattleShowScore,
+    BoolPref::JumpChangePhysics,
 };
 
 struct DefaultU8Pref {

@@ -1358,6 +1358,57 @@ static Widget s_stage_edit_widgets[] = {
     },
 };
 
+static const char* JUMP_COUNTS[] = {"1", "2", "Infinite"};
+
+static Widget s_jump_setting_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Use Changed Physics",
+                .pref = pref::BoolPref::JumpChangePhysics,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Allow Walljumps",
+                .pref = pref::BoolPref::JumpAllowWalljumps,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Jump Count",
+                .choices = JUMP_COUNTS,
+                .num_choices = LEN(JUMP_COUNTS),
+                .pref = pref::U8Pref::JumpCount,
+            },
+    },
+};
+
+static Widget s_jump_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Jump Mod",
+                .pref = pref::BoolPref::JumpMod,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_setting_widgets,
+                .num_widgets = LEN(s_jump_setting_widgets),
+                .show_if = []() { return pref::get(pref::BoolPref::JumpMod); },
+            },
+    },
+};
+
 static Widget s_gameplay_mods_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -1397,11 +1448,12 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Menu,
+        .menu =
             {
                 .label = "Jump Mod",
-                .pref = pref::BoolPref::JumpMod,
+                .widgets = s_jump_widgets,
+                .num_widgets = LEN(s_jump_widgets),
             },
     },
     {
