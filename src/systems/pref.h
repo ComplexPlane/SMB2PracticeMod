@@ -87,6 +87,7 @@ enum class U8Pref : u8 {
     JumpCount,
     Weight,
     PhysicsPreset,
+    MonkeyType,
 };
 
 void init();

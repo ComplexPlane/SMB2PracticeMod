@@ -234,6 +234,10 @@ static Widget s_hex_widgets[] = {
     },
 };
 
+static const char* MONKEY_TYPES[] = {
+    "Default", "Aiai", "Meemee", "Baby", "Gongon", "Random",
+};
+
 static Widget s_ball_color_widgets[] = {
     {
         .type = WidgetType::Header,
@@ -289,6 +293,21 @@ static Widget s_ball_color_widgets[] = {
                 .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
                 .show_if = []() { return pref::get(pref::U8Pref::ApeColorType) == 0; },
+            },
+    },
+    {WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Monkey"},
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Monkey Type",
+                .choices = MONKEY_TYPES,
+                .num_choices = LEN(MONKEY_TYPES),
+                .pref = pref::U8Pref::MonkeyType,
             },
     },
 };

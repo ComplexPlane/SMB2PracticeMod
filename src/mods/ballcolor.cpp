@@ -24,6 +24,15 @@ enum class ClothingType {
     Random = 1,
 };
 
+enum class MonkeyType {
+    Default = 0,
+    Aiai = 1,
+    Meemee = 2,
+    Baby = 3,
+    Gongon = 4,
+    Random = 5,
+};
+
 static u32 s_rainbow = 0;  // tick for rainbow animation
 static mkb::GXColor s_default_color;
 static mkb::GXColor s_current_color;
@@ -42,6 +51,34 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
         return 0;
     }
     return color_choice - 1;
+}
+
+void smd_game_ready_init() {
+    switch (MonkeyType(pref::get(pref::U8Pref::MonkeyType))) {
+        case MonkeyType::Default: {
+            break;
+        }
+        case MonkeyType::Aiai: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 0;
+            break;
+        }
+        case MonkeyType::Meemee: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 1;
+            break;
+        }
+        case MonkeyType::Baby: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 2;
+            break;
+        }
+        case MonkeyType::Gongon: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 3;
+            break;
+        }
+        case MonkeyType::Random: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = mkb::rand() % 4;
+            break;
+        }
+    }
 }
 
 void init() {
