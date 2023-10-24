@@ -8,6 +8,7 @@
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
+#include "mods/physics.h"
 #include "mods/stage_edits.h"
 #include "mods/unlock.h"
 #include "systems/pref.h"
@@ -1181,19 +1182,39 @@ static Widget s_tools_widgets[] = {
     },
 };
 
+static Widget s_reset_ilmark_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Reset IL invalidating preferences to defaults?"},
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Cancel",
+                .push = nullptr,
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Confirm",
+                .push = [] { ilmark::disable_invalidating_settings(); },
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+};
+
 static Widget s_il_mark_widgets[] = {
     {
         .type = WidgetType::Header,
         .header = {"Disable IL Invalidating Settings"},
     },
     {
-        .type = WidgetType::Button,
-        .button =
-            {
-                .label = "Disable Now",
-                .push = [] { ilmark::disable_invalidating_settings(); },
-                .flags = ButtonFlags::GoBack,
-            },
+        .type = WidgetType::Menu,
+        .menu = {"Disable Now", s_reset_ilmark_widgets, LEN(s_reset_ilmark_widgets)},
     },
     {.type = WidgetType::Separator},
     {
@@ -1289,22 +1310,103 @@ static Widget s_enabled_physics_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::FloatEdit,
+        .float_edit =
             {
-                .label = "Moon Gravity",
-                .pref = pref::BoolPref::Moon,
+                .label = "Weight",
+                .pref = pref::U8Pref::Weight,
+                .precision = 1000,
+                .min = 0,
+                .max = 200,
+                .floor = 900,
+                .decimals = 3,
             },
     },
 };
 
+static const char* PHYSICS_PRESETS[] = {"Default",     "Light Ball",  "No Friction", "Heavy Ball",
+                                        "Bouncy Ball", "Sticky Ball", "Custom"};
+
+static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 0.95"}}};
+static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.000"}}};
+static Widget s_heavyball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.05"}}};
+static Widget s_bouncyball[] = {{.type = WidgetType::Text, .text = {"  Restitution: 1.20"}}};
+static Widget s_stickyball[] = {{.type = WidgetType::Text, .text = {"  Restitution: 0.01"}}};
+
 static Widget s_physics_widgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Use Custom Physics",
-                .pref = pref::BoolPref::UseCustomPhysics,
+                .label = "Physics Presets",
+                .choices = PHYSICS_PRESETS,
+                .num_choices = LEN(PHYSICS_PRESETS),
+                .pref = pref::U8Pref::PhysicsPreset,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_lightball,
+                .num_widgets = LEN(s_lightball),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::LightBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_nofriction,
+                .num_widgets = LEN(s_nofriction),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::NoFriction;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_heavyball,
+                .num_widgets = LEN(s_heavyball),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::HeavyBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_bouncyball,
+                .num_widgets = LEN(s_bouncyball),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::BouncyBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_stickyball,
+                .num_widgets = LEN(s_stickyball),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::StickyBall;
+                    },
             },
     },
     {
@@ -1313,7 +1415,11 @@ static Widget s_physics_widgets[] = {
             {
                 .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
-                .show_if = []() { return pref::get(pref::BoolPref::UseCustomPhysics); },
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::Custom;
+                    },
             },
     },
 };

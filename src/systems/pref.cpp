@@ -39,7 +39,7 @@ enum class PrefId : u16 {
     BallColor = 19,
     ApeColor = 20,
     Marathon = 21,
-    Moon = 22,
+    // Do not reuse 22, it belonged to old Moon Gravity BoolPref
     IlBattleDisplay = 23,
     IlBattleLength = 24,
     // Do not reuse 25, it belonged to old IL Battle Score Breakdown BoolPref
@@ -79,7 +79,7 @@ enum class PrefId : u16 {
     IlBattleShowScore = 59,
     IlBattleBuzzerOld = 60,
     IlBattleBreakdown = 61,
-    UseCustomPhysics = 62,
+    PhysicsPreset = 62,
     Friction = 63,
     Restitution = 64,
     SavestateDisableOverwrite = 65,
@@ -97,6 +97,7 @@ enum class PrefId : u16 {
     JumpChangePhysics = 77,
     JumpAllowWalljumps = 78,
     JumpCount = 79,
+    Weight = 80,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -121,7 +122,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::BallColor,
     PrefId::ApeColor,
     PrefId::Marathon,
-    PrefId::Moon,
     PrefId::IlBattleDisplay,
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
@@ -155,7 +155,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleBuzzerOld,
     PrefId::Friction,
     PrefId::Restitution,
-    PrefId::UseCustomPhysics,
+    PrefId::PhysicsPreset,
     PrefId::SavestateDisableOverwrite,
     PrefId::ApeColorType,
     PrefId::IlBattleBreakdown,
@@ -177,6 +177,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::JumpChangePhysics,
     PrefId::JumpAllowWalljumps,
     PrefId::JumpCount,
+    PrefId::Weight,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -213,8 +214,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Freecam;
         case PrefId::Marathon:
             return BoolPref::Marathon;
-        case PrefId::Moon:
-            return BoolPref::Moon;
         case PrefId::IlBattleDisplay:
             return BoolPref::IlBattleDisplay;
         case PrefId::IlMarkPractice:
@@ -261,8 +260,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlBattleShowScore;
         case PrefId::IlBattleBuzzerOld:
             return BoolPref::IlBattleBuzzerOld;
-        case PrefId::UseCustomPhysics:
-            return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
         case PrefId::IlBattleTieCount:
@@ -342,6 +339,10 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::StageEditVariant;
         case PrefId::JumpCount:
             return U8Pref::JumpCount;
+        case PrefId::Weight:
+            return U8Pref::Weight;
+        case PrefId::PhysicsPreset:
+            return U8Pref::PhysicsPreset;
         default:
             return {};
     }
@@ -376,6 +377,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
     {U8Pref::IlBattleReadyBind, 104},   // dpad-down
     {U8Pref::FreecamToggleBind, 255},   // unbound
     {U8Pref::SavestateClearBind, 255},  // unbound
+    {U8Pref::Weight, 100},              // 1.0
 };
 
 //
@@ -384,7 +386,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[26];   // 26 u8 prefs
+    u8 u8_prefs[29];   // 29 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

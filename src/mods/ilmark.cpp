@@ -18,17 +18,14 @@ static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
 static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
-    pref::BoolPref::DisableFalloutVolumes,
-    pref::BoolPref::UseCustomPhysics,
-    pref::BoolPref::JumpMod,
-    pref::BoolPref::Moon,
-    pref::BoolPref::Marathon,
-    pref::BoolPref::DebugMode,
+    pref::BoolPref::DisableFalloutVolumes, pref::BoolPref::JumpMod, pref::BoolPref::Marathon,
+    // pref::BoolPref::DebugMode,
 };
 
 static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
     pref::U8Pref::TimerType, pref::U8Pref::Friction,         pref::U8Pref::Restitution,
-    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType,
+    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType, pref::U8Pref::PhysicsPreset,
+    // pref::U8Pref::StageEditVariant,
 };
 
 void disable_invalidating_settings() {

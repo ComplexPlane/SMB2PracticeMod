@@ -23,7 +23,6 @@ enum class BoolPref : u8 {
     InputDispRawStickInputs,
     Freecam,
     Marathon,
-    Moon,
     IlBattleDisplay,
     IlMarkPractice,
     IlMarkStory,
@@ -47,7 +46,6 @@ enum class BoolPref : u8 {
     IlBattleShowTime,
     IlBattleShowScore,
     IlBattleBuzzerOld,
-    UseCustomPhysics,
     SavestateDisableOverwrite,
     IlBattleTieCount,
     IlBattleAttemptCount,
@@ -55,7 +53,6 @@ enum class BoolPref : u8 {
     TimerShowFramesave,
     TimerShowUnrounded,
     TimerShowPause,
-    ReverseMode,
     JumpChangePhysics,
     JumpAllowWalljumps,
 };
@@ -88,6 +85,8 @@ enum class U8Pref : u8 {
     FalloutPlaneType,
     StageEditVariant,
     JumpCount,
+    Weight,
+    PhysicsPreset,
 };
 
 void init();

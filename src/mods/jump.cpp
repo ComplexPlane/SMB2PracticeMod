@@ -1,6 +1,7 @@
 #include "jump.h"
 
 #include "mkb/mkb.h"
+#include "mods/physics.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -35,11 +36,12 @@ static void reset() {
 
 static void enable() {
     if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::BoolPref::UseCustomPhysics, true);
+        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Custom));
         // FRICTION = 0.015;
         pref::set(pref::U8Pref::Friction, 115);
         // RESTITUTION = 0.25f;
         pref::set(pref::U8Pref::Restitution, 125);
+        pref::save();
     }
     reset();
 }
@@ -52,11 +54,12 @@ static void disable() {
     }
 
     if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::BoolPref::UseCustomPhysics, false);
+        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Custom));
         // FRICTION = 0.015;
         pref::set(pref::U8Pref::Friction, pref::get_default(pref::U8Pref::Friction));
         // RESTITUTION = 0.25f;
         pref::set(pref::U8Pref::Restitution, pref::get_default(pref::U8Pref::Restitution));
+        pref::save();
     }
 }
 
