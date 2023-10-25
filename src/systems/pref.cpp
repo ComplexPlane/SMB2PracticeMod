@@ -368,6 +368,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::IlBattleShowTime,
     BoolPref::IlBattleShowScore,
     BoolPref::JumpChangePhysics,
+    BoolPref::JumpAllowWalljumps,
 };
 
 struct DefaultU8Pref {
