@@ -130,10 +130,11 @@ void freeze_timer() {
 void tick() {
     if (freecam::should_freeze_timer() && s_prev_freecam == TimerType::Invalid) {
         s_prev_freecam = TimerType(pref::get(pref::U8Pref::TimerType));
-        pref::set(pref::U8Pref::TimerType, 1);
+        pref::set(pref::U8Pref::TimerType, static_cast<u8>(TimerType::FreezeInstantly));
     } else if (!freecam::should_freeze_timer() && s_prev_freecam != TimerType::Invalid) {
         pref::set(pref::U8Pref::TimerType, static_cast<u8>(s_prev_freecam));
         s_prev_freecam = TimerType::Invalid;
+        pref::save();
     }
     freeze_timer();
 }
