@@ -99,6 +99,7 @@ enum class PrefId : u16 {
     JumpCount = 79,
     Weight = 80,
     MonkeyType = 81,
+    JumpProfile = 82,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -347,6 +348,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::PhysicsPreset;
         case PrefId::MonkeyType:
             return U8Pref::MonkeyType;
+        case PrefId::JumpProfile:
+            return U8Pref::JumpProfile;
         default:
             return {};
     }
@@ -390,7 +393,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[30];   // 30 u8 prefs
+    u8 u8_prefs[31];   // 31 u8 prefs
 };
 
 static PrefState s_pref_state, s_default_pref_state;

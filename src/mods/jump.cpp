@@ -27,6 +27,9 @@ constexpr s32 EARLY_BUFFER_LENGTH = 4;
 constexpr s32 LATE_BUFFER_LENGTH = 5;
 constexpr f32 WALLJUMP_NORMAL = -0.5;
 
+constexpr s32 CLASSIC_EARLY_BUFFER_LENGTH = 4;
+constexpr s32 CLASSIC_LATE_BUFFER_LENGTH = 8;
+
 static bool s_prev_enabled = false;
 static u32 s_patch1;
 static u32 s_patch2;
@@ -38,17 +41,11 @@ static u32 s_ticks_since_ground = 0;
 static s32 s_aerial_jumps = 0;
 
 static void reset() {
-    s_ticks_since_jump_input = 10;
-    s_ticks_since_ground = 10;
+    s_ticks_since_jump_input = EARLY_BUFFER_LENGTH + 1;
+    s_ticks_since_ground = LATE_BUFFER_LENGTH + 1;
     s_jumping = JumpState::NotJumping;
     s_jump_frames = 0;
-
-    JumpCount count = JumpCount(pref::get(pref::U8Pref::JumpCount));
-    if (count == JumpCount::Two) {
-        s_aerial_jumps = 1;
-    } else {
-        s_aerial_jumps = 0;
-    }
+    s_aerial_jumps = 0;
 }
 
 static void enable() {
@@ -83,7 +80,7 @@ static f32 lerp(s32 current, s32 max) {
     return lerp * lerp * lerp;
 }
 
-static void jumping() {
+static void patch_minimap() {
     // Patch out Minimap Toggle
     if (mkb::main_mode == mkb::MD_GAME) {
         u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
@@ -97,20 +94,20 @@ static void jumping() {
             s_patch2 = patch::write_nop(reinterpret_cast<void*>(0x808f5168));
         }
     }
+}
 
-    // Don't run while paused
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (paused_now) return;
-
+static void toggle_minimap() {
     // Minimap Toggle with B
     if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
             mkb::toggle_minimap_zoom();
         }
     }
+}
 
+static void jumping() {
     // Reset state on READY_INIT
-    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN) {
+    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT) {
         reset();
         return;
     }
@@ -155,9 +152,13 @@ static void jumping() {
     bool aerial_jumped = (s_aerial_jumps > 0 ||
                           JumpCount(pref::get(pref::U8Pref::JumpCount)) == JumpCount::Infinite) &&
                          a_pressed;
+    bool start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT &&
+                      s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
 
-    // start jump
-    if ((buffered_early || coyote_late) && valid_location) {
+    if (start_jump) {
+        s_jumping = JumpState::GroundedJump;
+        s_ticks_since_ground += LATE_BUFFER_LENGTH;  // cannot coyote jump anymore
+    } else if ((buffered_early || coyote_late) && valid_location) {
         s_jumping = JumpState::GroundedJump;
         s_ticks_since_ground += LATE_BUFFER_LENGTH;  // cannot coyote jump anymore
     } else if (aerial_jumped) {
@@ -201,6 +202,63 @@ static void jumping() {
     }
 }
 
+static void classic_jumping() {
+    if (mkb::sub_mode != mkb::SMD_GAME_READY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT &&
+        mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN) {
+        s_ticks_since_jump_input = CLASSIC_EARLY_BUFFER_LENGTH + 1;
+        s_ticks_since_ground = CLASSIC_LATE_BUFFER_LENGTH + 1;
+        s_jumping = JumpState::NotJumping;
+        s_jump_frames = 0;
+        return;
+    }
+
+    // Setup vars
+    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
+    bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
+    bool a_down = pad::button_down(mkb::PAD_BUTTON_A);
+    bool a_released = pad::button_released(mkb::PAD_BUTTON_A);
+    bool ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND);
+
+    if (a_pressed) {
+        s_ticks_since_jump_input = 0;
+    } else {
+        s_ticks_since_jump_input++;
+    }
+    if (ground_touched) {
+        s_ticks_since_ground = 0;
+    } else {
+        s_ticks_since_ground++;
+    }
+
+    bool before = ground_touched && s_ticks_since_jump_input < CLASSIC_EARLY_BUFFER_LENGTH;
+    bool after = a_pressed && s_ticks_since_ground < CLASSIC_LATE_BUFFER_LENGTH;
+    bool go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && a_down;
+
+    if (before || after || go_buffered_press) s_jumping = JumpState::GroundedJump;
+
+    if (a_released) {
+        s_jumping = JumpState::NotJumping;
+        s_jump_frames = 0;
+    }
+
+    if (s_jumping == JumpState::GroundedJump) {
+        if (s_jump_frames == 0) {
+            mkb::call_SoundReqID_arg_0(268);
+        }
+
+        s_jump_frames++;
+        if (s_jump_frames > JUMP_LENGTH) {
+            s_jumping = JumpState::NotJumping;
+            s_jump_frames = 0;
+            return;
+        }
+
+        f32 lerp = static_cast<f32>(JUMP_LENGTH - s_jump_frames) / JUMP_LENGTH;
+        lerp = lerp * lerp * lerp;
+        ball.vel.y += lerp * 0.1;
+    }
+}
+
 void tick() {
     bool enabled = pref::get(pref::BoolPref::JumpMod);
     if (enabled != s_prev_enabled) {
@@ -212,7 +270,17 @@ void tick() {
         }
     }
     if (enabled) {
-        jumping();
+        patch_minimap();
+        // Don't run logic while paused
+        bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+        if (paused_now) return;
+        toggle_minimap();
+
+        if (pref::get(pref::U8Pref::JumpProfile) == 0) {
+            jumping();
+        } else {
+            classic_jumping();
+        }
     }
 }
 

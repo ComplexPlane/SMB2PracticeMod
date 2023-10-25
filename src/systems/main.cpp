@@ -1,5 +1,6 @@
 #include "mkb/mkb.h"
 
+#include "mods/variant_text.h"
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
@@ -165,6 +166,7 @@ void init() {
         draw::disp();
         ilmark::disp();
         physics::disp();
+        variant_text::disp();
         scratch::disp();
     });
 

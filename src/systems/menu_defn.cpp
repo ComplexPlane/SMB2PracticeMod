@@ -1505,7 +1505,28 @@ static Widget s_stage_edit_widgets[] = {
 
 static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 
-static Widget s_jump_setting_widgets[] = {
+static Widget s_jump_classic_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Classic Jump-Mod from the first version of Practice Mod"},
+    },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Use Changed Physics",
+                .pref = pref::BoolPref::JumpChangePhysics,
+            },
+    },
+};
+
+static Widget s_jump_standard_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Standard Jump-Mod"},
+    },
+    {.type = WidgetType::Separator},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -1534,6 +1555,39 @@ static Widget s_jump_setting_widgets[] = {
     },
 };
 
+static const char* JUMP_PROFILES[] = {"Standard", "Classic"};
+
+static Widget s_jump_profiles[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Jump Type",
+                .choices = JUMP_PROFILES,
+                .num_choices = LEN(JUMP_PROFILES),
+                .pref = pref::U8Pref::JumpProfile,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_standard_widgets,
+                .num_widgets = LEN(s_jump_standard_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::JumpProfile) == 0; },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_classic_widgets,
+                .num_widgets = LEN(s_jump_classic_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::JumpProfile) == 1; },
+            },
+    },
+};
+
 static Widget s_jump_widgets[] = {
     {
         .type = WidgetType::Checkbox,
@@ -1547,8 +1601,8 @@ static Widget s_jump_widgets[] = {
         .type = WidgetType::HideableGroupWidget,
         .hideable_group =
             {
-                .widgets = s_jump_setting_widgets,
-                .num_widgets = LEN(s_jump_setting_widgets),
+                .widgets = s_jump_profiles,
+                .num_widgets = LEN(s_jump_profiles),
                 .show_if = []() { return pref::get(pref::BoolPref::JumpMod); },
             },
     },
