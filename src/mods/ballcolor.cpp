@@ -37,6 +37,8 @@ static u32 s_rainbow = 0;  // tick for rainbow animation
 static mkb::GXColor s_default_color;
 static mkb::GXColor s_current_color;
 
+static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
+
 mkb::GXColor get_current_color() { return s_current_color; }
 
 static u8 convert_to_ball_color_id(u8 color_choice) {
@@ -53,7 +55,7 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
     return color_choice - 1;
 }
 
-void smd_game_ready_init() {
+void switch_monkey() {
     switch (MonkeyType(pref::get(pref::U8Pref::MonkeyType))) {
         case MonkeyType::Default: {
             break;
@@ -83,6 +85,11 @@ void smd_game_ready_init() {
 
 void init() {
     s_default_color = *reinterpret_cast<mkb::GXColor*>(0x80472a34);  // default color
+
+    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
+        s_load_stagedef_tramp.dest(stage_id);
+        switch_monkey();
+    });
 }
 
 void tick() {

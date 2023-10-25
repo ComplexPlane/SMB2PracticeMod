@@ -1,5 +1,4 @@
 #include "stage_edits.h"
-#include "mods/ballcolor.h"
 #include "systems/pref.h"
 #include "utils/patch.h"
 
@@ -129,8 +128,6 @@ void init() {
         s_load_stagedef_tramp.dest(stage_id);
         s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
         set_mode(s_current_mode);
-
-        ballcolor::smd_game_ready_init();
     });
 }
 

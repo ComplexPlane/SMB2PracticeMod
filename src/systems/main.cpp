@@ -179,7 +179,7 @@ void init() {
             if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
                 patch::hook_function(s_smd_game_ready_init_tramp, mkb::smd_game_ready_init, []() {
                     stage_edits::smd_game_ready_init();
-                    ballcolor::smd_game_ready_init();
+                    ballcolor::switch_monkey();
                     s_smd_game_ready_init_tramp.dest();
                 });
             }

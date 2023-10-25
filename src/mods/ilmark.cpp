@@ -27,8 +27,7 @@ static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
 
 static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
     pref::U8Pref::TimerType,        pref::U8Pref::Friction,         pref::U8Pref::Restitution,
-    pref::U8Pref::Camera,           pref::U8Pref::FalloutPlaneType, pref::U8Pref::PhysicsPreset,
-    pref::U8Pref::StageEditVariant,
+    pref::U8Pref::FalloutPlaneType, pref::U8Pref::StageEditVariant,
 };
 
 void disable_invalidating_settings() {
