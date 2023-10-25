@@ -11,11 +11,14 @@ enum class PhysicsPreset {
     HeavyBall = 3,
     BouncyBall = 4,
     StickyBall = 5,
-    Custom = 6,
+    JumpPhysics = 6,
+    Custom = 7,
 };
 
+bool using_custom_physics();
 void restore_physics_prefs();
 void init();
 void tick();
+void disp();
 
 }  // namespace physics

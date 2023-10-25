@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 #include "mods/freecam.h"
+#include "mods/physics.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -18,14 +19,16 @@ static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
 static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
-    pref::BoolPref::DisableFalloutVolumes, pref::BoolPref::JumpMod, pref::BoolPref::Marathon,
-    // pref::BoolPref::DebugMode,
+    pref::BoolPref::DisableFalloutVolumes,
+    pref::BoolPref::JumpMod,
+    pref::BoolPref::Marathon,
+    pref::BoolPref::DebugMode,
 };
 
 static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
-    pref::U8Pref::TimerType, pref::U8Pref::Friction,         pref::U8Pref::Restitution,
-    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType, pref::U8Pref::PhysicsPreset,
-    // pref::U8Pref::StageEditVariant,
+    pref::U8Pref::TimerType,        pref::U8Pref::Friction,         pref::U8Pref::Restitution,
+    pref::U8Pref::Camera,           pref::U8Pref::FalloutPlaneType, pref::U8Pref::PhysicsPreset,
+    pref::U8Pref::StageEditVariant,
 };
 
 void disable_invalidating_settings() {
@@ -72,6 +75,9 @@ void tick() {
 
         // Opening the mod menu is disallowed
         if (menu_impl::is_visible()) s_valid_run = false;
+
+        // Physics must be default or custom (with all default values)
+        if (physics::using_custom_physics()) s_valid_run = false;
 
         // Invalid bool prefs are enabled
         for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {

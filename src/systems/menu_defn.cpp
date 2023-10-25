@@ -1343,14 +1343,21 @@ static Widget s_enabled_physics_widgets[] = {
     },
 };
 
-static const char* PHYSICS_PRESETS[] = {"Default",     "Light Ball",  "No Friction", "Heavy Ball",
-                                        "Bouncy Ball", "Sticky Ball", "Custom"};
+static const char* PHYSICS_PRESETS[] = {"Default",          "Light Ball",  "No Friction",
+                                        "Heavy Ball",       "Bouncy Ball", "Sticky Ball",
+                                        "Jump-Mod Physics", "Custom"};
 
-static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 0.95"}}};
-static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.000"}}};
-static Widget s_heavyball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.05"}}};
-static Widget s_bouncyball[] = {{.type = WidgetType::Text, .text = {"  Restitution: 1.20"}}};
-static Widget s_stickyball[] = {{.type = WidgetType::Text, .text = {"  Restitution: 0.01"}}};
+static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 0.95"}}};
+static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.000"}}};
+static Widget s_heavyball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 1.05"}}};
+static Widget s_bouncyball[] = {
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 1.20"}}};
+static Widget s_stickyball[] = {
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.01"}}};
+static Widget s_jump_physics[] = {
+    {.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.015"}},
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.25"}},
+};
 
 static Widget s_physics_widgets[] = {
     {
@@ -1432,6 +1439,19 @@ static Widget s_physics_widgets[] = {
         .type = WidgetType::HideableGroupWidget,
         .hideable_group =
             {
+                .widgets = s_jump_physics,
+                .num_widgets = LEN(s_jump_physics),
+                .show_if =
+                    []() {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::JumpPhysics;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
                 .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
                 .show_if =
@@ -1483,7 +1503,7 @@ static Widget s_stage_edit_widgets[] = {
     },
 };
 
-static const char* JUMP_COUNTS[] = {"1", "2", "Infinite"};
+static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 
 static Widget s_jump_setting_widgets[] = {
     {

@@ -164,6 +164,7 @@ void init() {
         menu_impl::disp();
         draw::disp();
         ilmark::disp();
+        physics::disp();
         scratch::disp();
     });
 

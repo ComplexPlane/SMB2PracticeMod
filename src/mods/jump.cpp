@@ -11,36 +11,50 @@
 namespace jump {
 
 enum class JumpCount {
-    One,
-    Two,
-    Infinite,
+    One = 0,
+    Two = 1,
+    Infinite = 2,
 };
 
-constexpr s32 JUMP_FRAMES = 15;
+enum class JumpState {
+    NotJumping = 0,
+    GroundedJump = 1,
+    AerialJump = 2,
+};
+
+constexpr s32 JUMP_LENGTH = 15;
+constexpr s32 EARLY_BUFFER_LENGTH = 4;
+constexpr s32 LATE_BUFFER_LENGTH = 5;
+constexpr f32 WALLJUMP_NORMAL = -0.5;
 
 static bool s_prev_enabled = false;
 static u32 s_patch1;
 static u32 s_patch2;
 
-static s32 s_jump_frames = 0;
-static bool s_jumping = false;
-static s32 s_ticks_since_jump_input = -1;
-static s32 s_ticks_since_ground = -1;
+static JumpState s_jumping = JumpState::NotJumping;
+static u32 s_jump_frames = 0;
+static u32 s_ticks_since_jump_input = 0;
+static u32 s_ticks_since_ground = 0;
+static s32 s_aerial_jumps = 0;
 
 static void reset() {
     s_ticks_since_jump_input = 10;
     s_ticks_since_ground = 10;
-    s_jumping = false;
+    s_jumping = JumpState::NotJumping;
     s_jump_frames = 0;
+
+    JumpCount count = JumpCount(pref::get(pref::U8Pref::JumpCount));
+    if (count == JumpCount::Two) {
+        s_aerial_jumps = 1;
+    } else {
+        s_aerial_jumps = 0;
+    }
 }
 
 static void enable() {
     if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Custom));
-        // FRICTION = 0.015;
-        pref::set(pref::U8Pref::Friction, 115);
-        // RESTITUTION = 0.25f;
-        pref::set(pref::U8Pref::Restitution, 125);
+        pref::set(pref::U8Pref::PhysicsPreset,
+                  static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
         pref::save();
     }
     reset();
@@ -54,17 +68,13 @@ static void disable() {
     }
 
     if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Custom));
-        // FRICTION = 0.015;
-        pref::set(pref::U8Pref::Friction, pref::get_default(pref::U8Pref::Friction));
-        // RESTITUTION = 0.25f;
-        pref::set(pref::U8Pref::Restitution, pref::get_default(pref::U8Pref::Restitution));
+        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Default));
         pref::save();
     }
 }
 
 static void end_jump() {
-    s_jumping = false;
+    s_jumping = JumpState::NotJumping;
     s_jump_frames = 0;
 }
 
@@ -100,73 +110,94 @@ static void jumping() {
     }
 
     // Reset state on READY_INIT
-    if (mkb::sub_mode != mkb::SMD_GAME_READY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT &&
-        mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&
-        mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
+    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN) {
         reset();
         return;
     }
 
+    // Setup vars
     mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
-
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
     bool a_down = pad::button_down(mkb::PAD_BUTTON_A);
     bool a_released = pad::button_released(mkb::PAD_BUTTON_A);
     bool ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND);
     Vec normal_vec = mkb::balls[mkb::curr_player_idx].g_last_collision_normal;
 
+    // Track Jump Presses
     if (a_pressed) {
         s_ticks_since_jump_input = 0;
     } else {
         s_ticks_since_jump_input++;
     }
 
-    if (ground_touched) {
+    bool valid_location =
+        normal_vec.y < WALLJUMP_NORMAL || pref::get(pref::BoolPref::JumpAllowWalljumps);
+    // Track Ground Touched
+    if (ground_touched && valid_location) {
         s_ticks_since_ground = 0;
+
+        JumpCount count = JumpCount(pref::get(pref::U8Pref::JumpCount));
+        if (count == JumpCount::Two) {
+            s_aerial_jumps = 1;
+        } else {
+            s_aerial_jumps = 0;
+        }
     } else {
         s_ticks_since_ground++;
     }
 
-    bool before =
-        (ground_touched || JumpCount(pref::get(pref::U8Pref::JumpCount)) == JumpCount::Infinite) &&
-        s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
-    bool after = a_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
-    bool go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && a_down;
+    // check if jump was buffered before touching ground, or pressed during "coyote time" after
+    // leaving ground
+    bool buffered_early =
+        ground_touched && s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
+    bool coyote_late = s_ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
+    // check extra jump count
+    bool aerial_jumped = (s_aerial_jumps > 0 ||
+                          JumpCount(pref::get(pref::U8Pref::JumpCount)) == JumpCount::Infinite) &&
+                         a_pressed;
 
-    if ((before || after || go_buffered_press) &&
-        (normal_vec.y < -0.5 || pref::get(pref::BoolPref::JumpAllowWalljumps))) {
-        s_jumping = true;
+    // start jump
+    if ((buffered_early || coyote_late) && valid_location) {
+        s_jumping = JumpState::GroundedJump;
+        s_ticks_since_ground += LATE_BUFFER_LENGTH;  // cannot coyote jump anymore
+    } else if (aerial_jumped) {
+        s_jumping = JumpState::AerialJump;
+        s_aerial_jumps--;
     }
 
     // end jump
     if (a_released) {
         end_jump();
+        return;
     }
 
-    // first frame of jump
-    if (s_jumping && s_jump_frames == 0) {
-        mkb::call_SoundReqID_arg_0(268);
-        if (ball.vel.y < 0) {
-            ball.vel.y = 0;
+    // jump!
+    if (s_jumping == JumpState::GroundedJump || s_jumping == JumpState::AerialJump) {
+        // first frame of jump
+        if (s_jump_frames == 0) {
+            mkb::call_SoundReqID_arg_0(268);
+            if (ball.vel.y < 0) {
+                ball.vel.y = 0;
+            }
         }
-    }
-
-    // tick jump frames
-    if (s_jumping) {
-        s_jump_frames++;
-        // end jump
-        if (s_jump_frames > JUMP_FRAMES) {
+        // tick jump frames
+        if (s_jump_frames > JUMP_LENGTH) {
             end_jump();
+            return;
+        } else {
+            s_jump_frames++;
         }
-    }
 
-    // affect jump velocity
-    if (s_jumping) {
-        if (s_ticks_since_ground < 10) {
-            ball.vel.x += lerp(s_jump_frames, JUMP_FRAMES) * (0.05 * -normal_vec.x);
-            ball.vel.z += lerp(s_jump_frames, JUMP_FRAMES) * (0.05 * -normal_vec.z);
+        if (s_jumping == JumpState::GroundedJump) {
+            ball.vel.x += lerp(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.x);
+            ball.vel.z += lerp(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.z);
+            f32 expected_height = (0.1 * -normal_vec.y);
+            f32 bonus_height = (1.0 - ABS(normal_vec.y)) * 0.08;
+            f32 lerped_height = lerp(s_jump_frames, JUMP_LENGTH) * (expected_height + bonus_height);
+            ball.vel.y += lerped_height;
+        } else {
+            ball.vel.y += lerp(s_jump_frames, JUMP_LENGTH) * 0.09;
         }
-        ball.vel.y += lerp(s_jump_frames, JUMP_FRAMES) * 0.1;
     }
 }
 

@@ -1,7 +1,9 @@
 #include "physics.h"
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "utils/draw.h"
 #include "utils/macro_utils.h"
 
 namespace physics {
@@ -16,6 +18,17 @@ static constexpr pref::U8Pref PHYSICS_U8_PREFS[] = {
     pref::U8Pref::Restitution,
     pref::U8Pref::Weight,
 };
+
+bool using_custom_physics() {
+    bool result = false;
+    // set all u8 prefs to default
+    for (u8 i = 0; i < LEN(PHYSICS_U8_PREFS); i++) {
+        if (pref::get(PHYSICS_U8_PREFS[i]) != pref::get_default(PHYSICS_U8_PREFS[i])) {
+            result = true;
+        }
+    }
+    return result;
+}
 
 void restore_physics_prefs() {
     // set all u8 prefs to default
@@ -61,6 +74,13 @@ static void update_preset() {
             pref::set(pref::U8Pref::Restitution, 101);
             break;
         }
+        case PhysicsPreset::JumpPhysics: {
+            // FRICTION = 0.015;
+            pref::set(pref::U8Pref::Friction, 115);
+            // RESTITUTION = 0.25f;
+            pref::set(pref::U8Pref::Restitution, 125);
+            break;
+        }
     }
     pref::save();
 }
@@ -68,6 +88,7 @@ static void update_preset() {
 static void change_physics() {
     mkb::ball_friction = s_orig_friction;
     mkb::ball_restitution = s_orig_restitution;
+    mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
     if (PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) == PhysicsPreset::Default) {
         return;
     }
@@ -94,6 +115,24 @@ static void change_physics() {
 void tick() {
     update_preset();
     change_physics();
+}
+
+void disp() {
+    if (mkb::sub_mode != mkb::SMD_GAME_READY_INIT && mkb::sub_mode != mkb::SMD_GAME_READY_MAIN &&
+        mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
+        return;
+    if (!using_custom_physics()) return;
+
+    mkb::textdraw_reset();
+    mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);
+    u32 x = 634;
+    u32 y = 474;
+    mkb::textdraw_set_pos(x, y);
+    mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
+    mkb::textdraw_set_scale(1.2, 0.8);
+    mkb::GXColor color = draw::WHITE;
+    mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
+    mkb::textdraw_print("Custom Physics");
 }
 
 }  // namespace physics
