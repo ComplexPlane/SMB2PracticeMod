@@ -10,7 +10,7 @@
 
 namespace jump {
 
-enum class JumpCount {
+enum class MaxJumpCount {
     One = 0,
     Two = 1,
     Infinite = 2,
@@ -75,7 +75,7 @@ static void end_jump() {
     s_jump_frames = 0;
 }
 
-static f32 lerp(s32 current, s32 max) {
+static f32 jump_curve(s32 current, s32 max) {
     f32 lerp = static_cast<f32>(max - current) / max;
     return lerp * lerp * lerp;
 }
@@ -133,8 +133,8 @@ static void jumping() {
     if (ground_touched && valid_location) {
         s_ticks_since_ground = 0;
 
-        JumpCount count = JumpCount(pref::get(pref::U8Pref::JumpCount));
-        if (count == JumpCount::Two) {
+        MaxJumpCount count = MaxJumpCount(pref::get(pref::U8Pref::JumpCount));
+        if (count == MaxJumpCount::Two) {
             s_aerial_jumps = 1;
         } else {
             s_aerial_jumps = 0;
@@ -149,8 +149,8 @@ static void jumping() {
         ground_touched && s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
     bool coyote_late = s_ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
     // check extra jump count
-    bool aerial_jumped = (s_aerial_jumps > 0 ||
-                          JumpCount(pref::get(pref::U8Pref::JumpCount)) == JumpCount::Infinite) &&
+    bool aerial_jumped = (s_aerial_jumps > 0 || MaxJumpCount(pref::get(pref::U8Pref::JumpCount)) ==
+                                                    MaxJumpCount::Infinite) &&
                          a_pressed;
     bool start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT &&
                       s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
@@ -190,14 +190,15 @@ static void jumping() {
         }
 
         if (s_jumping == JumpState::GroundedJump) {
-            ball.vel.x += lerp(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.x);
-            ball.vel.z += lerp(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.z);
+            ball.vel.x += jump_curve(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.x);
+            ball.vel.z += jump_curve(s_jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.z);
             f32 expected_height = (0.1 * -normal_vec.y);
             f32 bonus_height = (1.0 - ABS(normal_vec.y)) * 0.08;
-            f32 lerped_height = lerp(s_jump_frames, JUMP_LENGTH) * (expected_height + bonus_height);
+            f32 lerped_height =
+                jump_curve(s_jump_frames, JUMP_LENGTH) * (expected_height + bonus_height);
             ball.vel.y += lerped_height;
         } else {
-            ball.vel.y += lerp(s_jump_frames, JUMP_LENGTH) * 0.09;
+            ball.vel.y += jump_curve(s_jump_frames, JUMP_LENGTH) * 0.09;
         }
     }
 }

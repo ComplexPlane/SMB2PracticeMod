@@ -1,6 +1,5 @@
 #include "physics.h"
 #include "mkb/mkb.h"
-#include "mkb/mkb2_ghidra.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -49,6 +48,7 @@ static void update_preset() {
     s_current_preset = preset;
 
     restore_physics_prefs();
+    // Update menu text for the presets if any are changed!
     switch (preset) {
         case PhysicsPreset::Default:
         case PhysicsPreset::Custom: {
