@@ -63,6 +63,7 @@ static bool s_is_run_complete;
 static u32 s_segment_timer[10];
 static bool s_is_on_world[10]; 
 static bool s_can_change_segment_start_time[10];
+static u32 s_segment_timer_location;
 
 void tick() {
     if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
@@ -175,6 +176,7 @@ void tick() {
         s_lower_stage_counter = false;
         s_loadless_story_timer = 0;
         s_completed_stages = 0;
+        s_prev_completed_stage_count = 0;
         } else{
             s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer;
         }
@@ -382,8 +384,8 @@ void disp() {
     }
 */
 if (s_in_story == false || freecam::should_hide_hud() ){
-    return;
-}
+        return;
+    }
 
     switch(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
         case FullgameTimerOptions::F_AlwaysShow:
@@ -408,22 +410,38 @@ if (s_in_story == false || freecam::should_hide_hud() ){
             break;
     }
 
+    if (s_display_story_timer == true){
+        timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false, false, 0);
+    }
+    
+    // if the fullgame timer is off but the segment timer is on, move the segment timer up by 1 line
+    if(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_DontShow){
+        s_segment_timer_location = 1;
+    } else {
+            s_segment_timer_location = 0;
+        }
+
     switch(SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
         case SegmentTimerOptions::S_AlwaysShow:
             s_display_segment_timer = true;
-            break;
-        case SegmentTimerOptions::S_BetweenWorlds:
-            if (s_is_between_worlds == true) {
-                s_display_segment_timer = true;
-            } else {
-                s_display_segment_timer = false;
+            // if the segment timer is always showing, 
+            // use the format iw time (split time) after breaking the tape on the last stage of a world
+            for (s32 k=1; k<11; k++){
+                if (s_display_segment_timer == true && s_is_on_world[k] == true && s_is_between_worlds == false && s_is_run_complete == false) {
+                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, 0);
+                }
+                else if (s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
+                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Time:", 1, draw::WHITE, false, true, s_split[k]); 
+                }
             }
             break;
-        case SegmentTimerOptions::S_EndOfRun:
-            if (s_is_run_complete == true){ 
-                s_display_segment_timer = true;
-            } else {
-                s_display_segment_timer = false;
+        case SegmentTimerOptions::S_BetweenWorlds:
+            s_display_segment_timer = true;
+            // otherwise use the format split time (iw time)
+            for (s32 k=1; k<11; k++){
+                if (s_display_segment_timer == true && s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
+                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Time:", 1, draw::WHITE, false, true, s_segment_timer[k]);
+                } 
             }
             break;
         case SegmentTimerOptions::S_DontShow:
@@ -431,6 +449,16 @@ if (s_in_story == false || freecam::should_hide_hud() ){
             break;
     }
 
+    // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the tape is broken on the last stage
+    if (SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != SegmentTimerOptions::S_DontShow) {
+        for (s32 k=1; k<11; k++){
+            if (s_is_run_complete == true){
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Splt:", k+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[k]);
+            }
+        }
+    }
+
+/*
     for (s32 k=1; k<11; k++){
         if (s_display_story_timer == true && s_is_between_worlds == false){
             timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false, false, 0);
@@ -444,10 +472,11 @@ if (s_in_story == false || freecam::should_hide_hud() ){
             // to do: modify draw_storytimer so that you can display in the format "World k: split k time (segment k time)"
         }
         }
+*/
 
     // debugging
-    timerdisp::draw_timer(static_cast<s32>(s_dummy), "Splt:", 0, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(s_dummy_2), "Splt:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*s_completed_stages), "Splt:", 0, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*s_prev_completed_stage_count), "Splt:", 1, draw::WHITE, true);
 // draw_storytimer(s32 frames_1, const char* prefix, u32 row, mkb::GXColor color, bool show_seconds, bool second_argument, s32 frames_2) (reference)
 //  if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless); (reference)
 } 
