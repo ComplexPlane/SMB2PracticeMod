@@ -64,6 +64,13 @@ static u32 s_segment_timer[10];
 static bool s_is_on_world[10]; 
 static bool s_can_change_segment_start_time[10];
 static u32 s_segment_timer_location;
+static u32 s_spin_in_init_timer;
+static bool s_stage_selected_state;
+static bool s_can_increment_spin_in_init_timer;
+static bool s_has_incremented_spin_in_init_timer;
+static u32 s_previous_spin_in_init_timer;
+static u32 s_game_scenario_return_timer;
+static u32 s_correction_timer;
 
 void tick() {
     if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
@@ -123,6 +130,44 @@ void tick() {
    } 
     */
 
+   /*
+    // trying to detect the missing frame during spin   
+    if (mkb::g_storymode_mode == 5) {
+        s_can_increment_spin_in_init_timer = false;
+    }
+
+    if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED) {
+        s_stage_selected_state = true; 
+        s_previous_spin_in_init_timer = s_spin_in_init_timer;
+    } else {
+        false;
+    }
+
+    if (s_stage_selected_state == false ) {
+        s_can_increment_spin_in_init_timer = true;
+    }
+
+    if (s_can_increment_spin_in_init_timer == true) {
+        s_spin_in_init_timer +=1; 
+    }
+
+    if ( (s_spin_in_init_timer - s_previous_spin_in_init_timer) >0 ) {
+        s_can_increment_spin_in_init_timer = false;
+    }
+    */
+
+   // no idea why the spin_in_init_timer only properly incremenents when it's not in the if (s_run_timer == true){ statement below (I checked and s_run_timer always remains true during spin in)
+   // this is very jank I hate it so much
+   if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT) {
+    s_spin_in_init_timer += 1;
+   }
+
+   if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
+    s_game_scenario_return_timer += 1;
+   }
+   
+   s_correction_timer = s_spin_in_init_timer + s_game_scenario_return_timer;
+
     // submodes during spin in
     if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT || mkb::sub_mode==mkb::SMD_GAME_READY_INIT || mkb::sub_mode==mkb::SMD_GAME_READY_MAIN) {
         s_is_on_spin_in = true;
@@ -165,11 +210,13 @@ void tick() {
 
     if (mkb::g_storymode_mode == 5){
         // zero the timer on the file select screen and set the number of completed stages to 0
+        s_spin_in_init_timer = 0;
         s_spin_in_timer = 0 ;
         s_gameplay_timer = 0;
         s_postgoal_timer = 0;
         // s_postgoal_replay_timer = 0;
         s_stage_select_timer = 0;
+        s_game_scenario_return_timer = 0;
         s_exit_game_timer = 0;
         s_fallout_timer = 0;
         s_run_timer = false;
@@ -178,7 +225,9 @@ void tick() {
         s_completed_stages = 0;
         s_prev_completed_stage_count = 0;
         } else{
-            s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer;
+            // trying to figure out missing frames
+            // for some reason, separately including s_spin_in_init_timer doesn't cause the visual frame skip in the timer
+            s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer+s_spin_in_init_timer+s_game_scenario_return_timer;
         }
 
     if (s_run_timer == true){
@@ -186,6 +235,12 @@ void tick() {
             // increment the timer every frame during spin in
             s_spin_in_timer +=1;
         }
+        /* 
+        no idea why putting this here makes this timer not work correctly, but it works correctly above
+        if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT) {
+            s_spin_in_init_timer += 1;
+        }
+        */
         if (mkb::sub_mode==mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode==mkb::SMD_GAME_PLAY_MAIN) {
             //increment the timer every frame during gameplay
             s_gameplay_timer +=1;
@@ -309,11 +364,9 @@ void tick() {
         }
 
         */
-       if (s_is_on_world[1] == true) {
-        s_dummy_2 = 1;
-       } else {
-        s_dummy_2 = 0;
-       }
+       if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED) {
+        s_dummy_2 += 1;
+       } 
     }
 
 
@@ -332,7 +385,7 @@ void tick() {
 
    */
 
-     if (s_is_between_worlds == true){
+     if (s_run_timer == true){
         s_dummy = 1;
     } else {
         s_dummy = 0;
@@ -475,8 +528,8 @@ if (s_in_story == false || freecam::should_hide_hud() ){
 */
 
     // debugging
-    timerdisp::draw_timer(static_cast<s32>(60*s_completed_stages), "Splt:", 0, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(60*s_prev_completed_stage_count), "Splt:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*mkb::sub_mode), "Splt:", 0, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_dummy), "Splt:", 1, draw::WHITE, true);
 // draw_storytimer(s32 frames_1, const char* prefix, u32 row, mkb::GXColor color, bool show_seconds, bool second_argument, s32 frames_2) (reference)
 //  if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless); (reference)
 } 
