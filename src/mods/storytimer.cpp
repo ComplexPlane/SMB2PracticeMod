@@ -38,6 +38,7 @@ static u32 s_loadless_story_timer;
 static bool s_run_timer;
 static bool s_is_on_spin_in;
 static bool s_is_on_stage_select_screen; 
+static bool s_is_on_gameplay;
 static bool s_is_on_exit_game_screen;
 static bool s_is_on_fallout_screen;
 static bool s_is_postgoal;
@@ -49,9 +50,9 @@ static s32 s_completed_stages;
 static u32 s_dummy;
 static u32 s_dummy_2;
 static u32 s_dummy_3;
-static u32 s_split[10];    // s_split[k] is the loadless time on tape break of the 10th stage of world k
-static u32 s_segment_time[10];  // s_segment_time[k] is the loadless time spent on world k, starting from stage select spin in to tape break on the 10th stage
-static u32 s_segment_start_time[10];  // the loadless time at the start of world k, used to calculate s_segment_time[k]
+static u32 s_split[11];    // s_split[k] is the loadless time on tape break of the 10th stage of world k
+static u32 s_segment_time[11];  // s_segment_time[k] is the loadless time spent on world k, starting from stage select spin in to tape break on the 10th stage
+static u32 s_segment_start_time[11];  // the loadless time at the start of world k, used to calculate s_segment_time[k]
 static bool s_display_story_timer;
 static bool s_display_segment_timer;
 static bool s_display_split;
@@ -60,9 +61,9 @@ static bool s_display_segment;
 static bool s_is_between_worlds;
 static bool s_passed_cutscene;
 static bool s_is_run_complete;
-static u32 s_segment_timer[10];
-static bool s_is_on_world[10]; 
-static bool s_can_change_segment_start_time[10];
+static u32 s_segment_timer[11];
+static bool s_is_on_world[11]; 
+static bool s_can_change_segment_start_time[11];
 static u32 s_segment_timer_location;
 static u32 s_spin_in_init_timer;
 static bool s_stage_selected_state;
@@ -72,13 +73,20 @@ static u32 s_previous_spin_in_init_timer;
 static u32 s_game_scenario_return_timer;
 static u32 s_correction_timer;
 static u32 s_corrected_stage_select_timer;
-static bool s_is_on_world_first_intro_sequence[10];
-static bool s_has_entered_world[10];
-static bool s_has_corrected_stage_select_timer[10];
-static bool s_is_on_first_frame_of_world[10];
-static bool s_has_passed_first_frame_of_world[10];
-static bool s_can_detect_first_frame_of_world[10];
-static bool s_has_done_start_world_correction[10];
+static bool s_is_on_world_first_intro_sequence[11];
+static bool s_has_entered_world[11];
+static bool s_has_corrected_stage_select_timer[11];
+static bool s_is_on_first_frame_of_world[11];
+static bool s_has_passed_first_frame_of_world[11];
+static bool s_can_detect_first_frame_of_world[11];
+static bool s_has_done_start_world_correction[11];
+static constexpr s32 fullgame_timer_location_x = 18;
+static constexpr s32 fullgame_timer_text_offset = 54;
+static constexpr s32 segment_timer_location_x = 29;
+static constexpr s32 segment_timer_text_offset = 43;
+static constexpr s32 IW_time_location_x = 40; 
+static constexpr s32 IW_time_text_offset = 32;
+static constexpr s32 Y=24;
 
 void tick() {
     if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
@@ -178,12 +186,12 @@ void tick() {
    // no idea why the spin_in_init_timer only properly incremenents when it's not in the if (s_run_timer == true){ statement below (I checked and s_run_timer always remains true during spin in)
    // this is very jank I hate it so much
    if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT) {
-    s_spin_in_init_timer += 1;
-   }
+        s_spin_in_init_timer += 1;
+    }
 
    if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
-    s_game_scenario_return_timer += 1;
-   }
+        s_game_scenario_return_timer += 1;
+    }
    
    s_correction_timer = s_spin_in_init_timer + s_game_scenario_return_timer+s_corrected_stage_select_timer;
 
@@ -202,6 +210,13 @@ void tick() {
         } else {
             s_is_on_stage_select_screen = false;
         }
+
+    // submodes during gameplay
+    if (mkb::sub_mode==mkb::SMD_GAME_PLAY_INIT || mkb::sub_mode==mkb::SMD_GAME_PLAY_MAIN) {
+        s_is_on_gameplay = true;
+    } else {
+        s_is_on_gameplay = false;
+    }
 
     // submodes entered when exiting game
     if (mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_INIT || mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_MAIN 
@@ -255,10 +270,13 @@ void tick() {
             +s_spin_in_init_timer+s_game_scenario_return_timer+s_corrected_stage_select_timer;
         }
         // on the file select screen, set these to false just in case you reset while on world k but did not complete 10k stages
+        // need to stipulate s_run_timer is false otherwise there's weird behavior on the first stage of e/ world
         for (s32 k=1; k<11; k++){
-            s_is_on_world[k] = false;
+            if (s_run_timer == false){
+                s_is_on_world[k] = false;
+            }
         }
-
+        
     if (s_run_timer == true){
         if (s_is_on_spin_in == true) {
             // increment the timer every frame during spin in
@@ -302,14 +320,30 @@ void tick() {
     if (s_completed_stages == 99 && mkb::sub_mode ==mkb::SMD_GAME_GOAL_INIT){
         // stop the timer after breaking the tape on stage 100
         // to do: make this work for story mode packs with less than 100 stages like kaizo
-        s_run_timer = false;
+        
+        // when completing a run, first correct by 2 frames since the timer will run for 2f after breaking the tape, 
+        // then set s_run_timer to false so that if we pause on goal init, we don't subtract 2 from the timer every frame while paused
+        /*
+        if (s_run_timer == true) {
+            // s_loadless_story_timer = s_loadless_story_timer - 2; 
+            s_loadless_story_timer = s_segment_start_time[10]+s_segment_timer[10];
+            s_run_timer = false;
         }
-
+        */
+        }
+    if (s_completed_stages == 100) {
+        s_is_run_complete = true;
+        s_loadless_story_timer = s_segment_start_time[10]+s_segment_timer[10];
+    } else {
+        s_is_run_complete = false;
+    }
+    /*
     if (s_completed_stages == 100 && s_is_postgoal == true) {
         s_is_run_complete = true;
     } else {
         s_is_run_complete = false;
     }
+    */
 
     if ( (mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::STORY_MODE)  || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_INIT || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_MAIN) {
      s_in_story = true;
@@ -369,47 +403,15 @@ void tick() {
         
         if ( ( (10*(k-1) +1)<= s_completed_stages) && (s_completed_stages <= (10*k-1)) ) {
             s_is_on_world[k] = true; 
-        } else if (s_completed_stages == 10*(k-1) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
+        } else if (s_completed_stages == 10*(k-1) && (s_is_on_stage_select_screen == true || s_is_on_spin_in == true || s_is_on_gameplay == true) ){
             s_is_on_world[k-1] = false;
             s_is_on_world[k] = true;
-        } else if (s_completed_stages == 10*k && s_is_postgoal == true && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) {
+        } else if (s_completed_stages == 10*k && s_is_postgoal == true && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN) {
             // testing what happens when adding the scenario return part, since if you are on world k+1, have not completed a stage, and stage select back to the 10 ball screen, 
             // the code thinks you are on world k for 1 frame
-            // && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN
             s_is_on_world[k] = true;
         }
 
-        // missing frames at the start of each world
-
-        /*
-        if (s_completed_stages == 10*(k-1) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
-            s_has_entered_world[k] = true;
-        } else {
-            s_has_entered_world[k] = false;
-        }
-
-        if (s_has_entered_world[k] == true && s_has_corrected_stage_select_timer[k] == false) {
-            s_corrected_stage_select_timer = s_stage_select_timer+2*k;
-        }
-
-        if ((s_corrected_stage_select_timer - s_stage_select_timer) == 2*k) {
-            s_has_corrected_stage_select_timer[k] = true;
-        } else {
-            s_has_corrected_stage_select_timer[k] = false;
-        }
-
-
-        if (mkb::g_storymode_mode == 5) {
-            s_has_passed_first_frame_of_world[k] = false;
-        }
-        if (s_completed_stages == 10*(k-1) && mkb::sub_mode == mkb::SMD_GAME_RETURN) {
-            s_can_detect_first_frame_of_world[k] = true;
-        }
-        if (s_can_detect_first_frame_of_world[k] == true && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE && s_has_passed_first_frame_of_world[k] == false) {
-            s_is_on_first_frame_of_world[k] = true;
-            s_has_passed_first_frame_of_world[k] = true;
-        }
-        */
         
        if (mkb::g_storymode_stageselect_state == 1) {
         s_dummy_2 = 1;
@@ -451,10 +453,16 @@ void tick() {
 
         */
     } 
-
+    // debugging
+    /*
+    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
+        s_completed_stages = 91;
+    }
+    */
 }
 
 void disp() {
+
     if (s_in_story == false || freecam::should_hide_hud() ){
             return;
         }
@@ -503,7 +511,7 @@ void disp() {
                     timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, 0);
                 }
                 else if (s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, true, s_split[k]); 
+                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, s_split[k]); 
                 }
             }
             break;
@@ -512,7 +520,7 @@ void disp() {
             // otherwise use the format split time (iw time)
             for (s32 k=1; k<11; k++){
                 if (s_display_segment_timer == true && s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Seg:", 1, draw::WHITE, false, true, s_segment_timer[k]);
+                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Seg:", 1, draw::WHITE, false, false, s_segment_timer[k]);
                 } 
             }
             break;
@@ -523,18 +531,46 @@ void disp() {
 
     // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the tape is broken on the last stage
     if (SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != SegmentTimerOptions::S_DontShow) {
+        /*
         for (s32 k=1; k<11; k++){
             if (s_is_run_complete == true){
                 timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Splt:", k+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[k]);
             }
         }
+        */
+       if (s_is_run_complete == true){
+            // I'm so sorry :(
+            // I don't know how to get the text to show "Wk" where k ranges in a for loop
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[1]), "W1:", 1+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[1]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[2]), "W2:", 2+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[2]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[3]), "W3:", 3+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[3]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[4]), "W4:", 4+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[4]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[5]), "W5:", 5+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[5]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[6]), "W6:", 6+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[6]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[7]), "W7:", 7+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[7]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[8]), "W8:", 8+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[8]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[9]), "W9:", 9+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[9]);
+                timerdisp::draw_storytimer(static_cast<s32>(s_split[10]), "W10:", 10+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[10]);
+            }
     }
 
+    // (to do) toggle-able warning if no timers are going to display during the run 
+
     // debugging
-    timerdisp::draw_timer(static_cast<s32>(s_is_on_world[1]), "dbg1:", 0, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(s_is_on_world[2]), "dbg2:", 1, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(60*s_dummy), "dbg3:", 2, draw::WHITE, true);
+    /*
+    timerdisp::draw_timer(static_cast<s32>(s_run_timer), "dbg1:", 0, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*s_is_run_complete), "dbg2:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*s_completed_stages), "dbg3:", 2, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_segment_start_time[10]), "dbg4:", 3, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_segment_timer[10]), "dbg5:", 4, draw::WHITE, true);
+
+    timerdisp::draw_timer_general(fullgame_timer_location_x, 8, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    timerdisp::draw_timer_general(segment_timer_location_x, 40, segment_timer_text_offset, "Seg:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    timerdisp::draw_timer_general(IW_time_location_x, 56, IW_time_text_offset, "IW:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    */
 // draw_storytimer(s32 frames_1, const char* prefix, u32 row, mkb::GXColor color, bool show_seconds, bool second_argument, s32 frames_2) (reference)
+// draw_timer_general(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefix, s32 frames_1, s32 frames_2, bool show_second_argument, bool show_seconds_only, mkb::GXColor color) (reference)
+// timerdisp text offset for 5 characters (includes :) is 54; for 4 characters, try an additional 54 for the x pos, 
 //  if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless); (reference)
 } 
 

@@ -89,6 +89,7 @@ enum class PrefId : u16 {
     SavestateClearBind = 69,
     FullgameTimerOptions = 70,
     SegmentTimerOptions = 71,
+    StoryTimerWarning = 72,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -159,6 +160,9 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
+    PrefId::FullgameTimerOptions,
+    PrefId::SegmentTimerOptions,
+    PrefId::StoryTimerWarning,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -247,6 +251,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
+        case PrefId::StoryTimerWarning:
+            return BoolPref::StoryTimerWarning;
         default:
             return {};
     }
