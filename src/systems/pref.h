@@ -50,6 +50,7 @@ enum class BoolPref : u8 {
     UseCustomPhysics,
     SavestateDisableOverwrite,
     StoryTimerWarning,
+    ShowDeathCounter,
 };
 
 enum class U8Pref : u8 {

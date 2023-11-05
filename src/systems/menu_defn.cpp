@@ -1249,6 +1249,14 @@ static Widget s_displays_widgets[] = {
                 .pref = pref::BoolPref::BananaCounter9999,
             },
     },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Death Counter",
+                .pref = pref::BoolPref::ShowDeathCounter,
+            },
+    },
 };
 
 static Widget s_enabled_physics_widgets[] = {

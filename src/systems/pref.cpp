@@ -90,6 +90,7 @@ enum class PrefId : u16 {
     FullgameTimerOptions = 70,
     SegmentTimerOptions = 71,
     StoryTimerWarning = 72,
+    ShowDeathCounter = 73,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -163,6 +164,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::FullgameTimerOptions,
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
+    PrefId::ShowDeathCounter,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -253,6 +255,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::SavestateDisableOverwrite;
         case PrefId::StoryTimerWarning:
             return BoolPref::StoryTimerWarning;
+        case PrefId::ShowDeathCounter:
+            return BoolPref::ShowDeathCounter;
         default:
             return {};
     }
