@@ -71,6 +71,14 @@ static bool s_has_incremented_spin_in_init_timer;
 static u32 s_previous_spin_in_init_timer;
 static u32 s_game_scenario_return_timer;
 static u32 s_correction_timer;
+static u32 s_corrected_stage_select_timer;
+static bool s_is_on_world_first_intro_sequence[10];
+static bool s_has_entered_world[10];
+static bool s_has_corrected_stage_select_timer[10];
+static bool s_is_on_first_frame_of_world[10];
+static bool s_has_passed_first_frame_of_world[10];
+static bool s_can_detect_first_frame_of_world[10];
+static bool s_has_done_start_world_correction[10];
 
 void tick() {
     if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
@@ -124,6 +132,17 @@ void tick() {
         s_lower_stage_counter = false;
     }
 
+    for (s32 k=1; k<11; k++) {
+        /*
+        if ( s_completed_stages == 10*(k-1) && mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN && s_has_done_start_world_correction[k] == false && k != 1) {
+            s_corrected_stage_select_timer += 1;
+            s_has_done_start_world_correction[k] == true;
+        }
+        */
+       if (s_is_on_world[k] == true) {
+        s_corrected_stage_select_timer = 2*k;
+       }
+    }
    /*
    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
     s_completed_stages +=1;
@@ -166,7 +185,7 @@ void tick() {
     s_game_scenario_return_timer += 1;
    }
    
-   s_correction_timer = s_spin_in_init_timer + s_game_scenario_return_timer;
+   s_correction_timer = s_spin_in_init_timer + s_game_scenario_return_timer+s_corrected_stage_select_timer;
 
     // submodes during spin in
     if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT || mkb::sub_mode==mkb::SMD_GAME_READY_INIT || mkb::sub_mode==mkb::SMD_GAME_READY_MAIN) {
@@ -224,10 +243,20 @@ void tick() {
         s_loadless_story_timer = 0;
         s_completed_stages = 0;
         s_prev_completed_stage_count = 0;
+        s_corrected_stage_select_timer = 0;
+        for (s32 k=1; k<11; k++) {
+            s_has_done_start_world_correction[k] = false;
+        }
         } else{
             // trying to figure out missing frames
             // for some reason, separately including s_spin_in_init_timer doesn't cause the visual frame skip in the timer
-            s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer+s_spin_in_init_timer+s_game_scenario_return_timer;
+            // last 3 terms are correction terms to account for missing frames
+            s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer
+            +s_spin_in_init_timer+s_game_scenario_return_timer+s_corrected_stage_select_timer;
+        }
+        // on the file select screen, set these to false just in case you reset while on world k but did not complete 10k stages
+        for (s32 k=1; k<11; k++){
+            s_is_on_world[k] = false;
         }
 
     if (s_run_timer == true){
@@ -344,51 +373,55 @@ void tick() {
             s_is_on_world[k-1] = false;
             s_is_on_world[k] = true;
         } else if (s_completed_stages == 10*k && s_is_postgoal == true && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) {
+            // testing what happens when adding the scenario return part, since if you are on world k+1, have not completed a stage, and stage select back to the 10 ball screen, 
+            // the code thinks you are on world k for 1 frame
+            // && mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN
             s_is_on_world[k] = true;
         }
-        
 
-       /* can't use switch case in for loop :(
+        // missing frames at the start of each world
 
-        switch (s_completed_stages) {
-            case ( (10*(k-1) +1<= s_completed_stages) && (s_completed_stages <= (10*k-1)) ):
-                s_is_on_world[k] = true; 
-                break;
-            case (s_completed_stages == 10*(k-1) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE):
-                s_is_on_world[k-1] = false;
-                s_is_on_world[k] = true;
-                break;
-            case (s_completed_stages == 10*k && s_is_postgoal == true):
-                s_is_on_world[k] = true;
-                break;
+        /*
+        if (s_completed_stages == 10*(k-1) && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
+            s_has_entered_world[k] = true;
+        } else {
+            s_has_entered_world[k] = false;
         }
 
+        if (s_has_entered_world[k] == true && s_has_corrected_stage_select_timer[k] == false) {
+            s_corrected_stage_select_timer = s_stage_select_timer+2*k;
+        }
+
+        if ((s_corrected_stage_select_timer - s_stage_select_timer) == 2*k) {
+            s_has_corrected_stage_select_timer[k] = true;
+        } else {
+            s_has_corrected_stage_select_timer[k] = false;
+        }
+
+
+        if (mkb::g_storymode_mode == 5) {
+            s_has_passed_first_frame_of_world[k] = false;
+        }
+        if (s_completed_stages == 10*(k-1) && mkb::sub_mode == mkb::SMD_GAME_RETURN) {
+            s_can_detect_first_frame_of_world[k] = true;
+        }
+        if (s_can_detect_first_frame_of_world[k] == true && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE && s_has_passed_first_frame_of_world[k] == false) {
+            s_is_on_first_frame_of_world[k] = true;
+            s_has_passed_first_frame_of_world[k] = true;
+        }
         */
-       if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED) {
-        s_dummy_2 += 1;
-       } 
+        
+       if (mkb::g_storymode_stageselect_state == 1) {
+        s_dummy_2 = 1;
+       } else{
+        s_dummy_2 = 0;
+       }
     }
 
-
-
-   /*
-   if ( ( (10*(k-1)-1 < s_completed_stages) && (s_completed_stages < 10*k-1) ) || (s_completed_stages == 10*k-1 && s_is_postgoal == false) ){
-            s_segment_timer[k] = s_loadless_story_timer - s_segment_start_time[k];
-        }
-
-        // display split and iw time after breaking the tape on the last stage of a world, but stop displaying when the stage select screen for the next world starts spinning in
-        if ((s_completed_stages == 10*k-1 || s_completed_stages == 10*k ) &&  mkb::g_storymode_stageselect_state != mkb::STAGE_SELECT_INTRO_SEQUENCE) {
-            s_display_segment = true;
-        } else if (s_completed_stages == 10*k && mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
-            s_display_segment = false;
-        }
-
-   */
-
-     if (s_run_timer == true){
-        s_dummy = 1;
-    } else {
-        s_dummy = 0;
+     if (mkb::g_storymode_mode == 5){
+            s_dummy = 1;
+        } else {
+            s_dummy = 0;
         /* things tested that didn't work for exit game so far
         SMD_GAME_FORCE_EXIT_MAIN=93
         SMD_GAME_FORCE_OVER_MAIN=96
@@ -422,23 +455,9 @@ void tick() {
 }
 
 void disp() {
-        // timerdisp::draw_timer(static_cast<s32>(s_display_segment), "Splt:", 1, draw::WHITE, true);
-        // timerdisp::draw_timer(static_cast<s32>(60*mkb::sub_mode), "dbg:", 4, draw::WHITE, true);
-        // timerdisp::draw_timer(static_cast<s32>(s_segment_timer[2]), "IW:", 3, draw::WHITE, true);
-/*
-        if (FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_AlwaysShow){
-            timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false);
+    if (s_in_story == false || freecam::should_hide_hud() ){
+            return;
         }
-*/
-    /* 
-    if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE ||
-        freecam::should_hide_hud()) {
-        return;
-    }
-*/
-if (s_in_story == false || freecam::should_hide_hud() ){
-        return;
-    }
 
     switch(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
         case FullgameTimerOptions::F_AlwaysShow:
@@ -484,7 +503,7 @@ if (s_in_story == false || freecam::should_hide_hud() ){
                     timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, 0);
                 }
                 else if (s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Time:", 1, draw::WHITE, false, true, s_split[k]); 
+                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, true, s_split[k]); 
                 }
             }
             break;
@@ -493,7 +512,7 @@ if (s_in_story == false || freecam::should_hide_hud() ){
             // otherwise use the format split time (iw time)
             for (s32 k=1; k<11; k++){
                 if (s_display_segment_timer == true && s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Time:", 1, draw::WHITE, false, true, s_segment_timer[k]);
+                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Seg:", 1, draw::WHITE, false, true, s_segment_timer[k]);
                 } 
             }
             break;
@@ -511,25 +530,10 @@ if (s_in_story == false || freecam::should_hide_hud() ){
         }
     }
 
-/*
-    for (s32 k=1; k<11; k++){
-        if (s_display_story_timer == true && s_is_between_worlds == false){
-            timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false, false, 0);
-        } else if (s_display_story_timer == true && s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-            timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false, true, s_split[k]); 
-        }
-        if (s_display_segment_timer == true && s_is_on_world[k] == true && s_is_run_complete == false) {
-            timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, 0);
-        } else if (s_display_segment_timer == true && s_is_run_complete == true) {
-            timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Splt:", k, draw::WHITE, false, true, s_segment_timer[k]);
-            // to do: modify draw_storytimer so that you can display in the format "World k: split k time (segment k time)"
-        }
-        }
-*/
-
     // debugging
-    timerdisp::draw_timer(static_cast<s32>(60*mkb::sub_mode), "Splt:", 0, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(s_dummy), "Splt:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_is_on_world[1]), "dbg1:", 0, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_is_on_world[2]), "dbg2:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*s_dummy), "dbg3:", 2, draw::WHITE, true);
 // draw_storytimer(s32 frames_1, const char* prefix, u32 row, mkb::GXColor color, bool show_seconds, bool second_argument, s32 frames_2) (reference)
 //  if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless); (reference)
 } 
