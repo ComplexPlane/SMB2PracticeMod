@@ -252,7 +252,7 @@ void draw_timer_general(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefi
                             centiseconds_1);
         } else if (minutes_1 > 0 && !show_seconds_only) {
             draw::debug_text(A, b, color, prefix);
-            draw::debug_text(A, b, color, "%s%02d:%02d.%02d", sign, minutes_1, seconds_1,
+            draw::debug_text(a, b, color, "%s%02d:%02d.%02d", sign, minutes_1, seconds_1,
                             centiseconds_1);
         } else {
             u32 total_seconds_1 =

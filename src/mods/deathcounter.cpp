@@ -36,7 +36,9 @@ void tick() {
         s_can_die = false;
     }
 
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
+    // first framing should not increase the death counter, and retrying after breaking the tape should not increase it either
+    // to do: however, if you retry after breaking the tape on the very first frame (so the frame before goal init), it does count as a death when it should not
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
         s_can_die = false;
     }
 
@@ -49,6 +51,8 @@ void disp() {
         }
    draw::debug_text(18, 56, draw::WHITE, "Deaths: "); 
    draw::debug_text(100, 56, draw::WHITE, "%d", s_death_count);
+
+   // to do so I don't forget: get pref for the storytimers so that the the text doesn't overlap
 
 } 
 

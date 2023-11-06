@@ -64,7 +64,8 @@ static bool s_is_run_complete;
 static u32 s_segment_timer[11];
 static bool s_is_on_world[11]; 
 static bool s_can_change_segment_start_time[11];
-static u32 s_segment_timer_location;
+static u32 s_fullgame_timer_location_y;
+static u32 s_segment_timer_location_y;
 static u32 s_spin_in_init_timer;
 static bool s_stage_selected_state;
 static bool s_can_increment_spin_in_init_timer;
@@ -80,11 +81,11 @@ static bool s_is_on_first_frame_of_world[11];
 static bool s_has_passed_first_frame_of_world[11];
 static bool s_can_detect_first_frame_of_world[11];
 static bool s_has_done_start_world_correction[11];
-static constexpr s32 fullgame_timer_location_x = 18;
-static constexpr s32 fullgame_timer_text_offset = 54;
-static constexpr s32 segment_timer_location_x = 29;
-static constexpr s32 segment_timer_text_offset = 43;
-static constexpr s32 IW_time_location_x = 40; 
+static constexpr s32 fullgame_timer_location_x = 18+24;
+static constexpr s32 fullgame_timer_text_offset = 56;
+static constexpr s32 segment_timer_location_x = 30+24;
+static constexpr s32 segment_timer_text_offset = 44;
+static constexpr s32 IW_time_location_x = 42+24; 
 static constexpr s32 IW_time_text_offset = 32;
 static constexpr s32 Y=24;
 
@@ -420,7 +421,7 @@ void tick() {
        }
     }
 
-     if (mkb::g_storymode_mode == 5){
+     if (mkb::g_storymode_mode == 21){
             s_dummy = 1;
         } else {
             s_dummy = 0;
@@ -467,6 +468,22 @@ void disp() {
             return;
         }
 
+    if (pref::get(pref::BoolPref::ShowDeathCounter) == true) {
+        s_fullgame_timer_location_y = 1;
+    } else {
+        s_fullgame_timer_location_y = 0;
+    }
+
+    // if the fullgame timer and death counter is off but the segment timer is on, move the segment timer to the top line; if either the fullgame timer or death counter are on but not both are on,
+    // move it to the 2nd line, if all 3 are enabled, put it on the 3rd line
+    if(s_display_story_timer == false && pref::get(pref::BoolPref::ShowDeathCounter) == false ){
+        s_segment_timer_location_y = 0;
+    } else if (s_display_story_timer == false || pref::get(pref::BoolPref::ShowDeathCounter) == false ){
+            s_segment_timer_location_y = 1;
+        } else {
+            s_segment_timer_location_y = 2;
+        }
+
     switch(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
         case FullgameTimerOptions::F_AlwaysShow:
             s_display_story_timer = true;
@@ -491,36 +508,31 @@ void disp() {
     }
 
     if (s_display_story_timer == true){
-        timerdisp::draw_storytimer(static_cast<s32>(s_loadless_story_timer), "Time:", 0, draw::WHITE, false, false, 0);
+         timerdisp::draw_timer_general(fullgame_timer_location_x, s_fullgame_timer_location_y, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
     }
-    
-    // if the fullgame timer is off but the segment timer is on, move the segment timer up by 1 line
-    if(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_DontShow){
-        s_segment_timer_location = 1;
-    } else {
-            s_segment_timer_location = 0;
-        }
 
     switch(SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
         case SegmentTimerOptions::S_AlwaysShow:
             s_display_segment_timer = true;
             // if the segment timer is always showing, 
             // use the format iw time (split time) after breaking the tape on the last stage of a world
+            // to do: get the spacing right for showing the on tape break split time; currently I have show second argument set to false between worlds
             for (s32 k=1; k<11; k++){
                 if (s_display_segment_timer == true && s_is_on_world[k] == true && s_is_between_worlds == false && s_is_run_complete == false) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, 0);
+                    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
                 }
                 else if (s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_segment_timer[k]), "Seg:", 1, draw::WHITE, false, false, s_split[k]); 
+                    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], s_split[k], false, false, draw::WHITE); 
                 }
             }
             break;
         case SegmentTimerOptions::S_BetweenWorlds:
             s_display_segment_timer = true;
-            // otherwise use the format split time (iw time)
+            // otherwise use the format split time (iw time) 
+            // to do: switch around arguments if I fix the spacing
             for (s32 k=1; k<11; k++){
                 if (s_display_segment_timer == true && s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Seg:", 1, draw::WHITE, false, false, s_segment_timer[k]);
+                    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], s_split[k], false, false, draw::WHITE);
                 } 
             }
             break;
@@ -534,39 +546,50 @@ void disp() {
         /*
         for (s32 k=1; k<11; k++){
             if (s_is_run_complete == true){
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[k]), "Splt:", k+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[k]);
+                timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+k, IW_time_text_offset, "Wk:", s_split[k], s_segment_timer[k], true, false, draw::WHITE);
             }
         }
         */
-       if (s_is_run_complete == true){
+       if (s_is_run_complete == true) {
             // I'm so sorry :(
             // I don't know how to get the text to show "Wk" where k ranges in a for loop
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[1]), "W1:", 1+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[1]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[2]), "W2:", 2+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[2]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[3]), "W3:", 3+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[3]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[4]), "W4:", 4+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[4]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[5]), "W5:", 5+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[5]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[6]), "W6:", 6+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[6]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[7]), "W7:", 7+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[7]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[8]), "W8:", 8+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[8]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[9]), "W9:", 9+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[9]);
-                timerdisp::draw_storytimer(static_cast<s32>(s_split[10]), "W10:", 10+s_segment_timer_location, draw::WHITE, false, true, s_segment_timer[10]);
-            }
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+1, IW_time_text_offset, "W1:", s_split[1], s_segment_timer[1], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+2, IW_time_text_offset, "W2:", s_split[2], s_segment_timer[2], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+3, IW_time_text_offset, "W3:", s_split[3], s_segment_timer[3], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+4, IW_time_text_offset, "W4:", s_split[4], s_segment_timer[4], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+5, IW_time_text_offset, "W5:", s_split[5], s_segment_timer[5], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+6, IW_time_text_offset, "W6:", s_split[6], s_segment_timer[6], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+7, IW_time_text_offset, "W7:", s_split[7], s_segment_timer[7], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+8, IW_time_text_offset, "W8:", s_split[8], s_segment_timer[8], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+9, IW_time_text_offset, "W9:", s_split[9], s_segment_timer[9], true, false, draw::WHITE);
+            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+10, IW_time_text_offset, "W10:", s_split[10], s_segment_timer[10], true, false, draw::WHITE);
+       }
     }
 
-    // (to do) toggle-able warning if no timers are going to display during the run 
+    if (pref::get(pref::BoolPref::StoryTimerWarning) == true && FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_DontShow 
+    && SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == SegmentTimerOptions::S_DontShow && mkb::g_storymode_mode == 21){
+        // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
+        draw::debug_text(460, 425, draw::RED, "Timer Not On!");
+    }
 
     // debugging
     /*
-    timerdisp::draw_timer(static_cast<s32>(s_run_timer), "dbg1:", 0, draw::WHITE, true);
-    timerdisp::draw_timer(static_cast<s32>(60*s_is_run_complete), "dbg2:", 1, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(s_dummy), "dbg1:", 0, draw::WHITE, true);
+    timerdisp::draw_timer(static_cast<s32>(60*mkb::g_storymode_mode), "dbg2:", 1, draw::WHITE, true);
+    
     timerdisp::draw_timer(static_cast<s32>(60*s_completed_stages), "dbg3:", 2, draw::WHITE, true);
     timerdisp::draw_timer(static_cast<s32>(s_segment_start_time[10]), "dbg4:", 3, draw::WHITE, true);
     timerdisp::draw_timer(static_cast<s32>(s_segment_timer[10]), "dbg5:", 4, draw::WHITE, true);
+    */
+    
 
-    timerdisp::draw_timer_general(fullgame_timer_location_x, 8, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
-    timerdisp::draw_timer_general(segment_timer_location_x, 40, segment_timer_text_offset, "Seg:", s_loadless_story_timer, 0, false, false, draw::WHITE);
-    timerdisp::draw_timer_general(IW_time_location_x, 56, IW_time_text_offset, "IW:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    /*
+    timerdisp::draw_timer_general(fullgame_timer_location_x, 3, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    timerdisp::draw_timer_general(segment_timer_location_x, 1, segment_timer_text_offset, "Seg:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+    timerdisp::draw_timer_general(IW_time_location_x, 2, IW_time_text_offset, "W1:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+
+    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
+
     */
 // draw_storytimer(s32 frames_1, const char* prefix, u32 row, mkb::GXColor color, bool show_seconds, bool second_argument, s32 frames_2) (reference)
 // draw_timer_general(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefix, s32 frames_1, s32 frames_2, bool show_second_argument, bool show_seconds_only, mkb::GXColor color) (reference)
