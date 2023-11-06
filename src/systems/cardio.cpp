@@ -142,93 +142,96 @@ void tick() {
 
     switch (s_state) {
         case WriteState::Idle: {
-            if (s_write_request.has_value()) {
-                // Kick off write operation
-                s_write_params = s_write_request.value();
-                s_write_request.reset();
-                set_fake_gamecode();
-
-                // Probe and begin mounting card A
-                s32 sector_size;
-                mkb::CARDProbeEx(0, nullptr, &sector_size);
-                s_write_size = (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
-                mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
-                s_state = WriteState::Mount;
+            if (!s_write_request.has_value()) {
+                break;
             }
+
+            // Kick off write operation
+            s_write_params = s_write_request.value();
+            s_write_request.reset();
+            set_fake_gamecode();
+
+            // Probe and begin mounting card A
+            s32 sector_size;
+            mkb::CARDProbeEx(0, nullptr, &sector_size);
+            s_write_size = (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
+            mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
+            s_state = WriteState::Mount;
             break;
         }
 
         case WriteState::Mount: {
             res = mkb::CARDGetResultCode(0);
-            if (res != mkb::CARD_RESULT_BUSY) {
-                if (res == mkb::CARD_RESULT_READY) {
-                    // Try to open the file
-                    res = mkb::CARDOpen(0, const_cast<char*>(s_write_params.file_name),
-                                        &s_card_file_info);
-                    if (res == mkb::CARD_RESULT_READY) {
-                        // Check if file is too small
-                        mkb::CARDStat stat;
-                        res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
-                        if (res != mkb::CARD_RESULT_READY) {
-                            finish_write(res);
+            if (res == mkb::CARD_RESULT_BUSY) {
+                break;
+            }
+            if (res != mkb::CARD_RESULT_READY) {
+                finish_write(res);
+                break;
+            }
 
-                        } else if (stat.length < s_write_size) {
-                            // Recreate file
-                            mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
-                            s_state = WriteState::Delete;
+            // Try to open the file
+            res = mkb::CARDOpen(0, const_cast<char*>(s_write_params.file_name), &s_card_file_info);
+            if (res == mkb::CARD_RESULT_READY) {
+                // Check if file is too small
+                mkb::CARDStat stat;
+                res = mkb::CARDGetStatus(0, s_card_file_info.fileNo, &stat);
+                if (res != mkb::CARD_RESULT_READY) {
+                    finish_write(res);
 
-                        } else {
-                            // Card opened successfully, proceed directly to writing
-                            mkb::CARDWriteAsync(&s_card_file_info,
-                                                const_cast<void*>(s_write_params.buf), s_write_size,
-                                                0, nullptr);
-                            s_state = WriteState::Write;
-                        }
-
-                    } else if (res == mkb::CARD_RESULT_NOFILE) {
-                        // Create new file
-                        mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name),
-                                             s_write_size, &s_card_file_info, nullptr);
-                        s_state = WriteState::Create;
-
-                    } else {
-                        // Some other error, fail entire write operation
-                        finish_write(res);
-                    }
+                } else if (stat.length < s_write_size) {
+                    // Recreate file
+                    mkb::CARDFastDeleteAsync(0, s_card_file_info.fileNo, nullptr);
+                    s_state = WriteState::Delete;
 
                 } else {
-                    // Error mounting
-                    finish_write(res);
+                    // Card opened successfully, proceed directly to writing
+                    mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(s_write_params.buf),
+                                        s_write_size, 0, nullptr);
+                    s_state = WriteState::Write;
                 }
+
+            } else if (res == mkb::CARD_RESULT_NOFILE) {
+                // Create new file
+                mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name), s_write_size,
+                                     &s_card_file_info, nullptr);
+                s_state = WriteState::Create;
+
+            } else {
+                // Some other error, fail entire write operation
+                finish_write(res);
             }
             break;
         }
 
         case WriteState::Create: {
             res = mkb::CARDGetResultCode(0);
-            if (res != mkb::CARD_RESULT_BUSY) {
-                if (res == mkb::CARD_RESULT_READY) {
-                    mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(s_write_params.buf),
-                                        s_write_size, 0, nullptr);
-                    s_state = WriteState::Write;
-                } else {
-                    finish_write(res);
-                }
+            if (res == mkb::CARD_RESULT_BUSY) {
+                break;
             }
+            if (res != mkb::CARD_RESULT_READY) {
+                finish_write(res);
+                break;
+            }
+
+            mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(s_write_params.buf),
+                                s_write_size, 0, nullptr);
+            s_state = WriteState::Write;
             break;
         }
 
         case WriteState::Delete: {
             res = mkb::CARDGetResultCode(0);
-            if (res != mkb::CARD_RESULT_BUSY) {
-                if (res == mkb::CARD_RESULT_READY) {
-                    mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name),
-                                         s_write_size, &s_card_file_info, nullptr);
-                    s_state = WriteState::Create;
-                } else {
-                    finish_write(res);
-                }
+            if (res == mkb::CARD_RESULT_BUSY) {
+                break;
             }
+            if (res != mkb::CARD_RESULT_READY) {
+                finish_write(res);
+                break;
+            }
+            mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name), s_write_size,
+                                 &s_card_file_info, nullptr);
+            s_state = WriteState::Create;
             break;
         }
 
