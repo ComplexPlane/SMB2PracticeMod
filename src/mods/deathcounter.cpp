@@ -16,7 +16,7 @@ static bool s_in_story;
 
 void tick() {
 
-    if ( (mkb::main_game_mode == mkb::STORY_MODE)  || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_INIT || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_MAIN) {
+    if ( mkb::main_game_mode == mkb::STORY_MODE  || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_INIT || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_MAIN) {
      s_in_story = true;
     } else{
         s_in_story = false;

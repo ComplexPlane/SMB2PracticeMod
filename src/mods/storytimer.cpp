@@ -297,19 +297,19 @@ void disp() {
 
     // move the positions of the fullgame and segment timers if the death counter is on
     if (pref::get(pref::BoolPref::ShowDeathCounter) == true) {
-        s_fullgame_timer_location_y = 1;
+        s_fullgame_timer_location_y = 3;
     } else {
-        s_fullgame_timer_location_y = 0;
+        s_fullgame_timer_location_y = 2;
     }
 
     // if the fullgame timer and death counter is off but the segment timer is on, move the segment timer to the top line; if either the fullgame timer or death counter are on but not both are on,
     // move it to the 2nd line, if all 3 are enabled, put it on the 3rd line
     if(s_display_story_timer == false && pref::get(pref::BoolPref::ShowDeathCounter) == false ){
-        s_segment_timer_location_y = 0;
+        s_segment_timer_location_y = 2;
     } else if (s_display_story_timer == false || pref::get(pref::BoolPref::ShowDeathCounter) == false ){
-            s_segment_timer_location_y = 1;
+            s_segment_timer_location_y = 3;
         } else {
-            s_segment_timer_location_y = 2;
+            s_segment_timer_location_y = 4;
         }
 
     switch(FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
@@ -336,14 +336,14 @@ void disp() {
     }
 
     if (s_display_story_timer == true){
-         timerdisp::draw_timer_general(fullgame_timer_location_x, s_fullgame_timer_location_y, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
+         timerdisp::draw_timer(fullgame_timer_location_x, s_fullgame_timer_location_y, fullgame_timer_text_offset, "Time:", s_loadless_story_timer, 0, false, false, draw::WHITE);
     }
 
     switch(SegmentTimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
         case SegmentTimerOptions::S_AlwaysShow:
             for (s32 k=1; k<11; k++){
                 if (s_is_on_world[k] == true && s_is_run_complete == false) {
-                    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
+                    timerdisp::draw_timer(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
                 }
                 
             }
@@ -351,7 +351,7 @@ void disp() {
         case SegmentTimerOptions::S_BetweenWorlds:
             for (s32 k=1; k<11; k++){
                 if (s_is_between_worlds == true && s_is_on_world[k] == true && k != 10) {
-                    timerdisp::draw_timer_general(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
+                    timerdisp::draw_timer(segment_timer_location_x, s_segment_timer_location_y, segment_timer_text_offset, "Seg:", s_segment_timer[k], 0, false, false, draw::WHITE);
                 } 
             }
             break;
@@ -365,16 +365,16 @@ void disp() {
        if (s_is_run_complete == true) {
             // I'm so sorry :(
             // I don't know how to get the text to show "Wk" where k ranges in a for loop
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+1, IW_time_text_offset, "W1:", s_split[1], s_segment_timer[1], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+2, IW_time_text_offset, "W2:", s_split[2], s_segment_timer[2], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+3, IW_time_text_offset, "W3:", s_split[3], s_segment_timer[3], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+4, IW_time_text_offset, "W4:", s_split[4], s_segment_timer[4], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+5, IW_time_text_offset, "W5:", s_split[5], s_segment_timer[5], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+6, IW_time_text_offset, "W6:", s_split[6], s_segment_timer[6], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+7, IW_time_text_offset, "W7:", s_split[7], s_segment_timer[7], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+8, IW_time_text_offset, "W8:", s_split[8], s_segment_timer[8], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+9, IW_time_text_offset, "W9:", s_split[9], s_segment_timer[9], true, false, draw::WHITE);
-            timerdisp::draw_timer_general(IW_time_location_x, s_segment_timer_location_y+10, IW_time_text_offset, "W10:", s_split[10], s_segment_timer[10], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+1, IW_time_text_offset, "W1:", s_split[1], s_segment_timer[1], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+2, IW_time_text_offset, "W2:", s_split[2], s_segment_timer[2], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+3, IW_time_text_offset, "W3:", s_split[3], s_segment_timer[3], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+4, IW_time_text_offset, "W4:", s_split[4], s_segment_timer[4], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+5, IW_time_text_offset, "W5:", s_split[5], s_segment_timer[5], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+6, IW_time_text_offset, "W6:", s_split[6], s_segment_timer[6], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+7, IW_time_text_offset, "W7:", s_split[7], s_segment_timer[7], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+8, IW_time_text_offset, "W8:", s_split[8], s_segment_timer[8], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+9, IW_time_text_offset, "W9:", s_split[9], s_segment_timer[9], true, false, draw::WHITE);
+            timerdisp::draw_timer(IW_time_location_x, s_segment_timer_location_y+10, IW_time_text_offset, "W10:", s_split[10], s_segment_timer[10], true, false, draw::WHITE);
        }
     }
 
