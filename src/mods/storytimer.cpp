@@ -31,6 +31,7 @@ static u32 s_gameplay_timer;
 static u32 s_postgoal_timer;
 static u32 s_exit_game_timer;
 static u32 s_fallout_timer;
+static u32 s_timeover_timer;
 static u32 s_stage_select_timer;
 static u32 s_loadless_story_timer;
 static bool s_is_on_spin_in;
@@ -38,6 +39,7 @@ static bool s_is_on_stage_select_screen;
 static bool s_is_on_gameplay;
 static bool s_is_on_exit_game_screen;
 static bool s_is_on_fallout_screen;
+static bool s_is_timeover;
 static bool s_is_postgoal;
 static bool s_can_increment_stage_counter;
 static bool s_lower_stage_counter;
@@ -151,6 +153,13 @@ void tick() {
         s_is_on_fallout_screen = false; 
     }
 
+    // submodes during timeover
+    if (mkb:: sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
+        s_is_timeover = true;
+    } else {
+        s_is_timeover = false;
+    }
+
     if ( (mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::STORY_MODE)  || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_INIT || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_MAIN) {
      s_in_story = true;
     } else{
@@ -171,6 +180,7 @@ void tick() {
         s_game_scenario_return_timer_correction = 0;
         s_exit_game_timer = 0;
         s_fallout_timer = 0;
+        s_timeover_timer = 0;
         s_lower_stage_counter = false;
         s_loadless_story_timer = 0;
         s_completed_stages = 0;
@@ -192,7 +202,7 @@ void tick() {
         }
 
         // last 3 terms are correction terms to account for missing frames
-        s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer
+        s_loadless_story_timer = s_spin_in_timer+s_gameplay_timer+s_postgoal_timer+s_stage_select_timer+s_exit_game_timer+s_fallout_timer+s_timeover_timer+
             +s_spin_in_timer_correction+s_game_scenario_return_timer_correction+ s_world_start_timer_correction;
 
 
@@ -219,6 +229,10 @@ void tick() {
         if (s_is_on_fallout_screen == true) {
             // increment the timer every frame during the fallout sequence and y/n screen
             s_fallout_timer += 1;
+        }
+        if (s_is_timeover == true) {
+            // increment the timer every frame during the timeover sequence
+            s_timeover_timer += 1;
         }
 
         for (s32 k=1; k<11; k++) {
