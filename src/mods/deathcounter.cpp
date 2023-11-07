@@ -50,7 +50,7 @@ void disp() {
             return;
         }
    draw::debug_text(18, 56, draw::WHITE, "Deaths: "); 
-   draw::debug_text(100, 56, draw::WHITE, "%d", s_death_count);
+   draw::debug_text(98, 56, draw::WHITE, "%d", s_death_count);
 
    // to do so I don't forget: get pref for the storytimers so that the the text doesn't overlap
 
