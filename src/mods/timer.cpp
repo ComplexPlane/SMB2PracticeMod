@@ -53,8 +53,8 @@ void disp() {
     }
 
     if (pref::get(pref::BoolPref::RtaPauseTimer) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(380, 1, 44, "RTA:", s_rta_timer, 1, false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 2, 44, "PAU:", s_pause_timer, 2, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 1, 44, "RTA:", s_rta_timer, 0, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 2, 44, "PAU:", s_pause_timer, 0, false, true, draw::WHITE);
     }
 }
 

@@ -2,6 +2,7 @@
 
 namespace storytimer {
 
+void init();
 void tick();
 void disp();
 
