@@ -31,14 +31,16 @@ void tick() {
         s_can_die = true;
     }
 
-    if ( (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT) && s_can_die == true){
-        s_death_count += 1; 
+    if (s_can_die == true && (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT 
+    || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT || mkb::sub_mode == mkb:: SMD_GAME_SCENARIO_RETURN)){
+        // you can die either by retrying after dropping in, falling out, timing over, or stage selecting after dropping in (but before breaking the tape)
+        s_death_count += 1;
         s_can_die = false;
     }
 
     // first framing should not increase the death counter, and retrying after breaking the tape should not increase it either
     // to do: however, if you retry after breaking the tape on the very first frame (so the frame before goal init), it does count as a death when it should not
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
+    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
         s_can_die = false;
     }
 

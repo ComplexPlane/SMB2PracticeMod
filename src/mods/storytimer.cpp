@@ -51,6 +51,8 @@ static bool s_is_timeover;
 static bool s_can_increment_stage_counter;
 static bool s_lower_stage_counter;
 static bool s_cap_postgoal_timer;
+static bool s_start_stage_fade_out_timer;
+static u32 s_stage_fade_out_timer;
 static u32 s_prev_completed_stage_count;
 static s32 s_completed_stages;
 static u32 s_segment_timer[11]; // IW timer for world k
@@ -67,6 +69,7 @@ static constexpr s32 segment_timer_location_x = 30+24;
 static constexpr s32 segment_timer_text_offset = 44;
 static constexpr s32 IW_time_location_x = 42+24; 
 static constexpr s32 IW_time_text_offset = 32;
+static constexpr s32 stage_fade_out_time = 49;
 static u32 s_dummy;
 static u32 s_dummy_2;
 static u32 s_dummy_3;
@@ -177,13 +180,19 @@ void tick() {
         s_in_story = false;
     }
 
+    // this code is used to halt the timer once the screen becomes completely white when stage selecting out of a level
     if (mkb::pausemenu_type == mkb::PMT_STORY_PLAY && mkb::g_current_focused_pause_menu_entry == 4 && pad::button_pressed(mkb::PAD_BUTTON_A) == true && s_is_postgoal == true){
             // stage select is on line 4 of the pause menu (top line is line 0)
-            s_cap_postgoal_timer = true;
+            s_start_stage_fade_out_timer = true;
         } else if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
-            s_cap_postgoal_timer = false;
+            s_start_stage_fade_out_timer = false;
+            s_dummy_3 = 0;
         }
-
+    if (s_start_stage_fade_out_timer == true) {
+        s_stage_fade_out_timer += 1;
+    } else {
+        s_stage_fade_out_timer = 0;
+    }
 
 
     // before starting the run, there are several values we zero on the file select screen (this serves to reset the timer)
@@ -205,7 +214,8 @@ void tick() {
         s_loadless_story_timer = 0;
         s_completed_stages = 0;
         s_prev_completed_stage_count = 0;
-        s_cap_postgoal_timer = false;
+        s_start_stage_fade_out_timer = false;
+        s_stage_fade_out_timer = 0;
         s_dummy_3 = 0;
         for (s32 k=1; k<11; k++) {
             // on the file select screen, set these to false just in case you reset while on world k but did not complete 10k stages
@@ -236,11 +246,10 @@ void tick() {
             //increment the timer every frame during gameplay
             s_gameplay_timer +=1;
         }
-        if (s_is_postgoal == true && s_cap_postgoal_timer == false) {
-            //increment the timer every frame after breaking the tape before returning to story select
-            // but once stage select is pressed, stop incrementing the timer
-            // the reason to do this is because even if we ignore completely white frames, the time it takes to *get to* the first completely white frame varies between
-            // console and emu, so this is necessary for a loadless timer
+        if (s_is_postgoal == true && s_stage_fade_out_timer < stage_fade_out_time+1) {
+            // increment the timer every frame after game goal init happens; once you press stage select, a separate 49 frame timer is started (fade out from stage select
+            // to the first completely white frame takes 49 frames). once the timer hits 49 frames, stop incrementing the timer 
+            // until the 10 ball screen starts spinning in
             s_postgoal_timer +=1;
         }
         if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE || mkb::g_storymode_stageselect_state == 3 || 
@@ -269,11 +278,13 @@ void tick() {
             s_world_start_timer_correction = 2*k;
             }
         }
-
-        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
-            // need to add 1 frame to the timer when stage selecting to the 10 ball screen 
-                s_game_scenario_return_timer_correction += 1;
+        
+        if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN && s_completed_stages % 10 != 0) {
+            // need to add 2 frames to the timer when stage selecting to the 10 ball screen, but don't correct if on the last stage of a world
+            // since the next frame the timer should increment on is covered by s_world_start_timer_correction
+                s_game_scenario_return_timer_correction += 2;
             }
+            
     }
 
     if (s_completed_stages == 100) {
@@ -477,9 +488,10 @@ void disp() {
     /*
    if (FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_AlwaysShow){
         timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60*s_cap_postgoal_timer), 1, false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*s_dummy_3), 1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*s_start_stage_fade_out_timer), 1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*s_stage_fade_out_timer), 1, false, true, draw::WHITE);
     }
-    */
+*/
     
 } 
 
