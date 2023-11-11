@@ -82,7 +82,6 @@ void init() {
     Tetris::get_instance().init();
     physics::init();
     iw::init();
-    storytimer::init();
     libsavest::init();
     timer::init();
     inputdisp::init();

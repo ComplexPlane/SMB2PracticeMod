@@ -50,7 +50,6 @@ static bool s_is_on_fallout_screen;
 static bool s_is_timeover;
 static bool s_can_increment_stage_counter;
 static bool s_lower_stage_counter;
-static bool s_cap_postgoal_timer;
 static bool s_start_stage_fade_out_timer;
 static u32 s_stage_fade_out_timer;
 static u32 s_prev_completed_stage_count;
@@ -70,20 +69,6 @@ static constexpr s32 segment_timer_text_offset = 44;
 static constexpr s32 IW_time_location_x = 42+24; 
 static constexpr s32 IW_time_text_offset = 32;
 static constexpr s32 stage_fade_out_time = 49;
-static u32 s_dummy;
-static u32 s_dummy_2;
-static u32 s_dummy_3;
-
-void init() {
-    static patch::Tramp<decltype(&mkb::handle_pausemenu_selection)> s_handle_pause_menu_selection_tramp;
-    patch::hook_function(s_handle_pause_menu_selection_tramp, mkb::handle_pausemenu_selection, [](int param_1) {
-        s_handle_pause_menu_selection_tramp.dest(param_1);
-        if (mkb::pausemenu_type == mkb::PMT_STORY_PLAY && mkb::g_current_focused_pause_menu_entry == 4){
-            // stage select is on line 4 of the pause menu (top line is line 0)
-            s_dummy_3 = 1;
-        }
-    });
-}
     
 void tick() {
     
@@ -186,7 +171,6 @@ void tick() {
             s_start_stage_fade_out_timer = true;
         } else if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE){
             s_start_stage_fade_out_timer = false;
-            s_dummy_3 = 0;
         }
     if (s_start_stage_fade_out_timer == true) {
         s_stage_fade_out_timer += 1;
@@ -216,7 +200,6 @@ void tick() {
         s_prev_completed_stage_count = 0;
         s_start_stage_fade_out_timer = false;
         s_stage_fade_out_timer = 0;
-        s_dummy_3 = 0;
         for (s32 k=1; k<11; k++) {
             // on the file select screen, set these to false just in case you reset while on world k but did not complete 10k stages
             s_is_on_world[k] = false;
@@ -246,7 +229,7 @@ void tick() {
             //increment the timer every frame during gameplay
             s_gameplay_timer +=1;
         }
-        if (s_is_postgoal == true && s_stage_fade_out_timer < stage_fade_out_time+1) {
+        if (s_is_postgoal == true && s_stage_fade_out_timer <= stage_fade_out_time) {
             // increment the timer every frame after game goal init happens; once you press stage select, a separate 49 frame timer is started (fade out from stage select
             // to the first completely white frame takes 49 frames). once the timer hits 49 frames, stop incrementing the timer 
             // until the 10 ball screen starts spinning in
@@ -315,7 +298,7 @@ void tick() {
         }
 
         if (s_completed_stages == 10*(k-1) && mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN && s_can_change_segment_start_time[k] == true) {
-            s_segment_start_time[k] = s_loadless_story_timer+2;
+            s_segment_start_time[k] = s_loadless_story_timer;
         }
       
         if ( ( (10*(k-1) <= s_completed_stages) && (s_completed_stages <= (10*k-2) ) ) || (s_completed_stages == (10*k-1) && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) ){
@@ -438,61 +421,7 @@ void disp() {
         // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
-    
-    // debugging
 
-     if (s_is_between_worlds == true){
-            s_dummy = 1;
-        } else {
-            s_dummy = 0;
-        /* things tested that didn't work for exit game so far
-        SMD_GAME_FORCE_EXIT_MAIN=93
-        SMD_GAME_FORCE_OVER_MAIN=96
-        SMD_GAME_OVER_POINT_MAIN=86
-
-        things that do work
-        SMD_GAME_SUGG_SAVE_MAIN, doesn't include playpoint text, only the save data question after
-        SMD_GAME_INTR_SEL_MAIN is the playpoint text
-
-        fallout submode testing
-        test: 50, 51, 58, 59, 90, 91, 48, 49, 
-
-        SMD_GAME_READY_INIT=48,
-        SMD_GAME_READY_MAIN=49,
-        SMD_GAME_RINGOUT_INIT=58,
-        SMD_GAME_RINGOUT_MAIN=59
-        SMD_GAME_RETRY_INIT=90,
-        SMD_GAME_RETRY_MAIN=91
-
-        conclusion: ringout = fallout submode, game retry init/main = y/n menu
-
-        FOR LATER, TRY THESE:
-        SMD_GAME_SCENSCNPLAY_RETURN=94 (missing frame on world entry?)
-        SMD_AUTHOR_PLAY_INIT=247,
-        SMD_AUTHOR_PLAY_MAIN=248,
-        SMD_AUTHOR_PLAY_STORY_INIT=249,
-
-        */
-    } 
-    if (pad::button_pressed(mkb::PAD_BUTTON_A) == true) {
-        s_dummy_2 = 1;
-       } else{
-        s_dummy_2 = 0;
-       }
-       
-    /*
-    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
-        s_completed_stages = 91;
-    }
-    */
-    /*
-   if (FullgameTimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == FullgameTimerOptions::F_AlwaysShow){
-        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60*s_cap_postgoal_timer), 1, false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*s_start_stage_fade_out_timer), 1, false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*s_stage_fade_out_timer), 1, false, true, draw::WHITE);
-    }
-*/
-    
 } 
 
 } // namespace storytimer

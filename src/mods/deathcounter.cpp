@@ -1,3 +1,5 @@
+#include "mods/deathcounter.h"
+
 #include "mkb/mkb.h"
 
 #include "mods/freecam.h"

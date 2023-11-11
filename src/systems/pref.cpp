@@ -358,7 +358,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[8];  // up to 64 bool prefs
+    u8 bool_prefs[9];  // up to 64 bool prefs
     u8 u8_prefs[27];   // 27 u8 prefs
 };
 

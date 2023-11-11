@@ -414,7 +414,7 @@ static void draw_help(const Widget& widget) {
                              "Reset");
             break;
         }
-        case WidgetType::InputSelect: { 
+        case WidgetType::InputSelect: {
             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
