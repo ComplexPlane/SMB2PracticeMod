@@ -658,14 +658,7 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
-static const char* FULLGAME_TIMER_OPTIONS[] = {
-    "Don't show",
-    "Always show",
-    "Between worlds",
-    "End of run",
-};
-
-static const char* SEGMENT_TIMER_OPTIONS[] = {
+static const char* TIMER_OPTIONS[] = {
     "Don't show",
     "Always show",
     "Between worlds",
@@ -678,8 +671,8 @@ static Widget s_loadless_timers_widgets[] = {
         .choose =
             {
                 .label = "Fullgame Timer",
-                .choices = FULLGAME_TIMER_OPTIONS,
-                .num_choices = LEN(FULLGAME_TIMER_OPTIONS),
+                .choices = TIMER_OPTIONS,
+                .num_choices = LEN(TIMER_OPTIONS),
                 .pref = pref::U8Pref::FullgameTimerOptions,
             },
     },
@@ -688,8 +681,8 @@ static Widget s_loadless_timers_widgets[] = {
         .choose =
             {
                 .label = "Segment Timer",
-                .choices = SEGMENT_TIMER_OPTIONS,
-                .num_choices = LEN(SEGMENT_TIMER_OPTIONS),
+                .choices = TIMER_OPTIONS,
+                .num_choices = LEN(TIMER_OPTIONS),
                 .pref = pref::U8Pref::SegmentTimerOptions,
             },
     },

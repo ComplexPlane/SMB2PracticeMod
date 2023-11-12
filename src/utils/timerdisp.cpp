@@ -9,7 +9,6 @@ static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 
 static constexpr s32 X = 380;
-static constexpr s32 X_2 = 18;
 static constexpr s32 Y = 24;
 
 void draw_timer(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefix, s32 frames_1, s32 frames_2, bool show_second_argument, bool show_seconds_only, mkb::GXColor color){
