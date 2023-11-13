@@ -14,16 +14,9 @@ namespace deathcounter {
 
 static bool s_can_die;
 static u32 s_death_count;
-static bool s_in_story;
 
 void tick() {
-    if (mkb::main_game_mode == mkb::STORY_MODE || mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_INIT ||
-        mkb::sub_mode == mkb::SMD_AUTHOR_PLAY_MAIN) {
-        s_in_story = true;
-    } else {
-        s_in_story = false;
-    }
-
+    // bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
     // set the death count to 0 on the file select screen
     if (mkb::g_storymode_mode == 5) {
         s_death_count = 0;
@@ -33,12 +26,14 @@ void tick() {
         s_can_die = true;
     }
 
-    if (s_can_die == true &&
+    if (s_can_die &&
         (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
          mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
-         mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN)) {
-        // you can die either by retrying after dropping in, falling out, timing over, or stage
-        // selecting after dropping in (but before breaking the tape)
+         mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN ||
+         mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_INIT)) {
+        // you can die either by retrying after dropping in, falling out, timing over, stage
+        // selecting after dropping in (but before breaking the tape), or exiting game after
+        // dropping in (but before breaking the tape)
         s_death_count += 1;
         s_can_die = false;
     }
@@ -50,16 +45,18 @@ void tick() {
         mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
         s_can_die = false;
     }
+
+    
 }
 
 void disp() {
-    if (s_in_story == false || freecam::should_hide_hud() ||
-        pref::get(pref::BoolPref::ShowDeathCounter) == false) {
+    if ((mkb::main_game_mode != mkb::STORY_MODE && mkb::sub_mode != mkb::SMD_AUTHOR_PLAY_INIT &&
+         mkb::sub_mode != mkb::SMD_AUTHOR_PLAY_MAIN) ||
+        freecam::should_hide_hud() || pref::get(pref::BoolPref::ShowDeathCounter) == false) {
         return;
     }
     draw::debug_text(18, 56, draw::WHITE, "Deaths: ");
     draw::debug_text(98, 56, draw::WHITE, "%d", s_death_count);
-
 }
 
 }  // namespace deathcounter

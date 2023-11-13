@@ -41,8 +41,7 @@ static bool s_is_on_stage_select_screen;
 static bool s_is_on_exit_game_screen;
 static bool s_is_on_fallout_screen;
 static bool s_is_timeover;
-static bool s_can_increment_stage_counter;
-static bool s_lower_stage_counter;
+static bool s_can_lower_stage_counter;
 static bool s_start_STAGE_FADE_OUT_TIMEr;
 static u32 s_STAGE_FADE_OUT_TIMEr;
 static u32 s_prev_completed_stage_count;
@@ -64,39 +63,30 @@ static constexpr s32 SEGMENT_TIMER_TEXT_OFFSET = 44;
 static constexpr s32 IW_TIME_LOCATION_X = 42 + 24;
 static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
 static constexpr s32 STAGE_FADE_OUT_TIME = 49;
+static u32 s_dummy;
+static u32 s_dummy_2;
+static u32 s_dummy_3;
 
 void tick() {
     // for later use, it's useful to record how many stages we've completed
-    // there is likely a simpler way to increment the stage counter in a way that works when you
-    // retry after breaking the tape and also does not break if you pause during game goal init or
-    // game goal main
-
-    if (mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-        // not allowed to increment the stage counter on goal init because of first framing
-        s_can_increment_stage_counter = true;
-    }
-
-    if ((s_completed_stages - s_prev_completed_stage_count) > 0) {
-        // if we've incremented the stage counter already, we're not allowed to increment again
-        // until the next game goal main
-        s_can_increment_stage_counter = false;
-        // however, if you retry after breaking the tape, lower the counter
-        if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
-            s_lower_stage_counter = true;
-        } else if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
-            s_lower_stage_counter = false;
-            s_prev_completed_stage_count = s_completed_stages;
-        }
-    }
-
-    if (s_can_increment_stage_counter == true) {
+    // increment the completed stages by 1 during the init
+    // need to check that the game is not paused to ensure the counter only goes up by 1
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
         s_completed_stages += 1;
+        s_can_lower_stage_counter = true;
     }
 
-    if (s_lower_stage_counter == true &&
-        ((s_completed_stages - s_prev_completed_stage_count) > 0)) {
+    // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select screen, lower the counter by exactly 1
+    if (s_can_lower_stage_counter && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_completed_stages += -1;
-        s_lower_stage_counter = false;
+        s_can_lower_stage_counter = false;
+    }
+
+    // once you leave a stage, set this to false to ensure the completed stage count is not lowered
+    // when entering spin in on the next stage
+    if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
+        s_can_lower_stage_counter = false;
     }
 
     // for later, it's useful to record what submodes correspond to spin in, gameplay, etc.
@@ -206,7 +196,7 @@ void tick() {
         s_exit_game_timer = 0;
         s_fallout_timer = 0;
         s_timeover_timer = 0;
-        s_lower_stage_counter = false;
+        s_can_lower_stage_counter = false;
         s_loadless_story_timer = 0;
         s_completed_stages = 0;
         s_prev_completed_stage_count = 0;
@@ -435,8 +425,7 @@ void disp() {
 
     // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the
     // tape is broken on the last stage
-    if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) !=
-        TimerOptions::DontShow) {
+    if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow) {
         if (s_is_run_complete == true) {
             // I'm so sorry :(
             // I don't know how to get the text to show "Wk" where k ranges in a for loop
@@ -477,14 +466,67 @@ void disp() {
     // show warning on the name entry screen if no timers are on (if the toggle for the warning is
     // turned on)
     if (pref::get(pref::BoolPref::StoryTimerWarning) == true &&
-        TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) ==
-            TimerOptions::DontShow &&
-        TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) ==
-            TimerOptions::DontShow &&
+        TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
+        TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
         mkb::g_storymode_mode == 21) {
         // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
+
+    // debugging
+
+    if (s_is_between_worlds == true) {
+        s_dummy = 1;
+    } else {
+        s_dummy = 0;
+        /* things tested that didn't work for exit game so far
+        SMD_GAME_FORCE_EXIT_MAIN=93
+        SMD_GAME_FORCE_OVER_MAIN=96
+        SMD_GAME_OVER_POINT_MAIN=86
+
+        things that do work
+        SMD_GAME_SUGG_SAVE_MAIN, doesn't include playpoint text, only the save data question after
+        SMD_GAME_INTR_SEL_MAIN is the playpoint text
+
+        fallout submode testing
+        test: 50, 51, 58, 59, 90, 91, 48, 49,
+
+        SMD_GAME_READY_INIT=48,
+        SMD_GAME_READY_MAIN=49,
+        SMD_GAME_RINGOUT_INIT=58,
+        SMD_GAME_RINGOUT_MAIN=59
+        SMD_GAME_RETRY_INIT=90,
+        SMD_GAME_RETRY_MAIN=91
+
+        conclusion: ringout = fallout submode, game retry init/main = y/n menu
+
+        FOR LATER, TRY THESE:
+        SMD_GAME_SCENSCNPLAY_RETURN=94 (missing frame on world entry?)
+        SMD_AUTHOR_PLAY_INIT=247,
+        SMD_AUTHOR_PLAY_MAIN=248,
+        SMD_AUTHOR_PLAY_STORY_INIT=249,
+
+        */
+    }
+    if (pad::button_pressed(mkb::PAD_BUTTON_A) == true) {
+        s_dummy_2 = 1;
+    } else {
+        s_dummy_2 = 0;
+    }
+
+    /*
+    if (pad::button_pressed(mkb::PAD_BUTTON_DOWN)) {
+        s_completed_stages = 91;
+    }
+    */
+
+    if (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
+        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60 * s_completed_stages), 1,
+                              false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*mkb::get_world_unbeaten_stage_count(0)), 1, false, true, draw::WHITE); 
+        //timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*), 1, false, true, draw::WHITE);
+    }
+    // mkb::scen_info.world
 }
 
 }  // namespace storytimer
