@@ -142,14 +142,14 @@ void tick() {
         }
         case ActiveMode::Golden: {
             if (mkb::mode_info.bananas_remaining == 0) {
-                mkb::mode_info.g_ball_mode |= 0x228;
+                mkb::mode_info.ball_mode |= 0x228;
             }
             break;
         }
         case ActiveMode::Dark: {
             if (mkb::stagedef != nullptr &&
                 mkb::mode_info.bananas_remaining != mkb::stagedef->banana_count) {
-                mkb::mode_info.g_ball_mode |= mkb::BALLMODE_FALLEN_OUT;
+                mkb::mode_info.ball_mode |= mkb::BALLMODE_FALLEN_OUT;
             }
             break;
         }

@@ -26,7 +26,7 @@ static u32 s_iw_time;
 static u32 s_prev_retrace_count;
 
 static void handle_iw_selection() {
-    if (mkb::g_storymode_mode != 5) return;
+    if (mkb::scen_info.mode != 5) return;
 
     if (pad::analog_down(mkb::PAI_LSTICK_LEFT) || pad::analog_down(mkb::PAI_LSTICK_RIGHT)) return;
     if (pad::button_down(mkb::PAD_BUTTON_LEFT) || pad::button_down(mkb::PAD_BUTTON_RIGHT)) return;
@@ -56,7 +56,7 @@ static void handle_iw_selection() {
 }
 
 static void set_save_file_info() {
-    if (mkb::g_storymode_mode != 5) return;
+    if (mkb::scen_info.mode != 5) return;
 
     s_anim_counter += 1;
 
@@ -79,7 +79,7 @@ static void handle_iw_timer() {
     // If we're still on the file selection screen and the IW file has been opened though,
     // start the timer during the open animation (to be more consistent with prior versions
     // of the IW code)
-    if (mkb::g_storymode_mode == 5 && mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA) {
+    if (mkb::scen_info.mode == 5 && mkb::data_select_menu_state != mkb::DSMS_OPEN_DATA) {
         // We're not actually in the IW, zero the timer
         s_iw_time = 0;
     } else if (main::currently_playing_iw && !main::is_iw_complete()) {
@@ -109,8 +109,8 @@ void tick() {
     handle_iw_selection();
     set_save_file_info();
 
-    u8 file_idx = mkb::g_storymode_mode == 5 ? mkb::selected_story_file_idx
-                                             : mkb::curr_storymode_save_file_idx;
+    u8 file_idx =
+        mkb::scen_info.mode == 5 ? mkb::selected_story_file_idx : mkb::scen_info.save_file_idx;
 
     // Maybe not the best way to detect if we're playing an IW but it works
     main::currently_playing_iw = s_iw_files & (1 << file_idx);
