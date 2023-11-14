@@ -30,6 +30,9 @@ static u32 s_spin_in_timer_correction;
 static u32 s_game_scenario_return_timer_correction;
 static u32 s_world_start_timer_correction;
 static u32 s_loadless_story_timer;
+struct TimerGroup {
+    static u32 test;
+};
 static bool s_in_story;
 static bool s_is_on_world[11];
 static bool s_is_between_worlds;
@@ -521,12 +524,13 @@ void disp() {
     */
 
     if (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
-        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60 * s_completed_stages), 1,
+        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60*s_completed_stages), 1,
                               false, true, draw::WHITE);
         timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*mkb::get_world_unbeaten_stage_count(0)), 1, false, true, draw::WHITE); 
-        //timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*), 1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*mkb::mode_info.g_selected_world_idx), 1, false, true, draw::WHITE);
     }
     // mkb::scen_info.world
+    // 10*mkb::scen_info.world+mkb::get_world_unbeaten_stage_count(mkb::scen_info.world)
 }
 
 }  // namespace storytimer

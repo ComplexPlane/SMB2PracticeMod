@@ -8,6 +8,7 @@
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
+#include "mods/stage_edits.h"
 #include "mods/unlock.h"
 #include "systems/pref.h"
 #include "systems/version.h"
@@ -19,7 +20,7 @@
 
 namespace menu_defn {
 
-static char s_version_str[30];
+static char s_version_str[36];
 
 static const char* INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
@@ -367,6 +368,22 @@ static Widget s_il_battle_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                .label = "Show Tie Count",
+                .pref = pref::BoolPref::IlBattleTieCount,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Attempts",
+                .pref = pref::BoolPref::IlBattleAttemptCount,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
                 .label = "Old Buzzer Message",
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
@@ -656,6 +673,11 @@ static Widget s_cm_seg_widgets[] = {
                 .pref = pref::U8Pref::CmChara,
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Text,
+        .text = {"Segments may crash in some romhacks"},
+    },
 };
 
 static const char* TIMER_OPTIONS[] = {
@@ -696,20 +718,57 @@ static Widget s_loadless_timers_widgets[] = {
     },
 };
 
-static Widget s_timers_widgets[] = {
+static Widget s_timers_widgets[] = { // I might want to reorganize this with the addition of a loadless timer
+    {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "RTA+Pause Timer",
-                .pref = pref::BoolPref::RtaPauseTimer,
+                .label = "Realtime (RTA)",
+                .pref = pref::BoolPref::TimerShowRTA,
             },
     },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Story Mode IW Timer",
+                .label = "Pausetime (PAU)",
+                .pref = pref::BoolPref::TimerShowPause,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Subtick Timers"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Framesave (FSV)",
+                .pref = pref::BoolPref::TimerShowFramesave,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Subtick (SUB)",
+                .pref = pref::BoolPref::TimerShowSubtick,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Unrounded (CUR/NXT)",
+                .pref = pref::BoolPref::TimerShowUnrounded,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Segment & Loadless Timers"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Story Mode IWs (IW)",
                 .pref = pref::BoolPref::IwTimer,
             },
     },
@@ -717,7 +776,7 @@ static Widget s_timers_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "CM Seg Timer",
+                .label = "CM Segments (SEG)",
                 .pref = pref::BoolPref::CmTimer,
             },
     },
@@ -1309,6 +1368,46 @@ static Widget s_physics_widgets[] = {
     },
 };
 
+static const char* STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
+
+static Widget s_reverse_goal_widgets[] = {
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Select New Goal",
+                .push = [] { stage_edits::select_new_goal(); },
+                .flags = ButtonFlags::CloseMenu,
+            },
+    },
+};
+
+static Widget s_stage_edit_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Stage Edit Mode",
+                .choices = STAGE_EDIT_VARIANTS,
+                .num_choices = LEN(STAGE_EDIT_VARIANTS),
+                .pref = pref::U8Pref::StageEditVariant,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_reverse_goal_widgets,
+                .num_widgets = LEN(s_reverse_goal_widgets),
+                .show_if = []() { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
+            },
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"Stage Edits are activated on retry"},
+    },
+};
+
 static Widget s_gameplay_mods_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -1336,6 +1435,15 @@ static Widget s_gameplay_mods_widgets[] = {
                 .label = "Assist",
                 .widgets = s_assist_widgets,
                 .num_widgets = LEN(s_assist_widgets),
+            },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Stage Edits",
+                .widgets = s_stage_edit_widgets,
+                .num_widgets = LEN(s_stage_edit_widgets),
             },
     },
     {

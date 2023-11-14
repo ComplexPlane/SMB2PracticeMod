@@ -1,6 +1,7 @@
 #include "mkb/mkb.h"
 
 #include "systems/assembly.h"
+#include "systems/binds.h"
 #include "systems/cardio.h"
 #include "systems/heap.h"
 #include "systems/menu_defn.h"
@@ -10,7 +11,9 @@
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/libsavest.h"
+#include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 #include "mods/ballcolor.h"
 #include "mods/banans.h"
@@ -32,17 +35,18 @@
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
+#include "mods/stage_edits.h"
 #include "mods/storytimer.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
-#include "systems/binds.h"
 
 namespace main {
 
 static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debug_text_tramp;
 static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
+static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -94,6 +98,7 @@ void init() {
     ilmark::init();
     camera::init();
     fallout::init();
+    stage_edits::init();
     scratch::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
@@ -133,6 +138,7 @@ void init() {
         ilbattle::tick();
         ilmark::tick();
         camera::tick();
+        stage_edits::tick();
         scratch::tick();
     });
 
@@ -165,6 +171,22 @@ void init() {
         ilmark::disp();
         scratch::disp();
     });
+
+    // Hook for mkb::load_additional_rel
+    patch::hook_function(
+        s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+            bool ret = s_OSLink_tramp.dest(rel_buffer, bss_buffer);
+
+            // Main game init functions
+            if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
+                stage_edits::main_game_init();
+            }
+            // Sel_ngc init functions
+            // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {
+            // }
+
+            return ret;
+        });
 }
 
 /*

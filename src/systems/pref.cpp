@@ -21,7 +21,7 @@ enum class PrefId : u16 {
     Savestates = 1,
     InputDisp = 2,
     InputDispCenterLocation = 3,
-    RtaPauseTimer = 4,
+    TimerShowRTA = 4,
     CmChara = 5,
     InputDispColor = 6,
     InputDispNotchIndicators = 7,
@@ -87,10 +87,17 @@ enum class PrefId : u16 {
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
     SavestateClearBind = 69,
-    FullgameTimerOptions = 70,
-    SegmentTimerOptions = 71,
-    StoryTimerWarning = 72,
-    ShowDeathCounter = 73,
+    IlBattleTieCount = 70,
+    IlBattleAttemptCount = 71,
+    TimerShowSubtick = 72,
+    TimerShowFramesave = 73,
+    TimerShowUnrounded = 74,
+    TimerShowPause = 75,
+    StageEditVariant = 76,
+    FullgameTimerOptions = 77,
+    SegmentTimerOptions = 78,
+    StoryTimerWarning = 79,
+    ShowDeathCounter = 80,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -98,7 +105,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::Savestates,
     PrefId::InputDisp,
     PrefId::InputDispCenterLocation,
-    PrefId::RtaPauseTimer,
+    PrefId::TimerShowRTA,
     PrefId::CmChara,
     PrefId::InputDispColor,
     PrefId::InputDispNotchIndicators,
@@ -161,6 +168,13 @@ static const PrefId s_pref_ids[] = {
     PrefId::FreecamToggleBind,
     PrefId::SavestateClearBind,
     PrefId::FalloutPlaneType,
+    PrefId::IlBattleTieCount,
+    PrefId::IlBattleAttemptCount,
+    PrefId::TimerShowSubtick,
+    PrefId::TimerShowFramesave,
+    PrefId::TimerShowUnrounded,
+    PrefId::TimerShowPause,
+    PrefId::StageEditVariant,
     PrefId::FullgameTimerOptions,
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
@@ -175,8 +189,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::InputDisp;
         case PrefId::InputDispCenterLocation:
             return BoolPref::InputDispCenterLocation;
-        case PrefId::RtaPauseTimer:
-            return BoolPref::RtaPauseTimer;
+        case PrefId::TimerShowRTA:
+            return BoolPref::TimerShowRTA;
         case PrefId::InputDispNotchIndicators:
             return BoolPref::InputDispNotchIndicators;
         case PrefId::IwTimer:
@@ -253,6 +267,18 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
+        case PrefId::IlBattleTieCount:
+            return BoolPref::IlBattleTieCount;
+        case PrefId::IlBattleAttemptCount:
+            return BoolPref::IlBattleAttemptCount;
+        case PrefId::TimerShowSubtick:
+            return BoolPref::TimerShowSubtick;
+        case PrefId::TimerShowFramesave:
+            return BoolPref::TimerShowFramesave;
+        case PrefId::TimerShowUnrounded:
+            return BoolPref::TimerShowUnrounded;
+        case PrefId::TimerShowPause:
+            return BoolPref::TimerShowPause;
         case PrefId::StoryTimerWarning:
             return BoolPref::StoryTimerWarning;
         case PrefId::ShowDeathCounter:
@@ -314,6 +340,8 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::SavestateClearBind;
         case PrefId::FalloutPlaneType:
             return U8Pref::FalloutPlaneType;
+        case PrefId::StageEditVariant:
+            return U8Pref::StageEditVariant;
         case PrefId::FullgameTimerOptions:
             return U8Pref::FullgameTimerOptions;
         case PrefId::SegmentTimerOptions:
@@ -358,8 +386,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[9];
-    u8 u8_prefs[27];
+    u8 bool_prefs[9];  
+    u8 u8_prefs[28];   
 };
 
 static PrefState s_pref_state, s_default_pref_state;

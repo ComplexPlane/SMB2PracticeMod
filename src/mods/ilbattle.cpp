@@ -4,6 +4,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/libsavest.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
@@ -48,6 +49,12 @@ static s16 s_best_frames = 0;
 static u32 s_best_score = 0;
 static u32 s_best_score_bananas = 0;
 static u32 s_best_score_frames = 0;
+// ties and retry counts
+static u32 s_best_frames_ties = 0;
+static u32 s_best_score_ties = 0;
+static u32 s_attempts = 0;
+static bool s_accepted_tie = false;
+static bool s_accepted_retry = false;
 // buzzer beaters
 static u32 s_buzzer_message_count = 0;
 static u32 s_rainbow = 0;
@@ -94,21 +101,32 @@ static void battle_display(mkb::GXColor text_color) {
 
     draw::debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
     if (battle_hours > 0) {
-        draw::debug_text(X, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
+        draw::debug_text(X - 6, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
                          battle_seconds);
     } else {
-        draw::debug_text(X, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
+        draw::debug_text(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
     }
 
     if (pref::get(pref::BoolPref::IlBattleShowTime)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
-        draw::debug_text(X, current_y, time_color, "%d.%02d", best_seconds, best_centiseconds);
+        if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_frames_ties > 0) {
+            draw::debug_text(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
+                             best_centiseconds, s_best_frames_ties + 1);
+        } else {
+            draw::debug_text(X - 6, current_y, time_color, "%d.%02d", best_seconds,
+                             best_centiseconds);
+        }
     }
     if (pref::get(pref::BoolPref::IlBattleShowScore)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
-        draw::debug_text(X, current_y, score_color, "%d", s_best_score);
+        if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_score_ties > 0) {
+            draw::debug_text(X - 6, current_y, score_color, "%d (%d)", s_best_score,
+                             s_best_score_ties + 1);
+        } else {
+            draw::debug_text(X - 6, current_y, score_color, "%d", s_best_score);
+        }
 
         // breakdown
         u8 breakdown_value = pref::get(pref::U8Pref::IlBattleBreakdown);
@@ -116,20 +134,23 @@ static void battle_display(mkb::GXColor text_color) {
             // minimal
             current_y += CHEIGHT;
             draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
-            draw::debug_text(X, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
+            draw::debug_text(X - 6, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
                              best_score_centiseconds, s_best_score_bananas);
         } else if (breakdown_value == 2) {
             // full
             current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, draw::GOLD, "SCORE BREAKDOWN");
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "  BANANAS:");
+            draw::debug_text(X - 6, current_y, text_color, "%d", s_best_score_bananas);
             current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BANANAS:");
-            draw::debug_text(X, current_y, text_color, "%d", s_best_score_bananas);
-            current_y += CHEIGHT;
-            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "TIMER:");
-            draw::debug_text(X, current_y, text_color, "%d.%02d", best_score_seconds,
+            draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "  TIMER:");
+            draw::debug_text(X - 6, current_y, text_color, "%d.%02d", best_score_seconds,
                              best_score_centiseconds);
         }
+    }
+    if (pref::get(pref::BoolPref::IlBattleAttemptCount)) {
+        current_y += CHEIGHT;
+        draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
+        draw::debug_text(X - 6, current_y, text_color, "%d", s_attempts);
     }
 
     if (pref::get(pref::BoolPref::IlBattleBuzzerOld) &&
@@ -168,6 +189,9 @@ void clear_display() {
     s_buzzer_message_count = 0;
     s_best_score_bananas = 0;
     s_best_score_frames = 0;
+    s_best_frames_ties = 0;
+    s_best_score_ties = 0;
+    s_attempts = 0;
     s_time_buzzer = false;
     s_score_buzzer = false;
     s_battle_length =
@@ -200,24 +224,40 @@ static void run_battle_timer() {
 }
 
 static void track_best() {
+    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) return;
+
     s16 current_frames = mkb::mode_info.stage_time_frames_remaining;
     u32 current_score = mkb::balls[mkb::curr_player_idx].score;
-    bool entered_goal =
-        mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN;
-    if (entered_goal) {
-        bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
-                                  s_battle_stage_id != mkb::current_stage_id &&
-                                  mkb::main_mode == mkb::MD_GAME;
-        bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
-                     s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
-        if (current_frames > s_best_frames && valid && !on_incorrect_stage) {
-            s_best_frames = current_frames;
+    bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
+                              s_battle_stage_id != mkb::current_stage_id &&
+                              mkb::main_mode == mkb::MD_GAME;
+    bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
+                 s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
+    if (!valid || on_incorrect_stage) return;
+
+    u32 calculated_score = score_calc(current_score);
+
+    // increment ties
+    if (!s_accepted_tie) {
+        if (current_frames == s_best_frames) {
+            s_best_frames_ties++;
         }
-        if (score_calc(current_score) > s_best_score && valid && !on_incorrect_stage) {
-            s_best_score = score_calc(current_score);
-            s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
-            s_best_score_frames = current_frames;
+        if (calculated_score == s_best_score) {
+            s_best_score_ties++;
         }
+        s_accepted_tie = true;
+    }
+
+    // update times
+    if (current_frames > s_best_frames) {
+        s_best_frames_ties = 0;
+        s_best_frames = current_frames;
+    }
+    if (calculated_score > s_best_score) {
+        s_best_score_ties = 0;
+        s_best_score = calculated_score;
+        s_best_score_bananas = mkb::balls[mkb::curr_player_idx].banana_count;
+        s_best_score_frames = current_frames;
     }
 }
 
@@ -225,11 +265,16 @@ static void track_invalid_pauses() {
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
-        s_paused_frame = 0;  // attempt is valid
+        s_paused_frame = 0;       // attempt is now valid
+        if (!s_accepted_retry) {  // track attempt counts
+            s_attempts++;
+            s_accepted_retry = true;
+        }
     }
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
         s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
-    } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) {
+    } else if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) ||
+               libsavest::state_loaded_this_frame()) {
         s_valid_run = false;
     }
 }
@@ -279,6 +324,14 @@ void tick() {
     if (!pref::get(pref::BoolPref::IlBattleDisplay)) {
         clear_display();
         s_state = IlBattleState::NotReady;
+    }
+
+    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT) {
+        s_accepted_retry = false;
+    }
+
+    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) {
+        s_accepted_tie = false;
     }
 
     if (mkb::main_mode == mkb::MD_GAME) {
