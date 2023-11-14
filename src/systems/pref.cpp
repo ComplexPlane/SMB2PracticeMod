@@ -100,6 +100,7 @@ enum class PrefId : u16 {
     Weight = 80,
     MonkeyType = 81,
     JumpProfile = 82,
+    CustomPhysicsDisp = 83,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -181,6 +182,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::JumpCount,
     PrefId::Weight,
     PrefId::MonkeyType,
+    PrefId::CustomPhysicsDisp,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -281,6 +283,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::JumpChangePhysics;
         case PrefId::JumpAllowWalljumps:
             return BoolPref::JumpAllowWalljumps;
+        case PrefId::CustomPhysicsDisp:
+            return BoolPref::CustomPhysicsDisp;
         default:
             return {};
     }
@@ -369,6 +373,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::IlBattleShowScore,
     BoolPref::JumpChangePhysics,
     BoolPref::JumpAllowWalljumps,
+    BoolPref::CustomPhysicsDisp,
 };
 
 struct DefaultU8Pref {
@@ -397,7 +402,7 @@ struct PrefState {
     u8 u8_prefs[31];   // 31 u8 prefs
 };
 
-static PrefState s_pref_state, s_default_pref_state;
+static PrefState s_pref_state, s_prev_pref_state, s_default_pref_state;
 
 struct FileHeader {
     char magic[4];  // "APMP"
@@ -545,6 +550,11 @@ void init() {
     }
 }
 
+void tick() {
+    // runs after all prefs have been set on a frame
+    mkb::memcpy(&s_prev_pref_state, &s_pref_state, sizeof(s_pref_state));
+}
+
 void save() {
     pref_struct_to_card_buf();
     cardio::write_file(PREF_FILENAME, s_card_buf, sizeof(s_card_buf), [](mkb::CARDResult res) {
@@ -560,6 +570,13 @@ void save() {
 
 void reset_all_defaults() {
     mkb::memcpy(&s_pref_state, &s_default_pref_state, sizeof(s_pref_state));
+}
+
+bool did_pref_change(BoolPref bool_pref) {
+    return get_bool_pref(bool_pref, s_pref_state) != get_bool_pref(bool_pref, s_prev_pref_state);
+}
+bool did_pref_change(U8Pref u8_pref) {
+    return get_u8_pref(u8_pref, s_pref_state) != get_u8_pref(u8_pref, s_prev_pref_state);
 }
 
 bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }

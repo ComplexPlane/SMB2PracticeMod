@@ -55,6 +55,7 @@ enum class BoolPref : u8 {
     TimerShowPause,
     JumpChangePhysics,
     JumpAllowWalljumps,
+    CustomPhysicsDisp,
 };
 
 enum class U8Pref : u8 {
@@ -92,8 +93,12 @@ enum class U8Pref : u8 {
 };
 
 void init();
+void tick();
 void save();
 void reset_all_defaults();
+
+bool did_pref_change(BoolPref bool_pref);
+bool did_pref_change(U8Pref u8_pref);
 
 bool get(BoolPref bool_pref);
 u8 get(U8Pref u8_pref);

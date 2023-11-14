@@ -22,15 +22,14 @@ enum class JumpState {
     AerialJump = 2,
 };
 
-constexpr s32 JUMP_LENGTH = 15;
-constexpr s32 EARLY_BUFFER_LENGTH = 4;
-constexpr s32 LATE_BUFFER_LENGTH = 5;
-constexpr f32 WALLJUMP_NORMAL = -0.5;
+static constexpr s32 JUMP_LENGTH = 15;
+static constexpr s32 EARLY_BUFFER_LENGTH = 4;
+static constexpr s32 LATE_BUFFER_LENGTH = 5;
+static constexpr f32 WALLJUMP_NORMAL = -0.5;
 
-constexpr s32 CLASSIC_EARLY_BUFFER_LENGTH = 4;
-constexpr s32 CLASSIC_LATE_BUFFER_LENGTH = 8;
+static constexpr s32 CLASSIC_EARLY_BUFFER_LENGTH = 4;
+static constexpr s32 CLASSIC_LATE_BUFFER_LENGTH = 8;
 
-static bool s_prev_enabled = false;
 static u32 s_patch1;
 static u32 s_patch2;
 
@@ -48,38 +47,6 @@ static void reset() {
     s_aerial_jumps = 0;
 }
 
-static void enable() {
-    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset,
-                  static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
-        pref::save();
-    }
-    reset();
-}
-
-static void disable() {
-    if (mkb::main_mode == mkb::MD_GAME) {
-        // These overwrites exist in main_game.rel which isn't always loaded
-        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
-        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
-    }
-
-    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Default));
-        pref::save();
-    }
-}
-
-static void end_jump() {
-    s_jumping = JumpState::NotJumping;
-    s_jump_frames = 0;
-}
-
-static f32 jump_curve(s32 current, s32 max) {
-    f32 lerp = static_cast<f32>(max - current) / max;
-    return lerp * lerp * lerp;
-}
-
 static void patch_minimap() {
     // Patch out Minimap Toggle
     if (mkb::main_mode == mkb::MD_GAME) {
@@ -94,6 +61,41 @@ static void patch_minimap() {
             s_patch2 = patch::write_nop(reinterpret_cast<void*>(0x808f5168));
         }
     }
+}
+
+static void restore_minimap() {
+    if (mkb::main_mode == mkb::MD_GAME) {
+        // These overwrites exist in main_game.rel which isn't always loaded
+        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
+        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+    }
+}
+
+static void enable() {
+    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
+        pref::set(pref::U8Pref::PhysicsPreset,
+                  static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
+        pref::save();
+    }
+    reset();
+}
+
+static void disable() {
+    restore_minimap();
+    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
+        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Default));
+        pref::save();
+    }
+}
+
+static void end_jump() {
+    s_jumping = JumpState::NotJumping;
+    s_jump_frames = 0;
+}
+
+static f32 jump_curve(s32 current, s32 max) {
+    f32 lerp = static_cast<f32>(max - current) / max;
+    return lerp * lerp * lerp;
 }
 
 static void toggle_minimap() {
@@ -262,8 +264,7 @@ static void classic_jumping() {
 
 void tick() {
     bool enabled = pref::get(pref::BoolPref::JumpMod);
-    if (enabled != s_prev_enabled) {
-        s_prev_enabled = enabled;
+    if (pref::did_pref_change(pref::BoolPref::JumpMod)) {
         if (enabled) {
             enable();
         } else {
@@ -272,6 +273,16 @@ void tick() {
     }
     if (enabled) {
         patch_minimap();
+        if (pref::did_pref_change(pref::BoolPref::JumpChangePhysics)) {
+            if (pref::get(pref::BoolPref::JumpChangePhysics)) {
+                pref::set(pref::U8Pref::PhysicsPreset,
+                          static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
+            } else {
+                pref::set(pref::U8Pref::PhysicsPreset,
+                          static_cast<u8>(physics::PhysicsPreset::Default));
+            }
+            pref::save();
+        }
         // Don't run logic while paused
         bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
         if (paused_now) return;

@@ -124,7 +124,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
             },
     },
     {
@@ -133,7 +133,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
             },
     },
 };
@@ -153,7 +153,7 @@ static Widget s_inputdisp_widgets[] = {
             {
                 .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::InputDisp); },
+                .show_if = [] { return pref::get(pref::BoolPref::InputDisp); },
             },
     },
 };
@@ -259,7 +259,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_widgets,
                 .num_widgets = LEN(s_preset_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 0; },
             },
     },
     {
@@ -268,7 +268,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_hex_widgets,
                 .num_widgets = LEN(s_hex_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 1; },
+                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 1; },
             },
     },
     {WidgetType::Separator},
@@ -292,7 +292,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::ApeColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::ApeColorType) == 0; },
             },
     },
     {WidgetType::Separator},
@@ -381,7 +381,7 @@ static Widget s_il_battle_subwidgets[] = {
             {
                 .widgets = s_il_battle_score_widgets,
                 .num_widgets = LEN(s_il_battle_score_widgets),
-                .show_if = []() { return pref::get(pref::BoolPref::IlBattleShowScore); },
+                .show_if = [] { return pref::get(pref::BoolPref::IlBattleShowScore); },
             },
     },
     {
@@ -426,7 +426,7 @@ static Widget s_il_battle_widgets[] = {
             {
                 .widgets = s_il_battle_subwidgets,
                 .num_widgets = LEN(s_il_battle_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::IlBattleDisplay); },
+                .show_if = [] { return pref::get(pref::BoolPref::IlBattleDisplay); },
             },
     },
 };
@@ -449,7 +449,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 1 Rumble",
-            .get = []() { return rumble_get(0); },
+            .get = [] { return rumble_get(0); },
             .set = [](bool enable) { rumble_set(0, enable); },
         },
     },
@@ -457,7 +457,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 2 Rumble",
-            .get = []() { return rumble_get(1); },
+            .get = [] { return rumble_get(1); },
             .set = [](bool enable) { rumble_set(1, enable); },
         },
     },
@@ -465,7 +465,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 3 Rumble",
-            .get = []() { return rumble_get(2); },
+            .get = [] { return rumble_get(2); },
             .set = [](bool enable) { rumble_set(2, enable); },
         },
     },
@@ -473,7 +473,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 4 Rumble",
-            .get = []() { return rumble_get(3); },
+            .get = [] { return rumble_get(3); },
             .set = [](bool enable) { rumble_set(3, enable); },
         },
     },
@@ -1001,7 +1001,7 @@ static Widget s_freecam_widgets[] = {
             {
                 .widgets = s_freecam_subwidgets,
                 .num_widgets = LEN(s_freecam_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::Freecam); },
+                .show_if = [] { return pref::get(pref::BoolPref::Freecam); },
             },
     },
 };
@@ -1136,7 +1136,7 @@ static Widget s_savestate_widgets[] = {
             {
                 .widgets = s_savestate_subwidgets,
                 .num_widgets = LEN(s_savestate_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::Savestates); },
+                .show_if = [] { return pref::get(pref::BoolPref::Savestates); },
             },
     },
 };
@@ -1377,7 +1377,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_lightball,
                 .num_widgets = LEN(s_lightball),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::LightBall;
                     },
@@ -1390,7 +1390,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_nofriction,
                 .num_widgets = LEN(s_nofriction),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::NoFriction;
                     },
@@ -1403,7 +1403,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_heavyball,
                 .num_widgets = LEN(s_heavyball),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::HeavyBall;
                     },
@@ -1416,7 +1416,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_bouncyball,
                 .num_widgets = LEN(s_bouncyball),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::BouncyBall;
                     },
@@ -1429,7 +1429,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_stickyball,
                 .num_widgets = LEN(s_stickyball),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::StickyBall;
                     },
@@ -1442,7 +1442,7 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_jump_physics,
                 .num_widgets = LEN(s_jump_physics),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::JumpPhysics;
                     },
@@ -1455,10 +1455,18 @@ static Widget s_physics_widgets[] = {
                 .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
                 .show_if =
-                    []() {
+                    [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::Custom;
                     },
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Display Physics Text",
+                .pref = pref::BoolPref::CustomPhysicsDisp,
             },
     },
 };
@@ -1494,7 +1502,7 @@ static Widget s_stage_edit_widgets[] = {
             {
                 .widgets = s_reverse_goal_widgets,
                 .num_widgets = LEN(s_reverse_goal_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
+                .show_if = [] { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
             },
     },
     {
@@ -1574,7 +1582,7 @@ static Widget s_jump_profiles[] = {
             {
                 .widgets = s_jump_standard_widgets,
                 .num_widgets = LEN(s_jump_standard_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::JumpProfile) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 0; },
             },
     },
     {
@@ -1583,7 +1591,7 @@ static Widget s_jump_profiles[] = {
             {
                 .widgets = s_jump_classic_widgets,
                 .num_widgets = LEN(s_jump_classic_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::JumpProfile) == 1; },
+                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 1; },
             },
     },
 };
@@ -1603,7 +1611,7 @@ static Widget s_jump_widgets[] = {
             {
                 .widgets = s_jump_profiles,
                 .num_widgets = LEN(s_jump_profiles),
-                .show_if = []() { return pref::get(pref::BoolPref::JumpMod); },
+                .show_if = [] { return pref::get(pref::BoolPref::JumpMod); },
             },
     },
 };

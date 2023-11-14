@@ -1,6 +1,5 @@
 #include "mkb/mkb.h"
 
-#include "mods/variant_text.h"
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
@@ -138,6 +137,8 @@ void init() {
         camera::tick();
         stage_edits::tick();
         scratch::tick();
+        // Pref runs last to track the prefs from the previous frame
+        pref::tick();
     });
 
     patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
@@ -166,7 +167,6 @@ void init() {
         draw::disp();
         ilmark::disp();
         physics::disp();
-        variant_text::disp();
         scratch::disp();
     });
 
