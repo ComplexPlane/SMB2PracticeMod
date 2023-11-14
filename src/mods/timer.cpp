@@ -159,7 +159,7 @@ void disp() {
     if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_rta_timer = mkb::mode_info.stage_time_limit;
         s_pause_timer = 0;
-    } else if ((mkb::mode_info.g_ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0) {
+    } else if ((mkb::mode_info.ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0) {
         s_rta_timer -= s_retrace_count - s_prev_retrace_count;
         //        if (s_rtaTimer < 0) s_rtaTimer = 0;
         if (mkb::g_some_other_flags & mkb::OF_GAME_PAUSED) {

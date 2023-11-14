@@ -107,9 +107,9 @@ static void state_load_menu() {
     mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
 
     // Set menu state to have chosen Main Game -> Challenge Mode
-    mkb::menu_stack_ptr = 1;
-    mkb::g_menu_stack[0] = 0;  // ??
-    mkb::g_menu_stack[1] = 7;  // Main game
+    mkb::sel_menu_info.menu_stack_ptr = 1;
+    mkb::sel_menu_info.menu_stack[0] = 0;  // ??
+    mkb::sel_menu_info.menu_stack[1] = 7;  // Main game
     mkb::g_focused_root_menu = 0;
     mkb::g_focused_maingame_menu = 1;
 
@@ -126,7 +126,7 @@ static void state_enter_cm() {
     mkb::num_players = 1;
     s_overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
     mkb::number_of_starting_monkeys = 100;
-    mkb::enter_challenge_mode();
+    mkb::menu_start_challenge_mode();
 
     // Reset this timer to prevent dark pause menu when leaving an Exit Game menu. The game draws
     // the pause menu sprite at a different depth depending on this global, which can incorrectly
@@ -190,7 +190,7 @@ static void state_seg_active() {
 void state_seg_complete() {
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
     if (mkb::mode_info.cm_stage_id == -1 &&
-        mkb::mode_info.g_ball_mode & mkb::BALLMODE_ON_BONUS_STAGE) {
+        mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE) {
         if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
             mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT) {
             mkb::sub_mode_frame_counter += 120;
