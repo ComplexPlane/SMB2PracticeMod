@@ -80,7 +80,8 @@ void tick() {
         s_can_lower_stage_counter = true;
     }
 
-    // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select screen, lower the counter by exactly 1
+    // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select screen, lower
+    // the counter by exactly 1
     if (s_can_lower_stage_counter && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_completed_stages += -1;
         s_can_lower_stage_counter = false;
@@ -187,7 +188,7 @@ void tick() {
     // serves to reset the timer) to do: in the future, have the timer not reset unless the file's
     // data is reset (either manually or by using the IW move up/down feature)
 
-    if (mkb::g_storymode_mode == 5) {
+    if (mkb::scen_info.mode == 5) {
         // zero the timer on the file select screen and set the number of completed stages to 0
         s_spin_in_timer_correction = 0;
         s_spin_in_timer = 0;
@@ -471,8 +472,8 @@ void disp() {
     if (pref::get(pref::BoolPref::StoryTimerWarning) == true &&
         TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
         TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
-        mkb::g_storymode_mode == 21) {
-        // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
+        mkb::scen_info.mode == 21) {
+        // mkb::scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
 
@@ -524,10 +525,14 @@ void disp() {
     */
 
     if (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
-        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60*s_completed_stages), 1,
+        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60 * s_completed_stages), 1,
                               false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*mkb::get_world_unbeaten_stage_count(0)), 1, false, true, draw::WHITE); 
-        timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*mkb::mode_info.g_selected_world_idx), 1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 1, 44,
+                              "dbg:", static_cast<s32>(60 * mkb::get_world_unbeaten_stage_count(0)),
+                              1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 2, 44,
+                              "dbg:", static_cast<s32>(60 * mkb::mode_info.g_selected_world_idx), 1,
+                              false, true, draw::WHITE);
     }
     // mkb::scen_info.world
     // 10*mkb::scen_info.world+mkb::get_world_unbeaten_stage_count(mkb::scen_info.world)
