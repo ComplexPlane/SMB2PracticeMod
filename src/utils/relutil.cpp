@@ -1,5 +1,6 @@
 #include "relutil.h"
 
+#include "macro_utils.h"
 #include "mkb/mkb.h"
 
 namespace relutil {
@@ -44,16 +45,24 @@ struct RelHeader {
 };
 static_assert(sizeof(RelHeader) == 0x4C);
 
-void* compute_mainloop_reldata_boundary() {
+void* compute_mainloop_reldata_boundary(void* start) {
     RelHeader* module = *reinterpret_cast<RelHeader**>(0x800030C8);
     for (u32 imp_idx = 0; imp_idx * sizeof(Imp) < module->imp_size; imp_idx++) {
         Imp& imp = module->imp_offset[imp_idx];
         // Look for end of relocation data against main_loop.rel itself
         if (imp.module_id != 1) continue;
+
+        // Ignore space already allocated for this mod
+        // `rel_offset` may not be `sizeof(RelEntry)` aligned, so give `start` the same alignment
+        u32 start_aligned = reinterpret_cast<u32>(start) +
+                            (reinterpret_cast<u32>(imp.rel_offset) % sizeof(RelEntry));
+        u32 first_valid_ptr = MAX(reinterpret_cast<u32>(imp.rel_offset), start_aligned);
+        RelEntry* first_valid = reinterpret_cast<RelEntry*>(first_valid_ptr);
+
         u32 rel_idx = 0;
-        for (; imp.rel_offset[rel_idx].type != 203; rel_idx++)
+        for (; first_valid[rel_idx].type != 203; rel_idx++)
             ;
-        return &imp.rel_offset[rel_idx + 1];
+        return &first_valid[rel_idx + 1];
     }
     return nullptr;
 }
