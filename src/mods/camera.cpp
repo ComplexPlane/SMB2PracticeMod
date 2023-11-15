@@ -13,8 +13,6 @@ enum class CameraType {
     ForceSMB1 = 2,
 };
 
-static CameraType s_prev_value;
-
 void init() {}
 
 void tick() {
@@ -22,7 +20,7 @@ void tick() {
 
     switch (value) {
         case CameraType::Default: {
-            if (s_prev_value != value) {
+            if (pref::did_change(pref::U8Pref::Camera)) {
                 // restore cam to smb2 once (so toggle still works)
                 if (mkb::cameras[0].mode == 0x1) {
                     mkb::cameras[0].mode = 0x4c;
@@ -64,7 +62,6 @@ void tick() {
             break;
         }
     }
-    s_prev_value = value;
 }
 
 }  // namespace camera

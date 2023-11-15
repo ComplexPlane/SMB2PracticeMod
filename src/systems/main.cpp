@@ -45,6 +45,7 @@ static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debug_text_tramp;
 static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
 static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_ready_init)> s_smd_game_ready_init_tramp;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -136,6 +137,8 @@ void init() {
         camera::tick();
         stage_edits::tick();
         scratch::tick();
+        // Pref runs last to track the prefs from the previous frame
+        pref::tick();
     });
 
     patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
@@ -163,6 +166,7 @@ void init() {
         menu_impl::disp();
         draw::disp();
         ilmark::disp();
+        physics::disp();
         scratch::disp();
     });
 
@@ -173,7 +177,12 @@ void init() {
 
             // Main game init functions
             if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
-                stage_edits::main_game_init();
+                patch::hook_function(s_smd_game_ready_init_tramp, mkb::smd_game_ready_init, []() {
+                    stage_edits::smd_game_ready_init();
+                    ballcolor::switch_monkey();
+                    s_smd_game_ready_init_tramp.dest();
+                });
+                jump::patch_minimap();
             }
             // Sel_ngc init functions
             // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {

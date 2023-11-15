@@ -24,9 +24,20 @@ enum class ClothingType {
     Random = 1,
 };
 
+enum class MonkeyType {
+    Default = 0,
+    Aiai = 1,
+    Meemee = 2,
+    Baby = 3,
+    Gongon = 4,
+    Random = 5,
+};
+
 static u32 s_rainbow = 0;  // tick for rainbow animation
 static mkb::GXColor s_default_color;
 static mkb::GXColor s_current_color;
+
+static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
 mkb::GXColor get_current_color() { return s_current_color; }
 
@@ -44,8 +55,41 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
     return color_choice - 1;
 }
 
+void switch_monkey() {
+    switch (MonkeyType(pref::get(pref::U8Pref::MonkeyType))) {
+        case MonkeyType::Default: {
+            break;
+        }
+        case MonkeyType::Aiai: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 0;
+            break;
+        }
+        case MonkeyType::Meemee: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 1;
+            break;
+        }
+        case MonkeyType::Baby: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 2;
+            break;
+        }
+        case MonkeyType::Gongon: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = 3;
+            break;
+        }
+        case MonkeyType::Random: {
+            mkb::active_monkey_id[mkb::curr_player_idx] = mkb::rand() % 4;
+            break;
+        }
+    }
+}
+
 void init() {
     s_default_color = *reinterpret_cast<mkb::GXColor*>(0x80472a34);  // default color
+
+    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
+        s_load_stagedef_tramp.dest(stage_id);
+        switch_monkey();
+    });
 }
 
 void tick() {

@@ -8,6 +8,7 @@
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
+#include "mods/physics.h"
 #include "mods/stage_edits.h"
 #include "mods/unlock.h"
 #include "systems/pref.h"
@@ -123,7 +124,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
             },
     },
     {
@@ -132,7 +133,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
             },
     },
 };
@@ -152,7 +153,7 @@ static Widget s_inputdisp_widgets[] = {
             {
                 .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::InputDisp); },
+                .show_if = [] { return pref::get(pref::BoolPref::InputDisp); },
             },
     },
 };
@@ -233,6 +234,10 @@ static Widget s_hex_widgets[] = {
     },
 };
 
+static const char* MONKEY_TYPES[] = {
+    "Default", "Aiai", "Meemee", "Baby", "Gongon", "Random",
+};
+
 static Widget s_ball_color_widgets[] = {
     {
         .type = WidgetType::Header,
@@ -254,7 +259,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_widgets,
                 .num_widgets = LEN(s_preset_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 0; },
             },
     },
     {
@@ -263,7 +268,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_hex_widgets,
                 .num_widgets = LEN(s_hex_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::BallColorType) == 1; },
+                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 1; },
             },
     },
     {WidgetType::Separator},
@@ -287,7 +292,22 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::ApeColorType) == 0; },
+                .show_if = [] { return pref::get(pref::U8Pref::ApeColorType) == 0; },
+            },
+    },
+    {WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Monkey"},
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Monkey Type",
+                .choices = MONKEY_TYPES,
+                .num_choices = LEN(MONKEY_TYPES),
+                .pref = pref::U8Pref::MonkeyType,
             },
     },
 };
@@ -361,7 +381,7 @@ static Widget s_il_battle_subwidgets[] = {
             {
                 .widgets = s_il_battle_score_widgets,
                 .num_widgets = LEN(s_il_battle_score_widgets),
-                .show_if = []() { return pref::get(pref::BoolPref::IlBattleShowScore); },
+                .show_if = [] { return pref::get(pref::BoolPref::IlBattleShowScore); },
             },
     },
     {
@@ -406,7 +426,7 @@ static Widget s_il_battle_widgets[] = {
             {
                 .widgets = s_il_battle_subwidgets,
                 .num_widgets = LEN(s_il_battle_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::IlBattleDisplay); },
+                .show_if = [] { return pref::get(pref::BoolPref::IlBattleDisplay); },
             },
     },
 };
@@ -429,7 +449,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 1 Rumble",
-            .get = []() { return rumble_get(0); },
+            .get = [] { return rumble_get(0); },
             .set = [](bool enable) { rumble_set(0, enable); },
         },
     },
@@ -437,7 +457,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 2 Rumble",
-            .get = []() { return rumble_get(1); },
+            .get = [] { return rumble_get(1); },
             .set = [](bool enable) { rumble_set(1, enable); },
         },
     },
@@ -445,7 +465,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 3 Rumble",
-            .get = []() { return rumble_get(2); },
+            .get = [] { return rumble_get(2); },
             .set = [](bool enable) { rumble_set(2, enable); },
         },
     },
@@ -453,7 +473,7 @@ static Widget s_rumble_widgets[] = {
         .type = WidgetType::GetSetCheckbox,
         .get_set_checkbox = {
             .label = "Controller 4 Rumble",
-            .get = []() { return rumble_get(3); },
+            .get = [] { return rumble_get(3); },
             .set = [](bool enable) { rumble_set(3, enable); },
         },
     },
@@ -981,7 +1001,7 @@ static Widget s_freecam_widgets[] = {
             {
                 .widgets = s_freecam_subwidgets,
                 .num_widgets = LEN(s_freecam_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::Freecam); },
+                .show_if = [] { return pref::get(pref::BoolPref::Freecam); },
             },
     },
 };
@@ -1116,7 +1136,7 @@ static Widget s_savestate_widgets[] = {
             {
                 .widgets = s_savestate_subwidgets,
                 .num_widgets = LEN(s_savestate_subwidgets),
-                .show_if = []() { return pref::get(pref::BoolPref::Savestates); },
+                .show_if = [] { return pref::get(pref::BoolPref::Savestates); },
             },
     },
 };
@@ -1181,19 +1201,39 @@ static Widget s_tools_widgets[] = {
     },
 };
 
+static Widget s_reset_ilmark_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Reset IL invalidating preferences to defaults?"},
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Cancel",
+                .push = nullptr,
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+    {
+        .type = WidgetType::Button,
+        .button =
+            {
+                .label = "Confirm",
+                .push = [] { ilmark::disable_invalidating_settings(); },
+                .flags = ButtonFlags::GoBack,
+            },
+    },
+};
+
 static Widget s_il_mark_widgets[] = {
     {
         .type = WidgetType::Header,
         .header = {"Disable IL Invalidating Settings"},
     },
     {
-        .type = WidgetType::Button,
-        .button =
-            {
-                .label = "Disable Now",
-                .push = [] { ilmark::disable_invalidating_settings(); },
-                .flags = ButtonFlags::GoBack,
-            },
+        .type = WidgetType::Menu,
+        .menu = {"Disable Now", s_reset_ilmark_widgets, LEN(s_reset_ilmark_widgets)},
     },
     {.type = WidgetType::Separator},
     {
@@ -1289,22 +1329,123 @@ static Widget s_enabled_physics_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::FloatEdit,
+        .float_edit =
             {
-                .label = "Moon Gravity",
-                .pref = pref::BoolPref::Moon,
+                .label = "Weight",
+                .pref = pref::U8Pref::Weight,
+                .precision = 1000,
+                .min = 0,
+                .max = 200,
+                .floor = 900,
+                .decimals = 3,
             },
     },
 };
 
+static const char* PHYSICS_PRESETS[] = {"Default",          "Light Ball",  "No Friction",
+                                        "Heavy Ball",       "Bouncy Ball", "Sticky Ball",
+                                        "Jump-Mod Physics", "Custom"};
+
+static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 0.95"}}};
+static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.000"}}};
+static Widget s_heavyball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 1.05"}}};
+static Widget s_bouncyball[] = {
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 1.20"}}};
+static Widget s_stickyball[] = {
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.01"}}};
+static Widget s_jump_physics[] = {
+    {.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.015"}},
+    {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.25"}},
+};
+
 static Widget s_physics_widgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Use Custom Physics",
-                .pref = pref::BoolPref::UseCustomPhysics,
+                .label = "Physics Presets",
+                .choices = PHYSICS_PRESETS,
+                .num_choices = LEN(PHYSICS_PRESETS),
+                .pref = pref::U8Pref::PhysicsPreset,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_lightball,
+                .num_widgets = LEN(s_lightball),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::LightBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_nofriction,
+                .num_widgets = LEN(s_nofriction),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::NoFriction;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_heavyball,
+                .num_widgets = LEN(s_heavyball),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::HeavyBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_bouncyball,
+                .num_widgets = LEN(s_bouncyball),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::BouncyBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_stickyball,
+                .num_widgets = LEN(s_stickyball),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::StickyBall;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_physics,
+                .num_widgets = LEN(s_jump_physics),
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::JumpPhysics;
+                    },
             },
     },
     {
@@ -1313,7 +1454,19 @@ static Widget s_physics_widgets[] = {
             {
                 .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
-                .show_if = []() { return pref::get(pref::BoolPref::UseCustomPhysics); },
+                .show_if =
+                    [] {
+                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                               physics::PhysicsPreset::Custom;
+                    },
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Display Physics Text",
+                .pref = pref::BoolPref::CustomPhysicsDisp,
             },
     },
 };
@@ -1349,12 +1502,120 @@ static Widget s_stage_edit_widgets[] = {
             {
                 .widgets = s_reverse_goal_widgets,
                 .num_widgets = LEN(s_reverse_goal_widgets),
-                .show_if = []() { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
+                .show_if = [] { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
             },
     },
     {
         .type = WidgetType::Text,
         .text = {"Stage Edits are activated on retry"},
+    },
+};
+
+static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
+
+static Widget s_jump_classic_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Classic Jump-Mod from it's original release"},
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Configuration"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Use Changed Physics",
+                .pref = pref::BoolPref::JumpChangePhysics,
+            },
+    },
+};
+
+static Widget s_jump_standard_widgets[] = {
+    {
+        .type = WidgetType::Text,
+        .text = {"  Standard Jump-Mod"},
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Configuration"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Use Changed Physics",
+                .pref = pref::BoolPref::JumpChangePhysics,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Allow Walljumps",
+                .pref = pref::BoolPref::JumpAllowWalljumps,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Jump Count",
+                .choices = JUMP_COUNTS,
+                .num_choices = LEN(JUMP_COUNTS),
+                .pref = pref::U8Pref::JumpCount,
+            },
+    },
+};
+
+static const char* JUMP_PROFILES[] = {"Standard", "Classic"};
+
+static Widget s_jump_profiles[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Jump Type",
+                .choices = JUMP_PROFILES,
+                .num_choices = LEN(JUMP_PROFILES),
+                .pref = pref::U8Pref::JumpProfile,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_standard_widgets,
+                .num_widgets = LEN(s_jump_standard_widgets),
+                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 0; },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_classic_widgets,
+                .num_widgets = LEN(s_jump_classic_widgets),
+                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 1; },
+            },
+    },
+};
+
+static Widget s_jump_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Jump Settings"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Jump Mod",
+                .pref = pref::BoolPref::JumpMod,
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_jump_profiles,
+                .num_widgets = LEN(s_jump_profiles),
+                .show_if = [] { return pref::get(pref::BoolPref::JumpMod); },
+            },
     },
 };
 
@@ -1397,11 +1658,12 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Menu,
+        .menu =
             {
                 .label = "Jump Mod",
-                .pref = pref::BoolPref::JumpMod,
+                .widgets = s_jump_widgets,
+                .num_widgets = LEN(s_jump_widgets),
             },
     },
     {
