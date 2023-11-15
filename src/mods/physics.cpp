@@ -129,7 +129,7 @@ void disp() {
         u32 y = 474;
         mkb::textdraw_set_pos(x, y);
         mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
-        mkb::textdraw_set_scale(1.2, 0.8);
+        mkb::textdraw_set_scale(1.2, 0.9);
         mkb::GXColor color = draw::WHITE;
         mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
         mkb::textdraw_print("Custom Physics");
