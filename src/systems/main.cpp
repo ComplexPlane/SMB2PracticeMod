@@ -182,6 +182,7 @@ void init() {
                     ballcolor::switch_monkey();
                     s_smd_game_ready_init_tramp.dest();
                 });
+                jump::patch_minimap();
             }
             // Sel_ngc init functions
             // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {

@@ -47,9 +47,10 @@ static void reset() {
     s_aerial_jumps = 0;
 }
 
-static void patch_minimap() {
+void patch_minimap() {
     // Patch out Minimap Toggle
-    if (mkb::main_mode == mkb::MD_GAME) {
+    // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
+    if (mkb::main_mode == mkb::MD_GAME && pref::get(pref::BoolPref::JumpMod)) {
         u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
         u32* patch2_loc = reinterpret_cast<u32*>(0x808f5168);
 
@@ -72,6 +73,7 @@ static void restore_minimap() {
 }
 
 static void enable() {
+    patch_minimap();
     if (pref::get(pref::BoolPref::JumpChangePhysics)) {
         pref::set(pref::U8Pref::PhysicsPreset,
                   static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
@@ -272,7 +274,6 @@ void tick() {
         }
     }
     if (enabled) {
-        patch_minimap();
         if (pref::did_pref_change(pref::BoolPref::JumpChangePhysics)) {
             if (pref::get(pref::BoolPref::JumpChangePhysics)) {
                 pref::set(pref::U8Pref::PhysicsPreset,
