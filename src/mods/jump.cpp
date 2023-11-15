@@ -266,7 +266,7 @@ static void classic_jumping() {
 
 void tick() {
     bool enabled = pref::get(pref::BoolPref::JumpMod);
-    if (pref::did_pref_change(pref::BoolPref::JumpMod)) {
+    if (pref::did_change(pref::BoolPref::JumpMod)) {
         if (enabled) {
             enable();
         } else {
@@ -274,7 +274,7 @@ void tick() {
         }
     }
     if (enabled) {
-        if (pref::did_pref_change(pref::BoolPref::JumpChangePhysics)) {
+        if (pref::did_change(pref::BoolPref::JumpChangePhysics)) {
             if (pref::get(pref::BoolPref::JumpChangePhysics)) {
                 pref::set(pref::U8Pref::PhysicsPreset,
                           static_cast<u8>(physics::PhysicsPreset::JumpPhysics));

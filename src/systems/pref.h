@@ -97,8 +97,8 @@ void tick();
 void save();
 void reset_all_defaults();
 
-bool did_pref_change(BoolPref bool_pref);
-bool did_pref_change(U8Pref u8_pref);
+bool did_change(BoolPref bool_pref);
+bool did_change(U8Pref u8_pref);
 
 bool get(BoolPref bool_pref);
 u8 get(U8Pref u8_pref);

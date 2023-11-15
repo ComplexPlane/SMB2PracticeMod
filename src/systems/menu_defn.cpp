@@ -1516,9 +1516,10 @@ static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 static Widget s_jump_classic_widgets[] = {
     {
         .type = WidgetType::Text,
-        .text = {"  Classic Jump-Mod from the first version of Practice Mod"},
+        .text = {"  Classic Jump-Mod from it's original release"},
     },
     {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Configuration"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -1535,6 +1536,7 @@ static Widget s_jump_standard_widgets[] = {
         .text = {"  Standard Jump-Mod"},
     },
     {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Configuration"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -1597,6 +1599,7 @@ static Widget s_jump_profiles[] = {
 };
 
 static Widget s_jump_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Jump Settings"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =

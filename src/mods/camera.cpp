@@ -20,7 +20,7 @@ void tick() {
 
     switch (value) {
         case CameraType::Default: {
-            if (pref::did_pref_change(pref::U8Pref::Camera)) {
+            if (pref::did_change(pref::U8Pref::Camera)) {
                 // restore cam to smb2 once (so toggle still works)
                 if (mkb::cameras[0].mode == 0x1) {
                     mkb::cameras[0].mode = 0x4c;
