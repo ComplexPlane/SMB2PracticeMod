@@ -24,6 +24,7 @@ enum class TimerType {
 
 static patch::Tramp<decltype(&mkb::did_ball_fallout)> s_did_ball_fallout_tramp;
 
+// TODO: use pref::did_change()
 static TimerType s_prev_pref = TimerType::Invalid;
 static TimerType s_prev_freecam = TimerType::Invalid;
 

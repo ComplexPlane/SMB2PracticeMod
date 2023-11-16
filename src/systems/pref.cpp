@@ -539,6 +539,7 @@ static constexpr char* PREF_FILENAME = "apmp";
 
 void init() {
     load_default_prefs();
+    mkb::memcpy(&s_default_pref_state, &s_prev_pref_state, sizeof(s_default_pref_state));
 
     FileHeader* header = nullptr;
     s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void**>(&header));

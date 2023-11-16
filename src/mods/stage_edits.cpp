@@ -11,6 +11,7 @@ enum class ActiveMode {
     Reverse = 3,
 };
 
+// TODO: use pref::did_change()
 static ActiveMode s_current_mode = ActiveMode::None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;

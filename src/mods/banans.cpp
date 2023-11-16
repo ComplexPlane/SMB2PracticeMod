@@ -5,13 +5,9 @@
 
 namespace banans {
 
-static bool s_prev_enabled = false;
-
 void tick() {
-    bool enabled = pref::get(pref::BoolPref::BananaCounter9999);
-    if (enabled != s_prev_enabled) {
-        s_prev_enabled = enabled;
-        if (enabled) {
+    if (pref::did_change(pref::BoolPref::BananaCounter9999)) {
+        if (pref::get(pref::BoolPref::BananaCounter9999)) {
             patch::write_word(reinterpret_cast<void*>(0x802b8284), 0x2c00270f);
             patch::write_word(reinterpret_cast<void*>(0x802b828c), 0x3800270f);
         } else {
