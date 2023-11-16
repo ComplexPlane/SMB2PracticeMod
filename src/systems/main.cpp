@@ -119,11 +119,11 @@ void init() {
         binds::tick();
         cardio::tick();
         unlock::tick();
-        fallout::tick();
         physics::tick();
         iw::tick();
         savest_ui::tick();
         menu_impl::tick();
+        fallout::tick();
         jump::tick();
         inputdisp::tick();
         gotostory::tick();

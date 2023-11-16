@@ -26,7 +26,8 @@ static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
 static u32 s_timeover_condition = 0x2c000000;  // Timeover at 0.00
 static u32 s_timer_increment = 0x3803ffff;     // Add -1 to timer each frame
-static bool s_halted;                          // freeze timer for TimerType::FreezeAtZero
+static bool s_halted = false;                  // freeze timer for TimerType::FreezeAtZero
+static bool s_toggled_freecam = false;
 
 void init() {
     // stop fallouts
@@ -84,15 +85,17 @@ void freeze_timer() {
     TimerType type = TimerType(pref::get(pref::U8Pref::TimerType));
     if (freecam::should_freeze_timer()) {
         type = TimerType::FreezeInstantly;
+        s_toggled_freecam = true;
     }
+
     switch (type) {
         case TimerType::Default: {
-            // only run once (to avoid overwriting custom code from packs)
-            if (pref::did_change(pref::U8Pref::TimerType)) {
+            if (pref::did_change(pref::U8Pref::TimerType) || s_toggled_freecam) {
                 // time over at 0 frames
                 *reinterpret_cast<u32*>(0x80297548) = s_timeover_condition;
                 // add -1 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
+                s_toggled_freecam = false;
             }
             break;
         }
