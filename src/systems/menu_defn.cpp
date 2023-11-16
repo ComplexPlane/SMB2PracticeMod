@@ -1518,7 +1518,7 @@ static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 static Widget s_jump_classic_widgets[] = {
     {
         .type = WidgetType::Text,
-        .text = {"  Classic Jump-Mod from it's original release"},
+        .text = {"  Classic Jump-Mod from its original release"},
     },
     {.type = WidgetType::Separator},
     {.type = WidgetType::Header, .header = {"Configuration"}},

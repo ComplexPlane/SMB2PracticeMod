@@ -26,7 +26,6 @@ static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
 static u32 s_timeover_condition = 0x2c000000;  // Timeover at 0.00
 static u32 s_timer_increment = 0x3803ffff;     // Add -1 to timer each frame
-static bool s_halted = false;                  // freeze timer for TimerType::FreezeAtZero
 static bool s_toggled_freecam = false;
 
 void init() {
@@ -110,17 +109,12 @@ void freeze_timer() {
             // time over at -60 frames (so timer is able to stop at 0.00)
             *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
 
-            if (mkb::mode_info.stage_time_frames_remaining <= 0 && !s_halted) {
+            if (mkb::mode_info.stage_time_frames_remaining <= 0) {
                 // when timer hits 0, add 0 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
-                s_halted = true;
-            } else if (mkb::mode_info.stage_time_frames_remaining <= 0 && s_halted) {
-                // add 0 to timer each frame to maintain freeze
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
             } else {
                 // timer is ticking normally, add -1 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
-                s_halted = false;
             }
             break;
         }
@@ -130,8 +124,15 @@ void freeze_timer() {
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
             *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
-            // add 1 to timer each frame
-            patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+
+            // getting close to signed integer overflow, freeze timer to prevent time-over
+            if (mkb::mode_info.stage_time_frames_remaining >= 32400) {
+                // add 0 to timer each frame
+                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+            } else {
+                // timer is ticking normally, add +1 to timer each frame
+                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+            }
             break;
         }
     }
