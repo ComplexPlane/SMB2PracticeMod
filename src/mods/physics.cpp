@@ -1,5 +1,6 @@
 #include "physics.h"
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -117,6 +118,8 @@ void disp() {
     if (mkb::sub_mode != mkb::SMD_GAME_READY_INIT && mkb::sub_mode != mkb::SMD_GAME_READY_MAIN &&
         mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
         return;
+
+    if (freecam::should_hide_hud()) return;
 
     if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp)) {
         mkb::textdraw_reset();
