@@ -340,6 +340,16 @@ static Widget s_il_battle_score_widgets[] = {
 
 static Widget s_il_battle_subwidgets[] = {
     {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Battle Length",
+                .choices = IL_BATTLE_LENGTHS,
+                .num_choices = LEN(IL_BATTLE_LENGTHS),
+                .pref = pref::U8Pref::IlBattleLength,
+            },
+    },
+    {
         .type = WidgetType::InputSelect,
         .input_select =
             {
@@ -349,15 +359,11 @@ static Widget s_il_battle_subwidgets[] = {
                 .can_unbind = true,
             },
     },
+    {.type = WidgetType::Text, .text = {"  Press Ready Bind then Retry to start a battle"}},
+    {.type = WidgetType::Separator},
     {
-        .type = WidgetType::Choose,
-        .choose =
-            {
-                .label = "Battle Length",
-                .choices = IL_BATTLE_LENGTHS,
-                .num_choices = LEN(IL_BATTLE_LENGTHS),
-                .pref = pref::U8Pref::IlBattleLength,
-            },
+        .type = WidgetType::Header,
+        .header = {"Main Displays"},
     },
     {
         .type = WidgetType::Checkbox,
@@ -384,6 +390,11 @@ static Widget s_il_battle_subwidgets[] = {
                 .show_if = [] { return pref::get(pref::BoolPref::IlBattleShowScore); },
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Extra Displays"},
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -408,10 +419,13 @@ static Widget s_il_battle_subwidgets[] = {
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
     },
-    {.type = WidgetType::Text, .text = {"  Press Ready Bind then Retry to start a battle"}},
 };
 
 static Widget s_il_battle_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Battle Tracker"},
+    },
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -826,7 +840,7 @@ static Widget s_help_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Jump Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+        .menu = {"Jump-Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
@@ -1572,7 +1586,7 @@ static Widget s_jump_profiles[] = {
         .type = WidgetType::Choose,
         .choose =
             {
-                .label = "Jump Type",
+                .label = "Jump Profile",
                 .choices = JUMP_PROFILES,
                 .num_choices = LEN(JUMP_PROFILES),
                 .pref = pref::U8Pref::JumpProfile,
@@ -1604,7 +1618,7 @@ static Widget s_jump_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .pref = pref::BoolPref::JumpMod,
             },
     },
@@ -1661,7 +1675,7 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .widgets = s_jump_widgets,
                 .num_widgets = LEN(s_jump_widgets),
             },
