@@ -176,6 +176,24 @@ void tick() {
     s_flags &= ~Flags::EnabledThisTick;
     if (enabled()) {
         s_flags |= Flags::EnabledThisTick;
+
+        // Adjust turbo speed multiplier
+        int speed_mult = pref::get(pref::U8Pref::FreecamSpeedMult);
+        bool input_made = false;
+        if (pad::button_repeat(mkb::PAD_BUTTON_DOWN)) {
+            speed_mult--;
+            input_made = true;
+        }
+        if (pad::button_repeat(mkb::PAD_BUTTON_UP)) {
+            speed_mult++;
+            input_made = true;
+        }
+        speed_mult = CLAMP(speed_mult, TURBO_SPEED_MIN, TURBO_SPEED_MAX);
+        if (input_made) {
+            draw::notify(draw::WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
+            pref::set(pref::U8Pref::FreecamSpeedMult, speed_mult);
+            pref::save();
+        }
     }
 }
 
