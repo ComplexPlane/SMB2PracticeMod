@@ -119,9 +119,8 @@ void disp() {
         mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
         return;
 
-    if (freecam::should_hide_hud()) return;
-
-    if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp)) {
+    if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp) &&
+        !freecam::should_hide_hud()) {
         mkb::textdraw_reset();
         mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);
         u32 x = 634;
