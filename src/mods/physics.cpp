@@ -10,8 +10,6 @@ namespace physics {
 static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
-static PhysicsPreset s_current_preset = PhysicsPreset::Default;
-
 static constexpr pref::U8Pref PHYSICS_U8_PREFS[] = {
     pref::U8Pref::Friction,
     pref::U8Pref::Restitution,
@@ -43,13 +41,11 @@ void init() {
 }
 
 static void update_preset() {
-    PhysicsPreset preset = PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset));
-    if (preset == s_current_preset) return;
-    s_current_preset = preset;
+    if (!pref::did_change(pref::U8Pref::PhysicsPreset)) return;
 
     restore_physics_prefs();
     // Update menu text for the presets if any are changed!
-    switch (preset) {
+    switch (PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset))) {
         case PhysicsPreset::Default:
         case PhysicsPreset::Custom: {
             break;
