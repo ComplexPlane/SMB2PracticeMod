@@ -120,11 +120,11 @@ void init() {
         cardio::tick();
         unlock::tick();
         fallout::tick();
-        physics::tick();
         iw::tick();
         savest_ui::tick();
         menu_impl::tick();
         jump::tick();
+        physics::tick();
         inputdisp::tick();
         gotostory::tick();
         cmseg::tick();
