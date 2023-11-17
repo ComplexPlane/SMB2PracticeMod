@@ -10,8 +10,6 @@ namespace physics {
 static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
-static PhysicsPreset s_current_preset = PhysicsPreset::Default;
-
 static constexpr pref::U8Pref PHYSICS_U8_PREFS[] = {
     pref::U8Pref::Friction,
     pref::U8Pref::Restitution,
