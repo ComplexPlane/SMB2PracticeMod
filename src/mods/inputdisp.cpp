@@ -8,6 +8,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/macro_utils.h"
 #include "utils/patch.h"
 
 namespace inputdisp {
@@ -47,6 +48,11 @@ static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
                 outInputs.gameY += mkb::pad_status_groups[i].raw.stickY;
             }
         }
+
+        outInputs.rawX = CLAMP(outInputs.rawX, -128, 127);
+        outInputs.rawY = CLAMP(outInputs.rawY, -128, 127);
+        outInputs.gameX = CLAMP(outInputs.gameX, -60, 60);
+        outInputs.gameY = CLAMP(outInputs.gameY, -60, 60);
     }
 }
 
@@ -293,9 +299,7 @@ static void draw_raw_stick_inputs(const MergedStickInputs& stick_inputs) {
 }
 
 void disp() {
-    bool in_replay = mkb::sub_mode == mkb::SMD_OPTION_REPLAY_INIT ||
-                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_MAIN ||
-                     mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT ||
+    bool in_replay = mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT ||
                      mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_MAIN ||
                      mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_INIT ||
                      mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_MAIN ||

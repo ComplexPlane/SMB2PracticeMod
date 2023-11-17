@@ -24,15 +24,55 @@ static S16Vec s_rot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
+struct MergedStickInputs {
+    s32 rawX;
+    s32 rawY;
+    s32 substickX;
+    s32 substickY;
+    s32 triggerL;
+    s32 triggerR;
+};
+
+static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
+    outInputs = {};
+
+    // Accumulate stick inputs from all controllers since we don't always
+    // know which player is active, like in menus
+    // TODO account for d-pad control setting
+    if (!pad::get_exclusive_mode()) {
+        for (s32 i = 0; i < 4; i++) {
+            mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+            if (status.err == mkb::PAD_ERR_NONE) {
+                outInputs.rawX += status.stickX;
+                outInputs.rawY += status.stickY;
+                outInputs.substickX += status.substickX;
+                outInputs.substickY += status.substickY;
+                outInputs.triggerL += status.triggerLeft;
+                outInputs.triggerR += status.triggerRight;
+            }
+        }
+
+        outInputs.rawX = CLAMP(outInputs.rawX, -128, 127);
+        outInputs.rawY = CLAMP(outInputs.rawY, -128, 127);
+        outInputs.substickX = CLAMP(outInputs.substickX, -128, 127);
+        outInputs.substickY = CLAMP(outInputs.substickY, -128, 127);
+        outInputs.triggerL = CLAMP(outInputs.triggerL, 0, 255);
+        outInputs.triggerR = CLAMP(outInputs.triggerR, 0, 255);
+    }
+}
+
 bool enabled() {
     bool correct_main_mode = mkb::main_mode == mkb::MD_GAME || mkb::main_mode == mkb::MD_ADV ||
-                             mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR;
+                             mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR ||
+                             mkb::main_mode == mkb::MD_EXOPT;
     bool correct_sub_mode = mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT &&
                             mkb::sub_mode != mkb::SMD_GAME_SCENARIO_MAIN &&
                             mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN &&
                             mkb::sub_mode != mkb::SMD_ADV_TITLE_INIT &&
                             mkb::sub_mode != mkb::SMD_ADV_TITLE_MAIN &&
-                            mkb::sub_mode != mkb::SMD_ADV_TITLE_REINIT;
+                            mkb::sub_mode != mkb::SMD_ADV_TITLE_REINIT &&
+                            mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_INIT &&
+                            mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_MAIN;
     return pref::get(pref::BoolPref::Freecam) && correct_main_mode && correct_sub_mode;
 }
 
@@ -46,12 +86,15 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
         s_rot = mkb::cameras[0].rot;
     }
 
-    float stick_x = mkb::pad_status_groups[0].raw.stickX / 60.f;
-    float stick_y = mkb::pad_status_groups[0].raw.stickY / 60.f;
-    float substick_x = mkb::pad_status_groups[0].raw.substickX / 60.f;
-    float substick_y = mkb::pad_status_groups[0].raw.substickY / 60.f;
-    float trigger_left = mkb::pad_status_groups[0].raw.triggerLeft / 128.f;
-    float trigger_right = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
+    MergedStickInputs stick_inputs;
+    get_merged_stick_inputs(stick_inputs);
+
+    float stick_x = stick_inputs.rawX / 60.f;
+    float stick_y = stick_inputs.rawY / 60.f;
+    float substick_x = stick_inputs.substickX / 60.f;
+    float substick_y = stick_inputs.substickY / 60.f;
+    float trigger_left = stick_inputs.triggerL / 128.f;
+    float trigger_right = stick_inputs.triggerR / 128.f;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 
@@ -133,24 +176,6 @@ void tick() {
     s_flags &= ~Flags::EnabledThisTick;
     if (enabled()) {
         s_flags |= Flags::EnabledThisTick;
-
-        // Adjust turbo speed multiplier
-        int speed_mult = pref::get(pref::U8Pref::FreecamSpeedMult);
-        bool input_made = false;
-        if (pad::button_repeat(mkb::PAD_BUTTON_DOWN)) {
-            speed_mult--;
-            input_made = true;
-        }
-        if (pad::button_repeat(mkb::PAD_BUTTON_UP)) {
-            speed_mult++;
-            input_made = true;
-        }
-        speed_mult = CLAMP(speed_mult, TURBO_SPEED_MIN, TURBO_SPEED_MAX);
-        if (input_made) {
-            draw::notify(draw::WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
-            pref::set(pref::U8Pref::FreecamSpeedMult, speed_mult);
-            pref::save();
-        }
     }
 }
 
