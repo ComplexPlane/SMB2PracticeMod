@@ -25,17 +25,9 @@ struct TimerGroup {
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
     u32 split;       // the time from the start of the run until tape break of the last stage of the
                      // world
-    u32 spin_in;
-    u32 spin_in_correction;
     u32 gameplay;
-    u32 postgoal;
-    u32 stage_select;
-    u32 game_scenario_return_correction;
+    u32 non_gameplay;
     u32 world_start_correction;
-    u32 exit_game;
-    u32 fallout;
-    u32 timeover;
-    u32 last_stage_postgoal;
 };
 static TimerGroup s_timer_group[10];  // each world has its own TimerGroup structure
 static bool s_can_lower_stage_counter;
@@ -159,15 +151,12 @@ void tick() {
                 // to spin in, more specifically, this prevents the timer from skipping ahead
                 // for a few frames, then pausing for a few frames to even itself out (I don't
                 // understand why that happens)
-                s_timer_group[k].spin_in_correction += 1;
+                s_timer_group[k].non_gameplay += 1;
             }
 
-            s_timer_group[k].full_world =
-                s_timer_group[k].spin_in + s_timer_group[k].spin_in_correction +
-                s_timer_group[k].gameplay + s_timer_group[k].postgoal +
-                s_timer_group[k].stage_select + s_timer_group[k].game_scenario_return_correction +
-                s_timer_group[k].exit_game + s_timer_group[k].fallout + s_timer_group[k].timeover +
-                s_timer_group[k].world_start_correction + s_timer_group[k].last_stage_postgoal;
+            s_timer_group[k].full_world = s_timer_group[k].gameplay +
+                                          s_timer_group[k].non_gameplay +
+                                          s_timer_group[k].world_start_correction;
 
             if (s_completed_stages_world[k] <= 9) {
                 s_timer_group[k].segment = s_timer_group[k].full_world;
@@ -178,10 +167,12 @@ void tick() {
                 s_timer_group[k].segment += -2;
             }
 
-            if (is_on_spin_in) {
-                // increment the timer every frame during spin in
-                s_timer_group[k].spin_in += 1;
+            if (is_on_spin_in || is_on_exit_game || is_on_fallout || is_timeover) {
+                // increment the timer during every frame on spin in, exit game, fallout, and
+                // timeover
+                s_timer_group[k].non_gameplay += 1;
             }
+
             if (is_on_gameplay) {
                 // increment the timer every frame during gameplay
                 s_timer_group[k].gameplay += 1;
@@ -192,13 +183,7 @@ void tick() {
                 // select to the first completely white frame takes 49 frames). once the timer
                 // hits 49 frames, stop incrementing the timer until the 10 ball screen starts
                 // spinning in
-                if (mkb::get_world_unbeaten_stage_count(k) <= 8) {
-                    s_timer_group[k].postgoal += 1;
-                } else if (mkb::get_world_unbeaten_stage_count(k) == 9) {
-                    // also note that get_world_unbeaten_stage_count only increases once the
-                    // fade to white happens
-                    s_timer_group[k].last_stage_postgoal += 1;
-                }
+                s_timer_group[k].non_gameplay += 1;
             }
             if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE ||
                 mkb::g_storymode_stageselect_state == 3 ||
@@ -209,26 +194,14 @@ void tick() {
                 //  mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED can be highly
                 //  variable (up to over 40 frames sometimes!), so for the purpose of a loadless
                 //  timer, it makes sense to cut this out from the timer
-                s_timer_group[k].stage_select += 1;
-            }
-            if (is_on_exit_game) {
-                // increment the timer every frame on the exit game screen
-                s_timer_group[k].exit_game += 1;
-            }
-            if (is_on_fallout) {
-                // increment the timer every frame during the fallout sequence and y/n screen
-                s_timer_group[k].fallout += 1;
-            }
-            if (is_timeover) {
-                // increment the timer every frame during the timeover sequence
-                s_timer_group[k].timeover += 1;
+                s_timer_group[k].non_gameplay += 1;
             }
 
             if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN && s_completed_stages % 10 != 0) {
                 // need to add 2 frames to the timer when stage selecting to the 10 ball screen,
                 // but don't correct if on the last stage of a world since the next frame the
                 // timer should increment on is covered by s_world_start_timer_correction
-                s_timer_group[k].game_scenario_return_correction += 2;
+                s_timer_group[k].non_gameplay += 2;
             }
 
             // this only gets set to 2 when you enter world k; this is needed since otherwise
