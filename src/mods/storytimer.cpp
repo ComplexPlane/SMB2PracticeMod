@@ -53,6 +53,8 @@ static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
 static constexpr s32 STAGE_FADE_OUT_TIME = 49;
 static constexpr u32 WORLD_START_CORRECTION = 2;
 
+u32 get_completed_stagecount() { return s_completed_stages; }
+
 void tick() {
     // before starting the run, there are several values we zero on the file select and name entry
     // screen (this serves to reset the timer)

@@ -98,6 +98,7 @@ enum class PrefId : u16 {
     SegmentTimerOptions = 78,
     StoryTimerWarning = 79,
     ShowDeathCounter = 80,
+    CountStage1Deaths = 81,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -179,6 +180,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
     PrefId::ShowDeathCounter,
+    PrefId::CountStage1Deaths,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -283,6 +285,8 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::StoryTimerWarning;
         case PrefId::ShowDeathCounter:
             return BoolPref::ShowDeathCounter;
+        case PrefId::CountStage1Deaths:
+            return BoolPref::CountStage1Deaths;
         default:
             return {};
     }
@@ -363,6 +367,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::FreecamHideHud,
     BoolPref::IlBattleShowTime,
     BoolPref::IlBattleShowScore,
+    BoolPref::CountStage1Deaths,
 };
 
 struct DefaultU8Pref {
@@ -386,8 +391,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[9];  
-    u8 u8_prefs[28];   
+    u8 bool_prefs[10];
+    u8 u8_prefs[28];
 };
 
 static PrefState s_pref_state, s_default_pref_state;

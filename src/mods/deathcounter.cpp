@@ -3,6 +3,7 @@
 #include "mkb/mkb.h"
 
 #include "mods/freecam.h"
+#include "mods/storytimer.h"
 #include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -16,14 +17,22 @@ static bool s_can_die;
 static u32 s_death_count;
 
 void tick() {
-    // bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
     // set the death count to 0 on the file select screen
     if (mkb::scen_info.mode == 5) {
         s_death_count = 0;
+        s_can_die = false;
     }
 
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-        s_can_die = true;
+    // Don't increment the death counter on stage 1 if the setting is ticked
+    if (!pref::get(pref::BoolPref::CountStage1Deaths)) {
+        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN &&
+            storytimer::get_completed_stagecount() != 0) {
+            s_can_die = true;
+        }
+    } else {
+        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+            s_can_die = true;
+        }
     }
 
     if (s_can_die &&
@@ -35,7 +44,8 @@ void tick() {
         // selecting after dropping in (but before breaking the tape), or exiting game after
         // dropping in (but before breaking the tape)
         s_death_count += 1;
-        s_can_die = false;
+        s_can_die = false;  // once the death counter is incremented, set this to false so we only
+                            // increment it by 1
     }
 
     // first framing should not increase the death counter, and retrying after breaking the tape
@@ -50,7 +60,7 @@ void tick() {
 void disp() {
     if ((mkb::main_game_mode != mkb::STORY_MODE && mkb::sub_mode != mkb::SMD_AUTHOR_PLAY_INIT &&
          mkb::sub_mode != mkb::SMD_AUTHOR_PLAY_MAIN) ||
-        freecam::should_hide_hud() || pref::get(pref::BoolPref::ShowDeathCounter) == false) {
+        freecam::should_hide_hud() || !pref::get(pref::BoolPref::ShowDeathCounter)) {
         return;
     }
     draw::debug_text(18, 56, draw::WHITE, "Deaths: ");

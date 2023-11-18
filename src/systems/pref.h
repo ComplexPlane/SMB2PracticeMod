@@ -58,6 +58,7 @@ enum class BoolPref : u8 {
     ReverseMode,
     StoryTimerWarning,
     ShowDeathCounter,
+    CountStage1Deaths,
 };
 
 enum class U8Pref : u8 {
