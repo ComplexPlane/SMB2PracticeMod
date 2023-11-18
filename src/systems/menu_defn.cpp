@@ -954,11 +954,6 @@ static Widget s_freecam_widgets[] = {
                 .can_unbind = true,
             },
     },
-    {
-        .type = WidgetType::Text,
-        .text = {"  Freecam uses the controller in Port 1"},
-
-    },
     {.type = WidgetType::Separator},
     {
         .type = WidgetType::Header,
