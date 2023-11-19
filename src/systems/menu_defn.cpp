@@ -11,6 +11,7 @@
 #include "mods/physics.h"
 #include "mods/stage_edits.h"
 #include "mods/unlock.h"
+#include "mods/validate.h"
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
@@ -1220,7 +1221,7 @@ static Widget s_reset_ilmark_widgets[] = {
         .button =
             {
                 .label = "Confirm",
-                .push = [] { ilmark::disable_invalidating_settings(); },
+                .push = [] { validate::disable_invalidating_settings(); },
                 .flags = ButtonFlags::GoBack,
             },
     },

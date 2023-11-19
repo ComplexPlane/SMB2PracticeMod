@@ -1,5 +1,6 @@
 #include "mkb/mkb.h"
 
+#include "mods/validate.h"
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
@@ -46,6 +47,7 @@ static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
 static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_ready_init)> s_smd_game_ready_init_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_play_tick)> s_smd_game_play_tick_tramp;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -99,6 +101,7 @@ void init() {
     fallout::init();
     stage_edits::init();
     scratch::init();
+    validate::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
         u32 ret = s_PADRead_tramp.dest(statuses);
@@ -137,6 +140,7 @@ void init() {
         camera::tick();
         stage_edits::tick();
         scratch::tick();
+        validate::tick();
         // Pref runs last to track the prefs from the previous frame
         pref::tick();
     });
@@ -181,6 +185,20 @@ void init() {
                     stage_edits::smd_game_ready_init();
                     ballcolor::switch_monkey();
                     s_smd_game_ready_init_tramp.dest();
+                });
+                patch::hook_function(s_smd_game_play_tick_tramp, mkb::smd_game_play_tick, []() {
+                    s_smd_game_play_tick_tramp.dest();
+                    validate::validate_run();
+
+                    bool ilmark_valid = validate::was_run_valid(false);
+                    bool battle_valid = validate::was_run_valid(true);
+
+                    if (ilmark_valid) {
+                        ilmark::set_valid();
+                    }
+                    if (battle_valid) {
+                        ilbattle::track_valid_attempt();
+                    }
                 });
                 jump::patch_minimap();
             }
