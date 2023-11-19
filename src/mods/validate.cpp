@@ -81,6 +81,7 @@ void validate_run() {
     }
 }
 
+// Copy-paste of line_intersects from ghidra with slight changes to calculate s_framesave
 static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb::Rect& rect) {
     Vec end;
     Vec start;
@@ -126,9 +127,9 @@ static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb:
     }
 }
 
+// Copy paste from ghidra of did_ball_enter_goal with slight changes to calculate s_framesave
 void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
                     mkb::byte* out_goal_flags) {
-    // mostly a ghidra copy-paste
     int itemgroup_goal_idx;
     mkb::StagedefGoal* goal;
     mkb::dword itemgroup_idx;
