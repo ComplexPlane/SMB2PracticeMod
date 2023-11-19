@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mkb/mkb2_ghidra.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -40,7 +41,7 @@ static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
     // know which player is active, like in menus
     // TODO account for d-pad control setting
     if (!pad::get_exclusive_mode()) {
-        for (s32 i = 0; i < 4; i++) {
+        for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
             mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
             if (status.err == mkb::PAD_ERR_NONE) {
                 outInputs.rawX += status.stickX;
