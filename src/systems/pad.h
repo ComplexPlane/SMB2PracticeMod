@@ -16,12 +16,12 @@ enum Dir {
     DIR_NONE = -1,
 };
 
-struct StickInputs {
+struct StickState {
     s32 x;
     s32 y;
 };
 
-struct TriggerInputs {
+struct TriggerState {
     s32 l;
     s32 r;
 };
@@ -60,9 +60,9 @@ bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal di
 void reset_dir_repeat();
 bool konami_pressed();
 
-void get_merged_raw_stick(StickInputs& out);  // stick before game makes alterations
-void get_merged_stick(StickInputs& out);
-void get_merged_substick(StickInputs& out);
-void get_merged_triggers(TriggerInputs& out);
+void get_merged_raw_stick(StickState& out);  // stick before game makes alterations
+void get_merged_stick(StickState& out);
+void get_merged_substick(StickState& out);
+void get_merged_triggers(TriggerState& out);
 
 }  // namespace pad

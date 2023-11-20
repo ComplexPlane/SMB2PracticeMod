@@ -119,7 +119,7 @@ void tick() {
                         !pref::get(pref::BoolPref::InputDispRawStickInputs)));
 }
 
-static bool get_notch_pos(const pad::StickInputs& stick_inputs, Vec2d* out_pos) {
+static bool get_notch_pos(const pad::StickState& stick_inputs, Vec2d* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
@@ -192,7 +192,7 @@ static mkb::GXColor get_color() {
     return {};
 }
 
-static void draw_stick(const pad::StickInputs& raw_stick_inputs, const Vec2d& center, f32 scale) {
+static void draw_stick(const pad::StickState& raw_stick_inputs, const Vec2d& center, f32 scale) {
     mkb::GXColor chosen_color = get_color();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
@@ -234,7 +234,7 @@ static void draw_buttons(const Vec2d& center, f32 scale) {
     }
 }
 
-static void draw_notch_indicators(const pad::StickInputs& stick_inputs, const Vec2d& center,
+static void draw_notch_indicators(const pad::StickState& stick_inputs, const Vec2d& center,
                                   f32 scale) {
     if (!pref::get(pref::BoolPref::InputDispNotchIndicators)) return;
 
@@ -248,8 +248,8 @@ static void draw_notch_indicators(const pad::StickInputs& stick_inputs, const Ve
     }
 }
 
-static void draw_raw_stick_inputs(const pad::StickInputs& raw_stick_inputs,
-                                  const pad::StickInputs& stick_inputs) {
+static void draw_raw_stick_inputs(const pad::StickState& raw_stick_inputs,
+                                  const pad::StickState& stick_inputs) {
     if (!pref::get(pref::BoolPref::InputDispRawStickInputs)) return;
 
     Vec2d center = {
@@ -277,7 +277,7 @@ void disp() {
         pref::get(pref::BoolPref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
     f32 scale = 0.6f;
 
-    pad::StickInputs raw_stick, stick;
+    pad::StickState raw_stick, stick;
     pad::get_merged_raw_stick(raw_stick);
     pad::get_merged_stick(stick);
 

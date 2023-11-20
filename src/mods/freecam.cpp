@@ -2,7 +2,6 @@
 
 #include "mkb/mkb.h"
 
-#include "mkb/mkb2_ghidra.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -18,6 +17,9 @@ enum {
     EnabledPrevTick = 1 << 1,
 };
 }
+
+static constexpr float MAX_STICK = 60.f;
+static constexpr float MAX_TRIGGER = 128.f;
 
 static u32 s_flags;
 static Vec s_eye = {};
@@ -50,18 +52,18 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
         s_rot = mkb::cameras[0].rot;
     }
 
-    pad::StickInputs stick, substick;
-    pad::TriggerInputs trigger;
+    pad::StickState stick, substick;
+    pad::TriggerState trigger;
     pad::get_merged_stick(stick);
     pad::get_merged_substick(substick);
     pad::get_merged_triggers(trigger);
 
-    float stick_x = stick.x / 60.f;
-    float stick_y = stick.y / 60.f;
-    float substick_x = substick.x / 60.f;
-    float substick_y = substick.y / 60.f;
-    float trigger_left = trigger.l / 128.f;
-    float trigger_right = trigger.r / 128.f;
+    float stick_x = stick.x / MAX_STICK;
+    float stick_y = stick.y / MAX_STICK;
+    float substick_x = substick.x / MAX_STICK;
+    float substick_y = substick.y / MAX_STICK;
+    float trigger_left = trigger.l / MAX_TRIGGER;
+    float trigger_right = trigger.r / MAX_TRIGGER;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 
