@@ -826,7 +826,7 @@ static Widget s_help_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Jump Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+        .menu = {"Jump-Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
@@ -1601,7 +1601,7 @@ static Widget s_jump_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .pref = pref::BoolPref::JumpMod,
             },
     },
@@ -1658,7 +1658,7 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .widgets = s_jump_widgets,
                 .num_widgets = LEN(s_jump_widgets),
             },

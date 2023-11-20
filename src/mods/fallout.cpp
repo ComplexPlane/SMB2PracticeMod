@@ -68,7 +68,7 @@ void init() {
 
     patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
         // Set the current default values before loading the stagedef
-        *reinterpret_cast<u32*>(0x80297548) = s_timeover_condition;
+        patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
         patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
         s_load_stagedef_tramp.dest(stage_id);
         // Stardust's custom code sets the timers after loading the stagedef, this will run
@@ -91,7 +91,7 @@ void freeze_timer() {
         case TimerType::Default: {
             if (pref::did_change(pref::U8Pref::TimerType) || s_toggled_freecam) {
                 // time over at 0 frames
-                *reinterpret_cast<u32*>(0x80297548) = s_timeover_condition;
+                patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
                 // add -1 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
                 s_toggled_freecam = false;
@@ -100,14 +100,14 @@ void freeze_timer() {
         }
         case TimerType::FreezeInstantly: {
             // time over at -60 frames (for leniency when switching modes)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
             // add 0 to timer each frame (timer doesnt move)
             patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
             break;
         }
         case TimerType::FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
 
             if (mkb::mode_info.stage_time_frames_remaining <= 0) {
                 // when timer hits 0, add 0 to timer each frame
@@ -123,7 +123,7 @@ void freeze_timer() {
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
 
             // getting close to signed integer overflow, freeze timer to prevent time-over
             if (mkb::mode_info.stage_time_frames_remaining >= 32400) {
