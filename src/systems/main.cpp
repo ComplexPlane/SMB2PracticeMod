@@ -108,7 +108,8 @@ void init() {
 
         // Dpad can modify effective stick input, shown by input display
         dpad::on_PADRead(statuses);
-        inputdisp::on_PADRead(statuses);
+        // pad collects original inputs before they are modified by the game
+        pad::on_PADRead(statuses);
 
         return ret;
     });
@@ -122,12 +123,12 @@ void init() {
         binds::tick();
         cardio::tick();
         unlock::tick();
-        physics::tick();
         iw::tick();
         savest_ui::tick();
-        menu_impl::tick();
+        menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
         fallout::tick();
-        jump::tick();
+        jump::tick();     // (edits physics preset)
+        physics::tick();  // anything editing physics presets must run before physics::tick()
         inputdisp::tick();
         gotostory::tick();
         cmseg::tick();
@@ -139,8 +140,8 @@ void init() {
         ilmark::tick();
         camera::tick();
         stage_edits::tick();
-        scratch::tick();
         validate::tick();
+        scratch::tick();
         // Pref runs last to track the prefs from the previous frame
         pref::tick();
     });

@@ -1,5 +1,6 @@
 #include "ilbattle.h"
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "mods/validate.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
@@ -376,7 +377,7 @@ void disp() {
         return;
     }
 
-    if (!pref::get(pref::BoolPref::IlBattleDisplay)) return;
+    if (!pref::get(pref::BoolPref::IlBattleDisplay) || freecam::should_hide_hud()) return;
 
     switch (s_state) {
         case IlBattleState::NotReady: {

@@ -1,8 +1,21 @@
 #include "systems/pad.h"
 
 #include "mkb/mkb.h"
+#include "utils/macro_utils.h"
 
 namespace pad {
+
+struct AnalogState {
+    s32 raw_stick_x;
+    s32 raw_stick_y;
+    s32 stick_x;
+    s32 stick_y;
+    s32 substick_x;
+    s32 substick_y;
+    s32 trigger_l;
+    s32 trigger_r;
+};
+static AnalogState s_analog_state;
 
 static constexpr u32 DIR_REPEAT_PERIOD = 3;
 static constexpr u32 DIR_REPEAT_WAIT = 14;
@@ -16,8 +29,29 @@ static mkb::AnalogInputGroup s_merged_analog_inputs;
 static mkb::DigitalInputGroup s_merged_digital_inputs;
 static mkb::AnalogInputGroup s_analog_inputs[4];
 static mkb::PadStatusGroup s_pad_status_groups[4];
+static mkb::PADStatus s_original_inputs[4];
 
 static u8 s_dir_down_time[8];
+
+void get_merged_stick(StickState& out) {
+    out = {.x = s_analog_state.stick_x, .y = s_analog_state.stick_y};
+}
+
+void get_merged_raw_stick(StickState& out) {
+    out = {.x = s_analog_state.raw_stick_x, .y = s_analog_state.raw_stick_y};
+}
+
+void get_merged_substick(StickState& out) {
+    out = {.x = s_analog_state.substick_x, .y = s_analog_state.substick_y};
+}
+
+void get_merged_triggers(TriggerState& out) {
+    out = {.l = s_analog_state.trigger_l, .r = s_analog_state.trigger_r};
+}
+
+void on_PADRead(mkb::PADStatus* statuses) {
+    mkb::memcpy(s_original_inputs, statuses, sizeof(s_original_inputs));
+}
 
 bool button_down(mkb::PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
@@ -214,12 +248,11 @@ bool dir_repeat(Dir dir, bool priority) {
     if (s_exclusive_mode && !priority) return false;
 
     u32 t = s_dir_down_time[dir];
-    return dir_pressed(dir, priority) || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
+    return dir_pressed(dir, priority) ||
+           (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
-void reset_dir_repeat() {
-    mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
-}
+void reset_dir_repeat() { mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time)); }
 
 bool konami_pressed() { return s_konami_progress == 11; }
 
@@ -259,12 +292,38 @@ void tick() {
     mkb::memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
     mkb::memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
 
+    s_analog_state = {};
     if (s_exclusive_mode) {
         // Zero controller inputs in the game
         mkb::merged_analog_inputs = {};
         mkb::merged_digital_inputs = {};
         memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));
         memset(mkb::analog_inputs, 0, sizeof(mkb::analog_inputs));
+    } else {
+        // update analog state
+        for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
+            mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+            if (s_original_inputs[i].err == mkb::PAD_ERR_NONE) {
+                s_analog_state.raw_stick_x += s_original_inputs[i].stickX;
+                s_analog_state.raw_stick_y += s_original_inputs[i].stickY;
+            }
+            if (status.err == mkb::PAD_ERR_NONE) {
+                s_analog_state.stick_x += status.stickX;
+                s_analog_state.stick_y += status.stickY;
+                s_analog_state.substick_x += status.substickX;
+                s_analog_state.substick_y += status.substickY;
+                s_analog_state.trigger_l += status.triggerLeft;
+                s_analog_state.trigger_r += status.triggerRight;
+            }
+        }
+        s_analog_state.raw_stick_x = CLAMP(s_analog_state.raw_stick_x, -128, 127);
+        s_analog_state.raw_stick_y = CLAMP(s_analog_state.raw_stick_y, -128, 127);
+        s_analog_state.stick_x = CLAMP(s_analog_state.stick_x, -MAX_STICK, MAX_STICK);
+        s_analog_state.stick_y = CLAMP(s_analog_state.stick_y, -MAX_STICK, MAX_STICK);
+        s_analog_state.substick_x = CLAMP(s_analog_state.substick_x, -MAX_STICK, MAX_STICK);
+        s_analog_state.substick_y = CLAMP(s_analog_state.substick_y, -MAX_STICK, MAX_STICK);
+        s_analog_state.trigger_l = CLAMP(s_analog_state.trigger_l, 0, MAX_TRIGGER);
+        s_analog_state.trigger_r = CLAMP(s_analog_state.trigger_r, 0, MAX_TRIGGER);
     }
 
     update_konami();
