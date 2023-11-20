@@ -1,5 +1,6 @@
 #include "ilbattle.h"
 #include "mkb/mkb.h"
+#include "mods/validate.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -39,8 +40,6 @@ static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;  // frames per minute
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;    // frames per hour
 // battle trackers
 static u32 s_battle_frames = 0;
-static bool s_valid_run = false;
-static s16 s_paused_frame = 0;
 static u32 s_battle_length = 0;
 static u32 s_battle_stage_id = 0;
 static u32 s_main_mode_play_timer = 0;
@@ -198,7 +197,7 @@ void clear_display() {
         convert_battle_length(IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)));
 }
 
-void new_battle() {
+static void new_battle() {
     clear_display();
     s_state = IlBattleState::WaitForFirstRetry;
 }
@@ -213,6 +212,12 @@ static void track_first_retry() {
 }
 
 static void run_battle_timer() {
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
+        if (!s_accepted_retry) {  // track attempt counts
+            s_attempts++;
+            s_accepted_retry = true;
+        }
+    }
     if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless) {
         // timer is endless
         s_battle_frames++;
@@ -223,17 +228,9 @@ static void run_battle_timer() {
     }
 }
 
-static void track_best() {
-    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) return;
-
+void update_best() {
     s16 current_frames = mkb::mode_info.stage_time_frames_remaining;
     u32 current_score = mkb::balls[mkb::curr_player_idx].score;
-    bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
-                              s_battle_stage_id != mkb::current_stage_id &&
-                              mkb::main_mode == mkb::MD_GAME;
-    bool valid = (s_valid_run && s_paused_frame <= current_frames) ||
-                 s_paused_frame == mkb::mode_info.stage_time_frames_remaining;
-    if (!valid || on_incorrect_stage) return;
 
     u32 calculated_score = score_calc(current_score);
 
@@ -261,39 +258,20 @@ static void track_best() {
     }
 }
 
-static void track_invalid_pauses() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
-        s_valid_run = true;
-        s_paused_frame = 0;       // attempt is now valid
-        if (!s_accepted_retry) {  // track attempt counts
-            s_attempts++;
-            s_accepted_retry = true;
-        }
-    }
-    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
-        s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
-    } else if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) ||
-               libsavest::state_loaded_this_frame()) {
-        s_valid_run = false;
-    }
-}
+void validate_attempt() {
+    if (!validate::was_run_valid(true)) return;
 
-static void track_final_attempt() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    // End battle if: Paused, Fallout, or Time Over
-    if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
-        mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
-        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
-        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
-        s_state = IlBattleState::BattleDone;
-    }
-    // Player has entered goal...
-    // Save time & enter postgoal phase for score
-    else if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+    bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
+                              s_battle_stage_id != mkb::current_stage_id &&
+                              mkb::main_mode == mkb::MD_GAME;
+    if (on_incorrect_stage) return;
+
+    if (s_state == IlBattleState::BattleRunning) {
+        update_best();
+    } else if (s_state == IlBattleState::BuzzerBeater) {
         s16 pre_buzzer_time = s_best_frames;
         u32 pre_buzzer_score = s_best_score;
-        track_best();
+        update_best();
         s_state = IlBattleState::BuzzerBeaterPostgoal;
         // time buzzer beater
         if (pre_buzzer_time < s_best_frames) {
@@ -303,15 +281,24 @@ static void track_final_attempt() {
         if (pre_buzzer_score < s_best_score) {
             s_score_buzzer = true;
         }
-
     }
-    // Game is no longer in goal phase...
-    // Save score and end battle
-    else if (s_state == IlBattleState::BuzzerBeaterPostgoal &&
-             !(mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
-               mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN)) {
+}
+
+static void final_attempt() {
+    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    // End battle if: Paused, Fallout, or Time Over
+    if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
+        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
+        mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
+        s_state = IlBattleState::BattleDone;
+    }
+}
+
+static void track_postgoal() {
+    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT && mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN) {
         u32 pre_buzzer_score = s_best_score;
-        track_best();
+        update_best();
         s_state = IlBattleState::BattleDone;
         // score buzzer beater (track again if there are post goals)
         if (pre_buzzer_score < s_best_score) {
@@ -330,7 +317,7 @@ void tick() {
         s_accepted_retry = false;
     }
 
-    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) {
+    if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN) {
         s_accepted_tie = false;
     }
 
@@ -354,19 +341,15 @@ void tick() {
             break;
         }
         case IlBattleState::BattleRunning: {
-            track_invalid_pauses();
-            track_best();
-            run_battle_timer();  // TODO: Implement realtime timer (without loads), if I figure how
+            run_battle_timer();
             break;
         }
         case IlBattleState::BuzzerBeater: {
-            track_invalid_pauses();
-            track_final_attempt();
+            final_attempt();
             break;
         }
         case IlBattleState::BuzzerBeaterPostgoal: {
-            track_invalid_pauses();
-            track_final_attempt();
+            track_postgoal();
             break;
         }
         default: {

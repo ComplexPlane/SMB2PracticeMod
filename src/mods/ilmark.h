@@ -2,8 +2,7 @@
 
 namespace ilmark {
 
-void disable_invalidating_settings();
-
+void validate_attempt();
 void init();
 void tick();
 void disp();
