@@ -11,13 +11,14 @@
 #include "mods/physics.h"
 #include "mods/stage_edits.h"
 #include "mods/unlock.h"
+#include "mods/validate.h"
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 
-// TODO update buttons with close menu flag
-// TODO let buttons have null push()
+// TODO: update buttons with close menu flag
+// TODO: let buttons have null push()
 
 namespace menu_defn {
 
@@ -404,7 +405,7 @@ static Widget s_il_battle_subwidgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Old Buzzer Message",
+                .label = "Buzzer Message",
                 .pref = pref::BoolPref::IlBattleBuzzerOld,
             },
     },
@@ -696,7 +697,7 @@ static Widget s_cm_seg_widgets[] = {
     {.type = WidgetType::Separator},
     {
         .type = WidgetType::Text,
-        .text = {"Segments may crash in some romhacks"},
+        .text = {"  Segments may crash in some romhacks"},
     },
 };
 
@@ -768,7 +769,7 @@ static Widget s_savestates_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
     {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
     {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
-    // TODO replace this feature with a better one that works in-menu
+    // TODO: replace this feature with a better one that works in-menu
     {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
     {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
 };
@@ -826,7 +827,7 @@ static Widget s_help_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Jump Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
+        .menu = {"Jump-Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
@@ -931,16 +932,33 @@ static Widget s_unlock_widgets[] = {
     },
 };
 
-static Widget s_freecam_subwidgets[] = {
+static Widget s_freecam_widgets[] = {
     {
-        .type = WidgetType::IntEdit,
-        .int_edit =
+        .type = WidgetType::Header,
+        .header = {"Freecam Toggle"},
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
             {
-                .label = "Turbo Speed Factor",
-                .pref = pref::U8Pref::FreecamSpeedMult,
-                .min = freecam::TURBO_SPEED_MIN,
-                .max = freecam::TURBO_SPEED_MAX,
+                .label = "Freecam",
+                .pref = pref::BoolPref::Freecam,
             },
+    },
+    {
+        .type = WidgetType::InputSelect,
+        .input_select =
+            {
+                .label = "Toggle Bind",
+                .pref = pref::U8Pref::FreecamToggleBind,
+                .required_chord = false,
+                .can_unbind = true,
+            },
+    },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Configuration"},
     },
     {
         .type = WidgetType::Checkbox,
@@ -959,6 +977,16 @@ static Widget s_freecam_subwidgets[] = {
             },
     },
     {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Turbo Speed Factor",
+                .pref = pref::U8Pref::FreecamSpeedMult,
+                .min = freecam::TURBO_SPEED_MIN,
+                .max = freecam::TURBO_SPEED_MAX,
+            },
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -972,36 +1000,6 @@ static Widget s_freecam_subwidgets[] = {
             {
                 .label = "Hide HUD",
                 .pref = pref::BoolPref::FreecamHideHud,
-            },
-    },
-};
-
-static Widget s_freecam_widgets[] = {
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Freecam",
-                .pref = pref::BoolPref::Freecam,
-            },
-    },
-    {
-        .type = WidgetType::InputSelect,
-        .input_select =
-            {
-                .label = "Freecam Toggle Bind",
-                .pref = pref::U8Pref::FreecamToggleBind,
-                .required_chord = false,
-                .can_unbind = true,
-            },
-    },
-    {
-        .type = WidgetType::HideableGroupWidget,
-        .hideable_group =
-            {
-                .widgets = s_freecam_subwidgets,
-                .num_widgets = LEN(s_freecam_subwidgets),
-                .show_if = [] { return pref::get(pref::BoolPref::Freecam); },
             },
     },
 };
@@ -1066,7 +1064,7 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static const char* TIMER_TYPES[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
+static const char* TIMER_TYPES[] = {"Default", "Frozen", "Freeze at 0", "Count up from 0"};
 static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
 
 static Widget s_assist_widgets[] = {
@@ -1220,7 +1218,7 @@ static Widget s_reset_ilmark_widgets[] = {
         .button =
             {
                 .label = "Confirm",
-                .push = [] { ilmark::disable_invalidating_settings(); },
+                .push = [] { validate::disable_invalidating_settings(); },
                 .flags = ButtonFlags::GoBack,
             },
     },
@@ -1507,7 +1505,7 @@ static Widget s_stage_edit_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"Stage Edits are activated on retry"},
+        .text = {"  Stage Edits are activated on retry"},
     },
 };
 
@@ -1516,7 +1514,7 @@ static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 static Widget s_jump_classic_widgets[] = {
     {
         .type = WidgetType::Text,
-        .text = {"  Classic Jump-Mod from it's original release"},
+        .text = {"  Classic Jump-Mod from its original release"},
     },
     {.type = WidgetType::Separator},
     {.type = WidgetType::Header, .header = {"Configuration"}},
@@ -1604,7 +1602,7 @@ static Widget s_jump_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .pref = pref::BoolPref::JumpMod,
             },
     },
@@ -1661,7 +1659,7 @@ static Widget s_gameplay_mods_widgets[] = {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Jump Mod",
+                .label = "Jump-Mod",
                 .widgets = s_jump_widgets,
                 .num_widgets = LEN(s_jump_widgets),
             },
