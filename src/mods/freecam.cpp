@@ -18,9 +18,6 @@ enum {
 };
 }
 
-static constexpr float MAX_STICK = 60.f;
-static constexpr float MAX_TRIGGER = 128.f;
-
 static u32 s_flags;
 static Vec s_eye = {};
 static S16Vec s_rot = {};
@@ -58,12 +55,12 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     pad::get_merged_substick(substick);
     pad::get_merged_triggers(trigger);
 
-    float stick_x = stick.x / MAX_STICK;
-    float stick_y = stick.y / MAX_STICK;
-    float substick_x = substick.x / MAX_STICK;
-    float substick_y = substick.y / MAX_STICK;
-    float trigger_left = trigger.l / MAX_TRIGGER;
-    float trigger_right = trigger.r / MAX_TRIGGER;
+    float stick_x = stick.x / static_cast<float>(pad::MAX_STICK);
+    float stick_y = stick.y / static_cast<float>(pad::MAX_STICK);
+    float substick_x = substick.x / static_cast<float>(pad::MAX_STICK);
+    float substick_y = substick.y / static_cast<float>(pad::MAX_STICK);
+    float trigger_left = trigger.l / static_cast<float>(pad::MAX_TRIGGER);
+    float trigger_right = trigger.r / static_cast<float>(pad::MAX_TRIGGER);
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 

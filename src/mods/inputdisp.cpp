@@ -123,28 +123,28 @@ static bool get_notch_pos(const pad::StickState& stick_inputs, Vec2d* out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
-    if (stick_inputs.x == 0 && stick_inputs.y == 60) {
+    if (stick_inputs.x == 0 && stick_inputs.y == pad::MAX_STICK) {
         *out_pos = {0, 1};
         notch_found = true;
-    } else if (stick_inputs.x == 0 && stick_inputs.y == -60) {
+    } else if (stick_inputs.x == 0 && stick_inputs.y == -pad::MAX_STICK) {
         *out_pos = {0, -1};
         notch_found = true;
-    } else if (stick_inputs.x == 60 && stick_inputs.y == 0) {
+    } else if (stick_inputs.x == pad::MAX_STICK && stick_inputs.y == 0) {
         *out_pos = {1, 0};
         notch_found = true;
-    } else if (stick_inputs.x == -60 && stick_inputs.y == 0) {
+    } else if (stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == 0) {
         *out_pos = {-1, 0};
         notch_found = true;
-    } else if (stick_inputs.x == 60 && stick_inputs.y == 60) {
+    } else if (stick_inputs.x == pad::MAX_STICK && stick_inputs.y == pad::MAX_STICK) {
         *out_pos = {DIAG, DIAG};
         notch_found = true;
-    } else if (stick_inputs.x == 60 && stick_inputs.y == -60) {
+    } else if (stick_inputs.x == pad::MAX_STICK && stick_inputs.y == -pad::MAX_STICK) {
         *out_pos = {DIAG, -DIAG};
         notch_found = true;
-    } else if (stick_inputs.x == -60 && stick_inputs.y == 60) {
+    } else if (stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == pad::MAX_STICK) {
         *out_pos = {-DIAG, DIAG};
         notch_found = true;
-    } else if (stick_inputs.x == -60 && stick_inputs.y == -60) {
+    } else if (stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == -pad::MAX_STICK) {
         *out_pos = {-DIAG, -DIAG};
         notch_found = true;
     }

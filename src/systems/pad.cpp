@@ -318,12 +318,12 @@ void tick() {
         }
         s_analog_state.raw_stick_x = CLAMP(s_analog_state.raw_stick_x, -128, 127);
         s_analog_state.raw_stick_y = CLAMP(s_analog_state.raw_stick_y, -128, 127);
-        s_analog_state.stick_x = CLAMP(s_analog_state.stick_x, -60, 60);
-        s_analog_state.stick_y = CLAMP(s_analog_state.stick_y, -60, 60);
-        s_analog_state.substick_x = CLAMP(s_analog_state.substick_x, -60, 60);
-        s_analog_state.substick_y = CLAMP(s_analog_state.substick_y, -60, 60);
-        s_analog_state.trigger_l = CLAMP(s_analog_state.trigger_l, 0, 255);
-        s_analog_state.trigger_r = CLAMP(s_analog_state.trigger_r, 0, 255);
+        s_analog_state.stick_x = CLAMP(s_analog_state.stick_x, -MAX_STICK, MAX_STICK);
+        s_analog_state.stick_y = CLAMP(s_analog_state.stick_y, -MAX_STICK, MAX_STICK);
+        s_analog_state.substick_x = CLAMP(s_analog_state.substick_x, -MAX_STICK, MAX_STICK);
+        s_analog_state.substick_y = CLAMP(s_analog_state.substick_y, -MAX_STICK, MAX_STICK);
+        s_analog_state.trigger_l = CLAMP(s_analog_state.trigger_l, 0, MAX_TRIGGER);
+        s_analog_state.trigger_r = CLAMP(s_analog_state.trigger_r, 0, MAX_TRIGGER);
     }
 
     update_konami();

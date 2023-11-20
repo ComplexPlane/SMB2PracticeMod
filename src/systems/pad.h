@@ -26,6 +26,9 @@ struct TriggerState {
     s32 r;
 };
 
+static constexpr int MAX_STICK = 60.f;
+static constexpr int MAX_TRIGGER = 128.f;
+
 void init();
 // Tick functions to be run at different points in the game loop
 void on_frame_start();
