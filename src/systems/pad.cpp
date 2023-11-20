@@ -86,7 +86,7 @@ void get_merged_triggers(TriggerInputs& out) {
     out.r = CLAMP(out.r, 0, 255);
 }
 
-void on_PADREAD(mkb::PADStatus* statuses) {
+void on_PADRead(mkb::PADStatus* statuses) {
     mkb::memcpy(s_original_inputs, statuses, sizeof(s_original_inputs));
 }
 

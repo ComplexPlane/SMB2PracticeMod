@@ -60,9 +60,9 @@ bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal di
 void reset_dir_repeat();
 bool konami_pressed();
 
-void get_merged_raw_stick(StickInputs out);  // stick before game makes alterations
-void get_merged_stick(StickInputs out);
-void get_merged_substick(StickInputs out);
-void get_merged_triggers(TriggerInputs out);
+void get_merged_raw_stick(StickInputs& out);  // stick before game makes alterations
+void get_merged_stick(StickInputs& out);
+void get_merged_substick(StickInputs& out);
+void get_merged_triggers(TriggerInputs& out);
 
 }  // namespace pad
