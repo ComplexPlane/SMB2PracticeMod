@@ -292,13 +292,13 @@ void tick() {
     mkb::memcpy(s_pad_status_groups, mkb::pad_status_groups, sizeof(mkb::pad_status_groups));
     mkb::memcpy(s_analog_inputs, mkb::analog_inputs, sizeof(mkb::analog_inputs));
 
+    s_analog_state = {};
     if (s_exclusive_mode) {
         // Zero controller inputs in the game
         mkb::merged_analog_inputs = {};
         mkb::merged_digital_inputs = {};
         memset(mkb::pad_status_groups, 0, sizeof(mkb::pad_status_groups));
         memset(mkb::analog_inputs, 0, sizeof(mkb::analog_inputs));
-        s_analog_state = {};
     } else {
         // update analog state
         for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
