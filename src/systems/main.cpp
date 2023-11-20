@@ -105,7 +105,8 @@ void init() {
 
         // Dpad can modify effective stick input, shown by input display
         dpad::on_PADRead(statuses);
-        inputdisp::on_PADRead(statuses);
+        // pad collects original inputs before they are modified by the game
+        pad::on_PADRead(statuses);
 
         return ret;
     });

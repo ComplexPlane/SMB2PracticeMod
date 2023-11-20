@@ -16,10 +16,21 @@ enum Dir {
     DIR_NONE = -1,
 };
 
+struct StickInputs {
+    s32 x;
+    s32 y;
+};
+
+struct TriggerInputs {
+    s32 l;
+    s32 r;
+};
+
 void init();
 // Tick functions to be run at different points in the game loop
 void on_frame_start();
 void tick();  // Run this after controller inputs are read and processed by the game
+void on_PADRead(mkb::PADStatus* statuses);
 
 // In exclusive mode, inputs only register
 // when passing `true` to the optional second argument of the input checking functions,
@@ -48,5 +59,10 @@ bool dir_pressed(Dir dir, bool priority = false);  // Only works for cardinal di
 bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal directions
 void reset_dir_repeat();
 bool konami_pressed();
+
+void get_merged_raw_stick(StickInputs out);  // stick before game makes alterations
+void get_merged_stick(StickInputs out);
+void get_merged_substick(StickInputs out);
+void get_merged_triggers(TriggerInputs out);
 
 }  // namespace pad

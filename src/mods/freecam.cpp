@@ -25,43 +25,6 @@ static S16Vec s_rot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
-struct MergedStickInputs {
-    s32 rawX;
-    s32 rawY;
-    s32 substickX;
-    s32 substickY;
-    s32 triggerL;
-    s32 triggerR;
-};
-
-static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
-    outInputs = {};
-
-    // Accumulate stick inputs from all controllers since we don't always
-    // know which player is active, like in menus
-    // TODO account for d-pad control setting
-    if (!pad::get_exclusive_mode()) {
-        for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
-            mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
-            if (status.err == mkb::PAD_ERR_NONE) {
-                outInputs.rawX += status.stickX;
-                outInputs.rawY += status.stickY;
-                outInputs.substickX += status.substickX;
-                outInputs.substickY += status.substickY;
-                outInputs.triggerL += status.triggerLeft;
-                outInputs.triggerR += status.triggerRight;
-            }
-        }
-
-        outInputs.rawX = CLAMP(outInputs.rawX, -128, 127);
-        outInputs.rawY = CLAMP(outInputs.rawY, -128, 127);
-        outInputs.substickX = CLAMP(outInputs.substickX, -128, 127);
-        outInputs.substickY = CLAMP(outInputs.substickY, -128, 127);
-        outInputs.triggerL = CLAMP(outInputs.triggerL, 0, 255);
-        outInputs.triggerR = CLAMP(outInputs.triggerR, 0, 255);
-    }
-}
-
 bool enabled() {
     bool correct_main_mode = mkb::main_mode == mkb::MD_GAME || mkb::main_mode == mkb::MD_ADV ||
                              mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR ||
@@ -87,15 +50,18 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
         s_rot = mkb::cameras[0].rot;
     }
 
-    MergedStickInputs stick_inputs;
-    get_merged_stick_inputs(stick_inputs);
+    pad::StickInputs stick, substick;
+    pad::TriggerInputs trigger;
+    pad::get_merged_stick(stick);
+    pad::get_merged_substick(substick);
+    pad::get_merged_triggers(trigger);
 
-    float stick_x = stick_inputs.rawX / 60.f;
-    float stick_y = stick_inputs.rawY / 60.f;
-    float substick_x = stick_inputs.substickX / 60.f;
-    float substick_y = stick_inputs.substickY / 60.f;
-    float trigger_left = stick_inputs.triggerL / 128.f;
-    float trigger_right = stick_inputs.triggerR / 128.f;
+    float stick_x = stick.x / 60.f;
+    float stick_y = stick.y / 60.f;
+    float substick_x = substick.x / 60.f;
+    float substick_y = substick.y / 60.f;
+    float trigger_left = trigger.l / 128.f;
+    float trigger_right = trigger.r / 128.f;
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 

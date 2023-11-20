@@ -1,6 +1,8 @@
 #include "systems/pad.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
+#include "utils/macro_utils.h"
 
 namespace pad {
 
@@ -18,6 +20,75 @@ static mkb::AnalogInputGroup s_analog_inputs[4];
 static mkb::PadStatusGroup s_pad_status_groups[4];
 
 static u8 s_dir_down_time[8];
+
+static mkb::PADStatus s_original_inputs[4];
+
+void get_merged_stick(StickInputs& out) {
+    out = {};
+    if (s_exclusive_mode) return;
+
+    for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
+        mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+        if (status.err == mkb::PAD_ERR_NONE) {
+            out.x += status.stickX;
+            out.y += status.stickY;
+        }
+    }
+
+    out.x = CLAMP(out.x, -128, 127);
+    out.y = CLAMP(out.y, -128, 127);
+}
+
+void get_merged_raw_stick(StickInputs& out) {
+    out = {};
+    if (s_exclusive_mode) return;
+
+    for (s32 i = 0; i < 4; i++) {
+        if (s_original_inputs[i].err == mkb::PAD_ERR_NONE) {
+            out.x += s_original_inputs[i].stickX;
+            out.y += s_original_inputs[i].stickY;
+        }
+    }
+
+    out.x = CLAMP(out.x, -60, 60);
+    out.y = CLAMP(out.y, -60, 60);
+}
+
+void get_merged_substick(StickInputs& out) {
+    out = {};
+    if (s_exclusive_mode) return;
+
+    for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
+        mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+        if (status.err == mkb::PAD_ERR_NONE) {
+            out.x += status.substickX;
+            out.y += status.substickY;
+        }
+    }
+
+    out.x = CLAMP(out.x, -128, 127);
+    out.y = CLAMP(out.y, -128, 127);
+}
+
+void get_merged_triggers(TriggerInputs& out) {
+    out = {};
+    if (s_exclusive_mode) return;
+
+    for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
+        mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+        if (status.err == mkb::PAD_ERR_NONE) {
+            out.l += status.triggerLeft;
+            out.r += status.triggerRight;
+        }
+    }
+
+    out.l = CLAMP(out.l, 0, 255);
+    out.r = CLAMP(out.r, 0, 255);
+}
+
+void on_PADREAD(mkb::PADStatus* statuses) {
+    mkb::memcpy(s_original_inputs, statuses, sizeof(s_original_inputs));
+}
 
 bool button_down(mkb::PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
@@ -214,12 +285,11 @@ bool dir_repeat(Dir dir, bool priority) {
     if (s_exclusive_mode && !priority) return false;
 
     u32 t = s_dir_down_time[dir];
-    return dir_pressed(dir, priority) || (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
+    return dir_pressed(dir, priority) ||
+           (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
-void reset_dir_repeat() {
-    mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
-}
+void reset_dir_repeat() { mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time)); }
 
 bool konami_pressed() { return s_konami_progress == 11; }
 
