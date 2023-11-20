@@ -26,13 +26,16 @@ static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp
 
 bool enabled() {
     bool correct_main_mode = mkb::main_mode == mkb::MD_GAME || mkb::main_mode == mkb::MD_ADV ||
-                             mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR;
+                             mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR ||
+                             mkb::main_mode == mkb::MD_EXOPT;
     bool correct_sub_mode = mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT &&
                             mkb::sub_mode != mkb::SMD_GAME_SCENARIO_MAIN &&
                             mkb::sub_mode != mkb::SMD_GAME_SCENARIO_RETURN &&
                             mkb::sub_mode != mkb::SMD_ADV_TITLE_INIT &&
                             mkb::sub_mode != mkb::SMD_ADV_TITLE_MAIN &&
-                            mkb::sub_mode != mkb::SMD_ADV_TITLE_REINIT;
+                            mkb::sub_mode != mkb::SMD_ADV_TITLE_REINIT &&
+                            mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_INIT &&
+                            mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_MAIN;
     return pref::get(pref::BoolPref::Freecam) && correct_main_mode && correct_sub_mode;
 }
 
@@ -46,12 +49,18 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
         s_rot = mkb::cameras[0].rot;
     }
 
-    float stick_x = mkb::pad_status_groups[0].raw.stickX / 60.f;
-    float stick_y = mkb::pad_status_groups[0].raw.stickY / 60.f;
-    float substick_x = mkb::pad_status_groups[0].raw.substickX / 60.f;
-    float substick_y = mkb::pad_status_groups[0].raw.substickY / 60.f;
-    float trigger_left = mkb::pad_status_groups[0].raw.triggerLeft / 128.f;
-    float trigger_right = mkb::pad_status_groups[0].raw.triggerRight / 128.f;
+    pad::StickState stick, substick;
+    pad::TriggerState trigger;
+    pad::get_merged_stick(stick);
+    pad::get_merged_substick(substick);
+    pad::get_merged_triggers(trigger);
+
+    float stick_x = stick.x / static_cast<float>(pad::MAX_STICK);
+    float stick_y = stick.y / static_cast<float>(pad::MAX_STICK);
+    float substick_x = substick.x / static_cast<float>(pad::MAX_STICK);
+    float substick_y = substick.y / static_cast<float>(pad::MAX_STICK);
+    float trigger_left = trigger.l / static_cast<float>(pad::MAX_TRIGGER);
+    float trigger_right = trigger.r / static_cast<float>(pad::MAX_TRIGGER);
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 

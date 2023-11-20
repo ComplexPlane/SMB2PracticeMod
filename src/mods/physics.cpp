@@ -1,5 +1,6 @@
 #include "physics.h"
 #include "mkb/mkb.h"
+#include "mods/freecam.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
@@ -9,8 +10,6 @@ namespace physics {
 
 static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
-
-static PhysicsPreset s_current_preset = PhysicsPreset::Default;
 
 static constexpr pref::U8Pref PHYSICS_U8_PREFS[] = {
     pref::U8Pref::Friction,
@@ -43,13 +42,11 @@ void init() {
 }
 
 static void update_preset() {
-    PhysicsPreset preset = PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset));
-    if (preset == s_current_preset) return;
-    s_current_preset = preset;
+    if (!pref::did_change(pref::U8Pref::PhysicsPreset)) return;
 
     restore_physics_prefs();
     // Update menu text for the presets if any are changed!
-    switch (preset) {
+    switch (PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset))) {
         case PhysicsPreset::Default:
         case PhysicsPreset::Custom: {
             break;
@@ -122,7 +119,8 @@ void disp() {
         mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
         return;
 
-    if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp)) {
+    if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp) &&
+        !freecam::should_hide_hud()) {
         mkb::textdraw_reset();
         mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);
         u32 x = 634;
