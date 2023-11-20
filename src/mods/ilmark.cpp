@@ -3,6 +3,7 @@
 #include "mkb/mkb.h"
 #include "mods/freecam.h"
 #include "mods/physics.h"
+#include "mods/validate.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -23,7 +24,10 @@ void init() {
     s_is_romhack = mkb::strcmp(gamecode, "GM2E8P") != 0;
 }
 
-void set_valid() { s_valid_run = true; }
+void validate_attempt() {
+    if (!validate::was_run_valid(false)) return;
+    s_valid_run = true;
+}
 
 void tick() {
     if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT &&

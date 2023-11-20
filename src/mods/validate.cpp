@@ -195,8 +195,6 @@ void init() {
 }
 
 void tick() {
-    if (mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT) {
-    }
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_entered_goal = false;
         s_used_mods = false;

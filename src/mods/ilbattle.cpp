@@ -1,5 +1,6 @@
 #include "ilbattle.h"
 #include "mkb/mkb.h"
+#include "mods/validate.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -257,7 +258,9 @@ void update_best() {
     }
 }
 
-void track_valid_attempt() {
+void validate_attempt() {
+    if (!validate::was_run_valid(true)) return;
+
     bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
                               s_battle_stage_id != mkb::current_stage_id &&
                               mkb::main_mode == mkb::MD_GAME;

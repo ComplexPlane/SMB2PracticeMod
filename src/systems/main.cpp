@@ -189,16 +189,8 @@ void init() {
                 patch::hook_function(s_smd_game_play_tick_tramp, mkb::smd_game_play_tick, []() {
                     s_smd_game_play_tick_tramp.dest();
                     validate::validate_run();
-
-                    bool ilmark_valid = validate::was_run_valid(false);
-                    bool battle_valid = validate::was_run_valid(true);
-
-                    if (ilmark_valid) {
-                        ilmark::set_valid();
-                    }
-                    if (battle_valid) {
-                        ilbattle::track_valid_attempt();
-                    }
+                    ilmark::validate_attempt();
+                    ilbattle::validate_attempt();
                 });
                 jump::patch_minimap();
             }
