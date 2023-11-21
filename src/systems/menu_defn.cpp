@@ -529,11 +529,85 @@ static Widget s_about_widgets[] = {
         .type = WidgetType::ColoredText,
         .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE},
     },
+    {.type = WidgetType::Separator},
+
+    {
+        .type = WidgetType::Header,
+        .header = {"Documentation"},
+    },
+    {
+        .type = WidgetType::Text,
+        .text = {"  For full documentation of SMB2 Practice Mod:"},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/wiki", draw::BLUE},
+    },
+};
+
+static Widget s_savestates_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
+    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
+    // TODO: replace this feature with a better one that works in-menu
+    {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
+    {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
+};
+
+static Widget s_iw_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  Story Mode individual world segments can"}},
+    {.type = WidgetType::Text, .text = {"  be done by going to file select in Story"}},
+    {.type = WidgetType::Text, .text = {"  Mode, pressing up/down on an empty file"}},
+    {.type = WidgetType::Text, .text = {"  to select a world, and selecting the file."}},
+};
+
+static Widget s_jump_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
+    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
+};
+
+static Widget s_freecam_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  Left Stick \x1c Move"}},
+    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Rotate"}},
+    {.type = WidgetType::Text, .text = {"  L          \x1c Down"}},
+    {.type = WidgetType::Text, .text = {"  R          \x1c Up"}},
+    {.type = WidgetType::Text, .text = {"  Y          \x1c Turbo Speed"}},
+    {.type = WidgetType::Text, .text = {"  X          \x1c Slow Speed"}},
+    {.type = WidgetType::Text, .text = {"  D-pad Up   \x1c Increase Turbo Speed"}},
+    {.type = WidgetType::Text, .text = {"  D-pad Down \x1c Decrease Turbo Speed"}},
+};
+
+static Widget s_iw_mark_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  The IL validation mark is shown after"}},
+    {.type = WidgetType::Text, .text = {"  completing a level. It is green only if no"}},
+    {.type = WidgetType::Text, .text = {"  gameplay-altering mods were used during the"}},
+    {.type = WidgetType::Text, .text = {"  level completion, and red otherwise."}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Text, .text = {"  Showing this watermark is currently required"}},
+    {.type = WidgetType::Text, .text = {"  to submit IL speedruns of vanilla SMB2 to the"}},
+    {.type = WidgetType::Text, .text = {"  official leaderboards if you are using the"}},
+    {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, may also be"}},
+    {.type = WidgetType::Text, .text = {"  disallowed for for IL leaderboard submissions."}},
+    {.type = WidgetType::Text, .text = {"  The IL validation does not account for these"}},
+    {.type = WidgetType::Text, .text = {"  visual-only mods."}},
+    {.type = WidgetType::Separator},
+
+    {.type = WidgetType::Text, .text = {"  If you complete a stage without the watermark"}},
+    {.type = WidgetType::Text, .text = {"  enabled, you can still enable it post-goal to"}},
+    {.type = WidgetType::Text, .text = {"  validate your run."}},
 };
 
 static const char* CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget s_cm_beg_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Segment Selection"},
+    },
     {
         .type = WidgetType::Button,
         .button =
@@ -555,6 +629,10 @@ static Widget s_cm_beg_widgets[] = {
 };
 
 static Widget s_cm_adv_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Segment Selection"},
+    },
     {
         .type = WidgetType::Button,
         .button =
@@ -594,6 +672,10 @@ static Widget s_cm_adv_widgets[] = {
 };
 
 static Widget s_cm_exp_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Segment Selection"},
+    },
     {
         .type = WidgetType::Button,
         .button =
@@ -652,6 +734,10 @@ static Widget s_cm_exp_widgets[] = {
 
 static Widget s_cm_mas_widgets[] = {
     {
+        .type = WidgetType::Header,
+        .header = {"Segment Selection"},
+    },
+    {
         .type = WidgetType::Button,
         .button =
             {
@@ -676,7 +762,6 @@ static Widget s_cm_seg_widgets[] = {
         .type = WidgetType::Header,
         .header = {"Segment Selection"},
     },
-    // Beginner
     {
         .type = WidgetType::Menu,
         .menu = {"Beginner", s_cm_beg_widgets, LEN(s_cm_beg_widgets)},
@@ -692,6 +777,10 @@ static Widget s_cm_seg_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Master", s_cm_mas_widgets, LEN(s_cm_mas_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Story Mode", s_iw_help_widgets, LEN(s_iw_help_widgets)},
     },
     {.type = WidgetType::Separator},
     {
@@ -776,84 +865,6 @@ static Widget s_timers_widgets[] = {
                 .label = "CM Segments (SEG)",
                 .pref = pref::BoolPref::CmTimer,
             },
-    },
-};
-
-static Widget s_savestates_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  X          \x1c Create savestate"}},
-    {.type = WidgetType::Text, .text = {"  Y          \x1c Load savestate"}},
-    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Change savestate slot"}},
-    // TODO: replace this feature with a better one that works in-menu
-    {.type = WidgetType::Text, .text = {"  L+X or R+X \x1c Frame advance"}},
-    {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
-};
-
-static Widget s_iw_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on"}},
-    {.type = WidgetType::Text, .text = {"  a file to choose a world."}},
-};
-
-static Widget s_jump_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
-    {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
-};
-
-static Widget s_freecam_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  Left Stick \x1c Move"}},
-    {.type = WidgetType::Text, .text = {"  C-Stick    \x1c Rotate"}},
-    {.type = WidgetType::Text, .text = {"  L          \x1c Down"}},
-    {.type = WidgetType::Text, .text = {"  R          \x1c Up"}},
-    {.type = WidgetType::Text, .text = {"  Y          \x1c Turbo Speed"}},
-    {.type = WidgetType::Text, .text = {"  X          \x1c Slow Speed"}},
-    {.type = WidgetType::Text, .text = {"  D-pad Up   \x1c Increase Turbo Speed"}},
-    {.type = WidgetType::Text, .text = {"  D-pad Down \x1c Decrease Turbo Speed"}},
-};
-
-static Widget s_iw_mark_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  The IL validation mark is shown after"}},
-    {.type = WidgetType::Text, .text = {"  completing a level. It is green only if no "}},
-    {.type = WidgetType::Text, .text = {"  gameplay-altering mods were used during the "}},
-    {.type = WidgetType::Text, .text = {"  level completion, and red otherwise."}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Text, .text = {"  Showing this watermark is currently required"}},
-    {.type = WidgetType::Text, .text = {"  to submit IL speedruns of vanilla SMB2 to the"}},
-    {.type = WidgetType::Text, .text = {"  official leaderboards if you are using the"}},
-    {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, such as raw"}},
-    {.type = WidgetType::Text, .text = {"  input display, may also be disallowed for"}},
-    {.type = WidgetType::Text, .text = {"  IL leaderboard submissions. The IL validation"}},
-    {.type = WidgetType::Text, .text = {"  mark does not account for visual-only mods."}},
-    {.type = WidgetType::Separator},
-
-    {.type = WidgetType::Text, .text = {"  If you complete a stage without the watermark"}},
-    {.type = WidgetType::Text, .text = {"  enabled, you can still enable it post-goal to"}},
-    {.type = WidgetType::Text, .text = {"  validate your run."}},
-    {.type = WidgetType::Separator},
-};
-
-static Widget s_help_widgets[] = {
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Savestates", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Jump-Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Freecam", s_freecam_help_widgets, LEN(s_freecam_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Story Mode IWs", s_iw_help_widgets, LEN(s_iw_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"IL Validation Mark", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)},
     },
 };
 
@@ -1016,6 +1027,20 @@ static Widget s_freecam_widgets[] = {
                 .pref = pref::BoolPref::FreecamHideHud,
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Help"},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_freecam_help_widgets,
+                .num_widgets = LEN(s_freecam_help_widgets),
+            },
+    },
 };
 
 static Widget s_hide_widgets[] = {
@@ -1078,40 +1103,6 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static const char* TIMER_TYPES[] = {"Default", "Frozen", "Freeze at 0", "Count up from 0"};
-static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
-
-static Widget s_assist_widgets[] = {
-    {
-        .type = WidgetType::Choose,
-        .choose =
-            {
-                .label = "Timer Type",
-                .choices = TIMER_TYPES,
-                .num_choices = LEN(TIMER_TYPES),
-                .pref = pref::U8Pref::TimerType,
-            },
-    },
-    {
-        .type = WidgetType::Choose,
-        .choose =
-            {
-                .label = "Fallout Plane Type",
-                .choices = FALLOUT_PLANE_TYPE,
-                .num_choices = LEN(FALLOUT_PLANE_TYPE),
-                .pref = pref::U8Pref::FalloutPlaneType,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Disable Fallout Volume",
-                .pref = pref::BoolPref::DisableFalloutVolumes,
-            },
-    },
-};
-
 static Widget s_savestate_subwidgets[] = {
     {
         .type = WidgetType::InputSelect,
@@ -1135,6 +1126,10 @@ static Widget s_savestate_subwidgets[] = {
 
 static Widget s_savestate_widgets[] = {
     {
+        .type = WidgetType::Header,
+        .header = {"Savestates"},
+    },
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -1151,6 +1146,20 @@ static Widget s_savestate_widgets[] = {
                 .show_if = [] { return pref::get(pref::BoolPref::Savestates); },
             },
     },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Help"},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_savestates_help_widgets,
+                .num_widgets = LEN(s_savestates_help_widgets),
+            },
+    },
 };
 
 static Widget s_tools_widgets[] = {
@@ -1165,7 +1174,7 @@ static Widget s_tools_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
+        .menu = {"Speedrun Segments", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
     },
     {
         .type = WidgetType::Menu,
@@ -1283,6 +1292,15 @@ static Widget s_il_mark_widgets[] = {
                 .label = "Romhacks",
                 .pref = pref::BoolPref::IlMarkRomhacks,
             },
+    },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Help"},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"About", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)},
     },
 };
 
@@ -1629,9 +1647,29 @@ static Widget s_jump_widgets[] = {
                 .show_if = [] { return pref::get(pref::BoolPref::JumpMod); },
             },
     },
+    {
+        .type = WidgetType::Header,
+        .header = {"Help"},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_jump_help_widgets,
+                .num_widgets = LEN(s_jump_help_widgets),
+            },
+    },
 };
 
-static Widget s_gameplay_mods_widgets[] = {
+static const char* TIMER_TYPES[] = {"Default", "Frozen", "Freeze at 0", "Count up from 0"};
+static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
+
+static Widget s_variant_widgets[] = {
+    {
+        .type = WidgetType::Header,
+        .header = {"Modifications"},
+    },
     {
         .type = WidgetType::Choose,
         .choose =
@@ -1643,6 +1681,14 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "D-Pad Controls",
+                .pref = pref::BoolPref::DpadControls,
+            },
+    },
+    {
         .type = WidgetType::Menu,
         .menu =
             {
@@ -1651,13 +1697,51 @@ static Widget s_gameplay_mods_widgets[] = {
                 .num_widgets = LEN(s_physics_widgets),
             },
     },
+    {WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Assist"},
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Timer Type",
+                .choices = TIMER_TYPES,
+                .num_choices = LEN(TIMER_TYPES),
+                .pref = pref::U8Pref::TimerType,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Fallout Plane Type",
+                .choices = FALLOUT_PLANE_TYPE,
+                .num_choices = LEN(FALLOUT_PLANE_TYPE),
+                .pref = pref::U8Pref::FalloutPlaneType,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Disable Fallout Volume",
+                .pref = pref::BoolPref::DisableFalloutVolumes,
+            },
+    },
+    {WidgetType::Separator},
+    {
+        .type = WidgetType::Header,
+        .header = {"Alternate Modes"},
+    },
     {
         .type = WidgetType::Menu,
         .menu =
             {
-                .label = "Assist",
-                .widgets = s_assist_widgets,
-                .num_widgets = LEN(s_assist_widgets),
+                .label = "Jump-Mod",
+                .widgets = s_jump_widgets,
+                .num_widgets = LEN(s_jump_widgets),
             },
     },
     {
@@ -1670,28 +1754,11 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Menu,
-        .menu =
-            {
-                .label = "Jump-Mod",
-                .widgets = s_jump_widgets,
-                .num_widgets = LEN(s_jump_widgets),
-            },
-    },
-    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
                 .label = "Marathon Mode",
                 .pref = pref::BoolPref::Marathon,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "D-pad Controls",
-                .pref = pref::BoolPref::DpadControls,
             },
     },
 };
@@ -1758,15 +1825,11 @@ static Widget s_root_widgets[] = {
     },
     {
         .type = WidgetType::Menu,
-        .menu = {"Variants", s_gameplay_mods_widgets, LEN(s_gameplay_mods_widgets)},
+        .menu = {"Variants", s_variant_widgets, LEN(s_variant_widgets)},
     },
     {
         .type = WidgetType::Menu,
         .menu = {"Settings", s_pracmod_settings_widgets, LEN(s_pracmod_settings_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Help", s_help_widgets, LEN(s_help_widgets)},
     },
     {
         .type = WidgetType::Menu,
