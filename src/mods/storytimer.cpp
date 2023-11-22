@@ -20,7 +20,16 @@ enum class TimerOptions {
     EndOfRun = 3,
 };
 
-static u32 s_loadless_story_timer;
+static constexpr s32 FULLGAME_TIMER_LOCATION_X = 18 + 24;
+static constexpr s32 FULLGAME_TIMER_TEXT_OFFSET = 56;
+static constexpr s32 SEGMENT_TIMER_LOCATION_X = 30 + 24;
+static constexpr s32 SEGMENT_TIMER_TEXT_OFFSET = 44;
+static constexpr s32 IW_TIME_LOCATION_X = 42 + 24;
+static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
+static constexpr s32 STAGE_FADE_OUT_TIME = 49;
+static constexpr u32 WORLD_START_CORRECTION = 2;
+static constexpr s32 WORLD_COUNT = 10;
+static constexpr s32 STAGES_PER_WORLD = 10;
 static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
@@ -31,21 +40,13 @@ struct TimerGroup {
     u32 non_gameplay;
     u32 world_start_correction;
 };
-static TimerGroup s_timer_group[10];  // each world has its own TimerGroup structure
+static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static bool s_can_lower_stage_counter;
 static bool s_start_stage_fade_out_timer;
 static u32 s_stage_fade_out_timer;
-static s32 s_completed_stages;            // the completed stages for the whole run
-static s32 s_completed_stages_world[10];  // the completed stages in world k
+static s32 s_completed_stages;                     // the completed stages for the whole run
+static s32 s_completed_stages_world[WORLD_COUNT];  // the completed stages in world k
 static bool s_display_segment_timer;
-static constexpr s32 FULLGAME_TIMER_LOCATION_X = 18 + 24;
-static constexpr s32 FULLGAME_TIMER_TEXT_OFFSET = 56;
-static constexpr s32 SEGMENT_TIMER_LOCATION_X = 30 + 24;
-static constexpr s32 SEGMENT_TIMER_TEXT_OFFSET = 44;
-static constexpr s32 IW_TIME_LOCATION_X = 42 + 24;
-static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
-static constexpr s32 STAGE_FADE_OUT_TIME = 49;
-static constexpr u32 WORLD_START_CORRECTION = 2;
 
 u32 get_completed_stagecount() { return s_completed_stages; }
 
@@ -61,11 +62,10 @@ void tick() {
     if (mkb::scen_info.mode == 5 || mkb::scen_info.mode == 21) {
         // 5 is the file select screen, 21 is the name entry screen
         s_can_lower_stage_counter = false;
-        s_loadless_story_timer = 0;
         s_completed_stages = 0;
         s_start_stage_fade_out_timer = false;
         s_stage_fade_out_timer = 0;
-        for (s32 k = 0; k < 10; k++) {
+        for (s32 k = 0; k < WORLD_COUNT; k++) {
             s_timer_group[k] = {};
             s_completed_stages_world[k] = 0;
         }
@@ -75,7 +75,7 @@ void tick() {
     // for later use, it's useful to record how many stages we've completed
     // increment the completed stages by 1 during the init
     // need to check that the game is not paused to ensure the counter only goes up by 1
-    for (s32 k = 0; k < 10; k++) {
+    for (s32 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {
             if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
                 s_completed_stages_world[k] += 1;
@@ -150,7 +150,7 @@ void tick() {
         s_stage_fade_out_timer = 0;
     }
 
-    for (s32 k = 0; k < 10; k++) {
+    for (s32 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {
             if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT) {
                 // need to add 1 additional frame to the timer during spin in
@@ -168,7 +168,7 @@ void tick() {
 
             if (s_completed_stages_world[k] <= 9) {
                 s_timer_group[k].segment = s_timer_group[k].full_world;
-            } else if (s_completed_stages_world[k] == 10 &&
+            } else if (s_completed_stages_world[k] == STAGES_PER_WORLD &&
                        mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT && !paused_now) {
                 // stop world k's segment timer on tape break of the last stage of the world; we
                 // need to correct by 2f since SMD_GAME_GOAL_INIT happens 2f after tape break
@@ -205,7 +205,8 @@ void tick() {
                 s_timer_group[k].non_gameplay += 1;
             }
 
-            if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN && s_completed_stages % 10 != 0) {
+            if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN &&
+                s_completed_stages % STAGES_PER_WORLD != 0) {
                 // need to add 2 frames to the timer when stage selecting to the 10 ball screen,
                 // but don't correct if on the last stage of a world since the next frame the
                 // timer should increment on is covered by s_world_start_timer_correction
@@ -223,15 +224,14 @@ void tick() {
     // s_timer_group[k].split is just the fullgame time at tape break on the last stage of world k;
     // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
     // current world's segment timer
-    u32 sum[10] = {};
-    for (s32 k = 1; k < 10; k++) {
+    u32 sum[WORLD_COUNT] = {};
+    for (s32 k = 1; k < WORLD_COUNT; k++) {
         for (s32 j = 0; j < k; j++) {
             sum[k] += s_timer_group[j].full_world;
         }
         s_timer_group[k].split = sum[k] + s_timer_group[k].segment;
     }
     s_timer_group[0].split = s_timer_group[0].segment;
-    s_loadless_story_timer = s_timer_group[9].split;
 }
 
 void disp() {
@@ -242,18 +242,19 @@ void disp() {
     }
 
     bool is_between_worlds = false;
-    if ((s_completed_stages % 10 == 0) && s_completed_stages != 0 &&
+    if ((s_completed_stages % STAGES_PER_WORLD == 0) && s_completed_stages != 0 &&
         mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
         is_between_worlds = true;
-    } else if ((s_completed_stages % 10 == 0 &&
+    } else if ((s_completed_stages % STAGES_PER_WORLD == 0 &&
                 mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) ||
-               s_completed_stages % 10 != 0) {
+               s_completed_stages % STAGES_PER_WORLD != 0) {
         // no longer "between worlds" if you enter the next worlds 10 ball screen, or if you break
         // the tape on the last stage of the current world, but retry
         is_between_worlds = false;
     }
 
-    bool is_run_complete = (mkb::scen_info.world == 9 && s_completed_stages_world[9] == 10);
+    bool is_run_complete =
+        (mkb::scen_info.world == 9 && s_completed_stages_world[9] == STAGES_PER_WORLD);
 
     // move the positions of the fullgame if the death counter is on
     u32 fullgame_timer_location_y = 2;
@@ -279,9 +280,11 @@ void disp() {
             break;
     }
 
+    u32 loadless_story_timer = s_timer_group[9].split;
+
     if (display_story_timer) {
         timerdisp::draw_timer(FULLGAME_TIMER_LOCATION_X, fullgame_timer_location_y,
-                              FULLGAME_TIMER_TEXT_OFFSET, "Time:", s_loadless_story_timer, 0, false,
+                              FULLGAME_TIMER_TEXT_OFFSET, "Time:", loadless_story_timer, 0, false,
                               false, draw::WHITE);
     }
 
@@ -300,7 +303,7 @@ void disp() {
 
     switch (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
         case TimerOptions::AlwaysShow:
-            for (s32 k = 0; k < 10; k++) {
+            for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (mkb::scen_info.world == k && !is_run_complete) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
                                           SEGMENT_TIMER_TEXT_OFFSET,
@@ -310,7 +313,7 @@ void disp() {
             }
             break;
         case TimerOptions::BetweenWorlds:
-            for (s32 k = 0; k < 10; k++) {
+            for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (is_between_worlds && mkb::scen_info.world == k && k != 9) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
                                           SEGMENT_TIMER_TEXT_OFFSET,
@@ -360,16 +363,6 @@ void disp() {
         timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y + 9,
                               SEGMENT_TIMER_TEXT_OFFSET, "W10:", s_timer_group[9].split,
                               s_timer_group[9].segment, true, false, draw::WHITE);
-    }
-
-    // show warning on the name entry screen if no timers are on (if the toggle for the warning is
-    // turned on)
-    if (pref::get(pref::BoolPref::StoryTimerWarning) &&
-        TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
-        TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
-        mkb::scen_info.mode == 21) {
-        // mkb::scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
-        draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
 }
 

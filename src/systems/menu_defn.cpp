@@ -729,14 +729,6 @@ static Widget s_loadless_timers_widgets[] = {
                 .pref = pref::U8Pref::SegmentTimerOptions,
             },
     },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Timer Not On Warning",
-                .pref = pref::BoolPref::StoryTimerWarning,
-            },
-    },
 };
 
 static Widget s_deathcounter_widgets[] = {
