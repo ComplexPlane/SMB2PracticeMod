@@ -39,7 +39,7 @@ enum class PrefId : u16 {
     BallColor = 19,
     ApeColor = 20,
     Marathon = 21,
-    Moon = 22,
+    // Do not reuse 22, it belonged to old Moon Gravity BoolPref
     IlBattleDisplay = 23,
     IlBattleLength = 24,
     // Do not reuse 25, it belonged to old IL Battle Score Breakdown BoolPref
@@ -79,7 +79,7 @@ enum class PrefId : u16 {
     IlBattleShowScore = 59,
     IlBattleBuzzerOld = 60,
     IlBattleBreakdown = 61,
-    UseCustomPhysics = 62,
+    PhysicsPreset = 62,
     Friction = 63,
     Restitution = 64,
     SavestateDisableOverwrite = 65,
@@ -94,11 +94,18 @@ enum class PrefId : u16 {
     TimerShowUnrounded = 74,
     TimerShowPause = 75,
     StageEditVariant = 76,
-    FullgameTimerOptions = 77,
-    SegmentTimerOptions = 78,
-    StoryTimerWarning = 79,
-    ShowDeathCounter = 80,
-    CountStage1Deaths = 81,
+    JumpChangePhysics = 77,
+    JumpAllowWalljumps = 78,
+    JumpCount = 79,
+    Weight = 80,
+    MonkeyType = 81,
+    JumpProfile = 82,
+    CustomPhysicsDisp = 83,
+    FullgameTimerOptions = 84,
+    SegmentTimerOptions = 85,
+    StoryTimerWarning = 86,
+    ShowDeathCounter = 87,
+    CountStage1Deaths = 88,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -123,7 +130,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::BallColor,
     PrefId::ApeColor,
     PrefId::Marathon,
-    PrefId::Moon,
     PrefId::IlBattleDisplay,
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
@@ -157,7 +163,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleBuzzerOld,
     PrefId::Friction,
     PrefId::Restitution,
-    PrefId::UseCustomPhysics,
+    PrefId::PhysicsPreset,
     PrefId::SavestateDisableOverwrite,
     PrefId::ApeColorType,
     PrefId::IlBattleBreakdown,
@@ -176,6 +182,12 @@ static const PrefId s_pref_ids[] = {
     PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
     PrefId::StageEditVariant,
+    PrefId::JumpChangePhysics,
+    PrefId::JumpAllowWalljumps,
+    PrefId::JumpCount,
+    PrefId::Weight,
+    PrefId::MonkeyType,
+    PrefId::CustomPhysicsDisp,
     PrefId::FullgameTimerOptions,
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
@@ -217,8 +229,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::Freecam;
         case PrefId::Marathon:
             return BoolPref::Marathon;
-        case PrefId::Moon:
-            return BoolPref::Moon;
         case PrefId::IlBattleDisplay:
             return BoolPref::IlBattleDisplay;
         case PrefId::IlMarkPractice:
@@ -265,8 +275,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlBattleShowScore;
         case PrefId::IlBattleBuzzerOld:
             return BoolPref::IlBattleBuzzerOld;
-        case PrefId::UseCustomPhysics:
-            return BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
             return BoolPref::SavestateDisableOverwrite;
         case PrefId::IlBattleTieCount:
@@ -281,6 +289,12 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::TimerShowUnrounded;
         case PrefId::TimerShowPause:
             return BoolPref::TimerShowPause;
+        case PrefId::JumpChangePhysics:
+            return BoolPref::JumpChangePhysics;
+        case PrefId::JumpAllowWalljumps:
+            return BoolPref::JumpAllowWalljumps;
+        case PrefId::CustomPhysicsDisp:
+            return BoolPref::CustomPhysicsDisp;
         case PrefId::StoryTimerWarning:
             return BoolPref::StoryTimerWarning;
         case PrefId::ShowDeathCounter:
@@ -346,6 +360,16 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::FalloutPlaneType;
         case PrefId::StageEditVariant:
             return U8Pref::StageEditVariant;
+        case PrefId::JumpCount:
+            return U8Pref::JumpCount;
+        case PrefId::Weight:
+            return U8Pref::Weight;
+        case PrefId::PhysicsPreset:
+            return U8Pref::PhysicsPreset;
+        case PrefId::MonkeyType:
+            return U8Pref::MonkeyType;
+        case PrefId::JumpProfile:
+            return U8Pref::JumpProfile;
         case PrefId::FullgameTimerOptions:
             return U8Pref::FullgameTimerOptions;
         case PrefId::SegmentTimerOptions:
@@ -367,6 +391,9 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::FreecamHideHud,
     BoolPref::IlBattleShowTime,
     BoolPref::IlBattleShowScore,
+    BoolPref::JumpChangePhysics,
+    BoolPref::JumpAllowWalljumps,
+    BoolPref::CustomPhysicsDisp,
     BoolPref::CountStage1Deaths,
 };
 
@@ -384,6 +411,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
     {U8Pref::IlBattleReadyBind, 104},   // dpad-down
     {U8Pref::FreecamToggleBind, 255},   // unbound
     {U8Pref::SavestateClearBind, 255},  // unbound
+    {U8Pref::Weight, 100},              // 1.0
 };
 
 //
@@ -392,10 +420,10 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[8];
-    u8 u8_prefs[28];
+    u8 u8_prefs[33];
 };
 
-static PrefState s_pref_state, s_default_pref_state;
+static PrefState s_pref_state, s_prev_pref_state, s_default_pref_state;
 
 struct FileHeader {
     char magic[4];  // "APMP"
@@ -532,6 +560,7 @@ static constexpr char* PREF_FILENAME = "apmp";
 
 void init() {
     load_default_prefs();
+    mkb::memcpy(&s_prev_pref_state, &s_default_pref_state, sizeof(s_default_pref_state));
 
     FileHeader* header = nullptr;
     s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void**>(&header));
@@ -541,6 +570,11 @@ void init() {
     } else if (result != mkb::CARD_RESULT_NOFILE) {
         draw::notify(draw::RED, "Error loading settings from Card A, setting defaults");
     }
+}
+
+void tick() {
+    // runs after all prefs have been set on a frame
+    mkb::memcpy(&s_prev_pref_state, &s_pref_state, sizeof(s_pref_state));
 }
 
 void save() {
@@ -560,6 +594,12 @@ void reset_all_defaults() {
     mkb::memcpy(&s_pref_state, &s_default_pref_state, sizeof(s_pref_state));
 }
 
+bool did_change(BoolPref bool_pref) {
+    return get_bool_pref(bool_pref, s_pref_state) != get_bool_pref(bool_pref, s_prev_pref_state);
+}
+bool did_change(U8Pref u8_pref) {
+    return get_u8_pref(u8_pref, s_pref_state) != get_u8_pref(u8_pref, s_prev_pref_state);
+}
 bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }
 u8 get(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_pref_state); }
 void set(BoolPref bool_pref, bool value) { set_bool_pref(bool_pref, value, s_pref_state); };

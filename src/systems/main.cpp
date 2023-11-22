@@ -1,5 +1,6 @@
 #include "mkb/mkb.h"
 
+#include "mods/validate.h"
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
@@ -47,6 +48,8 @@ static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debug_text_tramp;
 static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
 static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
 static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_ready_init)> s_smd_game_ready_init_tramp;
+static patch::Tramp<decltype(&mkb::smd_game_play_tick)> s_smd_game_play_tick_tramp;
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -100,13 +103,15 @@ void init() {
     fallout::init();
     stage_edits::init();
     scratch::init();
+    validate::init();
 
     patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
         u32 ret = s_PADRead_tramp.dest(statuses);
 
         // Dpad can modify effective stick input, shown by input display
         dpad::on_PADRead(statuses);
-        inputdisp::on_PADRead(statuses);
+        // pad collects original inputs before they are modified by the game
+        pad::on_PADRead(statuses);
 
         return ret;
     });
@@ -120,14 +125,14 @@ void init() {
         binds::tick();
         cardio::tick();
         unlock::tick();
-        fallout::tick();
-        physics::tick();
         iw::tick();
         storytimer::tick();
         deathcounter::tick();
         savest_ui::tick();
-        menu_impl::tick();
-        jump::tick();
+        menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
+        fallout::tick();
+        jump::tick();     // (edits physics preset)
+        physics::tick();  // anything editing physics presets must run before physics::tick()
         inputdisp::tick();
         gotostory::tick();
         cmseg::tick();
@@ -139,7 +144,10 @@ void init() {
         ilmark::tick();
         camera::tick();
         stage_edits::tick();
+        validate::tick();
         scratch::tick();
+        // Pref runs last to track the prefs from the previous frame
+        pref::tick();
     });
 
     patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
@@ -169,6 +177,7 @@ void init() {
         menu_impl::disp();
         draw::disp();
         ilmark::disp();
+        physics::disp();
         scratch::disp();
     });
 
@@ -179,7 +188,18 @@ void init() {
 
             // Main game init functions
             if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
-                stage_edits::main_game_init();
+                patch::hook_function(s_smd_game_ready_init_tramp, mkb::smd_game_ready_init, []() {
+                    stage_edits::smd_game_ready_init();
+                    ballcolor::switch_monkey();
+                    s_smd_game_ready_init_tramp.dest();
+                });
+                patch::hook_function(s_smd_game_play_tick_tramp, mkb::smd_game_play_tick, []() {
+                    s_smd_game_play_tick_tramp.dest();
+                    validate::validate_run();
+                    ilmark::validate_attempt();
+                    ilbattle::validate_attempt();
+                });
+                jump::patch_minimap();
             }
             // Sel_ngc init functions
             // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {

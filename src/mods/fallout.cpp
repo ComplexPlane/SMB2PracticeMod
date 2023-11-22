@@ -19,15 +19,14 @@ enum class TimerType {
     FreezeInstantly,
     FreezeAtZero,
     CountUpwards,
-    Invalid  // this state is used to determine when
 };
 
 static patch::Tramp<decltype(&mkb::did_ball_fallout)> s_did_ball_fallout_tramp;
+static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
-static TimerType s_prev_pref = TimerType::Invalid;
-static TimerType s_prev_freecam = TimerType::Invalid;
-
-static bool s_halted;  // freeze timer for TimerType::FreezeAtZero
+static u32 s_timeover_condition = 0x2c000000;  // Timeover at 0.00
+static u32 s_timer_increment = 0x3803ffff;     // Add -1 to timer each frame
+static bool s_toggled_freecam = false;
 
 void init() {
     // stop fallouts
@@ -66,50 +65,56 @@ void init() {
 
         return orig_result;
     });
+
+    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
+        // Set the current default values before loading the stagedef
+        patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
+        patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
+        s_load_stagedef_tramp.dest(stage_id);
+        // Stardust's custom code sets the timers after loading the stagedef, this will run
+        // afterwards and collect those timer defaults
+        // For non-Stardust packs, this will simply collect the default values again (and not affect
+        // anything)
+        s_timeover_condition = *reinterpret_cast<u32*>(0x80297548);
+        s_timer_increment = *reinterpret_cast<u32*>(0x80297534);
+    });
 }
 
 void freeze_timer() {
-    TimerType current_pref = TimerType(pref::get(pref::U8Pref::TimerType));
-    bool update_timer_incr =
-        mkb::sub_mode == mkb::SMD_GAME_READY_INIT || current_pref != s_prev_pref;
-    s_prev_pref = current_pref;
+    TimerType type = TimerType(pref::get(pref::U8Pref::TimerType));
+    if (freecam::should_freeze_timer()) {
+        type = TimerType::FreezeInstantly;
+        s_toggled_freecam = true;
+    }
 
-    switch (current_pref) {
+    switch (type) {
         case TimerType::Default: {
-            // time over at 0 frames
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
-            // add -1 to timer each frame
-            if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
+            if (pref::did_change(pref::U8Pref::TimerType) || s_toggled_freecam) {
+                // time over at 0 frames
+                patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
+                // add -1 to timer each frame
+                patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
+                s_toggled_freecam = false;
             }
             break;
         }
         case TimerType::FreezeInstantly: {
-            // time over at 0 frames
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
+            // time over at -60 frames (for leniency when switching modes)
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
             // add 0 to timer each frame (timer doesnt move)
-            if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
-            }
+            patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
             break;
         }
         case TimerType::FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
-            // add -1 to timer each frame (will need to freeze timer at 0.00 and unfreeze on retry)
-            if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
-            }
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
 
-            // when timer hits 0, add 0 to timer each frame
-            if (mkb::mode_info.stage_time_frames_remaining <= 0 && !s_halted) {
+            if (mkb::mode_info.stage_time_frames_remaining <= 0) {
+                // when timer hits 0, add 0 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
-                s_halted = true;
-            }
-            // when timer is reset on retry, add -1 to timer each frame
-            else if (mkb::mode_info.stage_time_frames_remaining > 0 && s_halted) {
+            } else {
+                // timer is ticking normally, add -1 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
-                s_halted = false;
             }
             break;
         }
@@ -118,29 +123,22 @@ void freeze_timer() {
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
-            // add 1 to timer each frame
-            if (update_timer_incr) {
+            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
+
+            // getting close to signed integer overflow, freeze timer to prevent time-over
+            if (mkb::mode_info.stage_time_frames_remaining >= 32400) {
+                // add 0 to timer each frame
+                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+            } else {
+                // timer is ticking normally, add +1 to timer each frame
                 patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
             }
-            break;
-        }
-        case TimerType::Invalid: {
             break;
         }
     }
 }
 
-void tick() {
-    if (freecam::should_freeze_timer() && s_prev_freecam == TimerType::Invalid) {
-        s_prev_freecam = TimerType(pref::get(pref::U8Pref::TimerType));
-        pref::set(pref::U8Pref::TimerType, 1);
-    } else if (!freecam::should_freeze_timer() && s_prev_freecam != TimerType::Invalid) {
-        pref::set(pref::U8Pref::TimerType, static_cast<u8>(s_prev_freecam));
-        s_prev_freecam = TimerType::Invalid;
-    }
-    freeze_timer();
-}
+void tick() { freeze_timer(); }
 void disp() {}
 
 }  // namespace fallout

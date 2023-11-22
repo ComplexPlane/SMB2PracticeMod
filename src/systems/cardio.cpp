@@ -1,8 +1,10 @@
 #include "cardio.h"
 
 #include <optional>
+#include "mkb/mkb.h"
 #include "systems/heap.h"
 #include "systems/log.h"
+#include "systems/modlink.h"
 #include "utils/draw.h"
 
 namespace cardio {
@@ -25,7 +27,7 @@ struct WriteParams {
 
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards, this sucks!
 // Reminder we only have ~550KB to work with for the entire mod, including savestates
-static u8 s_card_work_area[mkb::CARD_WORKAREA_SIZE] __attribute__((__aligned__(32)));
+static void* s_card_work_area;
 static mkb::CARDFileInfo s_card_file_info;
 
 static WriteState s_state = WriteState::Idle;
@@ -113,7 +115,20 @@ void write_file(const char* file_name, const void* buf, u32 buf_size,
     s_write_request.emplace(WriteParams{file_name, buf, buf_size, callback});
 }
 
-void init() { mkb::memcpy(s_orig_gamecode, mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode)); }
+static bool connect_shared_work_area() {
+    if (modlink::get() == nullptr) return false;
+    if (modlink::get()->modlink_version.minor < 1) return false;
+    if (modlink::get()->part2->card_work_area == nullptr) return false;
+    s_card_work_area = modlink::get()->part2->card_work_area;
+    return true;
+}
+
+void init() {
+    mkb::memcpy(s_orig_gamecode, mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
+    if (!connect_shared_work_area()) {
+        s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
+    }
+}
 
 static void finish_write(mkb::CARDResult res) {
     mkb::CARDUnmount(0);  // I'm assuming that trying to unmount when mounting failed is OK

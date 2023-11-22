@@ -23,7 +23,6 @@ enum class BoolPref : u8 {
     InputDispRawStickInputs,
     Freecam,
     Marathon,
-    Moon,
     IlBattleDisplay,
     IlMarkPractice,
     IlMarkStory,
@@ -47,7 +46,6 @@ enum class BoolPref : u8 {
     IlBattleShowTime,
     IlBattleShowScore,
     IlBattleBuzzerOld,
-    UseCustomPhysics,
     SavestateDisableOverwrite,
     IlBattleTieCount,
     IlBattleAttemptCount,
@@ -55,7 +53,9 @@ enum class BoolPref : u8 {
     TimerShowFramesave,
     TimerShowUnrounded,
     TimerShowPause,
-    ReverseMode,
+    JumpChangePhysics,
+    JumpAllowWalljumps,
+    CustomPhysicsDisp,
     StoryTimerWarning,
     ShowDeathCounter,
     CountStage1Deaths,
@@ -88,13 +88,22 @@ enum class U8Pref : u8 {
     SavestateClearBind,
     FalloutPlaneType,
     StageEditVariant,
+    JumpCount,
+    Weight,
+    PhysicsPreset,
+    MonkeyType,
+    JumpProfile,
     FullgameTimerOptions,
     SegmentTimerOptions,
 };
 
 void init();
+void tick();
 void save();
 void reset_all_defaults();
+
+bool did_change(BoolPref bool_pref);
+bool did_change(U8Pref u8_pref);
 
 bool get(BoolPref bool_pref);
 u8 get(U8Pref u8_pref);
