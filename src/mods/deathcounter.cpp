@@ -4,6 +4,7 @@
 
 #include "mods/freecam.h"
 #include "mods/storytimer.h"
+#include "mods/validate.h"
 #include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -16,6 +17,12 @@ namespace deathcounter {
 static bool s_can_die;
 static u32 s_death_count;
 
+void on_goal_entry() {
+    if (!validate::has_entered_goal()) {
+        s_can_die = false;
+    }
+}
+
 void tick() {
     // set the death count to 0 on the file select screen
     if (mkb::scen_info.mode == 5) {
@@ -24,13 +31,11 @@ void tick() {
     }
 
     // Don't increment the death counter on stage 1 if the setting is ticked
-    if (!pref::get(pref::BoolPref::CountStage1Deaths)) {
-        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN &&
-            storytimer::get_completed_stagecount() != 0) {
+    if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !validate::has_entered_goal()) {
+        if (pref::get(pref::BoolPref::CountFirstStageDeaths)) {
             s_can_die = true;
-        }
-    } else {
-        if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
+        } else if (!pref::get(pref::BoolPref::CountFirstStageDeaths) &&
+                   storytimer::get_completed_stagecount() != 0) {
             s_can_die = true;
         }
     }

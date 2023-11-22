@@ -58,7 +58,7 @@ enum class BoolPref : u8 {
     CustomPhysicsDisp,
     StoryTimerWarning,
     ShowDeathCounter,
-    CountStage1Deaths,
+    CountFirstStageDeaths,
 };
 
 enum class U8Pref : u8 {

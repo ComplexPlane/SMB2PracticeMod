@@ -3,6 +3,7 @@
 #include "mkb/mkb.h"
 
 #include "mods/freecam.h"
+#include "mods/validate.h"
 #include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -20,6 +21,7 @@ enum class TimerOptions {
 };
 
 static u32 s_loadless_story_timer;
+static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
@@ -46,6 +48,12 @@ static constexpr s32 STAGE_FADE_OUT_TIME = 49;
 static constexpr u32 WORLD_START_CORRECTION = 2;
 
 u32 get_completed_stagecount() { return s_completed_stages; }
+
+void on_goal_entry() {
+    if (!validate::has_entered_goal()) {
+        // no code yet
+    }
+}
 
 void tick() {
     // before starting the run, there are several values we zero on the file select and name entry

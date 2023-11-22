@@ -753,7 +753,7 @@ static Widget s_deathcounter_widgets[] = {
         .checkbox =
             {
                 .label = "Count Stage 1 Deaths",
-                .pref = pref::BoolPref::CountStage1Deaths,
+                .pref = pref::BoolPref::CountFirstStageDeaths,
             },
     },
 };
