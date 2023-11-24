@@ -12,6 +12,7 @@ namespace cardio {
 // Corresponds to CARD call we're waiting for
 enum class WriteState {
     Idle,
+    Probe,
     Mount,
     Create,  // If memcard file doesn't exist
     Delete,  // Else, it exists but it's too small, delete and create from scratch
@@ -56,8 +57,15 @@ static void restore_original_gamecode() {
 static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf) {
     mkb::CARDResult res = mkb::CARD_RESULT_READY;
 
-    // Probe and mount card
-    mkb::CARDProbeEx(0, nullptr, nullptr);
+    // Probe card
+    do {
+        res = mkb::CARDProbeEx(0, nullptr, nullptr);
+    } while (res == mkb::CARD_RESULT_BUSY);
+    if (res != mkb::CARD_RESULT_READY) {
+        return res;
+    }
+
+    // Mount card
     mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
     do {
         res = mkb::CARDGetResultCode(0);
@@ -152,8 +160,21 @@ void tick() {
             set_fake_gamecode();
 
             // Probe and begin mounting card A
+            s_state = WriteState::Probe;
+            break;
+        }
+
+        case WriteState::Probe: {
             s32 sector_size;
-            mkb::CARDProbeEx(0, nullptr, &sector_size);
+            res = mkb::CARDProbeEx(0, nullptr, &sector_size);
+            if (res == mkb::CARD_RESULT_BUSY) {
+                break;
+            }
+            if (res != mkb::CARD_RESULT_READY) {
+                finish_write(res);
+                break;
+            }
+
             s_write_size = (s_write_params.buf_size + sector_size - 1) & ~(sector_size - 1);
             mkb::CARDMountAsync(0, s_card_work_area, nullptr, nullptr);
             s_state = WriteState::Mount;
