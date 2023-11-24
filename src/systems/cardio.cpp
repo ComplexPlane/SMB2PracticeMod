@@ -146,8 +146,6 @@ static void finish_write(mkb::CARDResult res) {
 }
 
 static void tick_state_machine() {
-    mkb::CARDResult res;
-
     switch (s_state) {
         case WriteState::Idle: {
             if (!s_write_request.has_value()) {
@@ -166,7 +164,7 @@ static void tick_state_machine() {
 
         case WriteState::Probe: {
             s32 sector_size;
-            res = mkb::CARDProbeEx(0, nullptr, &sector_size);
+            mkb::CARDResult res = mkb::CARDProbeEx(0, nullptr, &sector_size);
             if (res == mkb::CARD_RESULT_BUSY) {
                 break;
             }
@@ -182,7 +180,7 @@ static void tick_state_machine() {
         }
 
         case WriteState::Mount: {
-            res = mkb::CARDGetResultCode(0);
+            mkb::CARDResult res = mkb::CARDGetResultCode(0);
             if (res == mkb::CARD_RESULT_BUSY) {
                 break;
             }
@@ -226,7 +224,7 @@ static void tick_state_machine() {
         }
 
         case WriteState::Create: {
-            res = mkb::CARDGetResultCode(0);
+            mkb::CARDResult res = mkb::CARDGetResultCode(0);
             if (res == mkb::CARD_RESULT_BUSY) {
                 break;
             }
@@ -242,7 +240,7 @@ static void tick_state_machine() {
         }
 
         case WriteState::Delete: {
-            res = mkb::CARDGetResultCode(0);
+            mkb::CARDResult res = mkb::CARDGetResultCode(0);
             if (res == mkb::CARD_RESULT_BUSY) {
                 break;
             }
@@ -257,7 +255,7 @@ static void tick_state_machine() {
         }
 
         case WriteState::Write: {
-            res = mkb::CARDGetResultCode(0);
+            mkb::CARDResult res = mkb::CARDGetResultCode(0);
             if (res != mkb::CARD_RESULT_BUSY) {
                 // Either succeeded or failed, either way we're done
                 finish_write(res);
@@ -268,7 +266,7 @@ static void tick_state_machine() {
 }
 
 void tick() {
-    WriteState prev_state;
+    WriteState prev_state = WriteState::Idle;
     do {
         prev_state = s_state;
         tick_state_machine();
