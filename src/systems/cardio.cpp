@@ -145,7 +145,7 @@ static void finish_write(mkb::CARDResult res) {
     restore_original_gamecode();
 }
 
-void tick() {
+static void tick_state_machine() {
     mkb::CARDResult res;
 
     switch (s_state) {
@@ -265,6 +265,14 @@ void tick() {
             break;
         }
     }
+}
+
+void tick() {
+    WriteState prev_state;
+    do {
+        prev_state = s_state;
+        tick_state_machine();
+    } while (prev_state != s_state);
 }
 
 }  // namespace cardio
