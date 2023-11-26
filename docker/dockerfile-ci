@@ -3,7 +3,3 @@ FROM ubuntu:jammy
 COPY common.sh common.sh
 RUN chmod +x common.sh && ./common.sh
 ENV DEVKITPPC=/opt/devkitpro/devkitPPC
-
-# Install latest clangd
-RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" && \
-    ln -s /usr/bin/clangd-* /usr/local/bin/clangd
