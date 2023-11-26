@@ -1,0 +1,20 @@
+name: Build
+
+on:
+  push:
+    branches: ['master']
+    tags: ['*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: complexplane/smb2-practice-mod:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: make -j
