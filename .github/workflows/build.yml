@@ -12,7 +12,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: complexplane/smb2-practice-mod:latest
+    container:
+      image: complexplane/smb2-practice-mod:latest
+      options: --user vscode
     steps:
       - name: Checkout
         uses: actions/checkout@v4
