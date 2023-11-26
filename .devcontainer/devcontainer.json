@@ -3,7 +3,7 @@
 {
 	"name": "smb2practicemod",
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "../docker/dockerfile-dev"
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
