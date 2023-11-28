@@ -34,8 +34,8 @@ static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
-    u32 split;       // the time from the start of the run until tape break of the last stage of the
-                     // world
+    // u32 split;       // the time from the start of the run until tape break of the last stage of
+    // the world
     u32 gameplay;
     u32 non_gameplay;
     u32 world_start_correction;
@@ -56,19 +56,23 @@ void on_goal_entry() {
     }
 }
 
+// before starting the run, there are several values we zero
+static void reset_timer() {
+    s_can_lower_stage_counter = false;
+    s_completed_stages = 0;
+    s_start_stage_fade_out_timer = false;
+    s_stage_fade_out_timer = 0;
+    for (s32 k = 0; k < WORLD_COUNT; k++) {
+        s_timer_group[k] = {};
+        s_completed_stages_world[k] = 0;
+    }
+}
+
 void tick() {
-    // before starting the run, there are several values we zero on the file select and name entry
-    // screen (this serves to reset the timer)
+    // reset the timer on the file select screen (scen_info.mode == 5) and the name entry screen
+    // (scen_info.mode == 21)
     if (mkb::scen_info.mode == 5 || mkb::scen_info.mode == 21) {
-        // 5 is the file select screen, 21 is the name entry screen
-        s_can_lower_stage_counter = false;
-        s_completed_stages = 0;
-        s_start_stage_fade_out_timer = false;
-        s_stage_fade_out_timer = 0;
-        for (s32 k = 0; k < WORLD_COUNT; k++) {
-            s_timer_group[k] = {};
-            s_completed_stages_world[k] = 0;
-        }
+        reset_timer();
     }
 
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
@@ -221,6 +225,7 @@ void tick() {
             }
         }
     }
+    /*
     // s_timer_group[k].split is just the fullgame time at tape break on the last stage of world k;
     // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
     // current world's segment timer
@@ -232,6 +237,7 @@ void tick() {
         s_timer_group[k].split = sum[k] + s_timer_group[k].segment;
     }
     s_timer_group[0].split = s_timer_group[0].segment;
+    */
 }
 
 void disp() {
@@ -256,15 +262,13 @@ void disp() {
     bool is_run_complete =
         (mkb::scen_info.world == 9 && s_completed_stages_world[9] == STAGES_PER_WORLD);
 
-    // move the positions of the fullgame if the death counter is on
+    // move the position of the fullgame timer if the death counter is on
     u32 fullgame_timer_location_y = 2;
     if (pref::get(pref::BoolPref::ShowDeathCounter)) {
-        fullgame_timer_location_y = 3;
-    } else {
-        fullgame_timer_location_y = 2;
+        fullgame_timer_location_y++;
     }
 
-    bool display_story_timer = 0;
+    bool display_story_timer = false;
     switch (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
         case TimerOptions::AlwaysShow:
             display_story_timer = true;
@@ -280,7 +284,22 @@ void disp() {
             break;
     }
 
-    u32 loadless_story_timer = s_timer_group[9].split;
+    // u32 loadless_story_timer = s_timer_group[9].split;
+
+    // split[k] is just the fullgame time at tape break on the last stage of world k;
+    // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
+    // current world's segment timer
+
+    u32 sum[WORLD_COUNT] = {};
+    u32 split[WORLD_COUNT] = {};
+    for (s32 k = 1; k < WORLD_COUNT; k++) {
+        for (s32 j = 0; j < k; j++) {
+            sum[k] += s_timer_group[j].full_world;
+        }
+        split[k] = sum[k] + s_timer_group[k].segment;
+    }
+    split[0] = s_timer_group[0].segment;
+    u32 loadless_story_timer = split[9];
 
     if (display_story_timer) {
         timerdisp::draw_timer(FULLGAME_TIMER_LOCATION_X, fullgame_timer_location_y,
@@ -289,16 +308,13 @@ void disp() {
     }
 
     // move the position of the segment timer depending on if the death counter and fullgame timer
-    // is on; if the fullgame timer and death counter is off but the segment timer is on, move the
-    // segment timer to the top line; if either the fullgame timer or death counter are on but not
-    // both are on, move it to the 2nd line, if all 3 are enabled, put it on the 3rd line
-    u32 segment_timer_location_y = 2;
-    if (!display_story_timer && !pref::get(pref::BoolPref::ShowDeathCounter)) {
-        segment_timer_location_y = 2;
-    } else if (!display_story_timer || !pref::get(pref::BoolPref::ShowDeathCounter)) {
-        segment_timer_location_y = 3;
-    } else {
-        segment_timer_location_y = 4;
+    // is on
+    u32 segment_timer_y = 2;
+    if (display_story_timer) {
+        segment_timer_y++;
+    }
+    if (pref::get(pref::BoolPref::ShowDeathCounter)) {
+        segment_timer_y++;
     }
 
     switch (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
@@ -333,36 +349,27 @@ void disp() {
         is_run_complete) {
         // haven't attempted the mkb::sprintf suggestion yet
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y, IW_TIME_TEXT_OFFSET,
-                              "W1:", s_timer_group[0].split, s_timer_group[0].segment, true, false,
-                              draw::WHITE);
+                              "W1:", split[0], s_timer_group[0].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 1, IW_TIME_TEXT_OFFSET,
-                              "W2:", s_timer_group[1].split, s_timer_group[1].segment, true, false,
-                              draw::WHITE);
+                              "W2:", split[1], s_timer_group[1].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 2, IW_TIME_TEXT_OFFSET,
-                              "W3:", s_timer_group[2].split, s_timer_group[2].segment, true, false,
-                              draw::WHITE);
+                              "W3:", split[2], s_timer_group[2].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 3, IW_TIME_TEXT_OFFSET,
-                              "W4:", s_timer_group[3].split, s_timer_group[3].segment, true, false,
-                              draw::WHITE);
+                              "W4:", split[3], s_timer_group[3].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 4, IW_TIME_TEXT_OFFSET,
-                              "W5:", s_timer_group[4].split, s_timer_group[4].segment, true, false,
-                              draw::WHITE);
+                              "W5:", split[4], s_timer_group[4].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 5, IW_TIME_TEXT_OFFSET,
-                              "W6:", s_timer_group[5].split, s_timer_group[5].segment, true, false,
-                              draw::WHITE);
+                              "W6:", split[5], s_timer_group[5].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 6, IW_TIME_TEXT_OFFSET,
-                              "W7:", s_timer_group[6].split, s_timer_group[6].segment, true, false,
-                              draw::WHITE);
+                              "W7:", split[6], s_timer_group[6].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 7, IW_TIME_TEXT_OFFSET,
-                              "W8:", s_timer_group[7].split, s_timer_group[7].segment, true, false,
-                              draw::WHITE);
+                              "W8:", split[7], s_timer_group[7].segment, true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 8, IW_TIME_TEXT_OFFSET,
-                              "W9:", s_timer_group[8].split, s_timer_group[8].segment, true, false,
-                              draw::WHITE);
+                              "W9:", split[8], s_timer_group[8].segment, true, false, draw::WHITE);
         // use segment timer spacing for w10 since "W10" is 3 characters long, not 2
         timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y + 9,
-                              SEGMENT_TIMER_TEXT_OFFSET, "W10:", s_timer_group[9].split,
-                              s_timer_group[9].segment, true, false, draw::WHITE);
+                              SEGMENT_TIMER_TEXT_OFFSET, "W10:", split[9], s_timer_group[9].segment,
+                              true, false, draw::WHITE);
     }
 }
 
