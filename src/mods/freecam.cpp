@@ -8,6 +8,7 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace freecam {
 
@@ -112,7 +113,7 @@ static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
 }
 
 void init() {
-    patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
+    patch::write_branch_bl(relutil::relocate_addr(0x8028353c),
                            reinterpret_cast<void*>(call_camera_func_hook));
 
     patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {

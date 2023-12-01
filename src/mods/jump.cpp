@@ -4,9 +4,9 @@
 #include "mods/physics.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace jump {
 
@@ -56,10 +56,10 @@ void patch_minimap() {
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
-            s_patch1 = patch::write_nop(reinterpret_cast<void*>(0x808f4d18));
+            s_patch1 = patch::write_nop(relutil::relocate_addr(0x808f4d18));
         }
         if (*patch2_loc != 0x60000000) {
-            s_patch2 = patch::write_nop(reinterpret_cast<void*>(0x808f5168));
+            s_patch2 = patch::write_nop(relutil::relocate_addr(0x808f5168));
         }
     }
 }
@@ -67,8 +67,8 @@ void patch_minimap() {
 static void restore_minimap() {
     if (mkb::main_mode == mkb::MD_GAME) {
         // These overwrites exist in main_game.rel which isn't always loaded
-        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
-        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+        patch::write_word(relutil::relocate_addr(0x808f4d18), s_patch1);
+        patch::write_word(relutil::relocate_addr(0x808f5168), s_patch2);
     }
 }
 
