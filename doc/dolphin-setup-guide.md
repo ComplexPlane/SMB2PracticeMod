@@ -1,5 +1,9 @@
 # Dolphin Setup Guide
 
+## Install Dolphin
+
+Using the latest **Beta** version of [Dolphin Emulator](https://dolphin-emu.org/download/) is highly recommended. Dolphin 5.0 (legacy release) is many years out of date, and _Development_ versions are less tested than Beta releases.
+
 ## Set up the GCI
 
 * Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases).
