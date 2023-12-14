@@ -6,9 +6,9 @@ Using the latest **Beta** version of [Dolphin Emulator](https://dolphin-emu.org/
 
 ## Set up the GCI
 
-* Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases).
-* Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_.
-* Copy `SMB2PracticeMod.gci` into the appropriate folder, which you may need to create yourself if it doesn't exist
+* Download the `.zip` file containing the release (_not_ the source code) from the [releases page](https://github.com/ComplexPlane/SMB2PracticeMod/releases)
+* Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_
+* Copy `SMB2PracticeMod.gci` into the following folder, which you may need to create yourself if it doesn't exist:
   * **Windows:** `Documents\Dolphin Emulator\GC\USA\Card B\`
   * **macOS:** `~/Library/Application Support/Dolphin/GC/USA/Card B/`
   * **Linux:** `~/.local/share/dolphin-emu/GC/USA/Card B/`
@@ -21,9 +21,6 @@ Using the latest **Beta** version of [Dolphin Emulator](https://dolphin-emu.org/
 * Right-click your Super Monkey Ball 2 game in the games list and go to _Properties -> Gecko Codes_
 * At the bottom click _Add New Code_, paste the Gecko code into the _Code_ box, then click _Save_
   * Make sure the first line that starts with `$` isn't included
-  * (For older revisions of Dolphin v5, instead go to Properties -> Edit Config and paste the text code into the Gecko
-    codes section of the `GM28EP.ini` file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add
-    it.)
 * In the Gecko Codes window, make sure the checkbox next to the Gecko code you just added is checked
 
 ## Launch the game
