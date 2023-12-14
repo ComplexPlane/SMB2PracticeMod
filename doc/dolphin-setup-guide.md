@@ -8,7 +8,7 @@ Using the latest **Beta** version of [Dolphin Emulator](https://dolphin-emu.org/
 
 * Download the `.zip` file containing the release (_not_ the source code). Releases are found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases).
 * Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_.
-* Copy the `.gci` files in the release into the appropriate folder, which you may need to create yourself if it doesn't exist
+* Copy the `.gci` file in the release into the appropriate folder, which you may need to create yourself if it doesn't exist
   * On Windows the folder is `Documents\Dolphin Emulator\GC\USA\Card B\`
   * On Linux/macOS the folder is `~/.local/share/dolphin-emu/GC/USA/Card B/`
 
