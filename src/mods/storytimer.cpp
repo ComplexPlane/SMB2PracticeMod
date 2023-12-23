@@ -26,7 +26,6 @@ static constexpr s32 SEGMENT_TIMER_LOCATION_X = 30 + 24;
 static constexpr s32 SEGMENT_TIMER_TEXT_OFFSET = 44;
 static constexpr s32 IW_TIME_LOCATION_X = 42 + 24;
 static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
-static constexpr s32 STAGE_FADE_OUT_TIME = 49;
 static constexpr u32 WORLD_START_CORRECTION = 2;
 static constexpr s32 WORLD_COUNT = 10;
 static constexpr s32 STAGES_PER_WORLD = 10;
@@ -34,11 +33,10 @@ static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
+    // char timer_str[32];
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static bool s_can_lower_stage_counter;
-static bool s_start_stage_fade_out_timer;
-static u32 s_stage_fade_out_timer;
 static s32 s_completed_stages;                     // the completed stages for the whole run
 static s32 s_completed_stages_world[WORLD_COUNT];  // the completed stages in world k
 static bool s_display_segment_timer;
@@ -55,8 +53,6 @@ void on_goal_entry() {
 static void reset_timer() {
     s_can_lower_stage_counter = false;
     s_completed_stages = 0;
-    s_start_stage_fade_out_timer = false;
-    s_stage_fade_out_timer = 0;
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         s_timer_group[k] = {};
         s_completed_stages_world[k] = 0;
@@ -70,32 +66,13 @@ void tick() {
         reset_timer();
     }
 
+    // old code for s_completed_stages
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
-    // for later use, it's useful to record how many stages we've completed
-    // increment the completed stages by 1 during the init
-    // need to check that the game is not paused to ensure the counter only goes up by 1
+    u32 sum = 0;
     for (s32 k = 0; k < WORLD_COUNT; k++) {
-        if (mkb::scen_info.world == k) {
-            if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
-                s_completed_stages_world[k] += 1;
-                s_can_lower_stage_counter = true;
-            }
-
-            // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select
-            // screen, lower the counter by exactly 1
-            if (s_can_lower_stage_counter && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
-                s_completed_stages_world[k] += -1;
-                s_can_lower_stage_counter = false;
-            }
-
-            // once you leave a stage, set this to false to ensure the completed stage count is not
-            // lowered when entering spin in on the next stage
-            if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN) {
-                s_can_lower_stage_counter = false;
-            }
-        }
-        s_completed_stages += s_completed_stages_world[k];
+        sum += mkb::get_world_unbeaten_stage_count(k);
     }
+    s_completed_stages = sum;
 
     // for later, it's useful to record what submodes correspond to spin in, gameplay, etc.
     // splitting up the timer this way also makes it easier in the future if I decide to implement
@@ -132,22 +109,6 @@ void tick() {
     // submodes during timeover
     bool is_timeover = (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
                         mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN);
-
-    // this code is used to halt the timer once the screen becomes completely white when stage
-    // selecting out of a level
-    if (mkb::pausemenu_type == mkb::PMT_STORY_PLAY &&
-        mkb::g_current_focused_pause_menu_entry == 4 && pad::button_pressed(mkb::PAD_BUTTON_A) &&
-        is_postgoal) {
-        // stage select is on line 4 of the pause menu (top line is line 0)
-        s_start_stage_fade_out_timer = true;
-    } else if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
-        s_start_stage_fade_out_timer = false;
-    }
-    if (s_start_stage_fade_out_timer) {
-        s_stage_fade_out_timer += 1;
-    } else {
-        s_stage_fade_out_timer = 0;
-    }
 
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {
@@ -200,9 +161,10 @@ void tick() {
                 s_timer_group[k].full_world += 1;
             }
 
-            if (s_completed_stages_world[k] <= 9) {
+            if (mkb::get_world_unbeaten_stage_count(k) < 9 ||
+                (mkb::get_world_unbeaten_stage_count(k) == 9 && !is_postgoal)) {
                 s_timer_group[k].segment = s_timer_group[k].full_world;
-            } else if (s_completed_stages_world[k] == STAGES_PER_WORLD &&
+            } else if (mkb::get_world_unbeaten_stage_count(k) == 9 &&
                        mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT && !paused_now) {
                 // stop world k's segment timer on tape break of the last stage of the world; we
                 // need to correct by 2f since SMD_GAME_GOAL_INIT happens 2f after tape break
@@ -220,19 +182,25 @@ void disp() {
     }
 
     bool is_between_worlds = false;
-    if ((s_completed_stages % STAGES_PER_WORLD == 0) && s_completed_stages != 0 &&
-        mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
+    if ((s_completed_stages % STAGES_PER_WORLD == 9) && mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
         is_between_worlds = true;
     } else if ((s_completed_stages % STAGES_PER_WORLD == 0 &&
-                mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) ||
-               s_completed_stages % STAGES_PER_WORLD != 0) {
+                mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) /*||
+               s_completed_stages % STAGES_PER_WORLD != 0 */) {
         // no longer "between worlds" if you enter the next world's 10 ball screen, or if you break
         // the tape on the last stage of the current world, but retry
         is_between_worlds = false;
     }
 
-    bool is_run_complete =
-        (mkb::scen_info.world == 9 && s_completed_stages_world[9] == STAGES_PER_WORLD);
+    bool is_postgoal =
+        (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN ||
+         mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT ||
+         mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN ||
+         mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN);
+
+    bool is_run_complete = (mkb::scen_info.world == 9 &&
+                            ((mkb::get_world_unbeaten_stage_count(9) == 9 && is_postgoal) ||
+                             mkb::get_world_unbeaten_stage_count(9) == 10));
 
     // move the position of the fullgame timer if the death counter is on
     u32 fullgame_timer_location_y = 2;
@@ -355,13 +323,23 @@ void disp() {
                               draw::WHITE);
     }
 
+    /*
+    for (s32 k = 0; k < 2; k++) {
+        mkb::sprintf(s_timer_group[k].timer_str, "W%d: %s%d:%02d:%02d.%02d (%s%d:%02d:%02d.%02d)",
+                     k, split[k], segment[k]);
+        draw::debug_text("%s", s_timer_group[k].timer_str);
+    }
+    */
+
     // debugging
-
-    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].full_world, 0,
-                          false, false, draw::WHITE);
-
-    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].segment, 0, false,
+    /*
+    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", 60 * s_completed_stages, 0, false,
                           false, draw::WHITE);
+
+    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET,
+                          "dbg:", 60 * mkb::get_world_unbeaten_stage_count(1), 0, false, false,
+                          draw::WHITE);
+    */
 }
 
 }  // namespace storytimer
