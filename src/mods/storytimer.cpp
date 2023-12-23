@@ -37,8 +37,7 @@ struct TimerGroup {
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static bool s_can_lower_stage_counter;
-static s32 s_completed_stages;                     // the completed stages for the whole run
-static s32 s_completed_stages_world[WORLD_COUNT];  // the completed stages in world k
+static s32 s_completed_stages;  // the completed stages for the whole run
 static bool s_display_segment_timer;
 
 u32 get_completed_stagecount() { return s_completed_stages; }
@@ -55,7 +54,6 @@ static void reset_timer() {
     s_completed_stages = 0;
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         s_timer_group[k] = {};
-        s_completed_stages_world[k] = 0;
     }
 }
 
