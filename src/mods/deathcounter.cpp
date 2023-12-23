@@ -53,6 +53,21 @@ void tick() {
                             // increment it by 1
     }
 
+    // bandaid fix for stardust bug
+    /*
+    if (s_can_die &&
+        (mkb::sub_mode == mkb::SMD_GAME_READY_INIT || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
+         mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
+         mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_INIT)) {
+        // you can die either by retrying after dropping in, falling out, timing over, stage
+        // selecting after dropping in (but before breaking the tape), or exiting game after
+        // dropping in (but before breaking the tape)
+        s_death_count += 1;
+        s_can_die = false;  // once the death counter is incremented, set this to false so we only
+                            // increment it by 1
+    }
+    */
+
     // first framing should not increase the death counter, and retrying after breaking the tape
     // should not increase it either to do: however, if you retry after breaking the tape on the
     // very first frame (so the frame before goal init), it does count as a death when it should not

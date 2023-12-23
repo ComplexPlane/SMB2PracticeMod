@@ -163,13 +163,8 @@ void tick() {
                 // to spin in, more specifically, this prevents the timer from skipping ahead
                 // for a few frames, then pausing for a few frames to even itself out (I don't
                 // understand why that happens)
-                s_timer_group[k].non_gameplay += 1;
+                s_timer_group[k].full_world += 1;
             }
-
-            s_timer_group[k].full_world = s_timer_group[k].gameplay +
-                                          s_timer_group[k].non_gameplay +
-                                          s_timer_group[k].world_start_correction;
-
             if (s_completed_stages_world[k] <= 9) {
                 s_timer_group[k].segment = s_timer_group[k].full_world;
             } else if (s_completed_stages_world[k] == STAGES_PER_WORLD &&
@@ -182,12 +177,12 @@ void tick() {
             if (is_on_spin_in || is_on_exit_game || is_on_fallout || is_timeover) {
                 // increment the timer during every frame on spin in, exit game, fallout, and
                 // timeover
-                s_timer_group[k].non_gameplay += 1;
+                s_timer_group[k].full_world += 1;
             }
 
             if (is_on_gameplay) {
                 // increment the timer every frame during gameplay
-                s_timer_group[k].gameplay += 1;
+                s_timer_group[k].full_world += 1;
             }
             if (is_postgoal && s_stage_fade_out_timer <= STAGE_FADE_OUT_TIME) {
                 // increment the timer every frame after game goal init happens; once you press
@@ -195,7 +190,7 @@ void tick() {
                 // select to the first completely white frame takes 49 frames). once the timer
                 // hits 49 frames, stop incrementing the timer until the 10 ball screen starts
                 // spinning in
-                s_timer_group[k].non_gameplay += 1;
+                s_timer_group[k].full_world += 1;
             }
             if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE ||
                 mkb::g_storymode_stageselect_state == 3 ||
@@ -206,7 +201,7 @@ void tick() {
                 //  mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED can be highly
                 //  variable (up to over 40 frames sometimes!), so for the purpose of a loadless
                 //  timer, it makes sense to cut this out from the timer
-                s_timer_group[k].non_gameplay += 1;
+                s_timer_group[k].full_world += 1;
             }
 
             if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN &&
@@ -214,15 +209,17 @@ void tick() {
                 // need to add 2 frames to the timer when stage selecting to the 10 ball screen,
                 // but don't correct if on the last stage of a world since the next frame the
                 // timer should increment on is covered by s_world_start_timer_correction
-                s_timer_group[k].non_gameplay += 2;
+                s_timer_group[k].full_world += 2;
             }
 
+            /*
             // this only gets set to 2 when you enter world k; this is needed since otherwise
             // the timer will not capture the first 2f of the 10 ball spin in when entering
             // a new world
             if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
                 s_timer_group[k].world_start_correction = 2;
             }
+            */
         }
     }
     /*
@@ -254,7 +251,7 @@ void disp() {
     } else if ((s_completed_stages % STAGES_PER_WORLD == 0 &&
                 mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) ||
                s_completed_stages % STAGES_PER_WORLD != 0) {
-        // no longer "between worlds" if you enter the next worlds 10 ball screen, or if you break
+        // no longer "between worlds" if you enter the next world's 10 ball screen, or if you break
         // the tape on the last stage of the current world, but retry
         is_between_worlds = false;
     }
@@ -290,13 +287,25 @@ void disp() {
     // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
     // current world's segment timer
 
+    // at the start of each world, we need to correct the timer by 1 frame
+    u32 full_world[10] = {};
+    u32 segment[10] = {};
+
+    for (s32 k = 0; k < WORLD_COUNT; k++) {
+        if (s_timer_group[k].full_world > 0) {
+            // don't apply the correction until the world actually starts
+            full_world[k] = s_timer_group[k].full_world + 1;
+            segment[k] = s_timer_group[k].segment + 1;
+        }
+    }
+
     u32 sum[WORLD_COUNT] = {};
     u32 split[WORLD_COUNT] = {};
     for (s32 k = 1; k < WORLD_COUNT; k++) {
         for (s32 j = 0; j < k; j++) {
-            sum[k] += s_timer_group[j].full_world;
+            sum[k] += full_world[j];
         }
-        split[k] = sum[k] + s_timer_group[k].segment;
+        split[k] = sum[k] + segment[k];
     }
     split[0] = s_timer_group[0].segment;
     u32 loadless_story_timer = split[9];
@@ -309,12 +318,12 @@ void disp() {
 
     // move the position of the segment timer depending on if the death counter and fullgame timer
     // is on
-    u32 segment_timer_y = 2;
+    u32 segment_timer_location_y = 2;
     if (display_story_timer) {
-        segment_timer_y++;
+        segment_timer_location_y++;
     }
     if (pref::get(pref::BoolPref::ShowDeathCounter)) {
-        segment_timer_y++;
+        segment_timer_location_y++;
     }
 
     switch (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
@@ -322,9 +331,8 @@ void disp() {
             for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (mkb::scen_info.world == k && !is_run_complete) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
-                                          SEGMENT_TIMER_TEXT_OFFSET,
-                                          "Seg:", s_timer_group[k].segment, 0, false, false,
-                                          draw::WHITE);
+                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], 0, false,
+                                          false, draw::WHITE);
                 }
             }
             break;
@@ -332,11 +340,12 @@ void disp() {
             for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (is_between_worlds && mkb::scen_info.world == k && k != 9) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
-                                          SEGMENT_TIMER_TEXT_OFFSET,
-                                          "Seg:", s_timer_group[k].segment, 0, false, false,
-                                          draw::WHITE);
+                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], 0, false,
+                                          false, draw::WHITE);
                 }
             }
+            break;
+        case TimerOptions::EndOfRun:
             break;
         case TimerOptions::DontShow:
             s_display_segment_timer = false;
@@ -349,28 +358,36 @@ void disp() {
         is_run_complete) {
         // haven't attempted the mkb::sprintf suggestion yet
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y, IW_TIME_TEXT_OFFSET,
-                              "W1:", split[0], s_timer_group[0].segment, true, false, draw::WHITE);
+                              "W1:", split[0], segment[0], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 1, IW_TIME_TEXT_OFFSET,
-                              "W2:", split[1], s_timer_group[1].segment, true, false, draw::WHITE);
+                              "W2:", split[1], segment[1], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 2, IW_TIME_TEXT_OFFSET,
-                              "W3:", split[2], s_timer_group[2].segment, true, false, draw::WHITE);
+                              "W3:", split[2], segment[2], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 3, IW_TIME_TEXT_OFFSET,
-                              "W4:", split[3], s_timer_group[3].segment, true, false, draw::WHITE);
+                              "W4:", split[3], segment[3], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 4, IW_TIME_TEXT_OFFSET,
-                              "W5:", split[4], s_timer_group[4].segment, true, false, draw::WHITE);
+                              "W5:", split[4], segment[4], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 5, IW_TIME_TEXT_OFFSET,
-                              "W6:", split[5], s_timer_group[5].segment, true, false, draw::WHITE);
+                              "W6:", split[5], segment[5], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 6, IW_TIME_TEXT_OFFSET,
-                              "W7:", split[6], s_timer_group[6].segment, true, false, draw::WHITE);
+                              "W7:", split[6], segment[6], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 7, IW_TIME_TEXT_OFFSET,
-                              "W8:", split[7], s_timer_group[7].segment, true, false, draw::WHITE);
+                              "W8:", split[7], segment[7], true, false, draw::WHITE);
         timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 8, IW_TIME_TEXT_OFFSET,
-                              "W9:", split[8], s_timer_group[8].segment, true, false, draw::WHITE);
+                              "W9:", split[8], segment[8], true, false, draw::WHITE);
         // use segment timer spacing for w10 since "W10" is 3 characters long, not 2
         timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y + 9,
-                              SEGMENT_TIMER_TEXT_OFFSET, "W10:", split[9], s_timer_group[9].segment,
-                              true, false, draw::WHITE);
+                              SEGMENT_TIMER_TEXT_OFFSET, "W10:", split[9], segment[9], true, false,
+                              draw::WHITE);
     }
+
+    // debugging
+
+    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", full_world[0], 0, false, true,
+                          draw::WHITE);
+
+    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", 60 * mkb::sub_mode, 0, false, true,
+                          draw::WHITE);
 }
 
 }  // namespace storytimer
