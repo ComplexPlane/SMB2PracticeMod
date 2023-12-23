@@ -34,11 +34,6 @@ static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
-    // u32 split;       // the time from the start of the run until tape break of the last stage of
-    // the world
-    u32 gameplay;
-    u32 non_gameplay;
-    u32 world_start_correction;
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static bool s_can_lower_stage_counter;
@@ -165,14 +160,6 @@ void tick() {
                 // understand why that happens)
                 s_timer_group[k].full_world += 1;
             }
-            if (s_completed_stages_world[k] <= 9) {
-                s_timer_group[k].segment = s_timer_group[k].full_world;
-            } else if (s_completed_stages_world[k] == STAGES_PER_WORLD &&
-                       mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT && !paused_now) {
-                // stop world k's segment timer on tape break of the last stage of the world; we
-                // need to correct by 2f since SMD_GAME_GOAL_INIT happens 2f after tape break
-                s_timer_group[k].segment += -2;
-            }
 
             if (is_on_spin_in || is_on_exit_game || is_on_fallout || is_timeover) {
                 // increment the timer during every frame on spin in, exit game, fallout, and
@@ -184,7 +171,7 @@ void tick() {
                 // increment the timer every frame during gameplay
                 s_timer_group[k].full_world += 1;
             }
-            if (is_postgoal && s_stage_fade_out_timer <= STAGE_FADE_OUT_TIME) {
+            if (is_postgoal) {
                 // increment the timer every frame after game goal init happens; once you press
                 // stage select, a separate 49 frame timer is started (fade out from stage
                 // select to the first completely white frame takes 49 frames). once the timer
@@ -206,35 +193,23 @@ void tick() {
 
             if (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN &&
                 s_completed_stages % STAGES_PER_WORLD != 0) {
-                // need to add 2 frames to the timer when stage selecting to the 10 ball screen,
+                // need to add 1 frame to the timer when stage selecting to the 10 ball screen,
                 // but don't correct if on the last stage of a world since the next frame the
                 // timer should increment on is covered by s_world_start_timer_correction
-                s_timer_group[k].full_world += 2;
+                // NOTE: change back to 2 if I add the stage fade out timer back in
+                s_timer_group[k].full_world += 1;
             }
 
-            /*
-            // this only gets set to 2 when you enter world k; this is needed since otherwise
-            // the timer will not capture the first 2f of the 10 ball spin in when entering
-            // a new world
-            if (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
-                s_timer_group[k].world_start_correction = 2;
+            if (s_completed_stages_world[k] <= 9) {
+                s_timer_group[k].segment = s_timer_group[k].full_world;
+            } else if (s_completed_stages_world[k] == STAGES_PER_WORLD &&
+                       mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT && !paused_now) {
+                // stop world k's segment timer on tape break of the last stage of the world; we
+                // need to correct by 2f since SMD_GAME_GOAL_INIT happens 2f after tape break
+                s_timer_group[k].segment += -2;
             }
-            */
         }
     }
-    /*
-    // s_timer_group[k].split is just the fullgame time at tape break on the last stage of world k;
-    // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
-    // current world's segment timer
-    u32 sum[WORLD_COUNT] = {};
-    for (s32 k = 1; k < WORLD_COUNT; k++) {
-        for (s32 j = 0; j < k; j++) {
-            sum[k] += s_timer_group[j].full_world;
-        }
-        s_timer_group[k].split = sum[k] + s_timer_group[k].segment;
-    }
-    s_timer_group[0].split = s_timer_group[0].segment;
-    */
 }
 
 void disp() {
@@ -281,13 +256,8 @@ void disp() {
             break;
     }
 
-    // u32 loadless_story_timer = s_timer_group[9].split;
-
-    // split[k] is just the fullgame time at tape break on the last stage of world k;
-    // to calculate this, just add s_timer_group[j].full_world (j<k) for the previous worlds to the
-    // current world's segment timer
-
     // at the start of each world, we need to correct the timer by 1 frame
+
     u32 full_world[10] = {};
     u32 segment[10] = {};
 
@@ -298,6 +268,10 @@ void disp() {
             segment[k] = s_timer_group[k].segment + 1;
         }
     }
+
+    // split[k] is just the fullgame time at tape break on the last stage of world k;
+    // to calculate this, just add full_world[j] (j<k) for the previous worlds to the
+    // current world's segment timer
 
     u32 sum[WORLD_COUNT] = {};
     u32 split[WORLD_COUNT] = {};
@@ -383,11 +357,11 @@ void disp() {
 
     // debugging
 
-    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", full_world[0], 0, false, true,
-                          draw::WHITE);
+    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].full_world, 0,
+                          false, false, draw::WHITE);
 
-    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", 60 * mkb::sub_mode, 0, false, true,
-                          draw::WHITE);
+    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].segment, 0, false,
+                          false, draw::WHITE);
 }
 
 }  // namespace storytimer
