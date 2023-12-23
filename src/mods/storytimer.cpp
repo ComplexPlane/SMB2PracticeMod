@@ -36,9 +36,7 @@ struct TimerGroup {
     // char timer_str[32];
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
-static bool s_can_lower_stage_counter;
-static s32 s_completed_stages;  // the completed stages for the whole run
-static bool s_display_segment_timer;
+static s32 s_completed_stages;                 // the completed stages for the whole run
 
 u32 get_completed_stagecount() { return s_completed_stages; }
 
@@ -50,7 +48,6 @@ void on_goal_entry() {
 
 // before starting the run, there are several values we zero
 static void reset_timer() {
-    s_can_lower_stage_counter = false;
     s_completed_stages = 0;
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         s_timer_group[k] = {};
@@ -64,8 +61,8 @@ void tick() {
         reset_timer();
     }
 
-    // old code for s_completed_stages
     bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+
     u32 sum = 0;
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         sum += mkb::get_world_unbeaten_stage_count(k);
@@ -288,7 +285,6 @@ void disp() {
         case TimerOptions::EndOfRun:
             break;
         case TimerOptions::DontShow:
-            s_display_segment_timer = false;
             break;
     }
 
