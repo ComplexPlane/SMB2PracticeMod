@@ -10,6 +10,7 @@
 #include "utils/draw.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
+#include "validate.h"
 
 namespace storytimer {
 
@@ -36,7 +37,6 @@ static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage
-    // char timer_str[32];
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static s32 s_completed_stages;                 // the completed stages for the whole run
@@ -45,7 +45,13 @@ u32 get_completed_stagecount() { return s_completed_stages; }
 
 void on_goal_entry() {
     if (!validate::has_entered_goal()) {
-        // no code yet
+        // the call to has_entered_goal lets us stop the segment timer on tape break on the last
+        // stage of a world (as opposed to using SMD_GOAL_INIT and manually subtracting 2 frames)
+        for (s32 k = 0; k < WORLD_COUNT; k++) {
+            if (mkb::scen_info.world == k && mkb::get_world_unbeaten_stage_count(k) == 9) {
+                s_timer_group[k].segment = s_timer_group[k].full_world;
+            }
+        }
     }
 }
 
@@ -110,6 +116,7 @@ void tick() {
 
     for (s32 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {
+            /*
             if (mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT) {
                 // need to add 1 additional frame to the timer during spin in
                 // putting this code before the code below for s_timer_group[k].full_world makes
@@ -119,6 +126,7 @@ void tick() {
                 // understand why that happens)
                 s_timer_group[k].full_world += 1;
             }
+            */
 
             if (is_on_spin_in || is_on_exit_game || is_on_fallout || is_timeover) {
                 // increment the timer during every frame on spin in, exit game, fallout, and
@@ -160,6 +168,17 @@ void tick() {
             }
 
             if (mkb::get_world_unbeaten_stage_count(k) < 9 ||
+                (mkb::get_world_unbeaten_stage_count(k) == 9 &&
+                 (mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE ||
+                  mkb::g_storymode_stageselect_state == 3 ||
+                  mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE ||
+                  mkb::sub_mode == mkb::SMD_GAME_FIRST_INIT || is_on_spin_in))) {
+                // the case where 9 stages in the world are completed and you are in gameplay is
+                // handled by the call to validate::has_entered_goal() earlier
+                s_timer_group[k].segment = s_timer_group[k].full_world;
+            }
+            /*
+            if (mkb::get_world_unbeaten_stage_count(k) < 9 ||
                 (mkb::get_world_unbeaten_stage_count(k) == 9 && !is_postgoal)) {
                 s_timer_group[k].segment = s_timer_group[k].full_world;
             } else if (mkb::get_world_unbeaten_stage_count(k) == 9 &&
@@ -168,6 +187,7 @@ void tick() {
                 // need to correct by 2f since SMD_GAME_GOAL_INIT happens 2f after tape break
                 s_timer_group[k].segment += -2;
             }
+            */
         }
     }
 }
@@ -313,7 +333,8 @@ void disp() {
         segment_centiseconds[k] = (segment[k] % SECOND_FRAMES) * 100 / 60;
     }
 
-    char timer_str[10][32] = {};
+    char timer_str[10][32] = {};  // timer_str[k-1] is the formatted text for "Wk: split[k]
+                                  // (segment[k])"
 
     // if the segment timer is enabled in any capacity, after the tape is broken on the last stage,
     // show all 10 split and iw times in the format "Wk: split[k] (segment[k])"
@@ -357,12 +378,11 @@ void disp() {
 
     // debugging
     /*
-    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", 60 * s_completed_stages, 0, false,
-                          false, draw::WHITE);
+    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", 60 * s_timer_group[0].full_world, 0,
+                          false, false, draw::WHITE);
 
-    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET,
-                          "dbg:", 60 * mkb::get_world_unbeaten_stage_count(1), 0, false, false,
-                          draw::WHITE);
+    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].segment, 0, false,
+                          false, draw::WHITE);
     */
 }
 
