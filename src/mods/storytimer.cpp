@@ -322,7 +322,7 @@ void disp() {
     if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow &&
         is_run_complete) {
         for (s32 k = 0; k < WORLD_COUNT; k++) {
-            u32 X[k] = {};  // horizontal position for the line of text "Wk: split[k] (segment[k])"
+            u32 X[10] = {};  // horizontal position for the line of text "Wk: split[k] (segment[k])"
             if (k != 9) {
                 X[k] = IW_TIME_LOCATION_X;
             } else {
