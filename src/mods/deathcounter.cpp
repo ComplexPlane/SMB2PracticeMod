@@ -69,8 +69,9 @@ void tick() {
     */
 
     // first framing should not increase the death counter, and retrying after breaking the tape
-    // should not increase it either to do: however, if you retry after breaking the tape on the
-    // very first frame (so the frame before goal init), it does count as a death when it should not
+    // should not increase it either
+    // to do: however, if you retry after breaking the tape on the very first frame (so the frame
+    // before goal init), it does count as a death when it should not
     if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT ||
         mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_INTRO_SEQUENCE) {
         s_can_die = false;

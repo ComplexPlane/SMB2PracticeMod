@@ -29,6 +29,9 @@ static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
 static constexpr u32 WORLD_START_CORRECTION = 2;
 static constexpr s32 WORLD_COUNT = 10;
 static constexpr s32 STAGES_PER_WORLD = 10;
+static constexpr u32 SECOND_FRAMES = 60;
+static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
+static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static bool s_entered_goal;
 struct TimerGroup {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
@@ -288,42 +291,84 @@ void disp() {
             break;
     }
 
-    // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the
-    // tape is broken on the last stage
-    if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow &&
-        is_run_complete) {
-        // haven't attempted the mkb::sprintf suggestion yet
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y, IW_TIME_TEXT_OFFSET,
-                              "W1:", split[0], segment[0], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 1, IW_TIME_TEXT_OFFSET,
-                              "W2:", split[1], segment[1], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 2, IW_TIME_TEXT_OFFSET,
-                              "W3:", split[2], segment[2], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 3, IW_TIME_TEXT_OFFSET,
-                              "W4:", split[3], segment[3], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 4, IW_TIME_TEXT_OFFSET,
-                              "W5:", split[4], segment[4], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 5, IW_TIME_TEXT_OFFSET,
-                              "W6:", split[5], segment[5], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 6, IW_TIME_TEXT_OFFSET,
-                              "W7:", split[6], segment[6], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 7, IW_TIME_TEXT_OFFSET,
-                              "W8:", split[7], segment[7], true, false, draw::WHITE);
-        timerdisp::draw_timer(IW_TIME_LOCATION_X, segment_timer_location_y + 8, IW_TIME_TEXT_OFFSET,
-                              "W9:", split[8], segment[8], true, false, draw::WHITE);
-        // use segment timer spacing for w10 since "W10" is 3 characters long, not 2
-        timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y + 9,
-                              SEGMENT_TIMER_TEXT_OFFSET, "W10:", split[9], segment[9], true, false,
-                              draw::WHITE);
+    u32 split_hours[10] = {};
+    u32 split_minutes[10] = {};
+    u32 split_seconds[10] = {};
+    u32 split_centiseconds[10] = {};
+
+    u32 segment_hours[10] = {};
+    u32 segment_minutes[10] = {};
+    u32 segment_seconds[10] = {};
+    u32 segment_centiseconds[10] = {};
+
+    for (s32 k = 0; k < WORLD_COUNT; k++) {
+        split_hours[k] = split[k] / HOUR_FRAMES;
+        split_minutes[k] = split[k] % HOUR_FRAMES / MINUTE_FRAMES;
+        split_seconds[k] = split[k] % MINUTE_FRAMES / SECOND_FRAMES;
+        split_centiseconds[k] = (split[k] % SECOND_FRAMES) * (100 / 60);
+
+        segment_hours[k] = segment[k] / HOUR_FRAMES;
+        segment_minutes[k] = segment[k] % HOUR_FRAMES / MINUTE_FRAMES;
+        segment_seconds[k] = segment[k] % MINUTE_FRAMES / SECOND_FRAMES;
+        segment_centiseconds[k] = (segment[k] % SECOND_FRAMES) * (100 / 60);
     }
 
-    /*
-    for (s32 k = 0; k < 2; k++) {
-        mkb::sprintf(s_timer_group[k].timer_str, "W%d: %s%d:%02d:%02d.%02d (%s%d:%02d:%02d.%02d)",
-                     k, split[k], segment[k]);
-        draw::debug_text("%s", s_timer_group[k].timer_str);
+    char timer_str[10][32] = {};
+
+    // if the segment timer is enabled in any capacity, after the tape is broken on the last stage,
+    // show all 10 split and iw times in the format "Wk: split[k] (segment[k])"
+    // to do: it is very likely that the current timer formatting text below is redundant given that
+    // there is similar code in timerdisp.cpp; for later: implement complex's suggestion for this
+    if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow &&
+        is_run_complete) {
+        for (s32 k = 0; k < WORLD_COUNT; k++) {
+            u32 Y[k] = {};
+            Y[k] = 24 + (segment_timer_location_y + k) * 16;  // vertical position for the line of
+                                                              // text "Wk: split[k] (segment[k])"
+            if (split_hours[k] > 0) {
+                if (segment_hours[k] > 0) {
+                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%d:%02d:%02d.%02d)", k + 1,
+                                 split_hours[k], split_minutes[k], split_seconds[k],
+                                 split_centiseconds[k], segment_hours[k], segment_minutes[k],
+                                 segment_seconds[k], segment_centiseconds[k]);
+                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
+                                     timer_str[k]);
+                } else if (segment_minutes[k] > 0) {
+                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
+                                 split_hours[k], split_minutes[k], split_seconds[k],
+                                 split_centiseconds[k], segment_minutes[k], segment_seconds[k],
+                                 segment_centiseconds[k]);
+                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
+                                     timer_str[k]);
+                } else {
+                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%02d.%02d)", k + 1,
+                                 split_hours[k], split_minutes[k], split_seconds[k],
+                                 split_centiseconds[k], segment_seconds[k],
+                                 segment_centiseconds[k]);
+                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
+                                     timer_str[k]);
+                }
+            } else if (split_minutes[k] > 0) {
+                if (segment_minutes[k] > 0) {
+                    mkb::sprintf(timer_str[k], "W%d: %02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
+                                 split_minutes[k], split_seconds[k], split_centiseconds[k],
+                                 segment_minutes[k], segment_seconds[k], segment_centiseconds[k]);
+                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
+                                     timer_str[k]);
+                } else {
+                    mkb::sprintf(timer_str[k], "W%d: %02d:%02d.%02d (%02d.%02d)", k + 1,
+                                 split_minutes[k], split_seconds[k], split_centiseconds[k],
+                                 segment_seconds[k], segment_centiseconds[k]);
+                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
+                                     timer_str[k]);
+                }
+            } else {
+                mkb::sprintf(timer_str[k], "W%d: %02d.%02d (%02d.%02d)", k + 1, split_seconds[k],
+                             split_centiseconds[k], segment_seconds[k], segment_centiseconds[k]);
+                draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s", timer_str[k]);
+            }
+        }
     }
-    */
 
     // debugging
     /*
