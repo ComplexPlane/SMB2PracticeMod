@@ -305,12 +305,12 @@ void disp() {
         split_hours[k] = split[k] / HOUR_FRAMES;
         split_minutes[k] = split[k] % HOUR_FRAMES / MINUTE_FRAMES;
         split_seconds[k] = split[k] % MINUTE_FRAMES / SECOND_FRAMES;
-        split_centiseconds[k] = (split[k] % SECOND_FRAMES) * (100 / 60);
+        split_centiseconds[k] = (split[k] % SECOND_FRAMES) * 100 / 60;
 
         segment_hours[k] = segment[k] / HOUR_FRAMES;
         segment_minutes[k] = segment[k] % HOUR_FRAMES / MINUTE_FRAMES;
         segment_seconds[k] = segment[k] % MINUTE_FRAMES / SECOND_FRAMES;
-        segment_centiseconds[k] = (segment[k] % SECOND_FRAMES) * (100 / 60);
+        segment_centiseconds[k] = (segment[k] % SECOND_FRAMES) * 100 / 60;
     }
 
     char timer_str[10][32] = {};
@@ -322,50 +322,35 @@ void disp() {
     if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow &&
         is_run_complete) {
         for (s32 k = 0; k < WORLD_COUNT; k++) {
-            u32 Y[k] = {};
-            Y[k] = 24 + (segment_timer_location_y + k) * 16;  // vertical position for the line of
-                                                              // text "Wk: split[k] (segment[k])"
+            u32 X[k] = {};  // horizontal position for the line of text "Wk: split[k] (segment[k])"
+            if (k != 9) {
+                X[k] = IW_TIME_LOCATION_X;
+            } else {
+                X[k] =
+                    SEGMENT_TIMER_LOCATION_X;  // change the position for world 10 because W10 takes
+                                               // up 3 characters instead of 2 like the rest
+            }
+            u32 Y[k] = {};  // vertical position for the line of text "Wk: split[k] (segment[k])"
+            Y[k] = 24 + (segment_timer_location_y + k) * 16;
             if (split_hours[k] > 0) {
                 if (segment_hours[k] > 0) {
-                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%d:%02d:%02d.%02d)", k + 1,
+                    mkb::sprintf(timer_str[k], "W%d:%d:%02d:%02d.%02d (%d:%02d:%02d.%02d)", k + 1,
                                  split_hours[k], split_minutes[k], split_seconds[k],
                                  split_centiseconds[k], segment_hours[k], segment_minutes[k],
                                  segment_seconds[k], segment_centiseconds[k]);
-                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
-                                     timer_str[k]);
-                } else if (segment_minutes[k] > 0) {
-                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
+                    draw::debug_text(X[k], Y[k], draw::WHITE, "%s", timer_str[k]);
+                } else {
+                    mkb::sprintf(timer_str[k], "W%d:%d:%02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
                                  split_hours[k], split_minutes[k], split_seconds[k],
                                  split_centiseconds[k], segment_minutes[k], segment_seconds[k],
                                  segment_centiseconds[k]);
-                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
-                                     timer_str[k]);
-                } else {
-                    mkb::sprintf(timer_str[k], "W%d: %d:%02d:%02d.%02d (%02d.%02d)", k + 1,
-                                 split_hours[k], split_minutes[k], split_seconds[k],
-                                 split_centiseconds[k], segment_seconds[k],
-                                 segment_centiseconds[k]);
-                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
-                                     timer_str[k]);
-                }
-            } else if (split_minutes[k] > 0) {
-                if (segment_minutes[k] > 0) {
-                    mkb::sprintf(timer_str[k], "W%d: %02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
-                                 split_minutes[k], split_seconds[k], split_centiseconds[k],
-                                 segment_minutes[k], segment_seconds[k], segment_centiseconds[k]);
-                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
-                                     timer_str[k]);
-                } else {
-                    mkb::sprintf(timer_str[k], "W%d: %02d:%02d.%02d (%02d.%02d)", k + 1,
-                                 split_minutes[k], split_seconds[k], split_centiseconds[k],
-                                 segment_seconds[k], segment_centiseconds[k]);
-                    draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s",
-                                     timer_str[k]);
+                    draw::debug_text(X[k], Y[k], draw::WHITE, "%s", timer_str[k]);
                 }
             } else {
-                mkb::sprintf(timer_str[k], "W%d: %02d.%02d (%02d.%02d)", k + 1, split_seconds[k],
-                             split_centiseconds[k], segment_seconds[k], segment_centiseconds[k]);
-                draw::debug_text(SEGMENT_TIMER_LOCATION_X, Y[k], draw::WHITE, "%s", timer_str[k]);
+                mkb::sprintf(timer_str[k], "W%d:%02d:%02d.%02d (%02d:%02d.%02d)", k + 1,
+                             split_minutes[k], split_seconds[k], split_centiseconds[k],
+                             segment_minutes[k], segment_seconds[k], segment_centiseconds[k]);
+                draw::debug_text(X[k], Y[k], draw::WHITE, "%s", timer_str[k]);
             }
         }
     }
