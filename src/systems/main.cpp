@@ -198,8 +198,8 @@ void init() {
                     validate::validate_run();
                     ilmark::validate_attempt();
                     ilbattle::validate_attempt();
-                    storytimer::on_goal_entry();
-                    deathcounter::on_goal_entry();
+                    // storytimer::on_goal_entry();
+                    // deathcounter::on_goal_entry();
                 });
                 jump::patch_minimap();
             }
