@@ -42,6 +42,7 @@ static s32 s_completed_stages;                 // the completed stages for the w
 static s32 s_time_on_tape_break;               // debugging/testing purposes
 static s32 s_time_on_intro_sequence;           // debugging/testing purposes
 static s32 s_time_can_press_a;                 // debugging/testing purposes
+static s32 s_time_on_a_press;                  // debugging/testing purposes
 
 u32 get_completed_stagecount() { return s_completed_stages; }
 
@@ -324,22 +325,34 @@ void disp() {
     // debugging
 
     /*
-    if (validate::has_entered_goal()) {
+    if (mkb::pausemenu_type == mkb::PMT_STORY_PLAY &&
+        mkb::g_current_focused_pause_menu_entry == 4 && pad::button_pressed(mkb::PAD_BUTTON_A) &&
+        is_postgoal) {
+        s_time_on_a_press = loadless_story_timer;
+    }
+    if (validate::has_entered_goal() && mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
         s_time_on_tape_break = loadless_story_timer;
     }
     if (mkb::g_storymode_stageselect_state == 3) {
         s_time_can_press_a = loadless_story_timer;
     }
 
-    u32 difference = s_time_can_press_a - s_time_on_tape_break;
+    u32 difference_1 = s_time_can_press_a - s_time_on_tape_break;  // stardust
+    u32 difference_2 = s_time_can_press_a - s_time_on_a_press;     // regular menuing
 
-    timerdisp::draw_timer(450, 1, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", s_time_on_tape_break, false,
+    timerdisp::draw_timer(450, 1, SEGMENT_TIMER_TEXT_OFFSET, "fin:", s_time_on_tape_break, false,
                           draw::WHITE);
 
-    timerdisp::draw_timer(450, 2, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", s_time_can_press_a, false,
+    timerdisp::draw_timer(450, 2, SEGMENT_TIMER_TEXT_OFFSET, "can:", s_time_can_press_a, false,
                           draw::WHITE);
 
-    timerdisp::draw_timer(450, 3, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", difference, false,
+    timerdisp::draw_timer(450, 3, SEGMENT_TIMER_TEXT_OFFSET, "sel:", s_time_on_a_press, false,
+                          draw::WHITE);
+
+    timerdisp::draw_timer(450, 4, SEGMENT_TIMER_TEXT_OFFSET, "sta:", difference_1, false,
+                          draw::WHITE);
+
+    timerdisp::draw_timer(450, 5, SEGMENT_TIMER_TEXT_OFFSET, "reg:", difference_2, false,
                           draw::WHITE);
     */
 }
