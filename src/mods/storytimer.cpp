@@ -39,6 +39,9 @@ struct TimerGroup {
 };
 static TimerGroup s_timer_group[WORLD_COUNT];  // each world has its own TimerGroup structure
 static s32 s_completed_stages;                 // the completed stages for the whole run
+static s32 s_time_on_tape_break;               // debugging/testing purposes
+static s32 s_time_on_intro_sequence;           // debugging/testing purposes
+static s32 s_time_can_press_a;                 // debugging/testing purposes
 
 u32 get_completed_stagecount() { return s_completed_stages; }
 
@@ -214,8 +217,8 @@ void disp() {
 
     if (display_story_timer) {
         timerdisp::draw_timer(FULLGAME_TIMER_LOCATION_X, fullgame_timer_location_y,
-                              FULLGAME_TIMER_TEXT_OFFSET, "Time:", loadless_story_timer, 0, false,
-                              false, draw::WHITE);
+                              FULLGAME_TIMER_TEXT_OFFSET, "Time:", loadless_story_timer, false,
+                              draw::WHITE);
     }
 
     // move the position of the segment timer depending on if the death counter and fullgame timer
@@ -233,8 +236,8 @@ void disp() {
             for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (mkb::scen_info.world == k && !is_run_complete) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
-                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], 0, false,
-                                          false, draw::WHITE);
+                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], false,
+                                          draw::WHITE);
                 }
             }
             break;
@@ -242,8 +245,8 @@ void disp() {
             for (s32 k = 0; k < WORLD_COUNT; k++) {
                 if (is_between_worlds && mkb::scen_info.world == k && k != 9) {
                     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, segment_timer_location_y,
-                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], 0, false,
-                                          false, draw::WHITE);
+                                          SEGMENT_TIMER_TEXT_OFFSET, "Seg:", segment[k], false,
+                                          draw::WHITE);
                 }
             }
             break;
@@ -319,12 +322,25 @@ void disp() {
     }
 
     // debugging
-    /*
-    timerdisp::draw_timer(450, 1, IW_TIME_TEXT_OFFSET, "dbg:", 60 * s_timer_group[0].full_world, 0,
-                          false, false, draw::WHITE);
 
-    timerdisp::draw_timer(450, 2, IW_TIME_TEXT_OFFSET, "dbg:", s_timer_group[0].segment, 0, false,
-                          false, draw::WHITE);
+    /*
+    if (validate::has_entered_goal()) {
+        s_time_on_tape_break = loadless_story_timer;
+    }
+    if (mkb::g_storymode_stageselect_state == 3) {
+        s_time_can_press_a = loadless_story_timer;
+    }
+
+    u32 difference = s_time_can_press_a - s_time_on_tape_break;
+
+    timerdisp::draw_timer(450, 1, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", s_time_on_tape_break, false,
+                          draw::WHITE);
+
+    timerdisp::draw_timer(450, 2, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", s_time_can_press_a, false,
+                          draw::WHITE);
+
+    timerdisp::draw_timer(450, 3, SEGMENT_TIMER_TEXT_OFFSET, "dbg:", difference, false,
+                          draw::WHITE);
     */
 }
 
