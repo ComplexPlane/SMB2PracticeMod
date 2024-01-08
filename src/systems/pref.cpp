@@ -126,6 +126,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::ApeColor,
     PrefId::Marathon,
     PrefId::IlBattleDisplay,
+    PrefId::IlBattleLength,
     PrefId::IlMarkPractice,
     PrefId::IlMarkStory,
     PrefId::IlMarkChallenge,
@@ -182,6 +183,7 @@ static const PrefId s_pref_ids[] = {
     PrefId::JumpCount,
     PrefId::Weight,
     PrefId::MonkeyType,
+    PrefId::JumpProfile,
     PrefId::CustomPhysicsDisp,
 };
 

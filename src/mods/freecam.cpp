@@ -24,7 +24,7 @@ static S16Vec s_rot = {};
 
 static patch::Tramp<decltype(&mkb::event_camera_tick)> s_event_camera_tick_tramp;
 
-bool enabled() {
+static bool in_correct_mode() {
     bool correct_main_mode = mkb::main_mode == mkb::MD_GAME || mkb::main_mode == mkb::MD_ADV ||
                              mkb::main_mode == mkb::MD_MINI || mkb::main_mode == mkb::MD_AUTHOR ||
                              mkb::main_mode == mkb::MD_EXOPT;
@@ -36,8 +36,9 @@ bool enabled() {
                             mkb::sub_mode != mkb::SMD_ADV_TITLE_REINIT &&
                             mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_INIT &&
                             mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_MAIN;
-    return pref::get(pref::BoolPref::Freecam) && correct_main_mode && correct_sub_mode;
+    return correct_main_mode && correct_sub_mode;
 }
+bool enabled() { return pref::get(pref::BoolPref::Freecam) && in_correct_mode(); }
 
 bool should_freeze_timer() { return enabled() && pref::get(pref::BoolPref::FreecamFreezeTimer); }
 
@@ -134,7 +135,7 @@ void tick() {
     }
 
     // Optionally toggle freecam with Z
-    if (binds::bind_pressed(pref::get(pref::U8Pref::FreecamToggleBind))) {
+    if (binds::bind_pressed(pref::get(pref::U8Pref::FreecamToggleBind)) && in_correct_mode()) {
         pref::set(pref::BoolPref::Freecam, !pref::get(pref::BoolPref::Freecam));
         pref::save();
     }
