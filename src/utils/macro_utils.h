@@ -1,6 +1,8 @@
 #pragma once
 
 #include "mkb/mkb.h"
+constexpr char* LOG_PREFIX = "[pracmod] ";
+constexpr char* LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
 
 #define LEN(array) (sizeof(array) / sizeof((array)[0]))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -20,3 +22,11 @@
 #define VEC_DOT(v1, v2) ((v1).x * (v2).x + (v1).y * (v2).y + (v1).z * (v2).z)
 #define VEC_LEN_SQ(v) (VEC_DOT((v), (v)))
 #define VEC_ZERO (Vec{0, 0, 0})
+
+// Fancy logging - note that this is less space-efficient than just calling mkb::OSReport
+#define LOG(msg, ...)                                       \
+    {                                                       \
+        mkb::printf(const_cast<char*>(LOG_PREFIX));         \
+        mkb::printf(const_cast<char*>(msg), ##__VA_ARGS__); \
+        mkb::printf("\n");                                  \
+    }
