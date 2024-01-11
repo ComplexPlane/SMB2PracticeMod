@@ -4,12 +4,10 @@
 
 #include "mkb/mkb.h"
 #include "mods/timer.h"
-#include "systems/heap.h"
-#include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace libsavest {
 
@@ -54,8 +52,8 @@ void SaveState::pass_over_regions() {
     m_store.do_region(&mkb::sub_mode, sizeof(mkb::sub_mode));
     m_store.do_region(&mkb::mode_info.stage_time_frames_remaining,
                       sizeof(mkb::mode_info.stage_time_frames_remaining));
-    m_store.do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
-    m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
+    m_store.do_region(relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
+    m_store.do_region(relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
     m_store.do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
@@ -102,8 +100,8 @@ void SaveState::pass_over_regions() {
     m_store.do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    m_store.do_region(reinterpret_cast<void*>(0x8054DCA8), 56);  // Pause menu state
-    m_store.do_region(reinterpret_cast<void*>(0x805BC474), 4);   // Pause menu bitfield
+    m_store.do_region(relutil::relocate_addr(0x8054DCA8), 56);  // Pause menu state
+    m_store.do_region(relutil::relocate_addr(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;

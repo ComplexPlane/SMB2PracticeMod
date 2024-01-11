@@ -52,23 +52,23 @@ static patch::Tramp<decltype(&mkb::smd_game_play_tick)> s_smd_game_play_tick_tra
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
+    patch::write_branch_bl(relutil::relocate_addr(0x80270704),
                            reinterpret_cast<void*>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
     // Only needs to be applied to the US version
-    patch::write_nop(reinterpret_cast<void*>(0x80033E9C));
+    patch::write_nop(relutil::relocate_addr(0x80033E9C));
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
-    patch::write_nop(reinterpret_cast<void*>(0x80299f54));
+    patch::write_nop(relutil::relocate_addr(0x80299f54));
     // Nop this pausemenu screenshot call so we can call it when we want to
-    patch::write_nop(reinterpret_cast<void*>(0x80270aac));
+    patch::write_nop(relutil::relocate_addr(0x80270aac));
 
     // Titlescreen patches
     mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
-    patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
+    patch::write_branch(relutil::relocate_addr(0x8032ad0c),
                         reinterpret_cast<void*>(main::custom_titlescreen_text_color));
 }
 

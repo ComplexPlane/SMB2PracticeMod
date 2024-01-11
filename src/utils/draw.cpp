@@ -5,8 +5,9 @@
 #include "mkb/mkb.h"
 
 #include "macro_utils.h"
-#include "patch.h"
 #include "systems/assembly.h"
+#include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace draw {
 
@@ -15,7 +16,7 @@ static s32 s_notify_frame_counter;
 static mkb::GXColor s_notify_color;
 
 void init() {
-    patch::write_branch(reinterpret_cast<void*>(0x802aeca4),
+    patch::write_branch(relutil::relocate_addr(0x802aeca4),
                         reinterpret_cast<void*>(main::full_debug_text_color));
 }
 
@@ -92,6 +93,7 @@ static Vec2d heart_verts[] = {
 
 void heart() {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
+    // TODO I guess this lives in the heap? fix w.r.t merge-heaps
     mkb::GXTexObj* texobj = reinterpret_cast<mkb::GXTexObj*>(0x807ad0e0);
     mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
     mkb::GXSetTevColor(mkb::GX_TEVREG0, {0xFF, 0x07, 0x07, 0xFF});
