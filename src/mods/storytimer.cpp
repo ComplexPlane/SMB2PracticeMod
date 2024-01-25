@@ -26,8 +26,6 @@ static constexpr s32 FULLGAME_TIMER_TEXT_OFFSET = 56;
 static constexpr s32 SEGMENT_TIMER_LOCATION_X = 30 + 24;
 static constexpr s32 SEGMENT_TIMER_TEXT_OFFSET = 44;
 static constexpr s32 IW_TIME_LOCATION_X = 42 + 24;
-static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
-static constexpr u32 WORLD_START_CORRECTION = 2;
 static constexpr s32 WORLD_COUNT = 10;
 static constexpr s32 STAGES_PER_WORLD = 10;
 static constexpr u32 SECOND_FRAMES = 60;
@@ -209,7 +207,7 @@ void disp() {
         }
         split[k] = sum[k] + segment[k];
     }
-    split[0] = s_timer_group[0].segment;
+    split[0] = segment[0];
     u32 loadless_story_timer = split[9];
 
     if (display_story_timer) {
