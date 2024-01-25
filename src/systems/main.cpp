@@ -20,6 +20,7 @@
 #include "mods/banans.h"
 #include "mods/camera.h"
 #include "mods/cmseg.h"
+#include "mods/deathcounter.h"
 #include "mods/dpad.h"
 #include "mods/fallout.h"
 #include "mods/freecam.h"
@@ -36,6 +37,7 @@
 #include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
+#include "mods/storytimer.h"
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
@@ -124,6 +126,8 @@ void init() {
         cardio::tick();
         unlock::tick();
         iw::tick();
+        storytimer::tick();
+        deathcounter::tick();
         savest_ui::tick();
         menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
         fallout::tick();
@@ -164,6 +168,8 @@ void init() {
         draw::predraw();
         timer::disp();
         iw::disp();
+        storytimer::disp();
+        deathcounter::disp();
         Tetris::get_instance().disp();
         ilbattle::disp();
         cmseg::disp();
@@ -192,6 +198,8 @@ void init() {
                     validate::validate_run();
                     ilmark::validate_attempt();
                     ilbattle::validate_attempt();
+                    // storytimer::on_goal_entry();
+                    // deathcounter::on_goal_entry();
                 });
                 jump::patch_minimap();
             }

@@ -56,6 +56,8 @@ enum class BoolPref : u8 {
     JumpChangePhysics,
     JumpAllowWalljumps,
     CustomPhysicsDisp,
+    ShowDeathCounter,
+    CountFirstStageDeaths,
 };
 
 enum class U8Pref : u8 {
@@ -90,6 +92,8 @@ enum class U8Pref : u8 {
     PhysicsPreset,
     MonkeyType,
     JumpProfile,
+    FullgameTimerOptions,
+    SegmentTimerOptions,
 };
 
 void init();
