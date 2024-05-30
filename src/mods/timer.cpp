@@ -81,13 +81,6 @@ void disp() {
                                       draw::WHITE, true, framesave, false);
     }
 
-    if (pref::get(pref::BoolPref::TimerShowUnrounded) && !freecam::should_hide_hud()) {
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
-                                      draw::WHITE, true, 0, false);
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:", row++,
-                                      draw::WHITE, true, 0, false);
-    }
-
     if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {
         timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
     }

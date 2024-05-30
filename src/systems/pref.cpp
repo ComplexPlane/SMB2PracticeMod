@@ -91,7 +91,6 @@ enum class PrefId : u16 {
     IlBattleAttemptCount = 71,
     TimerShowSubtick = 72,
     TimerShowFramesave = 73,
-    TimerShowUnrounded = 74,
     TimerShowPause = 75,
     StageEditVariant = 76,
     JumpChangePhysics = 77,
@@ -175,7 +174,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleAttemptCount,
     PrefId::TimerShowSubtick,
     PrefId::TimerShowFramesave,
-    PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
     PrefId::StageEditVariant,
     PrefId::JumpChangePhysics,
@@ -277,8 +275,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::TimerShowSubtick;
         case PrefId::TimerShowFramesave:
             return BoolPref::TimerShowFramesave;
-        case PrefId::TimerShowUnrounded:
-            return BoolPref::TimerShowUnrounded;
         case PrefId::TimerShowPause:
             return BoolPref::TimerShowPause;
         case PrefId::JumpChangePhysics:

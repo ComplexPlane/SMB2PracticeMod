@@ -840,14 +840,6 @@ static Widget s_timers_widgets[] = {
                 .pref = pref::BoolPref::TimerShowSubtick,
             },
     },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Unrounded (CUR/NXT)",
-                .pref = pref::BoolPref::TimerShowUnrounded,
-            },
-    },
     {.type = WidgetType::Separator},
     {.type = WidgetType::Header, .header = {"Segment Timers"}},
     {
