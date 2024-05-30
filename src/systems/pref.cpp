@@ -91,6 +91,9 @@ enum class PrefId : u16 {
     IlBattleAttemptCount = 71,
     TimerShowSubtick = 72,
     TimerShowFramesave = 73,
+    // 74 was used for a boolean timer option that only existed in a beta verison.
+    // Many people playtested that beta, so it may be best to not reuse until
+    // a future update
     TimerShowPause = 75,
     StageEditVariant = 76,
     JumpChangePhysics = 77,
