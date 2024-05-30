@@ -269,7 +269,7 @@ SaveState::SaveResult SaveState::save() {
 
     m_flags |= FLAG_ACTIVE;
     m_stage_id = mkb::current_stage_id;
-    m_character = mkb::selected_characters[mkb::curr_player_idx];
+    m_character = mkb::active_monkey_id[mkb::curr_player_idx];
     pass_over_regions();
     handle_pause_menu_save();
 
@@ -301,7 +301,7 @@ SaveState::LoadResult SaveState::load() {
     if (m_stage_id != mkb::current_stage_id) {
         return LoadResult::ErrorWrongStage;
     }
-    if (m_character != mkb::selected_characters[mkb::curr_player_idx]) {
+    if (m_character != mkb::active_monkey_id[mkb::curr_player_idx]) {
         return LoadResult::ErrorWrongMonkey;
     }
     if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL) {

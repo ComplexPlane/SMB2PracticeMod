@@ -368,6 +368,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::CmTimer,
     BoolPref::InputDispNotchIndicators,
     BoolPref::IlMarkPractice,
+    BoolPref::IlMarkRomhacks,
     BoolPref::UnlockVanilla,
     BoolPref::FreecamFreezeTimer,
     BoolPref::FreecamHideHud,

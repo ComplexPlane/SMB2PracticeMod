@@ -38,6 +38,10 @@ void tick() {
         mkb::sub_mode != mkb::SMD_GAME_BONUS_CLEAR_MAIN) {
         s_valid_run = false;
     }
+
+    if (libsavest::state_loaded_this_frame()) {
+        s_valid_run = false;
+    }
 }
 
 bool is_ilmark_enabled() {
