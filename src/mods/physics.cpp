@@ -12,7 +12,7 @@ static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
 bool using_custom_physics() {
-    return pref::get(pref::U8Pref::PhysicsPreset);
+    return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) != physics::PhysicsPreset::Default;
 }
 
 void init() {
