@@ -1323,51 +1323,9 @@ static Widget s_displays_widgets[] = {
     },
 };
 
-static Widget s_enabled_physics_widgets[] = {
-    {
-        .type = WidgetType::FloatEdit,
-        .float_edit =
-            {
-                .label = "Friction",
-                .pref = pref::U8Pref::Friction,
-                .precision = 1000,
-                .min = 0,
-                .max = 255,
-                .floor = -100,
-                .decimals = 3,
-            },
-    },
-    {
-        .type = WidgetType::FloatEdit,
-        .float_edit =
-            {
-                .label = "Restitution",
-                .pref = pref::U8Pref::Restitution,
-                .precision = 100,
-                .min = 0,
-                .max = 255,
-                .floor = -100,
-                .decimals = 2,
-            },
-    },
-    {
-        .type = WidgetType::FloatEdit,
-        .float_edit =
-            {
-                .label = "Weight",
-                .pref = pref::U8Pref::Weight,
-                .precision = 1000,
-                .min = 0,
-                .max = 200,
-                .floor = 900,
-                .decimals = 3,
-            },
-    },
-};
-
 static const char* PHYSICS_PRESETS[] = {"Default",          "Light Ball",  "No Friction",
-                                        "Heavy Ball",       "Bouncy Ball", "Sticky Ball",
-                                        "Jump-Mod Physics", "Custom"};
+                                        "Heavy Ball",       "Bouncy Ball", "Sticky Ball", "High Friction",
+                                        "Jump-Mod Physics"};
 
 static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 0.95"}}};
 static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.000"}}};
@@ -1376,6 +1334,9 @@ static Widget s_bouncyball[] = {
     {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 1.20"}}};
 static Widget s_stickyball[] = {
     {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.01"}}};
+static Widget s_high_friction[] = {
+    {.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.020"}},
+};
 static Widget s_jump_physics[] = {
     {.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.015"}},
     {.type = WidgetType::Text, .text = {"  Restitution: 0.50 -> 0.25"}},
@@ -1461,12 +1422,12 @@ static Widget s_physics_widgets[] = {
         .type = WidgetType::HideableGroupWidget,
         .hideable_group =
             {
-                .widgets = s_jump_physics,
-                .num_widgets = LEN(s_jump_physics),
+                .widgets = s_high_friction,
+                .num_widgets = LEN(s_high_friction),
                 .show_if =
                     [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
-                               physics::PhysicsPreset::JumpPhysics;
+                               physics::PhysicsPreset::HighFriction;
                     },
             },
     },
@@ -1474,12 +1435,12 @@ static Widget s_physics_widgets[] = {
         .type = WidgetType::HideableGroupWidget,
         .hideable_group =
             {
-                .widgets = s_enabled_physics_widgets,
-                .num_widgets = LEN(s_enabled_physics_widgets),
+                .widgets = s_jump_physics,
+                .num_widgets = LEN(s_jump_physics),
                 .show_if =
                     [] {
                         return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
-                               physics::PhysicsPreset::Custom;
+                               physics::PhysicsPreset::JumpPhysics;
                     },
             },
     },
