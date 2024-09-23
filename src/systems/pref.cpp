@@ -80,8 +80,8 @@ enum class PrefId : u16 {
     IlBattleBuzzerOld = 60,
     IlBattleBreakdown = 61,
     PhysicsPreset = 62,
-    Friction = 63,
-    Restitution = 64,
+    // 63 belonged to physics friction which was only used in beta playtesting
+    // 64 belonged to physics restitution which was only used in beta playtesting
     SavestateDisableOverwrite = 65,
     MenuBind = 66,
     IlBattleReadyBind = 67,
@@ -97,7 +97,7 @@ enum class PrefId : u16 {
     JumpChangePhysics = 77,
     JumpAllowWalljumps = 78,
     JumpCount = 79,
-    Weight = 80,
+    // 80 belonged to physics weight which was only used in beta playtesting
     MonkeyType = 81,
     JumpProfile = 82,
     CustomPhysicsDisp = 83,
@@ -157,8 +157,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleShowTime,
     PrefId::IlBattleShowScore,
     PrefId::IlBattleBuzzerOld,
-    PrefId::Friction,
-    PrefId::Restitution,
     PrefId::PhysicsPreset,
     PrefId::SavestateDisableOverwrite,
     PrefId::ApeColorType,
@@ -181,7 +179,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::JumpChangePhysics,
     PrefId::JumpAllowWalljumps,
     PrefId::JumpCount,
-    PrefId::Weight,
     PrefId::MonkeyType,
     PrefId::JumpProfile,
     PrefId::CustomPhysicsDisp,
@@ -320,10 +317,6 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::MenuBind;
         case PrefId::TimerType:
             return U8Pref::TimerType;
-        case PrefId::Friction:
-            return U8Pref::Friction;
-        case PrefId::Restitution:
-            return U8Pref::Restitution;
         case PrefId::ApeColorType:
             return U8Pref::ApeColorType;
         case PrefId::IlBattleBreakdown:
@@ -348,8 +341,6 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::StageEditVariant;
         case PrefId::JumpCount:
             return U8Pref::JumpCount;
-        case PrefId::Weight:
-            return U8Pref::Weight;
         case PrefId::PhysicsPreset:
             return U8Pref::PhysicsPreset;
         case PrefId::MonkeyType:
@@ -387,12 +378,9 @@ struct DefaultU8Pref {
 static DefaultU8Pref s_default_u8_prefs[] = {
     {U8Pref::FreecamSpeedMult, 3},      // 3
     {U8Pref::MenuBind, 64},             // L + R
-    {U8Pref::Friction, 110},            // 0.10
-    {U8Pref::Restitution, 150},         // 0.5
     {U8Pref::IlBattleReadyBind, 104},   // dpad-down
     {U8Pref::FreecamToggleBind, 255},   // unbound
     {U8Pref::SavestateClearBind, 255},  // unbound
-    {U8Pref::Weight, 100},              // 1.0
 };
 
 //
