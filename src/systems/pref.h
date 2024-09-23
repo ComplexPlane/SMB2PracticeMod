@@ -51,7 +51,6 @@ enum class BoolPref : u8 {
     IlBattleAttemptCount,
     TimerShowSubtick,
     TimerShowFramesave,
-    TimerShowUnrounded,
     TimerShowPause,
     JumpChangePhysics,
     JumpAllowWalljumps,

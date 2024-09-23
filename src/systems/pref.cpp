@@ -91,7 +91,9 @@ enum class PrefId : u16 {
     IlBattleAttemptCount = 71,
     TimerShowSubtick = 72,
     TimerShowFramesave = 73,
-    TimerShowUnrounded = 74,
+    // 74 was used for a boolean timer option that only existed in a beta verison.
+    // Many people playtested that beta, so it may be best to not reuse until
+    // a future update
     TimerShowPause = 75,
     StageEditVariant = 76,
     JumpChangePhysics = 77,
@@ -173,7 +175,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::IlBattleAttemptCount,
     PrefId::TimerShowSubtick,
     PrefId::TimerShowFramesave,
-    PrefId::TimerShowUnrounded,
     PrefId::TimerShowPause,
     PrefId::StageEditVariant,
     PrefId::JumpChangePhysics,
@@ -274,8 +275,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::TimerShowSubtick;
         case PrefId::TimerShowFramesave:
             return BoolPref::TimerShowFramesave;
-        case PrefId::TimerShowUnrounded:
-            return BoolPref::TimerShowUnrounded;
         case PrefId::TimerShowPause:
             return BoolPref::TimerShowPause;
         case PrefId::JumpChangePhysics:
@@ -359,6 +358,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::CmTimer,
     BoolPref::InputDispNotchIndicators,
     BoolPref::IlMarkPractice,
+    BoolPref::IlMarkRomhacks,
     BoolPref::UnlockVanilla,
     BoolPref::FreecamFreezeTimer,
     BoolPref::FreecamHideHud,
