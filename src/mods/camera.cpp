@@ -4,6 +4,7 @@
 #include "systems/pref.h"
 #include "utils/patch.h"
 #include "utils/ppcutil.h"
+#include "utils/relutil.h"
 
 namespace camera {
 
@@ -26,7 +27,7 @@ void tick() {
                     mkb::cameras[0].mode = 0x4c;
                 }
 
-                patch::write_word(reinterpret_cast<void*>(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
+                patch::write_word(relutil::relocate_addr(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
                 mkb::g_camera_turn_rate_scale = 0.75;
                 mkb::camera_pivot_height = 0.18;
                 mkb::camera_height = 0.8;
@@ -39,7 +40,7 @@ void tick() {
                 mkb::cameras[0].mode = 0x4c;
             }
 
-            patch::write_word(reinterpret_cast<void*>(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
+            patch::write_word(relutil::relocate_addr(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
             mkb::g_camera_turn_rate_scale = 0.75;
             mkb::camera_pivot_height = 0.18;
             mkb::camera_height = 0.8;
@@ -55,7 +56,7 @@ void tick() {
             // angle. Everything else brings the camera position/pivot values in-line with SMB1's
             // values Camera mode 0x1 enables SMB1-like vertical camera tracking, camera mode 0x4c
             // is SMB2's default
-            patch::write_word(reinterpret_cast<void*>(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x400));
+            patch::write_word(relutil::relocate_addr(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x400));
             mkb::g_camera_turn_rate_scale = 0.6875;
             mkb::camera_pivot_height = -0.5;
             mkb::camera_height = 1;

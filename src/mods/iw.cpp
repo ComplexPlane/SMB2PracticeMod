@@ -8,6 +8,7 @@
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
 // TODO: track best times per world
@@ -92,9 +93,9 @@ static void handle_iw_timer() {
 }
 
 void init() {
-    patch::write_branch(reinterpret_cast<void*>(0x80274804),
+    patch::write_branch(relutil::relocate_addr(0x80274804),
                         reinterpret_cast<void*>(main::stage_select_menu_hook));
-    patch::write_branch(reinterpret_cast<void*>(0x8032a86c),
+    patch::write_branch(relutil::relocate_addr(0x8032a86c),
                         reinterpret_cast<void*>(main::pause_menu_text_hook));
 }
 
