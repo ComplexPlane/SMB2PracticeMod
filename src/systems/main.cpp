@@ -49,11 +49,24 @@ static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_ready_init)> s_smd_game_ready_init_tramp;
 static patch::Tramp<decltype(&mkb::smd_game_play_tick)> s_smd_game_play_tick_tramp;
 
+/*
+ * This runs at the very start of the main game loop. Most per-frame code runs after
+ * controller inputs have been read and processed however, to ensure the lowest input delay.
+ */
+static void tick() {
+    // Replace overwritten function call
+    mkb::perf_init_timer(4);
+
+    if (pref::get(pref::BoolPref::DebugMode)) {
+        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+    } else {
+        mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
+    }
+    pad::on_frame_start();
+}
+
 static void perform_assembly_patches() {
-    // Inject the run function at the start of the main game loop
-    // Hooked after Workshop Mod's tick()
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
-                           reinterpret_cast<void*>(start_main_loop_assembly));
+    patch::write_branch_bl(reinterpret_cast<void*>(0x80270718), reinterpret_cast<void*>(tick));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -201,19 +214,6 @@ void init() {
 
             return ret;
         });
-}
-
-/*
- * This runs at the very start of the main game loop. Most per-frame code runs after
- * controller inputs have been read and processed however, to ensure the lowest input delay.
- */
-void tick() {
-    if (pref::get(pref::BoolPref::DebugMode)) {
-        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-    } else {
-        mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);
-    }
-    pad::on_frame_start();
 }
 
 }  // namespace main
