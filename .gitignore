@@ -283,6 +283,7 @@ __pycache__/
 /.clangd/
 /*.elf
 /*.rel
+/*.gci
 
 /.cache/**
 /compile_commands.json

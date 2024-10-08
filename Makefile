@@ -57,9 +57,9 @@ else
 TARGET		:=	SMB2PracticeMod
 BUILD		:=	build
 # Find command is invalid during recursive Make execution in build dir, ust ignore it for now
-SOURCES		:=	$(shell find src 2>/dev/null)
-DATA		:=	data  
-INCLUDES	:=	src
+SOURCES		:=	$(shell find cppsrc 2>/dev/null)
+DATA		:=	data
+INCLUDES	:=	cppsrc
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -70,7 +70,7 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -Wno-address-of-packed-member -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -Wno-address-of-packed-member -fmacro-prefix-map=$(abspath $(CURDIR)/../cppsrc)=. $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
@@ -81,7 +81,7 @@ LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections 
 #---------------------------------------------------------------------------------
 # Temporarily remove the math library to avoid conflicts
 # LIBS	:= -lm
-LIBS	:= 
+LIBS	:=
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -129,7 +129,7 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
-export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
+export MAPFILE		:= $(CURDIR)/cppsrc/mkb/mkb2.$(REGION).lst
 ifeq ($(REGION),us)
 	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
 	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
@@ -190,11 +190,11 @@ $(OFILES_SOURCES) : $(HFILES)
 %.rel: %.elf
 	@echo output ... $(notdir $@)
 	@$(ELF2REL) $< -s $(MAPFILE) --rel-version 2 --rel-id 101
-	
+
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
 	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
-	
+
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
 #---------------------------------------------------------------------------------
