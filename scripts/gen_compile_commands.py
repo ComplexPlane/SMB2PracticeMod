@@ -7,8 +7,8 @@ import json
 def main():
     cmds = []
     repo_dir = Path(__file__).parent.parent.resolve()
-    src_dir = repo_dir / "src"
-    include_dir = repo_dir / "src"
+    src_dir = repo_dir / "cppsrc"
+    include_dir = repo_dir / "cppsrc"
     for src_path in src_dir.glob("**/*.cpp"):
         command = (
             "/usr/bin/c++ "
