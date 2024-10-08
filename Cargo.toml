@@ -14,7 +14,7 @@ panic = "abort"
 [profile.release]
 panic = "abort"
 
-[[bin]]
-name = "smb2-practice-mod"
+[lib]
+crate-type = ["staticlib"]
 test = false
 bench = false

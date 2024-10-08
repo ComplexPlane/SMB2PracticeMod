@@ -2,7 +2,7 @@
   "arch": "powerpc",
   "cpu": "750",
   "data-layout": "E-m:e-p:32:32-Fn32-i64:64-n32",
-  "dynamic-linking": false,
+  "dynamic-linking": true,
   "env": "newlib",
   "executables": true,
   "has-rpath": true,
@@ -12,7 +12,26 @@
   "linker-is-gnu": true,
   "os": "rvl-ios",
   "pre-link-args": {
-    "gcc": ["-mrvl", "-meabi", "-mhard-float"]
+    "gcc": [
+      "-r",
+      "-e",
+      "_prolog",
+      "-u",
+      "_prolog",
+      "-u",
+      "_epilog",
+      "-u",
+      "_unresolved",
+      "-Wl,--gc-sections",
+      "-nostdlib",
+      "-g",
+      "-mno-sdata",
+      "-mgcn",
+      "-DGEKKO",
+      "-mcpu=750",
+      "-meabi",
+      "-mhard-float"
+    ]
   },
   "panic-strategy": "abort",
   "relocation-model": "static",

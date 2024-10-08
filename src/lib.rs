@@ -24,10 +24,7 @@ extern "C" fn _epilog() {}
 extern "C" fn _unresolved() {}
 
 unsafe fn init() {
-    let mut str = ArrayString::<32>::from("Hello World from Rust!").unwrap();
+    let mut str = ArrayString::<1024>::from("Hello World from Rust! Butt poop zzzzzzzzzzzzzzzzzzzzzzz blah blah blah egg igloo fartknocker butt butt butt").unwrap();
     str.push('\0');
     g_very_similar_to_puts(str.as_ptr() as *const c_char);
 }
-
-#[no_mangle]
-fn main() {}
