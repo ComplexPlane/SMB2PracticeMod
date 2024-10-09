@@ -94,7 +94,7 @@ impl Heap {
 
 unsafe impl GlobalAlloc for Heap {
     unsafe fn alloc(&self, layout: core::alloc::Layout) -> *mut u8 {
-        let heap_info = *self.heap_info.get();
+        let heap_info = &mut **self.heap_info.get();
 
         // Enlarge size to the smallest possible chunk size
         // We currently don't respect starting address alignments > 32
@@ -103,7 +103,7 @@ unsafe impl GlobalAlloc for Heap {
         let new_size = round_up_pow2(new_size, 32);
 
         // Find a memory area large enough
-        let mut temp_chunk = (*heap_info).first_free;
+        let mut temp_chunk = heap_info.first_free;
         while !temp_chunk.is_null() {
             if new_size <= (*temp_chunk).size {
                 break;
@@ -123,7 +123,7 @@ unsafe impl GlobalAlloc for Heap {
         // Check if the current chunk can be split into two pieces
         if leftover_size < min_size as isize {
             // Too small to split, so just extract it
-            (*heap_info).first_free = extract_chunk((*heap_info).first_free, temp_chunk);
+            heap_info.first_free = extract_chunk(heap_info.first_free, temp_chunk);
         } else {
             // Large enough to split
             (*temp_chunk).size = new_size;
@@ -143,12 +143,12 @@ unsafe impl GlobalAlloc for Heap {
             if !(*new_chunk).prev.is_null() {
                 (*(*new_chunk).prev).next = new_chunk;
             } else {
-                (*heap_info).first_free = new_chunk;
+                heap_info.first_free = new_chunk;
             }
         }
 
         // Add the chunk to the allocated list
-        (*heap_info).first_used = add_chunk_to_front((*heap_info).first_used, temp_chunk);
+        heap_info.first_used = add_chunk_to_front(heap_info.first_used, temp_chunk);
 
         // Add the header size to the chunk
         let allocated_memory =
@@ -159,7 +159,7 @@ unsafe impl GlobalAlloc for Heap {
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: core::alloc::Layout) {
-        let heap_info = *self.heap_info.get();
+        let heap_info = &mut **self.heap_info.get();
         let ptr_raw = ptr as usize;
 
         let header_size = round_up_pow2(core::mem::size_of::<ChunkInfo>(), 32);
@@ -168,9 +168,9 @@ unsafe impl GlobalAlloc for Heap {
         let temp_chunk = (ptr_raw - header_size) as *mut ChunkInfo;
 
         // Extract the chunk from the allocated list
-        (*heap_info).first_used = extract_chunk((*heap_info).first_used, temp_chunk);
+        heap_info.first_used = extract_chunk(heap_info.first_used, temp_chunk);
         // Add in sorted order to the free list
-        (*heap_info).first_free = DLInsert((*heap_info).first_free, temp_chunk);
+        heap_info.first_free = DLInsert(heap_info.first_free, temp_chunk);
     }
 }
 
