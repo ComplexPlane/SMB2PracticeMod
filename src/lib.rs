@@ -4,7 +4,7 @@
 mod heap;
 mod relutil;
 
-use core::ffi::c_char;
+use core::{ffi::c_char, fmt::Write};
 
 use panic_halt as _;
 
@@ -31,6 +31,15 @@ unsafe fn init() {
     heap::HEAP.init();
 
     let mut str = ArrayString::<1024>::from("Hello World from Rust!").unwrap();
+    str.push('\0');
+    g_very_similar_to_puts(str.as_ptr() as *const c_char);
+
+    str.clear();
+    str.write_fmt(format_args!(
+        "Available space: {}",
+        heap::HEAP.get_free_space()
+    ))
+    .unwrap();
     str.push('\0');
     g_very_similar_to_puts(str.as_ptr() as *const c_char);
 }

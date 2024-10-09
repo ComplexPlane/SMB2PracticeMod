@@ -68,7 +68,7 @@ unsafe fn make_heap_info() -> HeapInfo {
     let end = round_down_pow2(end_ptr, 32);
     let size = end - start;
 
-    core::ptr::write_bytes(start as *mut u8, 0, size as usize);
+    core::ptr::write_bytes(start as *mut u8, 0, size);
 
     let heap_info = HeapInfo {
         capacity: size,
@@ -89,6 +89,19 @@ impl Heap {
             *self.owned_heap_info.get() = make_heap_info();
             *self.heap_info.get() = self.owned_heap_info.get();
         }
+    }
+
+    pub fn get_free_space(&self) -> usize {
+        let mut space = 0;
+        unsafe {
+            let heap_info = &**self.heap_info.get();
+            let mut chunk = heap_info.first_free;
+            while !chunk.is_null() {
+                space += (*chunk).size - 32; // Don't count the ChunkInfo
+                chunk = (*chunk).next;
+            }
+        }
+        space
     }
 }
 
