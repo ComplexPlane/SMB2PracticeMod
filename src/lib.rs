@@ -3,6 +3,8 @@
 
 mod heap;
 mod log;
+mod menu_defn;
+mod pref;
 mod relutil;
 
 use core::{
