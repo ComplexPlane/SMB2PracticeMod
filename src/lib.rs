@@ -4,6 +4,7 @@
 mod heap;
 mod log;
 mod menu_defn;
+mod mkb;
 mod pref;
 mod relutil;
 
