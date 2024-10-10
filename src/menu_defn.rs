@@ -1,12 +1,7 @@
 extern crate alloc;
 
+use crate::mkb;
 use crate::pref::{BoolPref, U8Pref};
-
-struct Color {
-    r: u8,
-    g: u8,
-    b: u8,
-}
 
 enum AfterPush {
     None,
@@ -20,7 +15,7 @@ enum Widget {
     },
     ColoredText {
         label: &'static str,
-        color: Color,
+        color: mkb::GXColor,
     },
     Header {
         label: &'static str,

@@ -16,11 +16,30 @@ mod mkb;
 use core::{
     alloc::{GlobalAlloc, Layout},
     ffi::c_char,
+    panic::PanicInfo,
 };
 
-use panic_halt as _;
+use arrayvec::{ArrayString, ArrayVec};
 
-use arrayvec::ArrayString;
+#[panic_handler]
+fn on_panic(panic_info: &PanicInfo) -> ! {
+    match panic_info.location() {
+        Some(loc) => {
+            let mut file_buf = ArrayString::<128>::from(loc.file()).unwrap();
+            file_buf.push('\0');
+            log!(
+                "Panic occurred in %s at %d:%d",
+                file_buf.as_ptr() as *const i8,
+                loc.line(),
+                loc.column()
+            );
+        }
+        None => {
+            log!("Panic occurred")
+        }
+    }
+    loop {}
+}
 
 #[no_mangle]
 unsafe extern "C" fn _prolog() {
@@ -52,4 +71,10 @@ unsafe fn init() {
     heap::HEAP.dealloc(alloc2, Layout::new::<[u8; 327]>());
     log!("Available space 6: %d", heap::HEAP.get_free_space());
     log!("A random float: %f %f", 3.2, -3.2);
+
+    let mut vec = ArrayVec::<u8, 2>::new();
+    vec.push(4);
+    vec.push(4);
+    vec.push(4);
+    vec.push(4);
 }
