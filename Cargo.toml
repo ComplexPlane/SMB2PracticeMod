@@ -19,6 +19,3 @@ lto = true
 crate-type = ["staticlib"]
 test = false
 bench = false
-
-[build-dependencies]
-bindgen = "0.70.1"

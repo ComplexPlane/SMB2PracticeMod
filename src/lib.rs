@@ -4,9 +4,14 @@
 mod heap;
 mod log;
 mod menu_defn;
-mod mkb;
 mod pref;
 mod relutil;
+
+#[allow(dead_code)]
+#[allow(non_upper_case_globals)]
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
+mod mkb;
 
 use core::{
     alloc::{GlobalAlloc, Layout},
