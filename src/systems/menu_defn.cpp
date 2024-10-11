@@ -804,7 +804,57 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
+static const char* TIMER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+    "End of run",
+};
+
+static Widget s_loadless_timers_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Fullgame Timer",
+                .choices = TIMER_OPTIONS,
+                .num_choices = LEN(TIMER_OPTIONS),
+                .pref = pref::U8Pref::FullgameTimerOptions,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Segment Timer",
+                .choices = TIMER_OPTIONS,
+                .num_choices = LEN(TIMER_OPTIONS),
+                .pref = pref::U8Pref::SegmentTimerOptions,
+            },
+    },
+};
+
+static Widget s_deathcounter_widgets[] = {
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Death Counter",
+                .pref = pref::BoolPref::ShowDeathCounter,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Count Stage 1 Deaths",
+                .pref = pref::BoolPref::CountFirstStageDeaths,
+            },
+    },
+};
+
 static Widget s_timers_widgets[] = {
+    // I might want to reorganize this with the addition of a loadless timer
     {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
         .type = WidgetType::Checkbox,
@@ -841,7 +891,7 @@ static Widget s_timers_widgets[] = {
             },
     },
     {.type = WidgetType::Separator},
-    {.type = WidgetType::Header, .header = {"Segment Timers"}},
+    {.type = WidgetType::Header, .header = {"Segment & Loadless Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -857,6 +907,10 @@ static Widget s_timers_widgets[] = {
                 .label = "CM Segments (SEG)",
                 .pref = pref::BoolPref::CmTimer,
             },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Loadless Timers", s_loadless_timers_widgets, LEN(s_loadless_timers_widgets)},
     },
 };
 
@@ -1320,6 +1374,10 @@ static Widget s_displays_widgets[] = {
                 .label = "9999 Banana Counter",
                 .pref = pref::BoolPref::BananaCounter9999,
             },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Death Counter", s_deathcounter_widgets, LEN(s_deathcounter_widgets)},
     },
 };
 

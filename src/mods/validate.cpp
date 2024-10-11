@@ -196,6 +196,8 @@ void init() {
         });
 }
 
+bool has_entered_goal() { return s_entered_goal; }
+
 void tick() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_entered_goal = false;

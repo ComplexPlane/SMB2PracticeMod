@@ -103,6 +103,10 @@ enum class PrefId : u16 {
     MonkeyType = 81,
     JumpProfile = 82,
     CustomPhysicsDisp = 83,
+    FullgameTimerOptions = 84,
+    SegmentTimerOptions = 85,
+    ShowDeathCounter = 86,
+    CountFirstStageDeaths = 87,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -183,6 +187,10 @@ static const PrefId s_pref_ids[] = {
     PrefId::MonkeyType,
     PrefId::JumpProfile,
     PrefId::CustomPhysicsDisp,
+    PrefId::FullgameTimerOptions,
+    PrefId::SegmentTimerOptions,
+    PrefId::ShowDeathCounter,
+    PrefId::CountFirstStageDeaths,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -283,6 +291,10 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::JumpAllowWalljumps;
         case PrefId::CustomPhysicsDisp:
             return BoolPref::CustomPhysicsDisp;
+        case PrefId::ShowDeathCounter:
+            return BoolPref::ShowDeathCounter;
+        case PrefId::CountFirstStageDeaths:
+            return BoolPref::CountFirstStageDeaths;
         default:
             return {};
     }
@@ -346,6 +358,10 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::MonkeyType;
         case PrefId::JumpProfile:
             return U8Pref::JumpProfile;
+        case PrefId::FullgameTimerOptions:
+            return U8Pref::FullgameTimerOptions;
+        case PrefId::SegmentTimerOptions:
+            return U8Pref::SegmentTimerOptions;
         default:
             return {};
     }
@@ -367,6 +383,7 @@ static BoolPref s_default_on_bool_prefs[] = {
     BoolPref::JumpChangePhysics,
     BoolPref::JumpAllowWalljumps,
     BoolPref::CustomPhysicsDisp,
+    BoolPref::CountFirstStageDeaths,
 };
 
 struct DefaultU8Pref {
@@ -388,8 +405,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[8];  // up to 64 bool prefs
-    u8 u8_prefs[31];   // 31 u8 prefs
+    u8 bool_prefs[8];
+    u8 u8_prefs[33];
 };
 
 static PrefState s_pref_state, s_prev_pref_state, s_default_pref_state;
