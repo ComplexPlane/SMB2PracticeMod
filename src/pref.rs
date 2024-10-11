@@ -79,3 +79,15 @@ pub enum U8Pref {
     MonkeyType,
     JumpProfile,
 }
+
+pub fn get_bool(id: BoolPref) -> bool {
+    false
+}
+
+pub fn get_u8(id: U8Pref) -> u8 {
+    0
+}
+
+pub fn did_change_u8(id: U8Pref) -> bool {
+    false
+}
