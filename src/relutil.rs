@@ -1,5 +1,18 @@
 use core::ffi::{c_char, c_void};
 
+use num_enum::TryFromPrimitive;
+
+#[derive(TryFromPrimitive, PartialEq, Eq)]
+#[repr(u32)]
+pub enum ModuleId {
+    Dol = 0,
+    MainLoop = 1,
+    MainGame = 2,
+    SelNgc = 3,
+    WorkshopMod = 100,
+    PracticeMod = 101,
+}
+
 #[repr(C, packed)]
 struct RelEntry {
     offset: u16,

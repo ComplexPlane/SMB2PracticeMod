@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+mod app;
 mod camera;
 mod heap;
 mod hook;
@@ -17,12 +18,10 @@ mod relutil;
 #[allow(non_snake_case)]
 mod mkb;
 
-use core::{
-    ffi::c_char,
-    panic::PanicInfo,
-};
+use core::{ffi::c_char, panic::PanicInfo};
 
 use arrayvec::ArrayString;
+use critical_section::RawRestoreState;
 
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
@@ -59,13 +58,13 @@ unsafe fn init() {
     heap::HEAP.init();
 
     log!("SMB2 Practice Mod loaded");
-
-    TICK_HOOK.hook(mkb::process_inputs, tick_hook);
 }
 
-extern "C" fn tick_hook() {
-    unsafe { TICK_HOOK.call() };
-    log!("tick()");
-}
+// We're never running multiple "threads" or hooking interrupts, so establishing a critical section is a no-op
+struct MyCriticalSection;
+critical_section::set_impl!(MyCriticalSection);
+unsafe impl critical_section::Impl for MyCriticalSection {
+    unsafe fn acquire() -> RawRestoreState {}
 
-static mut TICK_HOOK: hook::Tramp = hook::Tramp::new();
+    unsafe fn release(_token: RawRestoreState) {}
+}
