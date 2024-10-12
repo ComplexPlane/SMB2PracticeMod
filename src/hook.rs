@@ -3,13 +3,20 @@ use core::mem::transmute;
 use crate::patch;
 use crate::ppc;
 
-struct Tramp {
+pub struct Tramp {
     instrs: [u32; 2],
-    dest: extern "C" fn(),
+    dest: Option<extern "C" fn()>,
 }
 
 impl Tramp {
-    unsafe fn hook(&mut self, func: unsafe extern "C" fn(), dest: extern "C" fn()) {
+    pub const fn new() -> Self {
+        Self {
+            instrs: [0, 0],
+            dest: None,
+        }
+    }
+
+    pub unsafe fn hook(&mut self, func: unsafe extern "C" fn(), dest: extern "C" fn()) {
         let func_instrs = func as *mut u32;
 
         if (*func_instrs & ppc::B_OPCODE_MASK) == ppc::B_OPCODE {
@@ -27,7 +34,7 @@ impl Tramp {
             patch::write_branch(func_instrs as *mut _, dest as *mut _);
 
             // Use the old hooked func as the trampoline dest
-            self.dest = transmute(old_dest);
+            self.dest = Some(transmute(old_dest));
         } else {
             // Func has not been hooked yet
             // Original instruction
@@ -42,15 +49,14 @@ impl Tramp {
 
             // The function pointer to run as the original function is the addr of the trampoline
             // instructions array
-            self.dest = transmute(self.instrs.as_ptr());
+            self.dest = Some(transmute(self.instrs.as_ptr()));
 
             // Write actual hook
             patch::write_branch(func_instrs, dest as *mut _);
         }
     }
 
-    fn call(&self) {
-        let f: fn() = unsafe { transmute(self.instrs.as_ptr()) };
-        f();
+    pub fn call(&self) {
+        (self.dest.unwrap())();
     }
 }

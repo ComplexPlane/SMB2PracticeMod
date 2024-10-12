@@ -60,4 +60,13 @@ unsafe fn init() {
     heap::HEAP.init();
 
     log!("SMB2 Practice Mod loaded");
+
+    TICK_HOOK.hook(mkb::process_inputs, tick_hook);
 }
+
+extern "C" fn tick_hook() {
+    unsafe { TICK_HOOK.call() };
+    log!("tick()");
+}
+
+static mut TICK_HOOK: hook::Tramp = hook::Tramp::new();
