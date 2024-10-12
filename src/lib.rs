@@ -18,12 +18,11 @@ mod relutil;
 mod mkb;
 
 use core::{
-    alloc::{GlobalAlloc, Layout},
     ffi::c_char,
     panic::PanicInfo,
 };
 
-use arrayvec::{ArrayString, ArrayVec};
+use arrayvec::ArrayString;
 
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
