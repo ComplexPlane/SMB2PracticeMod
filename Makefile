@@ -28,13 +28,13 @@ $(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs
 	cargo +nightly build -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
 
 SMB2PracticeMod.elf: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
-	$(DEVKITPPC)/bin/powerpc-eabi-gcc $(LINKER_FLAGS) -o $@ $<
+	@$(DEVKITPPC)/bin/powerpc-eabi-gcc $(LINKER_FLAGS) -o $@ $<
 
 SMB2PracticeMod.rel: elf2rel SMB2PracticeMod.elf
-	$(ELF2REL) SMB2PracticeMod.elf -s $(CURDIR)/cppsrc/mkb/mkb2.us.lst --rel-version 2 --rel-id 101
+	@$(ELF2REL) SMB2PracticeMod.elf -s $(CURDIR)/cppsrc/mkb/mkb2.us.lst --rel-version 2 --rel-id 101
 
 SMB2PracticeMod.gci: SMB2PracticeMod.rel
-	python3 $(GCIPACK) $< rel "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
+	@python3 $(GCIPACK) $< rel "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
 
 .PHONY: clean
 clean:
