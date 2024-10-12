@@ -9,6 +9,7 @@ GCIPACK := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/gcipack/gcipack.py
 BANNERFILE := $(CURDIR)/images/banner_us.raw
 ICONFILE := $(CURDIR)/images/icon_us.raw
 
+CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
 LINKER_FLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
 all: SMB2PracticeMod.gci
@@ -25,7 +26,7 @@ src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
 
 .PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 $(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs
-	cargo +nightly build -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
+	cargo +nightly build $(CARGO_BASE)
 
 SMB2PracticeMod.elf: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 	@$(DEVKITPPC)/bin/powerpc-eabi-gcc $(LINKER_FLAGS) -o $@ $<
@@ -35,6 +36,10 @@ SMB2PracticeMod.rel: elf2rel SMB2PracticeMod.elf
 
 SMB2PracticeMod.gci: SMB2PracticeMod.rel
 	@python3 $(GCIPACK) $< rel "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
+
+.PHONY: fix
+fix:
+	cargo +nightly fix $(CARGO_BASE) --allow-dirty
 
 .PHONY: clean
 clean:
