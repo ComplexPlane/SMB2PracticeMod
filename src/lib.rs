@@ -3,6 +3,7 @@
 
 mod camera;
 mod heap;
+mod hook;
 mod log;
 mod menu_defn;
 mod patch;

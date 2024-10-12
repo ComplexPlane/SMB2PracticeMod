@@ -35,6 +35,10 @@ pub fn instr_nop() -> u32 {
     0x60000000
 }
 
+pub const B_OPCODE_MASK: u32 = 0xFC000000;
+pub const B_OPCODE: u32 = 0x48000000;
+pub const B_DEST_MASK: u32 = 0x03FFFFFC;
+
 // TODO: PPC_INSR_CMPWI
 
 pub enum Reg {
