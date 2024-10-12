@@ -23,6 +23,7 @@ elf2rel:
 src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
 	bindgen $< --use-core -o $@ -- --target=powerpc-unknown-eabi
 
+.PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 $(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs
 	cargo +nightly build -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
 
