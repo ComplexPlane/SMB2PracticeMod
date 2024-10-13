@@ -3,7 +3,7 @@ use core::arch::global_asm;
 extern "C" {
     pub static custom_titlescreen_text_color: u8;
     pub static full_debug_text_color: u8;
-    pub static debug_text_color: u32;
+    pub static mut debug_text_color: u32;
 }
 
 global_asm!(
@@ -40,7 +40,6 @@ global_asm!(
 
 global_asm!(
     ".global full_debug_text_color
-    .global debug_text_color
 
     # Hooked at 0x802aeca4 GC
     full_debug_text_color:
@@ -58,5 +57,11 @@ global_asm!(
     ori %r5, %r5, 0xeca8
     mtctr %r5
     bctr
+
+    .section .data
+    .align 4
+    .global debug_text_color
+    debug_text_color:
+    .long 0
 "
 );
