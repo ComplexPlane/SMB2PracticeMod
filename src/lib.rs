@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+// Required for global_asm! to work on PowerPC
 #![feature(asm_experimental_arch)]
 
 mod app;
@@ -68,7 +69,34 @@ unsafe fn init() {
     log!("SMB2 Practice Mod loaded");
 }
 
+unsafe fn tick() {
+    // Replace overwritten function call
+    mkb::perf_init_timer(4);
+
+    if pref::get_bool(pref::BoolPref::DebugMode) {
+        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+    } else {
+        mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
+    }
+    // TODO
+    // pad::on_frame_start();
+}
+
 unsafe fn perform_assembly_patches() {
+    patch::write_branch_bl(0x80270718 as *mut u32, tick as *mut c_void);
+
+    /* Remove OSReport call ``PERF : event is still open for CPU!``
+    since it reports every frame, and thus clutters the console */
+    // Only needs to be applied to the US version
+    patch::write_nop(0x80033E9C as *mut u32);
+
+    // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
+    // disabled
+    patch::write_nop(0x80299f54 as *mut u32);
+    // Nop this pausemenu screenshot call so we can call it when we want to
+    patch::write_nop(0x80270aac as *mut u32);
+
+    // Titlescreen patches
     let msg = c"SMB2 PRACTICE MOD";
     core::ptr::copy_nonoverlapping(
         msg.as_ptr(),
