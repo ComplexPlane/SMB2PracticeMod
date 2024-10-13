@@ -68,7 +68,7 @@ extern "C" fn _unresolved() {}
 unsafe fn init() {
     heap::HEAP.init();
     perform_assembly_patches();
-    app::APP_CONTEXT.init();
+    app::init();
 
     log!("SMB2 Practice Mod loaded");
 }
