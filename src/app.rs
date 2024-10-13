@@ -202,3 +202,20 @@ static APP_CONTEXT: Lazy<Mutex<AppContext>> = Lazy::new(|| Mutex::new(AppContext
 pub fn init() {
     with_app(|cx| cx.init());
 }
+
+pub fn tick() {
+    unsafe {
+        // Replace overwritten function call
+        mkb::perf_init_timer(4);
+
+        // if pref::get_bool(pref::BoolPref::DebugMode) {
+        // mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+        // } else {
+        mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
+        // }
+
+        with_app(|cx| {
+            cx.pad.borrow_mut().on_frame_start();
+        })
+    }
+}

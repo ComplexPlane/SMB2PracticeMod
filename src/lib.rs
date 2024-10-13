@@ -73,17 +73,8 @@ unsafe fn init() {
     log!("SMB2 Practice Mod loaded");
 }
 
-unsafe fn tick() {
-    // Replace overwritten function call
-    mkb::perf_init_timer(4);
-
-    if pref::get_bool(pref::BoolPref::DebugMode) {
-        mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-    } else {
-        mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
-    }
-    // TODO
-    // pad::on_frame_start();
+unsafe extern "C" fn tick() {
+    app::tick();
 }
 
 unsafe fn perform_assembly_patches() {

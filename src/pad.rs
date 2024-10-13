@@ -318,19 +318,19 @@ impl Pad {
         self.dir_down_time = [0; 8];
     }
 
-    fn konami_pressed(&self) -> bool {
+    pub fn konami_pressed(&self) -> bool {
         self.konami_progress == 11
     }
 
-    fn set_exclusive_mode(&mut self, enabled: bool) {
+    pub fn set_exclusive_mode(&mut self, enabled: bool) {
         self.exclusive_mode_request = enabled;
     }
 
-    fn get_exclusive_mode(&self) -> bool {
+    pub fn get_exclusive_mode(&self) -> bool {
         self.exclusive_mode
     }
 
-    fn on_frame_start(&mut self) {
+    pub fn on_frame_start(&mut self) {
         unsafe {
             if self.exclusive_mode {
                 // Restore previous controller inputs so new inputs can be computed correctly by the game
