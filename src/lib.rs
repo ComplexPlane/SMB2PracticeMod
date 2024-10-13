@@ -1,7 +1,9 @@
 #![no_std]
 #![no_main]
+#![feature(asm_experimental_arch)]
 
 mod app;
+mod asm;
 mod camera;
 mod heap;
 mod hook;
@@ -18,9 +20,12 @@ mod relutil;
 #[allow(non_snake_case)]
 mod mkb;
 
-use core::{ffi::c_char, panic::PanicInfo};
+use core::{
+    ffi::{c_char, c_void},
+    panic::PanicInfo,
+    ptr::addr_of,
+};
 
-use app::AppContext;
 use arrayvec::ArrayString;
 use critical_section::RawRestoreState;
 
@@ -57,9 +62,23 @@ extern "C" fn _unresolved() {}
 
 unsafe fn init() {
     heap::HEAP.init();
+    perform_assembly_patches();
     app::APP_CONTEXT.init();
 
     log!("SMB2 Practice Mod loaded");
+}
+
+unsafe fn perform_assembly_patches() {
+    let msg = c"SMB2 PRACTICE MOD";
+    core::ptr::copy_nonoverlapping(
+        msg.as_ptr(),
+        0x8047f4ec as *mut c_char,
+        msg.count_bytes() + 1,
+    );
+    patch::write_branch(
+        0x8032ad0c as *mut u32,
+        addr_of!(asm::custom_titlescreen_text_color) as *mut c_void,
+    );
 }
 
 // We're never running multiple "threads" or hooking interrupts, so establishing a critical section

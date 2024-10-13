@@ -5,11 +5,10 @@ use core::ffi::c_void;
 use critical_section::Mutex;
 
 use crate::hook;
-use crate::log;
 use crate::mkb;
 use crate::relutil;
 
-pub fn with_mut<T, F, R>(v: &Mutex<RefCell<T>>, f: F) -> R
+fn with_mut<T, F, R>(v: &Mutex<RefCell<T>>, f: F) -> R
 where
     F: FnOnce(&mut T) -> R,
 {
