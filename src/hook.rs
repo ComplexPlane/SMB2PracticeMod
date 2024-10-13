@@ -6,7 +6,8 @@ use crate::app::{self, AppContext};
 use crate::mkb;
 use crate::patch;
 
-macro_rules! tramp {
+#[macro_export]
+macro_rules! hook {
     ($name:ident $(, $argname:ident: $arg:ty)* => $ret:ty, $their_func:expr, $our_func:expr) => {
         pub struct $name {
             instrs: [u32; 2],
@@ -15,7 +16,7 @@ macro_rules! tramp {
             our_func_c: extern "C" fn($($arg,)*) -> $ret,
         }
 
-        paste! {
+        paste::paste! {
             impl $name {
                 pub const fn new() -> Self {
                     Self {
@@ -28,14 +29,14 @@ macro_rules! tramp {
 
                 pub fn hook(&mut self) {
                     unsafe {
-                        let mut chained_func_addr = null();
-                        patch::hook_function(
+                        let mut chained_func_addr = core::ptr::null();
+                        $crate::patch::hook_function(
                             self.their_func as *mut u32,
                             self.our_func_c as *mut u32,
                             &mut self.instrs,
                             &mut chained_func_addr,
                         );
-                        self.chained_func = Some(transmute(chained_func_addr));
+                        self.chained_func = Some(core::mem::transmute(chained_func_addr));
                     }
                 }
 
@@ -45,7 +46,7 @@ macro_rules! tramp {
 
                 extern "C" fn [<$name:snake _c_hook>]($($argname: $arg, )*) -> $ret {
                     critical_section::with(|cs| {
-                        let mut cx = app::APP_CONTEXT.borrow(cs).borrow_mut();
+                        let mut cx = $crate::app::APP_CONTEXT.borrow(cs).borrow_mut();
                         $our_func($($argname, )* &mut cx)
                     })
                 }
@@ -53,7 +54,3 @@ macro_rules! tramp {
         }
     }
 }
-
-tramp!(PADReadTramp, status: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx: &mut AppContext| {
-    cx.padread_tramp.call(statuses)
-});
