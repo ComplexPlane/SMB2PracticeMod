@@ -5,14 +5,14 @@
 #[macro_export]
 macro_rules! log {
     ($fmt:expr $(, $($arg:tt)*)?) => {{
-        let mut c_fmt = ArrayString::<512>::from("[pracmod] ").unwrap();
+        let mut c_fmt = arrayvec::ArrayString::<512>::from("[pracmod] ").unwrap();
         c_fmt.push_str($fmt);
         c_fmt.push_str("\n\0");
 
         // I'm not sure it's possible to expand arg in a safe context
         #[allow(clippy::macro_metavars_in_unsafe)]
         unsafe {
-            mkb::OSReport(c_fmt.as_ptr() as *mut c_char $(, $($arg)*)?);
+            mkb::OSReport(c_fmt.as_ptr() as *mut core::ffi::c_char $(, $($arg)*)?);
         }
     }};
 }

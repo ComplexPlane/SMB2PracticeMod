@@ -55,25 +55,15 @@ extern "C" fn _epilog() {}
 #[no_mangle]
 extern "C" fn _unresolved() {}
 
-unsafe fn init_app(cx: &mut AppContext) {
-    cx.padread_hook.hook();
-    cx.process_inputs_hook.hook();
-    cx.draw_debug_text_hook.hook();
-    cx.oslink_hook.hook();
-}
-
 unsafe fn init() {
     heap::HEAP.init();
-
-    critical_section::with(|cs| {
-        let mut cx = app::APP_CONTEXT.borrow(cs).borrow_mut();
-        init_app(&mut cx);
-    });
+    app::APP_CONTEXT.init();
 
     log!("SMB2 Practice Mod loaded");
 }
 
-// We're never running multiple "threads" or hooking interrupts, so establishing a critical section is a no-op
+// We're never running multiple "threads" or hooking interrupts, so establishing a critical section
+// is a no-op
 struct MyCriticalSection;
 critical_section::set_impl!(MyCriticalSection);
 unsafe impl critical_section::Impl for MyCriticalSection {

@@ -45,10 +45,7 @@ macro_rules! hook {
                 }
 
                 extern "C" fn [<$name:snake _c_hook>]($($argname: $arg, )*) -> $ret {
-                    critical_section::with(|cs| {
-                        let mut cx = $crate::app::APP_CONTEXT.borrow(cs).borrow_mut();
-                        $our_func($($argname, )* &mut cx)
-                    })
+                    $our_func($($argname, )*)
                 }
             }
         }
