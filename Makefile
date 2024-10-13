@@ -22,7 +22,7 @@ elf2rel:
 	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 
 src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
-	bindgen $< --use-core -o $@ -- --target=powerpc-unknown-eabi
+	bindgen $< --use-core --with-derive-default -o $@ -- --target=powerpc-unknown-eabi
 
 .PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 $(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs

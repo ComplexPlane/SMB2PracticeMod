@@ -56,7 +56,7 @@ pub type PSeesawState = *mut SeesawState;
 pub type f32_ = f32;
 pub type Mtx = [[f32_; 4usize]; 3usize];
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SeesawState {
     pub angle: f32,
     pub prev_angle: f32,
@@ -216,7 +216,7 @@ pub const GX_TF_A8: _bindgen_ty_6 = 32;
 pub type _bindgen_ty_6 = ::core::ffi::c_uint;
 pub type GXTexFmt = undefined4;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct S16Vec {
     pub x: s16,
     pub y: s16,
@@ -301,8 +301,17 @@ const _: () = {
     ["Offset of field: GoalTape::field_0x194"]
         [::core::mem::offset_of!(GoalTape, field_0x194) - 404usize];
 };
+impl Default for GoalTape {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXTexObj {
     pub field_0x0: [undefined; 20usize],
     pub format: GXTexFmt,
@@ -318,7 +327,7 @@ const _: () = {
         [::core::mem::offset_of!(GXTexObj, field_0x18) - 24usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Vec {
     pub x: f32,
     pub y: f32,
@@ -333,7 +342,7 @@ const _: () = {
     ["Offset of field: Vec::z"][::core::mem::offset_of!(Vec, z) - 8usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct PhysicsBall {
     pub flags: dword,
     pub pos: Vec,
@@ -477,6 +486,15 @@ const _: () = {
     ["Offset of field: Stobj::g_local_velocity"]
         [::core::mem::offset_of!(Stobj, g_local_velocity) - 192usize];
 };
+impl Default for Stobj {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GmaModel {
@@ -523,6 +541,15 @@ const _: () = {
     ["Offset of field: GmaModel::field_0x30"]
         [::core::mem::offset_of!(GmaModel, field_0x30) - 48usize];
 };
+impl Default for GmaModel {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PMenuScreen = *mut MenuScreen;
 pub type PMenuEntry = *mut MenuEntry;
 pub type u32_ = u32;
@@ -572,6 +599,15 @@ const _: () = {
     ["Offset of field: MenuScreen::field_0xc"]
         [::core::mem::offset_of!(MenuScreen, field_0xc) - 12usize];
 };
+impl Default for MenuScreen {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct MenuEntry {
@@ -617,6 +653,15 @@ const _: () = {
     ["Offset of field: MenuEntry::description_ja"]
         [::core::mem::offset_of!(MenuEntry, description_ja) - 48usize];
 };
+impl Default for MenuEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PBmpInfo = *mut BmpInfo;
 pub type BOOL32 = ::core::ffi::c_int;
 pub type PTplBuffer = *mut TplBuffer;
@@ -645,6 +690,15 @@ const _: () = {
     ["Offset of field: TplBuffer::field_0x10"]
         [::core::mem::offset_of!(TplBuffer, field_0x10) - 16usize];
 };
+impl Default for TplBuffer {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct BmpInfo {
@@ -666,8 +720,17 @@ const _: () = {
     ["Offset of field: BmpInfo::tpl"][::core::mem::offset_of!(BmpInfo, tpl) - 16usize];
     ["Offset of field: BmpInfo::heap"][::core::mem::offset_of!(BmpInfo, heap) - 20usize];
 };
+impl Default for BmpInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct TplTextureHeader {
     pub format: GXTexFmt,
     pub data_offset: dword,
@@ -695,7 +758,7 @@ const _: () = {
 };
 pub type PCoinType = *mut CoinType;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CoinType {
     pub banana_count: s16,
     pub g_score_increment_flag: s16,
@@ -737,6 +800,15 @@ const _: () = {
     ["Offset of field: GMotionData::length"]
         [::core::mem::offset_of!(GMotionData, length) - 80usize];
 };
+impl Default for GMotionData {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const STAT_NULL: _bindgen_ty_8 = 0;
 pub const STAT_INIT: _bindgen_ty_8 = 1;
 pub const STAT_NORMAL: _bindgen_ty_8 = 2;
@@ -797,6 +869,15 @@ const _: () = {
     ["Offset of field: GSomeBgStruct::field11_0x2c"]
         [::core::mem::offset_of!(GSomeBgStruct, field11_0x2c) - 44usize];
 };
+impl Default for GSomeBgStruct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const SMD_ADV_TOP: _bindgen_ty_9 = 0;
 pub const SMD_ADV_MOVIE_INIT: _bindgen_ty_9 = 1;
 pub const SMD_ADV_MOVIE_RETURN: _bindgen_ty_9 = 2;
@@ -1238,6 +1319,15 @@ const _: () = {
     ["Offset of field: Replay::seesawState"]
         [::core::mem::offset_of!(Replay, seesawState) - 180usize];
 };
+impl Default for Replay {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PApe = *mut Ape;
 pub type PSomeApeState = *mut SomeApeState;
 pub type PMal = *mut Mal;
@@ -1316,7 +1406,7 @@ pub type PSKLBone = *mut SKLBone;
 pub type Pg_thing = *mut g_thing;
 pub type PGmaModelEntry = *mut GmaModelEntry;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Quat {
     pub x: f32_,
     pub y: f32_,
@@ -1333,7 +1423,7 @@ const _: () = {
     ["Offset of field: Quat::w"][::core::mem::offset_of!(Quat, w) - 12usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct gFloats {
     pub field0_0x0: ::core::ffi::c_short,
     pub field1_0x2: ::core::ffi::c_short,
@@ -1399,6 +1489,15 @@ const _: () = {
     ["Offset of field: SKLRoot::field_0x74"]
         [::core::mem::offset_of!(SKLRoot, field_0x74) - 116usize];
 };
+impl Default for SKLRoot {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct SomeApeState {
@@ -1441,8 +1540,17 @@ const _: () = {
     ["Offset of field: SomeApeState::field_0x38"]
         [::core::mem::offset_of!(SomeApeState, field_0x38) - 56usize];
 };
+impl Default for SomeApeState {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SKLBone {
     pub parentNumber: ::core::ffi::c_short,
     pub g_maybe_flag: ::core::ffi::c_short,
@@ -1464,7 +1572,7 @@ const _: () = {
         [::core::mem::offset_of!(SKLBone, Translation) - 36usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SKLFile {
     pub bone_count: ::core::ffi::c_short,
     pub padding: undefined2,
@@ -1495,6 +1603,15 @@ const _: () = {
         [::core::mem::offset_of!(ArcFileInfo, startoffset) - 4usize];
     ["Offset of field: ArcFileInfo::length"][::core::mem::offset_of!(ArcFileInfo, length) - 8usize];
 };
+impl Default for ArcFileInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct g_thing {
@@ -1510,6 +1627,15 @@ const _: () = {
     ["Offset of field: g_thing::Name"][::core::mem::offset_of!(g_thing, Name) - 8usize];
     ["Offset of field: g_thing::field_0xc"][::core::mem::offset_of!(g_thing, field_0xc) - 12usize];
 };
+impl Default for g_thing {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GmaBuffer {
@@ -1537,6 +1663,15 @@ const _: () = {
     ["Offset of field: GmaBuffer::field_0x14"]
         [::core::mem::offset_of!(GmaBuffer, field_0x14) - 20usize];
 };
+impl Default for GmaBuffer {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct SKLInfo {
@@ -1582,6 +1717,15 @@ const _: () = {
     ["Offset of field: SKLInfo::field_0xd4"]
         [::core::mem::offset_of!(SKLInfo, field_0xd4) - 212usize];
 };
+impl Default for SKLInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct ARCHandle {
@@ -1606,6 +1750,15 @@ const _: () = {
     ["Offset of field: ARCHandle::f"][::core::mem::offset_of!(ARCHandle, f) - 20usize];
     ["Offset of field: ARCHandle::g"][::core::mem::offset_of!(ARCHandle, g) - 24usize];
 };
+impl Default for ARCHandle {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GApeAnim {
@@ -1636,6 +1789,15 @@ const _: () = {
     ["Offset of field: GApeAnim::field_0x20"]
         [::core::mem::offset_of!(GApeAnim, field_0x20) - 32usize];
 };
+impl Default for GApeAnim {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Ape {
@@ -1959,6 +2121,15 @@ const _: () = {
     ["Offset of field: Ape::field221_0x2ec"]
         [::core::mem::offset_of!(Ape, field221_0x2ec) - 748usize];
 };
+impl Default for Ape {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Mal {
@@ -1974,6 +2145,15 @@ const _: () = {
     ["Offset of field: Mal::g_some_count"][::core::mem::offset_of!(Mal, g_some_count) - 33usize];
     ["Offset of field: Mal::field_0x22"][::core::mem::offset_of!(Mal, field_0x22) - 34usize];
 };
+impl Default for Mal {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GmaModelEntry {
@@ -1988,10 +2168,19 @@ const _: () = {
         [::core::mem::offset_of!(GmaModelEntry, model) - 0usize];
     ["Offset of field: GmaModelEntry::name"][::core::mem::offset_of!(GmaModelEntry, name) - 4usize];
 };
+impl Default for GmaModelEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PCamera = *mut Camera;
 pub type PVec2d = *mut Vec2d;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Vec2d {
     pub x: f32,
     pub y: f32,
@@ -2151,9 +2340,18 @@ const _: () = {
     ["Offset of field: Camera::field_0x210"]
         [::core::mem::offset_of!(Camera, field_0x210) - 528usize];
 };
+impl Default for Camera {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PRect = *mut Rect;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Rect {
     pub pos: Vec,
     pub rot: S16Vec,
@@ -2186,6 +2384,15 @@ const _: () = {
     ["Offset of field: OrdTblNode::draw_func"]
         [::core::mem::offset_of!(OrdTblNode, draw_func) - 4usize];
 };
+impl Default for OrdTblNode {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const CHALLENGE_MODE: _bindgen_ty_15 = 0;
 pub const COMPETITION_MODE: _bindgen_ty_15 = 1;
 pub const PRACTICE_MODE: _bindgen_ty_15 = 2;
@@ -2394,7 +2601,7 @@ pub type PDVDFileInfo = *mut DVDFileInfo;
 pub type PDVDCommandBlock = *mut DVDCommandBlock;
 pub type PDVDDiskID = *mut DVDDiskID;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Rgb24 {
     pub red: u8_,
     pub green: u8_,
@@ -2524,6 +2731,15 @@ const _: () = {
     ["Offset of field: Sprite::v2"][::core::mem::offset_of!(Sprite, v2) - 156usize];
     ["Offset of field: Sprite::text"][::core::mem::offset_of!(Sprite, text) - 160usize];
 };
+impl Default for Sprite {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct DVDCommandBlock {
@@ -2570,6 +2786,15 @@ const _: () = {
     ["Offset of field: DVDCommandBlock::userData"]
         [::core::mem::offset_of!(DVDCommandBlock, userData) - 44usize];
 };
+impl Default for DVDCommandBlock {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct DVDFileInfo {
@@ -2592,8 +2817,17 @@ const _: () = {
     ["Offset of field: DVDFileInfo::callback"]
         [::core::mem::offset_of!(DVDFileInfo, callback) - 60usize];
 };
+impl Default for DVDFileInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct DVDDiskID {
     pub gameName: [::core::ffi::c_char; 4usize],
     pub company: [::core::ffi::c_char; 2usize],
@@ -2659,9 +2893,18 @@ const _: () = {
     ["Offset of field: SpriteTex::dvd_file"]
         [::core::mem::offset_of!(SpriteTex, dvd_file) - 60usize];
 };
+impl Default for SpriteTex {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PHeapConfig = *mut HeapConfig;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct HeapConfig {
     pub stage_heap_size: u32_,
     pub bg_heap_size: u32_,
@@ -2685,7 +2928,7 @@ const _: () = {
 };
 pub type PGSomethingWithPadMotorsStruct = *mut GSomethingWithPadMotorsStruct;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GSomethingWithPadMotorsStruct {
     pub a: undefined1,
     pub field_0x1: [undefined; 1usize],
@@ -2713,7 +2956,7 @@ pub const SDRF_G_X_SCALE_RELATED: _bindgen_ty_20 = 16777216;
 pub type _bindgen_ty_20 = ::core::ffi::c_uint;
 pub type SpriteDrawReqFlags = undefined4;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SpriteDrawRequest {
     pub id: s32,
     pub pos: Vec,
@@ -2769,7 +3012,7 @@ const _: () = {
 pub type PCmPlayerProgress = *mut CmPlayerProgress;
 pub type PCmStage = *mut CmStage;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CmStage {
     pub stage_course_num: s32,
     pub stage_id: s32,
@@ -2783,7 +3026,7 @@ const _: () = {
     ["Offset of field: CmStage::stage_id"][::core::mem::offset_of!(CmStage, stage_id) - 4usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CmPlayerProgress {
     pub curr_stage: CmStage,
     pub next_stages: [CmStage; 3usize],
@@ -2835,6 +3078,15 @@ const _: () = {
     ["Offset of field: GoalBag::field16_0x24"]
         [::core::mem::offset_of!(GoalBag, field16_0x24) - 36usize];
 };
+impl Default for GoalBag {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PWorldInfo = *mut WorldInfo;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -2854,6 +3106,15 @@ const _: () = {
     ["Offset of field: WorldInfo::field_0x4"]
         [::core::mem::offset_of!(WorldInfo, field_0x4) - 4usize];
 };
+impl Default for WorldInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const RETURN_WIDTH: _bindgen_ty_22 = 0;
 pub const RETURN_CHARACTER_COUNT: _bindgen_ty_22 = 1;
 pub const G_RETURN_SOME_BOOL: _bindgen_ty_22 = 2;
@@ -2897,9 +3158,18 @@ const _: () = {
     ["Offset of field: SeesawInfo::g_replay_func"]
         [::core::mem::offset_of!(SeesawInfo, g_replay_func) - 28usize];
 };
+impl Default for SeesawInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGSoundCue = *mut GSoundCue;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GSoundCue {
     pub g_sfx_id: ::core::ffi::c_short,
     pub g_sfx_rid: ::core::ffi::c_short,
@@ -2956,6 +3226,15 @@ const _: () = {
     ["Offset of field: GCachedFileEntry::prev"]
         [::core::mem::offset_of!(GCachedFileEntry, prev) - 12usize];
 };
+impl Default for GCachedFileEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const MF_NONE: _bindgen_ty_24 = 0;
 pub const MF_0x1: _bindgen_ty_24 = 1;
 pub const MF_0x2: _bindgen_ty_24 = 2;
@@ -2992,6 +3271,15 @@ const _: () = {
     ["Offset of field: GSomeSpriteStruct::g_next"]
         [::core::mem::offset_of!(GSomeSpriteStruct, g_next) - 8usize];
 };
+impl Default for GSomeSpriteStruct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PItem = *mut Item;
 pub const ITEM_COIN: _bindgen_ty_25 = 0;
 pub const ITEM_FGT_BANANA: _bindgen_ty_25 = 1;
@@ -3118,6 +3406,15 @@ const _: () = {
     ["Offset of field: Item::g_something_with_shadows"]
         [::core::mem::offset_of!(Item, g_something_with_shadows) - 168usize];
 };
+impl Default for Item {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const BGM_SEL_WORLD: _bindgen_ty_26 = 0;
 pub const BGM_CAVE: _bindgen_ty_26 = 1;
 pub const BGM_SEL_FUTSAL: _bindgen_ty_26 = 2;
@@ -3283,7 +3580,7 @@ pub const COURSE_CMD_END: _bindgen_ty_28 = 3;
 pub type _bindgen_ty_28 = ::core::ffi::c_uint;
 pub type CourseCommandOpcode = undefined1;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CourseCommand {
     pub opcode: CourseCommandOpcode,
     pub type_: u8_,
@@ -3322,6 +3619,15 @@ const _: () = {
     ["Offset of field: RelBufferInfo::bss_buffer"]
         [::core::mem::offset_of!(RelBufferInfo, bss_buffer) - 4usize];
 };
+impl Default for RelBufferInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PUnlockInfo = *mut UnlockInfo;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3363,6 +3669,15 @@ const _: () = {
     ["Offset of field: UnlockInfo::field_0x16"]
         [::core::mem::offset_of!(UnlockInfo, field_0x16) - 22usize];
 };
+impl Default for UnlockInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PBall = *mut Ball;
 pub const PHYS_MODE_G_GOALED: _bindgen_ty_29 = 5;
 pub const PHYS_MODE_SLOWDOWN_BLASTOFF: _bindgen_ty_29 = 6;
@@ -3389,7 +3704,7 @@ pub type _bindgen_ty_30 = ::core::ffi::c_uint;
 pub type BallPhysFlags = undefined4;
 pub type PRaycastHit = *mut RaycastHit;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct RaycastHit {
     pub flags: u32_,
     pub pos: Vec,
@@ -3561,6 +3876,15 @@ const _: () = {
         [::core::mem::offset_of!(Ball, raycast_down_hit) - 380usize];
     ["Offset of field: Ball::field_0x198"][::core::mem::offset_of!(Ball, field_0x198) - 408usize];
 };
+impl Default for Ball {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PSmWorldInfo = *mut SmWorldInfo;
 pub type PSmStageInfo = *mut SmStageInfo;
 #[repr(C, packed)]
@@ -3580,8 +3904,17 @@ const _: () = {
         [::core::mem::offset_of!(SmWorldInfo, field_0x2) - 2usize];
     ["Offset of field: SmWorldInfo::stages"][::core::mem::offset_of!(SmWorldInfo, stages) - 4usize];
 };
+impl Default for SmWorldInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SmStageInfo {
     pub stage_id: s16,
     pub difficulty: s16,
@@ -3697,6 +4030,15 @@ const _: () = {
     ["Offset of field: FontDefinition::field23_0x34"]
         [::core::mem::offset_of!(FontDefinition, field23_0x34) - 52usize];
 };
+impl Default for FontDefinition {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PItemgroup = *mut Itemgroup;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3736,6 +4078,15 @@ const _: () = {
     ["Offset of field: Itemgroup::seesaw_info"]
         [::core::mem::offset_of!(Itemgroup, seesaw_info) - 156usize];
 };
+impl Default for Itemgroup {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGSoundGroupEntry = *mut GSoundGroupEntry;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3767,6 +4118,15 @@ const _: () = {
     ["Offset of field: GSoundGroupEntry::g_name"]
         [::core::mem::offset_of!(GSoundGroupEntry, g_name) - 12usize];
 };
+impl Default for GSoundGroupEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type CharPair = [::core::ffi::c_char; 2usize];
 pub type PStoryModeSaveFile = *mut StoryModeSaveFile;
 #[repr(C, packed)]
@@ -3814,6 +4174,15 @@ const _: () = {
     ["Offset of field: StoryModeSaveFile::field11_0x2f"]
         [::core::mem::offset_of!(StoryModeSaveFile, field11_0x2f) - 47usize];
 };
+impl Default for StoryModeSaveFile {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGBone = *mut GBone;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3830,6 +4199,15 @@ const _: () = {
     ["Offset of field: GBone::MTAData"][::core::mem::offset_of!(GBone, MTAData) - 4usize];
     ["Offset of field: GBone::UnknownPtr"][::core::mem::offset_of!(GBone, UnknownPtr) - 8usize];
 };
+impl Default for GBone {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PRankingEntry = *mut RankingEntry;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3859,9 +4237,18 @@ const _: () = {
     ["Offset of field: RankingEntry::field_0x18"]
         [::core::mem::offset_of!(RankingEntry, field_0x18) - 24usize];
 };
+impl Default for RankingEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGTableEntry = *mut GTableEntry;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GTableEntry {
     pub field_0x0: [undefined; 3usize],
     pub field3_0x3: byte,
@@ -3880,7 +4267,7 @@ const _: () = {
 };
 pub type Ptheme_light = *mut theme_light;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct theme_light {
     pub unk_float: f32,
     pub light_group_r: f32,
@@ -3959,7 +4346,7 @@ pub const GX_AF_NONE: _bindgen_ty_34 = 2;
 pub type _bindgen_ty_34 = ::core::ffi::c_uint;
 pub type GXAttnFn = undefined4;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OptiGXChanSettings {
     pub enable: GXBool,
     pub padding_0x1: [undefined; 3usize],
@@ -4001,6 +4388,15 @@ const _: () = {
     ["Offset of field: GSomeLightStruct::field_0x0"]
         [::core::mem::offset_of!(GSomeLightStruct, field_0x0) - 0usize];
 };
+impl Default for GSomeLightStruct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PCmListEntry = *mut CmListEntry;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -4020,6 +4416,15 @@ const _: () = {
     ["Offset of field: CmListEntry::field_0x8"]
         [::core::mem::offset_of!(CmListEntry, field_0x8) - 8usize];
 };
+impl Default for CmListEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PNlBuffer = *mut NlBuffer;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -4059,6 +4464,15 @@ const _: () = {
     ["Offset of field: NlBuffer::field85_0x64"]
         [::core::mem::offset_of!(NlBuffer, field85_0x64) - 100usize];
 };
+impl Default for NlBuffer {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGraphicsInfo = *mut GraphicsInfo;
 pub type PGXFifoObj = *mut GXFifoObj;
 #[repr(C, packed)]
@@ -4088,6 +4502,15 @@ const _: () = {
     ["Offset of field: GraphicsInfo::fifos"]
         [::core::mem::offset_of!(GraphicsInfo, fifos) - 20usize];
 };
+impl Default for GraphicsInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GXFifoObj {
@@ -4109,6 +4532,15 @@ const _: () = {
     ["Offset of field: GXFifoObj::field_0x1c"]
         [::core::mem::offset_of!(GXFifoObj, field_0x1c) - 28usize];
 };
+impl Default for GXFifoObj {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const FONT32_ASCII: _bindgen_ty_35 = 0;
 pub const FONT32_ASC_8x16: _bindgen_ty_35 = 1;
 pub const FONT32_ASC_12x12: _bindgen_ty_35 = 2;
@@ -4269,6 +4701,15 @@ const _: () = {
     ["Offset of field: g_someGameInfo::field_0x0"]
         [::core::mem::offset_of!(g_someGameInfo, field_0x0) - 0usize];
 };
+impl Default for g_someGameInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGSoundGroup = *mut GSoundGroup;
 #[repr(C, packed)]
 pub struct GSoundGroup {
@@ -4296,9 +4737,18 @@ const _: () = {
     ["Offset of field: GSoundGroup::field9_0x10"]
         [::core::mem::offset_of!(GSoundGroup, field9_0x10) - 16usize];
 };
+impl Default for GSoundGroup {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PScenInfo = *mut ScenInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct ScenInfo {
     pub mode: ScenMode,
     pub mode_request: ScenMode,
@@ -4504,7 +4954,7 @@ pub type _bindgen_ty_36 = ::core::ffi::c_uint;
 pub type Font16 = undefined2;
 pub type PMemCardInfo = *mut MemCardInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct MemCardInfo {
     pub chan: byte,
     pub field1_0x1: byte,
@@ -4572,6 +5022,15 @@ const _: () = {
     ["Offset of field: GSomeFileStruct::dvdFileInfo"]
         [::core::mem::offset_of!(GSomeFileStruct, dvdFileInfo) - 4usize];
 };
+impl Default for GSomeFileStruct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PPadStatusGroup = *mut PadStatusGroup;
 pub type PPADStatus = *mut PADStatus;
 pub const PAD_BUTTON_LEFT: _bindgen_ty_37 = 1;
@@ -4589,7 +5048,7 @@ pub const PAD_BUTTON_START: _bindgen_ty_37 = 4096;
 pub type _bindgen_ty_37 = ::core::ffi::c_uint;
 pub type PadDigitalInput = undefined2;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct PADStatus {
     pub button: PadDigitalInput,
     pub stickX: s8,
@@ -4625,7 +5084,7 @@ const _: () = {
         [::core::mem::offset_of!(PADStatus, field_0xb) - 11usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct PadStatusGroup {
     pub raw: PADStatus,
     pub prev_tick: PADStatus,
@@ -4649,7 +5108,7 @@ const _: () = {
 };
 pub type PDigitalInputGroup = *mut DigitalInputGroup;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct DigitalInputGroup {
     pub raw: PadDigitalInput,
     pub prev_tick: PadDigitalInput,
@@ -4691,7 +5150,7 @@ pub const PAI_RTRIG: _bindgen_ty_39 = 512;
 pub type _bindgen_ty_39 = ::core::ffi::c_uint;
 pub type PadAnalogInput = undefined2;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct AnalogInputGroup {
     pub raw: PadAnalogInput,
     pub prev_tick: PadAnalogInput,
@@ -4716,7 +5175,7 @@ const _: () = {
 };
 pub type PCARDStat = *mut CARDStat;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CARDStat {
     pub fileName: [::core::ffi::c_char; 32usize],
     pub length: u32_,
@@ -4774,7 +5233,7 @@ pub type WidescreenMode = undefined1;
 pub type PMemCardFile = *mut MemCardFile;
 pub type PCARDFileInfo = *mut CARDFileInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CARDFileInfo {
     pub chan: s32,
     pub fileNo: s32,
@@ -4820,6 +5279,15 @@ const _: () = {
     ["Offset of field: MemCardFile::file_name"]
         [::core::mem::offset_of!(MemCardFile, file_name) - 36usize];
 };
+impl Default for MemCardFile {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PModeInfo = *mut ModeInfo;
 pub const BALLMODE_NONE: _bindgen_ty_41 = 0;
 pub const BALLMODE_GOALED: _bindgen_ty_41 = 1;
@@ -4843,7 +5311,7 @@ pub const Red: _bindgen_ty_42 = 2;
 pub type _bindgen_ty_42 = ::core::ffi::c_uint;
 pub type GoalType = undefined1;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct ModeInfo {
     pub ball_mode: G_BallMode,
     pub stage_time_frames_remaining: s16,
@@ -4940,6 +5408,15 @@ const _: () = {
     ["Offset of field: Event::dest_func"][::core::mem::offset_of!(Event, dest_func) - 16usize];
     ["Offset of field: Event::tick_time"][::core::mem::offset_of!(Event, tick_time) - 20usize];
 };
+impl Default for Event {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type wchar16 = ::core::ffi::c_ushort;
 pub const EVENT_STAGE: _bindgen_ty_43 = 0;
 pub const EVENT_WORLD: _bindgen_ty_43 = 1;
@@ -4996,6 +5473,15 @@ const _: () = {
     ["Offset of field: __OutStrCtrl::CharsWritten"]
         [::core::mem::offset_of!(__OutStrCtrl, CharsWritten) - 8usize];
 };
+impl Default for __OutStrCtrl {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type POptiGXSettings = *mut OptiGXSettings;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5021,9 +5507,18 @@ const _: () = {
     ["Offset of field: OptiGXSettings::chan_alpha1"]
         [::core::mem::offset_of!(OptiGXSettings, chan_alpha1) - 3192usize];
 };
+impl Default for OptiGXSettings {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PS32Vec = *mut S32Vec;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct S32Vec {
     pub x: s32,
     pub y: s32,
@@ -5041,7 +5536,7 @@ pub type _bindgen_ty_46 = ::core::ffi::c_uint;
 pub type GOtherFlags = undefined4;
 pub type PMap = *mut Map;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Map {
     pub size: ::core::ffi::c_int,
     pub field1_0x4: undefined4,
@@ -5057,7 +5552,7 @@ const _: () = {
 };
 pub type PgDiscQueueItem = *mut gDiscQueueItem;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct gDiscQueueItem {
     pub status: ::core::ffi::c_int,
     pub entrynum: ::core::ffi::c_int,
@@ -5249,6 +5744,15 @@ const _: () = {
         [::core::mem::offset_of!(Effect, g_some_vec3) - 152usize];
     ["Offset of field: Effect::field_0xa4"][::core::mem::offset_of!(Effect, field_0xa4) - 164usize];
 };
+impl Default for Effect {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const PMT_UNKNOWN0: _bindgen_ty_53 = 0;
 pub const PMT_CHALLENGE: _bindgen_ty_53 = 1;
 pub const PMT_PRACTICE: _bindgen_ty_53 = 2;
@@ -5261,7 +5765,7 @@ pub type _bindgen_ty_53 = ::core::ffi::c_uint;
 pub type PauseMenuType = undefined4;
 pub type Pytgut = *mut ytgut;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct ytgut {
     pub field_0x0: [undefined; 4usize],
 }
@@ -5287,6 +5791,15 @@ const _: () = {
     ["Offset of field: GDialogStruct::field_0x4"]
         [::core::mem::offset_of!(GDialogStruct, field_0x4) - 4usize];
 };
+impl Default for GDialogStruct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PPoolInfo = *mut PoolInfo;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5308,9 +5821,18 @@ const _: () = {
     ["Offset of field: PoolInfo::status_list"]
         [::core::mem::offset_of!(PoolInfo, status_list) - 12usize];
 };
+impl Default for PoolInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PSelMenuInfo = *mut SelMenuInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct SelMenuInfo {
     pub menu_stack_ptr: u8_,
     pub menu_stack: [u8_; 10usize],
@@ -5372,6 +5894,15 @@ const _: () = {
     ["Offset of field: _IO_marker::_sbuf"][::core::mem::offset_of!(_IO_marker, _sbuf) - 4usize];
     ["Offset of field: _IO_marker::_pos"][::core::mem::offset_of!(_IO_marker, _pos) - 8usize];
 };
+impl Default for _IO_marker {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct _IO_FILE {
@@ -5455,6 +5986,15 @@ const _: () = {
     ["Offset of field: _IO_FILE::padding_0x73"]
         [::core::mem::offset_of!(_IO_FILE, padding_0x73) - 115usize];
 };
+impl Default for _IO_FILE {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type f64_ = f64;
 pub type __FILE = _IO_FILE;
 pub type FILE = _IO_FILE;
@@ -5494,6 +6034,15 @@ const _: () = {
     ["Offset of field: gSceneData::field12_0xc"]
         [::core::mem::offset_of!(gSceneData, field12_0xc) - 12usize];
 };
+impl Default for gSceneData {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PStagedefBackgroundAnimHeader = *mut StagedefBackgroundAnimHeader;
 pub type PStagedefAnimKeyframe = *mut StagedefAnimKeyframe;
 pub const EASING_CONSTANT: _bindgen_ty_57 = 0;
@@ -5560,8 +6109,17 @@ const _: () = {
     ["Offset of field: StagedefBackgroundAnimHeader::field_0x40"]
         [::core::mem::offset_of!(StagedefBackgroundAnimHeader, field_0x40) - 64usize];
 };
+impl Default for StagedefBackgroundAnimHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefAnimKeyframe {
     pub easing: Easing,
     pub time: f32,
@@ -5615,8 +6173,17 @@ const _: () = {
     ["Offset of field: StagedefEffectHeader::field_0x14"]
         [::core::mem::offset_of!(StagedefEffectHeader, field_0x14) - 20usize];
 };
+impl Default for StagedefEffectHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefEffect1 {
     pub field0_0x0: dword,
     pub field1_0x4: dword,
@@ -5646,7 +6213,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefEffect1, field_0x12) - 18usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefEffect2 {
     pub field0_0x0: f32,
     pub field1_0x4: f32,
@@ -5667,7 +6234,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefEffect2, field_0xc) - 12usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefTextureScroll {
     pub speed: Vec2d,
 }
@@ -5726,6 +6293,15 @@ const _: () = {
     ["Offset of field: StagedefFogAnimHeader::unk_keyframe_list"]
         [::core::mem::offset_of!(StagedefFogAnimHeader, unk_keyframe_list) - 44usize];
 };
+impl Default for StagedefFogAnimHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PStagedefAnimHeader = *mut StagedefAnimHeader;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5775,6 +6351,15 @@ const _: () = {
     ["Offset of field: StagedefAnimHeader::field_0x30"]
         [::core::mem::offset_of!(StagedefAnimHeader, field_0x30) - 48usize];
 };
+impl Default for StagedefAnimHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PStagedefFileHeader = *mut StagedefFileHeader;
 pub type PStagedefColiHeader = *mut StagedefColiHeader;
 pub type PStagedefStart = *mut StagedefStart;
@@ -5841,8 +6426,17 @@ const _: () = {
     ["Offset of field: StagedefStageModelInstance::scale"]
         [::core::mem::offset_of!(StagedefStageModelInstance, scale) - 24usize];
 };
+impl Default for StagedefStageModelInstance {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefBumper {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -5882,8 +6476,17 @@ const _: () = {
     ["Offset of field: StagedefReflectiveStageModel::field_0x8"]
         [::core::mem::offset_of!(StagedefReflectiveStageModel, field_0x8) - 8usize];
 };
+impl Default for StagedefReflectiveStageModel {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefFallout {
     pub y: f32,
 }
@@ -5894,7 +6497,7 @@ const _: () = {
     ["Offset of field: StagedefFallout::y"][::core::mem::offset_of!(StagedefFallout, y) - 0usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefButton {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -5937,6 +6540,15 @@ const _: () = {
     ["Offset of field: StagedefDynamicReflectionPlane::rot"]
         [::core::mem::offset_of!(StagedefDynamicReflectionPlane, rot) - 16usize];
 };
+impl Default for StagedefDynamicReflectionPlane {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefStageModel {
@@ -5958,8 +6570,17 @@ const _: () = {
     ["Offset of field: StagedefStageModel::field_0xc"]
         [::core::mem::offset_of!(StagedefStageModel, field_0xc) - 12usize];
 };
+impl Default for StagedefStageModel {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiSphere {
     pub position: Vec,
     pub radius: f32,
@@ -5977,7 +6598,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefColiSphere, g_not_padding) - 16usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiCylinder {
     pub position: Vec,
     pub radius: f32,
@@ -6041,6 +6662,15 @@ const _: () = {
     ["Offset of field: StagedefBackgroundModel::effect_header"]
         [::core::mem::offset_of!(StagedefBackgroundModel, effect_header) - 52usize];
 };
+impl Default for StagedefBackgroundModel {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefStageModelPtrA {
@@ -6060,6 +6690,15 @@ const _: () = {
     ["Offset of field: StagedefStageModelPtrA::stage_model"]
         [::core::mem::offset_of!(StagedefStageModelPtrA, stage_model) - 8usize];
 };
+impl Default for StagedefStageModelPtrA {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefStageModelPtrB {
@@ -6073,8 +6712,17 @@ const _: () = {
     ["Offset of field: StagedefStageModelPtrB::stage_model_a"]
         [::core::mem::offset_of!(StagedefStageModelPtrB, stage_model_a) - 0usize];
 };
+impl Default for StagedefStageModelPtrB {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefBanana {
     pub position: Vec,
     pub type_: BananaType,
@@ -6089,7 +6737,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefBanana, type_) - 12usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefMystery5 {
     pub field_0x0: [undefined; 4usize],
     pub field4_0x4: f32,
@@ -6113,7 +6761,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefMystery5, field7_0x10) - 16usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiCone {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -6134,7 +6782,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefColiCone, scale) - 20usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefJamabar {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -6155,7 +6803,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefJamabar, scale) - 20usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefMystery3 {
     pub field0_0x0: f32,
     pub field1_0x4: f32,
@@ -6182,7 +6830,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefMystery3, field_0x10) - 16usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefFalloutVolume {
     pub position: Vec,
     pub size: Vec,
@@ -6204,7 +6852,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefFalloutVolume, padding) - 30usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiTri {
     pub vert1: Vec,
     pub normal: Vec,
@@ -6237,7 +6885,7 @@ const _: () = {
         [::core::mem::offset_of!(StagedefColiTri, bitangent) - 56usize];
 };
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefGoal {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -6281,6 +6929,15 @@ const _: () = {
     ["Offset of field: StagedefWormhole::destination"]
         [::core::mem::offset_of!(StagedefWormhole, destination) - 24usize];
 };
+impl Default for StagedefWormhole {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefBackgroundAnim2Header {
@@ -6364,8 +7021,17 @@ const _: () = {
     ["Offset of field: StagedefBackgroundAnim2Header::unk11_keyframe_list"]
         [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk11_keyframe_list) - 92usize];
 };
+impl Default for StagedefBackgroundAnim2Header {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefStart {
     pub position: Vec,
     pub rotation: S16Vec,
@@ -6538,8 +7204,17 @@ const _: () = {
     ["Offset of field: StagedefFileHeader::field_0xd8"]
         [::core::mem::offset_of!(StagedefFileHeader, field_0xd8) - 216usize];
 };
+impl Default for StagedefFileHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefFog {
     pub type_: GXFogType,
     pub field_0x1: [undefined; 3usize],
@@ -6604,6 +7279,15 @@ const _: () = {
     ["Offset of field: StagedefForegroundModel::field9_0x34"]
         [::core::mem::offset_of!(StagedefForegroundModel, field9_0x34) - 52usize];
 };
+impl Default for StagedefForegroundModel {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefColiHeader {
@@ -6769,11 +7453,20 @@ const _: () = {
     ["Offset of field: StagedefColiHeader::field_0xdc"]
         [::core::mem::offset_of!(StagedefColiHeader, field_0xdc) - 220usize];
 };
+impl Default for StagedefColiHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type __gnuc_va_list = *mut ::core::ffi::c_void;
 pub type va_list = __gnuc_va_list;
 pub type PGmaShape = *mut GmaShape;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GmaShape {
     pub g_some_bitflag: uint,
     pub g_some_short: ::core::ffi::c_short,
@@ -6917,9 +7610,18 @@ const _: () = {
     ["Offset of field: GmaTevLayer::field_0x10"]
         [::core::mem::offset_of!(GmaTevLayer, field_0x10) - 16usize];
 };
+impl Default for GmaTevLayer {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGmaVertexControlHeader = *mut GmaVertexControlHeader;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GmaVertexControlHeader {
     pub vertex_count: s32,
     pub vertex_control_type1_array_offset: s32,
@@ -6955,7 +7657,7 @@ const _: () = {
 };
 pub type PGma = *mut Gma;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Gma {
     pub model_count: s32,
     pub header_size: s32,
@@ -6969,7 +7671,7 @@ const _: () = {
 };
 pub type POSSectionInfo = *mut OSSectionInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OSSectionInfo {
     pub offset: u32_,
     pub size: u32_,
@@ -7003,6 +7705,15 @@ const _: () = {
     ["Offset of field: OSThreadLink::next"][::core::mem::offset_of!(OSThreadLink, next) - 0usize];
     ["Offset of field: OSThreadLink::prev"][::core::mem::offset_of!(OSThreadLink, prev) - 4usize];
 };
+impl Default for OSThreadLink {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSMutexLink {
@@ -7016,6 +7727,15 @@ const _: () = {
     ["Offset of field: OSMutexLink::next"][::core::mem::offset_of!(OSMutexLink, next) - 0usize];
     ["Offset of field: OSMutexLink::prev"][::core::mem::offset_of!(OSMutexLink, prev) - 4usize];
 };
+impl Default for OSMutexLink {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSThreadQueue {
@@ -7029,6 +7749,15 @@ const _: () = {
     ["Offset of field: OSThreadQueue::head"][::core::mem::offset_of!(OSThreadQueue, head) - 0usize];
     ["Offset of field: OSThreadQueue::tail"][::core::mem::offset_of!(OSThreadQueue, tail) - 4usize];
 };
+impl Default for OSThreadQueue {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSMutex {
@@ -7046,8 +7775,17 @@ const _: () = {
     ["Offset of field: OSMutex::count"][::core::mem::offset_of!(OSMutex, count) - 12usize];
     ["Offset of field: OSMutex::link"][::core::mem::offset_of!(OSMutex, link) - 16usize];
 };
+impl Default for OSMutex {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OSContext {
     pub gpr: [u32_; 32usize],
     pub cr: u32_,
@@ -7097,6 +7835,15 @@ const _: () = {
     ["Offset of field: OSMutexQueue::head"][::core::mem::offset_of!(OSMutexQueue, head) - 0usize];
     ["Offset of field: OSMutexQueue::tail"][::core::mem::offset_of!(OSMutexQueue, tail) - 4usize];
 };
+impl Default for OSMutexQueue {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSThread {
@@ -7140,6 +7887,15 @@ const _: () = {
         [::core::mem::offset_of!(OSThread, stackBase) - 764usize];
     ["Offset of field: OSThread::stackEnd"][::core::mem::offset_of!(OSThread, stackEnd) - 768usize];
 };
+impl Default for OSThread {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_NONE: _bindgen_ty_62 = 0;
 pub const GX_DIRECT: _bindgen_ty_62 = 1;
 pub const GX_INDEX8: _bindgen_ty_62 = 2;
@@ -7189,6 +7945,15 @@ const _: () = {
     ["Offset of field: PPCWGPipe::v_f32"][::core::mem::offset_of!(PPCWGPipe, v_f32) - 0usize];
     ["Offset of field: PPCWGPipe::v_f64"][::core::mem::offset_of!(PPCWGPipe, v_f64) - 0usize];
 };
+impl Default for PPCWGPipe {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type OSTick = u32_;
 pub type PGXVtxAttrFmtList = *mut GXVtxAttrFmtList;
 pub const GX_VA_PNMTXIDX: _bindgen_ty_66 = 0;
@@ -7235,7 +8000,7 @@ pub const GX_RGBA8: _bindgen_ty_68 = 5;
 pub type _bindgen_ty_68 = ::core::ffi::c_uint;
 pub type GXCompType = undefined4;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXVtxAttrFmtList {
     pub attr: GXAttr,
     pub cnt: GXCompCnt,
@@ -7324,6 +8089,15 @@ const _: () = {
     ["Offset of field: OSModuleLink::next"][::core::mem::offset_of!(OSModuleLink, next) - 0usize];
     ["Offset of field: OSModuleLink::prev"][::core::mem::offset_of!(OSModuleLink, prev) - 4usize];
 };
+impl Default for OSModuleLink {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSModuleInfo {
@@ -7352,6 +8126,15 @@ const _: () = {
     ["Offset of field: OSModuleInfo::version"]
         [::core::mem::offset_of!(OSModuleInfo, version) - 28usize];
 };
+impl Default for OSModuleInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_TF_C4: _bindgen_ty_72 = 8;
 pub const GX_TF_C8: _bindgen_ty_72 = 9;
 pub const GX_TF_C14X2: _bindgen_ty_72 = 10;
@@ -7382,7 +8165,7 @@ pub type _bindgen_ty_73 = ::core::ffi::c_uint;
 pub type GXTexGenSrc = undefined4;
 pub type PGXColor = *mut GXColor;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXColor {
     pub r: u8_,
     pub g: u8_,
@@ -7416,7 +8199,7 @@ pub type _bindgen_ty_75 = ::core::ffi::c_uint;
 pub type VIXFBMode = undefined4;
 pub type PGXTlutRegion = *mut GXTlutRegion;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXTlutRegion {
     pub dummy: [u32_; 4usize],
 }
@@ -7477,7 +8260,7 @@ pub type _bindgen_ty_80 = ::core::ffi::c_uint;
 pub type GXTevScale = undefined4;
 pub type POSRel = *mut OSRel;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OSRel {
     pub offset: u16_,
     pub type_: u8_,
@@ -7500,7 +8283,7 @@ pub type _bindgen_ty_81 = ::core::ffi::c_uint;
 pub type GXFBClamp = undefined4;
 pub type PGXTexRegion = *mut GXTexRegion;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXTexRegion {
     pub dummy: [u32_; 4usize],
 }
@@ -7526,7 +8309,7 @@ pub type _bindgen_ty_82 = ::core::ffi::c_uint;
 pub type GXTevOp = undefined4;
 pub type PGXFogAdjTable = *mut GXFogAdjTable;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXFogAdjTable {
     pub dummy: [u16_; 10usize],
 }
@@ -7545,7 +8328,7 @@ pub type _bindgen_ty_83 = ::core::ffi::c_uint;
 pub type GXZTexOp = undefined4;
 pub type PGXVtxDescList = *mut GXVtxDescList;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXVtxDescList {
     pub attr: GXAttr,
     pub type_: GXAttrType,
@@ -7589,9 +8372,18 @@ const _: () = {
     ["Offset of field: ChunkInfo::size"][::core::mem::offset_of!(ChunkInfo, size) - 8usize];
     ["Offset of field: ChunkInfo::padding"][::core::mem::offset_of!(ChunkInfo, padding) - 12usize];
 };
+impl Default for ChunkInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub type PGXLightObj = *mut GXLightObj;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXLightObj {
     pub dummy: [u32_; 16usize],
 }
@@ -7704,7 +8496,7 @@ pub type _bindgen_ty_93 = ::core::ffi::c_uint;
 pub type GXTevAlphaArg = undefined4;
 pub type PGXTlutObj = *mut GXTlutObj;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXTlutObj {
     pub dummy: [u32_; 3usize],
 }
@@ -7809,6 +8601,15 @@ const _: () = {
     ["Offset of field: OSModuleHeader::bssAlign"]
         [::core::mem::offset_of!(OSModuleHeader, bssAlign) - 68usize];
 };
+impl Default for OSModuleHeader {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_TL_IA8: _bindgen_ty_98 = 0;
 pub const GX_TL_RGB565: _bindgen_ty_98 = 1;
 pub const GX_TL_RGB5A3: _bindgen_ty_98 = 2;
@@ -7843,6 +8644,15 @@ const _: () = {
     ["Offset of field: ARQRequest::callback"]
         [::core::mem::offset_of!(ARQRequest, callback) - 28usize];
 };
+impl Default for ARQRequest {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_SP_OFF: _bindgen_ty_99 = 0;
 pub const GX_SP_FLAT: _bindgen_ty_99 = 1;
 pub const GX_SP_COS: _bindgen_ty_99 = 2;
@@ -7870,6 +8680,15 @@ const _: () = {
     ["Offset of field: HeapInfo::first_used"]
         [::core::mem::offset_of!(HeapInfo, first_used) - 8usize];
 };
+impl Default for HeapInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_CULL_NONE: _bindgen_ty_100 = 0;
 pub const GX_CULL_FRONT: _bindgen_ty_100 = 1;
 pub const GX_CULL_BACK: _bindgen_ty_100 = 2;
@@ -7916,6 +8735,15 @@ const _: () = {
     ["Offset of field: DVDDirEntry::isDir"][::core::mem::offset_of!(DVDDirEntry, isDir) - 4usize];
     ["Offset of field: DVDDirEntry::name"][::core::mem::offset_of!(DVDDirEntry, name) - 8usize];
 };
+impl Default for DVDDirEntry {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const GX_TEVPREV: _bindgen_ty_104 = 0;
 pub const GX_TEVREG0: _bindgen_ty_104 = 1;
 pub const GX_TEVREG1: _bindgen_ty_104 = 2;
@@ -8074,7 +8902,7 @@ pub type _bindgen_ty_116 = ::core::ffi::c_uint;
 pub type GXPerf0 = undefined4;
 pub type POSImportInfo = *mut OSImportInfo;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OSImportInfo {
     pub id: OSModuleID,
     pub offset: u32_,
@@ -8089,7 +8917,7 @@ const _: () = {
 };
 pub type PGXRenderModeObj = *mut GXRenderModeObj;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXRenderModeObj {
     pub viTVmode: VITVMode,
     pub fbWidth: u16_,
@@ -8177,7 +9005,7 @@ pub type _bindgen_ty_119 = ::core::ffi::c_uint;
 pub type GXIndTexScale = undefined4;
 pub type POSCalendarTime = *mut OSCalendarTime;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct OSCalendarTime {
     pub sec: ::core::ffi::c_int,
     pub min: ::core::ffi::c_int,
@@ -8223,7 +9051,7 @@ pub type _bindgen_ty_120 = ::core::ffi::c_uint;
 pub type GXIndTexStageID = undefined4;
 pub type PDVDDir = *mut DVDDir;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct DVDDir {
     pub entryNum: u32_,
     pub location: u32_,
@@ -8293,7 +9121,7 @@ pub type _bindgen_ty_126 = ::core::ffi::c_uint;
 pub type GXTevClampMode = undefined4;
 pub type PGXColorS10 = *mut GXColorS10;
 #[repr(C, packed)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct GXColorS10 {
     pub r: s16,
     pub g: s16,

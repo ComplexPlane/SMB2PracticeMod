@@ -12,6 +12,7 @@ mod hook;
 mod log;
 mod menu_defn;
 mod mkb_suppl;
+mod pad;
 mod patch;
 mod ppc;
 mod pref;
