@@ -1,4 +1,4 @@
-use crate::draw;
+use crate::{draw, notify};
 
 pub struct Scratch {}
 
@@ -8,7 +8,7 @@ impl Scratch {
     }
 
     pub fn tick(&self, draw: &mut draw::Draw) {
-        draw.notify(draw::WHITE, "Hello World from Rust!");
+        notify!(draw, draw::PURPLE, "Hello world from Rust! %f", -2.8342);
     }
 
     pub fn disp(&self, draw: &mut draw::Draw) {}

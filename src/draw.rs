@@ -326,17 +326,29 @@ impl Draw {
     }
 }
 
-// macro_rules! sprintf {
-//     ($v:ident, $format:expr, $(, $arg:expr)*) => {
-//         let mut format_buf: arrayvec::ArrayString::<64>::from($format).unwrap();
-//         format_buf.push('\0');
-//     };
-// }
+// TODO: how do we use this macro as module-local?
+#[macro_export]
+macro_rules! sprintf {
+    ($v:ident, $format:expr $(, $arg:expr)*) => {
+        let mut format_buf = arrayvec::ArrayString::<64>::from($format).unwrap();
+        format_buf.push('\0');
 
-// #[macro_export]
-// macro_rules! notify {
-//     ($cx:expr, $color:expr, $format:expr $(, $arg:expr)*) => {
-//         sprintf!(buf, $format$(, $arg)*);
-//         draw::notify($color, buf);
-//     };
-// }
+        // Super duper unsafe! SMB2 doesn't provide a snprintf so just don't overflow the buffer, ok?
+        let mut buf: [u8; 128] = [0; 128];
+        unsafe {
+            $crate::mkb::sprintf(buf.as_mut_ptr() as *mut core::ffi::c_char,
+                format_buf.as_ptr() as *mut core::ffi::c_char
+                $(, $arg)*);
+        }
+        let $v = core::ffi::CStr::from_bytes_until_nul(&buf).unwrap();
+        let $v = $v.to_str().unwrap();
+    };
+}
+
+#[macro_export]
+macro_rules! notify {
+    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)*) => {
+        $crate::sprintf!(buf, $format $(, $arg)*);
+        $cx.notify($color, &buf);
+    };
+}
