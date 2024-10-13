@@ -335,13 +335,14 @@ macro_rules! sprintf {
 
         // Super duper unsafe! SMB2 doesn't provide a snprintf so just don't overflow the buffer, ok?
         let mut buf: [u8; 128] = [0; 128];
-        unsafe {
+        let written_bytes = unsafe {
             $crate::mkb::sprintf(buf.as_mut_ptr() as *mut core::ffi::c_char,
                 format_buf.as_ptr() as *mut core::ffi::c_char
-                $(, $arg)*);
-        }
-        let $v = core::ffi::CStr::from_bytes_until_nul(&buf).unwrap();
-        let $v = $v.to_str().unwrap();
+                $(, $arg)*)
+        };
+        // Converting this way instead of to &CStr -> &str saves around 7kb
+        let slice = &buf[0..(written_bytes as usize)];
+        let $v: &str = unsafe { core::mem::transmute(slice) };
     };
 }
 
