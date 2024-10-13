@@ -6,14 +6,17 @@
 mod app;
 mod asm;
 mod camera;
+mod draw;
 mod heap;
 mod hook;
 mod log;
 mod menu_defn;
+mod mkb_suppl;
 mod patch;
 mod ppc;
 mod pref;
 mod relutil;
+mod scratch;
 
 #[allow(dead_code)]
 #[allow(non_upper_case_globals)]
