@@ -5,12 +5,12 @@ use core::ffi::c_void;
 use critical_section::Mutex;
 use once_cell::sync::Lazy;
 
-use crate::draw::Draw;
 use crate::hook;
 use crate::mkb;
-use crate::pad::Pad;
-use crate::relutil;
-use crate::scratch::Scratch;
+use crate::mods::scratch::Scratch;
+use crate::systems::draw::Draw;
+use crate::systems::pad::Pad;
+use crate::utils::relutil;
 
 fn with_app<F, R>(f: F) -> R
 where

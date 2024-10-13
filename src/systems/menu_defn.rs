@@ -1,7 +1,7 @@
 extern crate alloc;
 
 use crate::mkb;
-use crate::pref::{BoolPref, U8Pref};
+use crate::systems::pref::{BoolPref, U8Pref};
 
 enum AfterPush {
     None,

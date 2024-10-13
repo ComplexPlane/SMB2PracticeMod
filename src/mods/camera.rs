@@ -2,8 +2,8 @@ use num_enum::TryFromPrimitive;
 
 use crate::mkb;
 use crate::patch;
-use crate::ppc;
-use crate::pref::{self, U8Pref};
+use crate::systems::pref::{self, U8Pref};
+use crate::utils::ppc;
 
 #[derive(TryFromPrimitive)]
 #[repr(u8)]

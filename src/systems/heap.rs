@@ -3,7 +3,7 @@ extern crate alloc;
 use core::{alloc::GlobalAlloc, cell::UnsafeCell, ptr::null_mut};
 
 use crate::mkb;
-use crate::relutil;
+use crate::utils::relutil;
 
 fn round_up_pow2(n: usize, align: usize) -> usize {
     (n + (align - 1)) & !(align - 1)

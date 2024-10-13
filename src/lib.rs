@@ -5,25 +5,17 @@
 
 mod app;
 mod asm;
-mod camera;
-mod draw;
-mod heap;
-mod hook;
-mod log;
-mod menu_defn;
-mod mkb_suppl;
-mod pad;
-mod patch;
-mod ppc;
-mod pref;
-mod relutil;
-mod scratch;
-
 #[allow(dead_code)]
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
 mod mkb;
+mod mkb_suppl;
+mod mods;
+mod systems;
+mod utils;
+
+use crate::utils::patch;
 
 use core::{
     ffi::{c_char, c_void},
@@ -33,6 +25,7 @@ use core::{
 
 use arrayvec::ArrayString;
 use critical_section::RawRestoreState;
+use systems::heap;
 
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
