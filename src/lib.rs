@@ -23,7 +23,7 @@ use core::{
     ptr::addr_of,
 };
 
-use arrayvec::ArrayString;
+use arrayvec::{ArrayString, ArrayVec};
 use critical_section::RawRestoreState;
 use systems::heap;
 

@@ -150,7 +150,7 @@ fn debug_text_palette() {
     }
 }
 
-fn heart() {
+pub fn heart() {
     unsafe {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
         let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
