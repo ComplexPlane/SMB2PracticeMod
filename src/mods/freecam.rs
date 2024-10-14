@@ -6,8 +6,8 @@ use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::patch;
 use crate::{mkb, notify};
 
-const TURBO_SPEED_MIN: i32 = 2;
-const TURBO_SPEED_MAX: i32 = 200;
+pub const TURBO_SPEED_MIN: u8 = 2;
+pub const TURBO_SPEED_MAX: u8 = 200;
 
 #[derive(Default)]
 pub struct Freecam {
@@ -192,7 +192,7 @@ impl Freecam {
             self.enabled_this_tick = true;
 
             // Adjust turbo speed multiplier
-            let mut speed_mult = pref.get_u8(pref::U8Pref::FreecamSpeedMult) as i32;
+            let mut speed_mult = pref.get_u8(pref::U8Pref::FreecamSpeedMult);
             let mut input_made = false;
             if pad.button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low) {
                 speed_mult -= 1;
@@ -208,9 +208,9 @@ impl Freecam {
                     draw,
                     draw::WHITE,
                     "Freecam Turbo Speed Factor: %dX",
-                    speed_mult
+                    speed_mult as u32
                 );
-                pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult as u8);
+                pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
                 pref.save();
             }
         }
