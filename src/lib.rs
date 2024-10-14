@@ -82,7 +82,8 @@ unsafe fn perform_assembly_patches() {
     // disabled
     patch::write_nop(0x80299f54 as *mut u32);
     // Nop this pausemenu screenshot call so we can call it when we want to
-    patch::write_nop(0x80270aac as *mut u32);
+    // TODO uncomment when we deal with this? Currently bugs out when when pausing
+    // patch::write_nop(0x80270aac as *mut u32);
 
     // Titlescreen patches
     let msg = c"SMB2 PRACTICE MOD";
