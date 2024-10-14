@@ -38,35 +38,39 @@ hook!(PADReadHook, status: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| 
 
 hook!(ProcessInputsHook => (), mkb::process_inputs, || {
     with_app(|cx| {
+        let pad = &mut cx.pad.borrow_mut();
+        let pref = &mut cx.pref.borrow_mut();
+        let draw = &mut cx.draw.borrow_mut();
+
         cx.process_inputs_hook.borrow().call();
 
-    // // These run after all controller inputs have been processed on the current frame,
-    // // to ensure lowest input delay
-    cx.pad.borrow_mut().tick();
-    // binds::tick();
-    // cardio::tick();
-    // unlock::tick();
-    // iw::tick();
-    // savest_ui::tick();
-    // menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
-    // fallout::tick();
-    // jump::tick();     // (edits physics preset)
-    // physics::tick();  // anything editing physics presets must run before physics::tick()
-    // inputdisp::tick();
-    // gotostory::tick();
-    // cmseg::tick();
-    // banans::tick();
-    // marathon::tick();
-    // ballcolor::tick();
-    // freecam::tick();
-    // ilbattle::tick();
-    // ilmark::tick();
-    // camera::tick();
-    // stage_edits::tick();
-    // validate::tick();
-        cx.scratch.borrow_mut().tick(&mut cx.draw.borrow_mut());
-    // // Pref runs last to track the prefs from the previous frame
-    cx.pref.borrow_mut().tick();
+        // // These run after all controller inputs have been processed on the current frame,
+        // // to ensure lowest input delay
+        cx.pad.borrow_mut().tick();
+        // binds::tick();
+        // cardio::tick();
+        // unlock::tick();
+        // iw::tick();
+        // savest_ui::tick();
+        // menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
+        // fallout::tick();
+        // jump::tick();     // (edits physics preset)
+        // physics::tick();  // anything editing physics presets must run before physics::tick()
+        // inputdisp::tick();
+        // gotostory::tick();
+        // cmseg::tick();
+        // banans::tick();
+        // marathon::tick();
+        // ballcolor::tick();
+        cx.freecam.borrow_mut().tick(pref, pad, draw);
+        // ilbattle::tick();
+        // ilmark::tick();
+        // camera::tick();
+        // stage_edits::tick();
+        // validate::tick();
+        cx.scratch.borrow_mut().tick(draw);
+        // // Pref runs last to track the prefs from the previous frame
+        cx.pref.borrow_mut().tick();
     });
 });
 
@@ -197,7 +201,7 @@ impl AppContext {
             // ballcolor::init();
             // sfx::init();
             // menu_defn::init();
-            // freecam::init();
+            cx.freecam.borrow_mut().init();
             // hide::init();
             // ilmark::init();
             // camera::init();
