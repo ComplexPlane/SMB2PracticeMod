@@ -14,7 +14,7 @@ use crate::systems::pad::Pad;
 use crate::systems::pref::{BoolPref, Pref};
 use crate::utils::relutil;
 
-fn with_app<F, R>(f: F) -> R
+pub fn with_app<F, R>(f: F) -> R
 where
     F: FnOnce(&AppContext) -> R,
 {
@@ -38,15 +38,15 @@ hook!(PADReadHook, status: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| 
 
 hook!(ProcessInputsHook => (), mkb::process_inputs, || {
     with_app(|cx| {
+        cx.process_inputs_hook.borrow().call();
+
         let pad = &mut cx.pad.borrow_mut();
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
 
-        cx.process_inputs_hook.borrow().call();
-
         // // These run after all controller inputs have been processed on the current frame,
         // // to ensure lowest input delay
-        cx.pad.borrow_mut().tick();
+        pad.tick();
         // binds::tick();
         // cardio::tick();
         // unlock::tick();
@@ -70,7 +70,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // validate::tick();
         cx.scratch.borrow_mut().tick(draw);
         // // Pref runs last to track the prefs from the previous frame
-        cx.pref.borrow_mut().tick();
+        pref.tick();
     });
 });
 
@@ -141,8 +141,7 @@ hook!(OSLinkHook,
 
 hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
     with_app(|cx| {
-        let mut pref = cx.pref.borrow_mut();
-        cx.freecam.borrow_mut().on_event_camera_tick(&mut pref);
+        cx.freecam.borrow_mut().on_event_camera_tick(&mut cx.pref.borrow_mut());
 
         cx.event_camera_tick_hook.borrow().call();
     })
@@ -231,12 +230,13 @@ pub fn tick() {
         mkb::perf_init_timer(4);
 
         with_app(|cx| {
-            let pref = cx.pref.borrow_mut();
-            if pref.get_bool(BoolPref::DebugMode) {
-                mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-            } else {
-                mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
-            }
+            // TODO
+            // let pref = cx.pref.borrow_mut();
+            // if pref.get_bool(BoolPref::DebugMode) {
+            //     mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+            // } else {
+            //     mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
+            // }
 
             cx.pad.borrow_mut().on_frame_start();
         })

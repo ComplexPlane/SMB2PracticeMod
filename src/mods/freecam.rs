@@ -1,3 +1,4 @@
+use crate::app::with_app;
 use crate::mkb::{S16Vec, Vec};
 use crate::systems::draw::{self, Draw};
 use crate::systems::pad::{self, Pad, Prio};
@@ -130,26 +131,35 @@ impl Freecam {
         }
     }
 
-    unsafe fn call_camera_func_hook(
-        &mut self,
-        camera: &mut mkb::Camera,
-        ball: &mut mkb::Ball,
-        pref: &mut Pref,
-        pad: &mut Pad,
-    ) {
-        if self.enabled_this_tick {
-            self.update_cam(camera, ball, pref, pad);
-        } else {
-            mkb::camera_funcs[camera.mode as usize].unwrap()(camera, ball);
-        }
+    unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb::Camera, ball: *mut mkb::Ball) {
+        with_app(|cx| {
+            let pref = &mut cx.pref.borrow_mut();
+            let pad = &mut cx.pad.borrow_mut();
+            cx.freecam
+                .borrow_mut()
+                .on_camera_func(camera, ball, pref, pad);
+        });
     }
 
     pub fn init(&mut self) {
         unsafe {
-            patch::write_branch_bl(
-                0x8028353c as *mut _,
-                Self::call_camera_func_hook as *const () as *mut _,
-            );
+            patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
+        }
+    }
+
+    pub fn on_camera_func(
+        &mut self,
+        camera: *mut mkb::Camera,
+        ball: *mut mkb::Ball,
+        pref: &mut Pref,
+        pad: &mut Pad,
+    ) {
+        unsafe {
+            if self.enabled_this_tick {
+                self.update_cam(&mut *camera, &mut *ball, pref, pad);
+            } else {
+                mkb::camera_funcs[(*camera).mode as usize].unwrap()(camera, ball);
+            }
         }
     }
 
