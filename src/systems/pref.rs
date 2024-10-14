@@ -80,14 +80,30 @@ pub enum U8Pref {
     JumpProfile,
 }
 
-pub fn get_bool(id: BoolPref) -> bool {
-    false
-}
+pub struct Pref {}
 
-pub fn get_u8(id: U8Pref) -> u8 {
-    0
-}
+impl Pref {
+    pub fn new() -> Self {
+        Self {}
+    }
 
-pub fn did_change_u8(id: U8Pref) -> bool {
-    false
+    pub fn init(&mut self) {}
+
+    pub fn tick(&mut self) {}
+
+    pub fn get_bool(&self, id: BoolPref) -> bool {
+        true
+    }
+
+    pub fn get_u8(&self, id: U8Pref) -> u8 {
+        0
+    }
+
+    pub fn did_change_u8(&self, id: U8Pref) -> bool {
+        false
+    }
+
+    pub fn set_u8(&mut self, id: U8Pref, value: u8) {}
+
+    pub fn save(&mut self) {}
 }

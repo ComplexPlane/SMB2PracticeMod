@@ -14,15 +14,15 @@ enum Dir {
 }
 
 #[derive(Default, Clone, Copy)]
-struct StickState {
-    x: i32,
-    y: i32,
+pub struct StickState {
+    pub x: i32,
+    pub y: i32,
 }
 
 #[derive(Default, Clone, Copy)]
-struct TriggerState {
-    l: i32,
-    r: i32,
+pub struct TriggerState {
+    pub l: i32,
+    pub r: i32,
 }
 
 #[derive(Default)]
@@ -37,8 +37,16 @@ struct AnalogState {
     trigger_r: i32,
 }
 
-const MAX_STICK: i32 = 60;
-const MAX_TRIGGER: i32 = 128;
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
+pub enum Prio {
+    #[default]
+    Low,
+    High,
+}
+
+pub const MAX_STICK: i32 = 60;
+pub const MAX_TRIGGER: i32 = 128;
+
 const DIR_REPEAT_PERIOD: u32 = 3;
 const DIR_REPEAT_WAIT: u32 = 14;
 
@@ -47,8 +55,8 @@ pub struct Pad {
     analog_state: AnalogState,
     konami_progress: i32,
     konami_input_prev_tick: bool,
-    exclusive_mode: bool,
-    exclusive_mode_request: bool,
+    curr_priority: Prio,
+    priority_request: Prio,
 
     merged_analog_inputs: mkb::AnalogInputGroup,
     merged_digital_inputs: mkb::DigitalInputGroup,
@@ -96,35 +104,32 @@ impl Pad {
         self.original_inputs = *statuses;
     }
 
-    pub fn button_down(&self, digital_input: mkb::PadDigitalInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority) && (self.merged_digital_inputs.raw & digital_input != 0)
+    pub fn button_down(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && (self.merged_digital_inputs.raw & digital_input != 0)
     }
 
-    pub fn button_pressed(&self, digital_input: mkb::PadDigitalInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority)
-            && self.merged_digital_inputs.pressed & digital_input != 0
+    pub fn button_pressed(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_digital_inputs.pressed & digital_input != 0
     }
 
-    pub fn button_released(&self, digital_input: mkb::PadDigitalInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority)
-            && self.merged_digital_inputs.released & digital_input != 0
+    pub fn button_released(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_digital_inputs.released & digital_input != 0
     }
 
-    pub fn button_repeat(&self, digital_input: mkb::PadDigitalInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority)
-            && self.merged_digital_inputs.repeated & digital_input != 0
+    pub fn button_repeat(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_digital_inputs.repeated & digital_input != 0
     }
 
-    pub fn analog_down(&self, analog_input: mkb::PadAnalogInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority) && self.merged_analog_inputs.raw & analog_input != 0
+    pub fn analog_down(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_analog_inputs.raw & analog_input != 0
     }
 
-    pub fn analog_pressed(&self, analog_input: mkb::PadAnalogInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority) && self.merged_analog_inputs.pressed & analog_input != 0
+    pub fn analog_pressed(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_analog_inputs.pressed & analog_input != 0
     }
 
-    pub fn analog_released(&self, analog_input: mkb::PadAnalogInput, priority: bool) -> bool {
-        (!self.exclusive_mode || priority) && self.merged_analog_inputs.released & analog_input != 0
+    pub fn analog_released(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
+        (priority >= self.curr_priority) && self.merged_analog_inputs.released & analog_input != 0
     }
 
     pub fn any_input_down(&self) -> bool {
@@ -152,49 +157,49 @@ impl Pad {
         self.konami_input_prev_tick = true;
         match self.konami_progress {
             0 | 1 => {
-                if self.dir_pressed(Dir::Up, true) {
+                if self.dir_pressed(Dir::Up, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             2 | 3 => {
-                if self.dir_pressed(Dir::Down, true) {
+                if self.dir_pressed(Dir::Down, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             4 | 6 => {
-                if self.dir_pressed(Dir::Left, true) {
+                if self.dir_pressed(Dir::Left, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             5 | 7 => {
-                if self.dir_pressed(Dir::Right, true) {
+                if self.dir_pressed(Dir::Right, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             8 => {
-                if self.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, true) {
+                if self.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             9 => {
-                if self.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, true) {
+                if self.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
                 }
             }
             10 => {
-                if self.button_pressed(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, true) {
+                if self.button_pressed(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::High) {
                     self.konami_progress += 1;
                 } else {
                     self.konami_progress = 0;
@@ -210,7 +215,7 @@ impl Pad {
         &self,
         btn1: mkb::PadDigitalInput,
         btn2: mkb::PadDigitalInput,
-        priority: bool,
+        priority: Prio,
     ) -> bool {
         (self.button_down(btn1, priority) && self.button_pressed(btn2, priority))
             || (self.button_pressed(btn1, priority) && self.button_down(btn2, priority))
@@ -220,13 +225,13 @@ impl Pad {
         &self,
         analog1: mkb::PadAnalogInput,
         analog2: mkb::PadAnalogInput,
-        priority: bool,
+        priority: Prio,
     ) -> bool {
         (self.analog_down(analog1, priority) && self.analog_pressed(analog2, priority))
             || (self.analog_pressed(analog1, priority) && self.analog_down(analog2, priority))
     }
 
-    pub fn get_cstick_dir(&self, priority: bool) -> Dir {
+    pub fn get_cstick_dir(&self, priority: Prio) -> Dir {
         let left = self.analog_down(mkb::PAI_CSTICK_LEFT as mkb::PadAnalogInput, priority);
         let right = self.analog_down(mkb::PAI_CSTICK_RIGHT as mkb::PadAnalogInput, priority);
         let up = self.analog_down(mkb::PAI_CSTICK_UP as mkb::PadAnalogInput, priority);
@@ -259,7 +264,7 @@ impl Pad {
         Dir::None
     }
 
-    pub fn dir_down(&self, dir: Dir, priority: bool) -> bool {
+    pub fn dir_down(&self, dir: Dir, priority: Prio) -> bool {
         match dir {
             Dir::Up => {
                 self.button_down(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, priority)
@@ -281,7 +286,7 @@ impl Pad {
         }
     }
 
-    pub fn dir_pressed(&self, dir: Dir, priority: bool) -> bool {
+    pub fn dir_pressed(&self, dir: Dir, priority: Prio) -> bool {
         match dir {
             Dir::Up => {
                 self.button_pressed(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, priority)
@@ -303,8 +308,8 @@ impl Pad {
         }
     }
 
-    pub fn dir_repeat(&self, dir: Dir, priority: bool) -> bool {
-        if self.exclusive_mode && !priority {
+    pub fn dir_repeat(&self, dir: Dir, priority: Prio) -> bool {
+        if priority < self.curr_priority {
             return false;
         }
 
@@ -322,17 +327,17 @@ impl Pad {
         self.konami_progress == 11
     }
 
-    pub fn set_exclusive_mode(&mut self, enabled: bool) {
-        self.exclusive_mode_request = enabled;
+    pub fn set_exclusive_mode(&mut self, priority: Prio) {
+        self.priority_request = priority;
     }
 
-    pub fn get_exclusive_mode(&self) -> bool {
-        self.exclusive_mode
+    pub fn get_priority(&self) -> Prio {
+        self.curr_priority
     }
 
     pub fn on_frame_start(&mut self) {
         unsafe {
-            if self.exclusive_mode {
+            if self.curr_priority == Prio::High {
                 // Restore previous controller inputs so new inputs can be computed correctly by the game
                 mkb::merged_analog_inputs = self.merged_analog_inputs;
                 mkb::merged_digital_inputs = self.merged_digital_inputs;
@@ -341,7 +346,7 @@ impl Pad {
             }
 
             // Only now do we honor the request to change into/out of exclusive mode
-            self.exclusive_mode = self.exclusive_mode_request;
+            self.curr_priority = self.priority_request;
         }
     }
 
@@ -356,7 +361,7 @@ impl Pad {
             Dir::Left,
             Dir::UpLeft,
         ] {
-            if self.dir_down(dir, true) {
+            if self.dir_down(dir, Prio::High) {
                 let dir_time = &mut self.dir_down_time[dir as usize];
                 *dir_time = (*dir_time).saturating_add(1);
                 if *dir_time == 120 {
@@ -377,7 +382,7 @@ impl Pad {
             self.analog_inputs = mkb::analog_inputs;
 
             self.analog_state = AnalogState::default();
-            if self.exclusive_mode {
+            if self.curr_priority == Prio::High {
                 // Zero controller inputs in the game
                 mkb::merged_analog_inputs = mkb::AnalogInputGroup::default();
                 mkb::merged_digital_inputs = mkb::DigitalInputGroup::default();

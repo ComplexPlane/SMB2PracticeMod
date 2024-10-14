@@ -7,9 +7,11 @@ use once_cell::sync::Lazy;
 
 use crate::hook;
 use crate::mkb;
+use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
 use crate::systems::draw::Draw;
 use crate::systems::pad::Pad;
+use crate::systems::pref::{BoolPref, Pref};
 use crate::utils::relutil;
 
 fn with_app<F, R>(f: F) -> R
@@ -64,7 +66,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
     // validate::tick();
         cx.scratch.borrow_mut().tick(&mut cx.draw.borrow_mut());
     // // Pref runs last to track the prefs from the previous frame
-    // pref::tick();
+    cx.pref.borrow_mut().tick();
     });
 });
 
@@ -133,6 +135,15 @@ hook!(OSLinkHook,
     })
 });
 
+hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
+    with_app(|cx| {
+        let mut pref = cx.pref.borrow_mut();
+        cx.freecam.borrow_mut().on_event_camera_tick(&mut pref);
+
+        cx.event_camera_tick_hook.borrow().call();
+    })
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -140,9 +151,12 @@ pub struct AppContext {
     pub oslink_hook: RefCell<OSLinkHook>,
     pub game_ready_init_hook: RefCell<GameReadyInitHook>,
     pub game_play_tick_hook: RefCell<GamePlayTickHook>,
+    pub event_camera_tick_hook: RefCell<EventCameraTickHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
+    pub pref: RefCell<Pref>,
+    pub freecam: RefCell<Freecam>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -155,9 +169,12 @@ impl AppContext {
             oslink_hook: RefCell::new(OSLinkHook::new()),
             game_ready_init_hook: RefCell::new(GameReadyInitHook::new()),
             game_play_tick_hook: RefCell::new(GamePlayTickHook::new()),
+            event_camera_tick_hook: RefCell::new(EventCameraTickHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
+            pref: RefCell::new(Pref::new()),
+            freecam: RefCell::new(Freecam::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
@@ -167,7 +184,7 @@ impl AppContext {
         with_app(|cx| {
             // heap::init();
             // cardio::init();
-            // pref::init();
+            cx.pref.borrow_mut().init();
             // unlock::init();
             cx.draw.borrow_mut().init();
             // Tetris::get_instance().init();
@@ -193,6 +210,7 @@ impl AppContext {
             cx.process_inputs_hook.borrow_mut().hook();
             cx.draw_debug_text_hook.borrow_mut().hook();
             cx.oslink_hook.borrow_mut().hook();
+            cx.event_camera_tick_hook.borrow_mut().hook();
         });
     }
 }
@@ -208,13 +226,14 @@ pub fn tick() {
         // Replace overwritten function call
         mkb::perf_init_timer(4);
 
-        // if pref::get_bool(pref::BoolPref::DebugMode) {
-        // mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-        // } else {
-        mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
-        // }
-
         with_app(|cx| {
+            let pref = cx.pref.borrow_mut();
+            if pref.get_bool(BoolPref::DebugMode) {
+                mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+            } else {
+                mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
+            }
+
             cx.pad.borrow_mut().on_frame_start();
         })
     }
