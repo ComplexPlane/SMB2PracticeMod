@@ -7,8 +7,8 @@ use super::pad::Pad;
 use super::pref::Pref;
 
 pub struct MenuContext<'a> {
-    pub pref: &'a mut Pref,
     pub pad: &'a mut Pad,
+    pub pref: &'a mut Pref,
     pub draw: &'a mut Draw,
     // physics: &'a mut Physics,
     // cmseg

@@ -8,9 +8,10 @@ use crate::{mkb, utils::tinymap::TinyMap};
 use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
+use super::draw::Draw;
 use super::menu_defn::{self, AfterPush, MenuContext, Widget};
-use super::pad::{self, Dir, Prio};
-use super::pref::U8Pref;
+use super::pad::{Dir, Pad, Prio};
+use super::pref::{Pref, U8Pref};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum BindingState {
@@ -38,12 +39,12 @@ static UNFOCUSED_COLOR: mkb::GXColor = draw::LIGHT_PURPLE;
 struct Menu {
     label: &'static str,
     widgets: &'static [Widget],
-    ptr: *const Widget,
+    ptr: usize, // Integer instead of pointer so that we can implement Sync
 }
 
 fn insert_menu_widgets<const N: usize>(
     widgets: &'static [Widget],
-    builder: &mut TinyMapBuilder<*const Widget, u32, N>,
+    builder: &mut TinyMapBuilder<usize, u32, N>,
 ) {
     for widget in widgets {
         if let Widget::Menu {
@@ -51,33 +52,33 @@ fn insert_menu_widgets<const N: usize>(
             ..
         } = widget
         {
-            builder.insert(widget as *const _, 0);
+            builder.insert(widget as *const _ as usize, 0);
             insert_menu_widgets(sub_widgets, builder);
         }
     }
 }
 
-fn get_menu_widget_sel_map<const N: usize>() -> TinyMap<*const Widget, u32, N> {
-    let mut builder: TinyMapBuilder<*const Widget, u32, N> = TinyMapBuilder::new();
+fn get_menu_widget_sel_map<const N: usize>() -> TinyMap<usize, u32, N> {
+    let mut builder: TinyMapBuilder<usize, u32, N> = TinyMapBuilder::new();
     if let Widget::Menu { widgets, .. } = menu_defn::ROOT_MENU {
         insert_menu_widgets(widgets, &mut builder);
     }
     builder.build()
 }
 
-struct MenuImpl {
+pub struct MenuImpl {
     visible: bool,
     cursor_frame: u32,
     menu_stack: ArrayVec<Menu, 5>,
     intedit_tick: i32,
     edit_tick: i32,
     binding: BindingState,
-    menu_pos_map: TinyMap<*const Widget, u32, 32>,
+    menu_pos_map: TinyMap<usize, u32, 32>,
     binds: Binds,
 }
 
 impl MenuImpl {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             visible: false,
             cursor_frame: 0,
@@ -166,7 +167,7 @@ impl MenuImpl {
                     self.push_menu(Menu {
                         label,
                         widgets,
-                        ptr: selected_widget as *const _,
+                        ptr: selected_widget as *const _ as usize,
                     });
                 }
             }
@@ -279,7 +280,9 @@ impl MenuImpl {
         }
     }
 
-    fn tick(&mut self, cx: &mut MenuContext) {
+    pub fn tick(&mut self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw) {
+        let cx = &mut MenuContext { pad, pref, draw };
+
         if self.binding == BindingState::Active {
             self.handle_widget_bind(cx);
             return;
@@ -577,6 +580,95 @@ impl MenuImpl {
             }
         }
     }
+
+    fn draw_menu_widgets(&self, menu: &Menu, cx: &mut MenuContext) {
+        let mut y = MARGIN + PAD + 2 * LINE_HEIGHT;
+        let mut selectable_idx = 0;
+
+        let lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+
+        for widget in menu.widgets {
+            self.draw_widget(
+                widget,
+                *self.menu_pos_map.get(menu.ptr),
+                &mut selectable_idx,
+                &mut y,
+                lerped_color,
+                cx,
+            );
+        }
+    }
+
+    fn draw_breadcrumbs(&self) {
+        const ARROW_STR: &str = " \u{001c} ";
+
+        let mut x = MARGIN + PAD;
+        for (i, menu) in self.menu_stack.iter().enumerate() {
+            let grey = mkb::GXColor {
+                r: 0xE0,
+                g: 0xE0,
+                b: 0xE0,
+                a: 0xFF,
+            };
+            draw::debug_text(
+                x,
+                MARGIN + PAD,
+                if i == self.menu_stack.len() - 1 {
+                    draw::PURPLE
+                } else {
+                    grey
+                },
+                menu.label,
+            );
+            x += menu.label.len() as u32 * draw::DEBUG_CHAR_WIDTH;
+            if i != self.menu_stack.len() - 1 {
+                draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
+                x += ARROW_STR.len() as u32 * draw::DEBUG_CHAR_WIDTH;
+            }
+        }
+
+        // Draw line under breadcrumbs. You can draw lines directly with GX but I couldn't get it
+        // working
+        draw::rect(
+            MARGIN as f32,
+            (MARGIN + 30) as f32,
+            (SCREEN_WIDTH - MARGIN) as f32,
+            (MARGIN + 34) as f32,
+            draw::GRAY,
+        );
+    }
+
+    pub fn disp(&self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw) {
+        let cx = &mut MenuContext { pad, pref, draw };
+
+        if !self.visible {
+            return;
+        }
+        let menu = self.menu_stack.last().unwrap();
+        draw::rect(
+            MARGIN as f32,
+            MARGIN as f32,
+            (SCREEN_WIDTH - MARGIN) as f32,
+            (SCREEN_HEIGHT - MARGIN) as f32,
+            mkb::GXColor {
+                r: 0x00,
+                g: 0x00,
+                b: 0x00,
+                a: 0xe0,
+            },
+        );
+        self.draw_breadcrumbs();
+        self.draw_menu_widgets(menu, cx);
+        draw_help_layout();
+        let selected = get_selected_widget(menu.widgets, *self.menu_pos_map.get(menu.ptr), cx);
+        if let Some(selected) = selected {
+            draw_help(selected);
+        }
+    }
+
+    fn is_visible(&self) -> bool {
+        self.visible
+    }
 }
 
 fn is_widget_selectable(widget: &'static Widget) -> bool {
@@ -829,53 +921,3 @@ fn draw_help(widget: &Widget) {
         _ => {}
     }
 }
-
-// void draw_menu_widgets(MenuWidget* menu) {
-//     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
-//     u32 selectable_idx = 0;
-
-//     mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
-
-//     for (u32 i = 0; i < menu->num_widgets; i++) {
-//         Widget& widget = menu->widgets[i];
-//         draw_widget(widget, menu->selected_idx, &selectable_idx, &y, lerped_color);
-//     }
-// }
-
-// static void draw_breadcrumbs() {
-//     const char* ARROW_STR = " \x1c ";
-
-//     u32 x = MARGIN + PAD;
-//     for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
-//         MenuWidget* menu = s_menu_stack[i];
-//         mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
-//         draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
-//         x += mkb::strlen(const_cast<char*>(menu->label)) * draw::DEBUG_CHAR_WIDTH;
-//         if (i != s_menu_stack_ptr) {
-//             draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
-//             x += mkb::strlen(const_cast<char*>(ARROW_STR)) * draw::DEBUG_CHAR_WIDTH;
-//         }
-//     }
-
-//     // Draw line under breadcrumbs. You can draw lines directly with GX but I couldn't get it
-//     // working
-//     draw::rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, draw::GRAY);
-// }
-
-// void disp() {
-//     if (!s_visible) return;
-//     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
-//     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
-//                {0x00, 0x00, 0x00, 0xe0});
-//     draw_breadcrumbs();
-//     draw_menu_widgets(menu);
-//     draw_help_layout();
-//     s32 curr_idx = -1;
-//     Widget* selected =
-//         get_selected_widget(menu->widgets, menu->num_widgets, curr_idx, menu->selected_idx);
-//     if (selected != nullptr) {
-//         draw_help(*selected);
-//     }
-// }
-
-// bool is_visible() { return s_visible; }

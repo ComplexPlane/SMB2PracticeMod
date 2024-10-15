@@ -10,6 +10,7 @@ use crate::mkb;
 use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
 use crate::systems::draw::Draw;
+use crate::systems::menu_impl::MenuImpl;
 use crate::systems::pad::Pad;
 use crate::systems::pref::Pref;
 use crate::utils::relutil;
@@ -52,7 +53,8 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // unlock::tick();
         // iw::tick();
         // savest_ui::tick();
-        // menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
+        // anything checking for pref changes should run after menu_impl.tick()
+        cx.menu_impl.borrow_mut().tick(pad, pref, draw);
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
         // physics::tick();  // anything editing physics presets must run before physics::tick()
@@ -78,6 +80,10 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
     with_app(|cx| {
         cx.draw_debug_text_hook.borrow().call();
 
+        let pad = &mut cx.pad.borrow_mut();
+        let pref = &mut cx.pref.borrow_mut();
+        let draw = &mut cx.draw.borrow_mut();
+
         // // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
         //         // elements. The original screenshot call is nopped.
         //         if (mkb::g_pause_status == 1) {
@@ -86,14 +92,14 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //                                            mkb::current_render_mode->efbHeight, mkb::GX_TF_RGB5A3);
         //         }
 
-        cx.draw.borrow_mut().predraw();
+        draw.predraw();
         //         timer::disp();
         //         iw::disp();
         //         Tetris::get_instance().disp();
         //         ilbattle::disp();
         //         cmseg::disp();
         //         inputdisp::disp();
-        //         menu_impl::disp();
+        cx.menu_impl.borrow_mut().disp(pad, pref, draw);
         cx.draw.borrow_mut().disp();
         //         ilmark::disp();
         //         physics::disp();
@@ -160,6 +166,7 @@ pub struct AppContext {
     pub pad: RefCell<Pad>,
     pub pref: RefCell<Pref>,
     pub freecam: RefCell<Freecam>,
+    pub menu_impl: RefCell<MenuImpl>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -178,6 +185,7 @@ impl AppContext {
             pad: RefCell::new(Pad::new()),
             pref: RefCell::new(Pref::new()),
             freecam: RefCell::new(Freecam::new()),
+            menu_impl: RefCell::new(MenuImpl::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
