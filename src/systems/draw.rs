@@ -326,29 +326,10 @@ impl Draw {
     }
 }
 
-// TODO: how do we use this macro as module-local?
-#[macro_export]
-macro_rules! sprintf {
-    ($v:ident, $format:expr $(, $arg:expr)*) => {
-        let mut format_buf = arrayvec::ArrayString::<64>::from($format).unwrap();
-        format_buf.push('\0');
-
-        // Super duper unsafe! SMB2 doesn't provide a snprintf so just don't overflow the buffer, ok?
-        let mut buf: [u8; 128] = [0; 128];
-        let written_bytes = unsafe {
-            $crate::mkb::sprintf(buf.as_mut_ptr() as *mut core::ffi::c_char,
-                format_buf.as_ptr() as *mut core::ffi::c_char
-                $(, $arg)*)
-        };
-        // Converting this way instead of to &CStr -> &str saves around 7kb
-        let slice = &buf[0..(written_bytes as usize)];
-        let $v: &str = unsafe { core::mem::transmute(slice) };
-    };
-}
-
 #[macro_export]
 macro_rules! notify {
-    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)*) => {
+    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)* $(,)?) => {
+        let mut buf = arrayvec::ArrayString::<64>::new();
         $crate::sprintf!(buf, $format $(, $arg)*);
         $cx.notify($color, &buf);
     };

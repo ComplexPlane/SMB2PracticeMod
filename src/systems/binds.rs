@@ -1,3 +1,5 @@
+use arrayvec::ArrayString;
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum EncodingType {
     SinglePress,
@@ -28,7 +30,7 @@ impl Binds {
         0
     }
 
-    pub fn get_bind_str(&self, bind_id: u8, buf: &mut str) {}
+    pub fn get_bind_str<const N: usize>(&self, bind_id: u8, buf: &mut ArrayString<N>) {}
 
     pub fn init(&mut self) {}
 

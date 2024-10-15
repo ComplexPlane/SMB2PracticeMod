@@ -1,7 +1,7 @@
 use crate::mkb;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Dir {
+pub enum Dir {
     Up,
     UpRight,
     Right,
@@ -327,7 +327,7 @@ impl Pad {
         self.konami_progress == 11
     }
 
-    pub fn set_exclusive_mode(&mut self, priority: Prio) {
+    pub fn set_priority(&mut self, priority: Prio) {
         self.priority_request = priority;
     }
 

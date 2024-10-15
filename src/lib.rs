@@ -34,14 +34,14 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
             let mut file_buf = ArrayString::<128>::from(loc.file()).unwrap();
             file_buf.push('\0');
             log!(
-                "Panic occurred in %s at %d:%d",
+                c"Panic occurred in %s at %d:%d",
                 file_buf.as_ptr() as *const i8,
                 loc.line(),
                 loc.column()
             );
         }
         None => {
-            log!("Panic occurred")
+            log!(c"Panic occurred")
         }
     }
     loop {}
@@ -63,7 +63,7 @@ unsafe fn init() {
     perform_assembly_patches();
     app::init();
 
-    log!("SMB2 Practice Mod loaded");
+    log!(c"SMB2 Practice Mod loaded");
 }
 
 unsafe extern "C" fn tick() {

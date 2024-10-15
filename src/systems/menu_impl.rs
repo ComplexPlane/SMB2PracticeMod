@@ -1,12 +1,16 @@
-use arrayvec::ArrayVec;
+use core::ffi::c_char;
 
+use arrayvec::{ArrayString, ArrayVec};
+
+use crate::notify;
 use crate::systems::draw;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{mkb, utils::tinymap::TinyMap};
 
 use super::binds::{self, Binds};
 use super::menu_defn::{self, AfterPush, MenuContext, Widget};
-use super::pad::Prio;
+use super::pad::{self, Dir, Prio};
+use super::pref::U8Pref;
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum BindingState {
@@ -22,7 +26,7 @@ const MARGIN: i32 = 20;
 const PAD: i32 = 8;
 const LINE_HEIGHT: i32 = 20;
 
-const L_R_BIND: i32 = 64; // bind id for an L+R bind
+const L_R_BIND: u8 = 64; // bind id for an L+R bind
 
 static FOCUSED_COLOR: mkb::GXColor = draw::LIGHT_GREEN;
 static UNFOCUSED_COLOR: mkb::GXColor = draw::LIGHT_PURPLE;
@@ -272,6 +276,78 @@ impl MenuImpl {
             _ => {}
         }
     }
+
+    fn tick(&mut self, cx: &mut MenuContext) {
+        if self.binding == BindingState::Active {
+            self.handle_widget_bind(cx);
+            return;
+        }
+
+        // TODO save settings on close
+        // TODO save menu position as settings
+        let toggle = self
+            .binds
+            .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), true);
+        if toggle {
+            self.visible ^= toggle;
+        } else if cx
+            .pad
+            .button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High)
+        {
+            self.pop_menu();
+        }
+        let just_opened = self.visible && toggle;
+        if just_opened {
+            // TODO: pad::reset_dir_repeat();
+            self.cursor_frame = 0;
+        }
+
+        cx.pad
+            .set_priority(if self.visible { Prio::High } else { Prio::Low });
+
+        if !self.visible {
+            // Default binding is L+R, but this lets you know the current binding in case you forget
+            // what you changed it to
+            let input = cx.pref.get_u8(U8Pref::MenuBind);
+            if cx.pad.button_chord_pressed(
+                mkb::PAD_TRIGGER_L as mkb::PadDigitalInput,
+                mkb::PAD_TRIGGER_R as mkb::PadDigitalInput,
+                Prio::High,
+            ) && input != L_R_BIND
+            {
+                let mut buf = ArrayString::<32>::new();
+                self.binds.get_bind_str(input, &mut buf);
+                buf.push('\0');
+                notify!(
+                    cx.draw,
+                    draw::RED,
+                    c"Use %s to toggle menu",
+                    buf.as_ptr() as *mut c_char,
+                );
+            }
+            return;
+        }
+
+        let menu = self.menu_stack.last_mut().unwrap();
+
+        // Update selected menu item
+        let down_repeat = cx.pad.dir_repeat(Dir::Down, Prio::High);
+        let up_repeat = cx.pad.dir_repeat(Dir::Up, Prio::High);
+        let dir_delta: i32 = if down_repeat { -1 } else { 0 } + if up_repeat { 1 } else { 0 };
+
+        let selectable = get_selectable_widget_count(menu.widgets, cx);
+        let selected_idx = self.menu_pos_map.get_mut(menu.ptr);
+        *selected_idx = (*selected_idx as i32 + dir_delta + selectable as i32) as u32 % selectable;
+
+        // Make selected menu item green if selection changed or menu opened
+        if dir_delta != 0 || just_opened {
+            self.cursor_frame = 0;
+        } else {
+            self.cursor_frame += 1;
+        }
+
+        self.handle_widget_bind(cx);
+    }
 }
 
 fn is_widget_selectable(widget: &'static Widget) -> bool {
@@ -344,57 +420,6 @@ fn get_selectable_widget_count(widgets: &'static [Widget], cx: &mut MenuContext)
     }
     selectable_count
 }
-
-// void tick() {
-//     if (s_binding == BindingState::Active) {
-//         handle_widget_bind();
-//         return;
-//     }
-
-//     // TODO save settings on close
-//     // TODO save menu position as settings
-//     bool toggle = binds::bind_pressed(pref::get(pref::U8Pref::MenuBind), true);
-//     if (toggle) {
-//         s_visible ^= toggle;
-//     } else if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
-//         pop_menu();
-//     }
-//     bool just_opened = s_visible && toggle;
-//     if (just_opened) {
-//         pad::reset_dir_repeat();
-//         s_cursor_frame = 0;
-//     }
-
-//     pad::set_exclusive_mode(s_visible);
-
-//     if (!s_visible) {
-//         // Default binding is L+R, but this lets you know the current binding in case you forget
-//         // what you changed it to
-//         u8 input = pref::get(pref::U8Pref::MenuBind);
-//         if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
-//             input != L_R_BIND) {
-//             char buf[25];
-//             binds::get_bind_str(input, buf);
-//             draw::notify(draw::RED, "Use %s to toggle menu", buf);
-//         }
-//         return;
-//     }
-
-//     MenuWidget* menu = s_menu_stack[s_menu_stack_ptr];
-
-//     // Update selected menu item
-//     s32 dir_delta = pad::dir_repeat(pad::DIR_DOWN, true) - pad::dir_repeat(pad::DIR_UP, true);
-//     u32 selectable = get_selectable_widget_count(menu->widgets, menu->num_widgets);
-//     menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
-
-//     // Make selected menu item green if selection changed or menu opened
-//     if (dir_delta != 0 || just_opened)
-//         s_cursor_frame = 0;
-//     else
-//         s_cursor_frame++;
-
-//     handle_widget_bind();
-// }
 
 fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXColor {
     let r = (1.0 - t) * color1.r as f32 + t * color2.r as f32;

@@ -207,7 +207,7 @@ impl Freecam {
                 notify!(
                     draw,
                     draw::WHITE,
-                    "Freecam Turbo Speed Factor: %dX",
+                    c"Freecam Turbo Speed Factor: %dX",
                     speed_mult as u32
                 );
                 pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);

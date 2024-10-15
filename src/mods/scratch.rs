@@ -8,7 +8,7 @@ impl Scratch {
     }
 
     pub fn tick(&self, draw: &mut draw::Draw) {
-        notify!(draw, draw::PURPLE, "Hello World from Rust! %f", -5.2134);
+        notify!(draw, draw::PURPLE, c"Hello World from Rust! %f", -5.2134);
     }
 
     pub fn disp(&self, draw: &mut draw::Draw) {}

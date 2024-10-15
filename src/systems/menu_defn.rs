@@ -2,13 +2,14 @@ use crate::mkb;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 
-use super::draw::{self};
+use super::draw::{self, Draw};
 use super::pad::Pad;
 use super::pref::Pref;
 
 pub struct MenuContext<'a> {
     pub pref: &'a mut Pref,
     pub pad: &'a mut Pad,
+    pub draw: &'a mut Draw,
     // physics: &'a mut Physics,
     // cmseg
 }

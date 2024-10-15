@@ -4,15 +4,13 @@
 // TODO handle converting string arguments to C strings
 #[macro_export]
 macro_rules! log {
-    ($fmt:expr $(, $($arg:tt)*)?) => {{
-        let mut c_fmt = arrayvec::ArrayString::<512>::from("[pracmod] ").unwrap();
-        c_fmt.push_str($fmt);
-        c_fmt.push_str("\n\0");
-
-        // I'm not sure it's possible to expand arg in a safe context
-        #[allow(clippy::macro_metavars_in_unsafe)]
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
         unsafe {
-            mkb::OSReport(c_fmt.as_ptr() as *mut core::ffi::c_char $(, $($arg)*)?);
+            mkb::OSReport(c"[pracmod] ".as_ptr() as *mut _);
+            // I'm not sure it's possible to expand arg in a safe context
+            #[allow(clippy::macro_metavars_in_unsafe)]
+            mkb::OSReport($fmt.as_ptr() as *mut _ $(, $arg)*);
+            mkb::OSReport(c"\n".as_ptr() as *mut _);
         }
     }};
 }
