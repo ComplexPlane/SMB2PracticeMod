@@ -12,7 +12,7 @@ use crate::mkb_suppl::GX_FALSE;
 use crate::mkb_suppl::GX_TRUE;
 use crate::patch;
 
-const DEBUG_CHAR_WIDTH: u32 = 0xc;
+pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 
 pub const WHITE: mkb::GXColor = mkb::GXColor {
     r: 0xff,
@@ -117,7 +117,7 @@ static HEART_VERTS: &[mkb::Vec2d] = &[
 ];
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
+pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
     unsafe {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
         let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
@@ -247,7 +247,7 @@ fn num_to_rainbow(num: i32) -> mkb::GXColor {
     color
 }
 
-fn draw_debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
+pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
     unsafe {
         asm::debug_text_color = ((color.r as u32) << 24)
             | ((color.g as u32) << 16)
@@ -312,7 +312,7 @@ impl Draw {
         if self.notify_frame_counter > 40 {
             color.a = 0xff - ((self.notify_frame_counter - 40) * 0xff / 20) as u8;
         }
-        draw_debug_text(draw_x, draw_y, color, &self.notify_msg_buf);
+        debug_text(draw_x, draw_y, color, &self.notify_msg_buf);
 
         self.notify_frame_counter += 1;
         self.notify_frame_counter = self.notify_frame_counter.clamp(0, 60);
@@ -328,7 +328,7 @@ impl Draw {
 
 #[macro_export]
 macro_rules! notify {
-    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)* $(,)?) => {
+    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)*) => {
         let mut buf = arrayvec::ArrayString::<64>::new();
         $crate::sprintf!(buf, $format $(, $arg)*);
         $cx.notify($color, &buf);

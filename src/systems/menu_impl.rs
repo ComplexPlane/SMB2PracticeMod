@@ -2,10 +2,10 @@ use core::ffi::c_char;
 
 use arrayvec::{ArrayString, ArrayVec};
 
-use crate::notify;
 use crate::systems::draw;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{mkb, utils::tinymap::TinyMap};
+use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
 use super::menu_defn::{self, AfterPush, MenuContext, Widget};
@@ -20,11 +20,13 @@ enum BindingState {
     Active,    // currently binding
 }
 
-const SCREEN_WIDTH: i32 = 640;
-const SCREEN_HEIGHT: i32 = 480;
-const MARGIN: i32 = 20;
-const PAD: i32 = 8;
-const LINE_HEIGHT: i32 = 20;
+const SCREEN_WIDTH: u32 = 640;
+const SCREEN_HEIGHT: u32 = 480;
+const MARGIN: u32 = 20;
+const PAD: u32 = 8;
+const LINE_HEIGHT: u32 = 20;
+const LABEL_OFFSET: u32 = 2;
+const PREF_OFFSET: u32 = 25;
 
 const L_R_BIND: u8 = 64; // bind id for an L+R bind
 
@@ -322,7 +324,7 @@ impl MenuImpl {
                     cx.draw,
                     draw::RED,
                     c"Use %s to toggle menu",
-                    buf.as_ptr() as *mut c_char,
+                    buf.as_ptr() as *mut c_char
                 );
             }
             return;
@@ -347,6 +349,233 @@ impl MenuImpl {
         }
 
         self.handle_widget_bind(cx);
+    }
+
+    fn draw_widget(
+        &self,
+        widget: &Widget,
+        selected_idx: u32,
+        selectable_idx: &mut u32,
+        y: &mut u32,
+        lerped_color: mkb::GXColor,
+        cx: &mut MenuContext,
+    ) {
+        match widget {
+            Widget::HideableGroup { widgets, show_if } => {
+                if show_if(cx) {
+                    for w in *widgets {
+                        self.draw_widget(w, selected_idx, selectable_idx, y, lerped_color, cx);
+                    }
+                }
+            }
+            Widget::Header { label } => {
+                draw::debug_text(MARGIN + PAD, *y, draw::ORANGE, label);
+                *y += LINE_HEIGHT;
+            }
+            Widget::Text { label } => {
+                draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
+                *y += LINE_HEIGHT;
+            }
+            Widget::ColoredText { label, color } => {
+                draw::debug_text(MARGIN + PAD, *y, *color, label);
+                *y += LINE_HEIGHT;
+            }
+            Widget::Checkbox { label, pref } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + 2, *y, color, label);
+                draw::debug_text(
+                    MARGIN + PAD + PREF_OFFSET,
+                    *y,
+                    color,
+                    if cx.pref.get_bool(*pref) { "On" } else { "Off" },
+                );
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::GetSetCheckbox { label, get, .. } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+                draw::debug_text(
+                    MARGIN + PAD + PREF_OFFSET,
+                    *y,
+                    color,
+                    if get(cx) { "On" } else { "Off" },
+                );
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::Separator {} => {
+                *y += LINE_HEIGHT / 2;
+            }
+            Widget::Menu { label, .. } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+
+                for i in 0..3 {
+                    draw::debug_text(
+                        MARGIN + PAD + 25 * draw::DEBUG_CHAR_WIDTH + i * 6,
+                        *y,
+                        color,
+                        ".",
+                    );
+                }
+
+                *selectable_idx += 1;
+                *y += LINE_HEIGHT;
+            }
+            Widget::FloatView { label, get } => {
+                draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
+                let mut float_str = ArrayString::<16>::new();
+                sprintf!(float_str, "%.3Ef", get() as f64);
+                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, draw::GREEN, &float_str);
+                *y += LINE_HEIGHT;
+            }
+            Widget::Choose {
+                label,
+                choices,
+                pref,
+            } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+                let current_choice = cx.pref.get_u8(*pref) as usize;
+
+                let mut choice_text = ArrayString::<16>::from(choices[current_choice]).unwrap();
+                choice_text.push('\0');
+
+                let mut buf = ArrayString::<16>::new();
+                sprintf!(
+                    buf,
+                    "(%d/%d) %s",
+                    current_choice + 1,
+                    choices.len(),
+                    &choice_text
+                );
+                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::Button { label, .. } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::IntEdit { label, pref, .. } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+                let mut buf = ArrayString::<8>::new();
+                sprintf!(buf, "%d", cx.pref.get_u8(*pref) as u32);
+                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::FloatEdit {
+                label,
+                pref,
+                precision,
+                floor,
+                decimals,
+                ..
+            } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color = if selected_idx == *selectable_idx {
+                    lerped_color
+                } else {
+                    UNFOCUSED_COLOR
+                };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+
+                let display = (cx.pref.get_u8(*pref) as f32 + *floor as f32) / *precision as f32;
+
+                let mut buf = ArrayString::<16>::new();
+                match decimals {
+                    2 => sprintf!(buf, "%0.2f", display as f64),
+                    _ => sprintf!(buf, "%0.3f", display as f64),
+                }
+                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
+
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::InputSelect { label, pref, .. } => {
+                if selected_idx == *selectable_idx {
+                    draw_selectable_highlight(*y as f32);
+                }
+                let color =
+                    if selected_idx == *selectable_idx && self.binding == BindingState::Active {
+                        FOCUSED_COLOR
+                    } else if selected_idx == *selectable_idx {
+                        lerped_color
+                    } else {
+                        UNFOCUSED_COLOR
+                    };
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
+
+                let bind_color =
+                    if selected_idx == *selectable_idx && self.binding == BindingState::Active {
+                        draw::GOLD
+                    } else if selected_idx == *selectable_idx {
+                        lerped_color
+                    } else {
+                        UNFOCUSED_COLOR
+                    };
+
+                let input = cx.pref.get_u8(*pref);
+                let mut buf = ArrayString::<32>::new();
+                self.binds.get_bind_str(input, &mut buf);
+                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, bind_color, &buf);
+
+                *y += LINE_HEIGHT;
+                *selectable_idx += 1;
+            }
+            Widget::Custom { draw: custom_draw } => {
+                custom_draw(cx);
+            }
+        }
     }
 }
 
@@ -435,307 +664,171 @@ fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXCol
     }
 }
 
-// static f32 sin_lerp(s32 period_frames) {
-//     f32 angle = (static_cast<s32>(s_cursor_frame % period_frames) - (period_frames / 2.f)) *
-//                 0x8000 / (period_frames / 2.f);
-//     f32 lerp = (mkb::math_sin(angle) + 1.f) / 2.f;
-//     return lerp;
-// }
+fn sin_lerp(period_frames: u32) -> f32 {
+    unsafe {
+        let angle = ((mkb::frame_counter % period_frames) - (period_frames / 2)) as f32
+            * 0x8000 as f32
+            / (period_frames as f32 / 2.0);
+        let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
+        lerp
+    }
+}
 
-// static void draw_selectable_highlight(float y) {
-//     // float new_y = y * 1.072 - 3; // Do NOT ask why we need this
-//     // draw::rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
+fn draw_selectable_highlight(y: f32) {
+    // let new_y = y * 1.072 - 3.0; // Do NOT ask why we need this
+    // draw::rect(MARGIN as f32, new_y, SCREEN_WIDTH as f32 - MARGIN as f32, (new_y + LINE_HEIGHT as f32), mkb::GXColor { r: 0, g: 0, b: 0, a: 0xFF });
 
-//     // Draw selection arrow
-//     draw::debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
-// }
+    // Draw selection arrow
+    draw::debug_text(MARGIN + PAD + 2, y as u32, FOCUSED_COLOR, "\x1c");
+}
 
-// static constexpr s32 BLOCK_WIDTH = 150;
-// static constexpr s32 START = MARGIN + 35;
-// static constexpr s32 BUTTON_START = -83;
-// static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
-// static constexpr s32 HALF_SPACE = 12;
+const BLOCK_WIDTH: u32 = 150;
+const START: u32 = MARGIN + 35;
+const BUTTON_OFFSET: u32 = 83;
+const Y_HEIGHT: u32 = SCREEN_HEIGHT - MARGIN - 52;
+const HALF_SPACE: u32 = 12;
 
-// static void draw_help_layout() {
-//     // draw seperator
-//     draw::rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
-//                SCREEN_HEIGHT - MARGIN - 30, draw::GRAY);
-//     // draw b: back
-//     draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B");
-//     draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//     draw::debug_text(BUTTON_START + 4 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE, "Back");
-// }
+fn draw_help_layout() {
+    // draw seperator
+    draw::rect(
+        MARGIN as f32,
+        (SCREEN_HEIGHT - MARGIN - 34) as f32,
+        (SCREEN_WIDTH - MARGIN) as f32,
+        (SCREEN_HEIGHT - MARGIN - 30) as f32,
+        draw::GRAY,
+    );
+    // draw b: back
+    draw::debug_text(
+        (START + 3 * BLOCK_WIDTH) as u32,
+        Y_HEIGHT,
+        draw::LIGHT_RED,
+        "B",
+    );
+    draw::debug_text(4 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
+    draw::debug_text(
+        4 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
+        Y_HEIGHT,
+        draw::WHITE,
+        "Back",
+    );
+}
 
-// static void draw_help(const Widget& widget) {
-//     // draw relevant controls for current widget
-//     switch (widget.type) {
-//         case WidgetType::Checkbox:
-//         case WidgetType::GetSetCheckbox: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Toggle");
-//             break;
-//         }
-//         case WidgetType::Menu: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Open");
-//             break;
-//         }
-//         case WidgetType::Button: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Activate");
-//             break;
-//         }
-//         case WidgetType::Choose: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Next");
-//             draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-//             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Previous");
-//             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Reset");
-//             break;
-//         }
-//         case WidgetType::IntEdit:
-//         case WidgetType::FloatEdit: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Increase");
-//             draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-//             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Decrease");
-//             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Reset");
-//             break;
-//         }
-//         case WidgetType::InputSelect: {
-//             draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Bind");
-//             if (widget.input_select.can_unbind) {
-//                 draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-//                 draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//                 draw::debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                                  "Unbind");
-//             }
-//             draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
-//             draw::debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, draw::WHITE,
-//                              "Reset");
-//             break;
-//         }
-//         default: {
-//             break;
-//         }
-//     }
-// }
-
-// void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
-//                  mkb::GXColor lerped_color) {
-//     switch (widget.type) {
-//         case WidgetType::HideableGroupWidget: {
-//             if (widget.hideable_group.show_if()) {
-//                 for (u32 i = 0; i < widget.hideable_group.num_widgets; i++) {
-//                     Widget& w = widget.hideable_group.widgets[i];
-//                     draw_widget(w, selected_idx, selectable_idx, y, lerped_color);
-//                 }
-//             }
-//             break;
-//         }
-//         case WidgetType::Header: {
-//             draw::debug_text(MARGIN + PAD, *y, draw::ORANGE, widget.header.label);
-//             *y += LINE_HEIGHT;
-//             break;
-//         }
-//         case WidgetType::Text: {
-//             draw::debug_text(MARGIN + PAD, *y, draw::WHITE, widget.text.label);
-//             *y += LINE_HEIGHT;
-//             break;
-//         }
-//         case WidgetType::ColoredText: {
-//             draw::debug_text(MARGIN + PAD, *y, widget.colored_text.color,
-//                              widget.colored_text.label);
-//             *y += LINE_HEIGHT;
-//             break;
-//         }
-//         case WidgetType::Checkbox:
-//         case WidgetType::GetSetCheckbox: {
-//             const char* label = nullptr;
-//             bool value = false;
-//             if (widget.type == WidgetType::Checkbox) {
-//                 label = widget.checkbox.label;
-//                 value = pref::get(widget.checkbox.pref);
-//             } else {
-//                 label = widget.get_set_checkbox.label;
-//                 value = widget.get_set_checkbox.get();
-//             }
-
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", label);
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "                         %s", value ? "On" : "Off");
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::Separator: {
-//             *y += LINE_HEIGHT / 2;
-//             break;
-//         }
-//         case WidgetType::Menu: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", widget.menu.label);
-
-//             // Draw "..." with dots closer together
-//             for (s32 i = 0; i < 3; i++) {
-//                 draw::debug_text(MARGIN + PAD + 25 * draw::DEBUG_CHAR_WIDTH + i * 6, *y,
-//                                  selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                                  ".");
-//             }
-
-//             (*selectable_idx)++;
-//             *y += LINE_HEIGHT;
-//             break;
-//         }
-//         case WidgetType::FloatView: {
-//             draw::debug_text(MARGIN + PAD, *y, draw::WHITE, "%s", widget.float_view.label);
-//             draw::debug_text(MARGIN + PAD, *y, draw::GREEN, "                         %.3Ef",
-//                              widget.float_view.get());
-//             y += LINE_HEIGHT;
-//             break;
-//         }
-//         case WidgetType::Choose: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", widget.choose.label);
-//             draw::debug_text(
-//                 MARGIN + PAD, *y, selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                 "                         (%d/%d) %s", pref::get(widget.choose.pref) + 1,
-//                 widget.choose.num_choices, widget.choose.choices[pref::get(widget.choose.pref)]);
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::Button: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", widget.button.label);
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::IntEdit: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", widget.int_edit.label);
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "                         %d", pref::get(widget.int_edit.pref));
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::FloatEdit: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-
-//             float display = ((float)(pref::get(widget.float_edit.pref) + widget.float_edit.floor) /
-//                              (float)widget.float_edit.precision);
-
-//             draw::debug_text(MARGIN + PAD, *y,
-//                              selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                              "  %s", widget.float_edit.label);
-//             switch (widget.float_edit.decimals) {
-//                 case 2: {
-//                     draw ::debug_text(
-//                         MARGIN + PAD, *y,
-//                         selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                         "                         %0.2f", display);
-//                     break;
-//                 }
-//                 default: {
-//                     draw ::debug_text(
-//                         MARGIN + PAD, *y,
-//                         selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                         "                         %0.3f", display);
-//                     break;
-//                 }
-//             }
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::InputSelect: {
-//             if (selected_idx == *selectable_idx) {
-//                 draw_selectable_highlight(*y);
-//             }
-//             if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
-//                 draw::debug_text(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s",
-//                                  widget.input_select.label);
-//             } else {
-//                 draw::debug_text(MARGIN + PAD, *y,
-//                                  selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-//                                  "  %s", widget.input_select.label);
-//             }
-//             mkb::GXColor bind_color =
-//                 selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
-//             if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
-//                 bind_color = draw::GOLD;
-//             }
-//             u8 input = pref::get(widget.input_select.pref);
-//             char buf[25];
-//             binds::get_bind_str(input, buf);
-//             draw::debug_text(MARGIN + PAD, *y, bind_color, "                         %s", buf);
-
-//             *y += LINE_HEIGHT;
-//             (*selectable_idx)++;
-//             break;
-//         }
-//         case WidgetType::Custom: {
-//             widget.custom.draw();
-//             break;
-//         }
-//     }
-// }
+fn draw_help(widget: &Widget) {
+    // draw relevant controls for current widget
+    match widget {
+        Widget::Checkbox { .. } | Widget::GetSetCheckbox { .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Toggle",
+            );
+        }
+        Widget::Menu { .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Open",
+            );
+        }
+        Widget::Button { .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Activate",
+            );
+        }
+        Widget::Choose { .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Next",
+            );
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+            draw::debug_text(BUTTON_OFFSET + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 2 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Previous",
+            );
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_OFFSET + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 3 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Reset",
+            );
+        }
+        Widget::IntEdit { .. } | Widget::FloatEdit { .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Increase",
+            );
+            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+            draw::debug_text(BUTTON_OFFSET + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 2 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Decrease",
+            );
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_OFFSET + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 3 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Reset",
+            );
+        }
+        Widget::InputSelect { can_unbind, .. } => {
+            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
+            draw::debug_text(BUTTON_OFFSET + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 1 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Bind",
+            );
+            if *can_unbind {
+                draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
+                draw::debug_text(BUTTON_OFFSET + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+                draw::debug_text(
+                    BUTTON_OFFSET + 2 * BLOCK_WIDTH + HALF_SPACE,
+                    Y_HEIGHT,
+                    draw::WHITE,
+                    "Unbind",
+                );
+            }
+            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
+            draw::debug_text(BUTTON_OFFSET + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::WHITE, ":");
+            draw::debug_text(
+                BUTTON_OFFSET + 3 * BLOCK_WIDTH + HALF_SPACE,
+                Y_HEIGHT,
+                draw::WHITE,
+                "Reset",
+            );
+        }
+        _ => {}
+    }
+}
 
 // void draw_menu_widgets(MenuWidget* menu) {
 //     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;

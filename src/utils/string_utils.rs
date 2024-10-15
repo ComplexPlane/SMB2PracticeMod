@@ -1,6 +1,6 @@
 #[macro_export]
 macro_rules! sprintf {
-    ($buf:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {
+    ($buf:expr, $fmt:literal $(, $arg:expr)*) => {
         unsafe {
             let ptr = $buf.as_mut_ptr();
             let written_bytes = $crate::mkb::sprintf(ptr as *mut _, $fmt.as_ptr() as *mut _ $(, $arg)*);
