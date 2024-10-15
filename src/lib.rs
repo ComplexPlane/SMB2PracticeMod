@@ -71,16 +71,16 @@ unsafe extern "C" fn tick() {
 }
 
 unsafe fn perform_assembly_patches() {
-    patch::write_branch_bl(0x80270718 as *mut u32, tick as *mut c_void);
+    patch::write_branch_bl(0x80270718 as *mut usize, tick as *mut c_void);
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
     // Only needs to be applied to the US version
-    patch::write_nop(0x80033E9C as *mut u32);
+    patch::write_nop(0x80033E9C as *mut usize);
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
-    patch::write_nop(0x80299f54 as *mut u32);
+    patch::write_nop(0x80299f54 as *mut usize);
     // Nop this pausemenu screenshot call so we can call it when we want to
     // TODO uncomment when we deal with this? Currently bugs out when when pausing
     // patch::write_nop(0x80270aac as *mut u32);
@@ -93,7 +93,7 @@ unsafe fn perform_assembly_patches() {
         msg.count_bytes() + 1,
     );
     patch::write_branch(
-        0x8032ad0c as *mut u32,
+        0x8032ad0c as *mut usize,
         addr_of!(asm::custom_titlescreen_text_color) as *mut c_void,
     );
 }

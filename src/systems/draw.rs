@@ -281,7 +281,7 @@ impl Draw {
     pub fn init(&self) {
         unsafe {
             patch::write_branch(
-                0x802aeca4 as *mut u32,
+                0x802aeca4 as *mut usize,
                 addr_of!(asm::full_debug_text_color) as *mut c_void,
             );
         }

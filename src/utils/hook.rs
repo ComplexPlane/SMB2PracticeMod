@@ -2,7 +2,7 @@
 macro_rules! hook {
     ($name:ident $(, $argname:ident: $arg:ty)* => $ret:ty, $their_func:expr, $our_func:expr) => {
         pub struct $name {
-            instrs: [u32; 2],
+            instrs: [usize; 2],
             chained_func: Option<extern "C" fn($($arg,)*) -> $ret>,
             their_func: unsafe extern "C" fn($($arg,)*) -> $ret,
             our_func_c: extern "C" fn($($arg,)*) -> $ret,
@@ -22,8 +22,8 @@ macro_rules! hook {
                 unsafe {
                     let mut chained_func_addr = core::ptr::null();
                     $crate::patch::hook_function(
-                        self.their_func as *mut u32,
-                        self.our_func_c as *mut u32,
+                        self.their_func as *mut usize,
+                        self.our_func_c as *mut usize,
                         &mut self.instrs,
                         &mut chained_func_addr,
                     );

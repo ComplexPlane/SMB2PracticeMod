@@ -67,26 +67,6 @@ pub struct SeesawState {
     pub inv_transform: Mtx,
     pub transform: Mtx,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SeesawState"][::core::mem::size_of::<SeesawState>() - 120usize];
-    ["Alignment of SeesawState"][::core::mem::align_of::<SeesawState>() - 1usize];
-    ["Offset of field: SeesawState::angle"][::core::mem::offset_of!(SeesawState, angle) - 0usize];
-    ["Offset of field: SeesawState::prev_angle"]
-        [::core::mem::offset_of!(SeesawState, prev_angle) - 4usize];
-    ["Offset of field: SeesawState::angle_vel"]
-        [::core::mem::offset_of!(SeesawState, angle_vel) - 8usize];
-    ["Offset of field: SeesawState::sensitivity"]
-        [::core::mem::offset_of!(SeesawState, sensitivity) - 12usize];
-    ["Offset of field: SeesawState::friction"]
-        [::core::mem::offset_of!(SeesawState, friction) - 16usize];
-    ["Offset of field: SeesawState::spring"]
-        [::core::mem::offset_of!(SeesawState, spring) - 20usize];
-    ["Offset of field: SeesawState::inv_transform"]
-        [::core::mem::offset_of!(SeesawState, inv_transform) - 24usize];
-    ["Offset of field: SeesawState::transform"]
-        [::core::mem::offset_of!(SeesawState, transform) - 72usize];
-};
 pub const APE_AIAI: _bindgen_ty_1 = 0;
 pub const APE_MEEMEE: _bindgen_ty_1 = 1;
 pub const APE_BABY: _bindgen_ty_1 = 2;
@@ -222,14 +202,6 @@ pub struct S16Vec {
     pub y: s16,
     pub z: s16,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of S16Vec"][::core::mem::size_of::<S16Vec>() - 6usize];
-    ["Alignment of S16Vec"][::core::mem::align_of::<S16Vec>() - 1usize];
-    ["Offset of field: S16Vec::x"][::core::mem::offset_of!(S16Vec, x) - 0usize];
-    ["Offset of field: S16Vec::y"][::core::mem::offset_of!(S16Vec, y) - 2usize];
-    ["Offset of field: S16Vec::z"][::core::mem::offset_of!(S16Vec, z) - 4usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GoalTape {
@@ -255,52 +227,6 @@ pub struct GoalTape {
     pub field349_0x190: uint,
     pub field_0x194: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GoalTape"][::core::mem::size_of::<GoalTape>() - 408usize];
-    ["Alignment of GoalTape"][::core::mem::align_of::<GoalTape>() - 1usize];
-    ["Offset of field: GoalTape::field_0x0"][::core::mem::offset_of!(GoalTape, field_0x0) - 0usize];
-    ["Offset of field: GoalTape::field4_0x4"]
-        [::core::mem::offset_of!(GoalTape, field4_0x4) - 4usize];
-    ["Offset of field: GoalTape::field5_0x8"]
-        [::core::mem::offset_of!(GoalTape, field5_0x8) - 8usize];
-    ["Offset of field: GoalTape::field6_0xc"]
-        [::core::mem::offset_of!(GoalTape, field6_0xc) - 12usize];
-    ["Offset of field: GoalTape::g_timer_frames_remaining"]
-        [::core::mem::offset_of!(GoalTape, g_timer_frames_remaining) - 16usize];
-    ["Offset of field: GoalTape::g_stobj_ptr"]
-        [::core::mem::offset_of!(GoalTape, g_stobj_ptr) - 20usize];
-    ["Offset of field: GoalTape::field9_0x18"]
-        [::core::mem::offset_of!(GoalTape, field9_0x18) - 24usize];
-    ["Offset of field: GoalTape::field10_0x1c"]
-        [::core::mem::offset_of!(GoalTape, field10_0x1c) - 28usize];
-    ["Offset of field: GoalTape::field11_0x20"]
-        [::core::mem::offset_of!(GoalTape, field11_0x20) - 32usize];
-    ["Offset of field: GoalTape::field12_0x24"]
-        [::core::mem::offset_of!(GoalTape, field12_0x24) - 36usize];
-    ["Offset of field: GoalTape::field13_0x28"]
-        [::core::mem::offset_of!(GoalTape, field13_0x28) - 40usize];
-    ["Offset of field: GoalTape::field14_0x2c"]
-        [::core::mem::offset_of!(GoalTape, field14_0x2c) - 44usize];
-    ["Offset of field: GoalTape::field15_0x30"]
-        [::core::mem::offset_of!(GoalTape, field15_0x30) - 48usize];
-    ["Offset of field: GoalTape::field16_0x34"]
-        [::core::mem::offset_of!(GoalTape, field16_0x34) - 52usize];
-    ["Offset of field: GoalTape::field17_0x38"]
-        [::core::mem::offset_of!(GoalTape, field17_0x38) - 56usize];
-    ["Offset of field: GoalTape::field18_0x3c"]
-        [::core::mem::offset_of!(GoalTape, field18_0x3c) - 60usize];
-    ["Offset of field: GoalTape::field19_0x40"]
-        [::core::mem::offset_of!(GoalTape, field19_0x40) - 64usize];
-    ["Offset of field: GoalTape::field20_0x44"]
-        [::core::mem::offset_of!(GoalTape, field20_0x44) - 68usize];
-    ["Offset of field: GoalTape::field_0x48"]
-        [::core::mem::offset_of!(GoalTape, field_0x48) - 72usize];
-    ["Offset of field: GoalTape::field349_0x190"]
-        [::core::mem::offset_of!(GoalTape, field349_0x190) - 400usize];
-    ["Offset of field: GoalTape::field_0x194"]
-        [::core::mem::offset_of!(GoalTape, field_0x194) - 404usize];
-};
 impl Default for GoalTape {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -317,15 +243,6 @@ pub struct GXTexObj {
     pub format: GXTexFmt,
     pub field_0x18: [undefined; 8usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXTexObj"][::core::mem::size_of::<GXTexObj>() - 32usize];
-    ["Alignment of GXTexObj"][::core::mem::align_of::<GXTexObj>() - 1usize];
-    ["Offset of field: GXTexObj::field_0x0"][::core::mem::offset_of!(GXTexObj, field_0x0) - 0usize];
-    ["Offset of field: GXTexObj::format"][::core::mem::offset_of!(GXTexObj, format) - 20usize];
-    ["Offset of field: GXTexObj::field_0x18"]
-        [::core::mem::offset_of!(GXTexObj, field_0x18) - 24usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Vec {
@@ -333,14 +250,6 @@ pub struct Vec {
     pub y: f32,
     pub z: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Vec"][::core::mem::size_of::<Vec>() - 12usize];
-    ["Alignment of Vec"][::core::mem::align_of::<Vec>() - 1usize];
-    ["Offset of field: Vec::x"][::core::mem::offset_of!(Vec, x) - 0usize];
-    ["Offset of field: Vec::y"][::core::mem::offset_of!(Vec, y) - 4usize];
-    ["Offset of field: Vec::z"][::core::mem::offset_of!(Vec, z) - 8usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct PhysicsBall {
@@ -359,36 +268,6 @@ pub struct PhysicsBall {
     pub field26_0x58: f32,
     pub itemgroup_idx: dword,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PhysicsBall"][::core::mem::size_of::<PhysicsBall>() - 96usize];
-    ["Alignment of PhysicsBall"][::core::mem::align_of::<PhysicsBall>() - 1usize];
-    ["Offset of field: PhysicsBall::flags"][::core::mem::offset_of!(PhysicsBall, flags) - 0usize];
-    ["Offset of field: PhysicsBall::pos"][::core::mem::offset_of!(PhysicsBall, pos) - 4usize];
-    ["Offset of field: PhysicsBall::prev_pos"]
-        [::core::mem::offset_of!(PhysicsBall, prev_pos) - 16usize];
-    ["Offset of field: PhysicsBall::vel"][::core::mem::offset_of!(PhysicsBall, vel) - 28usize];
-    ["Offset of field: PhysicsBall::radius"]
-        [::core::mem::offset_of!(PhysicsBall, radius) - 40usize];
-    ["Offset of field: PhysicsBall::acceleration"]
-        [::core::mem::offset_of!(PhysicsBall, acceleration) - 44usize];
-    ["Offset of field: PhysicsBall::restitution"]
-        [::core::mem::offset_of!(PhysicsBall, restitution) - 48usize];
-    ["Offset of field: PhysicsBall::g_jerk"]
-        [::core::mem::offset_of!(PhysicsBall, g_jerk) - 52usize];
-    ["Offset of field: PhysicsBall::field_0x38"]
-        [::core::mem::offset_of!(PhysicsBall, field_0x38) - 56usize];
-    ["Offset of field: PhysicsBall::g_some_vec"]
-        [::core::mem::offset_of!(PhysicsBall, g_some_vec) - 68usize];
-    ["Offset of field: PhysicsBall::field_0x50"]
-        [::core::mem::offset_of!(PhysicsBall, field_0x50) - 80usize];
-    ["Offset of field: PhysicsBall::field25_0x54"]
-        [::core::mem::offset_of!(PhysicsBall, field25_0x54) - 84usize];
-    ["Offset of field: PhysicsBall::field26_0x58"]
-        [::core::mem::offset_of!(PhysicsBall, field26_0x58) - 88usize];
-    ["Offset of field: PhysicsBall::itemgroup_idx"]
-        [::core::mem::offset_of!(PhysicsBall, itemgroup_idx) - 92usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Stobj {
@@ -430,62 +309,6 @@ pub struct Stobj {
     pub g_local_position: Vec,
     pub g_local_velocity: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Stobj"][::core::mem::size_of::<Stobj>() - 204usize];
-    ["Alignment of Stobj"][::core::mem::align_of::<Stobj>() - 1usize];
-    ["Offset of field: Stobj::idx"][::core::mem::offset_of!(Stobj, idx) - 0usize];
-    ["Offset of field: Stobj::id"][::core::mem::offset_of!(Stobj, id) - 2usize];
-    ["Offset of field: Stobj::type_"][::core::mem::offset_of!(Stobj, type_) - 4usize];
-    ["Offset of field: Stobj::field_0x6"][::core::mem::offset_of!(Stobj, field_0x6) - 6usize];
-    ["Offset of field: Stobj::g_some_bitflag"]
-        [::core::mem::offset_of!(Stobj, g_some_bitflag) - 8usize];
-    ["Offset of field: Stobj::g_mode"][::core::mem::offset_of!(Stobj, g_mode) - 12usize];
-    ["Offset of field: Stobj::g_counter"][::core::mem::offset_of!(Stobj, g_counter) - 14usize];
-    ["Offset of field: Stobj::g_model_origin"]
-        [::core::mem::offset_of!(Stobj, g_model_origin) - 16usize];
-    ["Offset of field: Stobj::position"][::core::mem::offset_of!(Stobj, position) - 28usize];
-    ["Offset of field: Stobj::position_2"][::core::mem::offset_of!(Stobj, position_2) - 40usize];
-    ["Offset of field: Stobj::bounding_sphere_radius"]
-        [::core::mem::offset_of!(Stobj, bounding_sphere_radius) - 52usize];
-    ["Offset of field: Stobj::coli_func"][::core::mem::offset_of!(Stobj, coli_func) - 56usize];
-    ["Offset of field: Stobj::scale"][::core::mem::offset_of!(Stobj, scale) - 60usize];
-    ["Offset of field: Stobj::field14_0x48"]
-        [::core::mem::offset_of!(Stobj, field14_0x48) - 72usize];
-    ["Offset of field: Stobj::field15_0x4c"]
-        [::core::mem::offset_of!(Stobj, field15_0x4c) - 76usize];
-    ["Offset of field: Stobj::field16_0x50"]
-        [::core::mem::offset_of!(Stobj, field16_0x50) - 80usize];
-    ["Offset of field: Stobj::model"][::core::mem::offset_of!(Stobj, model) - 84usize];
-    ["Offset of field: Stobj::pos"][::core::mem::offset_of!(Stobj, pos) - 88usize];
-    ["Offset of field: Stobj::vel"][::core::mem::offset_of!(Stobj, vel) - 100usize];
-    ["Offset of field: Stobj::rot"][::core::mem::offset_of!(Stobj, rot) - 112usize];
-    ["Offset of field: Stobj::field21_0x76"]
-        [::core::mem::offset_of!(Stobj, field21_0x76) - 118usize];
-    ["Offset of field: Stobj::field22_0x78"]
-        [::core::mem::offset_of!(Stobj, field22_0x78) - 120usize];
-    ["Offset of field: Stobj::field_0x7a"][::core::mem::offset_of!(Stobj, field_0x7a) - 122usize];
-    ["Offset of field: Stobj::g_prev_pos"][::core::mem::offset_of!(Stobj, g_prev_pos) - 124usize];
-    ["Offset of field: Stobj::g_prev_rot"][::core::mem::offset_of!(Stobj, g_prev_rot) - 136usize];
-    ["Offset of field: Stobj::field_0x8e"][::core::mem::offset_of!(Stobj, field_0x8e) - 142usize];
-    ["Offset of field: Stobj::field29_0x90"]
-        [::core::mem::offset_of!(Stobj, field29_0x90) - 144usize];
-    ["Offset of field: Stobj::field30_0x94"]
-        [::core::mem::offset_of!(Stobj, field30_0x94) - 148usize];
-    ["Offset of field: Stobj::field31_0x98"]
-        [::core::mem::offset_of!(Stobj, field31_0x98) - 152usize];
-    ["Offset of field: Stobj::field32_0x9c"]
-        [::core::mem::offset_of!(Stobj, field32_0x9c) - 156usize];
-    ["Offset of field: Stobj::itemgroup_idx"]
-        [::core::mem::offset_of!(Stobj, itemgroup_idx) - 160usize];
-    ["Offset of field: Stobj::field_0xa1"][::core::mem::offset_of!(Stobj, field_0xa1) - 161usize];
-    ["Offset of field: Stobj::extra_data"][::core::mem::offset_of!(Stobj, extra_data) - 164usize];
-    ["Offset of field: Stobj::g_some_pos2"][::core::mem::offset_of!(Stobj, g_some_pos2) - 168usize];
-    ["Offset of field: Stobj::g_local_position"]
-        [::core::mem::offset_of!(Stobj, g_local_position) - 180usize];
-    ["Offset of field: Stobj::g_local_velocity"]
-        [::core::mem::offset_of!(Stobj, g_local_velocity) - 192usize];
-};
 impl Default for Stobj {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -512,35 +335,6 @@ pub struct GmaModel {
     pub mtx_indexes: [s8; 8usize],
     pub field_0x30: [undefined; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaModel"][::core::mem::size_of::<GmaModel>() - 64usize];
-    ["Alignment of GmaModel"][::core::mem::align_of::<GmaModel>() - 1usize];
-    ["Offset of field: GmaModel::gcmf_magic"]
-        [::core::mem::offset_of!(GmaModel, gcmf_magic) - 0usize];
-    ["Offset of field: GmaModel::attrs"][::core::mem::offset_of!(GmaModel, attrs) - 4usize];
-    ["Offset of field: GmaModel::bound_sphere_center"]
-        [::core::mem::offset_of!(GmaModel, bound_sphere_center) - 8usize];
-    ["Offset of field: GmaModel::bound_sphere_radius"]
-        [::core::mem::offset_of!(GmaModel, bound_sphere_radius) - 20usize];
-    ["Offset of field: GmaModel::tev_layer_count"]
-        [::core::mem::offset_of!(GmaModel, tev_layer_count) - 24usize];
-    ["Offset of field: GmaModel::opaque_shape_count"]
-        [::core::mem::offset_of!(GmaModel, opaque_shape_count) - 26usize];
-    ["Offset of field: GmaModel::translucent_shape_count"]
-        [::core::mem::offset_of!(GmaModel, translucent_shape_count) - 28usize];
-    ["Offset of field: GmaModel::mtx_count"]
-        [::core::mem::offset_of!(GmaModel, mtx_count) - 30usize];
-    ["Offset of field: GmaModel::field_0x1f"]
-        [::core::mem::offset_of!(GmaModel, field_0x1f) - 31usize];
-    ["Offset of field: GmaModel::header_size"]
-        [::core::mem::offset_of!(GmaModel, header_size) - 32usize];
-    ["Offset of field: GmaModel::texobjs"][::core::mem::offset_of!(GmaModel, texobjs) - 36usize];
-    ["Offset of field: GmaModel::mtx_indexes"]
-        [::core::mem::offset_of!(GmaModel, mtx_indexes) - 40usize];
-    ["Offset of field: GmaModel::field_0x30"]
-        [::core::mem::offset_of!(GmaModel, field_0x30) - 48usize];
-};
 impl Default for GmaModel {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -587,18 +381,6 @@ pub struct MenuScreen {
     pub g_some_bitflag: u32_,
     pub field_0xc: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MenuScreen"][::core::mem::size_of::<MenuScreen>() - 16usize];
-    ["Alignment of MenuScreen"][::core::mem::align_of::<MenuScreen>() - 1usize];
-    ["Offset of field: MenuScreen::menu_entries"]
-        [::core::mem::offset_of!(MenuScreen, menu_entries) - 0usize];
-    ["Offset of field: MenuScreen::tick"][::core::mem::offset_of!(MenuScreen, tick) - 4usize];
-    ["Offset of field: MenuScreen::g_some_bitflag"]
-        [::core::mem::offset_of!(MenuScreen, g_some_bitflag) - 8usize];
-    ["Offset of field: MenuScreen::field_0xc"]
-        [::core::mem::offset_of!(MenuScreen, field_0xc) - 12usize];
-};
 impl Default for MenuScreen {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -626,33 +408,6 @@ pub struct MenuEntry {
     pub description_it: *mut ::core::ffi::c_char,
     pub description_ja: *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MenuEntry"][::core::mem::size_of::<MenuEntry>() - 52usize];
-    ["Alignment of MenuEntry"][::core::mem::align_of::<MenuEntry>() - 1usize];
-    ["Offset of field: MenuEntry::next_screen_id"]
-        [::core::mem::offset_of!(MenuEntry, next_screen_id) - 0usize];
-    ["Offset of field: MenuEntry::padding_0x1"]
-        [::core::mem::offset_of!(MenuEntry, padding_0x1) - 1usize];
-    ["Offset of field: MenuEntry::name_en"][::core::mem::offset_of!(MenuEntry, name_en) - 4usize];
-    ["Offset of field: MenuEntry::name_de"][::core::mem::offset_of!(MenuEntry, name_de) - 8usize];
-    ["Offset of field: MenuEntry::name_fr"][::core::mem::offset_of!(MenuEntry, name_fr) - 12usize];
-    ["Offset of field: MenuEntry::name_es"][::core::mem::offset_of!(MenuEntry, name_es) - 16usize];
-    ["Offset of field: MenuEntry::name_it"][::core::mem::offset_of!(MenuEntry, name_it) - 20usize];
-    ["Offset of field: MenuEntry::name_ja"][::core::mem::offset_of!(MenuEntry, name_ja) - 24usize];
-    ["Offset of field: MenuEntry::description_en"]
-        [::core::mem::offset_of!(MenuEntry, description_en) - 28usize];
-    ["Offset of field: MenuEntry::description_de"]
-        [::core::mem::offset_of!(MenuEntry, description_de) - 32usize];
-    ["Offset of field: MenuEntry::description_fr"]
-        [::core::mem::offset_of!(MenuEntry, description_fr) - 36usize];
-    ["Offset of field: MenuEntry::description_es"]
-        [::core::mem::offset_of!(MenuEntry, description_es) - 40usize];
-    ["Offset of field: MenuEntry::description_it"]
-        [::core::mem::offset_of!(MenuEntry, description_it) - 44usize];
-    ["Offset of field: MenuEntry::description_ja"]
-        [::core::mem::offset_of!(MenuEntry, description_ja) - 48usize];
-};
 impl Default for MenuEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -676,20 +431,6 @@ pub struct TplBuffer {
     pub texobjs: *mut GXTexObj,
     pub field_0x10: [undefined; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of TplBuffer"][::core::mem::size_of::<TplBuffer>() - 32usize];
-    ["Alignment of TplBuffer"][::core::mem::align_of::<TplBuffer>() - 1usize];
-    ["Offset of field: TplBuffer::texture_count"]
-        [::core::mem::offset_of!(TplBuffer, texture_count) - 0usize];
-    ["Offset of field: TplBuffer::texture_headers"]
-        [::core::mem::offset_of!(TplBuffer, texture_headers) - 4usize];
-    ["Offset of field: TplBuffer::raw_tpl_buffer"]
-        [::core::mem::offset_of!(TplBuffer, raw_tpl_buffer) - 8usize];
-    ["Offset of field: TplBuffer::texobjs"][::core::mem::offset_of!(TplBuffer, texobjs) - 12usize];
-    ["Offset of field: TplBuffer::field_0x10"]
-        [::core::mem::offset_of!(TplBuffer, field_0x10) - 16usize];
-};
 impl Default for TplBuffer {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -709,17 +450,6 @@ pub struct BmpInfo {
     pub tpl: *mut TplBuffer,
     pub heap: OSHeapHandle,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of BmpInfo"][::core::mem::size_of::<BmpInfo>() - 24usize];
-    ["Alignment of BmpInfo"][::core::mem::align_of::<BmpInfo>() - 1usize];
-    ["Offset of field: BmpInfo::is_loaded"][::core::mem::offset_of!(BmpInfo, is_loaded) - 0usize];
-    ["Offset of field: BmpInfo::filepath"][::core::mem::offset_of!(BmpInfo, filepath) - 4usize];
-    ["Offset of field: BmpInfo::category"][::core::mem::offset_of!(BmpInfo, category) - 8usize];
-    ["Offset of field: BmpInfo::field_0xc"][::core::mem::offset_of!(BmpInfo, field_0xc) - 12usize];
-    ["Offset of field: BmpInfo::tpl"][::core::mem::offset_of!(BmpInfo, tpl) - 16usize];
-    ["Offset of field: BmpInfo::heap"][::core::mem::offset_of!(BmpInfo, heap) - 20usize];
-};
 impl Default for BmpInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -739,23 +469,6 @@ pub struct TplTextureHeader {
     pub mipmap_count: u16_,
     pub always_0x1234: u16_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of TplTextureHeader"][::core::mem::size_of::<TplTextureHeader>() - 16usize];
-    ["Alignment of TplTextureHeader"][::core::mem::align_of::<TplTextureHeader>() - 1usize];
-    ["Offset of field: TplTextureHeader::format"]
-        [::core::mem::offset_of!(TplTextureHeader, format) - 0usize];
-    ["Offset of field: TplTextureHeader::data_offset"]
-        [::core::mem::offset_of!(TplTextureHeader, data_offset) - 4usize];
-    ["Offset of field: TplTextureHeader::width"]
-        [::core::mem::offset_of!(TplTextureHeader, width) - 8usize];
-    ["Offset of field: TplTextureHeader::height"]
-        [::core::mem::offset_of!(TplTextureHeader, height) - 10usize];
-    ["Offset of field: TplTextureHeader::mipmap_count"]
-        [::core::mem::offset_of!(TplTextureHeader, mipmap_count) - 12usize];
-    ["Offset of field: TplTextureHeader::always_0x1234"]
-        [::core::mem::offset_of!(TplTextureHeader, always_0x1234) - 14usize];
-};
 pub type PCoinType = *mut CoinType;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -766,21 +479,6 @@ pub struct CoinType {
     pub angular_velocity: S16Vec,
     pub field_0xc: [undefined; 8usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CoinType"][::core::mem::size_of::<CoinType>() - 20usize];
-    ["Alignment of CoinType"][::core::mem::align_of::<CoinType>() - 1usize];
-    ["Offset of field: CoinType::banana_count"]
-        [::core::mem::offset_of!(CoinType, banana_count) - 0usize];
-    ["Offset of field: CoinType::g_score_increment_flag"]
-        [::core::mem::offset_of!(CoinType, g_score_increment_flag) - 2usize];
-    ["Offset of field: CoinType::g_score_value"]
-        [::core::mem::offset_of!(CoinType, g_score_value) - 4usize];
-    ["Offset of field: CoinType::angular_velocity"]
-        [::core::mem::offset_of!(CoinType, angular_velocity) - 6usize];
-    ["Offset of field: CoinType::field_0xc"]
-        [::core::mem::offset_of!(CoinType, field_0xc) - 12usize];
-};
 pub type PGMotionData = *mut GMotionData;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -789,17 +487,6 @@ pub struct GMotionData {
     pub progress: f32,
     pub length: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GMotionData"][::core::mem::size_of::<GMotionData>() - 84usize];
-    ["Alignment of GMotionData"][::core::mem::align_of::<GMotionData>() - 1usize];
-    ["Offset of field: GMotionData::field_0x0"]
-        [::core::mem::offset_of!(GMotionData, field_0x0) - 0usize];
-    ["Offset of field: GMotionData::progress"]
-        [::core::mem::offset_of!(GMotionData, progress) - 76usize];
-    ["Offset of field: GMotionData::length"]
-        [::core::mem::offset_of!(GMotionData, length) - 80usize];
-};
 impl Default for GMotionData {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -840,35 +527,6 @@ pub struct GSomeBgStruct {
     pub some_counter: u32_,
     pub field11_0x2c: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSomeBgStruct"][::core::mem::size_of::<GSomeBgStruct>() - 48usize];
-    ["Alignment of GSomeBgStruct"][::core::mem::align_of::<GSomeBgStruct>() - 1usize];
-    ["Offset of field: GSomeBgStruct::some_flag"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_flag) - 0usize];
-    ["Offset of field: GSomeBgStruct::bg_model_list"]
-        [::core::mem::offset_of!(GSomeBgStruct, bg_model_list) - 4usize];
-    ["Offset of field: GSomeBgStruct::field2_0x8"]
-        [::core::mem::offset_of!(GSomeBgStruct, field2_0x8) - 8usize];
-    ["Offset of field: GSomeBgStruct::some_ptr_2"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_ptr_2) - 12usize];
-    ["Offset of field: GSomeBgStruct::field4_0x10"]
-        [::core::mem::offset_of!(GSomeBgStruct, field4_0x10) - 16usize];
-    ["Offset of field: GSomeBgStruct::some_ptr_3"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_ptr_3) - 20usize];
-    ["Offset of field: GSomeBgStruct::field6_0x18"]
-        [::core::mem::offset_of!(GSomeBgStruct, field6_0x18) - 24usize];
-    ["Offset of field: GSomeBgStruct::some_ptr_4"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_ptr_4) - 28usize];
-    ["Offset of field: GSomeBgStruct::field8_0x20"]
-        [::core::mem::offset_of!(GSomeBgStruct, field8_0x20) - 32usize];
-    ["Offset of field: GSomeBgStruct::some_ptr_5"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_ptr_5) - 36usize];
-    ["Offset of field: GSomeBgStruct::some_counter"]
-        [::core::mem::offset_of!(GSomeBgStruct, some_counter) - 40usize];
-    ["Offset of field: GSomeBgStruct::field11_0x2c"]
-        [::core::mem::offset_of!(GSomeBgStruct, field11_0x2c) - 44usize];
-};
 impl Default for GSomeBgStruct {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1245,80 +903,6 @@ pub struct Replay {
     pub playableItemgroupAnimFrames: *mut u8_,
     pub seesawState: *mut u8_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Replay"][::core::mem::size_of::<Replay>() - 184usize];
-    ["Alignment of Replay"][::core::mem::align_of::<Replay>() - 1usize];
-    ["Offset of field: Replay::field_0x0"][::core::mem::offset_of!(Replay, field_0x0) - 0usize];
-    ["Offset of field: Replay::difficulty"][::core::mem::offset_of!(Replay, difficulty) - 4usize];
-    ["Offset of field: Replay::floorNum"][::core::mem::offset_of!(Replay, floorNum) - 5usize];
-    ["Offset of field: Replay::monkey"][::core::mem::offset_of!(Replay, monkey) - 6usize];
-    ["Offset of field: Replay::field_0x7"][::core::mem::offset_of!(Replay, field_0x7) - 7usize];
-    ["Offset of field: Replay::field16_0x10"]
-        [::core::mem::offset_of!(Replay, field16_0x10) - 16usize];
-    ["Offset of field: Replay::field_0x14"][::core::mem::offset_of!(Replay, field_0x14) - 20usize];
-    ["Offset of field: Replay::g_stageTimeLimit1"]
-        [::core::mem::offset_of!(Replay, g_stageTimeLimit1) - 24usize];
-    ["Offset of field: Replay::g_duration"][::core::mem::offset_of!(Replay, g_duration) - 26usize];
-    ["Offset of field: Replay::field_0x1c"][::core::mem::offset_of!(Replay, field_0x1c) - 28usize];
-    ["Offset of field: Replay::goalId"][::core::mem::offset_of!(Replay, goalId) - 30usize];
-    ["Offset of field: Replay::field_0x20"][::core::mem::offset_of!(Replay, field_0x20) - 32usize];
-    ["Offset of field: Replay::g_ballVelAtGoal"]
-        [::core::mem::offset_of!(Replay, g_ballVelAtGoal) - 36usize];
-    ["Offset of field: Replay::field_0x30"][::core::mem::offset_of!(Replay, field_0x30) - 48usize];
-    ["Offset of field: Replay::size"][::core::mem::offset_of!(Replay, size) - 52usize];
-    ["Offset of field: Replay::g_currFrame"]
-        [::core::mem::offset_of!(Replay, g_currFrame) - 56usize];
-    ["Offset of field: Replay::g_stageTimeLimit2"]
-        [::core::mem::offset_of!(Replay, g_stageTimeLimit2) - 58usize];
-    ["Offset of field: Replay::initBallPos"]
-        [::core::mem::offset_of!(Replay, initBallPos) - 60usize];
-    ["Offset of field: Replay::ballDeltaXLo"]
-        [::core::mem::offset_of!(Replay, ballDeltaXLo) - 72usize];
-    ["Offset of field: Replay::ballDeltaXHi"]
-        [::core::mem::offset_of!(Replay, ballDeltaXHi) - 76usize];
-    ["Offset of field: Replay::ballDeltaYLo"]
-        [::core::mem::offset_of!(Replay, ballDeltaYLo) - 80usize];
-    ["Offset of field: Replay::ballDeltaYHi"]
-        [::core::mem::offset_of!(Replay, ballDeltaYHi) - 84usize];
-    ["Offset of field: Replay::ballDeltaZLo"]
-        [::core::mem::offset_of!(Replay, ballDeltaZLo) - 88usize];
-    ["Offset of field: Replay::ballDeltaZHi"]
-        [::core::mem::offset_of!(Replay, ballDeltaZHi) - 92usize];
-    ["Offset of field: Replay::ballRotXLo"][::core::mem::offset_of!(Replay, ballRotXLo) - 96usize];
-    ["Offset of field: Replay::ballRotXHi"][::core::mem::offset_of!(Replay, ballRotXHi) - 100usize];
-    ["Offset of field: Replay::ballRotYLo"][::core::mem::offset_of!(Replay, ballRotYLo) - 104usize];
-    ["Offset of field: Replay::ballRotYHi"][::core::mem::offset_of!(Replay, ballRotYHi) - 108usize];
-    ["Offset of field: Replay::ballRotZLo"][::core::mem::offset_of!(Replay, ballRotZLo) - 112usize];
-    ["Offset of field: Replay::ballRotZHi"][::core::mem::offset_of!(Replay, ballRotZHi) - 116usize];
-    ["Offset of field: Replay::sparkDirX"][::core::mem::offset_of!(Replay, sparkDirX) - 120usize];
-    ["Offset of field: Replay::sparkDirY"][::core::mem::offset_of!(Replay, sparkDirY) - 124usize];
-    ["Offset of field: Replay::sparkDirZ"][::core::mem::offset_of!(Replay, sparkDirZ) - 128usize];
-    ["Offset of field: Replay::sparkIntensity"]
-        [::core::mem::offset_of!(Replay, sparkIntensity) - 132usize];
-    ["Offset of field: Replay::coliFlags0"][::core::mem::offset_of!(Replay, coliFlags0) - 136usize];
-    ["Offset of field: Replay::coliFlags1"][::core::mem::offset_of!(Replay, coliFlags1) - 140usize];
-    ["Offset of field: Replay::coliFlags2"][::core::mem::offset_of!(Replay, coliFlags2) - 144usize];
-    ["Offset of field: Replay::coliFlags3"][::core::mem::offset_of!(Replay, coliFlags3) - 148usize];
-    ["Offset of field: Replay::stageTiltXLo"]
-        [::core::mem::offset_of!(Replay, stageTiltXLo) - 152usize];
-    ["Offset of field: Replay::stageTiltXHi"]
-        [::core::mem::offset_of!(Replay, stageTiltXHi) - 156usize];
-    ["Offset of field: Replay::stageTiltZLo"]
-        [::core::mem::offset_of!(Replay, stageTiltZLo) - 160usize];
-    ["Offset of field: Replay::stageTiltZHi"]
-        [::core::mem::offset_of!(Replay, stageTiltZHi) - 164usize];
-    ["Offset of field: Replay::field63_0xa8"]
-        [::core::mem::offset_of!(Replay, field63_0xa8) - 168usize];
-    ["Offset of field: Replay::playableItemgroupCount"]
-        [::core::mem::offset_of!(Replay, playableItemgroupCount) - 172usize];
-    ["Offset of field: Replay::seesawCount"]
-        [::core::mem::offset_of!(Replay, seesawCount) - 174usize];
-    ["Offset of field: Replay::playableItemgroupAnimFrames"]
-        [::core::mem::offset_of!(Replay, playableItemgroupAnimFrames) - 176usize];
-    ["Offset of field: Replay::seesawState"]
-        [::core::mem::offset_of!(Replay, seesawState) - 180usize];
-};
 impl Default for Replay {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1413,15 +997,6 @@ pub struct Quat {
     pub z: f32_,
     pub w: f32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Quat"][::core::mem::size_of::<Quat>() - 16usize];
-    ["Alignment of Quat"][::core::mem::align_of::<Quat>() - 1usize];
-    ["Offset of field: Quat::x"][::core::mem::offset_of!(Quat, x) - 0usize];
-    ["Offset of field: Quat::y"][::core::mem::offset_of!(Quat, y) - 4usize];
-    ["Offset of field: Quat::z"][::core::mem::offset_of!(Quat, z) - 8usize];
-    ["Offset of field: Quat::w"][::core::mem::offset_of!(Quat, w) - 12usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct gFloats {
@@ -1431,16 +1006,6 @@ pub struct gFloats {
     pub field3_0x6: ::core::ffi::c_short,
     pub vec3: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of gFloats"][::core::mem::size_of::<gFloats>() - 20usize];
-    ["Alignment of gFloats"][::core::mem::align_of::<gFloats>() - 1usize];
-    ["Offset of field: gFloats::field0_0x0"][::core::mem::offset_of!(gFloats, field0_0x0) - 0usize];
-    ["Offset of field: gFloats::field1_0x2"][::core::mem::offset_of!(gFloats, field1_0x2) - 2usize];
-    ["Offset of field: gFloats::field2_0x4"][::core::mem::offset_of!(gFloats, field2_0x4) - 4usize];
-    ["Offset of field: gFloats::field3_0x6"][::core::mem::offset_of!(gFloats, field3_0x6) - 6usize];
-    ["Offset of field: gFloats::vec3"][::core::mem::offset_of!(gFloats, vec3) - 8usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct SKLRoot {
@@ -1460,35 +1025,6 @@ pub struct SKLRoot {
     pub gBoneData: *mut SKLInfo,
     pub field_0x74: [undefined; 256usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SKLRoot"][::core::mem::size_of::<SKLRoot>() - 372usize];
-    ["Alignment of SKLRoot"][::core::mem::align_of::<SKLRoot>() - 1usize];
-    ["Offset of field: SKLRoot::bone_count"][::core::mem::offset_of!(SKLRoot, bone_count) - 0usize];
-    ["Offset of field: SKLRoot::g_flag"][::core::mem::offset_of!(SKLRoot, g_flag) - 2usize];
-    ["Offset of field: SKLRoot::g_some_float"]
-        [::core::mem::offset_of!(SKLRoot, g_some_float) - 4usize];
-    ["Offset of field: SKLRoot::bones"][::core::mem::offset_of!(SKLRoot, bones) - 8usize];
-    ["Offset of field: SKLRoot::rotation1"][::core::mem::offset_of!(SKLRoot, rotation1) - 12usize];
-    ["Offset of field: SKLRoot::rotation2"][::core::mem::offset_of!(SKLRoot, rotation2) - 28usize];
-    ["Offset of field: SKLRoot::g_bone_name"]
-        [::core::mem::offset_of!(SKLRoot, g_bone_name) - 44usize];
-    ["Offset of field: SKLRoot::translation"]
-        [::core::mem::offset_of!(SKLRoot, translation) - 48usize];
-    ["Offset of field: SKLRoot::field_0x3c"]
-        [::core::mem::offset_of!(SKLRoot, field_0x3c) - 60usize];
-    ["Offset of field: SKLRoot::float_thing1"]
-        [::core::mem::offset_of!(SKLRoot, float_thing1) - 64usize];
-    ["Offset of field: SKLRoot::field_0x54"]
-        [::core::mem::offset_of!(SKLRoot, field_0x54) - 84usize];
-    ["Offset of field: SKLRoot::float_thing2"]
-        [::core::mem::offset_of!(SKLRoot, float_thing2) - 88usize];
-    ["Offset of field: SKLRoot::field_0x6c"]
-        [::core::mem::offset_of!(SKLRoot, field_0x6c) - 108usize];
-    ["Offset of field: SKLRoot::gBoneData"][::core::mem::offset_of!(SKLRoot, gBoneData) - 112usize];
-    ["Offset of field: SKLRoot::field_0x74"]
-        [::core::mem::offset_of!(SKLRoot, field_0x74) - 116usize];
-};
 impl Default for SKLRoot {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1513,33 +1049,6 @@ pub struct SomeApeState {
     pub g_buf4: *mut ::core::ffi::c_void,
     pub field_0x38: [undefined; 40usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SomeApeState"][::core::mem::size_of::<SomeApeState>() - 96usize];
-    ["Alignment of SomeApeState"][::core::mem::align_of::<SomeApeState>() - 1usize];
-    ["Offset of field: SomeApeState::g_chara_idx"]
-        [::core::mem::offset_of!(SomeApeState, g_chara_idx) - 0usize];
-    ["Offset of field: SomeApeState::field_0x1"]
-        [::core::mem::offset_of!(SomeApeState, field_0x1) - 1usize];
-    ["Offset of field: SomeApeState::g_buf5"]
-        [::core::mem::offset_of!(SomeApeState, g_buf5) - 8usize];
-    ["Offset of field: SomeApeState::field_0xc"]
-        [::core::mem::offset_of!(SomeApeState, field_0xc) - 12usize];
-    ["Offset of field: SomeApeState::g_arc"]
-        [::core::mem::offset_of!(SomeApeState, g_arc) - 28usize];
-    ["Offset of field: SomeApeState::field_0x20"]
-        [::core::mem::offset_of!(SomeApeState, field_0x20) - 32usize];
-    ["Offset of field: SomeApeState::g_buf3"]
-        [::core::mem::offset_of!(SomeApeState, g_buf3) - 40usize];
-    ["Offset of field: SomeApeState::g_buf1"]
-        [::core::mem::offset_of!(SomeApeState, g_buf1) - 44usize];
-    ["Offset of field: SomeApeState::g_buf2"]
-        [::core::mem::offset_of!(SomeApeState, g_buf2) - 48usize];
-    ["Offset of field: SomeApeState::g_buf4"]
-        [::core::mem::offset_of!(SomeApeState, g_buf4) - 52usize];
-    ["Offset of field: SomeApeState::field_0x38"]
-        [::core::mem::offset_of!(SomeApeState, field_0x38) - 56usize];
-};
 impl Default for SomeApeState {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1558,19 +1067,6 @@ pub struct SKLBone {
     pub Rotation2: Quat,
     pub Translation: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SKLBone"][::core::mem::size_of::<SKLBone>() - 48usize];
-    ["Alignment of SKLBone"][::core::mem::align_of::<SKLBone>() - 1usize];
-    ["Offset of field: SKLBone::parentNumber"]
-        [::core::mem::offset_of!(SKLBone, parentNumber) - 0usize];
-    ["Offset of field: SKLBone::g_maybe_flag"]
-        [::core::mem::offset_of!(SKLBone, g_maybe_flag) - 2usize];
-    ["Offset of field: SKLBone::Rotation1"][::core::mem::offset_of!(SKLBone, Rotation1) - 4usize];
-    ["Offset of field: SKLBone::Rotation2"][::core::mem::offset_of!(SKLBone, Rotation2) - 20usize];
-    ["Offset of field: SKLBone::Translation"]
-        [::core::mem::offset_of!(SKLBone, Translation) - 36usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct SKLFile {
@@ -1578,15 +1074,6 @@ pub struct SKLFile {
     pub padding: undefined2,
     pub bone_section: SKLBone,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SKLFile"][::core::mem::size_of::<SKLFile>() - 52usize];
-    ["Alignment of SKLFile"][::core::mem::align_of::<SKLFile>() - 1usize];
-    ["Offset of field: SKLFile::bone_count"][::core::mem::offset_of!(SKLFile, bone_count) - 0usize];
-    ["Offset of field: SKLFile::padding"][::core::mem::offset_of!(SKLFile, padding) - 2usize];
-    ["Offset of field: SKLFile::bone_section"]
-        [::core::mem::offset_of!(SKLFile, bone_section) - 4usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct ArcFileInfo {
@@ -1594,15 +1081,6 @@ pub struct ArcFileInfo {
     pub startoffset: ::core::ffi::c_int,
     pub length: ::core::ffi::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ArcFileInfo"][::core::mem::size_of::<ArcFileInfo>() - 12usize];
-    ["Alignment of ArcFileInfo"][::core::mem::align_of::<ArcFileInfo>() - 1usize];
-    ["Offset of field: ArcFileInfo::Handle"][::core::mem::offset_of!(ArcFileInfo, Handle) - 0usize];
-    ["Offset of field: ArcFileInfo::startoffset"]
-        [::core::mem::offset_of!(ArcFileInfo, startoffset) - 4usize];
-    ["Offset of field: ArcFileInfo::length"][::core::mem::offset_of!(ArcFileInfo, length) - 8usize];
-};
 impl Default for ArcFileInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1619,14 +1097,6 @@ pub struct g_thing {
     pub Name: *mut ::core::ffi::c_char,
     pub field_0xc: [undefined; 28usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of g_thing"][::core::mem::size_of::<g_thing>() - 40usize];
-    ["Alignment of g_thing"][::core::mem::align_of::<g_thing>() - 1usize];
-    ["Offset of field: g_thing::field_0x0"][::core::mem::offset_of!(g_thing, field_0x0) - 0usize];
-    ["Offset of field: g_thing::Name"][::core::mem::offset_of!(g_thing, Name) - 8usize];
-    ["Offset of field: g_thing::field_0xc"][::core::mem::offset_of!(g_thing, field_0xc) - 12usize];
-};
 impl Default for g_thing {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1646,23 +1116,6 @@ pub struct GmaBuffer {
     pub g_initially_zero: dword,
     pub field_0x14: [undefined; 12usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaBuffer"][::core::mem::size_of::<GmaBuffer>() - 32usize];
-    ["Alignment of GmaBuffer"][::core::mem::align_of::<GmaBuffer>() - 1usize];
-    ["Offset of field: GmaBuffer::model_count"]
-        [::core::mem::offset_of!(GmaBuffer, model_count) - 0usize];
-    ["Offset of field: GmaBuffer::model_list_ptr"]
-        [::core::mem::offset_of!(GmaBuffer, model_list_ptr) - 4usize];
-    ["Offset of field: GmaBuffer::model_entries"]
-        [::core::mem::offset_of!(GmaBuffer, model_entries) - 8usize];
-    ["Offset of field: GmaBuffer::model_names_ptr"]
-        [::core::mem::offset_of!(GmaBuffer, model_names_ptr) - 12usize];
-    ["Offset of field: GmaBuffer::g_initially_zero"]
-        [::core::mem::offset_of!(GmaBuffer, g_initially_zero) - 16usize];
-    ["Offset of field: GmaBuffer::field_0x14"]
-        [::core::mem::offset_of!(GmaBuffer, field_0x14) - 20usize];
-};
 impl Default for GmaBuffer {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1691,32 +1144,6 @@ pub struct SKLInfo {
     pub g_float2: f32,
     pub field_0xd4: [undefined; 160usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SKLInfo"][::core::mem::size_of::<SKLInfo>() - 372usize];
-    ["Alignment of SKLInfo"][::core::mem::align_of::<SKLInfo>() - 1usize];
-    ["Offset of field: SKLInfo::bone_name"][::core::mem::offset_of!(SKLInfo, bone_name) - 0usize];
-    ["Offset of field: SKLInfo::g_flag"][::core::mem::offset_of!(SKLInfo, g_flag) - 4usize];
-    ["Offset of field: SKLInfo::parentNumber"]
-        [::core::mem::offset_of!(SKLInfo, parentNumber) - 6usize];
-    ["Offset of field: SKLInfo::vec3f1"][::core::mem::offset_of!(SKLInfo, vec3f1) - 8usize];
-    ["Offset of field: SKLInfo::vec3f1_len"]
-        [::core::mem::offset_of!(SKLInfo, vec3f1_len) - 20usize];
-    ["Offset of field: SKLInfo::vec3f1copy"]
-        [::core::mem::offset_of!(SKLInfo, vec3f1copy) - 24usize];
-    ["Offset of field: SKLInfo::g_float"][::core::mem::offset_of!(SKLInfo, g_float) - 36usize];
-    ["Offset of field: SKLInfo::g_mtx1"][::core::mem::offset_of!(SKLInfo, g_mtx1) - 40usize];
-    ["Offset of field: SKLInfo::g_mtx2"][::core::mem::offset_of!(SKLInfo, g_mtx2) - 88usize];
-    ["Offset of field: SKLInfo::field_0x59"]
-        [::core::mem::offset_of!(SKLInfo, field_0x59) - 89usize];
-    ["Offset of field: SKLInfo::matrix"][::core::mem::offset_of!(SKLInfo, matrix) - 136usize];
-    ["Offset of field: SKLInfo::vec3f3"][::core::mem::offset_of!(SKLInfo, vec3f3) - 184usize];
-    ["Offset of field: SKLInfo::field_0xc4"]
-        [::core::mem::offset_of!(SKLInfo, field_0xc4) - 196usize];
-    ["Offset of field: SKLInfo::g_float2"][::core::mem::offset_of!(SKLInfo, g_float2) - 208usize];
-    ["Offset of field: SKLInfo::field_0xd4"]
-        [::core::mem::offset_of!(SKLInfo, field_0xd4) - 212usize];
-};
 impl Default for SKLInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1737,19 +1164,6 @@ pub struct ARCHandle {
     pub f: s32,
     pub g: s32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ARCHandle"][::core::mem::size_of::<ARCHandle>() - 28usize];
-    ["Alignment of ARCHandle"][::core::mem::align_of::<ARCHandle>() - 1usize];
-    ["Offset of field: ARCHandle::arc_data"][::core::mem::offset_of!(ARCHandle, arc_data) - 0usize];
-    ["Offset of field: ARCHandle::g_first_node_offset"]
-        [::core::mem::offset_of!(ARCHandle, g_first_node_offset) - 4usize];
-    ["Offset of field: ARCHandle::c"][::core::mem::offset_of!(ARCHandle, c) - 8usize];
-    ["Offset of field: ARCHandle::d"][::core::mem::offset_of!(ARCHandle, d) - 12usize];
-    ["Offset of field: ARCHandle::e"][::core::mem::offset_of!(ARCHandle, e) - 16usize];
-    ["Offset of field: ARCHandle::f"][::core::mem::offset_of!(ARCHandle, f) - 20usize];
-    ["Offset of field: ARCHandle::g"][::core::mem::offset_of!(ARCHandle, g) - 24usize];
-};
 impl Default for ARCHandle {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1771,24 +1185,6 @@ pub struct GApeAnim {
     pub g_either_motion_or_skel2: s32,
     pub field_0x20: [undefined; 8usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GApeAnim"][::core::mem::size_of::<GApeAnim>() - 40usize];
-    ["Alignment of GApeAnim"][::core::mem::align_of::<GApeAnim>() - 1usize];
-    ["Offset of field: GApeAnim::field0_0x0"]
-        [::core::mem::offset_of!(GApeAnim, field0_0x0) - 0usize];
-    ["Offset of field: GApeAnim::field_0x1"][::core::mem::offset_of!(GApeAnim, field_0x1) - 1usize];
-    ["Offset of field: GApeAnim::count"][::core::mem::offset_of!(GApeAnim, count) - 4usize];
-    ["Offset of field: GApeAnim::ape"][::core::mem::offset_of!(GApeAnim, ape) - 8usize];
-    ["Offset of field: GApeAnim::field6_0xc"]
-        [::core::mem::offset_of!(GApeAnim, field6_0xc) - 12usize];
-    ["Offset of field: GApeAnim::field_0x10"]
-        [::core::mem::offset_of!(GApeAnim, field_0x10) - 16usize];
-    ["Offset of field: GApeAnim::g_either_motion_or_skel2"]
-        [::core::mem::offset_of!(GApeAnim, g_either_motion_or_skel2) - 28usize];
-    ["Offset of field: GApeAnim::field_0x20"]
-        [::core::mem::offset_of!(GApeAnim, field_0x20) - 32usize];
-};
 impl Default for GApeAnim {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -1935,192 +1331,6 @@ pub struct Ape {
     pub field220_0x2e8: f32,
     pub field221_0x2ec: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Ape"][::core::mem::size_of::<Ape>() - 752usize];
-    ["Alignment of Ape"][::core::mem::align_of::<Ape>() - 1usize];
-    ["Offset of field: Ape::g_some_ape_state"]
-        [::core::mem::offset_of!(Ape, g_some_ape_state) - 0usize];
-    ["Offset of field: Ape::common_mal"][::core::mem::offset_of!(Ape, common_mal) - 4usize];
-    ["Offset of field: Ape::game_mal"][::core::mem::offset_of!(Ape, game_mal) - 8usize];
-    ["Offset of field: Ape::frame_ptr"][::core::mem::offset_of!(Ape, frame_ptr) - 12usize];
-    ["Offset of field: Ape::arc_location"][::core::mem::offset_of!(Ape, arc_location) - 16usize];
-    ["Offset of field: Ape::g_some_ptr"][::core::mem::offset_of!(Ape, g_some_ptr) - 20usize];
-    ["Offset of field: Ape::faceSKLStorage"]
-        [::core::mem::offset_of!(Ape, faceSKLStorage) - 24usize];
-    ["Offset of field: Ape::faceSKLFile"][::core::mem::offset_of!(Ape, faceSKLFile) - 28usize];
-    ["Offset of field: Ape::faceMTA"][::core::mem::offset_of!(Ape, faceMTA) - 32usize];
-    ["Offset of field: Ape::handRSKLStorage"]
-        [::core::mem::offset_of!(Ape, handRSKLStorage) - 36usize];
-    ["Offset of field: Ape::handRSKLFile"][::core::mem::offset_of!(Ape, handRSKLFile) - 40usize];
-    ["Offset of field: Ape::handrMTA"][::core::mem::offset_of!(Ape, handrMTA) - 44usize];
-    ["Offset of field: Ape::handLSKLStorage"]
-        [::core::mem::offset_of!(Ape, handLSKLStorage) - 48usize];
-    ["Offset of field: Ape::handLSKLFile"][::core::mem::offset_of!(Ape, handLSKLFile) - 52usize];
-    ["Offset of field: Ape::handlMTA"][::core::mem::offset_of!(Ape, handlMTA) - 56usize];
-    ["Offset of field: Ape::tailSKLStorage"]
-        [::core::mem::offset_of!(Ape, tailSKLStorage) - 60usize];
-    ["Offset of field: Ape::tailSKLFile"][::core::mem::offset_of!(Ape, tailSKLFile) - 64usize];
-    ["Offset of field: Ape::animLengthBytes"]
-        [::core::mem::offset_of!(Ape, animLengthBytes) - 68usize];
-    ["Offset of field: Ape::g_some_skl"][::core::mem::offset_of!(Ape, g_some_skl) - 72usize];
-    ["Offset of field: Ape::GMABuffer"][::core::mem::offset_of!(Ape, GMABuffer) - 76usize];
-    ["Offset of field: Ape::TPLBuffer"][::core::mem::offset_of!(Ape, TPLBuffer) - 80usize];
-    ["Offset of field: Ape::field21_0x54"][::core::mem::offset_of!(Ape, field21_0x54) - 84usize];
-    ["Offset of field: Ape::field_0x56"][::core::mem::offset_of!(Ape, field_0x56) - 86usize];
-    ["Offset of field: Ape::field24_0x58"][::core::mem::offset_of!(Ape, field24_0x58) - 88usize];
-    ["Offset of field: Ape::field_0x5a"][::core::mem::offset_of!(Ape, field_0x5a) - 90usize];
-    ["Offset of field: Ape::anim_func"][::core::mem::offset_of!(Ape, anim_func) - 92usize];
-    ["Offset of field: Ape::float_0x60"][::core::mem::offset_of!(Ape, float_0x60) - 96usize];
-    ["Offset of field: Ape::field_0x64"][::core::mem::offset_of!(Ape, field_0x64) - 100usize];
-    ["Offset of field: Ape::game"][::core::mem::offset_of!(Ape, game) - 116usize];
-    ["Offset of field: Ape::g_ape_variant"][::core::mem::offset_of!(Ape, g_ape_variant) - 118usize];
-    ["Offset of field: Ape::field_0x77"][::core::mem::offset_of!(Ape, field_0x77) - 119usize];
-    ["Offset of field: Ape::g_smth_with_game"]
-        [::core::mem::offset_of!(Ape, g_smth_with_game) - 120usize];
-    ["Offset of field: Ape::field49_0x7c"][::core::mem::offset_of!(Ape, field49_0x7c) - 124usize];
-    ["Offset of field: Ape::field50_0x80"][::core::mem::offset_of!(Ape, field50_0x80) - 128usize];
-    ["Offset of field: Ape::field_0x82"][::core::mem::offset_of!(Ape, field_0x82) - 130usize];
-    ["Offset of field: Ape::field53_0x84"][::core::mem::offset_of!(Ape, field53_0x84) - 132usize];
-    ["Offset of field: Ape::chara_anim_type"]
-        [::core::mem::offset_of!(Ape, chara_anim_type) - 134usize];
-    ["Offset of field: Ape::g_anim_step"][::core::mem::offset_of!(Ape, g_anim_step) - 135usize];
-    ["Offset of field: Ape::ape_total_index"]
-        [::core::mem::offset_of!(Ape, ape_total_index) - 136usize];
-    ["Offset of field: Ape::g_handr_short"][::core::mem::offset_of!(Ape, g_handr_short) - 140usize];
-    ["Offset of field: Ape::g_handl_short"][::core::mem::offset_of!(Ape, g_handl_short) - 142usize];
-    ["Offset of field: Ape::face"][::core::mem::offset_of!(Ape, face) - 144usize];
-    ["Offset of field: Ape::field_0x92"][::core::mem::offset_of!(Ape, field_0x92) - 146usize];
-    ["Offset of field: Ape::g_handl_float"][::core::mem::offset_of!(Ape, g_handl_float) - 152usize];
-    ["Offset of field: Ape::g_handr_float"][::core::mem::offset_of!(Ape, g_handr_float) - 156usize];
-    ["Offset of field: Ape::some_flag"][::core::mem::offset_of!(Ape, some_flag) - 160usize];
-    ["Offset of field: Ape::some_flag_1"][::core::mem::offset_of!(Ape, some_flag_1) - 162usize];
-    ["Offset of field: Ape::field_0xa4"][::core::mem::offset_of!(Ape, field_0xa4) - 164usize];
-    ["Offset of field: Ape::g_some_length1"]
-        [::core::mem::offset_of!(Ape, g_some_length1) - 168usize];
-    ["Offset of field: Ape::field75_0xac"][::core::mem::offset_of!(Ape, field75_0xac) - 172usize];
-    ["Offset of field: Ape::field76_0xb0"][::core::mem::offset_of!(Ape, field76_0xb0) - 176usize];
-    ["Offset of field: Ape::field77_0xb4"][::core::mem::offset_of!(Ape, field77_0xb4) - 180usize];
-    ["Offset of field: Ape::field78_0xb8"][::core::mem::offset_of!(Ape, field78_0xb8) - 184usize];
-    ["Offset of field: Ape::field79_0xbc"][::core::mem::offset_of!(Ape, field79_0xbc) - 188usize];
-    ["Offset of field: Ape::field80_0xc0"][::core::mem::offset_of!(Ape, field80_0xc0) - 192usize];
-    ["Offset of field: Ape::g_frames1"][::core::mem::offset_of!(Ape, g_frames1) - 196usize];
-    ["Offset of field: Ape::field82_0x164"][::core::mem::offset_of!(Ape, field82_0x164) - 356usize];
-    ["Offset of field: Ape::field83_0x168"][::core::mem::offset_of!(Ape, field83_0x168) - 360usize];
-    ["Offset of field: Ape::field84_0x16c"][::core::mem::offset_of!(Ape, field84_0x16c) - 364usize];
-    ["Offset of field: Ape::field85_0x170"][::core::mem::offset_of!(Ape, field85_0x170) - 368usize];
-    ["Offset of field: Ape::field86_0x174"][::core::mem::offset_of!(Ape, field86_0x174) - 372usize];
-    ["Offset of field: Ape::field87_0x178"][::core::mem::offset_of!(Ape, field87_0x178) - 376usize];
-    ["Offset of field: Ape::field88_0x17c"][::core::mem::offset_of!(Ape, field88_0x17c) - 380usize];
-    ["Offset of field: Ape::field89_0x180"][::core::mem::offset_of!(Ape, field89_0x180) - 384usize];
-    ["Offset of field: Ape::field90_0x184"][::core::mem::offset_of!(Ape, field90_0x184) - 388usize];
-    ["Offset of field: Ape::field91_0x188"][::core::mem::offset_of!(Ape, field91_0x188) - 392usize];
-    ["Offset of field: Ape::field92_0x18c"][::core::mem::offset_of!(Ape, field92_0x18c) - 396usize];
-    ["Offset of field: Ape::field93_0x190"][::core::mem::offset_of!(Ape, field93_0x190) - 400usize];
-    ["Offset of field: Ape::field94_0x194"][::core::mem::offset_of!(Ape, field94_0x194) - 404usize];
-    ["Offset of field: Ape::field95_0x198"][::core::mem::offset_of!(Ape, field95_0x198) - 408usize];
-    ["Offset of field: Ape::field96_0x19c"][::core::mem::offset_of!(Ape, field96_0x19c) - 412usize];
-    ["Offset of field: Ape::field97_0x1a0"][::core::mem::offset_of!(Ape, field97_0x1a0) - 416usize];
-    ["Offset of field: Ape::field98_0x1a4"][::core::mem::offset_of!(Ape, field98_0x1a4) - 420usize];
-    ["Offset of field: Ape::field99_0x1a8"][::core::mem::offset_of!(Ape, field99_0x1a8) - 424usize];
-    ["Offset of field: Ape::field100_0x1ac"]
-        [::core::mem::offset_of!(Ape, field100_0x1ac) - 428usize];
-    ["Offset of field: Ape::field101_0x1b0"]
-        [::core::mem::offset_of!(Ape, field101_0x1b0) - 432usize];
-    ["Offset of field: Ape::field102_0x1b4"]
-        [::core::mem::offset_of!(Ape, field102_0x1b4) - 436usize];
-    ["Offset of field: Ape::field103_0x1b8"]
-        [::core::mem::offset_of!(Ape, field103_0x1b8) - 440usize];
-    ["Offset of field: Ape::field104_0x1bc"]
-        [::core::mem::offset_of!(Ape, field104_0x1bc) - 444usize];
-    ["Offset of field: Ape::field_0x1c0"][::core::mem::offset_of!(Ape, field_0x1c0) - 448usize];
-    ["Offset of field: Ape::expression_models"]
-        [::core::mem::offset_of!(Ape, expression_models) - 476usize];
-    ["Offset of field: Ape::field_0x200"][::core::mem::offset_of!(Ape, field_0x200) - 512usize];
-    ["Offset of field: Ape::HandL_GHA_model"]
-        [::core::mem::offset_of!(Ape, HandL_GHA_model) - 516usize];
-    ["Offset of field: Ape::HandL_PHA_model"]
-        [::core::mem::offset_of!(Ape, HandL_PHA_model) - 520usize];
-    ["Offset of field: Ape::HandR_GHA_model"]
-        [::core::mem::offset_of!(Ape, HandR_GHA_model) - 524usize];
-    ["Offset of field: Ape::HANDR_PHA_model"]
-        [::core::mem::offset_of!(Ape, HANDR_PHA_model) - 528usize];
-    ["Offset of field: Ape::float_0x214"][::core::mem::offset_of!(Ape, float_0x214) - 532usize];
-    ["Offset of field: Ape::field143_0x218"]
-        [::core::mem::offset_of!(Ape, field143_0x218) - 536usize];
-    ["Offset of field: Ape::field_0x21a"][::core::mem::offset_of!(Ape, field_0x21a) - 538usize];
-    ["Offset of field: Ape::flag2"][::core::mem::offset_of!(Ape, flag2) - 540usize];
-    ["Offset of field: Ape::field_0x21d"][::core::mem::offset_of!(Ape, field_0x21d) - 541usize];
-    ["Offset of field: Ape::flag3"][::core::mem::offset_of!(Ape, flag3) - 544usize];
-    ["Offset of field: Ape::flag4"][::core::mem::offset_of!(Ape, flag4) - 548usize];
-    ["Offset of field: Ape::field_0x228"][::core::mem::offset_of!(Ape, field_0x228) - 552usize];
-    ["Offset of field: Ape::field172_0x23c"]
-        [::core::mem::offset_of!(Ape, field172_0x23c) - 572usize];
-    ["Offset of field: Ape::field173_0x240"]
-        [::core::mem::offset_of!(Ape, field173_0x240) - 576usize];
-    ["Offset of field: Ape::character"][::core::mem::offset_of!(Ape, character) - 580usize];
-    ["Offset of field: Ape::flag1"][::core::mem::offset_of!(Ape, flag1) - 584usize];
-    ["Offset of field: Ape::field176_0x24c"]
-        [::core::mem::offset_of!(Ape, field176_0x24c) - 588usize];
-    ["Offset of field: Ape::field177_0x250"]
-        [::core::mem::offset_of!(Ape, field177_0x250) - 592usize];
-    ["Offset of field: Ape::field178_0x254"]
-        [::core::mem::offset_of!(Ape, field178_0x254) - 596usize];
-    ["Offset of field: Ape::pos"][::core::mem::offset_of!(Ape, pos) - 600usize];
-    ["Offset of field: Ape::some_vec3"][::core::mem::offset_of!(Ape, some_vec3) - 612usize];
-    ["Offset of field: Ape::field181_0x270"]
-        [::core::mem::offset_of!(Ape, field181_0x270) - 624usize];
-    ["Offset of field: Ape::field182_0x274"]
-        [::core::mem::offset_of!(Ape, field182_0x274) - 628usize];
-    ["Offset of field: Ape::field183_0x278"]
-        [::core::mem::offset_of!(Ape, field183_0x278) - 632usize];
-    ["Offset of field: Ape::field184_0x27c"]
-        [::core::mem::offset_of!(Ape, field184_0x27c) - 636usize];
-    ["Offset of field: Ape::scale"][::core::mem::offset_of!(Ape, scale) - 640usize];
-    ["Offset of field: Ape::field_0x284"][::core::mem::offset_of!(Ape, field_0x284) - 644usize];
-    ["Offset of field: Ape::chara_rotation"]
-        [::core::mem::offset_of!(Ape, chara_rotation) - 648usize];
-    ["Offset of field: Ape::ape_index"][::core::mem::offset_of!(Ape, ape_index) - 664usize];
-    ["Offset of field: Ape::field192_0x29c"]
-        [::core::mem::offset_of!(Ape, field192_0x29c) - 668usize];
-    ["Offset of field: Ape::lod"][::core::mem::offset_of!(Ape, lod) - 672usize];
-    ["Offset of field: Ape::field194_0x2a4"]
-        [::core::mem::offset_of!(Ape, field194_0x2a4) - 676usize];
-    ["Offset of field: Ape::g_smth_w_velocity1"]
-        [::core::mem::offset_of!(Ape, g_smth_w_velocity1) - 680usize];
-    ["Offset of field: Ape::g_smth_w_velocity2"]
-        [::core::mem::offset_of!(Ape, g_smth_w_velocity2) - 684usize];
-    ["Offset of field: Ape::g_smth_w_velocity3"]
-        [::core::mem::offset_of!(Ape, g_smth_w_velocity3) - 688usize];
-    ["Offset of field: Ape::g_smth_w_velocity4"]
-        [::core::mem::offset_of!(Ape, g_smth_w_velocity4) - 692usize];
-    ["Offset of field: Ape::field199_0x2b8"]
-        [::core::mem::offset_of!(Ape, field199_0x2b8) - 696usize];
-    ["Offset of field: Ape::color_index"][::core::mem::offset_of!(Ape, color_index) - 700usize];
-    ["Offset of field: Ape::field_0x2c0"][::core::mem::offset_of!(Ape, field_0x2c0) - 704usize];
-    ["Offset of field: Ape::ball_idx"][::core::mem::offset_of!(Ape, ball_idx) - 712usize];
-    ["Offset of field: Ape::camera_visible_bitmask"]
-        [::core::mem::offset_of!(Ape, camera_visible_bitmask) - 713usize];
-    ["Offset of field: Ape::field_0x2ca"][::core::mem::offset_of!(Ape, field_0x2ca) - 714usize];
-    ["Offset of field: Ape::field213_0x2cc"]
-        [::core::mem::offset_of!(Ape, field213_0x2cc) - 716usize];
-    ["Offset of field: Ape::field214_0x2d0"]
-        [::core::mem::offset_of!(Ape, field214_0x2d0) - 720usize];
-    ["Offset of field: Ape::field215_0x2d4"]
-        [::core::mem::offset_of!(Ape, field215_0x2d4) - 724usize];
-    ["Offset of field: Ape::field216_0x2d8"]
-        [::core::mem::offset_of!(Ape, field216_0x2d8) - 728usize];
-    ["Offset of field: Ape::field217_0x2dc"]
-        [::core::mem::offset_of!(Ape, field217_0x2dc) - 732usize];
-    ["Offset of field: Ape::field218_0x2e0"]
-        [::core::mem::offset_of!(Ape, field218_0x2e0) - 736usize];
-    ["Offset of field: Ape::field219_0x2e4"]
-        [::core::mem::offset_of!(Ape, field219_0x2e4) - 740usize];
-    ["Offset of field: Ape::field220_0x2e8"]
-        [::core::mem::offset_of!(Ape, field220_0x2e8) - 744usize];
-    ["Offset of field: Ape::field221_0x2ec"]
-        [::core::mem::offset_of!(Ape, field221_0x2ec) - 748usize];
-};
 impl Default for Ape {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2137,14 +1347,6 @@ pub struct Mal {
     pub g_some_count: u8_,
     pub field_0x22: [undefined; 14usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Mal"][::core::mem::size_of::<Mal>() - 48usize];
-    ["Alignment of Mal"][::core::mem::align_of::<Mal>() - 1usize];
-    ["Offset of field: Mal::field_0x0"][::core::mem::offset_of!(Mal, field_0x0) - 0usize];
-    ["Offset of field: Mal::g_some_count"][::core::mem::offset_of!(Mal, g_some_count) - 33usize];
-    ["Offset of field: Mal::field_0x22"][::core::mem::offset_of!(Mal, field_0x22) - 34usize];
-};
 impl Default for Mal {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2160,14 +1362,6 @@ pub struct GmaModelEntry {
     pub model: *mut GmaModel,
     pub name: *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaModelEntry"][::core::mem::size_of::<GmaModelEntry>() - 8usize];
-    ["Alignment of GmaModelEntry"][::core::mem::align_of::<GmaModelEntry>() - 1usize];
-    ["Offset of field: GmaModelEntry::model"]
-        [::core::mem::offset_of!(GmaModelEntry, model) - 0usize];
-    ["Offset of field: GmaModelEntry::name"][::core::mem::offset_of!(GmaModelEntry, name) - 4usize];
-};
 impl Default for GmaModelEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2185,13 +1379,6 @@ pub struct Vec2d {
     pub x: f32,
     pub y: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Vec2d"][::core::mem::size_of::<Vec2d>() - 8usize];
-    ["Alignment of Vec2d"][::core::mem::align_of::<Vec2d>() - 1usize];
-    ["Offset of field: Vec2d::x"][::core::mem::offset_of!(Vec2d, x) - 0usize];
-    ["Offset of field: Vec2d::y"][::core::mem::offset_of!(Vec2d, y) - 4usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Camera {
@@ -2248,98 +1435,6 @@ pub struct Camera {
     pub idx: u32_,
     pub field_0x210: [undefined; 124usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Camera"][::core::mem::size_of::<Camera>() - 652usize];
-    ["Alignment of Camera"][::core::mem::align_of::<Camera>() - 1usize];
-    ["Offset of field: Camera::pos"][::core::mem::offset_of!(Camera, pos) - 0usize];
-    ["Offset of field: Camera::pivot"][::core::mem::offset_of!(Camera, pivot) - 12usize];
-    ["Offset of field: Camera::rot"][::core::mem::offset_of!(Camera, rot) - 24usize];
-    ["Offset of field: Camera::mode"][::core::mem::offset_of!(Camera, mode) - 30usize];
-    ["Offset of field: Camera::submode"][::core::mem::offset_of!(Camera, submode) - 31usize];
-    ["Offset of field: Camera::g_some_float"]
-        [::core::mem::offset_of!(Camera, g_some_float) - 32usize];
-    ["Offset of field: Camera::g_some_bitflags"]
-        [::core::mem::offset_of!(Camera, g_some_bitflags) - 36usize];
-    ["Offset of field: Camera::g_some_flag"]
-        [::core::mem::offset_of!(Camera, g_some_flag) - 38usize];
-    ["Offset of field: Camera::g_some_flag2"]
-        [::core::mem::offset_of!(Camera, g_some_flag2) - 39usize];
-    ["Offset of field: Camera::g_some_float2"]
-        [::core::mem::offset_of!(Camera, g_some_float2) - 40usize];
-    ["Offset of field: Camera::g_some_float3"]
-        [::core::mem::offset_of!(Camera, g_some_float3) - 44usize];
-    ["Offset of field: Camera::fov"][::core::mem::offset_of!(Camera, fov) - 48usize];
-    ["Offset of field: Camera::next_fov"][::core::mem::offset_of!(Camera, next_fov) - 50usize];
-    ["Offset of field: Camera::aspect"][::core::mem::offset_of!(Camera, aspect) - 52usize];
-    ["Offset of field: Camera::fov_tangent"]
-        [::core::mem::offset_of!(Camera, fov_tangent) - 56usize];
-    ["Offset of field: Camera::fov_cotangent"]
-        [::core::mem::offset_of!(Camera, fov_cotangent) - 60usize];
-    ["Offset of field: Camera::near"][::core::mem::offset_of!(Camera, near) - 64usize];
-    ["Offset of field: Camera::far"][::core::mem::offset_of!(Camera, far) - 68usize];
-    ["Offset of field: Camera::viewport_pos"]
-        [::core::mem::offset_of!(Camera, viewport_pos) - 72usize];
-    ["Offset of field: Camera::viewport_size"]
-        [::core::mem::offset_of!(Camera, viewport_size) - 80usize];
-    ["Offset of field: Camera::g_some_counter1"]
-        [::core::mem::offset_of!(Camera, g_some_counter1) - 88usize];
-    ["Offset of field: Camera::g_some_short"]
-        [::core::mem::offset_of!(Camera, g_some_short) - 90usize];
-    ["Offset of field: Camera::g_initial_pivot"]
-        [::core::mem::offset_of!(Camera, g_initial_pivot) - 92usize];
-    ["Offset of field: Camera::g_spinin_value_1"]
-        [::core::mem::offset_of!(Camera, g_spinin_value_1) - 104usize];
-    ["Offset of field: Camera::g_spinin_value_2"]
-        [::core::mem::offset_of!(Camera, g_spinin_value_2) - 108usize];
-    ["Offset of field: Camera::field25_0x70"]
-        [::core::mem::offset_of!(Camera, field25_0x70) - 112usize];
-    ["Offset of field: Camera::field26_0x72"]
-        [::core::mem::offset_of!(Camera, field26_0x72) - 114usize];
-    ["Offset of field: Camera::field27_0x74"]
-        [::core::mem::offset_of!(Camera, field27_0x74) - 116usize];
-    ["Offset of field: Camera::field28_0x76"]
-        [::core::mem::offset_of!(Camera, field28_0x76) - 118usize];
-    ["Offset of field: Camera::field_0x78"][::core::mem::offset_of!(Camera, field_0x78) - 120usize];
-    ["Offset of field: Camera::g_final_pivot"]
-        [::core::mem::offset_of!(Camera, g_final_pivot) - 124usize];
-    ["Offset of field: Camera::field_0x88"][::core::mem::offset_of!(Camera, field_0x88) - 136usize];
-    ["Offset of field: Camera::field42_0x90"]
-        [::core::mem::offset_of!(Camera, field42_0x90) - 144usize];
-    ["Offset of field: Camera::field43_0x92"]
-        [::core::mem::offset_of!(Camera, field43_0x92) - 146usize];
-    ["Offset of field: Camera::field_0x94"][::core::mem::offset_of!(Camera, field_0x94) - 148usize];
-    ["Offset of field: Camera::vel"][::core::mem::offset_of!(Camera, vel) - 156usize];
-    ["Offset of field: Camera::pivot_vel"][::core::mem::offset_of!(Camera, pivot_vel) - 168usize];
-    ["Offset of field: Camera::g_pos_desire"]
-        [::core::mem::offset_of!(Camera, g_pos_desire) - 180usize];
-    ["Offset of field: Camera::g_pivot_x_rot"]
-        [::core::mem::offset_of!(Camera, g_pivot_x_rot) - 192usize];
-    ["Offset of field: Camera::field_0xc2"][::core::mem::offset_of!(Camera, field_0xc2) - 194usize];
-    ["Offset of field: Camera::g_y_rot_vel"]
-        [::core::mem::offset_of!(Camera, g_y_rot_vel) - 276usize];
-    ["Offset of field: Camera::field_0x116"]
-        [::core::mem::offset_of!(Camera, field_0x116) - 278usize];
-    ["Offset of field: Camera::g_some_goal_idx"]
-        [::core::mem::offset_of!(Camera, g_some_goal_idx) - 280usize];
-    ["Offset of field: Camera::field_0x119"]
-        [::core::mem::offset_of!(Camera, field_0x119) - 281usize];
-    ["Offset of field: Camera::g_some_vec5"]
-        [::core::mem::offset_of!(Camera, g_some_vec5) - 308usize];
-    ["Offset of field: Camera::g_some_vec6"]
-        [::core::mem::offset_of!(Camera, g_some_vec6) - 320usize];
-    ["Offset of field: Camera::g_some_mtx1"]
-        [::core::mem::offset_of!(Camera, g_some_mtx1) - 332usize];
-    ["Offset of field: Camera::g_some_mtx2"]
-        [::core::mem::offset_of!(Camera, g_some_mtx2) - 380usize];
-    ["Offset of field: Camera::g_some_mtx3"]
-        [::core::mem::offset_of!(Camera, g_some_mtx3) - 428usize];
-    ["Offset of field: Camera::g_some_mtx4"]
-        [::core::mem::offset_of!(Camera, g_some_mtx4) - 476usize];
-    ["Offset of field: Camera::idx"][::core::mem::offset_of!(Camera, idx) - 524usize];
-    ["Offset of field: Camera::field_0x210"]
-        [::core::mem::offset_of!(Camera, field_0x210) - 528usize];
-};
 impl Default for Camera {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2359,16 +1454,6 @@ pub struct Rect {
     pub width: f32,
     pub height: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Rect"][::core::mem::size_of::<Rect>() - 40usize];
-    ["Alignment of Rect"][::core::mem::align_of::<Rect>() - 1usize];
-    ["Offset of field: Rect::pos"][::core::mem::offset_of!(Rect, pos) - 0usize];
-    ["Offset of field: Rect::rot"][::core::mem::offset_of!(Rect, rot) - 12usize];
-    ["Offset of field: Rect::field_0x12"][::core::mem::offset_of!(Rect, field_0x12) - 18usize];
-    ["Offset of field: Rect::width"][::core::mem::offset_of!(Rect, width) - 32usize];
-    ["Offset of field: Rect::height"][::core::mem::offset_of!(Rect, height) - 36usize];
-};
 pub type POrdTblNode = *mut OrdTblNode;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -2376,14 +1461,6 @@ pub struct OrdTblNode {
     pub next: *mut OrdTblNode,
     pub draw_func: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OrdTblNode"][::core::mem::size_of::<OrdTblNode>() - 8usize];
-    ["Alignment of OrdTblNode"][::core::mem::align_of::<OrdTblNode>() - 1usize];
-    ["Offset of field: OrdTblNode::next"][::core::mem::offset_of!(OrdTblNode, next) - 0usize];
-    ["Offset of field: OrdTblNode::draw_func"]
-        [::core::mem::offset_of!(OrdTblNode, draw_func) - 4usize];
-};
 impl Default for OrdTblNode {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2607,14 +1684,6 @@ pub struct Rgb24 {
     pub green: u8_,
     pub blue: u8_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Rgb24"][::core::mem::size_of::<Rgb24>() - 3usize];
-    ["Alignment of Rgb24"][::core::mem::align_of::<Rgb24>() - 1usize];
-    ["Offset of field: Rgb24::red"][::core::mem::offset_of!(Rgb24, red) - 0usize];
-    ["Offset of field: Rgb24::green"][::core::mem::offset_of!(Rgb24, green) - 1usize];
-    ["Offset of field: Rgb24::blue"][::core::mem::offset_of!(Rgb24, blue) - 2usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Sprite {
@@ -2667,70 +1736,6 @@ pub struct Sprite {
     pub v2: f32_,
     pub text: [::core::ffi::c_char; 48usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Sprite"][::core::mem::size_of::<Sprite>() - 208usize];
-    ["Alignment of Sprite"][::core::mem::align_of::<Sprite>() - 1usize];
-    ["Offset of field: Sprite::type_"][::core::mem::offset_of!(Sprite, type_) - 0usize];
-    ["Offset of field: Sprite::font"][::core::mem::offset_of!(Sprite, font) - 1usize];
-    ["Offset of field: Sprite::index"][::core::mem::offset_of!(Sprite, index) - 2usize];
-    ["Offset of field: Sprite::alignment"][::core::mem::offset_of!(Sprite, alignment) - 3usize];
-    ["Offset of field: Sprite::pos"][::core::mem::offset_of!(Sprite, pos) - 4usize];
-    ["Offset of field: Sprite::mult_color"][::core::mem::offset_of!(Sprite, mult_color) - 12usize];
-    ["Offset of field: Sprite::unique_id"][::core::mem::offset_of!(Sprite, unique_id) - 15usize];
-    ["Offset of field: Sprite::g_counter"][::core::mem::offset_of!(Sprite, g_counter) - 16usize];
-    ["Offset of field: Sprite::widescreen_translation_x"]
-        [::core::mem::offset_of!(Sprite, widescreen_translation_x) - 18usize];
-    ["Offset of field: Sprite::field_0x14"][::core::mem::offset_of!(Sprite, field_0x14) - 20usize];
-    ["Offset of field: Sprite::horizontal_spacing"]
-        [::core::mem::offset_of!(Sprite, horizontal_spacing) - 26usize];
-    ["Offset of field: Sprite::vertical_spacing"]
-        [::core::mem::offset_of!(Sprite, vertical_spacing) - 27usize];
-    ["Offset of field: Sprite::field_0x1c"][::core::mem::offset_of!(Sprite, field_0x1c) - 28usize];
-    ["Offset of field: Sprite::field21_0x20"]
-        [::core::mem::offset_of!(Sprite, field21_0x20) - 32usize];
-    ["Offset of field: Sprite::field22_0x24"]
-        [::core::mem::offset_of!(Sprite, field22_0x24) - 36usize];
-    ["Offset of field: Sprite::field_0x28"][::core::mem::offset_of!(Sprite, field_0x28) - 40usize];
-    ["Offset of field: Sprite::tex"][::core::mem::offset_of!(Sprite, tex) - 44usize];
-    ["Offset of field: Sprite::dest_func"][::core::mem::offset_of!(Sprite, dest_func) - 48usize];
-    ["Offset of field: Sprite::tick_func"][::core::mem::offset_of!(Sprite, tick_func) - 52usize];
-    ["Offset of field: Sprite::disp_func"][::core::mem::offset_of!(Sprite, disp_func) - 56usize];
-    ["Offset of field: Sprite::bmp"][::core::mem::offset_of!(Sprite, bmp) - 60usize];
-    ["Offset of field: Sprite::field_0x3e"][::core::mem::offset_of!(Sprite, field_0x3e) - 62usize];
-    ["Offset of field: Sprite::width"][::core::mem::offset_of!(Sprite, width) - 64usize];
-    ["Offset of field: Sprite::height"][::core::mem::offset_of!(Sprite, height) - 68usize];
-    ["Offset of field: Sprite::depth"][::core::mem::offset_of!(Sprite, depth) - 72usize];
-    ["Offset of field: Sprite::para1"][::core::mem::offset_of!(Sprite, para1) - 76usize];
-    ["Offset of field: Sprite::para2"][::core::mem::offset_of!(Sprite, para2) - 80usize];
-    ["Offset of field: Sprite::para3"][::core::mem::offset_of!(Sprite, para3) - 84usize];
-    ["Offset of field: Sprite::fpara1"][::core::mem::offset_of!(Sprite, fpara1) - 88usize];
-    ["Offset of field: Sprite::fpara2"][::core::mem::offset_of!(Sprite, fpara2) - 92usize];
-    ["Offset of field: Sprite::fpara3"][::core::mem::offset_of!(Sprite, fpara3) - 96usize];
-    ["Offset of field: Sprite::prev_sprite"]
-        [::core::mem::offset_of!(Sprite, prev_sprite) - 100usize];
-    ["Offset of field: Sprite::next_sprite"]
-        [::core::mem::offset_of!(Sprite, next_sprite) - 104usize];
-    ["Offset of field: Sprite::g_maybe_pos_x"]
-        [::core::mem::offset_of!(Sprite, g_maybe_pos_x) - 108usize];
-    ["Offset of field: Sprite::g_maybe_pos_y"]
-        [::core::mem::offset_of!(Sprite, g_maybe_pos_y) - 112usize];
-    ["Offset of field: Sprite::field47_0x74"]
-        [::core::mem::offset_of!(Sprite, field47_0x74) - 116usize];
-    ["Offset of field: Sprite::field48_0x78"]
-        [::core::mem::offset_of!(Sprite, field48_0x78) - 120usize];
-    ["Offset of field: Sprite::field_0x7c"][::core::mem::offset_of!(Sprite, field_0x7c) - 124usize];
-    ["Offset of field: Sprite::alpha"][::core::mem::offset_of!(Sprite, alpha) - 128usize];
-    ["Offset of field: Sprite::add_color"][::core::mem::offset_of!(Sprite, add_color) - 132usize];
-    ["Offset of field: Sprite::field_0x87"][::core::mem::offset_of!(Sprite, field_0x87) - 135usize];
-    ["Offset of field: Sprite::g_flags1"][::core::mem::offset_of!(Sprite, g_flags1) - 136usize];
-    ["Offset of field: Sprite::g_flags2"][::core::mem::offset_of!(Sprite, g_flags2) - 140usize];
-    ["Offset of field: Sprite::u1"][::core::mem::offset_of!(Sprite, u1) - 144usize];
-    ["Offset of field: Sprite::v1"][::core::mem::offset_of!(Sprite, v1) - 148usize];
-    ["Offset of field: Sprite::u2"][::core::mem::offset_of!(Sprite, u2) - 152usize];
-    ["Offset of field: Sprite::v2"][::core::mem::offset_of!(Sprite, v2) - 156usize];
-    ["Offset of field: Sprite::text"][::core::mem::offset_of!(Sprite, text) - 160usize];
-};
 impl Default for Sprite {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2757,35 +1762,6 @@ pub struct DVDCommandBlock {
         ::core::option::Option<unsafe extern "C" fn(arg1: s32, arg2: *mut DVDCommandBlock)>,
     pub userData: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DVDCommandBlock"][::core::mem::size_of::<DVDCommandBlock>() - 48usize];
-    ["Alignment of DVDCommandBlock"][::core::mem::align_of::<DVDCommandBlock>() - 1usize];
-    ["Offset of field: DVDCommandBlock::next"]
-        [::core::mem::offset_of!(DVDCommandBlock, next) - 0usize];
-    ["Offset of field: DVDCommandBlock::prev"]
-        [::core::mem::offset_of!(DVDCommandBlock, prev) - 4usize];
-    ["Offset of field: DVDCommandBlock::command"]
-        [::core::mem::offset_of!(DVDCommandBlock, command) - 8usize];
-    ["Offset of field: DVDCommandBlock::state"]
-        [::core::mem::offset_of!(DVDCommandBlock, state) - 12usize];
-    ["Offset of field: DVDCommandBlock::offset"]
-        [::core::mem::offset_of!(DVDCommandBlock, offset) - 16usize];
-    ["Offset of field: DVDCommandBlock::length"]
-        [::core::mem::offset_of!(DVDCommandBlock, length) - 20usize];
-    ["Offset of field: DVDCommandBlock::addr"]
-        [::core::mem::offset_of!(DVDCommandBlock, addr) - 24usize];
-    ["Offset of field: DVDCommandBlock::currTransferSize"]
-        [::core::mem::offset_of!(DVDCommandBlock, currTransferSize) - 28usize];
-    ["Offset of field: DVDCommandBlock::transferredSize"]
-        [::core::mem::offset_of!(DVDCommandBlock, transferredSize) - 32usize];
-    ["Offset of field: DVDCommandBlock::id"]
-        [::core::mem::offset_of!(DVDCommandBlock, id) - 36usize];
-    ["Offset of field: DVDCommandBlock::callback"]
-        [::core::mem::offset_of!(DVDCommandBlock, callback) - 40usize];
-    ["Offset of field: DVDCommandBlock::userData"]
-        [::core::mem::offset_of!(DVDCommandBlock, userData) - 44usize];
-};
 impl Default for DVDCommandBlock {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2804,19 +1780,6 @@ pub struct DVDFileInfo {
     pub next: *mut DVDFileInfo,
     pub callback: ::core::option::Option<unsafe extern "C" fn(arg1: s32, arg2: *mut DVDFileInfo)>,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DVDFileInfo"][::core::mem::size_of::<DVDFileInfo>() - 64usize];
-    ["Alignment of DVDFileInfo"][::core::mem::align_of::<DVDFileInfo>() - 1usize];
-    ["Offset of field: DVDFileInfo::cb"][::core::mem::offset_of!(DVDFileInfo, cb) - 0usize];
-    ["Offset of field: DVDFileInfo::startAddr"]
-        [::core::mem::offset_of!(DVDFileInfo, startAddr) - 48usize];
-    ["Offset of field: DVDFileInfo::length"]
-        [::core::mem::offset_of!(DVDFileInfo, length) - 52usize];
-    ["Offset of field: DVDFileInfo::next"][::core::mem::offset_of!(DVDFileInfo, next) - 56usize];
-    ["Offset of field: DVDFileInfo::callback"]
-        [::core::mem::offset_of!(DVDFileInfo, callback) - 60usize];
-};
 impl Default for DVDFileInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2837,22 +1800,6 @@ pub struct DVDDiskID {
     pub streamingBufSize: u8_,
     pub padding: [u8_; 22usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DVDDiskID"][::core::mem::size_of::<DVDDiskID>() - 32usize];
-    ["Alignment of DVDDiskID"][::core::mem::align_of::<DVDDiskID>() - 1usize];
-    ["Offset of field: DVDDiskID::gameName"][::core::mem::offset_of!(DVDDiskID, gameName) - 0usize];
-    ["Offset of field: DVDDiskID::company"][::core::mem::offset_of!(DVDDiskID, company) - 4usize];
-    ["Offset of field: DVDDiskID::diskNumber"]
-        [::core::mem::offset_of!(DVDDiskID, diskNumber) - 6usize];
-    ["Offset of field: DVDDiskID::gameVersion"]
-        [::core::mem::offset_of!(DVDDiskID, gameVersion) - 7usize];
-    ["Offset of field: DVDDiskID::streaming"]
-        [::core::mem::offset_of!(DVDDiskID, streaming) - 8usize];
-    ["Offset of field: DVDDiskID::streamingBufSize"]
-        [::core::mem::offset_of!(DVDDiskID, streamingBufSize) - 9usize];
-    ["Offset of field: DVDDiskID::padding"][::core::mem::offset_of!(DVDDiskID, padding) - 10usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct SpriteTex {
@@ -2869,30 +1816,6 @@ pub struct SpriteTex {
     pub heap: OSHeapHandle,
     pub dvd_file: DVDFileInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SpriteTex"][::core::mem::size_of::<SpriteTex>() - 124usize];
-    ["Alignment of SpriteTex"][::core::mem::align_of::<SpriteTex>() - 1usize];
-    ["Offset of field: SpriteTex::field0_0x0"]
-        [::core::mem::offset_of!(SpriteTex, field0_0x0) - 0usize];
-    ["Offset of field: SpriteTex::field1_0x1"]
-        [::core::mem::offset_of!(SpriteTex, field1_0x1) - 1usize];
-    ["Offset of field: SpriteTex::field2_0x2"]
-        [::core::mem::offset_of!(SpriteTex, field2_0x2) - 2usize];
-    ["Offset of field: SpriteTex::tex_index"]
-        [::core::mem::offset_of!(SpriteTex, tex_index) - 4usize];
-    ["Offset of field: SpriteTex::texobj"][::core::mem::offset_of!(SpriteTex, texobj) - 8usize];
-    ["Offset of field: SpriteTex::tex_data"]
-        [::core::mem::offset_of!(SpriteTex, tex_data) - 40usize];
-    ["Offset of field: SpriteTex::tex_data_size"]
-        [::core::mem::offset_of!(SpriteTex, tex_data_size) - 44usize];
-    ["Offset of field: SpriteTex::width"][::core::mem::offset_of!(SpriteTex, width) - 48usize];
-    ["Offset of field: SpriteTex::height"][::core::mem::offset_of!(SpriteTex, height) - 50usize];
-    ["Offset of field: SpriteTex::format"][::core::mem::offset_of!(SpriteTex, format) - 52usize];
-    ["Offset of field: SpriteTex::heap"][::core::mem::offset_of!(SpriteTex, heap) - 56usize];
-    ["Offset of field: SpriteTex::dvd_file"]
-        [::core::mem::offset_of!(SpriteTex, dvd_file) - 60usize];
-};
 impl Default for SpriteTex {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -2912,20 +1835,6 @@ pub struct HeapConfig {
     pub replay_heap_size: u32_,
     pub flags: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of HeapConfig"][::core::mem::size_of::<HeapConfig>() - 20usize];
-    ["Alignment of HeapConfig"][::core::mem::align_of::<HeapConfig>() - 1usize];
-    ["Offset of field: HeapConfig::stage_heap_size"]
-        [::core::mem::offset_of!(HeapConfig, stage_heap_size) - 0usize];
-    ["Offset of field: HeapConfig::bg_heap_size"]
-        [::core::mem::offset_of!(HeapConfig, bg_heap_size) - 4usize];
-    ["Offset of field: HeapConfig::chara_heap_size"]
-        [::core::mem::offset_of!(HeapConfig, chara_heap_size) - 8usize];
-    ["Offset of field: HeapConfig::replay_heap_size"]
-        [::core::mem::offset_of!(HeapConfig, replay_heap_size) - 12usize];
-    ["Offset of field: HeapConfig::flags"][::core::mem::offset_of!(HeapConfig, flags) - 16usize];
-};
 pub type PGSomethingWithPadMotorsStruct = *mut GSomethingWithPadMotorsStruct;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -2934,19 +1843,6 @@ pub struct GSomethingWithPadMotorsStruct {
     pub field_0x1: [undefined; 1usize],
     pub b: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSomethingWithPadMotorsStruct"]
-        [::core::mem::size_of::<GSomethingWithPadMotorsStruct>() - 4usize];
-    ["Alignment of GSomethingWithPadMotorsStruct"]
-        [::core::mem::align_of::<GSomethingWithPadMotorsStruct>() - 1usize];
-    ["Offset of field: GSomethingWithPadMotorsStruct::a"]
-        [::core::mem::offset_of!(GSomethingWithPadMotorsStruct, a) - 0usize];
-    ["Offset of field: GSomethingWithPadMotorsStruct::field_0x1"]
-        [::core::mem::offset_of!(GSomethingWithPadMotorsStruct, field_0x1) - 1usize];
-    ["Offset of field: GSomethingWithPadMotorsStruct::b"]
-        [::core::mem::offset_of!(GSomethingWithPadMotorsStruct, b) - 2usize];
-};
 pub type PSpriteDrawRequest = *mut SpriteDrawRequest;
 pub const SDRF_G_SCREENFADE_RELATED: _bindgen_ty_20 = 262144;
 pub const SDRF_FLIP_X: _bindgen_ty_20 = 524288;
@@ -2974,41 +1870,6 @@ pub struct SpriteDrawRequest {
     pub widescreen_translation_x: s16,
     pub field_0x42: [undefined; 14usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SpriteDrawRequest"][::core::mem::size_of::<SpriteDrawRequest>() - 80usize];
-    ["Alignment of SpriteDrawRequest"][::core::mem::align_of::<SpriteDrawRequest>() - 1usize];
-    ["Offset of field: SpriteDrawRequest::id"]
-        [::core::mem::offset_of!(SpriteDrawRequest, id) - 0usize];
-    ["Offset of field: SpriteDrawRequest::pos"]
-        [::core::mem::offset_of!(SpriteDrawRequest, pos) - 4usize];
-    ["Offset of field: SpriteDrawRequest::scale"]
-        [::core::mem::offset_of!(SpriteDrawRequest, scale) - 16usize];
-    ["Offset of field: SpriteDrawRequest::u1"]
-        [::core::mem::offset_of!(SpriteDrawRequest, u1) - 24usize];
-    ["Offset of field: SpriteDrawRequest::v1"]
-        [::core::mem::offset_of!(SpriteDrawRequest, v1) - 28usize];
-    ["Offset of field: SpriteDrawRequest::u2"]
-        [::core::mem::offset_of!(SpriteDrawRequest, u2) - 32usize];
-    ["Offset of field: SpriteDrawRequest::v2"]
-        [::core::mem::offset_of!(SpriteDrawRequest, v2) - 36usize];
-    ["Offset of field: SpriteDrawRequest::rot_z"]
-        [::core::mem::offset_of!(SpriteDrawRequest, rot_z) - 40usize];
-    ["Offset of field: SpriteDrawRequest::alpha"]
-        [::core::mem::offset_of!(SpriteDrawRequest, alpha) - 44usize];
-    ["Offset of field: SpriteDrawRequest::g_unk1"]
-        [::core::mem::offset_of!(SpriteDrawRequest, g_unk1) - 48usize];
-    ["Offset of field: SpriteDrawRequest::flags"]
-        [::core::mem::offset_of!(SpriteDrawRequest, flags) - 52usize];
-    ["Offset of field: SpriteDrawRequest::mult_color"]
-        [::core::mem::offset_of!(SpriteDrawRequest, mult_color) - 56usize];
-    ["Offset of field: SpriteDrawRequest::add_color"]
-        [::core::mem::offset_of!(SpriteDrawRequest, add_color) - 60usize];
-    ["Offset of field: SpriteDrawRequest::widescreen_translation_x"]
-        [::core::mem::offset_of!(SpriteDrawRequest, widescreen_translation_x) - 64usize];
-    ["Offset of field: SpriteDrawRequest::field_0x42"]
-        [::core::mem::offset_of!(SpriteDrawRequest, field_0x42) - 66usize];
-};
 pub type PCmPlayerProgress = *mut CmPlayerProgress;
 pub type PCmStage = *mut CmStage;
 #[repr(C, packed)]
@@ -3017,14 +1878,6 @@ pub struct CmStage {
     pub stage_course_num: s32,
     pub stage_id: s32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CmStage"][::core::mem::size_of::<CmStage>() - 8usize];
-    ["Alignment of CmStage"][::core::mem::align_of::<CmStage>() - 1usize];
-    ["Offset of field: CmStage::stage_course_num"]
-        [::core::mem::offset_of!(CmStage, stage_course_num) - 0usize];
-    ["Offset of field: CmStage::stage_id"][::core::mem::offset_of!(CmStage, stage_id) - 4usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct CmPlayerProgress {
@@ -3033,19 +1886,6 @@ pub struct CmPlayerProgress {
     pub field2_0x20: s16,
     pub g_next_stage_idx: s16,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CmPlayerProgress"][::core::mem::size_of::<CmPlayerProgress>() - 36usize];
-    ["Alignment of CmPlayerProgress"][::core::mem::align_of::<CmPlayerProgress>() - 1usize];
-    ["Offset of field: CmPlayerProgress::curr_stage"]
-        [::core::mem::offset_of!(CmPlayerProgress, curr_stage) - 0usize];
-    ["Offset of field: CmPlayerProgress::next_stages"]
-        [::core::mem::offset_of!(CmPlayerProgress, next_stages) - 8usize];
-    ["Offset of field: CmPlayerProgress::field2_0x20"]
-        [::core::mem::offset_of!(CmPlayerProgress, field2_0x20) - 32usize];
-    ["Offset of field: CmPlayerProgress::g_next_stage_idx"]
-        [::core::mem::offset_of!(CmPlayerProgress, g_next_stage_idx) - 34usize];
-};
 pub const PAD_ERR_NONE: _bindgen_ty_21 = 0;
 pub const PAD_ERR_TRANSFER: _bindgen_ty_21 = 253;
 pub const PAD_ERR_NOT_READY: _bindgen_ty_21 = 254;
@@ -3064,20 +1904,6 @@ pub struct GoalBag {
     pub field_0x1c: [undefined; 8usize],
     pub field16_0x24: undefined4,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GoalBag"][::core::mem::size_of::<GoalBag>() - 40usize];
-    ["Alignment of GoalBag"][::core::mem::align_of::<GoalBag>() - 1usize];
-    ["Offset of field: GoalBag::field_0x0"][::core::mem::offset_of!(GoalBag, field_0x0) - 0usize];
-    ["Offset of field: GoalBag::field4_0x4"][::core::mem::offset_of!(GoalBag, field4_0x4) - 4usize];
-    ["Offset of field: GoalBag::field5_0x8"][::core::mem::offset_of!(GoalBag, field5_0x8) - 8usize];
-    ["Offset of field: GoalBag::stobj"][::core::mem::offset_of!(GoalBag, stobj) - 12usize];
-    ["Offset of field: GoalBag::g_pos"][::core::mem::offset_of!(GoalBag, g_pos) - 16usize];
-    ["Offset of field: GoalBag::field_0x1c"]
-        [::core::mem::offset_of!(GoalBag, field_0x1c) - 28usize];
-    ["Offset of field: GoalBag::field16_0x24"]
-        [::core::mem::offset_of!(GoalBag, field16_0x24) - 36usize];
-};
 impl Default for GoalBag {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3095,17 +1921,6 @@ pub struct WorldInfo {
     pub stage_tilt_z: s16,
     pub field_0x4: [undefined; 56usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of WorldInfo"][::core::mem::size_of::<WorldInfo>() - 60usize];
-    ["Alignment of WorldInfo"][::core::mem::align_of::<WorldInfo>() - 1usize];
-    ["Offset of field: WorldInfo::stage_tilt_x"]
-        [::core::mem::offset_of!(WorldInfo, stage_tilt_x) - 0usize];
-    ["Offset of field: WorldInfo::stage_tilt_z"]
-        [::core::mem::offset_of!(WorldInfo, stage_tilt_z) - 2usize];
-    ["Offset of field: WorldInfo::field_0x4"]
-        [::core::mem::offset_of!(WorldInfo, field_0x4) - 4usize];
-};
 impl Default for WorldInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3137,27 +1952,6 @@ pub struct SeesawInfo {
     pub g_some_func5: *mut ::core::ffi::c_void,
     pub g_replay_func: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SeesawInfo"][::core::mem::size_of::<SeesawInfo>() - 32usize];
-    ["Alignment of SeesawInfo"][::core::mem::align_of::<SeesawInfo>() - 1usize];
-    ["Offset of field: SeesawInfo::itemgroup_idx"]
-        [::core::mem::offset_of!(SeesawInfo, itemgroup_idx) - 0usize];
-    ["Offset of field: SeesawInfo::g_type"][::core::mem::offset_of!(SeesawInfo, g_type) - 2usize];
-    ["Offset of field: SeesawInfo::state"][::core::mem::offset_of!(SeesawInfo, state) - 4usize];
-    ["Offset of field: SeesawInfo::init_func"]
-        [::core::mem::offset_of!(SeesawInfo, init_func) - 8usize];
-    ["Offset of field: SeesawInfo::dest_func"]
-        [::core::mem::offset_of!(SeesawInfo, dest_func) - 12usize];
-    ["Offset of field: SeesawInfo::tick_func"]
-        [::core::mem::offset_of!(SeesawInfo, tick_func) - 16usize];
-    ["Offset of field: SeesawInfo::coli_func"]
-        [::core::mem::offset_of!(SeesawInfo, coli_func) - 20usize];
-    ["Offset of field: SeesawInfo::g_some_func5"]
-        [::core::mem::offset_of!(SeesawInfo, g_some_func5) - 24usize];
-    ["Offset of field: SeesawInfo::g_replay_func"]
-        [::core::mem::offset_of!(SeesawInfo, g_replay_func) - 28usize];
-};
 impl Default for SeesawInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3179,24 +1973,6 @@ pub struct GSoundCue {
     pub g_sfx_grp: ::core::ffi::c_char,
     pub player_id: ::core::ffi::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSoundCue"][::core::mem::size_of::<GSoundCue>() - 12usize];
-    ["Alignment of GSoundCue"][::core::mem::align_of::<GSoundCue>() - 1usize];
-    ["Offset of field: GSoundCue::g_sfx_id"][::core::mem::offset_of!(GSoundCue, g_sfx_id) - 0usize];
-    ["Offset of field: GSoundCue::g_sfx_rid"]
-        [::core::mem::offset_of!(GSoundCue, g_sfx_rid) - 2usize];
-    ["Offset of field: GSoundCue::field2_0x4"]
-        [::core::mem::offset_of!(GSoundCue, field2_0x4) - 4usize];
-    ["Offset of field: GSoundCue::g_sfx_pan"]
-        [::core::mem::offset_of!(GSoundCue, g_sfx_pan) - 5usize];
-    ["Offset of field: GSoundCue::g_sfx_span"]
-        [::core::mem::offset_of!(GSoundCue, g_sfx_span) - 6usize];
-    ["Offset of field: GSoundCue::g_sfx_grp"]
-        [::core::mem::offset_of!(GSoundCue, g_sfx_grp) - 7usize];
-    ["Offset of field: GSoundCue::player_id"]
-        [::core::mem::offset_of!(GSoundCue, player_id) - 8usize];
-};
 pub const DATA_SELECT: _bindgen_ty_23 = 0;
 pub const STAGE_SELECT_PRE_INTRO_SEQUENCE: _bindgen_ty_23 = 1;
 pub const STAGE_SELECT_INTRO_SEQUENCE: _bindgen_ty_23 = 2;
@@ -3213,19 +1989,6 @@ pub struct GCachedFileEntry {
     pub next: *mut DVDCommandBlock,
     pub prev: *mut DVDCommandBlock,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GCachedFileEntry"][::core::mem::size_of::<GCachedFileEntry>() - 16usize];
-    ["Alignment of GCachedFileEntry"][::core::mem::align_of::<GCachedFileEntry>() - 1usize];
-    ["Offset of field: GCachedFileEntry::field_0x0"]
-        [::core::mem::offset_of!(GCachedFileEntry, field_0x0) - 0usize];
-    ["Offset of field: GCachedFileEntry::dvd_entrynum"]
-        [::core::mem::offset_of!(GCachedFileEntry, dvd_entrynum) - 4usize];
-    ["Offset of field: GCachedFileEntry::next"]
-        [::core::mem::offset_of!(GCachedFileEntry, next) - 8usize];
-    ["Offset of field: GCachedFileEntry::prev"]
-        [::core::mem::offset_of!(GCachedFileEntry, prev) - 12usize];
-};
 impl Default for GCachedFileEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3260,17 +2023,6 @@ pub struct GSomeSpriteStruct {
     pub g_prev: *mut GSomeSpriteStruct,
     pub g_next: *mut GSomeSpriteStruct,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSomeSpriteStruct"][::core::mem::size_of::<GSomeSpriteStruct>() - 12usize];
-    ["Alignment of GSomeSpriteStruct"][::core::mem::align_of::<GSomeSpriteStruct>() - 1usize];
-    ["Offset of field: GSomeSpriteStruct::g_some_sprite"]
-        [::core::mem::offset_of!(GSomeSpriteStruct, g_some_sprite) - 0usize];
-    ["Offset of field: GSomeSpriteStruct::g_prev"]
-        [::core::mem::offset_of!(GSomeSpriteStruct, g_prev) - 4usize];
-    ["Offset of field: GSomeSpriteStruct::g_next"]
-        [::core::mem::offset_of!(GSomeSpriteStruct, g_next) - 8usize];
-};
 impl Default for GSomeSpriteStruct {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3348,64 +2100,6 @@ pub struct Item {
     pub shadow_position: Vec,
     pub g_something_with_shadows: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Item"][::core::mem::size_of::<Item>() - 180usize];
-    ["Alignment of Item"][::core::mem::align_of::<Item>() - 1usize];
-    ["Offset of field: Item::index"][::core::mem::offset_of!(Item, index) - 0usize];
-    ["Offset of field: Item::id"][::core::mem::offset_of!(Item, id) - 2usize];
-    ["Offset of field: Item::type_"][::core::mem::offset_of!(Item, type_) - 4usize];
-    ["Offset of field: Item::coin_type"][::core::mem::offset_of!(Item, coin_type) - 6usize];
-    ["Offset of field: Item::g_some_bitfield"]
-        [::core::mem::offset_of!(Item, g_some_bitfield) - 8usize];
-    ["Offset of field: Item::field5_0xc"][::core::mem::offset_of!(Item, field5_0xc) - 12usize];
-    ["Offset of field: Item::g_some_flag"][::core::mem::offset_of!(Item, g_some_flag) - 14usize];
-    ["Offset of field: Item::field7_0x10"][::core::mem::offset_of!(Item, field7_0x10) - 16usize];
-    ["Offset of field: Item::g_some_flag2"][::core::mem::offset_of!(Item, g_some_flag2) - 18usize];
-    ["Offset of field: Item::scale"][::core::mem::offset_of!(Item, scale) - 20usize];
-    ["Offset of field: Item::field10_0x18"][::core::mem::offset_of!(Item, field10_0x18) - 24usize];
-    ["Offset of field: Item::g_something_with_gma_model"]
-        [::core::mem::offset_of!(Item, g_something_with_gma_model) - 28usize];
-    ["Offset of field: Item::position"][::core::mem::offset_of!(Item, position) - 32usize];
-    ["Offset of field: Item::velocity"][::core::mem::offset_of!(Item, velocity) - 44usize];
-    ["Offset of field: Item::rotation"][::core::mem::offset_of!(Item, rotation) - 56usize];
-    ["Offset of field: Item::angular_velocity"]
-        [::core::mem::offset_of!(Item, angular_velocity) - 62usize];
-    ["Offset of field: Item::g_position_copy"]
-        [::core::mem::offset_of!(Item, g_position_copy) - 68usize];
-    ["Offset of field: Item::g_rotation_copy"]
-        [::core::mem::offset_of!(Item, g_rotation_copy) - 80usize];
-    ["Offset of field: Item::field_0x56"][::core::mem::offset_of!(Item, field_0x56) - 86usize];
-    ["Offset of field: Item::item_coli_func"]
-        [::core::mem::offset_of!(Item, item_coli_func) - 88usize];
-    ["Offset of field: Item::itemgroup_idx"]
-        [::core::mem::offset_of!(Item, itemgroup_idx) - 92usize];
-    ["Offset of field: Item::field_0x5d"][::core::mem::offset_of!(Item, field_0x5d) - 93usize];
-    ["Offset of field: Item::g_some_frame_counter"]
-        [::core::mem::offset_of!(Item, g_some_frame_counter) - 94usize];
-    ["Offset of field: Item::g_some_vec3f_ptr"]
-        [::core::mem::offset_of!(Item, g_some_vec3f_ptr) - 96usize];
-    ["Offset of field: Item::field25_0x64"][::core::mem::offset_of!(Item, field25_0x64) - 100usize];
-    ["Offset of field: Item::model_ptr"][::core::mem::offset_of!(Item, model_ptr) - 104usize];
-    ["Offset of field: Item::field27_0x6c"][::core::mem::offset_of!(Item, field27_0x6c) - 108usize];
-    ["Offset of field: Item::negative_y_rotation"]
-        [::core::mem::offset_of!(Item, negative_y_rotation) - 112usize];
-    ["Offset of field: Item::field_0x72"][::core::mem::offset_of!(Item, field_0x72) - 114usize];
-    ["Offset of field: Item::field31_0x74"][::core::mem::offset_of!(Item, field31_0x74) - 116usize];
-    ["Offset of field: Item::g_something_with_shadow_disp"]
-        [::core::mem::offset_of!(Item, g_something_with_shadow_disp) - 120usize];
-    ["Offset of field: Item::shadow_scale"][::core::mem::offset_of!(Item, shadow_scale) - 124usize];
-    ["Offset of field: Item::shadow_intensity"]
-        [::core::mem::offset_of!(Item, shadow_intensity) - 136usize];
-    ["Offset of field: Item::g_position_copy_2"]
-        [::core::mem::offset_of!(Item, g_position_copy_2) - 140usize];
-    ["Offset of field: Item::g_some_flag_2"]
-        [::core::mem::offset_of!(Item, g_some_flag_2) - 152usize];
-    ["Offset of field: Item::shadow_position"]
-        [::core::mem::offset_of!(Item, shadow_position) - 156usize];
-    ["Offset of field: Item::g_something_with_shadows"]
-        [::core::mem::offset_of!(Item, g_something_with_shadows) - 168usize];
-};
 impl Default for Item {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3588,21 +2282,6 @@ pub struct CourseCommand {
     pub value: s32,
     pub field4_0x8: [undefined; 20usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CourseCommand"][::core::mem::size_of::<CourseCommand>() - 28usize];
-    ["Alignment of CourseCommand"][::core::mem::align_of::<CourseCommand>() - 1usize];
-    ["Offset of field: CourseCommand::opcode"]
-        [::core::mem::offset_of!(CourseCommand, opcode) - 0usize];
-    ["Offset of field: CourseCommand::type_"]
-        [::core::mem::offset_of!(CourseCommand, type_) - 1usize];
-    ["Offset of field: CourseCommand::field2_0x2"]
-        [::core::mem::offset_of!(CourseCommand, field2_0x2) - 2usize];
-    ["Offset of field: CourseCommand::value"]
-        [::core::mem::offset_of!(CourseCommand, value) - 4usize];
-    ["Offset of field: CourseCommand::field4_0x8"]
-        [::core::mem::offset_of!(CourseCommand, field4_0x8) - 8usize];
-};
 pub type PRelBufferInfo = *mut RelBufferInfo;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3610,15 +2289,6 @@ pub struct RelBufferInfo {
     pub rel_buffer: *mut ::core::ffi::c_void,
     pub bss_buffer: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of RelBufferInfo"][::core::mem::size_of::<RelBufferInfo>() - 8usize];
-    ["Alignment of RelBufferInfo"][::core::mem::align_of::<RelBufferInfo>() - 1usize];
-    ["Offset of field: RelBufferInfo::rel_buffer"]
-        [::core::mem::offset_of!(RelBufferInfo, rel_buffer) - 0usize];
-    ["Offset of field: RelBufferInfo::bss_buffer"]
-        [::core::mem::offset_of!(RelBufferInfo, bss_buffer) - 4usize];
-};
 impl Default for RelBufferInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3644,31 +2314,6 @@ pub struct UnlockInfo {
     pub g_movies_watched: word,
     pub field_0x16: [undefined; 110usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of UnlockInfo"][::core::mem::size_of::<UnlockInfo>() - 132usize];
-    ["Alignment of UnlockInfo"][::core::mem::align_of::<UnlockInfo>() - 1usize];
-    ["Offset of field: UnlockInfo::master_unlocked"]
-        [::core::mem::offset_of!(UnlockInfo, master_unlocked) - 0usize];
-    ["Offset of field: UnlockInfo::monkeys"][::core::mem::offset_of!(UnlockInfo, monkeys) - 1usize];
-    ["Offset of field: UnlockInfo::field_0x2"]
-        [::core::mem::offset_of!(UnlockInfo, field_0x2) - 2usize];
-    ["Offset of field: UnlockInfo::staff_credits_game_unlocked"]
-        [::core::mem::offset_of!(UnlockInfo, staff_credits_game_unlocked) - 3usize];
-    ["Offset of field: UnlockInfo::play_points"]
-        [::core::mem::offset_of!(UnlockInfo, play_points) - 4usize];
-    ["Offset of field: UnlockInfo::newest_play_point_record"]
-        [::core::mem::offset_of!(UnlockInfo, newest_play_point_record) - 8usize];
-    ["Offset of field: UnlockInfo::field_0xc"]
-        [::core::mem::offset_of!(UnlockInfo, field_0xc) - 12usize];
-    ["Offset of field: UnlockInfo::movies"][::core::mem::offset_of!(UnlockInfo, movies) - 14usize];
-    ["Offset of field: UnlockInfo::party_games"]
-        [::core::mem::offset_of!(UnlockInfo, party_games) - 16usize];
-    ["Offset of field: UnlockInfo::g_movies_watched"]
-        [::core::mem::offset_of!(UnlockInfo, g_movies_watched) - 20usize];
-    ["Offset of field: UnlockInfo::field_0x16"]
-        [::core::mem::offset_of!(UnlockInfo, field_0x16) - 22usize];
-};
 impl Default for UnlockInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3710,14 +2355,6 @@ pub struct RaycastHit {
     pub pos: Vec,
     pub normal: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of RaycastHit"][::core::mem::size_of::<RaycastHit>() - 28usize];
-    ["Alignment of RaycastHit"][::core::mem::align_of::<RaycastHit>() - 1usize];
-    ["Offset of field: RaycastHit::flags"][::core::mem::offset_of!(RaycastHit, flags) - 0usize];
-    ["Offset of field: RaycastHit::pos"][::core::mem::offset_of!(RaycastHit, pos) - 4usize];
-    ["Offset of field: RaycastHit::normal"][::core::mem::offset_of!(RaycastHit, normal) - 16usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct Ball {
@@ -3783,99 +2420,6 @@ pub struct Ball {
     pub raycast_down_hit: RaycastHit,
     pub field_0x198: [undefined; 24usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Ball"][::core::mem::size_of::<Ball>() - 432usize];
-    ["Alignment of Ball"][::core::mem::align_of::<Ball>() - 1usize];
-    ["Offset of field: Ball::status"][::core::mem::offset_of!(Ball, status) - 0usize];
-    ["Offset of field: Ball::field_0x1"][::core::mem::offset_of!(Ball, field_0x1) - 1usize];
-    ["Offset of field: Ball::monkey_count"][::core::mem::offset_of!(Ball, monkey_count) - 2usize];
-    ["Offset of field: Ball::mode"][::core::mem::offset_of!(Ball, mode) - 3usize];
-    ["Offset of field: Ball::pos"][::core::mem::offset_of!(Ball, pos) - 4usize];
-    ["Offset of field: Ball::prev_pos"][::core::mem::offset_of!(Ball, prev_pos) - 16usize];
-    ["Offset of field: Ball::vel"][::core::mem::offset_of!(Ball, vel) - 28usize];
-    ["Offset of field: Ball::visual_rot"][::core::mem::offset_of!(Ball, visual_rot) - 40usize];
-    ["Offset of field: Ball::idx"][::core::mem::offset_of!(Ball, idx) - 46usize];
-    ["Offset of field: Ball::field_0x2f"][::core::mem::offset_of!(Ball, field_0x2f) - 47usize];
-    ["Offset of field: Ball::model_transform"]
-        [::core::mem::offset_of!(Ball, model_transform) - 48usize];
-    ["Offset of field: Ball::visual_rot_vel"]
-        [::core::mem::offset_of!(Ball, visual_rot_vel) - 96usize];
-    ["Offset of field: Ball::padding2"][::core::mem::offset_of!(Ball, padding2) - 102usize];
-    ["Offset of field: Ball::ball_size"][::core::mem::offset_of!(Ball, ball_size) - 104usize];
-    ["Offset of field: Ball::gravity"][::core::mem::offset_of!(Ball, gravity) - 108usize];
-    ["Offset of field: Ball::restitution"][::core::mem::offset_of!(Ball, restitution) - 112usize];
-    ["Offset of field: Ball::visual_scale"][::core::mem::offset_of!(Ball, visual_scale) - 116usize];
-    ["Offset of field: Ball::banana_count"][::core::mem::offset_of!(Ball, banana_count) - 120usize];
-    ["Offset of field: Ball::score"][::core::mem::offset_of!(Ball, score) - 124usize];
-    ["Offset of field: Ball::frames_since_spawn"]
-        [::core::mem::offset_of!(Ball, frames_since_spawn) - 128usize];
-    ["Offset of field: Ball::field_0x84"][::core::mem::offset_of!(Ball, field_0x84) - 132usize];
-    ["Offset of field: Ball::g_monkey_angle"]
-        [::core::mem::offset_of!(Ball, g_monkey_angle) - 146usize];
-    ["Offset of field: Ball::field_0x94"][::core::mem::offset_of!(Ball, field_0x94) - 148usize];
-    ["Offset of field: Ball::g_effect_flags"]
-        [::core::mem::offset_of!(Ball, g_effect_flags) - 152usize];
-    ["Offset of field: Ball::phys_flags"][::core::mem::offset_of!(Ball, phys_flags) - 156usize];
-    ["Offset of field: Ball::g_monkey_rotation"]
-        [::core::mem::offset_of!(Ball, g_monkey_rotation) - 160usize];
-    ["Offset of field: Ball::g_ball_rotation"]
-        [::core::mem::offset_of!(Ball, g_ball_rotation) - 176usize];
-    ["Offset of field: Ball::some_vec3"][::core::mem::offset_of!(Ball, some_vec3) - 192usize];
-    ["Offset of field: Ball::some_length"][::core::mem::offset_of!(Ball, some_length) - 204usize];
-    ["Offset of field: Ball::ball_transform_copy"]
-        [::core::mem::offset_of!(Ball, ball_transform_copy) - 208usize];
-    ["Offset of field: Ball::speed"][::core::mem::offset_of!(Ball, speed) - 256usize];
-    ["Offset of field: Ball::ape"][::core::mem::offset_of!(Ball, ape) - 260usize];
-    ["Offset of field: Ball::field48_0x108"]
-        [::core::mem::offset_of!(Ball, field48_0x108) - 264usize];
-    ["Offset of field: Ball::ape_facedir_point"]
-        [::core::mem::offset_of!(Ball, ape_facedir_point) - 268usize];
-    ["Offset of field: Ball::something_with_ape_facedir"]
-        [::core::mem::offset_of!(Ball, something_with_ape_facedir) - 280usize];
-    ["Offset of field: Ball::g_last_collision_normal"]
-        [::core::mem::offset_of!(Ball, g_last_collision_normal) - 284usize];
-    ["Offset of field: Ball::field_0x128"][::core::mem::offset_of!(Ball, field_0x128) - 296usize];
-    ["Offset of field: Ball::g_race_flags"][::core::mem::offset_of!(Ball, g_race_flags) - 300usize];
-    ["Offset of field: Ball::g_other_counter"]
-        [::core::mem::offset_of!(Ball, g_other_counter) - 304usize];
-    ["Offset of field: Ball::field58_0x132"]
-        [::core::mem::offset_of!(Ball, field58_0x132) - 306usize];
-    ["Offset of field: Ball::field59_0x134"]
-        [::core::mem::offset_of!(Ball, field59_0x134) - 308usize];
-    ["Offset of field: Ball::g_something_timer"]
-        [::core::mem::offset_of!(Ball, g_something_timer) - 310usize];
-    ["Offset of field: Ball::field_0x138"][::core::mem::offset_of!(Ball, field_0x138) - 312usize];
-    ["Offset of field: Ball::hardest_coli_speed"]
-        [::core::mem::offset_of!(Ball, hardest_coli_speed) - 316usize];
-    ["Offset of field: Ball::g_banana_count_copy"]
-        [::core::mem::offset_of!(Ball, g_banana_count_copy) - 320usize];
-    ["Offset of field: Ball::field_0x144"][::core::mem::offset_of!(Ball, field_0x144) - 324usize];
-    ["Offset of field: Ball::physical_ball_radius"]
-        [::core::mem::offset_of!(Ball, physical_ball_radius) - 332usize];
-    ["Offset of field: Ball::field_0x150"][::core::mem::offset_of!(Ball, field_0x150) - 336usize];
-    ["Offset of field: Ball::field80_0x154"]
-        [::core::mem::offset_of!(Ball, field80_0x154) - 340usize];
-    ["Offset of field: Ball::field81_0x155"]
-        [::core::mem::offset_of!(Ball, field81_0x155) - 341usize];
-    ["Offset of field: Ball::g_ball_color_index"]
-        [::core::mem::offset_of!(Ball, g_ball_color_index) - 342usize];
-    ["Offset of field: Ball::field83_0x157"]
-        [::core::mem::offset_of!(Ball, field83_0x157) - 343usize];
-    ["Offset of field: Ball::field_0x158"][::core::mem::offset_of!(Ball, field_0x158) - 344usize];
-    ["Offset of field: Ball::g_some_counter"]
-        [::core::mem::offset_of!(Ball, g_some_counter) - 346usize];
-    ["Offset of field: Ball::g_some_pos1"][::core::mem::offset_of!(Ball, g_some_pos1) - 348usize];
-    ["Offset of field: Ball::field_0x168"][::core::mem::offset_of!(Ball, field_0x168) - 360usize];
-    ["Offset of field: Ball::g_some_game_flag"]
-        [::core::mem::offset_of!(Ball, g_some_game_flag) - 376usize];
-    ["Offset of field: Ball::g_some_model_flag"]
-        [::core::mem::offset_of!(Ball, g_some_model_flag) - 377usize];
-    ["Offset of field: Ball::field_0x17a"][::core::mem::offset_of!(Ball, field_0x17a) - 378usize];
-    ["Offset of field: Ball::raycast_down_hit"]
-        [::core::mem::offset_of!(Ball, raycast_down_hit) - 380usize];
-    ["Offset of field: Ball::field_0x198"][::core::mem::offset_of!(Ball, field_0x198) - 408usize];
-};
 impl Default for Ball {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3894,16 +2438,6 @@ pub struct SmWorldInfo {
     pub field_0x2: [undefined; 2usize],
     pub stages: *mut SmStageInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SmWorldInfo"][::core::mem::size_of::<SmWorldInfo>() - 8usize];
-    ["Alignment of SmWorldInfo"][::core::mem::align_of::<SmWorldInfo>() - 1usize];
-    ["Offset of field: SmWorldInfo::stage_count"]
-        [::core::mem::offset_of!(SmWorldInfo, stage_count) - 0usize];
-    ["Offset of field: SmWorldInfo::field_0x2"]
-        [::core::mem::offset_of!(SmWorldInfo, field_0x2) - 2usize];
-    ["Offset of field: SmWorldInfo::stages"][::core::mem::offset_of!(SmWorldInfo, stages) - 4usize];
-};
 impl Default for SmWorldInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -3919,15 +2453,6 @@ pub struct SmStageInfo {
     pub stage_id: s16,
     pub difficulty: s16,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SmStageInfo"][::core::mem::size_of::<SmStageInfo>() - 4usize];
-    ["Alignment of SmStageInfo"][::core::mem::align_of::<SmStageInfo>() - 1usize];
-    ["Offset of field: SmStageInfo::stage_id"]
-        [::core::mem::offset_of!(SmStageInfo, stage_id) - 0usize];
-    ["Offset of field: SmStageInfo::difficulty"]
-        [::core::mem::offset_of!(SmStageInfo, difficulty) - 2usize];
-};
 pub const DMD_SCEN_1ST_INIT: _bindgen_ty_31 = 0;
 pub const DMD_SCEN_RETURN_INIT: _bindgen_ty_31 = 1;
 pub const DMD_SCEN_NEWGAME_INIT: _bindgen_ty_31 = 2;
@@ -3983,53 +2508,6 @@ pub struct FontDefinition {
     pub g_aram_char_lookup: *mut ::core::ffi::c_short,
     pub field23_0x34: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FontDefinition"][::core::mem::size_of::<FontDefinition>() - 56usize];
-    ["Alignment of FontDefinition"][::core::mem::align_of::<FontDefinition>() - 1usize];
-    ["Offset of field: FontDefinition::g_aram_flag"]
-        [::core::mem::offset_of!(FontDefinition, g_aram_flag) - 0usize];
-    ["Offset of field: FontDefinition::width"]
-        [::core::mem::offset_of!(FontDefinition, width) - 2usize];
-    ["Offset of field: FontDefinition::height"]
-        [::core::mem::offset_of!(FontDefinition, height) - 3usize];
-    ["Offset of field: FontDefinition::g_start_index"]
-        [::core::mem::offset_of!(FontDefinition, g_start_index) - 4usize];
-    ["Offset of field: FontDefinition::g_end_index"]
-        [::core::mem::offset_of!(FontDefinition, g_end_index) - 8usize];
-    ["Offset of field: FontDefinition::field5_0xc"]
-        [::core::mem::offset_of!(FontDefinition, field5_0xc) - 12usize];
-    ["Offset of field: FontDefinition::field_0xd"]
-        [::core::mem::offset_of!(FontDefinition, field_0xd) - 13usize];
-    ["Offset of field: FontDefinition::field9_0x10"]
-        [::core::mem::offset_of!(FontDefinition, field9_0x10) - 16usize];
-    ["Offset of field: FontDefinition::field10_0x14"]
-        [::core::mem::offset_of!(FontDefinition, field10_0x14) - 20usize];
-    ["Offset of field: FontDefinition::field11_0x18"]
-        [::core::mem::offset_of!(FontDefinition, field11_0x18) - 24usize];
-    ["Offset of field: FontDefinition::field12_0x1c"]
-        [::core::mem::offset_of!(FontDefinition, field12_0x1c) - 28usize];
-    ["Offset of field: FontDefinition::field13_0x20"]
-        [::core::mem::offset_of!(FontDefinition, field13_0x20) - 32usize];
-    ["Offset of field: FontDefinition::field14_0x21"]
-        [::core::mem::offset_of!(FontDefinition, field14_0x21) - 33usize];
-    ["Offset of field: FontDefinition::field15_0x22"]
-        [::core::mem::offset_of!(FontDefinition, field15_0x22) - 34usize];
-    ["Offset of field: FontDefinition::field16_0x23"]
-        [::core::mem::offset_of!(FontDefinition, field16_0x23) - 35usize];
-    ["Offset of field: FontDefinition::name"]
-        [::core::mem::offset_of!(FontDefinition, name) - 36usize];
-    ["Offset of field: FontDefinition::g_some_size"]
-        [::core::mem::offset_of!(FontDefinition, g_some_size) - 40usize];
-    ["Offset of field: FontDefinition::field_0x2a"]
-        [::core::mem::offset_of!(FontDefinition, field_0x2a) - 42usize];
-    ["Offset of field: FontDefinition::g_some_avtext_lookup"]
-        [::core::mem::offset_of!(FontDefinition, g_some_avtext_lookup) - 44usize];
-    ["Offset of field: FontDefinition::g_aram_char_lookup"]
-        [::core::mem::offset_of!(FontDefinition, g_aram_char_lookup) - 48usize];
-    ["Offset of field: FontDefinition::field23_0x34"]
-        [::core::mem::offset_of!(FontDefinition, field23_0x34) - 52usize];
-};
 impl Default for FontDefinition {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4054,30 +2532,6 @@ pub struct Itemgroup {
     pub field_0x8c: [undefined; 16usize],
     pub seesaw_info: *mut SeesawInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Itemgroup"][::core::mem::size_of::<Itemgroup>() - 160usize];
-    ["Alignment of Itemgroup"][::core::mem::align_of::<Itemgroup>() - 1usize];
-    ["Offset of field: Itemgroup::playback_state"]
-        [::core::mem::offset_of!(Itemgroup, playback_state) - 0usize];
-    ["Offset of field: Itemgroup::anim_frame"]
-        [::core::mem::offset_of!(Itemgroup, anim_frame) - 4usize];
-    ["Offset of field: Itemgroup::position"][::core::mem::offset_of!(Itemgroup, position) - 8usize];
-    ["Offset of field: Itemgroup::prev_position"]
-        [::core::mem::offset_of!(Itemgroup, prev_position) - 20usize];
-    ["Offset of field: Itemgroup::rotation"]
-        [::core::mem::offset_of!(Itemgroup, rotation) - 32usize];
-    ["Offset of field: Itemgroup::prev_rotation"]
-        [::core::mem::offset_of!(Itemgroup, prev_rotation) - 38usize];
-    ["Offset of field: Itemgroup::transform"]
-        [::core::mem::offset_of!(Itemgroup, transform) - 44usize];
-    ["Offset of field: Itemgroup::prev_transform"]
-        [::core::mem::offset_of!(Itemgroup, prev_transform) - 92usize];
-    ["Offset of field: Itemgroup::field_0x8c"]
-        [::core::mem::offset_of!(Itemgroup, field_0x8c) - 140usize];
-    ["Offset of field: Itemgroup::seesaw_info"]
-        [::core::mem::offset_of!(Itemgroup, seesaw_info) - 156usize];
-};
 impl Default for Itemgroup {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4099,25 +2553,6 @@ pub struct GSoundGroupEntry {
     pub field_0xa: [undefined; 2usize],
     pub g_name: *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSoundGroupEntry"][::core::mem::size_of::<GSoundGroupEntry>() - 16usize];
-    ["Alignment of GSoundGroupEntry"][::core::mem::align_of::<GSoundGroupEntry>() - 1usize];
-    ["Offset of field: GSoundGroupEntry::g_flags"]
-        [::core::mem::offset_of!(GSoundGroupEntry, g_flags) - 0usize];
-    ["Offset of field: GSoundGroupEntry::field_0x2"]
-        [::core::mem::offset_of!(GSoundGroupEntry, field_0x2) - 2usize];
-    ["Offset of field: GSoundGroupEntry::field3_0x4"]
-        [::core::mem::offset_of!(GSoundGroupEntry, field3_0x4) - 4usize];
-    ["Offset of field: GSoundGroupEntry::field_0x6"]
-        [::core::mem::offset_of!(GSoundGroupEntry, field_0x6) - 6usize];
-    ["Offset of field: GSoundGroupEntry::field6_0x8"]
-        [::core::mem::offset_of!(GSoundGroupEntry, field6_0x8) - 8usize];
-    ["Offset of field: GSoundGroupEntry::field_0xa"]
-        [::core::mem::offset_of!(GSoundGroupEntry, field_0xa) - 10usize];
-    ["Offset of field: GSoundGroupEntry::g_name"]
-        [::core::mem::offset_of!(GSoundGroupEntry, g_name) - 12usize];
-};
 impl Default for GSoundGroupEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4145,35 +2580,6 @@ pub struct StoryModeSaveFile {
     pub beaten_stage_indices: [u8_; 10usize],
     pub field11_0x2f: [undefined; 85usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StoryModeSaveFile"][::core::mem::size_of::<StoryModeSaveFile>() - 132usize];
-    ["Alignment of StoryModeSaveFile"][::core::mem::align_of::<StoryModeSaveFile>() - 1usize];
-    ["Offset of field: StoryModeSaveFile::field0_0x0"]
-        [::core::mem::offset_of!(StoryModeSaveFile, field0_0x0) - 0usize];
-    ["Offset of field: StoryModeSaveFile::is_valid"]
-        [::core::mem::offset_of!(StoryModeSaveFile, is_valid) - 4usize];
-    ["Offset of field: StoryModeSaveFile::file_name"]
-        [::core::mem::offset_of!(StoryModeSaveFile, file_name) - 8usize];
-    ["Offset of field: StoryModeSaveFile::current_world"]
-        [::core::mem::offset_of!(StoryModeSaveFile, current_world) - 21usize];
-    ["Offset of field: StoryModeSaveFile::field4_0x16"]
-        [::core::mem::offset_of!(StoryModeSaveFile, field4_0x16) - 22usize];
-    ["Offset of field: StoryModeSaveFile::field_0x17"]
-        [::core::mem::offset_of!(StoryModeSaveFile, field_0x17) - 23usize];
-    ["Offset of field: StoryModeSaveFile::playtime_in_frames"]
-        [::core::mem::offset_of!(StoryModeSaveFile, playtime_in_frames) - 24usize];
-    ["Offset of field: StoryModeSaveFile::score"]
-        [::core::mem::offset_of!(StoryModeSaveFile, score) - 28usize];
-    ["Offset of field: StoryModeSaveFile::bananas"]
-        [::core::mem::offset_of!(StoryModeSaveFile, bananas) - 32usize];
-    ["Offset of field: StoryModeSaveFile::num_beaten_stages_in_current_world"]
-        [::core::mem::offset_of!(StoryModeSaveFile, num_beaten_stages_in_current_world) - 36usize];
-    ["Offset of field: StoryModeSaveFile::beaten_stage_indices"]
-        [::core::mem::offset_of!(StoryModeSaveFile, beaten_stage_indices) - 37usize];
-    ["Offset of field: StoryModeSaveFile::field11_0x2f"]
-        [::core::mem::offset_of!(StoryModeSaveFile, field11_0x2f) - 47usize];
-};
 impl Default for StoryModeSaveFile {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4191,14 +2597,6 @@ pub struct GBone {
     pub MTAData: *mut ::core::ffi::c_void,
     pub UnknownPtr: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GBone"][::core::mem::size_of::<GBone>() - 12usize];
-    ["Alignment of GBone"][::core::mem::align_of::<GBone>() - 1usize];
-    ["Offset of field: GBone::SKLData"][::core::mem::offset_of!(GBone, SKLData) - 0usize];
-    ["Offset of field: GBone::MTAData"][::core::mem::offset_of!(GBone, MTAData) - 4usize];
-    ["Offset of field: GBone::UnknownPtr"][::core::mem::offset_of!(GBone, UnknownPtr) - 8usize];
-};
 impl Default for GBone {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4220,23 +2618,6 @@ pub struct RankingEntry {
     pub field11_0x14: undefined4,
     pub field_0x18: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of RankingEntry"][::core::mem::size_of::<RankingEntry>() - 28usize];
-    ["Alignment of RankingEntry"][::core::mem::align_of::<RankingEntry>() - 1usize];
-    ["Offset of field: RankingEntry::name"][::core::mem::offset_of!(RankingEntry, name) - 0usize];
-    ["Offset of field: RankingEntry::field_0x4"]
-        [::core::mem::offset_of!(RankingEntry, field_0x4) - 4usize];
-    ["Offset of field: RankingEntry::score"][::core::mem::offset_of!(RankingEntry, score) - 8usize];
-    ["Offset of field: RankingEntry::g_ape_id"]
-        [::core::mem::offset_of!(RankingEntry, g_ape_id) - 12usize];
-    ["Offset of field: RankingEntry::field_0x10"]
-        [::core::mem::offset_of!(RankingEntry, field_0x10) - 16usize];
-    ["Offset of field: RankingEntry::field11_0x14"]
-        [::core::mem::offset_of!(RankingEntry, field11_0x14) - 20usize];
-    ["Offset of field: RankingEntry::field_0x18"]
-        [::core::mem::offset_of!(RankingEntry, field_0x18) - 24usize];
-};
 impl Default for RankingEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4254,17 +2635,6 @@ pub struct GTableEntry {
     pub field3_0x3: byte,
     pub field_0x4: [undefined; 8usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GTableEntry"][::core::mem::size_of::<GTableEntry>() - 12usize];
-    ["Alignment of GTableEntry"][::core::mem::align_of::<GTableEntry>() - 1usize];
-    ["Offset of field: GTableEntry::field_0x0"]
-        [::core::mem::offset_of!(GTableEntry, field_0x0) - 0usize];
-    ["Offset of field: GTableEntry::field3_0x3"]
-        [::core::mem::offset_of!(GTableEntry, field3_0x3) - 3usize];
-    ["Offset of field: GTableEntry::field_0x4"]
-        [::core::mem::offset_of!(GTableEntry, field_0x4) - 4usize];
-};
 pub type Ptheme_light = *mut theme_light;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -4289,46 +2659,6 @@ pub struct theme_light {
     pub ya: i16,
     pub null: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of theme_light"][::core::mem::size_of::<theme_light>() - 72usize];
-    ["Alignment of theme_light"][::core::mem::align_of::<theme_light>() - 1usize];
-    ["Offset of field: theme_light::unk_float"]
-        [::core::mem::offset_of!(theme_light, unk_float) - 0usize];
-    ["Offset of field: theme_light::light_group_r"]
-        [::core::mem::offset_of!(theme_light, light_group_r) - 4usize];
-    ["Offset of field: theme_light::light_group_g"]
-        [::core::mem::offset_of!(theme_light, light_group_g) - 8usize];
-    ["Offset of field: theme_light::light_group_b"]
-        [::core::mem::offset_of!(theme_light, light_group_b) - 12usize];
-    ["Offset of field: theme_light::light_group_null"]
-        [::core::mem::offset_of!(theme_light, light_group_null) - 16usize];
-    ["Offset of field: theme_light::unk_one_1"]
-        [::core::mem::offset_of!(theme_light, unk_one_1) - 20usize];
-    ["Offset of field: theme_light::unk_one_2"]
-        [::core::mem::offset_of!(theme_light, unk_one_2) - 24usize];
-    ["Offset of field: theme_light::unk_one_3"]
-        [::core::mem::offset_of!(theme_light, unk_one_3) - 28usize];
-    ["Offset of field: theme_light::unk_one_null"]
-        [::core::mem::offset_of!(theme_light, unk_one_null) - 32usize];
-    ["Offset of field: theme_light::unk_half_1"]
-        [::core::mem::offset_of!(theme_light, unk_half_1) - 36usize];
-    ["Offset of field: theme_light::unk_half_2"]
-        [::core::mem::offset_of!(theme_light, unk_half_2) - 40usize];
-    ["Offset of field: theme_light::unk_half_3"]
-        [::core::mem::offset_of!(theme_light, unk_half_3) - 44usize];
-    ["Offset of field: theme_light::unk_half_null"]
-        [::core::mem::offset_of!(theme_light, unk_half_null) - 48usize];
-    ["Offset of field: theme_light::light_param_r"]
-        [::core::mem::offset_of!(theme_light, light_param_r) - 52usize];
-    ["Offset of field: theme_light::light_param_g"]
-        [::core::mem::offset_of!(theme_light, light_param_g) - 56usize];
-    ["Offset of field: theme_light::light_param_b"]
-        [::core::mem::offset_of!(theme_light, light_param_b) - 60usize];
-    ["Offset of field: theme_light::xa"][::core::mem::offset_of!(theme_light, xa) - 64usize];
-    ["Offset of field: theme_light::ya"][::core::mem::offset_of!(theme_light, ya) - 66usize];
-    ["Offset of field: theme_light::null"][::core::mem::offset_of!(theme_light, null) - 68usize];
-};
 pub type POptiGXChanSettings = *mut OptiGXChanSettings;
 pub type GXBool = u8_;
 pub const GX_SRC_REG: _bindgen_ty_32 = 0;
@@ -4356,38 +2686,12 @@ pub struct OptiGXChanSettings {
     pub diff_fn: GXDiffuseFn,
     pub attn_fn: GXAttnFn,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OptiGXChanSettings"][::core::mem::size_of::<OptiGXChanSettings>() - 24usize];
-    ["Alignment of OptiGXChanSettings"][::core::mem::align_of::<OptiGXChanSettings>() - 1usize];
-    ["Offset of field: OptiGXChanSettings::enable"]
-        [::core::mem::offset_of!(OptiGXChanSettings, enable) - 0usize];
-    ["Offset of field: OptiGXChanSettings::padding_0x1"]
-        [::core::mem::offset_of!(OptiGXChanSettings, padding_0x1) - 1usize];
-    ["Offset of field: OptiGXChanSettings::amb_src"]
-        [::core::mem::offset_of!(OptiGXChanSettings, amb_src) - 4usize];
-    ["Offset of field: OptiGXChanSettings::mat_src"]
-        [::core::mem::offset_of!(OptiGXChanSettings, mat_src) - 8usize];
-    ["Offset of field: OptiGXChanSettings::light_mask"]
-        [::core::mem::offset_of!(OptiGXChanSettings, light_mask) - 12usize];
-    ["Offset of field: OptiGXChanSettings::diff_fn"]
-        [::core::mem::offset_of!(OptiGXChanSettings, diff_fn) - 16usize];
-    ["Offset of field: OptiGXChanSettings::attn_fn"]
-        [::core::mem::offset_of!(OptiGXChanSettings, attn_fn) - 20usize];
-};
 pub type PGSomeLightStruct = *mut GSomeLightStruct;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct GSomeLightStruct {
     pub field_0x0: [undefined; 299usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSomeLightStruct"][::core::mem::size_of::<GSomeLightStruct>() - 299usize];
-    ["Alignment of GSomeLightStruct"][::core::mem::align_of::<GSomeLightStruct>() - 1usize];
-    ["Offset of field: GSomeLightStruct::field_0x0"]
-        [::core::mem::offset_of!(GSomeLightStruct, field_0x0) - 0usize];
-};
 impl Default for GSomeLightStruct {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4405,17 +2709,6 @@ pub struct CmListEntry {
     pub g_stage_id: undefined4,
     pub field_0x8: [undefined; 100usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CmListEntry"][::core::mem::size_of::<CmListEntry>() - 108usize];
-    ["Alignment of CmListEntry"][::core::mem::align_of::<CmListEntry>() - 1usize];
-    ["Offset of field: CmListEntry::field0_0x0"]
-        [::core::mem::offset_of!(CmListEntry, field0_0x0) - 0usize];
-    ["Offset of field: CmListEntry::g_stage_id"]
-        [::core::mem::offset_of!(CmListEntry, g_stage_id) - 4usize];
-    ["Offset of field: CmListEntry::field_0x8"]
-        [::core::mem::offset_of!(CmListEntry, field_0x8) - 8usize];
-};
 impl Default for CmListEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4440,30 +2733,6 @@ pub struct NlBuffer {
     pub field_0x3c: [undefined; 40usize],
     pub field85_0x64: *mut *mut ::core::ffi::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of NlBuffer"][::core::mem::size_of::<NlBuffer>() - 104usize];
-    ["Alignment of NlBuffer"][::core::mem::align_of::<NlBuffer>() - 1usize];
-    ["Offset of field: NlBuffer::field0_0x0"]
-        [::core::mem::offset_of!(NlBuffer, field0_0x0) - 0usize];
-    ["Offset of field: NlBuffer::field_0x4"][::core::mem::offset_of!(NlBuffer, field_0x4) - 4usize];
-    ["Offset of field: NlBuffer::field21_0x18"]
-        [::core::mem::offset_of!(NlBuffer, field21_0x18) - 24usize];
-    ["Offset of field: NlBuffer::field_0x1c"]
-        [::core::mem::offset_of!(NlBuffer, field_0x1c) - 28usize];
-    ["Offset of field: NlBuffer::field26_0x20"]
-        [::core::mem::offset_of!(NlBuffer, field26_0x20) - 32usize];
-    ["Offset of field: NlBuffer::field27_0x24"]
-        [::core::mem::offset_of!(NlBuffer, field27_0x24) - 36usize];
-    ["Offset of field: NlBuffer::field_0x28"]
-        [::core::mem::offset_of!(NlBuffer, field_0x28) - 40usize];
-    ["Offset of field: NlBuffer::field44_0x38"]
-        [::core::mem::offset_of!(NlBuffer, field44_0x38) - 56usize];
-    ["Offset of field: NlBuffer::field_0x3c"]
-        [::core::mem::offset_of!(NlBuffer, field_0x3c) - 60usize];
-    ["Offset of field: NlBuffer::field85_0x64"]
-        [::core::mem::offset_of!(NlBuffer, field85_0x64) - 100usize];
-};
 impl Default for NlBuffer {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4485,23 +2754,6 @@ pub struct GraphicsInfo {
     pub active_framebuffer_index: u32_,
     pub fifos: [*mut GXFifoObj; 2usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GraphicsInfo"][::core::mem::size_of::<GraphicsInfo>() - 28usize];
-    ["Alignment of GraphicsInfo"][::core::mem::align_of::<GraphicsInfo>() - 1usize];
-    ["Offset of field: GraphicsInfo::active_framebuffer"]
-        [::core::mem::offset_of!(GraphicsInfo, active_framebuffer) - 0usize];
-    ["Offset of field: GraphicsInfo::framebuffer1"]
-        [::core::mem::offset_of!(GraphicsInfo, framebuffer1) - 4usize];
-    ["Offset of field: GraphicsInfo::framebuffer2"]
-        [::core::mem::offset_of!(GraphicsInfo, framebuffer2) - 8usize];
-    ["Offset of field: GraphicsInfo::frame_count"]
-        [::core::mem::offset_of!(GraphicsInfo, frame_count) - 12usize];
-    ["Offset of field: GraphicsInfo::active_framebuffer_index"]
-        [::core::mem::offset_of!(GraphicsInfo, active_framebuffer_index) - 16usize];
-    ["Offset of field: GraphicsInfo::fifos"]
-        [::core::mem::offset_of!(GraphicsInfo, fifos) - 20usize];
-};
 impl Default for GraphicsInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4519,19 +2771,6 @@ pub struct GXFifoObj {
     pub write_ptr: *mut ::core::ffi::c_void,
     pub field_0x1c: [undefined; 100usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXFifoObj"][::core::mem::size_of::<GXFifoObj>() - 128usize];
-    ["Alignment of GXFifoObj"][::core::mem::align_of::<GXFifoObj>() - 1usize];
-    ["Offset of field: GXFifoObj::field_0x0"]
-        [::core::mem::offset_of!(GXFifoObj, field_0x0) - 0usize];
-    ["Offset of field: GXFifoObj::read_ptr"]
-        [::core::mem::offset_of!(GXFifoObj, read_ptr) - 20usize];
-    ["Offset of field: GXFifoObj::write_ptr"]
-        [::core::mem::offset_of!(GXFifoObj, write_ptr) - 24usize];
-    ["Offset of field: GXFifoObj::field_0x1c"]
-        [::core::mem::offset_of!(GXFifoObj, field_0x1c) - 28usize];
-};
 impl Default for GXFifoObj {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4694,13 +2933,6 @@ pub type Pg_someGameInfo = *mut g_someGameInfo;
 pub struct g_someGameInfo {
     pub field_0x0: [undefined; 80usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of g_someGameInfo"][::core::mem::size_of::<g_someGameInfo>() - 80usize];
-    ["Alignment of g_someGameInfo"][::core::mem::align_of::<g_someGameInfo>() - 1usize];
-    ["Offset of field: g_someGameInfo::field_0x0"]
-        [::core::mem::offset_of!(g_someGameInfo, field_0x0) - 0usize];
-};
 impl Default for g_someGameInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4720,23 +2952,6 @@ pub struct GSoundGroup {
     pub g_name: *mut ::core::ffi::c_char,
     pub field9_0x10: __IncompleteArrayField<GSoundGroupEntry>,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSoundGroup"][::core::mem::size_of::<GSoundGroup>() - 16usize];
-    ["Alignment of GSoundGroup"][::core::mem::align_of::<GSoundGroup>() - 1usize];
-    ["Offset of field: GSoundGroup::field_0x0"]
-        [::core::mem::offset_of!(GSoundGroup, field_0x0) - 0usize];
-    ["Offset of field: GSoundGroup::field4_0x4"]
-        [::core::mem::offset_of!(GSoundGroup, field4_0x4) - 4usize];
-    ["Offset of field: GSoundGroup::field5_0x8"]
-        [::core::mem::offset_of!(GSoundGroup, field5_0x8) - 8usize];
-    ["Offset of field: GSoundGroup::field_0xa"]
-        [::core::mem::offset_of!(GSoundGroup, field_0xa) - 10usize];
-    ["Offset of field: GSoundGroup::g_name"]
-        [::core::mem::offset_of!(GSoundGroup, g_name) - 12usize];
-    ["Offset of field: GSoundGroup::field9_0x10"]
-        [::core::mem::offset_of!(GSoundGroup, field9_0x10) - 16usize];
-};
 impl Default for GSoundGroup {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -4769,42 +2984,6 @@ pub struct ScenInfo {
     pub field22_0x30: undefined4,
     pub field23_0x34: undefined4,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ScenInfo"][::core::mem::size_of::<ScenInfo>() - 56usize];
-    ["Alignment of ScenInfo"][::core::mem::align_of::<ScenInfo>() - 1usize];
-    ["Offset of field: ScenInfo::mode"][::core::mem::offset_of!(ScenInfo, mode) - 0usize];
-    ["Offset of field: ScenInfo::mode_request"]
-        [::core::mem::offset_of!(ScenInfo, mode_request) - 2usize];
-    ["Offset of field: ScenInfo::world"][::core::mem::offset_of!(ScenInfo, world) - 4usize];
-    ["Offset of field: ScenInfo::world_stage"]
-        [::core::mem::offset_of!(ScenInfo, world_stage) - 6usize];
-    ["Offset of field: ScenInfo::flags"][::core::mem::offset_of!(ScenInfo, flags) - 8usize];
-    ["Offset of field: ScenInfo::next_world"]
-        [::core::mem::offset_of!(ScenInfo, next_world) - 12usize];
-    ["Offset of field: ScenInfo::field_0xe"]
-        [::core::mem::offset_of!(ScenInfo, field_0xe) - 14usize];
-    ["Offset of field: ScenInfo::score"][::core::mem::offset_of!(ScenInfo, score) - 16usize];
-    ["Offset of field: ScenInfo::bananas"][::core::mem::offset_of!(ScenInfo, bananas) - 20usize];
-    ["Offset of field: ScenInfo::g_some_storymode_func_ptr"]
-        [::core::mem::offset_of!(ScenInfo, g_some_storymode_func_ptr) - 24usize];
-    ["Offset of field: ScenInfo::field_0x1c"]
-        [::core::mem::offset_of!(ScenInfo, field_0x1c) - 28usize];
-    ["Offset of field: ScenInfo::save_file_idx"]
-        [::core::mem::offset_of!(ScenInfo, save_file_idx) - 34usize];
-    ["Offset of field: ScenInfo::field_0x23"]
-        [::core::mem::offset_of!(ScenInfo, field_0x23) - 35usize];
-    ["Offset of field: ScenInfo::field19_0x24"]
-        [::core::mem::offset_of!(ScenInfo, field19_0x24) - 36usize];
-    ["Offset of field: ScenInfo::field20_0x28"]
-        [::core::mem::offset_of!(ScenInfo, field20_0x28) - 40usize];
-    ["Offset of field: ScenInfo::field21_0x2c"]
-        [::core::mem::offset_of!(ScenInfo, field21_0x2c) - 44usize];
-    ["Offset of field: ScenInfo::field22_0x30"]
-        [::core::mem::offset_of!(ScenInfo, field22_0x30) - 48usize];
-    ["Offset of field: ScenInfo::field23_0x34"]
-        [::core::mem::offset_of!(ScenInfo, field23_0x34) - 52usize];
-};
 pub const FONT16_ASCII: _bindgen_ty_36 = 0;
 pub const FONT16_ASC_8x16: _bindgen_ty_36 = 1;
 pub const FONT16_ASC_12x12: _bindgen_ty_36 = 2;
@@ -4972,40 +3151,6 @@ pub struct MemCardInfo {
     pub field43_0x3c: dword,
     pub field44_0x40: dword,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MemCardInfo"][::core::mem::size_of::<MemCardInfo>() - 68usize];
-    ["Alignment of MemCardInfo"][::core::mem::align_of::<MemCardInfo>() - 1usize];
-    ["Offset of field: MemCardInfo::chan"][::core::mem::offset_of!(MemCardInfo, chan) - 0usize];
-    ["Offset of field: MemCardInfo::field1_0x1"]
-        [::core::mem::offset_of!(MemCardInfo, field1_0x1) - 1usize];
-    ["Offset of field: MemCardInfo::field2_0x2"]
-        [::core::mem::offset_of!(MemCardInfo, field2_0x2) - 2usize];
-    ["Offset of field: MemCardInfo::field_0x3"]
-        [::core::mem::offset_of!(MemCardInfo, field_0x3) - 3usize];
-    ["Offset of field: MemCardInfo::field8_0x8"]
-        [::core::mem::offset_of!(MemCardInfo, field8_0x8) - 8usize];
-    ["Offset of field: MemCardInfo::field9_0xa"]
-        [::core::mem::offset_of!(MemCardInfo, field9_0xa) - 10usize];
-    ["Offset of field: MemCardInfo::field10_0xc"]
-        [::core::mem::offset_of!(MemCardInfo, field10_0xc) - 12usize];
-    ["Offset of field: MemCardInfo::field_0x10"]
-        [::core::mem::offset_of!(MemCardInfo, field_0x10) - 16usize];
-    ["Offset of field: MemCardInfo::field31_0x24"]
-        [::core::mem::offset_of!(MemCardInfo, field31_0x24) - 36usize];
-    ["Offset of field: MemCardInfo::field_0x28"]
-        [::core::mem::offset_of!(MemCardInfo, field_0x28) - 40usize];
-    ["Offset of field: MemCardInfo::field40_0x30"]
-        [::core::mem::offset_of!(MemCardInfo, field40_0x30) - 48usize];
-    ["Offset of field: MemCardInfo::field41_0x34"]
-        [::core::mem::offset_of!(MemCardInfo, field41_0x34) - 52usize];
-    ["Offset of field: MemCardInfo::field42_0x38"]
-        [::core::mem::offset_of!(MemCardInfo, field42_0x38) - 56usize];
-    ["Offset of field: MemCardInfo::field43_0x3c"]
-        [::core::mem::offset_of!(MemCardInfo, field43_0x3c) - 60usize];
-    ["Offset of field: MemCardInfo::field44_0x40"]
-        [::core::mem::offset_of!(MemCardInfo, field44_0x40) - 64usize];
-};
 pub type PGSomeFileStruct = *mut GSomeFileStruct;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5013,15 +3158,6 @@ pub struct GSomeFileStruct {
     pub dvd_entrynum: BOOL32,
     pub dvdFileInfo: DVDFileInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GSomeFileStruct"][::core::mem::size_of::<GSomeFileStruct>() - 68usize];
-    ["Alignment of GSomeFileStruct"][::core::mem::align_of::<GSomeFileStruct>() - 1usize];
-    ["Offset of field: GSomeFileStruct::dvd_entrynum"]
-        [::core::mem::offset_of!(GSomeFileStruct, dvd_entrynum) - 0usize];
-    ["Offset of field: GSomeFileStruct::dvdFileInfo"]
-        [::core::mem::offset_of!(GSomeFileStruct, dvdFileInfo) - 4usize];
-};
 impl Default for GSomeFileStruct {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5062,27 +3198,6 @@ pub struct PADStatus {
     pub err: PadError,
     pub field_0xb: [undefined; 1usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PADStatus"][::core::mem::size_of::<PADStatus>() - 12usize];
-    ["Alignment of PADStatus"][::core::mem::align_of::<PADStatus>() - 1usize];
-    ["Offset of field: PADStatus::button"][::core::mem::offset_of!(PADStatus, button) - 0usize];
-    ["Offset of field: PADStatus::stickX"][::core::mem::offset_of!(PADStatus, stickX) - 2usize];
-    ["Offset of field: PADStatus::stickY"][::core::mem::offset_of!(PADStatus, stickY) - 3usize];
-    ["Offset of field: PADStatus::substickX"]
-        [::core::mem::offset_of!(PADStatus, substickX) - 4usize];
-    ["Offset of field: PADStatus::substickY"]
-        [::core::mem::offset_of!(PADStatus, substickY) - 5usize];
-    ["Offset of field: PADStatus::triggerLeft"]
-        [::core::mem::offset_of!(PADStatus, triggerLeft) - 6usize];
-    ["Offset of field: PADStatus::triggerRight"]
-        [::core::mem::offset_of!(PADStatus, triggerRight) - 7usize];
-    ["Offset of field: PADStatus::analogA"][::core::mem::offset_of!(PADStatus, analogA) - 8usize];
-    ["Offset of field: PADStatus::analogB"][::core::mem::offset_of!(PADStatus, analogB) - 9usize];
-    ["Offset of field: PADStatus::err"][::core::mem::offset_of!(PADStatus, err) - 10usize];
-    ["Offset of field: PADStatus::field_0xb"]
-        [::core::mem::offset_of!(PADStatus, field_0xb) - 11usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct PadStatusGroup {
@@ -5092,20 +3207,6 @@ pub struct PadStatusGroup {
     pub released: PADStatus,
     pub repeated: PADStatus,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PadStatusGroup"][::core::mem::size_of::<PadStatusGroup>() - 60usize];
-    ["Alignment of PadStatusGroup"][::core::mem::align_of::<PadStatusGroup>() - 1usize];
-    ["Offset of field: PadStatusGroup::raw"][::core::mem::offset_of!(PadStatusGroup, raw) - 0usize];
-    ["Offset of field: PadStatusGroup::prev_tick"]
-        [::core::mem::offset_of!(PadStatusGroup, prev_tick) - 12usize];
-    ["Offset of field: PadStatusGroup::pressed"]
-        [::core::mem::offset_of!(PadStatusGroup, pressed) - 24usize];
-    ["Offset of field: PadStatusGroup::released"]
-        [::core::mem::offset_of!(PadStatusGroup, released) - 36usize];
-    ["Offset of field: PadStatusGroup::repeated"]
-        [::core::mem::offset_of!(PadStatusGroup, repeated) - 48usize];
-};
 pub type PDigitalInputGroup = *mut DigitalInputGroup;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -5116,21 +3217,6 @@ pub struct DigitalInputGroup {
     pub released: PadDigitalInput,
     pub repeated: PadDigitalInput,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DigitalInputGroup"][::core::mem::size_of::<DigitalInputGroup>() - 10usize];
-    ["Alignment of DigitalInputGroup"][::core::mem::align_of::<DigitalInputGroup>() - 1usize];
-    ["Offset of field: DigitalInputGroup::raw"]
-        [::core::mem::offset_of!(DigitalInputGroup, raw) - 0usize];
-    ["Offset of field: DigitalInputGroup::prev_tick"]
-        [::core::mem::offset_of!(DigitalInputGroup, prev_tick) - 2usize];
-    ["Offset of field: DigitalInputGroup::pressed"]
-        [::core::mem::offset_of!(DigitalInputGroup, pressed) - 4usize];
-    ["Offset of field: DigitalInputGroup::released"]
-        [::core::mem::offset_of!(DigitalInputGroup, released) - 6usize];
-    ["Offset of field: DigitalInputGroup::repeated"]
-        [::core::mem::offset_of!(DigitalInputGroup, repeated) - 8usize];
-};
 pub const RENDERFLAG_NONE: _bindgen_ty_38 = 0;
 pub const RENDERFLAG_DISP: _bindgen_ty_38 = 8;
 pub const RENDERFLAG_MINIMAP: _bindgen_ty_38 = 1024;
@@ -5158,21 +3244,6 @@ pub struct AnalogInputGroup {
     pub released: PadAnalogInput,
     pub repeated: PadAnalogInput,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of AnalogInputGroup"][::core::mem::size_of::<AnalogInputGroup>() - 10usize];
-    ["Alignment of AnalogInputGroup"][::core::mem::align_of::<AnalogInputGroup>() - 1usize];
-    ["Offset of field: AnalogInputGroup::raw"]
-        [::core::mem::offset_of!(AnalogInputGroup, raw) - 0usize];
-    ["Offset of field: AnalogInputGroup::prev_tick"]
-        [::core::mem::offset_of!(AnalogInputGroup, prev_tick) - 2usize];
-    ["Offset of field: AnalogInputGroup::pressed"]
-        [::core::mem::offset_of!(AnalogInputGroup, pressed) - 4usize];
-    ["Offset of field: AnalogInputGroup::released"]
-        [::core::mem::offset_of!(AnalogInputGroup, released) - 6usize];
-    ["Offset of field: AnalogInputGroup::repeated"]
-        [::core::mem::offset_of!(AnalogInputGroup, repeated) - 8usize];
-};
 pub type PCARDStat = *mut CARDStat;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -5194,37 +3265,6 @@ pub struct CARDStat {
     pub offsetIconTlut: u32_,
     pub offsetData: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CARDStat"][::core::mem::size_of::<CARDStat>() - 108usize];
-    ["Alignment of CARDStat"][::core::mem::align_of::<CARDStat>() - 1usize];
-    ["Offset of field: CARDStat::fileName"][::core::mem::offset_of!(CARDStat, fileName) - 0usize];
-    ["Offset of field: CARDStat::length"][::core::mem::offset_of!(CARDStat, length) - 32usize];
-    ["Offset of field: CARDStat::time"][::core::mem::offset_of!(CARDStat, time) - 36usize];
-    ["Offset of field: CARDStat::gameName"][::core::mem::offset_of!(CARDStat, gameName) - 40usize];
-    ["Offset of field: CARDStat::company"][::core::mem::offset_of!(CARDStat, company) - 44usize];
-    ["Offset of field: CARDStat::bannerFormat"]
-        [::core::mem::offset_of!(CARDStat, bannerFormat) - 46usize];
-    ["Offset of field: CARDStat::field6_0x2f"]
-        [::core::mem::offset_of!(CARDStat, field6_0x2f) - 47usize];
-    ["Offset of field: CARDStat::iconAddr"][::core::mem::offset_of!(CARDStat, iconAddr) - 48usize];
-    ["Offset of field: CARDStat::iconFormat"]
-        [::core::mem::offset_of!(CARDStat, iconFormat) - 52usize];
-    ["Offset of field: CARDStat::iconSpeed"]
-        [::core::mem::offset_of!(CARDStat, iconSpeed) - 54usize];
-    ["Offset of field: CARDStat::commentAddr"]
-        [::core::mem::offset_of!(CARDStat, commentAddr) - 56usize];
-    ["Offset of field: CARDStat::offsetBanner"]
-        [::core::mem::offset_of!(CARDStat, offsetBanner) - 60usize];
-    ["Offset of field: CARDStat::offsetBannerTlut"]
-        [::core::mem::offset_of!(CARDStat, offsetBannerTlut) - 64usize];
-    ["Offset of field: CARDStat::offsetIcon"]
-        [::core::mem::offset_of!(CARDStat, offsetIcon) - 68usize];
-    ["Offset of field: CARDStat::offsetIconTlut"]
-        [::core::mem::offset_of!(CARDStat, offsetIconTlut) - 100usize];
-    ["Offset of field: CARDStat::offsetData"]
-        [::core::mem::offset_of!(CARDStat, offsetData) - 104usize];
-};
 pub const NORMAL: _bindgen_ty_40 = 0;
 pub const WIDESCREEN: _bindgen_ty_40 = 1;
 pub const LETTERBOX: _bindgen_ty_40 = 2;
@@ -5241,20 +3281,6 @@ pub struct CARDFileInfo {
     pub length: s32,
     pub iBlock: u16_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CARDFileInfo"][::core::mem::size_of::<CARDFileInfo>() - 18usize];
-    ["Alignment of CARDFileInfo"][::core::mem::align_of::<CARDFileInfo>() - 1usize];
-    ["Offset of field: CARDFileInfo::chan"][::core::mem::offset_of!(CARDFileInfo, chan) - 0usize];
-    ["Offset of field: CARDFileInfo::fileNo"]
-        [::core::mem::offset_of!(CARDFileInfo, fileNo) - 4usize];
-    ["Offset of field: CARDFileInfo::offset"]
-        [::core::mem::offset_of!(CARDFileInfo, offset) - 8usize];
-    ["Offset of field: CARDFileInfo::length"]
-        [::core::mem::offset_of!(CARDFileInfo, length) - 12usize];
-    ["Offset of field: CARDFileInfo::iBlock"]
-        [::core::mem::offset_of!(CARDFileInfo, iBlock) - 16usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct MemCardFile {
@@ -5264,21 +3290,6 @@ pub struct MemCardFile {
     pub field_0x22: [undefined; 2usize],
     pub file_name: *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MemCardFile"][::core::mem::size_of::<MemCardFile>() - 40usize];
-    ["Alignment of MemCardFile"][::core::mem::align_of::<MemCardFile>() - 1usize];
-    ["Offset of field: MemCardFile::exi_channel_number"]
-        [::core::mem::offset_of!(MemCardFile, exi_channel_number) - 0usize];
-    ["Offset of field: MemCardFile::field_0x4"]
-        [::core::mem::offset_of!(MemCardFile, field_0x4) - 4usize];
-    ["Offset of field: MemCardFile::gc_file_info"]
-        [::core::mem::offset_of!(MemCardFile, gc_file_info) - 16usize];
-    ["Offset of field: MemCardFile::field_0x22"]
-        [::core::mem::offset_of!(MemCardFile, field_0x22) - 34usize];
-    ["Offset of field: MemCardFile::file_name"]
-        [::core::mem::offset_of!(MemCardFile, file_name) - 36usize];
-};
 impl Default for MemCardFile {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5336,54 +3347,6 @@ pub struct ModeInfo {
     pub entered_goal_type: GoalType,
     pub field_0x39: [undefined; 3usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ModeInfo"][::core::mem::size_of::<ModeInfo>() - 60usize];
-    ["Alignment of ModeInfo"][::core::mem::align_of::<ModeInfo>() - 1usize];
-    ["Offset of field: ModeInfo::ball_mode"][::core::mem::offset_of!(ModeInfo, ball_mode) - 0usize];
-    ["Offset of field: ModeInfo::stage_time_frames_remaining"]
-        [::core::mem::offset_of!(ModeInfo, stage_time_frames_remaining) - 4usize];
-    ["Offset of field: ModeInfo::stage_time_limit"]
-        [::core::mem::offset_of!(ModeInfo, stage_time_limit) - 6usize];
-    ["Offset of field: ModeInfo::field3_0x8"]
-        [::core::mem::offset_of!(ModeInfo, field3_0x8) - 8usize];
-    ["Offset of field: ModeInfo::entered_goal_idx"]
-        [::core::mem::offset_of!(ModeInfo, entered_goal_idx) - 12usize];
-    ["Offset of field: ModeInfo::entered_goal_itemgroup_idx"]
-        [::core::mem::offset_of!(ModeInfo, entered_goal_itemgroup_idx) - 14usize];
-    ["Offset of field: ModeInfo::g_ballVelAtGoal"]
-        [::core::mem::offset_of!(ModeInfo, g_ballVelAtGoal) - 16usize];
-    ["Offset of field: ModeInfo::g_some_timer_frame_remaining_count"]
-        [::core::mem::offset_of!(ModeInfo, g_some_timer_frame_remaining_count) - 28usize];
-    ["Offset of field: ModeInfo::attempt_count"]
-        [::core::mem::offset_of!(ModeInfo, attempt_count) - 30usize];
-    ["Offset of field: ModeInfo::cm_course_stage_num"]
-        [::core::mem::offset_of!(ModeInfo, cm_course_stage_num) - 32usize];
-    ["Offset of field: ModeInfo::g_some_stage_jump_distance"]
-        [::core::mem::offset_of!(ModeInfo, g_some_stage_jump_distance) - 34usize];
-    ["Offset of field: ModeInfo::bananas_remaining"]
-        [::core::mem::offset_of!(ModeInfo, bananas_remaining) - 36usize];
-    ["Offset of field: ModeInfo::field12_0x28"]
-        [::core::mem::offset_of!(ModeInfo, field12_0x28) - 40usize];
-    ["Offset of field: ModeInfo::field13_0x2a"]
-        [::core::mem::offset_of!(ModeInfo, field13_0x2a) - 42usize];
-    ["Offset of field: ModeInfo::g_next_stage_id2"]
-        [::core::mem::offset_of!(ModeInfo, g_next_stage_id2) - 44usize];
-    ["Offset of field: ModeInfo::cm_stage_id"]
-        [::core::mem::offset_of!(ModeInfo, cm_stage_id) - 46usize];
-    ["Offset of field: ModeInfo::field16_0x30"]
-        [::core::mem::offset_of!(ModeInfo, field16_0x30) - 48usize];
-    ["Offset of field: ModeInfo::cm_next_stage_id"]
-        [::core::mem::offset_of!(ModeInfo, cm_next_stage_id) - 50usize];
-    ["Offset of field: ModeInfo::g_selected_world_idx"]
-        [::core::mem::offset_of!(ModeInfo, g_selected_world_idx) - 52usize];
-    ["Offset of field: ModeInfo::g_selected_world_stage_idx"]
-        [::core::mem::offset_of!(ModeInfo, g_selected_world_stage_idx) - 54usize];
-    ["Offset of field: ModeInfo::entered_goal_type"]
-        [::core::mem::offset_of!(ModeInfo, entered_goal_type) - 56usize];
-    ["Offset of field: ModeInfo::field_0x39"]
-        [::core::mem::offset_of!(ModeInfo, field_0x39) - 57usize];
-};
 pub type PEvent = *mut Event;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5396,18 +3359,6 @@ pub struct Event {
     pub dest_func: ::core::option::Option<unsafe extern "C" fn()>,
     pub tick_time: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Event"][::core::mem::size_of::<Event>() - 24usize];
-    ["Alignment of Event"][::core::mem::align_of::<Event>() - 1usize];
-    ["Offset of field: Event::status"][::core::mem::offset_of!(Event, status) - 0usize];
-    ["Offset of field: Event::padding_0x1"][::core::mem::offset_of!(Event, padding_0x1) - 1usize];
-    ["Offset of field: Event::name"][::core::mem::offset_of!(Event, name) - 4usize];
-    ["Offset of field: Event::init_func"][::core::mem::offset_of!(Event, init_func) - 8usize];
-    ["Offset of field: Event::tick_func"][::core::mem::offset_of!(Event, tick_func) - 12usize];
-    ["Offset of field: Event::dest_func"][::core::mem::offset_of!(Event, dest_func) - 16usize];
-    ["Offset of field: Event::tick_time"][::core::mem::offset_of!(Event, tick_time) - 20usize];
-};
 impl Default for Event {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5462,17 +3413,6 @@ pub struct __OutStrCtrl {
     pub MaxCharCount: usize,
     pub CharsWritten: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of __OutStrCtrl"][::core::mem::size_of::<__OutStrCtrl>() - 12usize];
-    ["Alignment of __OutStrCtrl"][::core::mem::align_of::<__OutStrCtrl>() - 1usize];
-    ["Offset of field: __OutStrCtrl::CharStr"]
-        [::core::mem::offset_of!(__OutStrCtrl, CharStr) - 0usize];
-    ["Offset of field: __OutStrCtrl::MaxCharCount"]
-        [::core::mem::offset_of!(__OutStrCtrl, MaxCharCount) - 4usize];
-    ["Offset of field: __OutStrCtrl::CharsWritten"]
-        [::core::mem::offset_of!(__OutStrCtrl, CharsWritten) - 8usize];
-};
 impl Default for __OutStrCtrl {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5492,21 +3432,6 @@ pub struct OptiGXSettings {
     pub chan_alpha0: OptiGXChanSettings,
     pub chan_alpha1: OptiGXChanSettings,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OptiGXSettings"][::core::mem::size_of::<OptiGXSettings>() - 3216usize];
-    ["Alignment of OptiGXSettings"][::core::mem::align_of::<OptiGXSettings>() - 1usize];
-    ["Offset of field: OptiGXSettings::field_0x0"]
-        [::core::mem::offset_of!(OptiGXSettings, field_0x0) - 0usize];
-    ["Offset of field: OptiGXSettings::chan_color0"]
-        [::core::mem::offset_of!(OptiGXSettings, chan_color0) - 3120usize];
-    ["Offset of field: OptiGXSettings::chan_color1"]
-        [::core::mem::offset_of!(OptiGXSettings, chan_color1) - 3144usize];
-    ["Offset of field: OptiGXSettings::chan_alpha0"]
-        [::core::mem::offset_of!(OptiGXSettings, chan_alpha0) - 3168usize];
-    ["Offset of field: OptiGXSettings::chan_alpha1"]
-        [::core::mem::offset_of!(OptiGXSettings, chan_alpha1) - 3192usize];
-};
 impl Default for OptiGXSettings {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5523,13 +3448,6 @@ pub struct S32Vec {
     pub x: s32,
     pub y: s32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of S32Vec"][::core::mem::size_of::<S32Vec>() - 8usize];
-    ["Alignment of S32Vec"][::core::mem::align_of::<S32Vec>() - 1usize];
-    ["Offset of field: S32Vec::x"][::core::mem::offset_of!(S32Vec, x) - 0usize];
-    ["Offset of field: S32Vec::y"][::core::mem::offset_of!(S32Vec, y) - 4usize];
-};
 pub const OF_G_SMTH_WITH_CAMERA: _bindgen_ty_46 = 2;
 pub const OF_GAME_PAUSED: _bindgen_ty_46 = 8;
 pub type _bindgen_ty_46 = ::core::ffi::c_uint;
@@ -5542,14 +3460,6 @@ pub struct Map {
     pub field1_0x4: undefined4,
     pub field_0x8: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Map"][::core::mem::size_of::<Map>() - 12usize];
-    ["Alignment of Map"][::core::mem::align_of::<Map>() - 1usize];
-    ["Offset of field: Map::size"][::core::mem::offset_of!(Map, size) - 0usize];
-    ["Offset of field: Map::field1_0x4"][::core::mem::offset_of!(Map, field1_0x4) - 4usize];
-    ["Offset of field: Map::field_0x8"][::core::mem::offset_of!(Map, field_0x8) - 8usize];
-};
 pub type PgDiscQueueItem = *mut gDiscQueueItem;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -5558,17 +3468,6 @@ pub struct gDiscQueueItem {
     pub entrynum: ::core::ffi::c_int,
     pub group: undefined4,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of gDiscQueueItem"][::core::mem::size_of::<gDiscQueueItem>() - 12usize];
-    ["Alignment of gDiscQueueItem"][::core::mem::align_of::<gDiscQueueItem>() - 1usize];
-    ["Offset of field: gDiscQueueItem::status"]
-        [::core::mem::offset_of!(gDiscQueueItem, status) - 0usize];
-    ["Offset of field: gDiscQueueItem::entrynum"]
-        [::core::mem::offset_of!(gDiscQueueItem, entrynum) - 4usize];
-    ["Offset of field: gDiscQueueItem::group"]
-        [::core::mem::offset_of!(gDiscQueueItem, group) - 8usize];
-};
 pub const MINIMAP_HIDDEN: _bindgen_ty_47 = 0;
 pub const MINIMAP_SHRINK: _bindgen_ty_47 = 1;
 pub const MINIMAP_SHOWN: _bindgen_ty_47 = 2;
@@ -5714,36 +3613,6 @@ pub struct Effect {
     pub g_some_vec3: Vec,
     pub field_0xa4: [undefined; 12usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Effect"][::core::mem::size_of::<Effect>() - 176usize];
-    ["Alignment of Effect"][::core::mem::align_of::<Effect>() - 1usize];
-    ["Offset of field: Effect::g_idx"][::core::mem::offset_of!(Effect, g_idx) - 0usize];
-    ["Offset of field: Effect::id"][::core::mem::offset_of!(Effect, id) - 2usize];
-    ["Offset of field: Effect::field_0x4"][::core::mem::offset_of!(Effect, field_0x4) - 4usize];
-    ["Offset of field: Effect::type_"][::core::mem::offset_of!(Effect, type_) - 8usize];
-    ["Offset of field: Effect::field_0xa"][::core::mem::offset_of!(Effect, field_0xa) - 10usize];
-    ["Offset of field: Effect::field9_0xc"][::core::mem::offset_of!(Effect, field9_0xc) - 12usize];
-    ["Offset of field: Effect::field_0x10"][::core::mem::offset_of!(Effect, field_0x10) - 16usize];
-    ["Offset of field: Effect::g_ball_idx"][::core::mem::offset_of!(Effect, g_ball_idx) - 20usize];
-    ["Offset of field: Effect::field15_0x16"]
-        [::core::mem::offset_of!(Effect, field15_0x16) - 22usize];
-    ["Offset of field: Effect::field_0x18"][::core::mem::offset_of!(Effect, field_0x18) - 24usize];
-    ["Offset of field: Effect::g_scale"][::core::mem::offset_of!(Effect, g_scale) - 36usize];
-    ["Offset of field: Effect::g_pointer_to_some_struct"]
-        [::core::mem::offset_of!(Effect, g_pointer_to_some_struct) - 48usize];
-    ["Offset of field: Effect::g_pos"][::core::mem::offset_of!(Effect, g_pos) - 52usize];
-    ["Offset of field: Effect::g_some_vec"][::core::mem::offset_of!(Effect, g_some_vec) - 64usize];
-    ["Offset of field: Effect::g_some_rot"][::core::mem::offset_of!(Effect, g_some_rot) - 76usize];
-    ["Offset of field: Effect::field_0x52"][::core::mem::offset_of!(Effect, field_0x52) - 82usize];
-    ["Offset of field: Effect::g_prev_pos"][::core::mem::offset_of!(Effect, g_prev_pos) - 88usize];
-    ["Offset of field: Effect::field_0x64"][::core::mem::offset_of!(Effect, field_0x64) - 100usize];
-    ["Offset of field: Effect::g_some_vec2"]
-        [::core::mem::offset_of!(Effect, g_some_vec2) - 140usize];
-    ["Offset of field: Effect::g_some_vec3"]
-        [::core::mem::offset_of!(Effect, g_some_vec3) - 152usize];
-    ["Offset of field: Effect::field_0xa4"][::core::mem::offset_of!(Effect, field_0xa4) - 164usize];
-};
 impl Default for Effect {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5769,12 +3638,6 @@ pub type Pytgut = *mut ytgut;
 pub struct ytgut {
     pub field_0x0: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ytgut"][::core::mem::size_of::<ytgut>() - 4usize];
-    ["Alignment of ytgut"][::core::mem::align_of::<ytgut>() - 1usize];
-    ["Offset of field: ytgut::field_0x0"][::core::mem::offset_of!(ytgut, field_0x0) - 0usize];
-};
 pub type PGDialogStruct = *mut GDialogStruct;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -5782,15 +3645,6 @@ pub struct GDialogStruct {
     pub g_test_dialog_ptr: undefined4,
     pub field_0x4: [undefined; 312usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GDialogStruct"][::core::mem::size_of::<GDialogStruct>() - 316usize];
-    ["Alignment of GDialogStruct"][::core::mem::align_of::<GDialogStruct>() - 1usize];
-    ["Offset of field: GDialogStruct::g_test_dialog_ptr"]
-        [::core::mem::offset_of!(GDialogStruct, g_test_dialog_ptr) - 0usize];
-    ["Offset of field: GDialogStruct::field_0x4"]
-        [::core::mem::offset_of!(GDialogStruct, field_0x4) - 4usize];
-};
 impl Default for GDialogStruct {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5809,18 +3663,6 @@ pub struct PoolInfo {
     pub upper_bound: dword,
     pub status_list: *mut u8_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PoolInfo"][::core::mem::size_of::<PoolInfo>() - 16usize];
-    ["Alignment of PoolInfo"][::core::mem::align_of::<PoolInfo>() - 1usize];
-    ["Offset of field: PoolInfo::len"][::core::mem::offset_of!(PoolInfo, len) - 0usize];
-    ["Offset of field: PoolInfo::low_free_idx"]
-        [::core::mem::offset_of!(PoolInfo, low_free_idx) - 4usize];
-    ["Offset of field: PoolInfo::upper_bound"]
-        [::core::mem::offset_of!(PoolInfo, upper_bound) - 8usize];
-    ["Offset of field: PoolInfo::status_list"]
-        [::core::mem::offset_of!(PoolInfo, status_list) - 12usize];
-};
 impl Default for PoolInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5839,19 +3681,6 @@ pub struct SelMenuInfo {
     pub field_0xb: [undefined; 3usize],
     pub field5_0xe: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SelMenuInfo"][::core::mem::size_of::<SelMenuInfo>() - 16usize];
-    ["Alignment of SelMenuInfo"][::core::mem::align_of::<SelMenuInfo>() - 1usize];
-    ["Offset of field: SelMenuInfo::menu_stack_ptr"]
-        [::core::mem::offset_of!(SelMenuInfo, menu_stack_ptr) - 0usize];
-    ["Offset of field: SelMenuInfo::menu_stack"]
-        [::core::mem::offset_of!(SelMenuInfo, menu_stack) - 1usize];
-    ["Offset of field: SelMenuInfo::field_0xb"]
-        [::core::mem::offset_of!(SelMenuInfo, field_0xb) - 11usize];
-    ["Offset of field: SelMenuInfo::field5_0xe"]
-        [::core::mem::offset_of!(SelMenuInfo, field5_0xe) - 14usize];
-};
 pub const PIID_LEFT: _bindgen_ty_54 = 0;
 pub const PIID_RIGHT: _bindgen_ty_54 = 1;
 pub const PIID_UP: _bindgen_ty_54 = 2;
@@ -5886,14 +3715,6 @@ pub struct _IO_marker {
     pub _sbuf: *mut _IO_FILE,
     pub _pos: ::core::ffi::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of _IO_marker"][::core::mem::size_of::<_IO_marker>() - 12usize];
-    ["Alignment of _IO_marker"][::core::mem::align_of::<_IO_marker>() - 1usize];
-    ["Offset of field: _IO_marker::_next"][::core::mem::offset_of!(_IO_marker, _next) - 0usize];
-    ["Offset of field: _IO_marker::_sbuf"][::core::mem::offset_of!(_IO_marker, _sbuf) - 4usize];
-    ["Offset of field: _IO_marker::_pos"][::core::mem::offset_of!(_IO_marker, _pos) - 8usize];
-};
 impl Default for _IO_marker {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -5936,56 +3757,6 @@ pub struct _IO_FILE {
     pub _unused2: [::core::ffi::c_char; 15usize],
     pub padding_0x73: [undefined; 1usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of _IO_FILE"][::core::mem::size_of::<_IO_FILE>() - 116usize];
-    ["Alignment of _IO_FILE"][::core::mem::align_of::<_IO_FILE>() - 1usize];
-    ["Offset of field: _IO_FILE::_flags"][::core::mem::offset_of!(_IO_FILE, _flags) - 0usize];
-    ["Offset of field: _IO_FILE::_IO_read_ptr"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_read_ptr) - 4usize];
-    ["Offset of field: _IO_FILE::_IO_read_end"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_read_end) - 8usize];
-    ["Offset of field: _IO_FILE::_IO_read_base"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_read_base) - 12usize];
-    ["Offset of field: _IO_FILE::_IO_write_base"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_write_base) - 16usize];
-    ["Offset of field: _IO_FILE::_IO_write_ptr"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_write_ptr) - 20usize];
-    ["Offset of field: _IO_FILE::_IO_write_end"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_write_end) - 24usize];
-    ["Offset of field: _IO_FILE::_IO_buf_base"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_buf_base) - 28usize];
-    ["Offset of field: _IO_FILE::_IO_buf_end"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_buf_end) - 32usize];
-    ["Offset of field: _IO_FILE::_IO_save_base"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_save_base) - 36usize];
-    ["Offset of field: _IO_FILE::_IO_backup_base"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_backup_base) - 40usize];
-    ["Offset of field: _IO_FILE::_IO_save_end"]
-        [::core::mem::offset_of!(_IO_FILE, _IO_save_end) - 44usize];
-    ["Offset of field: _IO_FILE::_markers"][::core::mem::offset_of!(_IO_FILE, _markers) - 48usize];
-    ["Offset of field: _IO_FILE::_chain"][::core::mem::offset_of!(_IO_FILE, _chain) - 52usize];
-    ["Offset of field: _IO_FILE::_fileno"][::core::mem::offset_of!(_IO_FILE, _fileno) - 56usize];
-    ["Offset of field: _IO_FILE::_flags2"][::core::mem::offset_of!(_IO_FILE, _flags2) - 60usize];
-    ["Offset of field: _IO_FILE::_old_offset"]
-        [::core::mem::offset_of!(_IO_FILE, _old_offset) - 64usize];
-    ["Offset of field: _IO_FILE::_cur_column"]
-        [::core::mem::offset_of!(_IO_FILE, _cur_column) - 68usize];
-    ["Offset of field: _IO_FILE::_vtable_offset"]
-        [::core::mem::offset_of!(_IO_FILE, _vtable_offset) - 70usize];
-    ["Offset of field: _IO_FILE::_shortbuf"]
-        [::core::mem::offset_of!(_IO_FILE, _shortbuf) - 71usize];
-    ["Offset of field: _IO_FILE::_lock"][::core::mem::offset_of!(_IO_FILE, _lock) - 72usize];
-    ["Offset of field: _IO_FILE::__pad1"][::core::mem::offset_of!(_IO_FILE, __pad1) - 76usize];
-    ["Offset of field: _IO_FILE::__pad2"][::core::mem::offset_of!(_IO_FILE, __pad2) - 80usize];
-    ["Offset of field: _IO_FILE::__pad3"][::core::mem::offset_of!(_IO_FILE, __pad3) - 84usize];
-    ["Offset of field: _IO_FILE::__pad4"][::core::mem::offset_of!(_IO_FILE, __pad4) - 88usize];
-    ["Offset of field: _IO_FILE::__pad5"][::core::mem::offset_of!(_IO_FILE, __pad5) - 92usize];
-    ["Offset of field: _IO_FILE::_mode"][::core::mem::offset_of!(_IO_FILE, _mode) - 96usize];
-    ["Offset of field: _IO_FILE::_unused2"][::core::mem::offset_of!(_IO_FILE, _unused2) - 100usize];
-    ["Offset of field: _IO_FILE::padding_0x73"]
-        [::core::mem::offset_of!(_IO_FILE, padding_0x73) - 115usize];
-};
 impl Default for _IO_FILE {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6013,27 +3784,6 @@ pub struct gSceneData {
     pub field_0xb: [undefined; 1usize],
     pub field12_0xc: *mut *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of gSceneData"][::core::mem::size_of::<gSceneData>() - 16usize];
-    ["Alignment of gSceneData"][::core::mem::align_of::<gSceneData>() - 1usize];
-    ["Offset of field: gSceneData::world_theme"]
-        [::core::mem::offset_of!(gSceneData, world_theme) - 0usize];
-    ["Offset of field: gSceneData::g_anim_flag"]
-        [::core::mem::offset_of!(gSceneData, g_anim_flag) - 1usize];
-    ["Offset of field: gSceneData::ape_count"]
-        [::core::mem::offset_of!(gSceneData, ape_count) - 2usize];
-    ["Offset of field: gSceneData::field_0x3"]
-        [::core::mem::offset_of!(gSceneData, field_0x3) - 3usize];
-    ["Offset of field: gSceneData::LOD"][::core::mem::offset_of!(gSceneData, LOD) - 8usize];
-    ["Offset of field: gSceneData::unknown"][::core::mem::offset_of!(gSceneData, unknown) - 9usize];
-    ["Offset of field: gSceneData::scene_item_count"]
-        [::core::mem::offset_of!(gSceneData, scene_item_count) - 10usize];
-    ["Offset of field: gSceneData::field_0xb"]
-        [::core::mem::offset_of!(gSceneData, field_0xb) - 11usize];
-    ["Offset of field: gSceneData::field12_0xc"]
-        [::core::mem::offset_of!(gSceneData, field12_0xc) - 12usize];
-};
 impl Default for gSceneData {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6070,45 +3820,6 @@ pub struct StagedefBackgroundAnimHeader {
     pub pos_z_keyframe_list: *mut StagedefAnimKeyframe,
     pub field_0x40: [undefined; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefBackgroundAnimHeader"]
-        [::core::mem::size_of::<StagedefBackgroundAnimHeader>() - 80usize];
-    ["Alignment of StagedefBackgroundAnimHeader"]
-        [::core::mem::align_of::<StagedefBackgroundAnimHeader>() - 1usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::field_0x0"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, field_0x0) - 0usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::loop_point_seconds"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, loop_point_seconds) - 4usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::field_0x8"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, field_0x8) - 8usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_x_keyframe_count) - 16usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_x_keyframe_list) - 20usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_y_keyframe_count) - 24usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_y_keyframe_list) - 28usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_z_keyframe_count) - 32usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::rot_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, rot_z_keyframe_list) - 36usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_x_keyframe_count) - 40usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_x_keyframe_list) - 44usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_y_keyframe_count) - 48usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_y_keyframe_list) - 52usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_z_keyframe_count) - 56usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::pos_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, pos_z_keyframe_list) - 60usize];
-    ["Offset of field: StagedefBackgroundAnimHeader::field_0x40"]
-        [::core::mem::offset_of!(StagedefBackgroundAnimHeader, field_0x40) - 64usize];
-};
 impl Default for StagedefBackgroundAnimHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6127,21 +3838,6 @@ pub struct StagedefAnimKeyframe {
     pub tangent_in: f32,
     pub tangent_out: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefAnimKeyframe"][::core::mem::size_of::<StagedefAnimKeyframe>() - 20usize];
-    ["Alignment of StagedefAnimKeyframe"][::core::mem::align_of::<StagedefAnimKeyframe>() - 1usize];
-    ["Offset of field: StagedefAnimKeyframe::easing"]
-        [::core::mem::offset_of!(StagedefAnimKeyframe, easing) - 0usize];
-    ["Offset of field: StagedefAnimKeyframe::time"]
-        [::core::mem::offset_of!(StagedefAnimKeyframe, time) - 4usize];
-    ["Offset of field: StagedefAnimKeyframe::value"]
-        [::core::mem::offset_of!(StagedefAnimKeyframe, value) - 8usize];
-    ["Offset of field: StagedefAnimKeyframe::tangent_in"]
-        [::core::mem::offset_of!(StagedefAnimKeyframe, tangent_in) - 12usize];
-    ["Offset of field: StagedefAnimKeyframe::tangent_out"]
-        [::core::mem::offset_of!(StagedefAnimKeyframe, tangent_out) - 16usize];
-};
 pub type PStagedefEffectHeader = *mut StagedefEffectHeader;
 pub type PStagedefEffect1 = *mut StagedefEffect1;
 pub type PStagedefEffect2 = *mut StagedefEffect2;
@@ -6156,23 +3852,6 @@ pub struct StagedefEffectHeader {
     pub texture_scroll: *mut StagedefTextureScroll,
     pub field_0x14: [undefined; 28usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefEffectHeader"][::core::mem::size_of::<StagedefEffectHeader>() - 48usize];
-    ["Alignment of StagedefEffectHeader"][::core::mem::align_of::<StagedefEffectHeader>() - 1usize];
-    ["Offset of field: StagedefEffectHeader::fx1_keyframe_count"]
-        [::core::mem::offset_of!(StagedefEffectHeader, fx1_keyframe_count) - 0usize];
-    ["Offset of field: StagedefEffectHeader::fx1_keyframe_list"]
-        [::core::mem::offset_of!(StagedefEffectHeader, fx1_keyframe_list) - 4usize];
-    ["Offset of field: StagedefEffectHeader::fx2_keyframe_count"]
-        [::core::mem::offset_of!(StagedefEffectHeader, fx2_keyframe_count) - 8usize];
-    ["Offset of field: StagedefEffectHeader::fx2_keyframe_list"]
-        [::core::mem::offset_of!(StagedefEffectHeader, fx2_keyframe_list) - 12usize];
-    ["Offset of field: StagedefEffectHeader::texture_scroll"]
-        [::core::mem::offset_of!(StagedefEffectHeader, texture_scroll) - 16usize];
-    ["Offset of field: StagedefEffectHeader::field_0x14"]
-        [::core::mem::offset_of!(StagedefEffectHeader, field_0x14) - 20usize];
-};
 impl Default for StagedefEffectHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6193,25 +3872,6 @@ pub struct StagedefEffect1 {
     pub field5_0x10: word,
     pub field_0x12: [undefined; 2usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefEffect1"][::core::mem::size_of::<StagedefEffect1>() - 20usize];
-    ["Alignment of StagedefEffect1"][::core::mem::align_of::<StagedefEffect1>() - 1usize];
-    ["Offset of field: StagedefEffect1::field0_0x0"]
-        [::core::mem::offset_of!(StagedefEffect1, field0_0x0) - 0usize];
-    ["Offset of field: StagedefEffect1::field1_0x4"]
-        [::core::mem::offset_of!(StagedefEffect1, field1_0x4) - 4usize];
-    ["Offset of field: StagedefEffect1::field2_0x8"]
-        [::core::mem::offset_of!(StagedefEffect1, field2_0x8) - 8usize];
-    ["Offset of field: StagedefEffect1::field3_0xc"]
-        [::core::mem::offset_of!(StagedefEffect1, field3_0xc) - 12usize];
-    ["Offset of field: StagedefEffect1::field4_0xe"]
-        [::core::mem::offset_of!(StagedefEffect1, field4_0xe) - 14usize];
-    ["Offset of field: StagedefEffect1::field5_0x10"]
-        [::core::mem::offset_of!(StagedefEffect1, field5_0x10) - 16usize];
-    ["Offset of field: StagedefEffect1::field_0x12"]
-        [::core::mem::offset_of!(StagedefEffect1, field_0x12) - 18usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefEffect2 {
@@ -6220,32 +3880,11 @@ pub struct StagedefEffect2 {
     pub field2_0x8: f32,
     pub field_0xc: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefEffect2"][::core::mem::size_of::<StagedefEffect2>() - 16usize];
-    ["Alignment of StagedefEffect2"][::core::mem::align_of::<StagedefEffect2>() - 1usize];
-    ["Offset of field: StagedefEffect2::field0_0x0"]
-        [::core::mem::offset_of!(StagedefEffect2, field0_0x0) - 0usize];
-    ["Offset of field: StagedefEffect2::field1_0x4"]
-        [::core::mem::offset_of!(StagedefEffect2, field1_0x4) - 4usize];
-    ["Offset of field: StagedefEffect2::field2_0x8"]
-        [::core::mem::offset_of!(StagedefEffect2, field2_0x8) - 8usize];
-    ["Offset of field: StagedefEffect2::field_0xc"]
-        [::core::mem::offset_of!(StagedefEffect2, field_0xc) - 12usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefTextureScroll {
     pub speed: Vec2d,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefTextureScroll"][::core::mem::size_of::<StagedefTextureScroll>() - 8usize];
-    ["Alignment of StagedefTextureScroll"]
-        [::core::mem::align_of::<StagedefTextureScroll>() - 1usize];
-    ["Offset of field: StagedefTextureScroll::speed"]
-        [::core::mem::offset_of!(StagedefTextureScroll, speed) - 0usize];
-};
 pub type PStagedefFogAnimHeader = *mut StagedefFogAnimHeader;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -6263,36 +3902,6 @@ pub struct StagedefFogAnimHeader {
     pub unk_keyframe_count: u32_,
     pub unk_keyframe_list: *mut StagedefAnimKeyframe,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefFogAnimHeader"][::core::mem::size_of::<StagedefFogAnimHeader>() - 48usize];
-    ["Alignment of StagedefFogAnimHeader"]
-        [::core::mem::align_of::<StagedefFogAnimHeader>() - 1usize];
-    ["Offset of field: StagedefFogAnimHeader::start_distance_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, start_distance_keyframe_count) - 0usize];
-    ["Offset of field: StagedefFogAnimHeader::start_distance_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, start_distance_keyframe_list) - 4usize];
-    ["Offset of field: StagedefFogAnimHeader::end_distance_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, end_distance_keyframe_count) - 8usize];
-    ["Offset of field: StagedefFogAnimHeader::end_distance_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, end_distance_keyframe_list) - 12usize];
-    ["Offset of field: StagedefFogAnimHeader::red_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, red_keyframe_count) - 16usize];
-    ["Offset of field: StagedefFogAnimHeader::red_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, red_keyframe_list) - 20usize];
-    ["Offset of field: StagedefFogAnimHeader::green_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, green_keyframe_count) - 24usize];
-    ["Offset of field: StagedefFogAnimHeader::green_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, green_keyframe_list) - 28usize];
-    ["Offset of field: StagedefFogAnimHeader::blue_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, blue_keyframe_count) - 32usize];
-    ["Offset of field: StagedefFogAnimHeader::blue_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, blue_keyframe_list) - 36usize];
-    ["Offset of field: StagedefFogAnimHeader::unk_keyframe_count"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, unk_keyframe_count) - 40usize];
-    ["Offset of field: StagedefFogAnimHeader::unk_keyframe_list"]
-        [::core::mem::offset_of!(StagedefFogAnimHeader, unk_keyframe_list) - 44usize];
-};
 impl Default for StagedefFogAnimHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6320,37 +3929,6 @@ pub struct StagedefAnimHeader {
     pub pos_z_keyframe_list: *mut StagedefAnimKeyframe,
     pub field_0x30: [undefined; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefAnimHeader"][::core::mem::size_of::<StagedefAnimHeader>() - 64usize];
-    ["Alignment of StagedefAnimHeader"][::core::mem::align_of::<StagedefAnimHeader>() - 1usize];
-    ["Offset of field: StagedefAnimHeader::rot_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_x_keyframe_count) - 0usize];
-    ["Offset of field: StagedefAnimHeader::rot_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_x_keyframe_list) - 4usize];
-    ["Offset of field: StagedefAnimHeader::rot_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_y_keyframe_count) - 8usize];
-    ["Offset of field: StagedefAnimHeader::rot_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_y_keyframe_list) - 12usize];
-    ["Offset of field: StagedefAnimHeader::rot_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_z_keyframe_count) - 16usize];
-    ["Offset of field: StagedefAnimHeader::rot_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, rot_z_keyframe_list) - 20usize];
-    ["Offset of field: StagedefAnimHeader::pos_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_x_keyframe_count) - 24usize];
-    ["Offset of field: StagedefAnimHeader::pos_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_x_keyframe_list) - 28usize];
-    ["Offset of field: StagedefAnimHeader::pos_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_y_keyframe_count) - 32usize];
-    ["Offset of field: StagedefAnimHeader::pos_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_y_keyframe_list) - 36usize];
-    ["Offset of field: StagedefAnimHeader::pos_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_z_keyframe_count) - 40usize];
-    ["Offset of field: StagedefAnimHeader::pos_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefAnimHeader, pos_z_keyframe_list) - 44usize];
-    ["Offset of field: StagedefAnimHeader::field_0x30"]
-        [::core::mem::offset_of!(StagedefAnimHeader, field_0x30) - 48usize];
-};
 impl Default for StagedefAnimHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6409,23 +3987,6 @@ pub struct StagedefStageModelInstance {
     pub g_not_padding: undefined2,
     pub scale: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefStageModelInstance"]
-        [::core::mem::size_of::<StagedefStageModelInstance>() - 36usize];
-    ["Alignment of StagedefStageModelInstance"]
-        [::core::mem::align_of::<StagedefStageModelInstance>() - 1usize];
-    ["Offset of field: StagedefStageModelInstance::stage_model_a"]
-        [::core::mem::offset_of!(StagedefStageModelInstance, stage_model_a) - 0usize];
-    ["Offset of field: StagedefStageModelInstance::position"]
-        [::core::mem::offset_of!(StagedefStageModelInstance, position) - 4usize];
-    ["Offset of field: StagedefStageModelInstance::rotation"]
-        [::core::mem::offset_of!(StagedefStageModelInstance, rotation) - 16usize];
-    ["Offset of field: StagedefStageModelInstance::g_not_padding"]
-        [::core::mem::offset_of!(StagedefStageModelInstance, g_not_padding) - 22usize];
-    ["Offset of field: StagedefStageModelInstance::scale"]
-        [::core::mem::offset_of!(StagedefStageModelInstance, scale) - 24usize];
-};
 impl Default for StagedefStageModelInstance {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6443,19 +4004,6 @@ pub struct StagedefBumper {
     pub padding: undefined2,
     pub scale: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefBumper"][::core::mem::size_of::<StagedefBumper>() - 32usize];
-    ["Alignment of StagedefBumper"][::core::mem::align_of::<StagedefBumper>() - 1usize];
-    ["Offset of field: StagedefBumper::position"]
-        [::core::mem::offset_of!(StagedefBumper, position) - 0usize];
-    ["Offset of field: StagedefBumper::rotation"]
-        [::core::mem::offset_of!(StagedefBumper, rotation) - 12usize];
-    ["Offset of field: StagedefBumper::padding"]
-        [::core::mem::offset_of!(StagedefBumper, padding) - 18usize];
-    ["Offset of field: StagedefBumper::scale"]
-        [::core::mem::offset_of!(StagedefBumper, scale) - 20usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefReflectiveStageModel {
@@ -6463,19 +4011,6 @@ pub struct StagedefReflectiveStageModel {
     pub g_model_header_ptr: *mut GmaModel,
     pub field_0x8: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefReflectiveStageModel"]
-        [::core::mem::size_of::<StagedefReflectiveStageModel>() - 12usize];
-    ["Alignment of StagedefReflectiveStageModel"]
-        [::core::mem::align_of::<StagedefReflectiveStageModel>() - 1usize];
-    ["Offset of field: StagedefReflectiveStageModel::model_name"]
-        [::core::mem::offset_of!(StagedefReflectiveStageModel, model_name) - 0usize];
-    ["Offset of field: StagedefReflectiveStageModel::g_model_header_ptr"]
-        [::core::mem::offset_of!(StagedefReflectiveStageModel, g_model_header_ptr) - 4usize];
-    ["Offset of field: StagedefReflectiveStageModel::field_0x8"]
-        [::core::mem::offset_of!(StagedefReflectiveStageModel, field_0x8) - 8usize];
-};
 impl Default for StagedefReflectiveStageModel {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6490,12 +4025,6 @@ impl Default for StagedefReflectiveStageModel {
 pub struct StagedefFallout {
     pub y: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefFallout"][::core::mem::size_of::<StagedefFallout>() - 4usize];
-    ["Alignment of StagedefFallout"][::core::mem::align_of::<StagedefFallout>() - 1usize];
-    ["Offset of field: StagedefFallout::y"][::core::mem::offset_of!(StagedefFallout, y) - 0usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefButton {
@@ -6505,21 +4034,6 @@ pub struct StagedefButton {
     pub anim_group_id: u16_,
     pub padding: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefButton"][::core::mem::size_of::<StagedefButton>() - 24usize];
-    ["Alignment of StagedefButton"][::core::mem::align_of::<StagedefButton>() - 1usize];
-    ["Offset of field: StagedefButton::position"]
-        [::core::mem::offset_of!(StagedefButton, position) - 0usize];
-    ["Offset of field: StagedefButton::rotation"]
-        [::core::mem::offset_of!(StagedefButton, rotation) - 12usize];
-    ["Offset of field: StagedefButton::playback_state"]
-        [::core::mem::offset_of!(StagedefButton, playback_state) - 18usize];
-    ["Offset of field: StagedefButton::anim_group_id"]
-        [::core::mem::offset_of!(StagedefButton, anim_group_id) - 20usize];
-    ["Offset of field: StagedefButton::padding"]
-        [::core::mem::offset_of!(StagedefButton, padding) - 22usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefDynamicReflectionPlane {
@@ -6527,19 +4041,6 @@ pub struct StagedefDynamicReflectionPlane {
     pub pos: Vec,
     pub rot: S16Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefDynamicReflectionPlane"]
-        [::core::mem::size_of::<StagedefDynamicReflectionPlane>() - 22usize];
-    ["Alignment of StagedefDynamicReflectionPlane"]
-        [::core::mem::align_of::<StagedefDynamicReflectionPlane>() - 1usize];
-    ["Offset of field: StagedefDynamicReflectionPlane::model_name_ptr"]
-        [::core::mem::offset_of!(StagedefDynamicReflectionPlane, model_name_ptr) - 0usize];
-    ["Offset of field: StagedefDynamicReflectionPlane::pos"]
-        [::core::mem::offset_of!(StagedefDynamicReflectionPlane, pos) - 4usize];
-    ["Offset of field: StagedefDynamicReflectionPlane::rot"]
-        [::core::mem::offset_of!(StagedefDynamicReflectionPlane, rot) - 16usize];
-};
 impl Default for StagedefDynamicReflectionPlane {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6557,19 +4058,6 @@ pub struct StagedefStageModel {
     pub some_flag: uint,
     pub field_0xc: [undefined; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefStageModel"][::core::mem::size_of::<StagedefStageModel>() - 16usize];
-    ["Alignment of StagedefStageModel"][::core::mem::align_of::<StagedefStageModel>() - 1usize];
-    ["Offset of field: StagedefStageModel::field_0x0"]
-        [::core::mem::offset_of!(StagedefStageModel, field_0x0) - 0usize];
-    ["Offset of field: StagedefStageModel::model_name"]
-        [::core::mem::offset_of!(StagedefStageModel, model_name) - 4usize];
-    ["Offset of field: StagedefStageModel::some_flag"]
-        [::core::mem::offset_of!(StagedefStageModel, some_flag) - 8usize];
-    ["Offset of field: StagedefStageModel::field_0xc"]
-        [::core::mem::offset_of!(StagedefStageModel, field_0xc) - 12usize];
-};
 impl Default for StagedefStageModel {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6586,17 +4074,6 @@ pub struct StagedefColiSphere {
     pub radius: f32,
     pub g_not_padding: undefined4,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefColiSphere"][::core::mem::size_of::<StagedefColiSphere>() - 20usize];
-    ["Alignment of StagedefColiSphere"][::core::mem::align_of::<StagedefColiSphere>() - 1usize];
-    ["Offset of field: StagedefColiSphere::position"]
-        [::core::mem::offset_of!(StagedefColiSphere, position) - 0usize];
-    ["Offset of field: StagedefColiSphere::radius"]
-        [::core::mem::offset_of!(StagedefColiSphere, radius) - 12usize];
-    ["Offset of field: StagedefColiSphere::g_not_padding"]
-        [::core::mem::offset_of!(StagedefColiSphere, g_not_padding) - 16usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiCylinder {
@@ -6606,21 +4083,6 @@ pub struct StagedefColiCylinder {
     pub rotation: S16Vec,
     pub g_not_padding: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefColiCylinder"][::core::mem::size_of::<StagedefColiCylinder>() - 28usize];
-    ["Alignment of StagedefColiCylinder"][::core::mem::align_of::<StagedefColiCylinder>() - 1usize];
-    ["Offset of field: StagedefColiCylinder::position"]
-        [::core::mem::offset_of!(StagedefColiCylinder, position) - 0usize];
-    ["Offset of field: StagedefColiCylinder::radius"]
-        [::core::mem::offset_of!(StagedefColiCylinder, radius) - 12usize];
-    ["Offset of field: StagedefColiCylinder::height"]
-        [::core::mem::offset_of!(StagedefColiCylinder, height) - 16usize];
-    ["Offset of field: StagedefColiCylinder::rotation"]
-        [::core::mem::offset_of!(StagedefColiCylinder, rotation) - 20usize];
-    ["Offset of field: StagedefColiCylinder::g_not_padding"]
-        [::core::mem::offset_of!(StagedefColiCylinder, g_not_padding) - 26usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefBackgroundModel {
@@ -6635,33 +4097,6 @@ pub struct StagedefBackgroundModel {
     pub background_anim2_header: *mut StagedefBackgroundAnim2Header,
     pub effect_header: *mut StagedefEffectHeader,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefBackgroundModel"]
-        [::core::mem::size_of::<StagedefBackgroundModel>() - 56usize];
-    ["Alignment of StagedefBackgroundModel"]
-        [::core::mem::align_of::<StagedefBackgroundModel>() - 1usize];
-    ["Offset of field: StagedefBackgroundModel::g_model_flag"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, g_model_flag) - 0usize];
-    ["Offset of field: StagedefBackgroundModel::model_name"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, model_name) - 4usize];
-    ["Offset of field: StagedefBackgroundModel::gma_model"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, gma_model) - 8usize];
-    ["Offset of field: StagedefBackgroundModel::position"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, position) - 12usize];
-    ["Offset of field: StagedefBackgroundModel::rotation"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, rotation) - 24usize];
-    ["Offset of field: StagedefBackgroundModel::padding"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, padding) - 30usize];
-    ["Offset of field: StagedefBackgroundModel::scale"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, scale) - 32usize];
-    ["Offset of field: StagedefBackgroundModel::background_anim_header"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, background_anim_header) - 44usize];
-    ["Offset of field: StagedefBackgroundModel::background_anim2_header"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, background_anim2_header) - 48usize];
-    ["Offset of field: StagedefBackgroundModel::effect_header"]
-        [::core::mem::offset_of!(StagedefBackgroundModel, effect_header) - 52usize];
-};
 impl Default for StagedefBackgroundModel {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6678,18 +4113,6 @@ pub struct StagedefStageModelPtrA {
     pub some_counter: uint,
     pub stage_model: *mut StagedefStageModel,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefStageModelPtrA"][::core::mem::size_of::<StagedefStageModelPtrA>() - 12usize];
-    ["Alignment of StagedefStageModelPtrA"]
-        [::core::mem::align_of::<StagedefStageModelPtrA>() - 1usize];
-    ["Offset of field: StagedefStageModelPtrA::some_effect_bitflag"]
-        [::core::mem::offset_of!(StagedefStageModelPtrA, some_effect_bitflag) - 0usize];
-    ["Offset of field: StagedefStageModelPtrA::some_counter"]
-        [::core::mem::offset_of!(StagedefStageModelPtrA, some_counter) - 4usize];
-    ["Offset of field: StagedefStageModelPtrA::stage_model"]
-        [::core::mem::offset_of!(StagedefStageModelPtrA, stage_model) - 8usize];
-};
 impl Default for StagedefStageModelPtrA {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6704,14 +4127,6 @@ impl Default for StagedefStageModelPtrA {
 pub struct StagedefStageModelPtrB {
     pub stage_model_a: *mut StagedefStageModelPtrA,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefStageModelPtrB"][::core::mem::size_of::<StagedefStageModelPtrB>() - 4usize];
-    ["Alignment of StagedefStageModelPtrB"]
-        [::core::mem::align_of::<StagedefStageModelPtrB>() - 1usize];
-    ["Offset of field: StagedefStageModelPtrB::stage_model_a"]
-        [::core::mem::offset_of!(StagedefStageModelPtrB, stage_model_a) - 0usize];
-};
 impl Default for StagedefStageModelPtrB {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6727,15 +4142,6 @@ pub struct StagedefBanana {
     pub position: Vec,
     pub type_: BananaType,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefBanana"][::core::mem::size_of::<StagedefBanana>() - 16usize];
-    ["Alignment of StagedefBanana"][::core::mem::align_of::<StagedefBanana>() - 1usize];
-    ["Offset of field: StagedefBanana::position"]
-        [::core::mem::offset_of!(StagedefBanana, position) - 0usize];
-    ["Offset of field: StagedefBanana::type_"]
-        [::core::mem::offset_of!(StagedefBanana, type_) - 12usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefMystery5 {
@@ -6745,21 +4151,6 @@ pub struct StagedefMystery5 {
     pub field6_0xc: f32,
     pub field7_0x10: f32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefMystery5"][::core::mem::size_of::<StagedefMystery5>() - 20usize];
-    ["Alignment of StagedefMystery5"][::core::mem::align_of::<StagedefMystery5>() - 1usize];
-    ["Offset of field: StagedefMystery5::field_0x0"]
-        [::core::mem::offset_of!(StagedefMystery5, field_0x0) - 0usize];
-    ["Offset of field: StagedefMystery5::field4_0x4"]
-        [::core::mem::offset_of!(StagedefMystery5, field4_0x4) - 4usize];
-    ["Offset of field: StagedefMystery5::field5_0x8"]
-        [::core::mem::offset_of!(StagedefMystery5, field5_0x8) - 8usize];
-    ["Offset of field: StagedefMystery5::field6_0xc"]
-        [::core::mem::offset_of!(StagedefMystery5, field6_0xc) - 12usize];
-    ["Offset of field: StagedefMystery5::field7_0x10"]
-        [::core::mem::offset_of!(StagedefMystery5, field7_0x10) - 16usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiCone {
@@ -6768,19 +4159,6 @@ pub struct StagedefColiCone {
     pub g_not_padding: undefined2,
     pub scale: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefColiCone"][::core::mem::size_of::<StagedefColiCone>() - 32usize];
-    ["Alignment of StagedefColiCone"][::core::mem::align_of::<StagedefColiCone>() - 1usize];
-    ["Offset of field: StagedefColiCone::position"]
-        [::core::mem::offset_of!(StagedefColiCone, position) - 0usize];
-    ["Offset of field: StagedefColiCone::rotation"]
-        [::core::mem::offset_of!(StagedefColiCone, rotation) - 12usize];
-    ["Offset of field: StagedefColiCone::g_not_padding"]
-        [::core::mem::offset_of!(StagedefColiCone, g_not_padding) - 18usize];
-    ["Offset of field: StagedefColiCone::scale"]
-        [::core::mem::offset_of!(StagedefColiCone, scale) - 20usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefJamabar {
@@ -6789,19 +4167,6 @@ pub struct StagedefJamabar {
     pub padding: undefined2,
     pub scale: Vec,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefJamabar"][::core::mem::size_of::<StagedefJamabar>() - 32usize];
-    ["Alignment of StagedefJamabar"][::core::mem::align_of::<StagedefJamabar>() - 1usize];
-    ["Offset of field: StagedefJamabar::position"]
-        [::core::mem::offset_of!(StagedefJamabar, position) - 0usize];
-    ["Offset of field: StagedefJamabar::rotation"]
-        [::core::mem::offset_of!(StagedefJamabar, rotation) - 12usize];
-    ["Offset of field: StagedefJamabar::padding"]
-        [::core::mem::offset_of!(StagedefJamabar, padding) - 18usize];
-    ["Offset of field: StagedefJamabar::scale"]
-        [::core::mem::offset_of!(StagedefJamabar, scale) - 20usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefMystery3 {
@@ -6812,23 +4177,6 @@ pub struct StagedefMystery3 {
     pub field4_0xe: undefined2,
     pub field_0x10: [undefined; 20usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefMystery3"][::core::mem::size_of::<StagedefMystery3>() - 36usize];
-    ["Alignment of StagedefMystery3"][::core::mem::align_of::<StagedefMystery3>() - 1usize];
-    ["Offset of field: StagedefMystery3::field0_0x0"]
-        [::core::mem::offset_of!(StagedefMystery3, field0_0x0) - 0usize];
-    ["Offset of field: StagedefMystery3::field1_0x4"]
-        [::core::mem::offset_of!(StagedefMystery3, field1_0x4) - 4usize];
-    ["Offset of field: StagedefMystery3::field2_0x8"]
-        [::core::mem::offset_of!(StagedefMystery3, field2_0x8) - 8usize];
-    ["Offset of field: StagedefMystery3::field3_0xc"]
-        [::core::mem::offset_of!(StagedefMystery3, field3_0xc) - 12usize];
-    ["Offset of field: StagedefMystery3::field4_0xe"]
-        [::core::mem::offset_of!(StagedefMystery3, field4_0xe) - 14usize];
-    ["Offset of field: StagedefMystery3::field_0x10"]
-        [::core::mem::offset_of!(StagedefMystery3, field_0x10) - 16usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefFalloutVolume {
@@ -6837,20 +4185,6 @@ pub struct StagedefFalloutVolume {
     pub rotation: S16Vec,
     pub padding: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefFalloutVolume"][::core::mem::size_of::<StagedefFalloutVolume>() - 32usize];
-    ["Alignment of StagedefFalloutVolume"]
-        [::core::mem::align_of::<StagedefFalloutVolume>() - 1usize];
-    ["Offset of field: StagedefFalloutVolume::position"]
-        [::core::mem::offset_of!(StagedefFalloutVolume, position) - 0usize];
-    ["Offset of field: StagedefFalloutVolume::size"]
-        [::core::mem::offset_of!(StagedefFalloutVolume, size) - 12usize];
-    ["Offset of field: StagedefFalloutVolume::rotation"]
-        [::core::mem::offset_of!(StagedefFalloutVolume, rotation) - 24usize];
-    ["Offset of field: StagedefFalloutVolume::padding"]
-        [::core::mem::offset_of!(StagedefFalloutVolume, padding) - 30usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefColiTri {
@@ -6863,27 +4197,6 @@ pub struct StagedefColiTri {
     pub tangent: Vec2d,
     pub bitangent: Vec2d,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefColiTri"][::core::mem::size_of::<StagedefColiTri>() - 64usize];
-    ["Alignment of StagedefColiTri"][::core::mem::align_of::<StagedefColiTri>() - 1usize];
-    ["Offset of field: StagedefColiTri::vert1"]
-        [::core::mem::offset_of!(StagedefColiTri, vert1) - 0usize];
-    ["Offset of field: StagedefColiTri::normal"]
-        [::core::mem::offset_of!(StagedefColiTri, normal) - 12usize];
-    ["Offset of field: StagedefColiTri::rot_from_xy"]
-        [::core::mem::offset_of!(StagedefColiTri, rot_from_xy) - 24usize];
-    ["Offset of field: StagedefColiTri::flags"]
-        [::core::mem::offset_of!(StagedefColiTri, flags) - 30usize];
-    ["Offset of field: StagedefColiTri::vert2_delta"]
-        [::core::mem::offset_of!(StagedefColiTri, vert2_delta) - 32usize];
-    ["Offset of field: StagedefColiTri::vert3_delta"]
-        [::core::mem::offset_of!(StagedefColiTri, vert3_delta) - 40usize];
-    ["Offset of field: StagedefColiTri::tangent"]
-        [::core::mem::offset_of!(StagedefColiTri, tangent) - 48usize];
-    ["Offset of field: StagedefColiTri::bitangent"]
-        [::core::mem::offset_of!(StagedefColiTri, bitangent) - 56usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct StagedefGoal {
@@ -6892,19 +4205,6 @@ pub struct StagedefGoal {
     pub type_: GoalType,
     pub field_0x13: [undefined; 1usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefGoal"][::core::mem::size_of::<StagedefGoal>() - 20usize];
-    ["Alignment of StagedefGoal"][::core::mem::align_of::<StagedefGoal>() - 1usize];
-    ["Offset of field: StagedefGoal::position"]
-        [::core::mem::offset_of!(StagedefGoal, position) - 0usize];
-    ["Offset of field: StagedefGoal::rotation"]
-        [::core::mem::offset_of!(StagedefGoal, rotation) - 12usize];
-    ["Offset of field: StagedefGoal::type_"]
-        [::core::mem::offset_of!(StagedefGoal, type_) - 18usize];
-    ["Offset of field: StagedefGoal::field_0x13"]
-        [::core::mem::offset_of!(StagedefGoal, field_0x13) - 19usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefWormhole {
@@ -6914,21 +4214,6 @@ pub struct StagedefWormhole {
     pub padding: undefined2,
     pub destination: *mut StagedefWormhole,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefWormhole"][::core::mem::size_of::<StagedefWormhole>() - 28usize];
-    ["Alignment of StagedefWormhole"][::core::mem::align_of::<StagedefWormhole>() - 1usize];
-    ["Offset of field: StagedefWormhole::field_0x0"]
-        [::core::mem::offset_of!(StagedefWormhole, field_0x0) - 0usize];
-    ["Offset of field: StagedefWormhole::positon"]
-        [::core::mem::offset_of!(StagedefWormhole, positon) - 4usize];
-    ["Offset of field: StagedefWormhole::rotation"]
-        [::core::mem::offset_of!(StagedefWormhole, rotation) - 16usize];
-    ["Offset of field: StagedefWormhole::padding"]
-        [::core::mem::offset_of!(StagedefWormhole, padding) - 22usize];
-    ["Offset of field: StagedefWormhole::destination"]
-        [::core::mem::offset_of!(StagedefWormhole, destination) - 24usize];
-};
 impl Default for StagedefWormhole {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -6966,61 +4251,6 @@ pub struct StagedefBackgroundAnim2Header {
     pub unk11_keyframe_count: u32_,
     pub unk11_keyframe_list: *mut StagedefAnimKeyframe,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefBackgroundAnim2Header"]
-        [::core::mem::size_of::<StagedefBackgroundAnim2Header>() - 96usize];
-    ["Alignment of StagedefBackgroundAnim2Header"]
-        [::core::mem::align_of::<StagedefBackgroundAnim2Header>() - 1usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::field_0x0"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, field_0x0) - 0usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::loop_point_seconds"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, loop_point_seconds) - 4usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk1_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk1_keyframe_count) - 8usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk1_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk1_keyframe_list) - 12usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk2_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk2_keyframe_count) - 16usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk2_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk2_keyframe_list) - 20usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_x_keyframe_count) - 24usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_x_keyframe_list) - 28usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_y_keyframe_count) - 32usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_y_keyframe_list) - 36usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_z_keyframe_count) - 40usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::rot_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, rot_z_keyframe_list) - 44usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_x_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_x_keyframe_count) - 48usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_x_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_x_keyframe_list) - 52usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_y_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_y_keyframe_count) - 56usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_y_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_y_keyframe_list) - 60usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_z_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_z_keyframe_count) - 64usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::pos_z_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, pos_z_keyframe_list) - 68usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk9_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk9_keyframe_count) - 72usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk9_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk9_keyframe_list) - 76usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk10_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk10_keyframe_count) - 80usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk10_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk10_keyframe_list) - 84usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk11_keyframe_count"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk11_keyframe_count) - 88usize];
-    ["Offset of field: StagedefBackgroundAnim2Header::unk11_keyframe_list"]
-        [::core::mem::offset_of!(StagedefBackgroundAnim2Header, unk11_keyframe_list) - 92usize];
-};
 impl Default for StagedefBackgroundAnim2Header {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7037,17 +4267,6 @@ pub struct StagedefStart {
     pub rotation: S16Vec,
     pub padding: undefined2,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefStart"][::core::mem::size_of::<StagedefStart>() - 20usize];
-    ["Alignment of StagedefStart"][::core::mem::align_of::<StagedefStart>() - 1usize];
-    ["Offset of field: StagedefStart::position"]
-        [::core::mem::offset_of!(StagedefStart, position) - 0usize];
-    ["Offset of field: StagedefStart::rotation"]
-        [::core::mem::offset_of!(StagedefStart, rotation) - 12usize];
-    ["Offset of field: StagedefStart::padding"]
-        [::core::mem::offset_of!(StagedefStart, padding) - 18usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefFileHeader {
@@ -7101,109 +4320,6 @@ pub struct StagedefFileHeader {
     pub mystery3: *mut StagedefMystery3,
     pub field_0xd8: [undefined; 1988usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefFileHeader"][::core::mem::size_of::<StagedefFileHeader>() - 2204usize];
-    ["Alignment of StagedefFileHeader"][::core::mem::align_of::<StagedefFileHeader>() - 1usize];
-    ["Offset of field: StagedefFileHeader::magic_number_a"]
-        [::core::mem::offset_of!(StagedefFileHeader, magic_number_a) - 0usize];
-    ["Offset of field: StagedefFileHeader::magic_number_b"]
-        [::core::mem::offset_of!(StagedefFileHeader, magic_number_b) - 4usize];
-    ["Offset of field: StagedefFileHeader::coli_header_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_header_count) - 8usize];
-    ["Offset of field: StagedefFileHeader::coli_header_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_header_list) - 12usize];
-    ["Offset of field: StagedefFileHeader::start"]
-        [::core::mem::offset_of!(StagedefFileHeader, start) - 16usize];
-    ["Offset of field: StagedefFileHeader::fallout"]
-        [::core::mem::offset_of!(StagedefFileHeader, fallout) - 20usize];
-    ["Offset of field: StagedefFileHeader::goal_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, goal_count) - 24usize];
-    ["Offset of field: StagedefFileHeader::goal_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, goal_list) - 28usize];
-    ["Offset of field: StagedefFileHeader::bumper_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, bumper_count) - 32usize];
-    ["Offset of field: StagedefFileHeader::bumper_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, bumper_list) - 36usize];
-    ["Offset of field: StagedefFileHeader::jamabar_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, jamabar_count) - 40usize];
-    ["Offset of field: StagedefFileHeader::jamabar_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, jamabar_list) - 44usize];
-    ["Offset of field: StagedefFileHeader::banana_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, banana_count) - 48usize];
-    ["Offset of field: StagedefFileHeader::banana_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, banana_list) - 52usize];
-    ["Offset of field: StagedefFileHeader::coli_cone_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_cone_count) - 56usize];
-    ["Offset of field: StagedefFileHeader::coli_cone_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_cone_list) - 60usize];
-    ["Offset of field: StagedefFileHeader::coli_sphere_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_sphere_count) - 64usize];
-    ["Offset of field: StagedefFileHeader::coli_sphere_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_sphere_list) - 68usize];
-    ["Offset of field: StagedefFileHeader::coli_cylinder_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_cylinder_count) - 72usize];
-    ["Offset of field: StagedefFileHeader::coli_cylinder_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, coli_cylinder_list) - 76usize];
-    ["Offset of field: StagedefFileHeader::fallout_volume_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, fallout_volume_count) - 80usize];
-    ["Offset of field: StagedefFileHeader::fallout_volume_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, fallout_volume_list) - 84usize];
-    ["Offset of field: StagedefFileHeader::background_model_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, background_model_count) - 88usize];
-    ["Offset of field: StagedefFileHeader::background_model_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, background_model_list) - 92usize];
-    ["Offset of field: StagedefFileHeader::foreground_model_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, foreground_model_count) - 96usize];
-    ["Offset of field: StagedefFileHeader::foreground_model_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, foreground_model_list) - 100usize];
-    ["Offset of field: StagedefFileHeader::field26_0x68"]
-        [::core::mem::offset_of!(StagedefFileHeader, field26_0x68) - 104usize];
-    ["Offset of field: StagedefFileHeader::field27_0x6c"]
-        [::core::mem::offset_of!(StagedefFileHeader, field27_0x6c) - 108usize];
-    ["Offset of field: StagedefFileHeader::reflective_stage_model_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, reflective_stage_model_count) - 112usize];
-    ["Offset of field: StagedefFileHeader::reflective_stage_model_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, reflective_stage_model_list) - 116usize];
-    ["Offset of field: StagedefFileHeader::field_0x78"]
-        [::core::mem::offset_of!(StagedefFileHeader, field_0x78) - 120usize];
-    ["Offset of field: StagedefFileHeader::stage_model_instance_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_instance_count) - 132usize];
-    ["Offset of field: StagedefFileHeader::stage_model_instance_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_instance_list) - 136usize];
-    ["Offset of field: StagedefFileHeader::stage_model_a_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_a_count) - 140usize];
-    ["Offset of field: StagedefFileHeader::stage_model_a_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_a_list) - 144usize];
-    ["Offset of field: StagedefFileHeader::stage_model_b_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_b_count) - 148usize];
-    ["Offset of field: StagedefFileHeader::stage_model_b_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, stage_model_b_list) - 152usize];
-    ["Offset of field: StagedefFileHeader::field_0x9c"]
-        [::core::mem::offset_of!(StagedefFileHeader, field_0x9c) - 156usize];
-    ["Offset of field: StagedefFileHeader::button_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, button_count) - 168usize];
-    ["Offset of field: StagedefFileHeader::button_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, button_list) - 172usize];
-    ["Offset of field: StagedefFileHeader::fog_animation"]
-        [::core::mem::offset_of!(StagedefFileHeader, fog_animation) - 176usize];
-    ["Offset of field: StagedefFileHeader::wormhole_count"]
-        [::core::mem::offset_of!(StagedefFileHeader, wormhole_count) - 180usize];
-    ["Offset of field: StagedefFileHeader::wormhole_list"]
-        [::core::mem::offset_of!(StagedefFileHeader, wormhole_list) - 184usize];
-    ["Offset of field: StagedefFileHeader::fog"]
-        [::core::mem::offset_of!(StagedefFileHeader, fog) - 188usize];
-    ["Offset of field: StagedefFileHeader::field_0xc0"]
-        [::core::mem::offset_of!(StagedefFileHeader, field_0xc0) - 192usize];
-    ["Offset of field: StagedefFileHeader::dynamic_reflection_plane"]
-        [::core::mem::offset_of!(StagedefFileHeader, dynamic_reflection_plane) - 200usize];
-    ["Offset of field: StagedefFileHeader::field_0xcc"]
-        [::core::mem::offset_of!(StagedefFileHeader, field_0xcc) - 204usize];
-    ["Offset of field: StagedefFileHeader::mystery3"]
-        [::core::mem::offset_of!(StagedefFileHeader, mystery3) - 212usize];
-    ["Offset of field: StagedefFileHeader::field_0xd8"]
-        [::core::mem::offset_of!(StagedefFileHeader, field_0xd8) - 216usize];
-};
 impl Default for StagedefFileHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7223,21 +4339,6 @@ pub struct StagedefFog {
     pub color: Vec,
     pub field_0x18: [undefined; 12usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefFog"][::core::mem::size_of::<StagedefFog>() - 36usize];
-    ["Alignment of StagedefFog"][::core::mem::align_of::<StagedefFog>() - 1usize];
-    ["Offset of field: StagedefFog::type_"][::core::mem::offset_of!(StagedefFog, type_) - 0usize];
-    ["Offset of field: StagedefFog::field_0x1"]
-        [::core::mem::offset_of!(StagedefFog, field_0x1) - 1usize];
-    ["Offset of field: StagedefFog::fog_start_distance"]
-        [::core::mem::offset_of!(StagedefFog, fog_start_distance) - 4usize];
-    ["Offset of field: StagedefFog::fog_end_distance"]
-        [::core::mem::offset_of!(StagedefFog, fog_end_distance) - 8usize];
-    ["Offset of field: StagedefFog::color"][::core::mem::offset_of!(StagedefFog, color) - 12usize];
-    ["Offset of field: StagedefFog::field_0x18"]
-        [::core::mem::offset_of!(StagedefFog, field_0x18) - 24usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct StagedefForegroundModel {
@@ -7252,33 +4353,6 @@ pub struct StagedefForegroundModel {
     pub background_anim2_header: *mut ::core::ffi::c_void,
     pub field9_0x34: *mut ::core::ffi::c_void,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefForegroundModel"]
-        [::core::mem::size_of::<StagedefForegroundModel>() - 56usize];
-    ["Alignment of StagedefForegroundModel"]
-        [::core::mem::align_of::<StagedefForegroundModel>() - 1usize];
-    ["Offset of field: StagedefForegroundModel::field0_0x0"]
-        [::core::mem::offset_of!(StagedefForegroundModel, field0_0x0) - 0usize];
-    ["Offset of field: StagedefForegroundModel::model_name"]
-        [::core::mem::offset_of!(StagedefForegroundModel, model_name) - 4usize];
-    ["Offset of field: StagedefForegroundModel::gma_model"]
-        [::core::mem::offset_of!(StagedefForegroundModel, gma_model) - 8usize];
-    ["Offset of field: StagedefForegroundModel::position"]
-        [::core::mem::offset_of!(StagedefForegroundModel, position) - 12usize];
-    ["Offset of field: StagedefForegroundModel::rotation"]
-        [::core::mem::offset_of!(StagedefForegroundModel, rotation) - 24usize];
-    ["Offset of field: StagedefForegroundModel::padding"]
-        [::core::mem::offset_of!(StagedefForegroundModel, padding) - 30usize];
-    ["Offset of field: StagedefForegroundModel::scale"]
-        [::core::mem::offset_of!(StagedefForegroundModel, scale) - 32usize];
-    ["Offset of field: StagedefForegroundModel::field7_0x2c"]
-        [::core::mem::offset_of!(StagedefForegroundModel, field7_0x2c) - 44usize];
-    ["Offset of field: StagedefForegroundModel::background_anim2_header"]
-        [::core::mem::offset_of!(StagedefForegroundModel, background_anim2_header) - 48usize];
-    ["Offset of field: StagedefForegroundModel::field9_0x34"]
-        [::core::mem::offset_of!(StagedefForegroundModel, field9_0x34) - 52usize];
-};
 impl Default for StagedefForegroundModel {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7344,115 +4418,6 @@ pub struct StagedefColiHeader {
     pub texture_scroll: *mut StagedefTextureScroll,
     pub field_0xdc: [undefined; 960usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StagedefColiHeader"][::core::mem::size_of::<StagedefColiHeader>() - 1180usize];
-    ["Alignment of StagedefColiHeader"][::core::mem::align_of::<StagedefColiHeader>() - 1usize];
-    ["Offset of field: StagedefColiHeader::origin"]
-        [::core::mem::offset_of!(StagedefColiHeader, origin) - 0usize];
-    ["Offset of field: StagedefColiHeader::initial_rotation"]
-        [::core::mem::offset_of!(StagedefColiHeader, initial_rotation) - 12usize];
-    ["Offset of field: StagedefColiHeader::anim_loop_type_and_seesaw"]
-        [::core::mem::offset_of!(StagedefColiHeader, anim_loop_type_and_seesaw) - 18usize];
-    ["Offset of field: StagedefColiHeader::animation_header"]
-        [::core::mem::offset_of!(StagedefColiHeader, animation_header) - 20usize];
-    ["Offset of field: StagedefColiHeader::conveyor_speed"]
-        [::core::mem::offset_of!(StagedefColiHeader, conveyor_speed) - 24usize];
-    ["Offset of field: StagedefColiHeader::coli_tri_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_tri_list) - 36usize];
-    ["Offset of field: StagedefColiHeader::coli_tri_idxs"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_tri_idxs) - 40usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_start_x"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_start_x) - 44usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_start_z"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_start_z) - 48usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_step_x"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_step_x) - 52usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_step_z"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_step_z) - 56usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_cells_x"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_cells_x) - 60usize];
-    ["Offset of field: StagedefColiHeader::coli_grid_cells_z"]
-        [::core::mem::offset_of!(StagedefColiHeader, coli_grid_cells_z) - 64usize];
-    ["Offset of field: StagedefColiHeader::goal_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, goal_count) - 68usize];
-    ["Offset of field: StagedefColiHeader::goal_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, goal_list) - 72usize];
-    ["Offset of field: StagedefColiHeader::bumper_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, bumper_count) - 76usize];
-    ["Offset of field: StagedefColiHeader::bumper_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, bumper_list) - 80usize];
-    ["Offset of field: StagedefColiHeader::jamabar_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, jamabar_count) - 84usize];
-    ["Offset of field: StagedefColiHeader::jamabar_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, jamabar_list) - 88usize];
-    ["Offset of field: StagedefColiHeader::banana_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, banana_count) - 92usize];
-    ["Offset of field: StagedefColiHeader::banana_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, banana_list) - 96usize];
-    ["Offset of field: StagedefColiHeader::cone_collision_object_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, cone_collision_object_count) - 100usize];
-    ["Offset of field: StagedefColiHeader::cone_collision_object_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, cone_collision_object_list) - 104usize];
-    ["Offset of field: StagedefColiHeader::sphere_collision_object_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, sphere_collision_object_count) - 108usize];
-    ["Offset of field: StagedefColiHeader::sphere_collision_object_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, sphere_collision_object_list) - 112usize];
-    ["Offset of field: StagedefColiHeader::cylinder_collision_object_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, cylinder_collision_object_count) - 116usize];
-    ["Offset of field: StagedefColiHeader::cylinder_collision_object_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, cylinder_collision_object_list) - 120usize];
-    ["Offset of field: StagedefColiHeader::fallout_volume_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, fallout_volume_count) - 124usize];
-    ["Offset of field: StagedefColiHeader::fallout_volume_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, fallout_volume_list) - 128usize];
-    ["Offset of field: StagedefColiHeader::reflective_stage_model_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, reflective_stage_model_count) - 132usize];
-    ["Offset of field: StagedefColiHeader::reflective_stage_model_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, reflective_stage_model_list) - 136usize];
-    ["Offset of field: StagedefColiHeader::stage_model_instance_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, stage_model_instance_count) - 140usize];
-    ["Offset of field: StagedefColiHeader::stage_model_instance_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, stage_model_instance_list) - 144usize];
-    ["Offset of field: StagedefColiHeader::stage_model_b_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, stage_model_b_count) - 148usize];
-    ["Offset of field: StagedefColiHeader::stage_model_b_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, stage_model_b_list) - 152usize];
-    ["Offset of field: StagedefColiHeader::field_0x9c"]
-        [::core::mem::offset_of!(StagedefColiHeader, field_0x9c) - 156usize];
-    ["Offset of field: StagedefColiHeader::anim_group_id"]
-        [::core::mem::offset_of!(StagedefColiHeader, anim_group_id) - 164usize];
-    ["Offset of field: StagedefColiHeader::g_not_padding"]
-        [::core::mem::offset_of!(StagedefColiHeader, g_not_padding) - 166usize];
-    ["Offset of field: StagedefColiHeader::button_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, button_count) - 168usize];
-    ["Offset of field: StagedefColiHeader::button_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, button_list) - 172usize];
-    ["Offset of field: StagedefColiHeader::field_0xb0"]
-        [::core::mem::offset_of!(StagedefColiHeader, field_0xb0) - 176usize];
-    ["Offset of field: StagedefColiHeader::mystery5"]
-        [::core::mem::offset_of!(StagedefColiHeader, mystery5) - 180usize];
-    ["Offset of field: StagedefColiHeader::seesaw_sensitivity"]
-        [::core::mem::offset_of!(StagedefColiHeader, seesaw_sensitivity) - 184usize];
-    ["Offset of field: StagedefColiHeader::seesaw_friction"]
-        [::core::mem::offset_of!(StagedefColiHeader, seesaw_friction) - 188usize];
-    ["Offset of field: StagedefColiHeader::seesaw_spring"]
-        [::core::mem::offset_of!(StagedefColiHeader, seesaw_spring) - 192usize];
-    ["Offset of field: StagedefColiHeader::wormhole_count"]
-        [::core::mem::offset_of!(StagedefColiHeader, wormhole_count) - 196usize];
-    ["Offset of field: StagedefColiHeader::wormhole_list"]
-        [::core::mem::offset_of!(StagedefColiHeader, wormhole_list) - 200usize];
-    ["Offset of field: StagedefColiHeader::initial_playback_state"]
-        [::core::mem::offset_of!(StagedefColiHeader, initial_playback_state) - 204usize];
-    ["Offset of field: StagedefColiHeader::field_0xd0"]
-        [::core::mem::offset_of!(StagedefColiHeader, field_0xd0) - 208usize];
-    ["Offset of field: StagedefColiHeader::anim_loop_point_seconds"]
-        [::core::mem::offset_of!(StagedefColiHeader, anim_loop_point_seconds) - 212usize];
-    ["Offset of field: StagedefColiHeader::texture_scroll"]
-        [::core::mem::offset_of!(StagedefColiHeader, texture_scroll) - 216usize];
-    ["Offset of field: StagedefColiHeader::field_0xdc"]
-        [::core::mem::offset_of!(StagedefColiHeader, field_0xdc) - 220usize];
-};
 impl Default for StagedefColiHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7492,57 +4457,6 @@ pub struct GmaShape {
     pub g_some_uint5: uint,
     pub field_0x44: [undefined; 28usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaShape"][::core::mem::size_of::<GmaShape>() - 96usize];
-    ["Alignment of GmaShape"][::core::mem::align_of::<GmaShape>() - 1usize];
-    ["Offset of field: GmaShape::g_some_bitflag"]
-        [::core::mem::offset_of!(GmaShape, g_some_bitflag) - 0usize];
-    ["Offset of field: GmaShape::g_some_short"]
-        [::core::mem::offset_of!(GmaShape, g_some_short) - 4usize];
-    ["Offset of field: GmaShape::g_some_short2"]
-        [::core::mem::offset_of!(GmaShape, g_some_short2) - 6usize];
-    ["Offset of field: GmaShape::g_some_short3"]
-        [::core::mem::offset_of!(GmaShape, g_some_short3) - 8usize];
-    ["Offset of field: GmaShape::g_some_short4"]
-        [::core::mem::offset_of!(GmaShape, g_some_short4) - 10usize];
-    ["Offset of field: GmaShape::g_some_flag"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag) - 12usize];
-    ["Offset of field: GmaShape::g_some_flag2"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag2) - 13usize];
-    ["Offset of field: GmaShape::g_some_flag3"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag3) - 14usize];
-    ["Offset of field: GmaShape::field_0xf"]
-        [::core::mem::offset_of!(GmaShape, field_0xf) - 15usize];
-    ["Offset of field: GmaShape::g_some_flag4"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag4) - 17usize];
-    ["Offset of field: GmaShape::g_some_flag5"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag5) - 18usize];
-    ["Offset of field: GmaShape::g_some_flag6"]
-        [::core::mem::offset_of!(GmaShape, g_some_flag6) - 19usize];
-    ["Offset of field: GmaShape::field_0x14"]
-        [::core::mem::offset_of!(GmaShape, field_0x14) - 20usize];
-    ["Offset of field: GmaShape::g_some_ushort"]
-        [::core::mem::offset_of!(GmaShape, g_some_ushort) - 22usize];
-    ["Offset of field: GmaShape::field_0x18"]
-        [::core::mem::offset_of!(GmaShape, field_0x18) - 24usize];
-    ["Offset of field: GmaShape::g_some_uint4"]
-        [::core::mem::offset_of!(GmaShape, g_some_uint4) - 28usize];
-    ["Offset of field: GmaShape::field_0x20"]
-        [::core::mem::offset_of!(GmaShape, field_0x20) - 32usize];
-    ["Offset of field: GmaShape::g_some_int"]
-        [::core::mem::offset_of!(GmaShape, g_some_int) - 40usize];
-    ["Offset of field: GmaShape::g_some_int2"]
-        [::core::mem::offset_of!(GmaShape, g_some_int2) - 44usize];
-    ["Offset of field: GmaShape::field_0x30"]
-        [::core::mem::offset_of!(GmaShape, field_0x30) - 48usize];
-    ["Offset of field: GmaShape::g_some_float"]
-        [::core::mem::offset_of!(GmaShape, g_some_float) - 60usize];
-    ["Offset of field: GmaShape::g_some_uint5"]
-        [::core::mem::offset_of!(GmaShape, g_some_uint5) - 64usize];
-    ["Offset of field: GmaShape::field_0x44"]
-        [::core::mem::offset_of!(GmaShape, field_0x44) - 68usize];
-};
 pub type PGmaTevLayer = *mut GmaTevLayer;
 pub const TEXFLAG_UNK_BIT0: _bindgen_ty_60 = 1;
 pub const TEXFLAG_UNK_BIT1: _bindgen_ty_60 = 2;
@@ -7589,27 +4503,6 @@ pub struct GmaTevLayer {
     pub tex_descriptor_idx: s16,
     pub field_0x10: [undefined; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaTevLayer"][::core::mem::size_of::<GmaTevLayer>() - 32usize];
-    ["Alignment of GmaTevLayer"][::core::mem::align_of::<GmaTevLayer>() - 1usize];
-    ["Offset of field: GmaTevLayer::flags"][::core::mem::offset_of!(GmaTevLayer, flags) - 0usize];
-    ["Offset of field: GmaTevLayer::tpl_texture_idx"]
-        [::core::mem::offset_of!(GmaTevLayer, tpl_texture_idx) - 4usize];
-    ["Offset of field: GmaTevLayer::field_0x6"]
-        [::core::mem::offset_of!(GmaTevLayer, field_0x6) - 6usize];
-    ["Offset of field: GmaTevLayer::anisotropy"]
-        [::core::mem::offset_of!(GmaTevLayer, anisotropy) - 7usize];
-    ["Offset of field: GmaTevLayer::texobj"][::core::mem::offset_of!(GmaTevLayer, texobj) - 8usize];
-    ["Offset of field: GmaTevLayer::unk_0xC"]
-        [::core::mem::offset_of!(GmaTevLayer, unk_0xC) - 12usize];
-    ["Offset of field: GmaTevLayer::g_is_swappable_texture"]
-        [::core::mem::offset_of!(GmaTevLayer, g_is_swappable_texture) - 13usize];
-    ["Offset of field: GmaTevLayer::tex_descriptor_idx"]
-        [::core::mem::offset_of!(GmaTevLayer, tex_descriptor_idx) - 14usize];
-    ["Offset of field: GmaTevLayer::field_0x10"]
-        [::core::mem::offset_of!(GmaTevLayer, field_0x10) - 16usize];
-};
 impl Default for GmaTevLayer {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7631,30 +4524,6 @@ pub struct GmaVertexControlHeader {
     pub field5_0x14: dword,
     pub field_0x18: [undefined; 8usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GmaVertexControlHeader"][::core::mem::size_of::<GmaVertexControlHeader>() - 32usize];
-    ["Alignment of GmaVertexControlHeader"]
-        [::core::mem::align_of::<GmaVertexControlHeader>() - 1usize];
-    ["Offset of field: GmaVertexControlHeader::vertex_count"]
-        [::core::mem::offset_of!(GmaVertexControlHeader, vertex_count) - 0usize];
-    ["Offset of field: GmaVertexControlHeader::vertex_control_type1_array_offset"][::core::mem::offset_of!(
-        GmaVertexControlHeader,
-        vertex_control_type1_array_offset
-    ) - 4usize];
-    ["Offset of field: GmaVertexControlHeader::vertex_control_type2_array_offset"][::core::mem::offset_of!(
-        GmaVertexControlHeader,
-        vertex_control_type2_array_offset
-    ) - 8usize];
-    ["Offset of field: GmaVertexControlHeader::vertex_control_type3_offset"]
-        [::core::mem::offset_of!(GmaVertexControlHeader, vertex_control_type3_offset) - 12usize];
-    ["Offset of field: GmaVertexControlHeader::vertex_control_type4_offset"]
-        [::core::mem::offset_of!(GmaVertexControlHeader, vertex_control_type4_offset) - 16usize];
-    ["Offset of field: GmaVertexControlHeader::field5_0x14"]
-        [::core::mem::offset_of!(GmaVertexControlHeader, field5_0x14) - 20usize];
-    ["Offset of field: GmaVertexControlHeader::field_0x18"]
-        [::core::mem::offset_of!(GmaVertexControlHeader, field_0x18) - 24usize];
-};
 pub type PGma = *mut Gma;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -7662,13 +4531,6 @@ pub struct Gma {
     pub model_count: s32,
     pub header_size: s32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Gma"][::core::mem::size_of::<Gma>() - 8usize];
-    ["Alignment of Gma"][::core::mem::align_of::<Gma>() - 1usize];
-    ["Offset of field: Gma::model_count"][::core::mem::offset_of!(Gma, model_count) - 0usize];
-    ["Offset of field: Gma::header_size"][::core::mem::offset_of!(Gma, header_size) - 4usize];
-};
 pub type POSSectionInfo = *mut OSSectionInfo;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -7676,14 +4538,6 @@ pub struct OSSectionInfo {
     pub offset: u32_,
     pub size: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSSectionInfo"][::core::mem::size_of::<OSSectionInfo>() - 8usize];
-    ["Alignment of OSSectionInfo"][::core::mem::align_of::<OSSectionInfo>() - 1usize];
-    ["Offset of field: OSSectionInfo::offset"]
-        [::core::mem::offset_of!(OSSectionInfo, offset) - 0usize];
-    ["Offset of field: OSSectionInfo::size"][::core::mem::offset_of!(OSSectionInfo, size) - 4usize];
-};
 pub type POSThreadLink = *mut OSThreadLink;
 pub type POSThread = *mut OSThread;
 pub type POSContext = *mut OSContext;
@@ -7698,13 +4552,6 @@ pub struct OSThreadLink {
     pub next: *mut OSThread,
     pub prev: *mut OSThread,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSThreadLink"][::core::mem::size_of::<OSThreadLink>() - 8usize];
-    ["Alignment of OSThreadLink"][::core::mem::align_of::<OSThreadLink>() - 1usize];
-    ["Offset of field: OSThreadLink::next"][::core::mem::offset_of!(OSThreadLink, next) - 0usize];
-    ["Offset of field: OSThreadLink::prev"][::core::mem::offset_of!(OSThreadLink, prev) - 4usize];
-};
 impl Default for OSThreadLink {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7720,13 +4567,6 @@ pub struct OSMutexLink {
     pub next: *mut OSMutex,
     pub prev: *mut OSMutex,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSMutexLink"][::core::mem::size_of::<OSMutexLink>() - 8usize];
-    ["Alignment of OSMutexLink"][::core::mem::align_of::<OSMutexLink>() - 1usize];
-    ["Offset of field: OSMutexLink::next"][::core::mem::offset_of!(OSMutexLink, next) - 0usize];
-    ["Offset of field: OSMutexLink::prev"][::core::mem::offset_of!(OSMutexLink, prev) - 4usize];
-};
 impl Default for OSMutexLink {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7742,13 +4582,6 @@ pub struct OSThreadQueue {
     pub head: *mut OSThread,
     pub tail: *mut OSThread,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSThreadQueue"][::core::mem::size_of::<OSThreadQueue>() - 8usize];
-    ["Alignment of OSThreadQueue"][::core::mem::align_of::<OSThreadQueue>() - 1usize];
-    ["Offset of field: OSThreadQueue::head"][::core::mem::offset_of!(OSThreadQueue, head) - 0usize];
-    ["Offset of field: OSThreadQueue::tail"][::core::mem::offset_of!(OSThreadQueue, tail) - 4usize];
-};
 impl Default for OSThreadQueue {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7766,15 +4599,6 @@ pub struct OSMutex {
     pub count: s32,
     pub link: OSMutexLink,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSMutex"][::core::mem::size_of::<OSMutex>() - 24usize];
-    ["Alignment of OSMutex"][::core::mem::align_of::<OSMutex>() - 1usize];
-    ["Offset of field: OSMutex::queue"][::core::mem::offset_of!(OSMutex, queue) - 0usize];
-    ["Offset of field: OSMutex::thread"][::core::mem::offset_of!(OSMutex, thread) - 8usize];
-    ["Offset of field: OSMutex::count"][::core::mem::offset_of!(OSMutex, count) - 12usize];
-    ["Offset of field: OSMutex::link"][::core::mem::offset_of!(OSMutex, link) - 16usize];
-};
 impl Default for OSMutex {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7802,39 +4626,12 @@ pub struct OSContext {
     pub gqr: [u32_; 8usize],
     pub psf: [f64_; 32usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSContext"][::core::mem::size_of::<OSContext>() - 708usize];
-    ["Alignment of OSContext"][::core::mem::align_of::<OSContext>() - 1usize];
-    ["Offset of field: OSContext::gpr"][::core::mem::offset_of!(OSContext, gpr) - 0usize];
-    ["Offset of field: OSContext::cr"][::core::mem::offset_of!(OSContext, cr) - 128usize];
-    ["Offset of field: OSContext::lr"][::core::mem::offset_of!(OSContext, lr) - 132usize];
-    ["Offset of field: OSContext::ctr"][::core::mem::offset_of!(OSContext, ctr) - 136usize];
-    ["Offset of field: OSContext::xer"][::core::mem::offset_of!(OSContext, xer) - 140usize];
-    ["Offset of field: OSContext::fpr"][::core::mem::offset_of!(OSContext, fpr) - 144usize];
-    ["Offset of field: OSContext::fpscr_pad"]
-        [::core::mem::offset_of!(OSContext, fpscr_pad) - 400usize];
-    ["Offset of field: OSContext::fpscr"][::core::mem::offset_of!(OSContext, fpscr) - 404usize];
-    ["Offset of field: OSContext::ssr0"][::core::mem::offset_of!(OSContext, ssr0) - 408usize];
-    ["Offset of field: OSContext::ssr1"][::core::mem::offset_of!(OSContext, ssr1) - 412usize];
-    ["Offset of field: OSContext::mode"][::core::mem::offset_of!(OSContext, mode) - 416usize];
-    ["Offset of field: OSContext::state"][::core::mem::offset_of!(OSContext, state) - 418usize];
-    ["Offset of field: OSContext::gqr"][::core::mem::offset_of!(OSContext, gqr) - 420usize];
-    ["Offset of field: OSContext::psf"][::core::mem::offset_of!(OSContext, psf) - 452usize];
-};
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct OSMutexQueue {
     pub head: *mut OSMutex,
     pub tail: *mut OSMutex,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSMutexQueue"][::core::mem::size_of::<OSMutexQueue>() - 8usize];
-    ["Alignment of OSMutexQueue"][::core::mem::align_of::<OSMutexQueue>() - 1usize];
-    ["Offset of field: OSMutexQueue::head"][::core::mem::offset_of!(OSMutexQueue, head) - 0usize];
-    ["Offset of field: OSMutexQueue::tail"][::core::mem::offset_of!(OSMutexQueue, tail) - 4usize];
-};
 impl Default for OSMutexQueue {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7863,30 +4660,6 @@ pub struct OSThread {
     pub stackBase: *mut u8_,
     pub stackEnd: *mut u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSThread"][::core::mem::size_of::<OSThread>() - 772usize];
-    ["Alignment of OSThread"][::core::mem::align_of::<OSThread>() - 1usize];
-    ["Offset of field: OSThread::context"][::core::mem::offset_of!(OSThread, context) - 0usize];
-    ["Offset of field: OSThread::state"][::core::mem::offset_of!(OSThread, state) - 708usize];
-    ["Offset of field: OSThread::attr"][::core::mem::offset_of!(OSThread, attr) - 710usize];
-    ["Offset of field: OSThread::suspend"][::core::mem::offset_of!(OSThread, suspend) - 712usize];
-    ["Offset of field: OSThread::priority"][::core::mem::offset_of!(OSThread, priority) - 716usize];
-    ["Offset of field: OSThread::base"][::core::mem::offset_of!(OSThread, base) - 720usize];
-    ["Offset of field: OSThread::val"][::core::mem::offset_of!(OSThread, val) - 724usize];
-    ["Offset of field: OSThread::queue"][::core::mem::offset_of!(OSThread, queue) - 728usize];
-    ["Offset of field: OSThread::link"][::core::mem::offset_of!(OSThread, link) - 732usize];
-    ["Offset of field: OSThread::queueJoin"]
-        [::core::mem::offset_of!(OSThread, queueJoin) - 740usize];
-    ["Offset of field: OSThread::mutex"][::core::mem::offset_of!(OSThread, mutex) - 744usize];
-    ["Offset of field: OSThread::queueMutex"]
-        [::core::mem::offset_of!(OSThread, queueMutex) - 748usize];
-    ["Offset of field: OSThread::linkActive"]
-        [::core::mem::offset_of!(OSThread, linkActive) - 756usize];
-    ["Offset of field: OSThread::stackBase"]
-        [::core::mem::offset_of!(OSThread, stackBase) - 764usize];
-    ["Offset of field: OSThread::stackEnd"][::core::mem::offset_of!(OSThread, stackEnd) - 768usize];
-};
 impl Default for OSThread {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -7932,19 +4705,6 @@ pub union PPCWGPipe {
     pub v_f32: f32_,
     pub v_f64: f64_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PPCWGPipe"][::core::mem::size_of::<PPCWGPipe>() - 8usize];
-    ["Alignment of PPCWGPipe"][::core::mem::align_of::<PPCWGPipe>() - 8usize];
-    ["Offset of field: PPCWGPipe::v_u8"][::core::mem::offset_of!(PPCWGPipe, v_u8) - 0usize];
-    ["Offset of field: PPCWGPipe::v_u16"][::core::mem::offset_of!(PPCWGPipe, v_u16) - 0usize];
-    ["Offset of field: PPCWGPipe::v_u32"][::core::mem::offset_of!(PPCWGPipe, v_u32) - 0usize];
-    ["Offset of field: PPCWGPipe::v_s8"][::core::mem::offset_of!(PPCWGPipe, v_s8) - 0usize];
-    ["Offset of field: PPCWGPipe::v_s16"][::core::mem::offset_of!(PPCWGPipe, v_s16) - 0usize];
-    ["Offset of field: PPCWGPipe::v_s32"][::core::mem::offset_of!(PPCWGPipe, v_s32) - 0usize];
-    ["Offset of field: PPCWGPipe::v_f32"][::core::mem::offset_of!(PPCWGPipe, v_f32) - 0usize];
-    ["Offset of field: PPCWGPipe::v_f64"][::core::mem::offset_of!(PPCWGPipe, v_f64) - 0usize];
-};
 impl Default for PPCWGPipe {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8007,19 +4767,6 @@ pub struct GXVtxAttrFmtList {
     pub type_: GXCompType,
     pub frac: u8_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXVtxAttrFmtList"][::core::mem::size_of::<GXVtxAttrFmtList>() - 13usize];
-    ["Alignment of GXVtxAttrFmtList"][::core::mem::align_of::<GXVtxAttrFmtList>() - 1usize];
-    ["Offset of field: GXVtxAttrFmtList::attr"]
-        [::core::mem::offset_of!(GXVtxAttrFmtList, attr) - 0usize];
-    ["Offset of field: GXVtxAttrFmtList::cnt"]
-        [::core::mem::offset_of!(GXVtxAttrFmtList, cnt) - 4usize];
-    ["Offset of field: GXVtxAttrFmtList::type_"]
-        [::core::mem::offset_of!(GXVtxAttrFmtList, type_) - 8usize];
-    ["Offset of field: GXVtxAttrFmtList::frac"]
-        [::core::mem::offset_of!(GXVtxAttrFmtList, frac) - 12usize];
-};
 pub const GX_QUADS: _bindgen_ty_69 = 128;
 pub const GX_TRIANGLES: _bindgen_ty_69 = 144;
 pub const GX_TRIANGLESTRIP: _bindgen_ty_69 = 152;
@@ -8082,13 +4829,6 @@ pub struct OSModuleLink {
     pub next: *mut OSModuleInfo,
     pub prev: *mut OSModuleInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSModuleLink"][::core::mem::size_of::<OSModuleLink>() - 8usize];
-    ["Alignment of OSModuleLink"][::core::mem::align_of::<OSModuleLink>() - 1usize];
-    ["Offset of field: OSModuleLink::next"][::core::mem::offset_of!(OSModuleLink, next) - 0usize];
-    ["Offset of field: OSModuleLink::prev"][::core::mem::offset_of!(OSModuleLink, prev) - 4usize];
-};
 impl Default for OSModuleLink {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8109,23 +4849,6 @@ pub struct OSModuleInfo {
     pub nameSize: u32_,
     pub version: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSModuleInfo"][::core::mem::size_of::<OSModuleInfo>() - 32usize];
-    ["Alignment of OSModuleInfo"][::core::mem::align_of::<OSModuleInfo>() - 1usize];
-    ["Offset of field: OSModuleInfo::id"][::core::mem::offset_of!(OSModuleInfo, id) - 0usize];
-    ["Offset of field: OSModuleInfo::link"][::core::mem::offset_of!(OSModuleInfo, link) - 4usize];
-    ["Offset of field: OSModuleInfo::numSections"]
-        [::core::mem::offset_of!(OSModuleInfo, numSections) - 12usize];
-    ["Offset of field: OSModuleInfo::sectionInfoOffset"]
-        [::core::mem::offset_of!(OSModuleInfo, sectionInfoOffset) - 16usize];
-    ["Offset of field: OSModuleInfo::nameOffset"]
-        [::core::mem::offset_of!(OSModuleInfo, nameOffset) - 20usize];
-    ["Offset of field: OSModuleInfo::nameSize"]
-        [::core::mem::offset_of!(OSModuleInfo, nameSize) - 24usize];
-    ["Offset of field: OSModuleInfo::version"]
-        [::core::mem::offset_of!(OSModuleInfo, version) - 28usize];
-};
 impl Default for OSModuleInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8172,15 +4895,6 @@ pub struct GXColor {
     pub b: u8_,
     pub a: u8_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXColor"][::core::mem::size_of::<GXColor>() - 4usize];
-    ["Alignment of GXColor"][::core::mem::align_of::<GXColor>() - 1usize];
-    ["Offset of field: GXColor::r"][::core::mem::offset_of!(GXColor, r) - 0usize];
-    ["Offset of field: GXColor::g"][::core::mem::offset_of!(GXColor, g) - 1usize];
-    ["Offset of field: GXColor::b"][::core::mem::offset_of!(GXColor, b) - 2usize];
-    ["Offset of field: GXColor::a"][::core::mem::offset_of!(GXColor, a) - 3usize];
-};
 pub const GX_COLOR0: _bindgen_ty_74 = 0;
 pub const GX_COLOR1: _bindgen_ty_74 = 1;
 pub const GX_ALPHA0: _bindgen_ty_74 = 2;
@@ -8203,12 +4917,6 @@ pub type PGXTlutRegion = *mut GXTlutRegion;
 pub struct GXTlutRegion {
     pub dummy: [u32_; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXTlutRegion"][::core::mem::size_of::<GXTlutRegion>() - 16usize];
-    ["Alignment of GXTlutRegion"][::core::mem::align_of::<GXTlutRegion>() - 1usize];
-    ["Offset of field: GXTlutRegion::dummy"][::core::mem::offset_of!(GXTlutRegion, dummy) - 0usize];
-};
 pub const GX_CLAMP: _bindgen_ty_76 = 0;
 pub const GX_REPEAT: _bindgen_ty_76 = 1;
 pub const GX_MIRROR: _bindgen_ty_76 = 2;
@@ -8267,15 +4975,6 @@ pub struct OSRel {
     pub section: u8_,
     pub addend: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSRel"][::core::mem::size_of::<OSRel>() - 8usize];
-    ["Alignment of OSRel"][::core::mem::align_of::<OSRel>() - 1usize];
-    ["Offset of field: OSRel::offset"][::core::mem::offset_of!(OSRel, offset) - 0usize];
-    ["Offset of field: OSRel::type_"][::core::mem::offset_of!(OSRel, type_) - 2usize];
-    ["Offset of field: OSRel::section"][::core::mem::offset_of!(OSRel, section) - 3usize];
-    ["Offset of field: OSRel::addend"][::core::mem::offset_of!(OSRel, addend) - 4usize];
-};
 pub const GX_CLAMP_NONE: _bindgen_ty_81 = 0;
 pub const GX_CLAMP_TOP: _bindgen_ty_81 = 1;
 pub const GX_CLAMP_BOTTOM: _bindgen_ty_81 = 2;
@@ -8287,12 +4986,6 @@ pub type PGXTexRegion = *mut GXTexRegion;
 pub struct GXTexRegion {
     pub dummy: [u32_; 4usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXTexRegion"][::core::mem::size_of::<GXTexRegion>() - 16usize];
-    ["Alignment of GXTexRegion"][::core::mem::align_of::<GXTexRegion>() - 1usize];
-    ["Offset of field: GXTexRegion::dummy"][::core::mem::offset_of!(GXTexRegion, dummy) - 0usize];
-};
 pub const GX_TEV_ADD: _bindgen_ty_82 = 0;
 pub const GX_TEV_SUB: _bindgen_ty_82 = 1;
 pub const GX_TEV_COMP_R8_GT: _bindgen_ty_82 = 8;
@@ -8313,13 +5006,6 @@ pub type PGXFogAdjTable = *mut GXFogAdjTable;
 pub struct GXFogAdjTable {
     pub dummy: [u16_; 10usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXFogAdjTable"][::core::mem::size_of::<GXFogAdjTable>() - 20usize];
-    ["Alignment of GXFogAdjTable"][::core::mem::align_of::<GXFogAdjTable>() - 1usize];
-    ["Offset of field: GXFogAdjTable::dummy"]
-        [::core::mem::offset_of!(GXFogAdjTable, dummy) - 0usize];
-};
 pub const GX_ZT_DISABLE: _bindgen_ty_83 = 0;
 pub const GX_ZT_ADD: _bindgen_ty_83 = 1;
 pub const GX_ZT_REPLACE: _bindgen_ty_83 = 2;
@@ -8333,14 +5019,6 @@ pub struct GXVtxDescList {
     pub attr: GXAttr,
     pub type_: GXAttrType,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXVtxDescList"][::core::mem::size_of::<GXVtxDescList>() - 8usize];
-    ["Alignment of GXVtxDescList"][::core::mem::align_of::<GXVtxDescList>() - 1usize];
-    ["Offset of field: GXVtxDescList::attr"][::core::mem::offset_of!(GXVtxDescList, attr) - 0usize];
-    ["Offset of field: GXVtxDescList::type_"]
-        [::core::mem::offset_of!(GXVtxDescList, type_) - 4usize];
-};
 pub const GX_TB_ZERO: _bindgen_ty_84 = 0;
 pub const GX_TB_ADDHALF: _bindgen_ty_84 = 1;
 pub const GX_TB_SUBHALF: _bindgen_ty_84 = 2;
@@ -8363,15 +5041,6 @@ pub struct ChunkInfo {
     pub size: u32_,
     pub padding: [u8_; 20usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ChunkInfo"][::core::mem::size_of::<ChunkInfo>() - 32usize];
-    ["Alignment of ChunkInfo"][::core::mem::align_of::<ChunkInfo>() - 1usize];
-    ["Offset of field: ChunkInfo::prev"][::core::mem::offset_of!(ChunkInfo, prev) - 0usize];
-    ["Offset of field: ChunkInfo::next"][::core::mem::offset_of!(ChunkInfo, next) - 4usize];
-    ["Offset of field: ChunkInfo::size"][::core::mem::offset_of!(ChunkInfo, size) - 8usize];
-    ["Offset of field: ChunkInfo::padding"][::core::mem::offset_of!(ChunkInfo, padding) - 12usize];
-};
 impl Default for ChunkInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8387,12 +5056,6 @@ pub type PGXLightObj = *mut GXLightObj;
 pub struct GXLightObj {
     pub dummy: [u32_; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXLightObj"][::core::mem::size_of::<GXLightObj>() - 64usize];
-    ["Alignment of GXLightObj"][::core::mem::align_of::<GXLightObj>() - 1usize];
-    ["Offset of field: GXLightObj::dummy"][::core::mem::offset_of!(GXLightObj, dummy) - 0usize];
-};
 pub const GX_TLUT_16: _bindgen_ty_86 = 1;
 pub const GX_TLUT_32: _bindgen_ty_86 = 2;
 pub const GX_TLUT_64: _bindgen_ty_86 = 4;
@@ -8500,12 +5163,6 @@ pub type PGXTlutObj = *mut GXTlutObj;
 pub struct GXTlutObj {
     pub dummy: [u32_; 3usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXTlutObj"][::core::mem::size_of::<GXTlutObj>() - 12usize];
-    ["Alignment of GXTlutObj"][::core::mem::align_of::<GXTlutObj>() - 1usize];
-    ["Offset of field: GXTlutObj::dummy"][::core::mem::offset_of!(GXTlutObj, dummy) - 0usize];
-};
 pub const GX_VTXFMT0: _bindgen_ty_94 = 0;
 pub const GX_VTXFMT1: _bindgen_ty_94 = 1;
 pub const GX_VTXFMT2: _bindgen_ty_94 = 2;
@@ -8568,39 +5225,6 @@ pub struct OSModuleHeader {
     pub align: u32_,
     pub bssAlign: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSModuleHeader"][::core::mem::size_of::<OSModuleHeader>() - 72usize];
-    ["Alignment of OSModuleHeader"][::core::mem::align_of::<OSModuleHeader>() - 1usize];
-    ["Offset of field: OSModuleHeader::info"]
-        [::core::mem::offset_of!(OSModuleHeader, info) - 0usize];
-    ["Offset of field: OSModuleHeader::bssSize"]
-        [::core::mem::offset_of!(OSModuleHeader, bssSize) - 32usize];
-    ["Offset of field: OSModuleHeader::relOffset"]
-        [::core::mem::offset_of!(OSModuleHeader, relOffset) - 36usize];
-    ["Offset of field: OSModuleHeader::impOffset"]
-        [::core::mem::offset_of!(OSModuleHeader, impOffset) - 40usize];
-    ["Offset of field: OSModuleHeader::impSize"]
-        [::core::mem::offset_of!(OSModuleHeader, impSize) - 44usize];
-    ["Offset of field: OSModuleHeader::prologSection"]
-        [::core::mem::offset_of!(OSModuleHeader, prologSection) - 48usize];
-    ["Offset of field: OSModuleHeader::epilogSection"]
-        [::core::mem::offset_of!(OSModuleHeader, epilogSection) - 49usize];
-    ["Offset of field: OSModuleHeader::unresolvedSection"]
-        [::core::mem::offset_of!(OSModuleHeader, unresolvedSection) - 50usize];
-    ["Offset of field: OSModuleHeader::padding0"]
-        [::core::mem::offset_of!(OSModuleHeader, padding0) - 51usize];
-    ["Offset of field: OSModuleHeader::prolog"]
-        [::core::mem::offset_of!(OSModuleHeader, prolog) - 52usize];
-    ["Offset of field: OSModuleHeader::epilog"]
-        [::core::mem::offset_of!(OSModuleHeader, epilog) - 56usize];
-    ["Offset of field: OSModuleHeader::unresolved"]
-        [::core::mem::offset_of!(OSModuleHeader, unresolved) - 60usize];
-    ["Offset of field: OSModuleHeader::align"]
-        [::core::mem::offset_of!(OSModuleHeader, align) - 64usize];
-    ["Offset of field: OSModuleHeader::bssAlign"]
-        [::core::mem::offset_of!(OSModuleHeader, bssAlign) - 68usize];
-};
 impl Default for OSModuleHeader {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8629,21 +5253,6 @@ pub struct ARQRequest {
     pub length: u32_,
     pub callback: ::core::option::Option<unsafe extern "C" fn(arg1: u32_)>,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ARQRequest"][::core::mem::size_of::<ARQRequest>() - 32usize];
-    ["Alignment of ARQRequest"][::core::mem::align_of::<ARQRequest>() - 1usize];
-    ["Offset of field: ARQRequest::next"][::core::mem::offset_of!(ARQRequest, next) - 0usize];
-    ["Offset of field: ARQRequest::owner"][::core::mem::offset_of!(ARQRequest, owner) - 4usize];
-    ["Offset of field: ARQRequest::type_"][::core::mem::offset_of!(ARQRequest, type_) - 8usize];
-    ["Offset of field: ARQRequest::priority"]
-        [::core::mem::offset_of!(ARQRequest, priority) - 12usize];
-    ["Offset of field: ARQRequest::source"][::core::mem::offset_of!(ARQRequest, source) - 16usize];
-    ["Offset of field: ARQRequest::dest"][::core::mem::offset_of!(ARQRequest, dest) - 20usize];
-    ["Offset of field: ARQRequest::length"][::core::mem::offset_of!(ARQRequest, length) - 24usize];
-    ["Offset of field: ARQRequest::callback"]
-        [::core::mem::offset_of!(ARQRequest, callback) - 28usize];
-};
 impl Default for ARQRequest {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8670,16 +5279,6 @@ pub struct HeapInfo {
     pub first_free: *mut ChunkInfo,
     pub first_used: *mut ChunkInfo,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of HeapInfo"][::core::mem::size_of::<HeapInfo>() - 12usize];
-    ["Alignment of HeapInfo"][::core::mem::align_of::<HeapInfo>() - 1usize];
-    ["Offset of field: HeapInfo::capacity"][::core::mem::offset_of!(HeapInfo, capacity) - 0usize];
-    ["Offset of field: HeapInfo::first_free"]
-        [::core::mem::offset_of!(HeapInfo, first_free) - 4usize];
-    ["Offset of field: HeapInfo::first_used"]
-        [::core::mem::offset_of!(HeapInfo, first_used) - 8usize];
-};
 impl Default for HeapInfo {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8726,15 +5325,6 @@ pub struct DVDDirEntry {
     pub isDir: BOOL32,
     pub name: *mut ::core::ffi::c_char,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DVDDirEntry"][::core::mem::size_of::<DVDDirEntry>() - 12usize];
-    ["Alignment of DVDDirEntry"][::core::mem::align_of::<DVDDirEntry>() - 1usize];
-    ["Offset of field: DVDDirEntry::entryNum"]
-        [::core::mem::offset_of!(DVDDirEntry, entryNum) - 0usize];
-    ["Offset of field: DVDDirEntry::isDir"][::core::mem::offset_of!(DVDDirEntry, isDir) - 4usize];
-    ["Offset of field: DVDDirEntry::name"][::core::mem::offset_of!(DVDDirEntry, name) - 8usize];
-};
 impl Default for DVDDirEntry {
     fn default() -> Self {
         let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
@@ -8907,14 +5497,6 @@ pub struct OSImportInfo {
     pub id: OSModuleID,
     pub offset: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSImportInfo"][::core::mem::size_of::<OSImportInfo>() - 8usize];
-    ["Alignment of OSImportInfo"][::core::mem::align_of::<OSImportInfo>() - 1usize];
-    ["Offset of field: OSImportInfo::id"][::core::mem::offset_of!(OSImportInfo, id) - 0usize];
-    ["Offset of field: OSImportInfo::offset"]
-        [::core::mem::offset_of!(OSImportInfo, offset) - 4usize];
-};
 pub type PGXRenderModeObj = *mut GXRenderModeObj;
 #[repr(C, packed)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -8933,37 +5515,6 @@ pub struct GXRenderModeObj {
     pub sample_pattern: [[u8_; 2usize]; 12usize],
     pub vfilter: [u8_; 7usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXRenderModeObj"][::core::mem::size_of::<GXRenderModeObj>() - 55usize];
-    ["Alignment of GXRenderModeObj"][::core::mem::align_of::<GXRenderModeObj>() - 1usize];
-    ["Offset of field: GXRenderModeObj::viTVmode"]
-        [::core::mem::offset_of!(GXRenderModeObj, viTVmode) - 0usize];
-    ["Offset of field: GXRenderModeObj::fbWidth"]
-        [::core::mem::offset_of!(GXRenderModeObj, fbWidth) - 4usize];
-    ["Offset of field: GXRenderModeObj::efbHeight"]
-        [::core::mem::offset_of!(GXRenderModeObj, efbHeight) - 6usize];
-    ["Offset of field: GXRenderModeObj::xfbHeight"]
-        [::core::mem::offset_of!(GXRenderModeObj, xfbHeight) - 8usize];
-    ["Offset of field: GXRenderModeObj::viXOrigin"]
-        [::core::mem::offset_of!(GXRenderModeObj, viXOrigin) - 10usize];
-    ["Offset of field: GXRenderModeObj::viYOrigin"]
-        [::core::mem::offset_of!(GXRenderModeObj, viYOrigin) - 12usize];
-    ["Offset of field: GXRenderModeObj::viWidth"]
-        [::core::mem::offset_of!(GXRenderModeObj, viWidth) - 14usize];
-    ["Offset of field: GXRenderModeObj::viHeight"]
-        [::core::mem::offset_of!(GXRenderModeObj, viHeight) - 16usize];
-    ["Offset of field: GXRenderModeObj::xFBmode"]
-        [::core::mem::offset_of!(GXRenderModeObj, xFBmode) - 18usize];
-    ["Offset of field: GXRenderModeObj::field_rendering"]
-        [::core::mem::offset_of!(GXRenderModeObj, field_rendering) - 22usize];
-    ["Offset of field: GXRenderModeObj::aa"]
-        [::core::mem::offset_of!(GXRenderModeObj, aa) - 23usize];
-    ["Offset of field: GXRenderModeObj::sample_pattern"]
-        [::core::mem::offset_of!(GXRenderModeObj, sample_pattern) - 24usize];
-    ["Offset of field: GXRenderModeObj::vfilter"]
-        [::core::mem::offset_of!(GXRenderModeObj, vfilter) - 48usize];
-};
 pub const GX_XF_FLUSH_NONE: _bindgen_ty_117 = 0;
 pub const GX_XF_FLUSH_SAFE: _bindgen_ty_117 = 8;
 pub type _bindgen_ty_117 = ::core::ffi::c_uint;
@@ -9018,29 +5569,6 @@ pub struct OSCalendarTime {
     pub msec: ::core::ffi::c_int,
     pub usec: ::core::ffi::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OSCalendarTime"][::core::mem::size_of::<OSCalendarTime>() - 40usize];
-    ["Alignment of OSCalendarTime"][::core::mem::align_of::<OSCalendarTime>() - 1usize];
-    ["Offset of field: OSCalendarTime::sec"][::core::mem::offset_of!(OSCalendarTime, sec) - 0usize];
-    ["Offset of field: OSCalendarTime::min"][::core::mem::offset_of!(OSCalendarTime, min) - 4usize];
-    ["Offset of field: OSCalendarTime::hour"]
-        [::core::mem::offset_of!(OSCalendarTime, hour) - 8usize];
-    ["Offset of field: OSCalendarTime::mday"]
-        [::core::mem::offset_of!(OSCalendarTime, mday) - 12usize];
-    ["Offset of field: OSCalendarTime::mon"]
-        [::core::mem::offset_of!(OSCalendarTime, mon) - 16usize];
-    ["Offset of field: OSCalendarTime::year"]
-        [::core::mem::offset_of!(OSCalendarTime, year) - 20usize];
-    ["Offset of field: OSCalendarTime::wday"]
-        [::core::mem::offset_of!(OSCalendarTime, wday) - 24usize];
-    ["Offset of field: OSCalendarTime::yday"]
-        [::core::mem::offset_of!(OSCalendarTime, yday) - 28usize];
-    ["Offset of field: OSCalendarTime::msec"]
-        [::core::mem::offset_of!(OSCalendarTime, msec) - 32usize];
-    ["Offset of field: OSCalendarTime::usec"]
-        [::core::mem::offset_of!(OSCalendarTime, usec) - 36usize];
-};
 pub type __OSInterrupt = s16;
 pub const GX_INDTEXSTAGE0: _bindgen_ty_120 = 0;
 pub const GX_INDTEXSTAGE1: _bindgen_ty_120 = 1;
@@ -9057,14 +5585,6 @@ pub struct DVDDir {
     pub location: u32_,
     pub next: u32_,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DVDDir"][::core::mem::size_of::<DVDDir>() - 12usize];
-    ["Alignment of DVDDir"][::core::mem::align_of::<DVDDir>() - 1usize];
-    ["Offset of field: DVDDir::entryNum"][::core::mem::offset_of!(DVDDir, entryNum) - 0usize];
-    ["Offset of field: DVDDir::location"][::core::mem::offset_of!(DVDDir, location) - 4usize];
-    ["Offset of field: DVDDir::next"][::core::mem::offset_of!(DVDDir, next) - 8usize];
-};
 pub const GX_TG_MTX3x4: _bindgen_ty_121 = 0;
 pub const GX_TG_MTX2x4: _bindgen_ty_121 = 1;
 pub const GX_TG_BUMP0: _bindgen_ty_121 = 2;
@@ -9128,15 +5648,6 @@ pub struct GXColorS10 {
     pub b: s16,
     pub a: s16,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GXColorS10"][::core::mem::size_of::<GXColorS10>() - 8usize];
-    ["Alignment of GXColorS10"][::core::mem::align_of::<GXColorS10>() - 1usize];
-    ["Offset of field: GXColorS10::r"][::core::mem::offset_of!(GXColorS10, r) - 0usize];
-    ["Offset of field: GXColorS10::g"][::core::mem::offset_of!(GXColorS10, g) - 2usize];
-    ["Offset of field: GXColorS10::b"][::core::mem::offset_of!(GXColorS10, b) - 4usize];
-    ["Offset of field: GXColorS10::a"][::core::mem::offset_of!(GXColorS10, a) - 6usize];
-};
 pub const GX_ITW_OFF: _bindgen_ty_127 = 0;
 pub const GX_ITW_256: _bindgen_ty_127 = 1;
 pub const GX_ITW_128: _bindgen_ty_127 = 2;
