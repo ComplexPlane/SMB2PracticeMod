@@ -2,7 +2,7 @@ use crate::app::with_app;
 use crate::mkb::{S16Vec, Vec};
 use crate::systems::draw::{self, Draw};
 use crate::systems::pad::{self, Pad, Prio};
-use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
+use crate::systems::pref::{self, BoolPref, Pref};
 use crate::utils::patch;
 use crate::{mkb, notify};
 

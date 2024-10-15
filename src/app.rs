@@ -11,7 +11,7 @@ use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
 use crate::systems::draw::Draw;
 use crate::systems::pad::Pad;
-use crate::systems::pref::{BoolPref, Pref};
+use crate::systems::pref::Pref;
 use crate::utils::relutil;
 
 pub fn with_app<F, R>(f: F) -> R

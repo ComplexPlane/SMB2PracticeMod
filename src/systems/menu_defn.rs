@@ -1,30 +1,25 @@
-extern crate alloc;
-
-use core::cell::Cell;
-
-use critical_section::Mutex;
-
 use crate::mkb;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
-use crate::utils::tinymap::TinyMapBuilder;
 
-use super::draw::{self, Draw};
+use super::draw::{self};
+use super::pad::Pad;
 use super::pref::Pref;
 
-struct MenuContext<'a> {
-    pref: &'a mut Pref,
+pub struct MenuContext<'a> {
+    pub pref: &'a mut Pref,
+    pub pad: &'a mut Pad,
     // physics: &'a mut Physics,
     // cmseg
 }
 
-enum AfterPush {
+pub enum AfterPush {
     None,
     CloseMenu,
     GoBack,
 }
 
-enum Widget {
+pub enum Widget {
     Text {
         label: &'static str,
     },
@@ -45,8 +40,8 @@ enum Widget {
     },
     GetSetCheckbox {
         label: &'static str,
-        get: fn(&MenuContext) -> bool,
-        set: fn(&MenuContext, bool),
+        get: fn(&mut MenuContext) -> bool,
+        set: fn(&mut MenuContext, bool),
     },
     FloatView {
         label: &'static str,
@@ -60,7 +55,7 @@ enum Widget {
     },
     Button {
         label: &'static str,
-        push: fn(&MenuContext),
+        push: fn(&mut MenuContext),
         after: AfterPush,
     },
     IntEdit {
@@ -86,10 +81,10 @@ enum Widget {
     },
     HideableGroup {
         widgets: &'static [Widget],
-        show_if: fn(&MenuContext) -> bool,
+        show_if: fn(&mut MenuContext) -> bool,
     },
     Custom {
-        draw: fn(&MenuContext),
+        draw: fn(&mut MenuContext),
     },
     Separator {},
 }
@@ -1279,7 +1274,7 @@ static ROOT_WIDGETS: &[Widget] = &[
     },
 ];
 
-static ROOT_MENU: Widget = Widget::Menu {
+pub static ROOT_MENU: Widget = Widget::Menu {
     label: "Main Menu",
     widgets: ROOT_WIDGETS,
 };

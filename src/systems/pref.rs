@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub enum BoolPref {
     Savestates,
     InputDisp,
@@ -49,6 +50,7 @@ pub enum BoolPref {
     CustomPhysicsDisp,
 }
 
+#[derive(Clone, Copy)]
 pub enum U8Pref {
     CmChara,
     InputDispColor,
@@ -104,6 +106,16 @@ impl Pref {
     }
 
     pub fn set_u8(&mut self, id: U8Pref, value: u8) {}
+
+    pub fn set_bool(&mut self, id: BoolPref, value: bool) {}
+
+    pub fn get_default_bool(&self, id: BoolPref) -> bool {
+        true
+    }
+
+    pub fn get_default_u8(&self, id: U8Pref) -> u8 {
+        0
+    }
 
     pub fn save(&mut self) {}
 }
