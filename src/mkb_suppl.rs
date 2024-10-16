@@ -1,3 +1,5 @@
+use core::ptr::write_volatile;
+
 use num_enum::TryFromPrimitive;
 
 use crate::mkb;
@@ -35,17 +37,17 @@ pub const CARD_FILENAME_MAX: i32 = 32;
 #[allow(non_snake_case)]
 pub fn GXPosition3f32(x: f32, y: f32, z: f32) {
     unsafe {
-        mkb::GXWGFifo.v_f32 = x;
-        mkb::GXWGFifo.v_f32 = y;
-        mkb::GXWGFifo.v_f32 = z;
+        write_volatile(&mut mkb::GXWGFifo.v_f32, x);
+        write_volatile(&mut mkb::GXWGFifo.v_f32, y);
+        write_volatile(&mut mkb::GXWGFifo.v_f32, z);
     }
 }
 
 #[allow(non_snake_case)]
 pub fn GXTexCoord2f32(s: f32, t: f32) {
     unsafe {
-        mkb::GXWGFifo.v_f32 = s;
-        mkb::GXWGFifo.v_f32 = t;
+        write_volatile(&mut mkb::GXWGFifo.v_f32, s);
+        write_volatile(&mut mkb::GXWGFifo.v_f32, t);
     }
 }
 

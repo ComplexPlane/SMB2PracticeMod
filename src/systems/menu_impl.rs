@@ -26,8 +26,8 @@ const SCREEN_HEIGHT: u32 = 480;
 const MARGIN: u32 = 20;
 const PAD: u32 = 8;
 const LINE_HEIGHT: u32 = 20;
-const LABEL_OFFSET: u32 = 2;
-const PREF_OFFSET: u32 = 25;
+const LABEL_OFFSET: u32 = 2 * draw::DEBUG_CHAR_WIDTH;
+const PREF_OFFSET: u32 = 25 * draw::DEBUG_CHAR_WIDTH;
 
 const L_R_BIND: u8 = 64; // bind id for an L+R bind
 
@@ -357,8 +357,11 @@ impl MenuImpl {
         let dir_delta: i32 = if down_repeat { 1 } else { 0 } + if up_repeat { -1 } else { 0 };
 
         let selectable = get_selectable_widget_count(menu.widgets, cx);
-        let selected_idx = self.menu_pos_map.get_mut(menu.ptr);
-        *selected_idx = (*selected_idx as i32 + dir_delta + selectable as i32) as u32 % selectable;
+        if selectable > 0 {
+            let selected_idx = self.menu_pos_map.get_mut(menu.ptr);
+            *selected_idx =
+                (*selected_idx as i32 + dir_delta + selectable as i32) as u32 % selectable;
+        }
 
         // Make selected menu item green if selection changed or menu opened
         if dir_delta != 0 || just_opened {
@@ -408,7 +411,7 @@ impl MenuImpl {
                 } else {
                     UNFOCUSED_COLOR
                 };
-                draw::debug_text(MARGIN + PAD + 2, *y, color, label);
+                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
                 draw::debug_text(
                     MARGIN + PAD + PREF_OFFSET,
                     *y,
