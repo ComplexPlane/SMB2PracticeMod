@@ -17,7 +17,7 @@ panic = "abort"
 [profile.release]
 panic = "abort"
 opt-level = "z"
-lto = true
+lto = "fat"
 
 [lib]
 crate-type = ["staticlib"]
