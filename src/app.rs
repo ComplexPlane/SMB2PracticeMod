@@ -100,11 +100,10 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //         cmseg::disp();
         //         inputdisp::disp();
         cx.menu_impl.borrow_mut().disp(pad, pref, draw);
-        cx.draw.borrow_mut().disp();
+        draw.disp();
         //         ilmark::disp();
         //         physics::disp();
-        let mut draw = cx.draw.borrow_mut();
-        cx.scratch.borrow_mut().disp(&mut draw);
+        cx.scratch.borrow_mut().disp(draw);
     })
 });
 
