@@ -111,7 +111,7 @@ impl MenuImpl {
     }
 
     fn pop_menu(&mut self) {
-        if self.menu_stack.is_empty() {
+        if self.menu_stack.len() == 1 {
             self.visible = false;
         } else {
             self.menu_stack.pop();
