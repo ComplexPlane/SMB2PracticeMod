@@ -504,7 +504,7 @@ impl MenuImpl {
                     c"(%d/%d) %s",
                     current_choice + 1,
                     choices.len(),
-                    &choice_text
+                    choice_text.as_ptr()
                 );
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
                 *y += LINE_HEIGHT;

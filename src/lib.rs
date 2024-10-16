@@ -35,7 +35,7 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
             file_buf.push('\0');
             log!(
                 c"Panic occurred in %s at %d:%d",
-                file_buf.as_ptr() as *const i8,
+                file_buf.as_ptr(),
                 loc.line(),
                 loc.column()
             );

@@ -370,7 +370,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
             let mut version_str = ArrayString::<32>::new();
             version::get_version_str(&mut version_str);
             version_str.push('\0');
-            sprintf!(buf, c"  Current version: v%s", &version_str);
+            sprintf!(buf, c"  Current version: v%s", version_str.as_ptr());
         },
     },
     Widget::Text {
