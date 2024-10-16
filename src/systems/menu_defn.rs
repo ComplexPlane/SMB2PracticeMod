@@ -1,6 +1,9 @@
-use crate::mkb;
+use arrayvec::ArrayString;
+
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
+use crate::utils::version;
+use crate::{mkb, sprintf};
 
 use super::draw::{self, Draw};
 use super::pad::Pad;
@@ -23,6 +26,9 @@ pub enum AfterPush {
 pub enum Widget {
     Text {
         label: &'static str,
+    },
+    TextFunc {
+        label_func: fn(buf: &mut ArrayString<32>, cx: &mut MenuContext),
     },
     ColoredText {
         label: &'static str,
@@ -359,10 +365,13 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Header { label: "Updates" },
-    Widget::Text {
-        // TODO
-        label: "TODO: version info",
-        // label: s_version_str,
+    Widget::TextFunc {
+        label_func: |buf, _cx| {
+            let mut version_str = ArrayString::<32>::new();
+            version::get_version_str(&mut version_str);
+            version_str.push('\0');
+            sprintf!(buf, c"  Current version: v%s", &version_str);
+        },
     },
     Widget::Text {
         label: "  For the latest version of SMB2 Practice Mod:",

@@ -4,8 +4,8 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw;
 use crate::utils::tinymap::TinyMapBuilder;
+use crate::{log, notify, sprintf};
 use crate::{mkb, utils::tinymap::TinyMap};
-use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
 use super::draw::Draw;
@@ -396,6 +396,12 @@ impl MenuImpl {
             }
             Widget::Text { label } => {
                 draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
+                *y += LINE_HEIGHT;
+            }
+            Widget::TextFunc { label_func } => {
+                let mut buf = ArrayString::<32>::new();
+                label_func(&mut buf, cx);
+                draw::debug_text(MARGIN + PAD, *y, draw::WHITE, &buf);
                 *y += LINE_HEIGHT;
             }
             Widget::ColoredText { label, color } => {

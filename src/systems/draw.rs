@@ -270,20 +270,17 @@ pub struct Draw {
 }
 
 impl Draw {
-    pub const fn new() -> Self {
-        Self {
-            notify_msg_buf: ArrayString::new_const(),
-            notify_frame_counter: 0,
-            notify_color: WHITE,
-        }
-    }
-
-    pub fn init(&self) {
+    pub fn new() -> Self {
         unsafe {
             patch::write_branch(
                 0x802aeca4 as *mut usize,
                 addr_of!(asm::full_debug_text_color) as *mut c_void,
             );
+        }
+        Self {
+            notify_msg_buf: ArrayString::new_const(),
+            notify_frame_counter: 0,
+            notify_color: WHITE,
         }
     }
 

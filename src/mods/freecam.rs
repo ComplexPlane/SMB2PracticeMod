@@ -20,6 +20,9 @@ pub struct Freecam {
 
 impl Freecam {
     pub fn new() -> Self {
+        unsafe {
+            patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
+        }
         Self::default()
     }
 
@@ -139,12 +142,6 @@ impl Freecam {
                 .borrow_mut()
                 .on_camera_func(camera, ball, pref, pad);
         });
-    }
-
-    pub fn init(&mut self) {
-        unsafe {
-            patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
-        }
     }
 
     pub fn on_camera_func(

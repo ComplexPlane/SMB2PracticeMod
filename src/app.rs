@@ -192,11 +192,9 @@ impl AppContext {
     // For now, must be called after non-movable stuff (hooks) have been permanently allocated
     pub fn init(&self) {
         with_app(|cx| {
-            // heap::init();
+            // TODO see if we can move these into constructor functions
             // cardio::init();
-            cx.pref.borrow_mut().init();
             // unlock::init();
-            cx.draw.borrow_mut().init();
             // Tetris::get_instance().init();
             // physics::init();
             // iw::init();
@@ -207,7 +205,6 @@ impl AppContext {
             // ballcolor::init();
             // sfx::init();
             // menu_defn::init();
-            cx.freecam.borrow_mut().init();
             // hide::init();
             // ilmark::init();
             // camera::init();
