@@ -354,7 +354,7 @@ impl MenuImpl {
         // Update selected menu item
         let down_repeat = cx.pad.dir_repeat(Dir::Down, Prio::High);
         let up_repeat = cx.pad.dir_repeat(Dir::Up, Prio::High);
-        let dir_delta: i32 = if down_repeat { -1 } else { 0 } + if up_repeat { 1 } else { 0 };
+        let dir_delta: i32 = if down_repeat { 1 } else { 0 } + if up_repeat { -1 } else { 0 };
 
         let selectable = get_selectable_widget_count(menu.widgets, cx);
         let selected_idx = self.menu_pos_map.get_mut(menu.ptr);
@@ -466,7 +466,7 @@ impl MenuImpl {
             Widget::FloatView { label, get } => {
                 draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
                 let mut float_str = ArrayString::<16>::new();
-                sprintf!(float_str, "%.3Ef", get() as f64);
+                sprintf!(float_str, c"%.3Ef", get() as f64);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, draw::GREEN, &float_str);
                 *y += LINE_HEIGHT;
             }
@@ -492,7 +492,7 @@ impl MenuImpl {
                 let mut buf = ArrayString::<16>::new();
                 sprintf!(
                     buf,
-                    "(%d/%d) %s",
+                    c"(%d/%d) %s",
                     current_choice + 1,
                     choices.len(),
                     &choice_text
@@ -525,7 +525,7 @@ impl MenuImpl {
                 };
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
                 let mut buf = ArrayString::<8>::new();
-                sprintf!(buf, "%d", cx.pref.get_u8(*pref) as u32);
+                sprintf!(buf, c"%d", cx.pref.get_u8(*pref) as u32);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
@@ -552,8 +552,8 @@ impl MenuImpl {
 
                 let mut buf = ArrayString::<16>::new();
                 match decimals {
-                    2 => sprintf!(buf, "%0.2f", display as f64),
-                    _ => sprintf!(buf, "%0.3f", display as f64),
+                    2 => sprintf!(buf, c"%0.2f", display as f64),
+                    _ => sprintf!(buf, c"%0.3f", display as f64),
                 }
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
 
