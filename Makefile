@@ -9,7 +9,8 @@ GCIPACK := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/gcipack/gcipack.py
 BANNERFILE := $(CURDIR)/images/banner_us.raw
 ICONFILE := $(CURDIR)/images/icon_us.raw
 
-CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
+CARGO_BASE := -Z build-std=core,alloc,panic_abort -Z build-std-features=panic_immediate_abort --target powerpc-unknown-eabi.json --release
+RUSTFLAGS := -Zlocation-detail=none -Zfmt-debug=none
 LINKER_FLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
 all: SMB2PracticeMod.gci
@@ -26,7 +27,7 @@ src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
 
 .PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 $(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs
-	cargo +nightly build $(CARGO_BASE)
+	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly build $(CARGO_BASE)
 
 SMB2PracticeMod.elf: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
 	@$(DEVKITPPC)/bin/powerpc-eabi-gcc $(LINKER_FLAGS) -o $@ $<
