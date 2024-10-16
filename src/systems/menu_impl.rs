@@ -9,7 +9,7 @@ use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
 use super::draw::Draw;
-use super::menu_defn::{self, AfterPush, MenuContext, Widget};
+use super::menu_defn::{self, AfterPush, MenuContext, Widget, ROOT_MENU};
 use super::pad::{Dir, Pad, Prio};
 use super::pref::{Pref, U8Pref};
 
@@ -60,6 +60,7 @@ fn insert_menu_widgets<const N: usize>(
 
 fn get_menu_widget_sel_map<const N: usize>() -> TinyMap<usize, u32, N> {
     let mut builder: TinyMapBuilder<usize, u32, N> = TinyMapBuilder::new();
+    builder.insert(&ROOT_MENU as *const _ as usize, 0);
     if let Widget::Menu { widgets, .. } = menu_defn::ROOT_MENU {
         insert_menu_widgets(widgets, &mut builder);
     }
@@ -73,16 +74,27 @@ pub struct MenuImpl {
     intedit_tick: i32,
     edit_tick: i32,
     binding: BindingState,
-    menu_pos_map: TinyMap<usize, u32, 32>,
+    menu_pos_map: TinyMap<usize, u32, 64>,
     binds: Binds,
 }
 
 impl MenuImpl {
     pub fn new() -> Self {
+        let mut menu_stack = ArrayVec::<Menu, 5>::new();
+        match ROOT_MENU {
+            Widget::Menu { label, widgets } => {
+                menu_stack.push(Menu {
+                    label,
+                    widgets,
+                    ptr: &ROOT_MENU as *const _ as usize,
+                });
+            }
+            _ => {}
+        }
         Self {
             visible: false,
             cursor_frame: 0,
-            menu_stack: ArrayVec::new(),
+            menu_stack,
             intedit_tick: 0,
             edit_tick: 0,
             binding: BindingState::default(),
@@ -290,9 +302,13 @@ impl MenuImpl {
 
         // TODO save settings on close
         // TODO save menu position as settings
-        let toggle = self
-            .binds
-            .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), true);
+        // TODO load bind from settings
+        // let toggle = self
+        //     .binds
+        //     .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), true);
+        let toggle = cx
+            .pad
+            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High);
         if toggle {
             self.visible ^= toggle;
         } else if cx
