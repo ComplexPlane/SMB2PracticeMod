@@ -35,7 +35,7 @@ struct ModLink {
     // The other mod calls `malloc_func` from assembly during bootstrapping to
     // load itself, then uses `heap_info` and its own heap functions for other
     // heap usage at runtime.
-    malloc_func: extern "C" fn(u32),
+    malloc_func: extern "C" fn(u32) -> *mut c_void,
     heap_info: *const mkb::HeapInfo,
 
     // As of ModLink v1.1.0: pointer to remainder of ModLink structure
