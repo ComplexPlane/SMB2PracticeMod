@@ -10,6 +10,18 @@ macro_rules! pref_defn {
     ($( // Line
        $id:literal => $pref_name:ident: $(u8 = $u8_default:literal)? $(bool = $bool_default:literal)?
     ),+ $(,)?) => {
+        const ALL_PREF_IDS: &[PrefId] = &[
+            $(PrefId::$pref_name),*
+        ];
+
+        const BOOL_PREF_COUNT: usize = [$(
+            $(swallow!((), $bool_default),)?
+        )+].len();
+
+        const U8_PREF_COUNT: usize = [$(
+            $(swallow!((), $u8_default),)?
+        )+].len();
+
         #[derive(Clone, Copy)]
         enum PrefId {
             $( // Line
@@ -33,65 +45,6 @@ macro_rules! pref_defn {
             )+
         }
 
-        const fn get_bit_array_len(flags: usize) -> usize {
-            let mut n = flags / 8;
-            if flags % 8 != 0 {
-                n += 1;
-            }
-            n
-        }
-
-        const BOOL_PREF_COUNT: usize = [$(
-            $(swallow!((), $bool_default),)?
-        )+].len();
-
-        const U8_PREF_COUNT: usize = [$(
-            $(swallow!((), $u8_default),)?
-        )+].len();
-
-        struct DefaultBool {
-            id: BoolPref,
-            value: bool,
-        }
-
-        struct DefaultU8 {
-            id: U8Pref,
-            value: u8,
-        }
-
-        #[derive(Clone, Default)]
-        struct PrefState {
-            bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
-            u8s: [u8; U8_PREF_COUNT],
-        }
-
-        #[repr(C, packed)]
-        struct FileHeader {
-            magic: [u8; 4], // "APMP"
-            semver_major: u16,
-            semver_minor: u16,
-            semver_patch: u16,
-            num_prefs: u16,
-        }
-
-        #[repr(C, packed)]
-        struct PrefEntry {
-            id: u16,
-            data: u16, // Either the preference value itself (if <= 2 bytes), or offset into buffer
-                       // prefs, etc
-        }
-
-        const ALL_PREF_IDS: &[PrefId] = &[
-            $(PrefId::$pref_name),*
-        ];
-
-        struct Pref {
-            curr_state: PrefState,
-            prev_state: PrefState,
-            default_state: PrefState,
-            pref_buf: Option<Vec<u8>>,
-        }
-
         impl Pref {
             fn pref_id_to_bool_pref(id: PrefId) -> Option<BoolPref> {
                 match id {
@@ -112,7 +65,6 @@ macro_rules! pref_defn {
             }
         }
     };
-    (@swallow $good:tt, %garbage:tt) => {$good}
 }
 
 macro_rules! swallow {
@@ -210,8 +162,55 @@ pref_defn!(
 
 const PREF_BUF_SIZE: usize = size_of::<FileHeader>() + ALL_PREF_IDS.len() * size_of::<PrefEntry>();
 
+const fn get_bit_array_len(flags: usize) -> usize {
+    let mut n = flags / 8;
+    if flags % 8 != 0 {
+        n += 1;
+    }
+    n
+}
+
+struct DefaultBool {
+    id: BoolPref,
+    value: bool,
+}
+
+struct DefaultU8 {
+    id: U8Pref,
+    value: u8,
+}
+
+#[derive(Clone, Default)]
+struct PrefState {
+    bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
+    u8s: [u8; U8_PREF_COUNT],
+}
+
+#[repr(C, packed)]
+struct FileHeader {
+    magic: [u8; 4], // "APMP"
+    semver_major: u16,
+    semver_minor: u16,
+    semver_patch: u16,
+    num_prefs: u16,
+}
+
+#[repr(C, packed)]
+struct PrefEntry {
+    id: u16,
+    data: u16, // Either the preference value itself (if <= 2 bytes), or offset into buffer
+               // prefs, etc
+}
+
 fn to_byte_slice<T>(v: &T) -> &[u8] {
     unsafe { from_raw_parts((v as *const T) as *const u8, size_of::<T>()) }
+}
+
+struct Pref {
+    curr_state: PrefState,
+    prev_state: PrefState,
+    default_state: PrefState,
+    pref_buf: Option<Vec<u8>>,
 }
 
 impl Pref {
