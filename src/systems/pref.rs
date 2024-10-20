@@ -4,9 +4,16 @@ use arrayvec::ArrayVec;
 
 extern crate alloc;
 
+use crate::mkb_suppl::CARDResult;
+use alloc::vec;
 use alloc::vec::Vec;
 use num_enum::TryFromPrimitive;
 use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout, Unaligned};
+
+use super::{
+    cardio::CardIo,
+    draw::{self, Draw},
+};
 
 macro_rules! pref_defn {
     ($( // Line
@@ -180,6 +187,7 @@ pref_defn!(
 
 const PREF_BUF_SIZE: usize =
     size_of::<FileHeader>() + ALL_PREF_IDS.len() * size_of::<FilePrefEntry>();
+const PREF_FILENAME: &str = "apmp";
 
 struct DefaultBool {
     id: BoolPref,
@@ -241,22 +249,38 @@ where
 }
 
 pub struct Pref {
+    cardio: CardIo,
     curr_state: PrefState,
     prev_state: PrefState,
     default_state: PrefState,
     pref_buf: Option<Vec<u8>>,
+    error_loading: bool,
 }
 
 impl Pref {
-    pub fn new() -> Pref {
-        let mut buf = Vec::<u8>::new();
-        buf.reserve_exact(PREF_BUF_SIZE);
-        Pref {
+    pub fn new() -> Self {
+        let mut pref = Self {
+            cardio: CardIo::new(),
             curr_state: PrefState::default(),
             prev_state: PrefState::default(),
             default_state: PrefState::default(),
-            pref_buf: Some(buf),
+            pref_buf: Some(vec![0; PREF_BUF_SIZE]),
+            error_loading: false,
+        };
+
+        pref.load_default_prefs();
+        pref.prev_state = pref.default_state.clone();
+        match pref.cardio.read_file(PREF_FILENAME) {
+            Ok(mut buf) => {
+                pref.import_from_card_buf(&mut buf);
+            }
+            Err(card_result) => {
+                if card_result != CARDResult::NoFile {
+                    pref.error_loading = true;
+                }
+            }
         }
+        pref
     }
 
     fn export_to_card_buf(mut buf: &mut [u8]) {
@@ -385,9 +409,18 @@ impl Pref {
         self.curr_state = self.default_state.clone();
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, draw: &mut Draw) {
+        self.cardio.tick();
         // Runs after all prefs have been set on a frame
         self.prev_state = self.curr_state.clone();
+
+        if self.error_loading {
+            draw.notify(
+                draw::RED,
+                "Error loading settings from Card A, setting defaults",
+            );
+            self.error_loading = false;
+        }
     }
 
     pub fn save(&mut self) {

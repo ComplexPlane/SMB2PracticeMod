@@ -46,7 +46,7 @@ fn to_card_result(raw_result: c_long) -> CARDResult {
     (raw_result as i32).try_into().unwrap()
 }
 
-struct CardIo {
+pub struct CardIo {
     card_work_area: Vec<u8>, // TODO point to wsmod's card work area if it exists
     card_file_info: mkb::CARDFileInfo,
 }

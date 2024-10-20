@@ -72,7 +72,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // validate::tick();
         cx.scratch.borrow_mut().tick(draw);
         // // Pref runs last to track the prefs from the previous frame
-        pref.tick();
+        pref.tick(draw);
     });
 });
 
