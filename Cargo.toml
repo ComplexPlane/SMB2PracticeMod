@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/main", "crates/proc-macros"]
+members = ["crates/main"]
 
 [profile.dev]
 panic = "abort"
