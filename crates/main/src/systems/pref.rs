@@ -56,8 +56,10 @@ macro_rules! pref_defn {
         #[derive(Clone, Copy)]
         #[repr(u16)]
         pub enum U8Pref {
-            $(
-                $($pref_name = swallow!($id, ($($u8_default)?)),)?
+            $( // Line
+                // Making a doc attr is a way to use u8_default to select the right repetition, while
+                // producing a valid syntax element
+                $(#[doc = core::concat!("default=", core::stringify!($($u8_default)?))] $pref_name,)?
             )+
         }
 
@@ -65,7 +67,7 @@ macro_rules! pref_defn {
         #[repr(u16)]
         pub enum BoolPref {
             $(
-                $($pref_name = swallow!($id, ($($bool_default)?)),)?
+                $(#[doc = core::concat!("default=", core::stringify!($($bool_default)?))] $pref_name,)?
             )+
         }
 
