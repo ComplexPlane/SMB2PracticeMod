@@ -3,15 +3,8 @@ extern crate alloc;
 use core::{alloc::GlobalAlloc, cell::UnsafeCell, ptr::null_mut};
 
 use crate::mkb;
+use crate::utils::math;
 use crate::utils::relutil;
-
-fn round_up_pow2(n: usize, align: usize) -> usize {
-    (n + (align - 1)) & !(align - 1)
-}
-
-fn round_down_pow2(n: usize, align: usize) -> usize {
-    n & !(align - 1)
-}
 
 unsafe fn extract_chunk(
     list: *mut mkb::ChunkInfo,
@@ -49,9 +42,9 @@ pub struct Heap {
 }
 
 unsafe fn make_heap_info() -> mkb::HeapInfo {
-    let start = round_up_pow2(*((0x8000452C) as *const usize), 32);
+    let start = math::round_up_pow2(*((0x8000452C) as *const usize), 32);
     let end_ptr = relutil::compute_mainloop_reldata_boundary(start);
-    let end = round_down_pow2(end_ptr, 32);
+    let end = math::round_down_pow2(end_ptr, 32);
     let size = end - start;
 
     core::ptr::write_bytes(start as *mut u8, 0, size);
@@ -97,9 +90,9 @@ unsafe impl GlobalAlloc for Heap {
 
         // Enlarge size to the smallest possible chunk size
         // We currently don't respect starting address alignments > 32
-        let new_size = round_up_pow2(layout.size(), layout.align());
-        let new_size = new_size + round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32);
-        let new_size = round_up_pow2(new_size, 32);
+        let new_size = math::round_up_pow2(layout.size(), layout.align());
+        let new_size = new_size + math::round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32);
+        let new_size = math::round_up_pow2(new_size, 32);
 
         // Find a memory area large enough
         let mut temp_chunk = heap_info.first_free;
@@ -117,7 +110,7 @@ unsafe impl GlobalAlloc for Heap {
 
         let leftover_size = (*temp_chunk).size as isize - new_size as isize;
 
-        let min_size = round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32) + 32;
+        let min_size = math::round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32) + 32;
 
         // Check if the current chunk can be split into two pieces
         if leftover_size < min_size as isize {
@@ -151,7 +144,7 @@ unsafe impl GlobalAlloc for Heap {
 
         // Add the header size to the chunk
         let allocated_memory = (temp_chunk as usize
-            + round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32))
+            + math::round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32))
             as *mut u8;
 
         core::ptr::write_bytes(allocated_memory, 0, layout.size());
@@ -162,7 +155,7 @@ unsafe impl GlobalAlloc for Heap {
         let heap_info = &mut **self.heap_info.get();
         let ptr_raw = ptr as usize;
 
-        let header_size = round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32);
+        let header_size = math::round_up_pow2(core::mem::size_of::<mkb::ChunkInfo>(), 32);
 
         // Remove the header size from ptr, as the value stored in the list does not include it
         let temp_chunk = (ptr_raw - header_size) as *mut mkb::ChunkInfo;

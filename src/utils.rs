@@ -1,5 +1,6 @@
 pub mod hook;
 pub mod log;
+pub mod math;
 pub mod modlink;
 pub mod patch;
 pub mod ppc;
