@@ -362,7 +362,11 @@ impl Pref {
     }
 
     fn set_bool_pref(bool_pref: BoolPref, state: &mut PrefState, val: bool) {
-        state.bools[bool_pref as usize / 8] |= 1 << (bool_pref as usize % 8);
+        if val {
+            state.bools[bool_pref as usize / 8] |= 1 << (bool_pref as usize % 8);
+        } else {
+            state.bools[bool_pref as usize / 8] &= !(1 << (bool_pref as usize % 8));
+        }
     }
 
     fn set_u8_pref(u8_pref: U8Pref, state: &mut PrefState, val: u8) {

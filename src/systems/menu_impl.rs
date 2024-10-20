@@ -103,14 +103,13 @@ impl MenuImpl {
         }
     }
 
-    fn push_menu(&mut self, menu: Menu) {
+    fn push_menu(&mut self, menu: Menu, cx: &mut MenuContext) {
         self.menu_stack.push(menu);
         self.cursor_frame = 0;
-        // TODO
-        // pad::reset_dir_repeat();
+        cx.pad.reset_dir_repeat();
     }
 
-    fn pop_menu(&mut self) {
+    fn pop_menu(&mut self, cx: &mut MenuContext) {
         if self.menu_stack.len() == 1 {
             self.visible = false;
         } else {
@@ -118,8 +117,7 @@ impl MenuImpl {
         }
         self.cursor_frame = 0;
 
-        // TODO
-        // pad::reset_dir_repeat();
+        cx.pad.reset_dir_repeat();
     }
 
     fn handle_widget_bind(&mut self, cx: &mut MenuContext) {
@@ -176,11 +174,14 @@ impl MenuImpl {
             }
             Widget::Menu { label, widgets } => {
                 if a_pressed {
-                    self.push_menu(Menu {
-                        label,
-                        widgets,
-                        ptr: selected_widget as *const _ as usize,
-                    });
+                    self.push_menu(
+                        Menu {
+                            label,
+                            widgets,
+                            ptr: selected_widget as *const _ as usize,
+                        },
+                        cx,
+                    );
                 }
             }
             Widget::Choose { pref, choices, .. } => {
@@ -205,7 +206,7 @@ impl MenuImpl {
                     push(cx);
                     match after {
                         AfterPush::CloseMenu => self.visible = false,
-                        AfterPush::GoBack => self.pop_menu(),
+                        AfterPush::GoBack => self.pop_menu(cx),
                         AfterPush::None => {}
                     }
                 }
@@ -315,7 +316,7 @@ impl MenuImpl {
             .pad
             .button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High)
         {
-            self.pop_menu();
+            self.pop_menu(cx);
         }
         let just_opened = self.visible && toggle;
         if just_opened {

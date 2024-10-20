@@ -319,7 +319,7 @@ impl Pad {
                 && ((t as u32 - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0)
     }
 
-    fn reset_dir_repeat(&mut self) {
+    pub fn reset_dir_repeat(&mut self) {
         self.dir_down_time = [0; 8];
     }
 
