@@ -26,11 +26,11 @@ elf2rel:
 	cd $(ELF2REL_BUILD) && cmake ..
 	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 
-src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
+crates/main/src/mkb.rs: cppsrc/mkb/mkb2_ghidra.h
 	bindgen $< --use-core --with-derive-default --no-layout-tests -o $@ -- --target=powerpc-unknown-eabi
 
 .PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
-$(RUST_BUILD_DIR)/libsmb2_practice_mod.a: src/mkb.rs
+$(RUST_BUILD_DIR)/libsmb2_practice_mod.a: crates/main/src/mkb.rs
 	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly build $(CARGO_BASE)
 
 SMB2PracticeMod.elf: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
