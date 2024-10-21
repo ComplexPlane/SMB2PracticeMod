@@ -1,4 +1,4 @@
-use core::ptr::write_volatile;
+use core::{ffi::c_long, ptr::write_volatile};
 
 use num_enum::TryFromPrimitive;
 
@@ -28,6 +28,10 @@ pub enum CARDResult {
     Encoding = -13,
     Canceled = -14,
     FatalError = -128,
+}
+
+pub fn to_card_result(raw_result: c_long) -> CARDResult {
+    (raw_result as i32).try_into().unwrap()
 }
 
 pub const CARD_READ_SIZE: i32 = 512;
