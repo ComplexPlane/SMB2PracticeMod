@@ -4,7 +4,7 @@
 // TODO handle converting string arguments to C strings
 #[macro_export]
 macro_rules! log {
-    ($fmt:literal $(, $arg:expr)*) => {{
+    ($fmt:literal $(, $arg:expr)* $(,)?) => {{
         unsafe {
             mkb::OSReport(c"[pracmod] ".as_ptr() as *mut _);
             // I'm not sure it's possible to expand arg in a safe context

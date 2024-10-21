@@ -3,6 +3,8 @@
 // Required for global_asm! to work on PowerPC
 #![feature(asm_experimental_arch)]
 
+extern crate alloc;
+
 mod app;
 mod asm;
 #[allow(dead_code)]
@@ -30,18 +32,24 @@ use systems::heap;
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
     match panic_info.location() {
+        // Panic code (including string formatting stuff) is only included with `make debug`,
+        // should all be removed in the normal size-optimized `make` build
         Some(loc) => {
-            let mut file_buf = ArrayString::<128>::from(loc.file()).unwrap();
-            file_buf.push('\0');
-            log!(
-                c"Panic occurred in %s at %d:%d",
-                file_buf.as_ptr(),
+            let mut formatted_str = alloc::fmt::format(format_args!(
+                "Panic occurred in {} at {}:{}: {}",
+                loc.file(),
                 loc.line(),
-                loc.column()
-            );
+                loc.column(),
+                panic_info.message(),
+            ));
+            formatted_str.push('\0');
+            log!(c"%s", formatted_str.as_ptr());
         }
         None => {
-            log!(c"Panic occurred")
+            let mut formatted_str =
+                alloc::fmt::format(format_args!("Panic: {}", panic_info.message(),));
+            formatted_str.push('\0');
+            log!(c"%s", formatted_str.as_ptr());
         }
     }
     loop {}
