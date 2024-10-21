@@ -9,6 +9,7 @@ use crate::hook;
 use crate::mkb;
 use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
+use crate::systems::binds::Binds;
 use crate::systems::draw::Draw;
 use crate::systems::heap;
 use crate::systems::menu_impl::MenuImpl;
@@ -47,10 +48,10 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
 
-        // // These run after all controller inputs have been processed on the current frame,
-        // // to ensure lowest input delay
+        // These run after all controller inputs have been processed on the current frame,
+        // to ensure lowest input delay
         pad.tick();
-        // binds::tick();
+        cx.binds.borrow_mut().tick(pad);
         // cardio::tick();
         // unlock::tick();
         // iw::tick();
@@ -168,6 +169,7 @@ pub struct AppContext {
     pub pref: RefCell<Pref>,
     pub freecam: RefCell<Freecam>,
     pub menu_impl: RefCell<MenuImpl>,
+    pub binds: RefCell<Binds>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -189,6 +191,7 @@ impl AppContext {
             pref: RefCell::new(Pref::new(&modlink)),
             freecam: RefCell::new(Freecam::new()),
             menu_impl: RefCell::new(MenuImpl::new()),
+            binds: RefCell::new(Binds::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
