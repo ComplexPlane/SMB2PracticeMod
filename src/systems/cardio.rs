@@ -5,9 +5,7 @@ use core::ffi::c_long;
 use core::ffi::c_void;
 use core::ptr::null_mut;
 
-use crate::log;
 use crate::mkb;
-use crate::mkb_suppl;
 use crate::mkb_suppl::to_card_result;
 use crate::mkb_suppl::CARDResult;
 use crate::mkb_suppl::CARD_READ_SIZE;

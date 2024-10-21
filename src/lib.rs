@@ -25,7 +25,6 @@ use core::{
     ptr::addr_of,
 };
 
-use arrayvec::ArrayString;
 use critical_section::RawRestoreState;
 use systems::heap;
 

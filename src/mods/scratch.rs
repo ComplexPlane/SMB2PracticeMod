@@ -1,4 +1,4 @@
-use crate::{notify, systems::draw};
+use crate::systems::draw;
 
 pub struct Scratch {}
 

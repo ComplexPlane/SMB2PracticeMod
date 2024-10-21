@@ -4,7 +4,7 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw;
 use crate::utils::tinymap::TinyMapBuilder;
-use crate::{log, notify, sprintf};
+use crate::{notify, sprintf};
 use crate::{mkb, utils::tinymap::TinyMap};
 
 use super::binds::{self, Binds};
