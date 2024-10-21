@@ -283,7 +283,13 @@ __pycache__/
 /.clangd/
 /*.elf
 /*.rel
+/*.gci
 
 /.cache/**
 /compile_commands.json
 .DS_Store
+
+
+# Added by cargo
+
+/target
