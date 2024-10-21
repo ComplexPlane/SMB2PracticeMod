@@ -5,6 +5,7 @@ use core::ffi::c_long;
 use core::ffi::c_void;
 use core::ptr::null_mut;
 
+use crate::log;
 use crate::mkb;
 use crate::mkb_suppl;
 use crate::mkb_suppl::to_card_result;
@@ -114,9 +115,11 @@ impl CardIo {
                 return Err(res);
             }
             // Open file
+            let mut file_name_buf = ArrayString::<16>::from(file_name).unwrap();
+            file_name_buf.push('\0');
             res = to_card_result(mkb::CARDOpen(
                 0,
-                file_name.as_ptr() as *mut i8,
+                file_name_buf.as_ptr() as *mut i8,
                 &mut self.card_file_info,
             ));
             if res != CARDResult::Ready {
