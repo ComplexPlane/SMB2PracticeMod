@@ -284,7 +284,7 @@ impl Pref {
         pref
     }
 
-    fn export_to_card_buf(mut buf: &mut [u8]) {
+    fn export_to_card_buf(&self, mut buf: &mut [u8]) {
         buf.fill(0);
 
         let header = FileHeader {
@@ -302,10 +302,10 @@ impl Pref {
                 value: 0,
             };
 
-            if let Some(bool_value) = Self::pref_id_to_bool_pref(pref_id) {
-                entry.value = bool_value as u16;
-            } else if let Some(u8_value) = Self::pref_id_to_u8_pref(pref_id) {
-                entry.value = u8_value as u16;
+            if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
+                entry.value = self.get_bool(bool_pref) as u16;
+            } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
+                entry.value = self.get_u8(u8_pref) as u16;
             } else {
                 panic!("Failed to determine preference type");
             }
@@ -448,7 +448,7 @@ impl Pref {
         // Start a write if a save is pending and a write is not pending
         if self.save_queued {
             if let Some(mut buf) = self.pref_buf.take() {
-                Self::export_to_card_buf(&mut buf);
+                self.export_to_card_buf(&mut buf);
                 self.cardio.begin_write_file(PREF_FILENAME, buf);
                 self.save_queued = false;
             }
