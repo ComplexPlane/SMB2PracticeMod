@@ -246,7 +246,7 @@ fn read_from_byte_slice<T>(buf: &[u8]) -> (&T, &[u8])
 where
     T: FromBytes + Immutable + KnownLayout,
 {
-    let val = T::ref_from_bytes(buf).unwrap();
+    let val = T::ref_from_bytes(&buf[0..size_of::<T>()]).unwrap();
     (val, &buf[size_of::<T>()..])
 }
 
