@@ -49,7 +49,7 @@ macro_rules! pref_defn {
         #[repr(u16)]
         enum PrefId {
             $( // Line
-                $pref_name,
+                $pref_name = $id,
             )*
         }
 
