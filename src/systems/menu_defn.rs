@@ -54,8 +54,7 @@ pub enum Widget {
     },
     FloatView {
         label: &'static str,
-        // TODO take state we can derive float from
-        get: fn() -> f32,
+        get: fn(&mut MenuContext) -> f32,
     },
     Choose {
         label: &'static str,
@@ -1235,9 +1234,9 @@ static RESET_PREFS_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Confirm",
-        push: |_| {
-            // TODO: Implement pref::reset_all_defaults();
-            // TODO: Implement pref::save();
+        push: |cx| {
+            cx.pref.reset_all_defaults();
+            cx.pref.save();
         },
         after: AfterPush::GoBack,
     },

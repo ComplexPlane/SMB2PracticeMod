@@ -4,8 +4,8 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw;
 use crate::utils::tinymap::TinyMapBuilder;
-use crate::{notify, sprintf};
 use crate::{mkb, utils::tinymap::TinyMap};
+use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
 use super::draw::Draw;
@@ -473,7 +473,7 @@ impl MenuImpl {
             Widget::FloatView { label, get } => {
                 draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
                 let mut float_str = ArrayString::<16>::new();
-                sprintf!(float_str, c"%.3Ef", get() as f64);
+                sprintf!(float_str, c"%.3Ef", get(cx) as f64);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, draw::GREEN, &float_str);
                 *y += LINE_HEIGHT;
             }
