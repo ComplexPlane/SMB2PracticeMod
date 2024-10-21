@@ -36,18 +36,21 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
         // should all be removed in the normal size-optimized `make` build
         Some(loc) => {
             let mut formatted_str = alloc::fmt::format(format_args!(
-                "Panic occurred in {} at {}:{}: {}",
+                "Panic in {} at {}:{}",
                 loc.file(),
                 loc.line(),
                 loc.column(),
-                panic_info.message(),
             ));
+            formatted_str.push('\0');
+            log!(c"%s", formatted_str.as_ptr());
+
+            let mut formatted_str = alloc::fmt::format(format_args!("{}", panic_info.message()));
             formatted_str.push('\0');
             log!(c"%s", formatted_str.as_ptr());
         }
         None => {
             let mut formatted_str =
-                alloc::fmt::format(format_args!("Panic: {}", panic_info.message(),));
+                alloc::fmt::format(format_args!("Panic: {}", panic_info.message()));
             formatted_str.push('\0');
             log!(c"%s", formatted_str.as_ptr());
         }
