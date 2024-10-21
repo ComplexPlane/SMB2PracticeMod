@@ -96,7 +96,7 @@ macro_rules! swallow {
 }
 
 pref_defn!(
-    1 => Savestates: bool,
+    1 => Savestates: bool = true,
     2 => InputDisp: bool,
     3 => InputDispCenterLocation: bool,
     4 => TimerShowRTA: bool = true,
