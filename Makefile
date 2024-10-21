@@ -51,3 +51,4 @@ clean:
 	@cargo clean
 	@rm -f SMB2PracticeMod.elf SMB2PracticeMod.rel SMB2PracticeMod.gci
 	@rm -rf $(ELF2REL_BUILD)
+	@rm -rf $(CURDIR)/build
