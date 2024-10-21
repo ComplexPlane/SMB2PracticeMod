@@ -499,7 +499,7 @@ impl MenuImpl {
                 let mut choice_text = ArrayString::<16>::from(choices[current_choice]).unwrap();
                 choice_text.push('\0');
 
-                let mut buf = ArrayString::<16>::new();
+                let mut buf = ArrayString::<32>::new();
                 sprintf!(
                     buf,
                     c"(%d/%d) %s",
