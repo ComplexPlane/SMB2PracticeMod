@@ -55,4 +55,4 @@ pub fn GXTexCoord2f32(s: f32, t: f32) {
     }
 }
 
-pub const CARD_WORKAREA_SIZE: u32 = 5 * 8 * 1024;
+pub const CARD_WORKAREA_SIZE: usize = 5 * 8 * 1024;

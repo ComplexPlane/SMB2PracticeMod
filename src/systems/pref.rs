@@ -260,7 +260,7 @@ pub struct Pref {
 impl Pref {
     pub fn new(modlink: &ModLink) -> Self {
         let mut pref = Self {
-            cardio: CardIo::new(),
+            cardio: CardIo::new(modlink),
             curr_state: PrefState::default(),
             prev_state: PrefState::default(),
             default_state: PrefState::default(),

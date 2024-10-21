@@ -12,6 +12,7 @@ use crate::mkb_suppl::CARD_READ_SIZE;
 use crate::mkb_suppl::CARD_WORKAREA_SIZE;
 use crate::utils::math;
 use crate::utils::math::round_up_pow2;
+use crate::utils::modlink::ModLink;
 use alloc::vec;
 use alloc::vec::Vec;
 use arrayvec::ArrayString;
@@ -65,15 +66,23 @@ struct WriteRequest {
 }
 
 pub struct CardIo {
-    card_work_area: Vec<u8>, // TODO point to wsmod's card work area if it exists
+    card_work_area: &'static mut [u8],
     card_file_info: mkb::CARDFileInfo,
     write_request: Option<WriteRequest>,
 }
 
 impl CardIo {
-    pub fn new() -> Self {
+    pub fn new(modlink: &ModLink) -> Self {
+        let card_work_area = unsafe {
+            match modlink.card_work_area {
+                Some(work_area) => {
+                    core::slice::from_raw_parts_mut(work_area as *mut u8, CARD_WORKAREA_SIZE)
+                }
+                None => vec![0; CARD_WORKAREA_SIZE].leak(),
+            }
+        };
         Self {
-            card_work_area: vec![0; CARD_WORKAREA_SIZE as usize],
+            card_work_area,
             card_file_info: mkb::CARDFileInfo::default(),
             write_request: None,
         }
