@@ -4,6 +4,7 @@ use core::{alloc::GlobalAlloc, cell::UnsafeCell, ptr::null_mut};
 
 use crate::mkb;
 use crate::utils::math;
+use crate::utils::modlink::ModLink;
 use crate::utils::relutil;
 
 unsafe fn extract_chunk(
@@ -62,11 +63,17 @@ unsafe fn make_heap_info() -> mkb::HeapInfo {
 }
 
 impl Heap {
-    pub fn init(&self) {
-        // TODO optionally use wsmod's heap
+    pub fn init(&self, modlink: &ModLink) {
         unsafe {
-            *self.owned_heap_info.get() = make_heap_info();
-            *self.heap_info.get() = self.owned_heap_info.get();
+            match modlink.heap_info {
+                Some(heap_info) => {
+                    *self.heap_info.get() = heap_info;
+                }
+                None => {
+                    *self.owned_heap_info.get() = make_heap_info();
+                    *self.heap_info.get() = self.owned_heap_info.get();
+                }
+            }
         }
     }
 

@@ -26,7 +26,6 @@ use core::{
 };
 
 use critical_section::RawRestoreState;
-use systems::heap;
 
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
@@ -69,7 +68,6 @@ extern "C" fn _epilog() {}
 extern "C" fn _unresolved() {}
 
 unsafe fn init() {
-    heap::HEAP.init();
     perform_assembly_patches();
     app::init();
 

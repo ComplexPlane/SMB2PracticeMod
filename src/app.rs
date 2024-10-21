@@ -10,9 +10,11 @@ use crate::mkb;
 use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
 use crate::systems::draw::Draw;
+use crate::systems::heap;
 use crate::systems::menu_impl::MenuImpl;
 use crate::systems::pad::Pad;
 use crate::systems::pref::Pref;
+use crate::utils::modlink::ModLink;
 use crate::utils::relutil;
 
 pub fn with_app<F, R>(f: F) -> R
@@ -171,6 +173,8 @@ pub struct AppContext {
 
 impl AppContext {
     fn new() -> Self {
+        let modlink = ModLink::new();
+        heap::HEAP.init(&modlink);
         Self {
             padread_hook: RefCell::new(PADReadHook::new()),
             process_inputs_hook: RefCell::new(ProcessInputsHook::new()),
@@ -182,7 +186,7 @@ impl AppContext {
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
-            pref: RefCell::new(Pref::new()),
+            pref: RefCell::new(Pref::new(&modlink)),
             freecam: RefCell::new(Freecam::new()),
             menu_impl: RefCell::new(MenuImpl::new()),
             scratch: RefCell::new(Scratch::new()),

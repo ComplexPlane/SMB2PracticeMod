@@ -6,11 +6,11 @@ use crate::sprintf;
 
 // Do NOT edit this, it's used directly in the modlink format
 #[repr(C)]
-#[derive(PartialOrd, Ord, PartialEq, Eq)]
+#[derive(PartialOrd, Ord, PartialEq, Eq, Clone, Copy)]
 pub struct SemVer {
-    major: u16,
-    minor: u16,
-    patch: u16,
+    pub major: u16,
+    pub minor: u16,
+    pub patch: u16,
 }
 
 #[derive(PartialEq, Eq, Ord)]

@@ -1,6 +1,6 @@
 extern crate alloc;
 
-use crate::mkb_suppl::CARDResult;
+use crate::{mkb_suppl::CARDResult, utils::modlink::ModLink};
 use alloc::vec;
 use alloc::vec::Vec;
 use num_enum::TryFromPrimitive;
@@ -258,7 +258,7 @@ pub struct Pref {
 }
 
 impl Pref {
-    pub fn new() -> Self {
+    pub fn new(modlink: &ModLink) -> Self {
         let mut pref = Self {
             cardio: CardIo::new(),
             curr_state: PrefState::default(),
