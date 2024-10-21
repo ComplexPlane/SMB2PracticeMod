@@ -1,7 +1,3 @@
-use core::slice::from_raw_parts;
-
-use arrayvec::ArrayVec;
-
 extern crate alloc;
 
 use crate::mkb_suppl::CARDResult;
@@ -190,6 +186,7 @@ pref_defn!(
 const PREF_BUF_SIZE: usize =
     size_of::<FileHeader>() + ALL_PREF_IDS.len() * size_of::<FilePrefEntry>();
 const PREF_FILENAME: &str = "apmp";
+const PREF_MAGIC: [u8; 4] = [b'A', b'P', b'M', b'P'];
 
 struct DefaultBool {
     id: BoolPref,
@@ -256,7 +253,7 @@ pub struct Pref {
     prev_state: PrefState,
     default_state: PrefState,
     pref_buf: Option<Vec<u8>>,
-    error_loading: bool,
+    import_error: Option<&'static str>,
     save_queued: bool,
 }
 
@@ -268,7 +265,7 @@ impl Pref {
             prev_state: PrefState::default(),
             default_state: PrefState::default(),
             pref_buf: Some(vec![0; PREF_BUF_SIZE]),
-            error_loading: false,
+            import_error: None,
             save_queued: false,
         };
 
@@ -280,7 +277,7 @@ impl Pref {
             }
             Err(card_result) => {
                 if card_result != CARDResult::NoFile {
-                    pref.error_loading = true;
+                    pref.import_error = Some("Failed to load prefs");
                 }
             }
         }
@@ -291,7 +288,7 @@ impl Pref {
         buf.fill(0);
 
         let header = FileHeader {
-            magic: [b'A', b'P', b'M', b'P'],
+            magic: PREF_MAGIC,
             semver_major: 1,
             semver_minor: 0,
             semver_patch: 0,
@@ -320,7 +317,12 @@ impl Pref {
     fn import_from_card_buf(&mut self, mut buf: &[u8]) {
         let header;
         (header, buf) = read_from_byte_slice::<FileHeader>(buf);
-        if header.semver_major > 1 {
+        if header.magic != PREF_MAGIC {
+            self.import_error = Some("Failed to load prefs: invalid magic");
+            return;
+        }
+        if header.semver_major != 1 {
+            self.import_error = Some("Failed to load prefs: invalid version");
             return; // Preferences file format too new for this mod
         }
 
@@ -422,12 +424,9 @@ impl Pref {
         // Runs after all prefs have been set on a frame
         self.prev_state = self.curr_state.clone();
 
-        if self.error_loading {
-            draw.notify(
-                draw::RED,
-                "Error loading settings from Card A, setting defaults",
-            );
-            self.error_loading = false;
+        if let Some(err) = self.import_error {
+            draw.notify(draw::RED, err);
+            self.import_error = None;
         }
 
         // Check if a pending card write has completed
@@ -448,7 +447,8 @@ impl Pref {
 
         // Start a write if a save is pending and a write is not pending
         if self.save_queued {
-            if let Some(buf) = self.pref_buf.take() {
+            if let Some(mut buf) = self.pref_buf.take() {
+                Self::export_to_card_buf(&mut buf);
                 self.cardio.begin_write_file(PREF_FILENAME, buf);
                 self.save_queued = false;
             }
