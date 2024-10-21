@@ -325,7 +325,7 @@ impl Draw {
 
 #[macro_export]
 macro_rules! notify {
-    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)*) => {
+    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)* $(,)?) => {
         let mut buf = arrayvec::ArrayString::<64>::new();
         $crate::sprintf!(buf, $format $(, $arg)*);
         $cx.notify($color, &buf);

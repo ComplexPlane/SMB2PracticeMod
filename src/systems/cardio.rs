@@ -173,6 +173,7 @@ impl CardIo {
     }
 
     // Returns the written buffer back and potential error when completed, or None if still writing
+    // or not writing at all
     pub fn get_write_result(&mut self) -> Option<(Vec<u8>, CARDResult)> {
         // We could avoid matching twice by taking then matching, but that would require moving the
         // matched write request back into self.write_request if not done
@@ -203,16 +204,19 @@ impl CardIo {
     fn tick_state_machine(&mut self) {
         let req = self.write_request.as_mut().unwrap();
         unsafe {
-            // Try again next tick if busy, or finish for any result other than Ready
-            req.card_result = to_card_result(mkb::CARDGetResultCode(0));
-            if req.card_result == CARDResult::Busy {
-                return;
-            }
-            if req.card_result != CARDResult::Ready {
-                req.state = WriteState::Done;
-                // I'm assuming that trying to unmount when mounting failed is OK
-                mkb::CARDUnmount(0);
-                return;
+            // Card result is NoCard before it's mounted
+            if req.state != WriteState::Probe {
+                // Try again next tick if busy, or finish for any result other than Ready
+                req.card_result = to_card_result(mkb::CARDGetResultCode(0));
+                if req.card_result == CARDResult::Busy {
+                    return;
+                }
+                if req.card_result != CARDResult::Ready {
+                    req.state = WriteState::Done;
+                    // I'm assuming that trying to unmount when mounting failed is OK
+                    mkb::CARDUnmount(0);
+                    return;
+                }
             }
 
             match req.state {
