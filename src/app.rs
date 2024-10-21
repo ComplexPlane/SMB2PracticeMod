@@ -47,17 +47,18 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         let pad = &mut cx.pad.borrow_mut();
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
+        let binds = &mut cx.binds.borrow_mut();
 
         // These run after all controller inputs have been processed on the current frame,
         // to ensure lowest input delay
         pad.tick();
-        cx.binds.borrow_mut().tick(pad);
+        binds.tick(pad);
         // cardio::tick();
         // unlock::tick();
         // iw::tick();
         // savest_ui::tick();
         // anything checking for pref changes should run after menu_impl.tick()
-        cx.menu_impl.borrow_mut().tick(pad, pref, draw);
+        cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds);
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
         // physics::tick();  // anything editing physics presets must run before physics::tick()
@@ -86,6 +87,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         let pad = &mut cx.pad.borrow_mut();
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
+        let binds = &mut cx.binds.borrow_mut();
 
         // // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
         //         // elements. The original screenshot call is nopped.
@@ -102,7 +104,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //         ilbattle::disp();
         //         cmseg::disp();
         //         inputdisp::disp();
-        cx.menu_impl.borrow_mut().disp(pad, pref, draw);
+        cx.menu_impl.borrow_mut().disp(pad, pref, draw, binds);
         draw.disp();
         //         ilmark::disp();
         //         physics::disp();

@@ -75,7 +75,6 @@ pub struct MenuImpl {
     edit_tick: i32,
     binding: BindingState,
     menu_pos_map: TinyMap<usize, u32, 64>,
-    binds: Binds,
 }
 
 impl MenuImpl {
@@ -99,7 +98,6 @@ impl MenuImpl {
             edit_tick: 0,
             binding: BindingState::default(),
             menu_pos_map: get_menu_widget_sel_map(),
-            binds: Binds::new(),
         }
     }
 
@@ -265,15 +263,15 @@ impl MenuImpl {
                     self.binding = BindingState::Active;
                 } else if self.binding == BindingState::Active {
                     // set new bind
-                    let encoding_type = self.binds.get_encoding_type();
+                    let encoding_type = cx.binds.get_encoding_type();
                     if encoding_type != binds::EncodingType::Invalid
                         && !(encoding_type == binds::EncodingType::SinglePress && *required_chord)
                     {
-                        let value = self.binds.get_current_encoding();
+                        let value = cx.binds.get_current_encoding();
                         cx.pref.set_u8(*pref, value);
                         cx.pref.save();
+                        self.binding = BindingState::Inactive;
                     }
-                    self.binding = BindingState::Inactive;
                 } else if a_pressed {
                     // enter rebind mode
                     self.binding = BindingState::Requested;
@@ -293,23 +291,22 @@ impl MenuImpl {
         }
     }
 
-    pub fn tick(&mut self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw) {
-        let cx = &mut MenuContext { pad, pref, draw };
+    pub fn tick(&mut self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw, binds: &mut Binds) {
+        let cx = &mut MenuContext {
+            pad,
+            pref,
+            draw,
+            binds,
+        };
 
         if self.binding == BindingState::Active {
             self.handle_widget_bind(cx);
             return;
         }
 
-        // TODO save settings on close
-        // TODO save menu position as settings
-        // TODO load bind from settings
-        // let toggle = self
-        //     .binds
-        //     .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), true);
         let toggle = cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High);
+            .binds
+            .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), Prio::High, cx.pad);
         if toggle {
             self.visible ^= toggle;
         } else if cx
@@ -320,7 +317,7 @@ impl MenuImpl {
         }
         let just_opened = self.visible && toggle;
         if just_opened {
-            // TODO: pad::reset_dir_repeat();
+            cx.pad.reset_dir_repeat();
             self.cursor_frame = 0;
         }
 
@@ -338,7 +335,7 @@ impl MenuImpl {
             ) && input != L_R_BIND
             {
                 let mut buf = ArrayString::<32>::new();
-                self.binds.get_bind_str(input, &mut buf);
+                cx.binds.get_bind_str(input, &mut buf);
                 buf.push('\0');
                 notify!(
                     cx.draw,
@@ -595,7 +592,7 @@ impl MenuImpl {
 
                 let input = cx.pref.get_u8(*pref);
                 let mut buf = ArrayString::<32>::new();
-                self.binds.get_bind_str(input, &mut buf);
+                cx.binds.get_bind_str(input, &mut buf);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, bind_color, &buf);
 
                 *y += LINE_HEIGHT;
@@ -664,8 +661,13 @@ impl MenuImpl {
         );
     }
 
-    pub fn disp(&self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw) {
-        let cx = &mut MenuContext { pad, pref, draw };
+    pub fn disp(&self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw, binds: &mut Binds) {
+        let cx = &mut MenuContext {
+            pad,
+            pref,
+            draw,
+            binds,
+        };
 
         if !self.visible {
             return;

@@ -5,6 +5,7 @@ use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
 use crate::{mkb, sprintf};
 
+use super::binds::Binds;
 use super::draw::{self, Draw};
 use super::pad::Pad;
 use super::pref::Pref;
@@ -13,6 +14,7 @@ pub struct MenuContext<'a> {
     pub pad: &'a mut Pad,
     pub pref: &'a mut Pref,
     pub draw: &'a mut Draw,
+    pub binds: &'a mut Binds,
     // physics: &'a mut Physics,
     // cmseg
 }
