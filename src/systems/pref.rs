@@ -257,6 +257,7 @@ pub struct Pref {
     default_state: PrefState,
     pref_buf: Option<Vec<u8>>,
     error_loading: bool,
+    save_queued: bool,
 }
 
 impl Pref {
@@ -268,6 +269,7 @@ impl Pref {
             default_state: PrefState::default(),
             pref_buf: Some(vec![0; PREF_BUF_SIZE]),
             error_loading: false,
+            save_queued: false,
         };
 
         pref.load_default_prefs();
@@ -427,9 +429,33 @@ impl Pref {
             );
             self.error_loading = false;
         }
+
+        // Check if a pending card write has completed
+        if matches!(self.pref_buf, None) {
+            if let Some((buf, card_result)) = self.cardio.get_write_result() {
+                self.pref_buf = Some(buf);
+                match card_result {
+                    CARDResult::Ready => {}
+                    CARDResult::NoEnt | CARDResult::InsSpace => {
+                        draw.notify(draw::RED, "Saving settings failed: card A full");
+                    }
+                    _ => {
+                        draw.notify(draw::RED, "Saving settings failed: card A unknown error");
+                    }
+                }
+            }
+        }
+
+        // Start a write if a save is pending and a write is not pending
+        if self.save_queued {
+            if let Some(buf) = self.pref_buf.take() {
+                self.cardio.begin_write_file(PREF_FILENAME, buf);
+                self.save_queued = false;
+            }
+        }
     }
 
     pub fn save(&mut self) {
-        // TODO
+        self.save_queued = true;
     }
 }
