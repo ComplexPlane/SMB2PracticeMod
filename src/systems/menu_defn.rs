@@ -351,6 +351,8 @@ static RUMBLE_WIDGETS: &[Widget] = &[
     },
 ];
 
+static GIT_HASH_STR: &str = concat!("  Git commit:      ", env!("GIT_HASH"));
+
 static ABOUT_WIDGETS: &[Widget] = &[
     Widget::Header {
         label: "SMB2 Practice Mod",
@@ -372,6 +374,9 @@ static ABOUT_WIDGETS: &[Widget] = &[
             version::get_version_str(&mut version_str);
             sprintf!(buf, c"  Current version: v%s", cstr!(version_str));
         },
+    },
+    Widget::Text {
+        label: GIT_HASH_STR,
     },
     Widget::Text {
         label: "  For the latest version of SMB2 Practice Mod:",
