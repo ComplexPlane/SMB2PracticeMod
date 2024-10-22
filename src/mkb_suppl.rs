@@ -30,6 +30,29 @@ pub enum CARDResult {
     FatalError = -128,
 }
 
+impl CARDResult {
+    pub fn to_str(&self) -> &'static str {
+        match self {
+            CARDResult::Ready => "Ready",
+            CARDResult::Busy => "Busy",
+            CARDResult::WrongDevice => "Wrong Device",
+            CARDResult::NoCard => "No Card",
+            CARDResult::NoFile => "No File",
+            CARDResult::IoError => "IO Error",
+            CARDResult::Broken => "Broken",
+            CARDResult::Exist => "Exist",
+            CARDResult::NoEnt => "No Ent",
+            CARDResult::InsSpace => "Ins Space",
+            CARDResult::NoPerm => "No Perm",
+            CARDResult::Limit => "Limit",
+            CARDResult::NameTooLong => "Name Too Long",
+            CARDResult::Encoding => "Encoding",
+            CARDResult::Canceled => "Canceled",
+            CARDResult::FatalError => "Fatal Error",
+        }
+    }
+}
+
 pub fn to_card_result(raw_result: c_long) -> CARDResult {
     (raw_result as i32).try_into().unwrap()
 }

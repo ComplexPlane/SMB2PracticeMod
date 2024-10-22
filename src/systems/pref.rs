@@ -1,8 +1,9 @@
 extern crate alloc;
 
-use crate::{mkb_suppl::CARDResult, utils::modlink::ModLink};
+use crate::{mkb_suppl::CARDResult, notify, utils::modlink::ModLink};
 use alloc::vec;
 use alloc::vec::Vec;
+use arrayvec::ArrayString;
 use num_enum::TryFromPrimitive;
 use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout, Unaligned};
 
@@ -433,14 +434,15 @@ impl Pref {
         if matches!(self.pref_buf, None) {
             if let Some((buf, card_result)) = self.cardio.get_write_result() {
                 self.pref_buf = Some(buf);
-                match card_result {
-                    CARDResult::Ready => {}
-                    CARDResult::NoEnt | CARDResult::InsSpace => {
-                        draw.notify(draw::RED, "Saving settings failed: card A full");
-                    }
-                    _ => {
-                        draw.notify(draw::RED, "Saving settings failed: card A unknown error");
-                    }
+                let mut result_buf = ArrayString::<16>::from(card_result.to_str()).unwrap();
+                result_buf.push('\0');
+                if !matches!(card_result, CARDResult::Ready) {
+                    notify!(
+                        draw,
+                        draw::RED,
+                        "Failed to save settings: %s",
+                        result_buf.as_ptr()
+                    );
                 }
             }
         }
