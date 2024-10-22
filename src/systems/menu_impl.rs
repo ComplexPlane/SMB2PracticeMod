@@ -4,8 +4,8 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
+use crate::{cstr, new_cstr, notify, sprintf};
 use crate::{mkb, utils::tinymap::TinyMap};
-use crate::{notify, sprintf};
 
 use super::binds::{self, Binds};
 use super::draw::Draw;
@@ -336,13 +336,12 @@ impl MenuImpl {
             {
                 let mut buf = ArrayString::<32>::new();
                 cx.binds.get_bind_str(input, &mut buf);
-                buf.push('\0');
                 notify!(
                     cx.draw,
                     draw::RED,
                     NotifyDuration::Long,
                     c"Use %s to toggle menu",
-                    buf.as_ptr() as *mut c_char
+                    cstr!(buf),
                 );
             }
             return;
@@ -494,16 +493,13 @@ impl MenuImpl {
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
                 let current_choice = cx.pref.get_u8(*pref) as usize;
 
-                let mut choice_text = ArrayString::<16>::from(choices[current_choice]).unwrap();
-                choice_text.push('\0');
-
                 let mut buf = ArrayString::<32>::new();
                 sprintf!(
                     buf,
                     c"(%d/%d) %s",
                     current_choice + 1,
                     choices.len(),
-                    choice_text.as_ptr()
+                    new_cstr!(choices[current_choice], 32),
                 );
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
                 *y += LINE_HEIGHT;

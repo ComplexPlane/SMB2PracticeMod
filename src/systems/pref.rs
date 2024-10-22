@@ -1,7 +1,7 @@
 extern crate alloc;
 
 use crate::{
-    mkb_suppl::CARDResult, notify, systems::draw::NotifyDuration, utils::modlink::ModLink,
+    mkb_suppl::CARDResult, new_cstr, notify, systems::draw::NotifyDuration, utils::modlink::ModLink,
 };
 use alloc::vec;
 use alloc::vec::Vec;
@@ -436,15 +436,13 @@ impl Pref {
         if matches!(self.pref_buf, None) {
             if let Some((buf, card_result)) = self.cardio.get_write_result() {
                 self.pref_buf = Some(buf);
-                let mut result_buf = ArrayString::<16>::from(card_result.to_str()).unwrap();
-                result_buf.push('\0');
                 if !matches!(card_result, CARDResult::Ready) {
                     notify!(
                         draw,
                         draw::RED,
                         NotifyDuration::Long,
-                        "Failed to save settings: %s",
-                        result_buf.as_ptr()
+                        c"Failed to save settings: %s",
+                        new_cstr!(card_result.to_str(), 16),
                     );
                 }
             }

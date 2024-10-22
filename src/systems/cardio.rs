@@ -10,6 +10,7 @@ use crate::mkb_suppl::to_card_result;
 use crate::mkb_suppl::CARDResult;
 use crate::mkb_suppl::CARD_READ_SIZE;
 use crate::mkb_suppl::CARD_WORKAREA_SIZE;
+use crate::new_cstr;
 use crate::utils::math;
 use crate::utils::math::round_up_pow2;
 use crate::utils::modlink::ModLink;
@@ -122,11 +123,9 @@ impl CardIo {
                 return Err(res);
             }
             // Open file
-            let mut file_name_buf = ArrayString::<16>::from(file_name).unwrap();
-            file_name_buf.push('\0');
             res = to_card_result(mkb::CARDOpen(
                 0,
-                file_name_buf.as_ptr() as *mut i8,
+                new_cstr!(file_name, 16),
                 &mut self.card_file_info,
             ));
             if res != CARDResult::Ready {
