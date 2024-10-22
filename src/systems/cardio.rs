@@ -210,115 +210,163 @@ impl CardIo {
         }
     }
 
+    fn finish_write(req: &mut WriteRequest, res: CARDResult) {
+        unsafe {
+            mkb::CARDUnmount(0); // I'm assuming that trying to unmount when mounting failed is OK
+            req.card_result = res;
+            req.state = WriteState::Done;
+        }
+    }
+
     fn tick_state_machine(&mut self) {
         let req = self.write_request.as_mut().unwrap();
-        unsafe {
-            // Card result is NoCard before it's mounted
-            if req.state != WriteState::Probe {
-                // Try again next tick if busy, or finish for any result other than Ready
-                req.card_result = to_card_result(mkb::CARDGetResultCode(0));
-                if req.card_result == CARDResult::Busy {
-                    return;
-                }
-                if req.card_result != CARDResult::Ready {
-                    req.state = WriteState::Done;
-                    // I'm assuming that trying to unmount when mounting failed is OK
-                    mkb::CARDUnmount(0);
-                    return;
-                }
-            }
 
-            match req.state {
-                WriteState::Probe => {
-                    let mut sector_size: c_long = 0;
-                    req.card_result =
-                        to_card_result(mkb::CARDProbeEx(0, null_mut(), &raw mut sector_size));
-                    req.write_size = round_up_pow2(req.buf.len(), sector_size as usize);
+        match req.state {
+            WriteState::Probe => {
+                let mut sector_size: c_long = 0;
+                let res = unsafe {
+                    to_card_result(mkb::CARDProbeEx(0, core::ptr::null_mut(), &mut sector_size))
+                };
+                if res == CARDResult::Busy {
+                    return;
+                }
+                if res != CARDResult::Ready {
+                    Self::finish_write(req, res);
+                    return;
+                }
+
+                req.write_size =
+                    (req.buf.len() + sector_size as usize - 1) & !(sector_size as usize - 1);
+                unsafe {
                     mkb::CARDMountAsync(
                         0,
                         self.card_work_area.as_mut_ptr() as *mut c_void,
-                        null_mut(),
-                        null_mut(),
+                        core::ptr::null_mut(),
+                        core::ptr::null_mut(),
                     );
-                    req.state = WriteState::Mount;
                 }
-                WriteState::Mount => {
-                    // Try to open the file
-                    req.card_result = to_card_result(mkb::CARDOpen(
+                req.state = WriteState::Mount;
+            }
+
+            WriteState::Mount => {
+                let res = unsafe { to_card_result(mkb::CARDGetResultCode(0)) };
+                if res == CARDResult::Busy {
+                    return;
+                }
+                if res != CARDResult::Ready {
+                    Self::finish_write(req, res);
+                    return;
+                }
+
+                // Try to open the file
+                let res = unsafe {
+                    to_card_result(mkb::CARDOpen(
                         0,
-                        req.file_name.as_ptr() as *mut i8,
+                        new_cstr!(req.file_name.as_str(), 16),
                         &mut self.card_file_info,
-                    ));
-                    if req.card_result == CARDResult::Ready {
-                        // Check if file is too small
-                        let mut stat = mkb::CARDStat::default();
-                        req.card_result = to_card_result(mkb::CARDGetStatus(
-                            0,
-                            self.card_file_info.fileNo,
-                            &mut stat,
-                        ));
-                        if req.card_result != CARDResult::Ready {
-                            req.state = WriteState::Done;
-                        } else if (stat.length as usize) < req.write_size {
-                            // Recreate file
-                            mkb::CARDFastDeleteAsync(0, self.card_file_info.fileNo, null_mut());
-                            req.state = WriteState::Delete;
-                        } else {
-                            // Card opened successfully, proceed directly to writing
+                    ))
+                };
+                if res == CARDResult::Ready {
+                    // Check if file is too small
+                    let mut stat = mkb::CARDStat::default();
+                    let res = unsafe {
+                        to_card_result(mkb::CARDGetStatus(0, self.card_file_info.fileNo, &mut stat))
+                    };
+                    if res != CARDResult::Ready {
+                        Self::finish_write(req, res);
+                    } else if (stat.length as usize) < req.write_size {
+                        // Recreate file
+                        unsafe {
+                            mkb::CARDFastDeleteAsync(
+                                0,
+                                self.card_file_info.fileNo,
+                                core::ptr::null_mut(),
+                            );
+                        }
+                        req.state = WriteState::Delete;
+                    } else {
+                        // Card opened successfully, proceed directly to writing
+                        unsafe {
                             mkb::CARDWriteAsync(
                                 &mut self.card_file_info,
                                 req.buf.as_ptr() as *mut c_void,
                                 req.write_size as c_long,
                                 0,
-                                null_mut(),
+                                core::ptr::null_mut(),
                             );
-                            req.state = WriteState::Write;
                         }
-                    } else if req.card_result == CARDResult::NoFile {
-                        // Create new file
+                        req.state = WriteState::Write;
+                    }
+                } else if res == CARDResult::NoFile {
+                    // Create new file
+                    unsafe {
                         mkb::CARDCreateAsync(
                             0,
-                            req.file_name.as_ptr() as *mut i8,
+                            new_cstr!(req.file_name.as_str(), 16),
                             req.write_size as u32,
                             &mut self.card_file_info,
-                            null_mut(),
+                            core::ptr::null_mut(),
                         );
-                        req.state = WriteState::Create;
-                    } else {
-                        // Some other error, fail entire write operation
-                        req.state = WriteState::Done;
                     }
-                }
-                WriteState::Create => {
-                    mkb::CARDWriteAsync(
-                        &mut self.card_file_info,
-                        req.buf.as_mut_ptr() as *mut c_void,
-                        req.buf.len() as c_long,
-                        0,
-                        null_mut(),
-                    );
-                    req.state = WriteState::Write;
-                }
-                WriteState::Delete => {
-                    mkb::CARDCreateAsync(
-                        0,
-                        req.file_name.as_ptr() as *mut i8,
-                        req.write_size as u32,
-                        &mut self.card_file_info,
-                        null_mut(),
-                    );
                     req.state = WriteState::Create;
-                }
-                WriteState::Write => {
-                    // Wait until the CARDResult is not Busy, which is checked earlier
-                    if req.card_result == CARDResult::Ready {
-                        req.state = WriteState::Done;
-                    }
-                }
-                WriteState::Done => {
-                    // Do nothing until the result is read
+                } else {
+                    // Some other error, fail entire write operation
+                    Self::finish_write(req, res);
                 }
             }
+
+            WriteState::Create => {
+                let res = unsafe { to_card_result(mkb::CARDGetResultCode(0)) };
+                if res == CARDResult::Busy {
+                    return;
+                }
+                if res != CARDResult::Ready {
+                    Self::finish_write(req, res);
+                    return;
+                }
+
+                unsafe {
+                    mkb::CARDWriteAsync(
+                        &mut self.card_file_info,
+                        req.buf.as_ptr() as *mut c_void,
+                        req.write_size as c_long,
+                        0,
+                        core::ptr::null_mut(),
+                    );
+                }
+                req.state = WriteState::Write;
+            }
+
+            WriteState::Delete => {
+                let res = unsafe { to_card_result(mkb::CARDGetResultCode(0)) };
+                if res == CARDResult::Busy {
+                    return;
+                }
+                if res != CARDResult::Ready {
+                    Self::finish_write(req, res);
+                    return;
+                }
+                unsafe {
+                    mkb::CARDCreateAsync(
+                        0,
+                        new_cstr!(req.file_name.as_str(), 16),
+                        req.write_size as u32,
+                        &mut self.card_file_info,
+                        core::ptr::null_mut(),
+                    );
+                }
+                req.state = WriteState::Create;
+            }
+
+            WriteState::Write => {
+                let res = unsafe { to_card_result(mkb::CARDGetResultCode(0)) };
+                if res != CARDResult::Busy {
+                    // Either succeeded or failed, either way we're done
+                    Self::finish_write(req, res);
+                }
+            }
+
+            _ => {}
         }
     }
 }
