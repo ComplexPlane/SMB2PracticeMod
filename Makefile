@@ -44,7 +44,7 @@ SMB2PracticeMod.gci: SMB2PracticeMod.rel
 
 .PHONY: fix
 fix:
-	cargo +nightly fix $(CARGO_BASE) --allow-dirty
+	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly fix $(CARGO_BASE) --allow-dirty
 
 .PHONY: clean
 clean:
