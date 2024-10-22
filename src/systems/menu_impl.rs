@@ -1,4 +1,3 @@
-
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
@@ -166,7 +165,7 @@ impl MenuImpl {
             Widget::GetSetCheckbox { get, set, .. } => {
                 if a_pressed || y_pressed {
                     let curr = get(cx);
-                    set(cx, !curr);
+                    set(!curr, cx);
                 }
             }
             Widget::Menu { label, widgets } => {

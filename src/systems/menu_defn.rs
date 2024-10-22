@@ -50,7 +50,7 @@ pub enum Widget {
     GetSetCheckbox {
         label: &'static str,
         get: fn(&mut MenuContext) -> bool,
-        set: fn(&mut MenuContext, bool),
+        set: fn(bool, &mut MenuContext),
     },
     FloatView {
         label: &'static str,
@@ -332,22 +332,22 @@ static RUMBLE_WIDGETS: &[Widget] = &[
     Widget::GetSetCheckbox {
         label: "Controller 1 Rumble",
         get: |_| rumble_get(0),
-        set: |_, enable| rumble_set(0, enable),
+        set: |enable, _| rumble_set(0, enable),
     },
     Widget::GetSetCheckbox {
         label: "Controller 2 Rumble",
         get: |_| rumble_get(1),
-        set: |_, enable| rumble_set(1, enable),
+        set: |enable, _| rumble_set(1, enable),
     },
     Widget::GetSetCheckbox {
         label: "Controller 3 Rumble",
         get: |_| rumble_get(2),
-        set: |_, enable| rumble_set(2, enable),
+        set: |enable, _| rumble_set(2, enable),
     },
     Widget::GetSetCheckbox {
         label: "Controller 4 Rumble",
         get: |_| rumble_get(3),
-        set: |_, enable| rumble_set(3, enable),
+        set: |enable, _| rumble_set(3, enable),
     },
 ];
 
