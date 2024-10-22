@@ -9,6 +9,7 @@ use crate::hook;
 use crate::mkb;
 use crate::mods::freecam::Freecam;
 use crate::mods::scratch::Scratch;
+use crate::mods::unlock::Unlock;
 use crate::systems::binds::Binds;
 use crate::systems::draw::Draw;
 use crate::systems::heap;
@@ -54,7 +55,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         pad.tick();
         binds.tick(pad);
         // cardio::tick();
-        // unlock::tick();
+        cx.unlock.borrow_mut().tick();
         // iw::tick();
         // savest_ui::tick();
         // anything checking for pref changes should run after menu_impl.tick()
@@ -168,10 +169,11 @@ pub struct AppContext {
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
-    pub pref: RefCell<Pref>,
     pub freecam: RefCell<Freecam>,
     pub menu_impl: RefCell<MenuImpl>,
     pub binds: RefCell<Binds>,
+    pub unlock: RefCell<Unlock>,
+    pub pref: RefCell<Pref>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -179,6 +181,7 @@ impl AppContext {
     fn new() -> Self {
         let modlink = ModLink::new();
         heap::HEAP.init(&modlink);
+        let pref = Pref::new(&modlink);
         Self {
             padread_hook: RefCell::new(PADReadHook::new()),
             process_inputs_hook: RefCell::new(ProcessInputsHook::new()),
@@ -190,10 +193,11 @@ impl AppContext {
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
-            pref: RefCell::new(Pref::new(&modlink)),
             freecam: RefCell::new(Freecam::new()),
             menu_impl: RefCell::new(MenuImpl::new()),
             binds: RefCell::new(Binds::new()),
+            unlock: RefCell::new(Unlock::new(&pref)),
+            pref: RefCell::new(pref),
             scratch: RefCell::new(Scratch::new()),
         }
     }
