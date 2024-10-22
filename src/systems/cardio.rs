@@ -12,7 +12,6 @@ use crate::mkb_suppl::CARD_READ_SIZE;
 use crate::mkb_suppl::CARD_WORKAREA_SIZE;
 use crate::new_cstr;
 use crate::utils::math;
-use crate::utils::math::round_up_pow2;
 use crate::utils::modlink::ModLink;
 use alloc::vec;
 use alloc::vec::Vec;
@@ -225,11 +224,7 @@ impl CardIo {
             match req.state {
                 WriteState::Probe => {
                     let mut sector_size: c_long = 0;
-                    let res = to_card_result(mkb::CARDProbeEx(
-                        0,
-                        core::ptr::null_mut(),
-                        &mut sector_size,
-                    ));
+                    let res = to_card_result(mkb::CARDProbeEx(0, null_mut(), &mut sector_size));
                     if res == CARDResult::Busy {
                         return;
                     }
@@ -243,8 +238,8 @@ impl CardIo {
                     mkb::CARDMountAsync(
                         0,
                         self.card_work_area.as_mut_ptr() as *mut c_void,
-                        core::ptr::null_mut(),
-                        core::ptr::null_mut(),
+                        null_mut(),
+                        null_mut(),
                     );
                     req.state = WriteState::Mount;
                 }
@@ -262,7 +257,7 @@ impl CardIo {
                     // Try to open the file
                     let res = to_card_result(mkb::CARDOpen(
                         0,
-                        new_cstr!(req.file_name.as_str(), 16),
+                        new_cstr!(&req.file_name, 16),
                         &mut self.card_file_info,
                     ));
                     if res == CARDResult::Ready {
@@ -277,11 +272,7 @@ impl CardIo {
                             Self::finish_write(req, res);
                         } else if (stat.length as usize) < req.write_size {
                             // Recreate file
-                            mkb::CARDFastDeleteAsync(
-                                0,
-                                self.card_file_info.fileNo,
-                                core::ptr::null_mut(),
-                            );
+                            mkb::CARDFastDeleteAsync(0, self.card_file_info.fileNo, null_mut());
                             req.state = WriteState::Delete;
                         } else {
                             // Card opened successfully, proceed directly to writing
@@ -290,7 +281,7 @@ impl CardIo {
                                 req.buf.as_ptr() as *mut c_void,
                                 req.write_size as c_long,
                                 0,
-                                core::ptr::null_mut(),
+                                null_mut(),
                             );
                             req.state = WriteState::Write;
                         }
@@ -298,10 +289,10 @@ impl CardIo {
                         // Create new file
                         mkb::CARDCreateAsync(
                             0,
-                            new_cstr!(req.file_name.as_str(), 16),
+                            new_cstr!(&req.file_name, 16),
                             req.write_size as u32,
                             &mut self.card_file_info,
-                            core::ptr::null_mut(),
+                            null_mut(),
                         );
                         req.state = WriteState::Create;
                     } else {
@@ -325,7 +316,7 @@ impl CardIo {
                         req.buf.as_ptr() as *mut c_void,
                         req.write_size as c_long,
                         0,
-                        core::ptr::null_mut(),
+                        null_mut(),
                     );
                     req.state = WriteState::Write;
                 }
@@ -341,10 +332,10 @@ impl CardIo {
                     }
                     mkb::CARDCreateAsync(
                         0,
-                        new_cstr!(req.file_name.as_str(), 16),
+                        new_cstr!(&req.file_name, 16),
                         req.write_size as u32,
                         &mut self.card_file_info,
-                        core::ptr::null_mut(),
+                        null_mut(),
                     );
                     req.state = WriteState::Create;
                 }

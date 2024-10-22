@@ -33,7 +33,7 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
         // Panic code (including string formatting stuff) is only included with `make debug`,
         // should all be removed in the normal size-optimized `make` build
         Some(loc) => {
-            let mut formatted_str = alloc::fmt::format(format_args!(
+            let formatted_str = alloc::fmt::format(format_args!(
                 "Panic in {} at {}:{}",
                 loc.file(),
                 loc.line(),
@@ -41,11 +41,11 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
             ));
             log!(c"%s", cstr!(formatted_str));
 
-            let mut formatted_str = alloc::fmt::format(format_args!("{}", panic_info.message()));
+            let formatted_str = alloc::fmt::format(format_args!("{}", panic_info.message()));
             log!(c"%s", cstr!(formatted_str));
         }
         None => {
-            let mut formatted_str =
+            let formatted_str =
                 alloc::fmt::format(format_args!("Panic: {}", panic_info.message()));
             log!(c"%s", cstr!(formatted_str));
         }

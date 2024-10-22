@@ -1,4 +1,3 @@
-use core::ffi::c_char;
 
 use arrayvec::{ArrayString, ArrayVec};
 

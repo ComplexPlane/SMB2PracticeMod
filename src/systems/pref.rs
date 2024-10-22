@@ -5,7 +5,6 @@ use crate::{
 };
 use alloc::vec;
 use alloc::vec::Vec;
-use arrayvec::ArrayString;
 use num_enum::TryFromPrimitive;
 use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout, Unaligned};
 
