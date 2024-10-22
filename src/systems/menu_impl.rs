@@ -2,7 +2,7 @@ use core::ffi::c_char;
 
 use arrayvec::{ArrayString, ArrayVec};
 
-use crate::systems::draw;
+use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{mkb, utils::tinymap::TinyMap};
 use crate::{notify, sprintf};
@@ -340,6 +340,7 @@ impl MenuImpl {
                 notify!(
                     cx.draw,
                     draw::RED,
+                    NotifyDuration::Long,
                     c"Use %s to toggle menu",
                     buf.as_ptr() as *mut c_char
                 );

@@ -1,6 +1,6 @@
 use crate::app::with_app;
 use crate::mkb::{S16Vec, Vec};
-use crate::systems::draw::{self, Draw};
+use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref};
 use crate::utils::patch;
@@ -204,6 +204,7 @@ impl Freecam {
                 notify!(
                     draw,
                     draw::WHITE,
+                    NotifyDuration::Short,
                     c"Freecam Turbo Speed Factor: %dX",
                     speed_mult as u32
                 );

@@ -1,6 +1,8 @@
 extern crate alloc;
 
-use crate::{mkb_suppl::CARDResult, notify, utils::modlink::ModLink};
+use crate::{
+    mkb_suppl::CARDResult, notify, systems::draw::NotifyDuration, utils::modlink::ModLink,
+};
 use alloc::vec;
 use alloc::vec::Vec;
 use arrayvec::ArrayString;
@@ -426,7 +428,7 @@ impl Pref {
         self.prev_state = self.curr_state.clone();
 
         if let Some(err) = self.import_error {
-            draw.notify(draw::RED, err);
+            draw.notify(draw::RED, NotifyDuration::Long, err);
             self.import_error = None;
         }
 
@@ -440,6 +442,7 @@ impl Pref {
                     notify!(
                         draw,
                         draw::RED,
+                        NotifyDuration::Long,
                         "Failed to save settings: %s",
                         result_buf.as_ptr()
                     );

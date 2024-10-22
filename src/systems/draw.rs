@@ -13,6 +13,9 @@ use crate::mkb_suppl::GX_TRUE;
 use crate::patch;
 
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
+pub const NOTIFY_DURATION_SHORT: u32 = 40;
+pub const NOTIFY_DURATION_LONG: u32 = 120;
+pub const NOTIFY_FADE_DURATION: u32 = 20;
 
 pub const WHITE: mkb::GXColor = mkb::GXColor {
     r: 0xff,
@@ -263,10 +266,16 @@ pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
     }
 }
 
+pub enum NotifyDuration {
+    Short,
+    Long,
+}
+
 pub struct Draw {
     notify_msg_buf: ArrayString<64>,
     notify_frame_counter: u32,
     notify_color: mkb::GXColor,
+    notify_duration: NotifyDuration,
 }
 
 impl Draw {
@@ -281,6 +290,7 @@ impl Draw {
             notify_msg_buf: ArrayString::new_const(),
             notify_frame_counter: 0,
             notify_color: WHITE,
+            notify_duration: NotifyDuration::Short,
         }
     }
 
@@ -306,28 +316,37 @@ impl Draw {
         let draw_y = 426;
         let mut color = self.notify_color;
 
-        if self.notify_frame_counter > 40 {
-            color.a = 0xff - ((self.notify_frame_counter - 40) * 0xff / 20) as u8;
+        let duration = match self.notify_duration {
+            NotifyDuration::Short => NOTIFY_DURATION_SHORT,
+            NotifyDuration::Long => NOTIFY_DURATION_LONG,
+        };
+
+        if self.notify_frame_counter > duration {
+            color.a =
+                0xff - ((self.notify_frame_counter - duration) * 0xff / NOTIFY_FADE_DURATION) as u8;
         }
         debug_text(draw_x, draw_y, color, &self.notify_msg_buf);
 
         self.notify_frame_counter += 1;
-        self.notify_frame_counter = self.notify_frame_counter.clamp(0, 60);
+        self.notify_frame_counter = self
+            .notify_frame_counter
+            .clamp(0, duration + NOTIFY_FADE_DURATION);
     }
 
-    pub fn notify(&mut self, color: mkb::GXColor, msg: &str) {
+    pub fn notify(&mut self, color: mkb::GXColor, duration: NotifyDuration, msg: &str) {
         self.notify_msg_buf.clear();
         self.notify_msg_buf.push_str(msg);
         self.notify_frame_counter = 0;
         self.notify_color = color;
+        self.notify_duration = duration;
     }
 }
 
 #[macro_export]
 macro_rules! notify {
-    ($cx:expr, $color:expr, $format:expr $(, $arg:expr)* $(,)?) => {
+    ($cx:expr, $color:expr, $duration:expr, $format:expr $(, $arg:expr)* $(,)?) => {
         let mut buf = arrayvec::ArrayString::<64>::new();
         $crate::sprintf!(buf, $format $(, $arg)*);
-        $cx.notify($color, &buf);
+        $cx.notify($color, $duration, &buf);
     };
 }
