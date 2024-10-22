@@ -11,7 +11,8 @@ fn main() {
         .args(["status", "--porcelain"])
         .output()
         .unwrap();
-    if !status.stdout.is_empty() {
+    let status = String::from_utf8(status.stdout).unwrap();
+    if !status.trim().is_empty() {
         git_hash.push_str("-dirty");
     }
 
