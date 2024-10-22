@@ -1,6 +1,8 @@
 pub mod hook;
+pub mod libsavest;
 pub mod log;
 pub mod math;
+pub mod memstore;
 pub mod misc;
 pub mod modlink;
 pub mod patch;
