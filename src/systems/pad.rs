@@ -1,4 +1,4 @@
-use crate::mkb;
+use crate::{mkb, utils::misc::for_c_arr_idx};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {
@@ -390,7 +390,7 @@ impl Pad {
                 mkb::analog_inputs = [mkb::AnalogInputGroup::default(); 4];
             } else {
                 // update analog state
-                for i in 0..mkb::pad_status_groups.len() {
+                for_c_arr_idx(&raw mut mkb::pad_status_groups, |i, _| {
                     let status = &mkb::pad_status_groups[i].raw;
                     if self.original_inputs[i].err == mkb::PAD_ERR_NONE as mkb::PadError {
                         self.analog_state.raw_stick_x += self.original_inputs[i].stickX as i32;
@@ -404,7 +404,7 @@ impl Pad {
                         self.analog_state.trigger_l += status.triggerLeft as i32;
                         self.analog_state.trigger_r += status.triggerRight as i32;
                     }
-                }
+                });
                 self.analog_state.raw_stick_x = self.analog_state.raw_stick_x.clamp(-128, 127);
                 self.analog_state.raw_stick_y = self.analog_state.raw_stick_y.clamp(-128, 127);
                 self.analog_state.stick_x = self.analog_state.stick_x.clamp(-MAX_STICK, MAX_STICK);

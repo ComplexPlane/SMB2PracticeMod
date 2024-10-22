@@ -3,6 +3,7 @@ use crate::mkb::{S16Vec, Vec};
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref};
+use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
 use crate::{mkb, notify};
 
@@ -163,10 +164,10 @@ impl Freecam {
     pub fn on_event_camera_tick(&self, pref: &mut Pref) {
         unsafe {
             if self.enabled(pref) {
-                for world_info in mkb::world_infos.iter_mut() {
-                    world_info.stage_tilt_x = 0;
-                    world_info.stage_tilt_z = 0;
-                }
+                for_c_arr(&raw mut mkb::world_infos, |world_info| {
+                    (*world_info).stage_tilt_x = 0;
+                    (*world_info).stage_tilt_z = 0;
+                });
             }
         }
     }

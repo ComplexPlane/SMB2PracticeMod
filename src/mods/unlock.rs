@@ -1,5 +1,5 @@
 use crate::mkb;
-use crate::systems::pref::{self, BoolPref, Pref};
+use crate::systems::pref::{BoolPref, Pref};
 use crate::utils::misc::for_c_arr;
 
 pub struct Unlock {
@@ -41,10 +41,10 @@ impl Unlock {
             mkb::unlock_info.party_games = 0x0001b600;
             mkb::unlock_info.g_movies_watched = 0x0fff;
 
-            for_c_arr(&raw mut mkb::cm_unlock_entries, |_i, v| {
+            for_c_arr(&raw mut mkb::cm_unlock_entries, |v| {
                 *v = 0xff;
             });
-            for_c_arr(&raw mut mkb::storymode_unlock_entries, |_i, v| {
+            for_c_arr(&raw mut mkb::storymode_unlock_entries, |v| {
                 *v = 0xff;
             });
 
