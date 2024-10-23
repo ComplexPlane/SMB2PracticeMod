@@ -29,7 +29,7 @@ pub enum LoadError {
 }
 
 #[derive(Default)]
-struct SaveState {
+pub struct SaveState {
     // None means empty savestate
     memstore: Option<memstore::Load>,
     reload_state: bool,
@@ -377,6 +377,6 @@ impl SaveState {
     }
 }
 
-pub fn savestates_enabled(pref: &mut Pref) -> bool {
+pub fn savestates_enabled(pref: &Pref) -> bool {
     pref.get_bool(BoolPref::Savestates) && !pref.get_bool(BoolPref::Freecam)
 }
