@@ -7,6 +7,12 @@ pub struct Prealloc {
     curr_size: usize,
 }
 
+impl Prealloc {
+    pub fn new() -> Self {
+        Self { curr_size: 0 }
+    }
+}
+
 pub struct Save {
     buf: Vec<u8>,
     orig_size: usize,
