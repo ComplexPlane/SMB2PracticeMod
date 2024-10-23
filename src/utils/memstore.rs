@@ -3,56 +3,21 @@ extern crate alloc;
 use alloc::vec::Vec;
 use core::ffi::c_void;
 
-enum State {
-    Prealloc,
-    Save,
-    Load,
-}
-
-pub trait MemStore {
-    const STATE: State;
-
-    fn scan_region(&mut self, ptr: *mut c_void, size: usize);
-
-    fn scan_obj<T>(&mut self, obj: *mut T) {
-        self.scan_region(obj as *mut c_void, size_of::<T>());
-    }
-}
-
-pub struct MemStorePrealloc {
+pub struct Prealloc {
     curr_size: usize,
 }
 
-impl MemStore for MemStorePrealloc {
-    const STATE: State = State::Prealloc;
-
-    fn scan_region(&mut self, _ptr: *mut c_void, size: usize) {
-        self.curr_size += size;
-    }
-}
-
-pub struct MemStoreSave {
+pub struct Save {
     buf: Vec<u8>,
     orig_size: usize,
 }
 
-impl MemStore for MemStoreSave {
-    const STATE: State = State::Save;
+impl TryFrom<Prealloc> for Save {
+    type Error = (); // TODO better error type
 
-    fn scan_region(&mut self, ptr: *mut c_void, size: usize) {
-        unsafe {
-            let slice = core::slice::from_raw_parts(ptr as *mut u8, size);
-            self.buf.extend_from_slice(slice);
-        }
-    }
-}
-
-impl TryFrom<MemStorePrealloc> for MemStoreSave {
-    type Error = (); // TODO use better error type
-
-    fn try_from(mem_store: MemStorePrealloc) -> Result<Self, Self::Error> {
+    fn try_from(prealloc: Prealloc) -> Result<Self, Self::Error> {
         let mut buf = Vec::new();
-        buf.try_reserve_exact(mem_store.curr_size).map_err(|_| ())?;
+        buf.try_reserve_exact(prealloc.curr_size).map_err(|_| ())?;
         Ok(Self {
             orig_size: buf.len(),
             buf,
@@ -60,24 +25,51 @@ impl TryFrom<MemStorePrealloc> for MemStoreSave {
     }
 }
 
-pub struct MemStoreLoad {
+pub struct Load {
     buf: Vec<u8>,
     offset: usize,
 }
 
-impl MemStoreLoad {
-    fn reset(&mut self) {
+impl Load {
+    pub fn reset(&mut self) {
         self.offset = 0;
     }
 }
 
-impl MemStore for MemStoreLoad {
-    const STATE: State = State::Load;
-
-    fn scan_region(&mut self, ptr: *mut c_void, size: usize) {
-        unsafe {
-            let slice = core::slice::from_raw_parts_mut(ptr as *mut u8, size);
-            slice.copy_from_slice(&self.buf[self.offset..self.offset + size]);
+impl From<Save> for Load {
+    fn from(save: Save) -> Self {
+        assert!(save.orig_size == save.buf.len());
+        Self {
+            buf: save.buf,
+            offset: 0,
         }
+    }
+}
+
+pub enum MemStore<'a> {
+    Prealloc(&'a mut Prealloc),
+    Save(&'a mut Save),
+    Load(&'a mut Load),
+}
+
+impl<'a> MemStore<'a> {
+    pub fn scan_region(&mut self, ptr: *mut c_void, size: usize) {
+        match self {
+            MemStore::Prealloc(buf) => {
+                buf.curr_size += size;
+            }
+            MemStore::Save(buf) => unsafe {
+                let slice = core::slice::from_raw_parts(ptr as *mut u8, size);
+                buf.buf.extend_from_slice(slice);
+            },
+            MemStore::Load(buf) => unsafe {
+                let slice = core::slice::from_raw_parts_mut(ptr as *mut u8, size);
+                slice.copy_from_slice(&buf.buf[buf.offset..buf.offset + size]);
+            },
+        }
+    }
+
+    pub fn scan_obj<T>(&mut self, obj: *mut T) {
+        self.scan_region(obj as *mut c_void, size_of::<T>());
     }
 }
