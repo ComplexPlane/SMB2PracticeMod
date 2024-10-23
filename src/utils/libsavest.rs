@@ -1,7 +1,10 @@
 use core::ffi::c_void;
 
 use super::memstore::{self, MemStore};
-use crate::mkb;
+use crate::{
+    mkb,
+    systems::pref::{BoolPref, Pref},
+};
 
 pub enum SaveError {
     MainMode,
@@ -325,5 +328,55 @@ impl SaveState {
                 _ => {}
             }
         }
+
+        // Seesaws
+        for i in 0..(*mkb::stagedef).coli_header_count {
+            if (*(*mkb::stagedef).coli_header_list.offset(i as isize)).anim_loop_type_and_seesaw
+                == mkb::ANIM_SEESAW as mkb::StagedefAnimType
+            {
+                memstore.scan_region(
+                    (*(*mkb::itemgroups.offset(i as isize)).seesaw_info).state as *mut _,
+                    12,
+                );
+            }
+        }
+
+        // Goal tape and party ball-specific extra data
+        memstore.scan_region(
+            &raw mut mkb::goaltapes as *mut _,
+            size_of::<mkb::GoalTape>() * (*mkb::stagedef).goal_count as usize,
+        );
+        memstore.scan_region(
+            &raw mut mkb::goalbags as *mut _,
+            size_of::<mkb::GoalBag>() * (*mkb::stagedef).goal_count as usize,
+        );
+
+        // Pause menu
+        memstore.scan_region(0x8054DCA8 as *mut _, 56); // Pause menu state
+        memstore.scan_region(0x805BC474 as *mut _, 4); // Pause menu bitfield
+
+        for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+            if *mkb::sprite_pool_info.status_list.offset(i as isize) == 0 {
+                continue;
+            }
+            let sprite = &raw mut mkb::sprites[i];
+
+            let tick_func = (*sprite).tick_func;
+            if tick_func == Some(mkb::sprite_timer_ball_tick) {
+                // Timer ball sprite (it'll probably always be in the same place in the sprite array)
+                memstore.scan_obj(sprite);
+            } else if tick_func == Some(mkb::sprite_score_tick) {
+                // Score sprite's lerped score value
+                memstore.scan_obj(&raw mut (*sprite).fpara1);
+            }
+        }
+
+        // RTA timer
+        // TODO
+        // timer::save_state(memstore);
     }
+}
+
+pub fn savestates_enabled(pref: &mut Pref) -> bool {
+    pref.get_bool(BoolPref::Savestates) && !pref.get_bool(BoolPref::Freecam)
 }
