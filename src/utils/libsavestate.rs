@@ -6,6 +6,17 @@ use crate::{
     systems::pref::{BoolPref, Pref},
 };
 
+#[derive(Default)]
+pub struct LibSaveState {
+    pub state_loaded_this_frame: bool,
+}
+
+impl LibSaveState {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 pub enum SaveError {
     MainMode,
     PostFallout,
@@ -33,7 +44,6 @@ pub struct SaveState {
     // None means empty savestate
     memstore: Option<memstore::Load>,
     reload_state: bool,
-    state_loaded_this_frame: bool,
 
     // TODO store in MemStore?
     stage_id: u16,
@@ -47,10 +57,10 @@ impl SaveState {
         SaveState::default()
     }
 
-    pub fn tick(&mut self) {
-        self.state_loaded_this_frame = false;
+    pub fn tick(&mut self, libsavestate: &mut LibSaveState) {
+        libsavestate.state_loaded_this_frame = false;
         if self.reload_state {
-            let _ = self.load(); // Ignore result, spooky!
+            let _ = self.load(libsavestate); // Ignore result, spooky!
         }
     }
 
@@ -100,7 +110,7 @@ impl SaveState {
         Ok(())
     }
 
-    pub fn load(&mut self) -> Result<(), LoadError> {
+    pub fn load(&mut self, libsavestate: &mut LibSaveState) -> Result<(), LoadError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -154,7 +164,7 @@ impl SaveState {
                 mkb::set_minimap_mode(mkb::MINIMAP_EXPAND);
             }
 
-            self.state_loaded_this_frame = true;
+            libsavestate.state_loaded_this_frame = true;
         }
 
         Ok(())
@@ -276,10 +286,6 @@ impl SaveState {
         matches!(self.memstore, None)
     }
 
-    pub fn loaded_this_frame(&self) -> bool {
-        self.state_loaded_this_frame
-    }
-
     pub fn clear(&mut self) {
         self.memstore = None
     }
@@ -377,6 +383,7 @@ impl SaveState {
     }
 }
 
-pub fn savestates_enabled(pref: &Pref) -> bool {
-    pref.get_bool(BoolPref::Savestates) && !pref.get_bool(BoolPref::Freecam)
-}
+// TODO: move Sprite struct into savestate so we don't get complaints about pointers
+// preventing send/sync
+unsafe impl Send for SaveState {}
+unsafe impl Sync for SaveState {}

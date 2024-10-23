@@ -8,6 +8,8 @@ use once_cell::sync::Lazy;
 use crate::hook;
 use crate::mkb;
 use crate::mods::freecam::Freecam;
+use crate::mods::savestates_ui;
+use crate::mods::savestates_ui::SaveStatesUi;
 use crate::mods::scratch::Scratch;
 use crate::mods::unlock::Unlock;
 use crate::systems::binds::Binds;
@@ -15,7 +17,9 @@ use crate::systems::draw::Draw;
 use crate::systems::heap;
 use crate::systems::menu_impl::MenuImpl;
 use crate::systems::pad::Pad;
+use crate::systems::pref::BoolPref;
 use crate::systems::pref::Pref;
+use crate::utils::libsavestate::LibSaveState;
 use crate::utils::modlink::ModLink;
 use crate::utils::relutil;
 
@@ -49,6 +53,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
         let binds = &mut cx.binds.borrow_mut();
+        let libsavestates = &mut cx.libsavestate.borrow_mut();
 
         // These run after all controller inputs have been processed on the current frame,
         // to ensure lowest input delay
@@ -57,6 +62,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // cardio::tick();
         cx.unlock.borrow_mut().tick();
         // iw::tick();
+        cx.savestates_ui.borrow_mut().tick(pad, pref, draw, binds, libsavestates);
         // savest_ui::tick();
         // anything checking for pref changes should run after menu_impl.tick()
         cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds);
@@ -158,6 +164,30 @@ hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
     })
 });
 
+hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode| {
+    with_app(|cx| {
+        let pref = &mut cx.pref.borrow_mut();
+        unsafe {
+            if !savestates_ui::savestates_enabled(pref)
+                || !(mkb::main_mode == mkb::MD_GAME
+                && mkb::main_game_mode == mkb::PRACTICE_MODE &&
+                mode == mkb::MINIMAP_SHRINK)
+            {
+                cx.set_minimap_mode_hook.borrow().call(mode);
+            }
+        }
+    });
+});
+
+hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
+    with_app(|cx| {
+        let libsavestate = &cx.libsavestate.borrow();
+        if !libsavestate.state_loaded_this_frame {
+            cx.sound_req_id_hook.borrow().call(sfx_idx);
+        }
+    });
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -166,6 +196,8 @@ pub struct AppContext {
     pub game_ready_init_hook: RefCell<GameReadyInitHook>,
     pub game_play_tick_hook: RefCell<GamePlayTickHook>,
     pub event_camera_tick_hook: RefCell<EventCameraTickHook>,
+    pub set_minimap_mode_hook: RefCell<SetMinimapModeHook>,
+    pub sound_req_id_hook: RefCell<SoundReqIdHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
@@ -174,6 +206,8 @@ pub struct AppContext {
     pub binds: RefCell<Binds>,
     pub unlock: RefCell<Unlock>,
     pub pref: RefCell<Pref>,
+    pub libsavestate: RefCell<LibSaveState>,
+    pub savestates_ui: RefCell<SaveStatesUi>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -190,6 +224,8 @@ impl AppContext {
             game_ready_init_hook: RefCell::new(GameReadyInitHook::new()),
             game_play_tick_hook: RefCell::new(GamePlayTickHook::new()),
             event_camera_tick_hook: RefCell::new(EventCameraTickHook::new()),
+            set_minimap_mode_hook: RefCell::new(SetMinimapModeHook::new()),
+            sound_req_id_hook: RefCell::new(SoundReqIdHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
@@ -198,6 +234,8 @@ impl AppContext {
             binds: RefCell::new(Binds::new()),
             unlock: RefCell::new(Unlock::new(&pref)),
             pref: RefCell::new(pref),
+            libsavestate: RefCell::new(LibSaveState::new()),
+            savestates_ui: RefCell::new(SaveStatesUi::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
@@ -206,12 +244,9 @@ impl AppContext {
     pub fn init(&self) {
         with_app(|cx| {
             // TODO see if we can move these into constructor functions
-            // cardio::init();
-            // unlock::init();
             // Tetris::get_instance().init();
             // physics::init();
             // iw::init();
-            // libsavest::init();
             // timer::init();
             // inputdisp::init();
             // cmseg::init();
@@ -223,7 +258,6 @@ impl AppContext {
             // camera::init();
             // fallout::init();
             // stage_edits::init();
-            // scratch::init();
             // validate::init();
 
             cx.padread_hook.borrow_mut().hook();
@@ -231,6 +265,8 @@ impl AppContext {
             cx.draw_debug_text_hook.borrow_mut().hook();
             cx.oslink_hook.borrow_mut().hook();
             cx.event_camera_tick_hook.borrow_mut().hook();
+            cx.set_minimap_mode_hook.borrow_mut().hook();
+            cx.sound_req_id_hook.borrow_mut().hook();
         });
     }
 }
@@ -247,13 +283,12 @@ pub fn tick() {
         mkb::perf_init_timer(4);
 
         with_app(|cx| {
-            // TODO
-            // let pref = cx.pref.borrow_mut();
-            // if pref.get_bool(BoolPref::DebugMode) {
-            //     mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
-            // } else {
-            //     mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
-            // }
+            let pref = cx.pref.borrow_mut();
+            if pref.get_bool(BoolPref::DebugMode) {
+                mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
+            } else {
+                mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
+            }
 
             cx.pad.borrow_mut().on_frame_start();
         })

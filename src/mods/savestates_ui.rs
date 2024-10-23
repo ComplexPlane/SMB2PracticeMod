@@ -6,24 +6,20 @@ use crate::{
         pad::{Dir, Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
     },
-    utils::libsavest::{self, LoadError, SaveError, SaveState},
+    utils::libsavestate::{self, LibSaveState, LoadError, SaveError, SaveState},
 };
 
-pub struct Savestates {
+#[derive(Default)]
+pub struct SaveStatesUi {
     states: [SaveState; 8],
     active_state_slot: i32,
     created_state_last_frame: bool,
     frame_advance_mode: bool,
 }
 
-impl Savestates {
+impl SaveStatesUi {
     pub fn new() -> Self {
-        Self {
-            states: core::array::from_fn(|_| SaveState::new()),
-            active_state_slot: 0,
-            created_state_last_frame: false,
-            frame_advance_mode: false,
-        }
+        Self::default()
     }
 
     fn is_either_trigger_held(&self, pad: &Pad) -> bool {
@@ -31,14 +27,21 @@ impl Savestates {
             || pad.analog_down(mkb::PAI_RTRIG as mkb::PadAnalogInput, Prio::Low)
     }
 
-    pub fn tick(&mut self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw, binds: &Binds) {
-        if !libsavest::savestates_enabled(pref) {
+    pub fn tick(
+        &mut self,
+        pad: &mut Pad,
+        pref: &mut Pref,
+        draw: &mut Draw,
+        binds: &Binds,
+        libsavestate: &mut LibSaveState,
+    ) {
+        if !savestates_enabled(pref) {
             return;
         }
 
         // Must tick savestates every frame
         for state in &mut self.states {
-            state.tick();
+            state.tick(libsavestate);
         }
 
         if !self.is_either_trigger_held(pad) {
@@ -179,7 +182,7 @@ impl Savestates {
             || (self.is_either_trigger_held(pad) && cstick_dir != Dir::None)
         {
             let state = &mut self.states[self.active_state_slot as usize];
-            match state.load() {
+            match state.load(libsavestate) {
                 Ok(()) => {}
                 Err(LoadError::MainMode) => {
                     // Unreachable
@@ -265,4 +268,8 @@ impl Savestates {
             self.created_state_last_frame = false;
         }
     }
+}
+
+pub fn savestates_enabled(pref: &Pref) -> bool {
+    pref.get_bool(BoolPref::Savestates) && !pref.get_bool(BoolPref::Freecam)
 }

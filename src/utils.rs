@@ -1,5 +1,5 @@
 pub mod hook;
-pub mod libsavest;
+pub mod libsavestate;
 pub mod log;
 pub mod math;
 pub mod memstore;
