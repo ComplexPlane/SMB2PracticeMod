@@ -25,7 +25,7 @@ impl TryFrom<Prealloc> for Save {
         let mut buf = Vec::new();
         buf.try_reserve_exact(prealloc.curr_size).map_err(|_| ())?;
         Ok(Self {
-            orig_size: buf.len(),
+            orig_size: prealloc.curr_size,
             buf,
         })
     }
@@ -71,6 +71,7 @@ impl<'a> MemStore<'a> {
             MemStore::Load(buf) => unsafe {
                 let slice = core::slice::from_raw_parts_mut(ptr as *mut u8, size);
                 slice.copy_from_slice(&buf.buf[buf.offset..buf.offset + size]);
+                buf.offset += size;
             },
         }
     }
