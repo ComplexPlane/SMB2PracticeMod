@@ -65,7 +65,7 @@ impl SaveStatesUi {
         }
 
         // Change the savestate slot with C stick
-        let cstick_dir = pad.get_cstick_dir(Prio::High);
+        let cstick_dir = pad.get_cstick_dir(Prio::Low);
         if cstick_dir != Dir::None {
             self.active_state_slot = cstick_dir as i32;
             draw.notify(
@@ -75,7 +75,7 @@ impl SaveStatesUi {
             );
         }
 
-        if pad.button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High) {
+        if pad.button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low) {
             let state = &mut self.states[self.active_state_slot as usize];
 
             if !state.is_empty() && disable_overwrite {
@@ -168,7 +168,7 @@ impl SaveStatesUi {
             }
 
             self.created_state_last_frame = true;
-        } else if binds.bind_pressed(clear_bind, Prio::High, pad) {
+        } else if binds.bind_pressed(clear_bind, Prio::Low, pad) {
             let state = &mut self.states[self.active_state_slot as usize];
             state.clear();
             draw.notify(
@@ -176,8 +176,8 @@ impl SaveStatesUi {
                 NotifyDuration::Short,
                 &fmt_new!(32, c"Slot %d Cleared", self.active_state_slot + 1),
             );
-        } else if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
-            || (pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High)
+        } else if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+            || (pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
                 && self.created_state_last_frame)
             || self.frame_advance_mode
             || (self.is_either_trigger_held(pad) && cstick_dir != Dir::None)

@@ -80,7 +80,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.banans.borrow_mut().tick(pref);
         // marathon::tick();
         cx.ballcolor.borrow_mut().tick(pref);
-        cx.freecam.borrow_mut().tick(pref, pad, draw);
+        cx.freecam.borrow_mut().tick(pref, pad, draw, binds);
         // ilbattle::tick();
         // ilmark::tick();
         // camera::tick();

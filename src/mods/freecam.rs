@@ -1,8 +1,9 @@
 use crate::app::with_app;
 use crate::mkb::{S16Vec, Vec};
+use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
-use crate::systems::pref::{self, BoolPref, Pref};
+use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
 use crate::{fmt_new, mkb};
@@ -172,25 +173,23 @@ impl Freecam {
         }
     }
 
-    pub fn tick(&mut self, pref: &mut Pref, pad: &mut Pad, draw: &mut Draw) {
+    pub fn tick(&mut self, pref: &mut Pref, pad: &mut Pad, draw: &mut Draw, binds: &mut Binds) {
         self.enabled_prev_tick = self.enabled_this_tick;
 
-        // Optionally toggle freecam with Z
-        // TODO
-        // if binds::bind_pressed(pref::get(pref::U8Pref::FreecamToggleBind))
-        //     && Self::in_correct_mode()
-        // {
-        //     let new_value = !pref::get(pref::BoolPref::Freecam);
-        //     pref::set(pref::BoolPref::Freecam, new_value);
-        //     pref::save();
-        // }
+        // Optionally toggle freecam
+        if binds.bind_pressed(pref.get_u8(U8Pref::FreecamToggleBind), Prio::Low, pad)
+            && Self::in_correct_mode()
+        {
+            pref.set_bool(BoolPref::Freecam, !pref.get_bool(BoolPref::Freecam));
+            pref.save();
+        }
 
         self.enabled_this_tick = false;
         if self.enabled(pref) {
             self.enabled_this_tick = true;
 
             // Adjust turbo speed multiplier
-            let mut speed_mult = pref.get_u8(pref::U8Pref::FreecamSpeedMult);
+            let mut speed_mult = pref.get_u8(U8Pref::FreecamSpeedMult);
             let mut input_made = false;
             if pad.button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low) {
                 speed_mult -= 1;
