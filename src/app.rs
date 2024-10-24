@@ -78,7 +78,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // cmseg::tick();
         // banans::tick();
         // marathon::tick();
-        // ballcolor::tick();
+        cx.ballcolor.borrow_mut().tick(pref);
         cx.freecam.borrow_mut().tick(pref, pad, draw);
         // ilbattle::tick();
         // ilmark::tick();
@@ -126,7 +126,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, || {
     with_app(|cx| {
         // stage_edits::smd_game_ready_init();
-        // ballcolor::switch_monkey();
+        cx.ballcolor.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
         cx.game_ready_init_hook.borrow().call();
     })
 });
@@ -198,6 +198,13 @@ hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |
     })
 });
 
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
+    with_app(|cx| {
+        cx.load_stagedef_hook.borrow().call(stage_id);
+        cx.ballcolor.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
+    });
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -209,6 +216,7 @@ pub struct AppContext {
     pub set_minimap_mode_hook: RefCell<SetMinimapModeHook>,
     pub sound_req_id_hook: RefCell<SoundReqIdHook>,
     pub create_speed_sprites_hook: RefCell<CreateSpeedSpritesHook>,
+    pub load_stagedef_hook: RefCell<LoadStagedefHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
@@ -240,6 +248,7 @@ impl AppContext {
             set_minimap_mode_hook: RefCell::new(SetMinimapModeHook::new()),
             sound_req_id_hook: RefCell::new(SoundReqIdHook::new()),
             create_speed_sprites_hook: RefCell::new(CreateSpeedSpritesHook::new()),
+            load_stagedef_hook: RefCell::new(LoadStagedefHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
@@ -284,6 +293,7 @@ impl AppContext {
             cx.set_minimap_mode_hook.borrow_mut().hook();
             cx.sound_req_id_hook.borrow_mut().hook();
             cx.create_speed_sprites_hook.borrow_mut().hook();
+            cx.load_stagedef_hook.borrow_mut().hook();
         });
     }
 }
