@@ -175,7 +175,7 @@ pub fn heart() {
         const OFFSET_Y: f32 = 100.0;
         const PERIOD: u32 = 120;
 
-        let t = (mkb::frame_counter % PERIOD) as f32 / PERIOD as f32;
+        let t = (mkb::frame_counter % PERIOD) as f32 / PERIOD as f32 - 0.5;
         let scale = mkb::math_sin((t * 0xFFFF as f32) as i16) * 0.02 + SCALE;
 
         mkb::GXBegin(
