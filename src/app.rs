@@ -8,6 +8,7 @@ use once_cell::sync::Lazy;
 use crate::hook;
 use crate::mkb;
 use crate::mods::ballcolor::BallColor;
+use crate::mods::banans::Banans;
 use crate::mods::freecam::Freecam;
 use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
@@ -76,7 +77,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.inputdisplay.borrow_mut().tick(pref);
         // gotostory::tick();
         // cmseg::tick();
-        // banans::tick();
+        cx.banans.borrow_mut().tick(pref);
         // marathon::tick();
         cx.ballcolor.borrow_mut().tick(pref);
         cx.freecam.borrow_mut().tick(pref, pad, draw);
@@ -229,6 +230,7 @@ pub struct AppContext {
     pub savestates_ui: RefCell<SaveStatesUi>,
     pub ballcolor: RefCell<BallColor>,
     pub inputdisplay: RefCell<InputDisplay>,
+    pub banans: RefCell<Banans>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -261,6 +263,7 @@ impl AppContext {
             savestates_ui: RefCell::new(SaveStatesUi::new()),
             ballcolor: RefCell::new(BallColor::new()),
             inputdisplay: RefCell::new(InputDisplay::new()),
+            banans: RefCell::new(Banans::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
