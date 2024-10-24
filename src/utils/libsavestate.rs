@@ -1,10 +1,7 @@
 use core::ffi::c_void;
 
 use super::memstore::{self, MemStore};
-use crate::{
-    mkb,
-    systems::pref::{BoolPref, Pref},
-};
+use crate::mkb;
 
 #[derive(Default)]
 pub struct LibSaveState {

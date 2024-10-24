@@ -14,7 +14,7 @@ use crate::{
 };
 
 use super::{
-    ballcolor::{self, BallColor},
+    ballcolor::{BallColor},
     freecam::Freecam,
 };
 

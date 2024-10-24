@@ -8,7 +8,7 @@ use crate::{
         pad::{Dir, Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
     },
-    utils::libsavestate::{self, LibSaveState, LoadError, SaveError, SaveState},
+    utils::libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
 };
 
 #[derive(Default)]

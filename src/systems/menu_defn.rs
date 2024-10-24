@@ -3,7 +3,7 @@ use arrayvec::ArrayString;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
-use crate::{cstr, fmt, fmt_new, mkb};
+use crate::{cstr, fmt, mkb};
 
 use super::binds::Binds;
 use super::draw::{self, Draw};
