@@ -2,7 +2,7 @@ use core::cmp::Ordering;
 
 use arrayvec::ArrayString;
 
-use crate::sprintf;
+use crate::fmt;
 
 // Do NOT edit this, it's used directly in the modlink format
 #[repr(C)]
@@ -50,7 +50,7 @@ static PRACMOD_VERSION: PracmodVersion = PracmodVersion {
 
 pub fn get_version_str<const N: usize>(s: &mut ArrayString<N>) {
     if PRACMOD_VERSION.release_cand > 0 {
-        sprintf!(
+        fmt!(
             s,
             c"%d.%d.%d-beta%d",
             PRACMOD_VERSION.semver.major as u32,
@@ -59,7 +59,7 @@ pub fn get_version_str<const N: usize>(s: &mut ArrayString<N>) {
             PRACMOD_VERSION.release_cand as u32
         );
     } else {
-        sprintf!(
+        fmt!(
             s,
             c"%d.%d.%d",
             PRACMOD_VERSION.semver.major as u32,

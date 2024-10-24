@@ -5,7 +5,7 @@ use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
-use crate::{mkb, notify};
+use crate::{fmt_new, mkb};
 
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;
@@ -202,12 +202,10 @@ impl Freecam {
             }
             speed_mult = speed_mult.clamp(TURBO_SPEED_MIN, TURBO_SPEED_MAX);
             if input_made {
-                notify!(
-                    draw,
+                draw.notify(
                     draw::WHITE,
                     NotifyDuration::Short,
-                    c"Freecam Turbo Speed Factor: %dX",
-                    speed_mult as u32
+                    &fmt_new!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
                 );
                 pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
                 pref.save();

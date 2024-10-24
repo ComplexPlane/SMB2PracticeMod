@@ -6,9 +6,10 @@ use critical_section::Mutex;
 use once_cell::sync::Lazy;
 
 use crate::hook;
-use crate::log;
 use crate::mkb;
+use crate::mods::ballcolor::BallColor;
 use crate::mods::freecam::Freecam;
+use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
 use crate::mods::savestates_ui::SaveStatesUi;
 use crate::mods::scratch::Scratch;
@@ -72,7 +73,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
         // physics::tick();  // anything editing physics presets must run before physics::tick()
-        // inputdisp::tick();
+        cx.inputdisplay.borrow_mut().tick(pref);
         // gotostory::tick();
         // cmseg::tick();
         // banans::tick();
@@ -113,7 +114,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //         Tetris::get_instance().disp();
         //         ilbattle::disp();
         //         cmseg::disp();
-        //         inputdisp::disp();
+        cx.inputdisplay.borrow_mut().disp(pad, pref, &mut cx.freecam.borrow_mut(), &mut cx.ballcolor.borrow_mut());
         cx.menu_impl.borrow_mut().disp(pad, pref, draw, binds);
         draw.disp();
         //         ilmark::disp();
@@ -191,6 +192,12 @@ hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| 
     });
 });
 
+hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |x, y| {
+    with_app(|cx| {
+        cx.create_speed_sprites_hook.borrow().call(x + 5.0, y);
+    })
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -201,6 +208,7 @@ pub struct AppContext {
     pub event_camera_tick_hook: RefCell<EventCameraTickHook>,
     pub set_minimap_mode_hook: RefCell<SetMinimapModeHook>,
     pub sound_req_id_hook: RefCell<SoundReqIdHook>,
+    pub create_speed_sprites_hook: RefCell<CreateSpeedSpritesHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
@@ -211,6 +219,8 @@ pub struct AppContext {
     pub pref: RefCell<Pref>,
     pub libsavestate: RefCell<LibSaveState>,
     pub savestates_ui: RefCell<SaveStatesUi>,
+    pub ballcolor: RefCell<BallColor>,
+    pub inputdisplay: RefCell<InputDisplay>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -229,6 +239,7 @@ impl AppContext {
             event_camera_tick_hook: RefCell::new(EventCameraTickHook::new()),
             set_minimap_mode_hook: RefCell::new(SetMinimapModeHook::new()),
             sound_req_id_hook: RefCell::new(SoundReqIdHook::new()),
+            create_speed_sprites_hook: RefCell::new(CreateSpeedSpritesHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
@@ -239,6 +250,8 @@ impl AppContext {
             pref: RefCell::new(pref),
             libsavestate: RefCell::new(LibSaveState::new()),
             savestates_ui: RefCell::new(SaveStatesUi::new()),
+            ballcolor: RefCell::new(BallColor::new()),
+            inputdisplay: RefCell::new(InputDisplay::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
@@ -270,6 +283,7 @@ impl AppContext {
             cx.event_camera_tick_hook.borrow_mut().hook();
             cx.set_minimap_mode_hook.borrow_mut().hook();
             cx.sound_req_id_hook.borrow_mut().hook();
+            cx.create_speed_sprites_hook.borrow_mut().hook();
         });
     }
 }

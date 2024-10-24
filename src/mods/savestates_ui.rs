@@ -1,7 +1,7 @@
 use core::cell::RefCell;
 
 use crate::{
-    mkb, notify,
+    fmt_new, mkb,
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
@@ -68,12 +68,10 @@ impl SaveStatesUi {
         let cstick_dir = pad.get_cstick_dir(Prio::High);
         if cstick_dir != Dir::None {
             self.active_state_slot = cstick_dir as i32;
-            notify!(
-                draw,
+            draw.notify(
                 draw::WHITE,
                 NotifyDuration::Short,
-                c"Slot %d Selected",
-                self.active_state_slot + 1
+                &fmt_new!(32, c"Slot %d Selected", self.active_state_slot + 1),
             );
         }
 
@@ -81,12 +79,10 @@ impl SaveStatesUi {
             let state = &mut self.states[self.active_state_slot as usize];
 
             if !state.is_empty() && disable_overwrite {
-                notify!(
-                    draw,
+                draw.notify(
                     draw::RED,
                     NotifyDuration::Short,
-                    c"Slot %d Full",
-                    self.active_state_slot + 1
+                    &fmt_new!(32, c"Slot {} Full", self.active_state_slot + 1),
                 );
                 return;
             }
@@ -158,20 +154,16 @@ impl SaveStatesUi {
             // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
             self.frame_advance_mode = self.is_either_trigger_held(pad);
             if self.frame_advance_mode {
-                notify!(
-                    draw,
+                draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    c"Slot %d Frame Advance",
-                    self.active_state_slot + 1
+                    &fmt_new!(32, c"Slot {} Frame Advance", self.active_state_slot + 1),
                 );
             } else {
-                notify!(
-                    draw,
+                draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    c"Slot %d Saved",
-                    self.active_state_slot + 1
+                    &fmt_new!(32, c"Slot {} Saved", self.active_state_slot + 1),
                 );
             }
 
@@ -179,12 +171,10 @@ impl SaveStatesUi {
         } else if binds.bind_pressed(clear_bind, Prio::High, pad) {
             let state = &mut self.states[self.active_state_slot as usize];
             state.clear();
-            notify!(
-                draw,
+            draw.notify(
                 draw::BLUE,
                 NotifyDuration::Short,
-                c"Slot %d Cleared",
-                self.active_state_slot + 1
+                &fmt_new!(32, c"Slot %d Cleared", self.active_state_slot + 1),
             );
         } else if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
             || (pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High)
@@ -216,63 +206,53 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::Empty) => {
-                    notify!(
-                        draw,
+                    draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        c"Slot %d Empty",
-                        self.active_state_slot + 1
+                        &fmt_new!(32, c"Slot {} Empty", self.active_state_slot + 1),
                     );
                     return;
                 }
                 Err(LoadError::WrongStage) => {
-                    notify!(
-                        draw,
+                    draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        c"Slot %d Wrong Stage",
-                        self.active_state_slot + 1
+                        &fmt_new!(32, c"Slot {} Wrong Stage", self.active_state_slot + 1),
                     );
                     return;
                 }
                 Err(LoadError::WrongMonkey) => {
                     // Thank you StevenCW for finding this marvelous bug
-                    notify!(
-                        draw,
+                    draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        c"Slot %d Wrong Monkey",
-                        self.active_state_slot + 1
+                        &fmt_new!(32, c"Slot {} Wrong Monkey", self.active_state_slot + 1),
                     );
                     return;
                 }
                 Err(LoadError::ViewStage) => {
-                    notify!(
-                        draw,
+                    draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        c"Cannot Load Savestate in View Stage"
+                        &fmt_new!(32, c"Cannot Load Savestate in View Stage"),
                     );
                     return;
                 }
                 Err(LoadError::PausedAndNonGameplaySubmode) => {
-                    notify!(
-                        draw,
+                    draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        c"Cannot Load Savestate, Please Unpause"
+                        &fmt_new!(32, c"Cannot Load Savestate, Please Unpause"),
                     );
                     return;
                 }
             }
 
             if !self.created_state_last_frame {
-                notify!(
-                    draw,
+                draw.notify(
                     draw::BLUE,
                     NotifyDuration::Short,
-                    c"Slot %d Loaded",
-                    self.active_state_slot + 1
+                    &fmt_new!(32, c"Slot %d Loaded", self.active_state_slot + 1),
                 );
             }
         } else {

@@ -202,7 +202,7 @@ pub fn heart() {
     }
 }
 
-fn num_to_rainbow(num: i32) -> mkb::GXColor {
+pub fn num_to_rainbow(num: i32) -> mkb::GXColor {
     const LOW_COLOR: u8 = 0x41;
     const HIGH_COLOR: u8 = 0xf5;
 
@@ -340,13 +340,4 @@ impl Draw {
         self.notify_color = color;
         self.notify_duration = duration;
     }
-}
-
-#[macro_export]
-macro_rules! notify {
-    ($cx:expr, $color:expr, $duration:expr, $format:expr $(, $arg:expr)* $(,)?) => {
-        let mut buf = arrayvec::ArrayString::<64>::new();
-        $crate::sprintf!(buf, $format $(, $arg)*);
-        $cx.notify($color, $duration, &buf);
-    };
 }

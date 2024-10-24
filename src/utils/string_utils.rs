@@ -1,7 +1,8 @@
 #[macro_export]
-macro_rules! sprintf {
+macro_rules! fmt {
     ($buf:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {
         unsafe {
+            let fmt: &core::ffi::CStr = $fmt;
             let ptr = $buf.as_mut_ptr();
             let written_bytes = $crate::mkb::sprintf(ptr as *mut _, $fmt.as_ptr() as *mut _ $(, $arg)*);
             assert!(written_bytes >= 0);
@@ -10,6 +11,15 @@ macro_rules! sprintf {
             $buf.set_len(written_bytes as usize);
         }
     }
+}
+
+#[macro_export]
+macro_rules! fmt_new {
+    ($n:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {{
+        let mut buf = arrayvec::ArrayString::<$n>::new();
+        $crate::fmt!(buf, $fmt $(, $arg)*);
+        buf
+    }};
 }
 
 #[macro_export]
@@ -22,8 +32,9 @@ macro_rules! cstr {
 }
 
 #[macro_export]
-macro_rules! new_cstr {
-    ($s:expr, $n:expr) => {{
+macro_rules! cstr_new {
+    ($n:expr, $s:expr) => {{
+        let s: &str = $s;
         let mut buf = arrayvec::ArrayString::<$n>::from($s).unwrap();
         buf.push('\0');
         buf.as_mut_ptr() as *mut i8
