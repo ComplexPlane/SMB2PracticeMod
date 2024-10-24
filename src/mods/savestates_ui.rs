@@ -1,3 +1,5 @@
+use core::cell::RefCell;
+
 use crate::{
     mkb, notify,
     systems::{
@@ -30,13 +32,22 @@ impl SaveStatesUi {
     pub fn tick(
         &mut self,
         pad: &mut Pad,
-        pref: &mut Pref,
+        pref: &RefCell<Pref>,
         draw: &mut Draw,
         binds: &Binds,
         libsavestate: &mut LibSaveState,
     ) {
-        if !savestates_enabled(pref) {
-            return;
+        // We must tightly scope our Pref usage to avoid a double borrow. libsavestate calls
+        // mkb::set_minimap_mode(), we hook it, and it uses pref
+        let disable_overwrite;
+        let clear_bind;
+        {
+            let pref = &mut pref.borrow_mut();
+            if !savestates_enabled(pref) {
+                return;
+            }
+            disable_overwrite = pref.get_bool(BoolPref::SavestateDisableOverwrite);
+            clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
         }
 
         // Must tick savestates every frame
@@ -69,7 +80,7 @@ impl SaveStatesUi {
         if pad.button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High) {
             let state = &mut self.states[self.active_state_slot as usize];
 
-            if !state.is_empty() && pref.get_bool(BoolPref::SavestateDisableOverwrite) {
+            if !state.is_empty() && disable_overwrite {
                 notify!(
                     draw,
                     draw::RED,
@@ -165,7 +176,7 @@ impl SaveStatesUi {
             }
 
             self.created_state_last_frame = true;
-        } else if binds.bind_pressed(pref.get_u8(U8Pref::SavestateClearBind), Prio::High, pad) {
+        } else if binds.bind_pressed(clear_bind, Prio::High, pad) {
             let state = &mut self.states[self.active_state_slot as usize];
             state.clear();
             notify!(

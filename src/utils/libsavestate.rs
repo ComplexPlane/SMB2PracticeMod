@@ -249,7 +249,8 @@ impl SaveState {
             };
 
             let post_goal_sprite_disp = if let Some(disp_func) = sprite.disp_func {
-                disp_func == mkb::sprite_clear_score_disp
+                disp_func == mkb::sprite_goal_disp
+                    || disp_func == mkb::sprite_clear_score_disp
                     || disp_func == mkb::sprite_warp_bonus_disp
                     || disp_func == mkb::sprite_time_bonus_disp
                     || disp_func == mkb::sprite_stage_score_disp

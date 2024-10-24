@@ -6,6 +6,7 @@ use critical_section::Mutex;
 use once_cell::sync::Lazy;
 
 use crate::hook;
+use crate::log;
 use crate::mkb;
 use crate::mods::freecam::Freecam;
 use crate::mods::savestates_ui;
@@ -50,7 +51,6 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.process_inputs_hook.borrow().call();
 
         let pad = &mut cx.pad.borrow_mut();
-        let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
         let binds = &mut cx.binds.borrow_mut();
         let libsavestates = &mut cx.libsavestate.borrow_mut();
@@ -62,9 +62,12 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // cardio::tick();
         cx.unlock.borrow_mut().tick();
         // iw::tick();
-        cx.savestates_ui.borrow_mut().tick(pad, pref, draw, binds, libsavestates);
+        cx.savestates_ui.borrow_mut().tick(pad, &cx.pref, draw, binds, libsavestates);
         // savest_ui::tick();
         // anything checking for pref changes should run after menu_impl.tick()
+
+        let pref = &mut cx.pref.borrow_mut();
+
         cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds);
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
