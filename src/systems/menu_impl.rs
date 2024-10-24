@@ -601,7 +601,7 @@ impl MenuImpl {
         let mut y = MARGIN + PAD + 2 * LINE_HEIGHT;
         let mut selectable_idx = 0;
 
-        let lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+        let lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, self.sin_lerp(40));
 
         for widget in menu.widgets {
             self.draw_widget(
@@ -690,6 +690,17 @@ impl MenuImpl {
     fn is_visible(&self) -> bool {
         self.visible
     }
+
+    fn sin_lerp(&self, period_frames: u32) -> f32 {
+        unsafe {
+            let angle = ((self.cursor_frame % period_frames) as i32 - (period_frames / 2) as i32)
+                as f32
+                * 0x8000 as f32
+                / (period_frames as f32 / 2.0);
+            let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
+            lerp
+        }
+    }
 }
 
 fn is_widget_selectable(widget: &'static Widget) -> bool {
@@ -774,16 +785,6 @@ fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXCol
         g: g.clamp(0.0, 255.0) as u8,
         b: b.clamp(0.0, 255.0) as u8,
         a: a.clamp(0.0, 255.0) as u8,
-    }
-}
-
-fn sin_lerp(period_frames: u32) -> f32 {
-    unsafe {
-        let angle = ((mkb::frame_counter % period_frames) - (period_frames / 2)) as f32
-            * 0x8000 as f32
-            / (period_frames as f32 / 2.0);
-        let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
-        lerp
     }
 }
 
