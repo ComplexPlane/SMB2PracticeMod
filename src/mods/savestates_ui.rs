@@ -1,7 +1,7 @@
 use core::cell::RefCell;
 
 use crate::{
-    fmt_new, mkb,
+    fmt, mkb,
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
@@ -71,7 +71,7 @@ impl SaveStatesUi {
             draw.notify(
                 draw::WHITE,
                 NotifyDuration::Short,
-                &fmt_new!(32, c"Slot %d Selected", self.active_state_slot + 1),
+                &fmt!(32, c"Slot %d Selected", self.active_state_slot + 1),
             );
         }
 
@@ -82,7 +82,7 @@ impl SaveStatesUi {
                 draw.notify(
                     draw::RED,
                     NotifyDuration::Short,
-                    &fmt_new!(32, c"Slot {} Full", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot {} Full", self.active_state_slot + 1),
                 );
                 return;
             }
@@ -157,13 +157,13 @@ impl SaveStatesUi {
                 draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    &fmt_new!(32, c"Slot {} Frame Advance", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot {} Frame Advance", self.active_state_slot + 1),
                 );
             } else {
                 draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    &fmt_new!(32, c"Slot {} Saved", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot {} Saved", self.active_state_slot + 1),
                 );
             }
 
@@ -174,7 +174,7 @@ impl SaveStatesUi {
             draw.notify(
                 draw::BLUE,
                 NotifyDuration::Short,
-                &fmt_new!(32, c"Slot %d Cleared", self.active_state_slot + 1),
+                &fmt!(32, c"Slot %d Cleared", self.active_state_slot + 1),
             );
         } else if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
             || (pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
@@ -209,7 +209,7 @@ impl SaveStatesUi {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt_new!(32, c"Slot {} Empty", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot {} Empty", self.active_state_slot + 1),
                     );
                     return;
                 }
@@ -217,7 +217,7 @@ impl SaveStatesUi {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt_new!(32, c"Slot {} Wrong Stage", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot {} Wrong Stage", self.active_state_slot + 1),
                     );
                     return;
                 }
@@ -226,7 +226,7 @@ impl SaveStatesUi {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt_new!(32, c"Slot {} Wrong Monkey", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot {} Wrong Monkey", self.active_state_slot + 1),
                     );
                     return;
                 }
@@ -234,7 +234,7 @@ impl SaveStatesUi {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt_new!(32, c"Cannot Load Savestate in View Stage"),
+                        &fmt!(32, c"Cannot Load Savestate in View Stage"),
                     );
                     return;
                 }
@@ -242,7 +242,7 @@ impl SaveStatesUi {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt_new!(32, c"Cannot Load Savestate, Please Unpause"),
+                        &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
                     );
                     return;
                 }
@@ -252,7 +252,7 @@ impl SaveStatesUi {
                 draw.notify(
                     draw::BLUE,
                     NotifyDuration::Short,
-                    &fmt_new!(32, c"Slot %d Loaded", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot %d Loaded", self.active_state_slot + 1),
                 );
             }
         } else {

@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! fmt {
+macro_rules! fmt_buf {
     ($buf:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {
         unsafe {
             let fmt: &core::ffi::CStr = $fmt;
@@ -14,16 +14,16 @@ macro_rules! fmt {
 }
 
 #[macro_export]
-macro_rules! fmt_new {
+macro_rules! fmt {
     ($n:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {{
         let mut buf = arrayvec::ArrayString::<$n>::new();
-        $crate::fmt!(buf, $fmt $(, $arg)*);
+        $crate::fmt_buf!(buf, $fmt $(, $arg)*);
         buf
     }};
 }
 
 #[macro_export]
-macro_rules! cstr {
+macro_rules! cstr_buf {
     ($arraystring:expr) => {{
         let mut buf = $arraystring;
         buf.push('\0');
@@ -32,7 +32,7 @@ macro_rules! cstr {
 }
 
 #[macro_export]
-macro_rules! cstr_new {
+macro_rules! cstr {
     ($n:expr, $s:expr) => {{
         let s: &str = $s;
         let mut buf = arrayvec::ArrayString::<$n>::from(s).unwrap();

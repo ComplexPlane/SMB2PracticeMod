@@ -3,7 +3,7 @@ use core::ffi::CStr;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    fmt_new,
+    fmt,
     mkb::{self, Vec2d},
     mkb_suppl::{GXPosition3f32, GXTexCoord2f32},
     systems::{
@@ -409,25 +409,25 @@ impl InputDisplay {
             center.x as u32,
             (center.y + 0.0 * 14.0) as u32,
             draw::WHITE,
-            &fmt_new!(16, c"rX: %d", raw_stick_inputs.x),
+            &fmt!(16, c"rX: %d", raw_stick_inputs.x),
         );
         draw::debug_text(
             center.x as u32,
             (center.y + 1.0 * 14.0) as u32,
             draw::WHITE,
-            &fmt_new!(16, c"rY: %d", raw_stick_inputs.y),
+            &fmt!(16, c"rY: %d", raw_stick_inputs.y),
         );
         draw::debug_text(
             center.x as u32,
             (center.y + 2.0 * 14.0) as u32,
             draw::WHITE,
-            &fmt_new!(16, c"gX: %d", stick_inputs.x),
+            &fmt!(16, c"gX: %d", stick_inputs.x),
         );
         draw::debug_text(
             center.x as u32,
             (center.y + 3.0 * 14.0) as u32,
             draw::WHITE,
-            &fmt_new!(16, c"gY: %d", stick_inputs.y),
+            &fmt!(16, c"gY: %d", stick_inputs.y),
         );
     }
 

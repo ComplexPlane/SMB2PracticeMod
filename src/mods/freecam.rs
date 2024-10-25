@@ -6,7 +6,7 @@ use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
-use crate::{fmt_new, mkb};
+use crate::{fmt, mkb};
 
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;
@@ -204,7 +204,7 @@ impl Freecam {
                 draw.notify(
                     draw::WHITE,
                     NotifyDuration::Short,
-                    &fmt_new!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
+                    &fmt!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
                 );
                 pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
                 pref.save();

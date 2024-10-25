@@ -39,14 +39,14 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
                 loc.line(),
                 loc.column(),
             ));
-            log!(c"%s", cstr!(formatted_str));
+            log!(c"%s", cstr_buf!(formatted_str));
 
             let formatted_str = alloc::fmt::format(format_args!("{}", panic_info.message()));
-            log!(c"%s", cstr!(formatted_str));
+            log!(c"%s", cstr_buf!(formatted_str));
         }
         None => {
             let formatted_str = alloc::fmt::format(format_args!("Panic: {}", panic_info.message()));
-            log!(c"%s", cstr!(formatted_str));
+            log!(c"%s", cstr_buf!(formatted_str));
         }
     }
     loop {}

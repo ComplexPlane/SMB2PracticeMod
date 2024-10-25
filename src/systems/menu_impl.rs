@@ -2,7 +2,7 @@ use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
-use crate::{cstr, cstr_new, fmt, fmt_new};
+use crate::{cstr, cstr_buf, fmt};
 use crate::{mkb, utils::tinymap::TinyMap};
 
 use super::binds::{self, Binds};
@@ -337,7 +337,7 @@ impl MenuImpl {
                 cx.draw.notify(
                     draw::RED,
                     NotifyDuration::Long,
-                    &fmt_new!(32, c"Use %s to toggle menu", cstr!(buf)),
+                    &fmt!(32, c"Use %s to toggle menu", cstr_buf!(buf)),
                 );
             }
             return;
@@ -468,9 +468,12 @@ impl MenuImpl {
             }
             Widget::FloatView { label, get } => {
                 draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
-                let mut float_str = ArrayString::<16>::new();
-                fmt!(float_str, c"%.3Ef", get(cx) as f64);
-                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, draw::GREEN, &float_str);
+                draw::debug_text(
+                    MARGIN + PAD + PREF_OFFSET,
+                    *y,
+                    draw::GREEN,
+                    &fmt!(16, c"%.3Ef", get(cx) as f64),
+                );
                 *y += LINE_HEIGHT;
             }
             Widget::Choose {
@@ -489,15 +492,18 @@ impl MenuImpl {
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
                 let current_choice = cx.pref.get_u8(*pref) as usize;
 
-                let mut buf = ArrayString::<32>::new();
-                fmt!(
-                    buf,
-                    c"(%d/%d) %s",
-                    current_choice + 1,
-                    choices.len(),
-                    cstr_new!(32, choices[current_choice]),
+                draw::debug_text(
+                    MARGIN + PAD + PREF_OFFSET,
+                    *y,
+                    color,
+                    &fmt!(
+                        32,
+                        c"(%d/%d) %s",
+                        current_choice + 1,
+                        choices.len(),
+                        cstr!(32, choices[current_choice]),
+                    ),
                 );
-                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
             }
@@ -524,9 +530,12 @@ impl MenuImpl {
                     UNFOCUSED_COLOR
                 };
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
-                let mut buf = ArrayString::<8>::new();
-                fmt!(buf, c"%d", cx.pref.get_u8(*pref) as u32);
-                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
+                draw::debug_text(
+                    MARGIN + PAD + PREF_OFFSET,
+                    *y,
+                    color,
+                    &fmt!(8, c"%d", cx.pref.get_u8(*pref) as u32),
+                );
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
             }
@@ -550,11 +559,10 @@ impl MenuImpl {
 
                 let display = (cx.pref.get_u8(*pref) as f32 + *floor as f32) / *precision as f32;
 
-                let mut buf = ArrayString::<16>::new();
-                match decimals {
-                    2 => fmt!(buf, c"%0.2f", display as f64),
-                    _ => fmt!(buf, c"%0.3f", display as f64),
-                }
+                let buf = match decimals {
+                    2 => fmt!(16, c"%0.2f", display as f64),
+                    _ => fmt!(16, c"%0.3f", display as f64),
+                };
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
 
                 *y += LINE_HEIGHT;

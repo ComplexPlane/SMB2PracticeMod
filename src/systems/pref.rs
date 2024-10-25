@@ -1,8 +1,7 @@
 extern crate alloc;
 
 use crate::{
-    cstr_new, fmt_new, mkb_suppl::CARDResult, systems::draw::NotifyDuration,
-    utils::modlink::ModLink,
+    cstr, fmt, mkb_suppl::CARDResult, systems::draw::NotifyDuration, utils::modlink::ModLink,
 };
 use alloc::vec;
 use alloc::vec::Vec;
@@ -440,10 +439,10 @@ impl Pref {
                     draw.notify(
                         draw::RED,
                         NotifyDuration::Long,
-                        &fmt_new!(
+                        &fmt!(
                             32,
                             c"Failed to save settings: %s",
-                            cstr_new!(16, card_result.to_str()),
+                            cstr!(16, card_result.to_str()),
                         ),
                     );
                 }

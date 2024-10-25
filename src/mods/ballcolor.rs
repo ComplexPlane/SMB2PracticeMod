@@ -1,7 +1,7 @@
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    mkb::{self, GXColor},
+    mkb::{self},
     systems::{
         draw,
         pref::{Pref, U8Pref},

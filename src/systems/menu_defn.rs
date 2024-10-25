@@ -3,7 +3,7 @@ use arrayvec::ArrayString;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
-use crate::{cstr, fmt, mkb};
+use crate::{cstr_buf, fmt_buf, mkb};
 
 use super::binds::Binds;
 use super::draw::{self, Draw};
@@ -372,7 +372,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
         label_func: |buf, _cx| {
             let mut version_str = ArrayString::<32>::new();
             version::get_version_str(&mut version_str);
-            fmt!(buf, c"  Current version: v%s", cstr!(version_str));
+            fmt_buf!(buf, c"  Current version: v%s", cstr_buf!(version_str));
         },
     },
     Widget::Text {

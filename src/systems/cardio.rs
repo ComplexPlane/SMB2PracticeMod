@@ -5,7 +5,7 @@ use core::ffi::c_long;
 use core::ffi::c_void;
 use core::ptr::null_mut;
 
-use crate::cstr_new;
+use crate::cstr;
 use crate::mkb;
 use crate::mkb_suppl::to_card_result;
 use crate::mkb_suppl::CARDResult;
@@ -124,7 +124,7 @@ impl CardIo {
             // Open file
             res = to_card_result(mkb::CARDOpen(
                 0,
-                cstr_new!(16, file_name),
+                cstr!(16, file_name),
                 &mut self.card_file_info,
             ));
             if res != CARDResult::Ready {
@@ -257,7 +257,7 @@ impl CardIo {
                     // Try to open the file
                     let res = to_card_result(mkb::CARDOpen(
                         0,
-                        cstr_new!(16, &req.file_name),
+                        cstr!(16, &req.file_name),
                         &mut self.card_file_info,
                     ));
                     if res == CARDResult::Ready {
@@ -289,7 +289,7 @@ impl CardIo {
                         // Create new file
                         mkb::CARDCreateAsync(
                             0,
-                            cstr_new!(16, &req.file_name),
+                            cstr!(16, &req.file_name),
                             req.write_size as u32,
                             &mut self.card_file_info,
                             null_mut(),
@@ -332,7 +332,7 @@ impl CardIo {
                     }
                     mkb::CARDCreateAsync(
                         0,
-                        cstr_new!(16, &req.file_name),
+                        cstr!(16, &req.file_name),
                         req.write_size as u32,
                         &mut self.card_file_info,
                         null_mut(),
