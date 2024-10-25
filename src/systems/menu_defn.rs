@@ -1211,7 +1211,7 @@ static VARIANT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Header {
-        label: "Alternate Modes",
+        label: "Alternative Modes",
     },
     Widget::Menu {
         label: "Jump-Mod",

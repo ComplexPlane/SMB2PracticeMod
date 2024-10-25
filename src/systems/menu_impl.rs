@@ -827,118 +827,53 @@ fn draw_help_layout() {
     );
 }
 
+fn draw_bind_help(bind: &str, label: &str, index: u32, color: mkb::GXColor) {
+    draw::debug_text(START + index * BLOCK_WIDTH, Y_HEIGHT, color, bind);
+    draw::debug_text(
+        (index + 1) * BLOCK_WIDTH - BUTTON_OFFSET,
+        Y_HEIGHT,
+        draw::WHITE,
+        ":",
+    );
+    draw::debug_text(
+        (index + 1) * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
+        Y_HEIGHT,
+        draw::WHITE,
+        label,
+    );
+}
+
 fn draw_help(widget: &Widget) {
     // draw relevant controls for current widget
     match widget {
         Widget::Checkbox { .. } | Widget::GetSetCheckbox { .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Toggle",
-            );
+            draw_bind_help("A", "Toggle", 0, draw::LIGHT_GREEN);
+            draw_bind_help("X", "Reset", 1, draw::GRAY);
         }
         Widget::Menu { .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Open",
-            );
+            draw_bind_help("A", "Open", 0, draw::LIGHT_GREEN);
         }
         Widget::Button { .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Activate",
-            );
+            draw_bind_help("A", "Activate", 0, draw::LIGHT_GREEN);
         }
         Widget::Choose { .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Next",
-            );
-            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-            draw::debug_text(2 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                2 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Previous",
-            );
-            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-            draw::debug_text(3 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                3 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Reset",
-            );
+            draw_bind_help("A", "Next", 0, draw::LIGHT_GREEN);
+            draw_bind_help("Y", "Previous", 1, draw::GRAY);
+            draw_bind_help("X", "Reset", 2, draw::GRAY);
         }
         Widget::IntEdit { .. } | Widget::FloatEdit { .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Increase",
-            );
-            draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-            draw::debug_text(2 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                2 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Decrease",
-            );
-            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-            draw::debug_text(3 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                3 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Reset",
-            );
+            draw_bind_help("A", "Increase", 0, draw::LIGHT_GREEN);
+            draw_bind_help("Y", "Decrease", 1, draw::GRAY);
+            draw_bind_help("X", "Reset", 2, draw::GRAY);
         }
         Widget::InputSelect { can_unbind, .. } => {
-            draw::debug_text(START, Y_HEIGHT, draw::LIGHT_GREEN, "A");
-            draw::debug_text(1 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                1 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Bind",
-            );
+            draw_bind_help("A", "Bind", 0, draw::LIGHT_GREEN);
             if *can_unbind {
-                draw::debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "Y");
-                draw::debug_text(2 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-                draw::debug_text(
-                    2 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                    Y_HEIGHT,
-                    draw::WHITE,
-                    "Unbind",
-                );
+                draw_bind_help("Y", "Unbind", 1, draw::GRAY);
+                draw_bind_help("X", "Reset", 2, draw::GRAY);
+            } else {
+                draw_bind_help("X", "Reset", 1, draw::GRAY);
             }
-            draw::debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, draw::GRAY, "X");
-            draw::debug_text(3 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
-            draw::debug_text(
-                3 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,
-                Y_HEIGHT,
-                draw::WHITE,
-                "Reset",
-            );
         }
         _ => {}
     }
