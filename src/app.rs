@@ -9,6 +9,7 @@ use crate::hook;
 use crate::mkb;
 use crate::mods::ballcolor::BallColor;
 use crate::mods::banans::Banans;
+use crate::mods::cmseg::CmSeg;
 use crate::mods::freecam::Freecam;
 use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
@@ -71,13 +72,13 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
 
         let pref = &mut cx.pref.borrow_mut();
 
-        cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds);
+        cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds, &mut cx.cmseg.borrow_mut());
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
         // physics::tick();  // anything editing physics presets must run before physics::tick()
         cx.inputdisplay.borrow_mut().tick(pref);
         // gotostory::tick();
-        // cmseg::tick();
+        cx.cmseg.borrow_mut().tick();
         cx.banans.borrow_mut().tick(pref);
         // marathon::tick();
         cx.ballcolor.borrow_mut().tick(pref);
@@ -101,6 +102,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         let pref = &mut cx.pref.borrow_mut();
         let draw = &mut cx.draw.borrow_mut();
         let binds = &mut cx.binds.borrow_mut();
+        let freecam = &mut cx.freecam.borrow_mut();
 
         // // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
         //         // elements. The original screenshot call is nopped.
@@ -111,13 +113,14 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //         }
 
         draw.predraw();
-        cx.timer.borrow_mut().disp(pref, &mut cx.freecam.borrow_mut());
+        cx.timer.borrow_mut().disp(pref, freecam);
         //         iw::disp();
         //         Tetris::get_instance().disp();
         //         ilbattle::disp();
         //         cmseg::disp();
-        cx.inputdisplay.borrow_mut().disp(pad, pref, &mut cx.freecam.borrow_mut(), &mut cx.ballcolor.borrow_mut());
-        cx.menu_impl.borrow_mut().disp(pad, pref, draw, binds);
+        cx.cmseg.borrow_mut().disp(pref, freecam);
+        cx.inputdisplay.borrow_mut().disp(pad, pref, freecam, &mut cx.ballcolor.borrow_mut());
+        cx.menu_impl.borrow_mut().disp(pad, pref, draw, binds, &mut cx.cmseg.borrow_mut());
         draw.disp();
         //         ilmark::disp();
         //         physics::disp();
@@ -155,6 +158,7 @@ hook!(OSLinkHook,
         if let Ok(relutil::ModuleId::MainGame) = module_id {
             cx.game_ready_init_hook.borrow_mut().hook();
             cx.game_play_tick_hook.borrow_mut().hook();
+            // TODO
             // jump::patch_minimap();
         }
 
@@ -207,6 +211,13 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
     });
 });
 
+hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, || {
+    with_app(|cx| {
+        cx.reset_cm_course_hook.borrow().call();
+        cx.cmseg.borrow_mut().on_reset_cm_course();
+    });
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -219,6 +230,7 @@ pub struct AppContext {
     pub sound_req_id_hook: RefCell<SoundReqIdHook>,
     pub create_speed_sprites_hook: RefCell<CreateSpeedSpritesHook>,
     pub load_stagedef_hook: RefCell<LoadStagedefHook>,
+    pub reset_cm_course_hook: RefCell<ResetCmCourseHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
@@ -233,6 +245,7 @@ pub struct AppContext {
     pub inputdisplay: RefCell<InputDisplay>,
     pub banans: RefCell<Banans>,
     pub timer: RefCell<Timer>,
+    pub cmseg: RefCell<CmSeg>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -253,6 +266,7 @@ impl AppContext {
             sound_req_id_hook: RefCell::new(SoundReqIdHook::new()),
             create_speed_sprites_hook: RefCell::new(CreateSpeedSpritesHook::new()),
             load_stagedef_hook: RefCell::new(LoadStagedefHook::new()),
+            reset_cm_course_hook: RefCell::new(ResetCmCourseHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
@@ -267,6 +281,7 @@ impl AppContext {
             inputdisplay: RefCell::new(InputDisplay::new()),
             banans: RefCell::new(Banans::new()),
             timer: RefCell::new(Timer::new()),
+            cmseg: RefCell::new(CmSeg::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
@@ -300,6 +315,7 @@ impl AppContext {
             cx.sound_req_id_hook.borrow_mut().hook();
             cx.create_speed_sprites_hook.borrow_mut().hook();
             cx.load_stagedef_hook.borrow_mut().hook();
+            cx.reset_cm_course_hook.borrow_mut().hook();
         });
     }
 }

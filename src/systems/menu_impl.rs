@@ -1,5 +1,6 @@
 use arrayvec::{ArrayString, ArrayVec};
 
+use crate::mods::cmseg::CmSeg;
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
@@ -289,12 +290,20 @@ impl MenuImpl {
         }
     }
 
-    pub fn tick(&mut self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw, binds: &mut Binds) {
+    pub fn tick(
+        &mut self,
+        pad: &mut Pad,
+        pref: &mut Pref,
+        draw: &mut Draw,
+        binds: &mut Binds,
+        cmseg: &mut CmSeg,
+    ) {
         let cx = &mut MenuContext {
             pad,
             pref,
             draw,
             binds,
+            cmseg,
         };
 
         if self.binding == BindingState::Active {
@@ -662,12 +671,20 @@ impl MenuImpl {
         );
     }
 
-    pub fn disp(&self, pad: &mut Pad, pref: &mut Pref, draw: &mut Draw, binds: &mut Binds) {
+    pub fn disp(
+        &self,
+        pad: &mut Pad,
+        pref: &mut Pref,
+        draw: &mut Draw,
+        binds: &mut Binds,
+        cmseg: &mut CmSeg,
+    ) {
         let cx = &mut MenuContext {
             pad,
             pref,
             draw,
             binds,
+            cmseg,
         };
 
         if !self.visible {

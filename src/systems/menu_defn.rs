@@ -1,5 +1,6 @@
 use arrayvec::ArrayString;
 
+use crate::mods::cmseg::{CmSeg, Seg};
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
@@ -15,8 +16,8 @@ pub struct MenuContext<'a> {
     pub pref: &'a mut Pref,
     pub draw: &'a mut Draw,
     pub binds: &'a mut Binds,
+    pub cmseg: &'a mut CmSeg,
     // physics: &'a mut Physics,
-    // cmseg
 }
 
 pub enum AfterPush {
@@ -527,16 +528,12 @@ static CM_BEG_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Beginner 1-10",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::Beginner1),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Beginner1),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Beginner Extra 1-10",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::BeginnerExtra),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::BeginnerExtra),
         after: AfterPush::CloseMenu,
     },
 ];
@@ -547,30 +544,22 @@ static CM_ADV_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Advanced 1-10",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::Advanced1),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Advanced1),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Advanced 11-20",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::Advanced11),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Advanced11),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Advanced 21-30",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::Advanced21),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Advanced21),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Advanced Extra 1-10",
-        // TODO
-        // push: || cmseg::request_cm_seg(cmseg::Seg::AdvancedExtra),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::AdvancedExtra),
         after: AfterPush::CloseMenu,
     },
 ];
@@ -581,32 +570,32 @@ static CM_EXP_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Expert 1-10",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::Expert1)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Expert1),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Expert 11-20",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::Expert11)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Expert11),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Expert 21-30",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::Expert21)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Expert21),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Expert 31-40",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::Expert31)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Expert31),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Expert 41-50",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::Expert41)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Expert41),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Expert Extra 1-10",
-        push: |_| {}, // TODO: Implement cmseg::request_cm_seg(cmseg::Seg::ExpertExtra)
+        push: |cx| cx.cmseg.request_cm_seg(Seg::ExpertExtra),
         after: AfterPush::CloseMenu,
     },
 ];
@@ -617,16 +606,12 @@ static CM_MAS_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Master 1-10",
-        // TODO
-        // push: |cx| cx.cmseg.request_cm_seg(cmseg::Seg::Master1),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::Master1),
         after: AfterPush::CloseMenu,
     },
     Widget::Button {
         label: "Master Extra 1-10",
-        // TODO
-        // push: |_| cmseg::request_cm_seg(cmseg::Seg::MasterExtra),
-        push: |_| {},
+        push: |cx| cx.cmseg.request_cm_seg(Seg::MasterExtra),
         after: AfterPush::CloseMenu,
     },
 ];

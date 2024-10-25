@@ -1,6 +1,7 @@
 pub mod ballcolor;
 pub mod banans;
 pub mod camera;
+pub mod cmseg;
 pub mod freecam;
 pub mod inputdisp;
 pub mod savestates_ui;
