@@ -1,7 +1,7 @@
 use core::ffi::c_void;
 
 use super::memstore::{self, MemStore};
-use crate::mkb;
+use crate::{mkb, mods::timer::Timer};
 
 #[derive(Default)]
 pub struct LibSaveState {
@@ -54,14 +54,14 @@ impl SaveState {
         SaveState::default()
     }
 
-    pub fn tick(&mut self, libsavestate: &mut LibSaveState) {
+    pub fn tick(&mut self, libsavestate: &mut LibSaveState, timer: &mut Timer) {
         libsavestate.state_loaded_this_frame = false;
         if self.reload_state {
-            let _ = self.load(libsavestate); // Ignore result, spooky!
+            let _ = self.load(libsavestate, timer); // Ignore result, spooky!
         }
     }
 
-    pub fn save(&mut self) -> Result<(), SaveError> {
+    pub fn save(&mut self, timer: &mut Timer) -> Result<(), SaveError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -92,11 +92,11 @@ impl SaveState {
             }
 
             let mut prealloc = memstore::Prealloc::new();
-            Self::pass_over_regions(&mut MemStore::Prealloc(&mut prealloc));
+            Self::pass_over_regions(&mut MemStore::Prealloc(&mut prealloc), timer);
             let mut save =
                 memstore::Save::try_from(prealloc).map_err(|_| SaveError::InsufficientMemory)?;
 
-            Self::pass_over_regions(&mut MemStore::Save(&mut save));
+            Self::pass_over_regions(&mut MemStore::Save(&mut save), timer);
             self.stage_id = mkb::current_stage_id;
             self.character = mkb::active_monkey_id[mkb::curr_player_idx as usize];
             // handle_pause_menu_save(); // TODO
@@ -107,7 +107,11 @@ impl SaveState {
         Ok(())
     }
 
-    pub fn load(&mut self, libsavestate: &mut LibSaveState) -> Result<(), LoadError> {
+    pub fn load(
+        &mut self,
+        libsavestate: &mut LibSaveState,
+        timer: &mut Timer,
+    ) -> Result<(), LoadError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -151,7 +155,7 @@ impl SaveState {
 
             let mut memstore = self.memstore.as_mut().unwrap();
             memstore.reset();
-            Self::pass_over_regions(&mut MemStore::Load(&mut memstore));
+            Self::pass_over_regions(&mut MemStore::Load(&mut memstore), timer);
 
             Self::destruct_non_gameplay_sprites();
             Self::destruct_distracting_effects();
@@ -288,7 +292,7 @@ impl SaveState {
         self.memstore = None
     }
 
-    unsafe fn pass_over_regions(memstore: &mut MemStore) {
+    unsafe fn pass_over_regions(memstore: &mut MemStore, timer: &mut Timer) {
         memstore.scan_obj(&raw mut mkb::balls[0]);
         memstore.scan_obj(&raw mut mkb::sub_mode);
         memstore.scan_obj(&raw mut mkb::mode_info.stage_time_frames_remaining);
@@ -376,8 +380,7 @@ impl SaveState {
         }
 
         // RTA timer
-        // TODO
-        // timer::save_state(memstore);
+        timer.save_state(memstore);
     }
 }
 

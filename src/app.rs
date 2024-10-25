@@ -14,6 +14,7 @@ use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
 use crate::mods::savestates_ui::SaveStatesUi;
 use crate::mods::scratch::Scratch;
+use crate::mods::timer::Timer;
 use crate::mods::unlock::Unlock;
 use crate::systems::binds::Binds;
 use crate::systems::draw::Draw;
@@ -64,7 +65,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         // cardio::tick();
         cx.unlock.borrow_mut().tick();
         // iw::tick();
-        cx.savestates_ui.borrow_mut().tick(pad, &cx.pref, draw, binds, libsavestates);
+        cx.savestates_ui.borrow_mut().tick(pad, &cx.pref, draw, binds, libsavestates, &mut cx.timer.borrow_mut());
         // savest_ui::tick();
         // anything checking for pref changes should run after menu_impl.tick()
 
@@ -110,7 +111,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         //         }
 
         draw.predraw();
-        //         timer::disp();
+        cx.timer.borrow_mut().disp(pref, &mut cx.freecam.borrow_mut());
         //         iw::disp();
         //         Tetris::get_instance().disp();
         //         ilbattle::disp();
@@ -231,6 +232,7 @@ pub struct AppContext {
     pub ballcolor: RefCell<BallColor>,
     pub inputdisplay: RefCell<InputDisplay>,
     pub banans: RefCell<Banans>,
+    pub timer: RefCell<Timer>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -264,6 +266,7 @@ impl AppContext {
             ballcolor: RefCell::new(BallColor::new()),
             inputdisplay: RefCell::new(InputDisplay::new()),
             banans: RefCell::new(Banans::new()),
+            timer: RefCell::new(Timer::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }

@@ -11,6 +11,8 @@ use crate::{
     utils::libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
 };
 
+use super::timer::Timer;
+
 #[derive(Default)]
 pub struct SaveStatesUi {
     states: [SaveState; 8],
@@ -36,6 +38,7 @@ impl SaveStatesUi {
         draw: &mut Draw,
         binds: &Binds,
         libsavestate: &mut LibSaveState,
+        timer: &mut Timer,
     ) {
         // We must tightly scope our Pref usage to avoid a double borrow. libsavestate calls
         // mkb::set_minimap_mode(), we hook it, and it uses pref
@@ -52,7 +55,7 @@ impl SaveStatesUi {
 
         // Must tick savestates every frame
         for state in &mut self.states {
-            state.tick(libsavestate);
+            state.tick(libsavestate, timer);
         }
 
         if !self.is_either_trigger_held(pad) {
@@ -87,7 +90,7 @@ impl SaveStatesUi {
                 return;
             }
 
-            match state.save() {
+            match state.save(timer) {
                 Ok(()) => {}
                 Err(SaveError::MainMode) => {
                     // Unreachable
@@ -183,7 +186,7 @@ impl SaveStatesUi {
             || (self.is_either_trigger_held(pad) && cstick_dir != Dir::None)
         {
             let state = &mut self.states[self.active_state_slot as usize];
-            match state.load(libsavestate) {
+            match state.load(libsavestate, timer) {
                 Ok(()) => {}
                 Err(LoadError::MainMode) => {
                     // Unreachable

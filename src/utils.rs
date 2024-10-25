@@ -9,5 +9,6 @@ pub mod patch;
 pub mod ppc;
 pub mod relutil;
 pub mod string_utils;
+pub mod timerdisp;
 pub mod tinymap;
 pub mod version;
