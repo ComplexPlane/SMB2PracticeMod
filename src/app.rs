@@ -10,6 +10,7 @@ use crate::mkb;
 use crate::mods::ballcolor::BallColor;
 use crate::mods::banans::Banans;
 use crate::mods::cmseg::CmSeg;
+use crate::mods::dpad;
 use crate::mods::freecam::Freecam;
 use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
@@ -35,11 +36,12 @@ where
     critical_section::with(|cs| f(APP_CONTEXT.borrow(cs)))
 }
 
-hook!(PADReadHook, status: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
+hook!(PADReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
     with_app(|cx| {
         let ret = cx.padread_hook.borrow().call(statuses);
 
         // // Dpad can modify effective stick input, shown by input display
+        dpad::on_pad_read(statuses, &mut cx.pref.borrow_mut());
         // dpad::on_PADRead(statuses);
         // pad collects original inputs before they are modified by the game
         let status_array = unsafe { core::slice::from_raw_parts(statuses, 4)};
