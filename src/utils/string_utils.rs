@@ -35,8 +35,7 @@ macro_rules! cstr_buf {
 macro_rules! cstr {
     ($n:expr, $s:expr) => {{
         let s: &str = $s;
-        let mut buf = arrayvec::ArrayString::<$n>::from(s).unwrap();
-        buf.push('\0');
-        buf.as_mut_ptr() as *mut i8
+        let buf = arrayvec::ArrayString::<$n>::from(s).unwrap();
+        $crate::cstr_buf!(buf)
     }};
 }
