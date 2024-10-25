@@ -3061,43 +3061,6 @@ enum {
 };
 typedef undefined4 MinimapMode;
 
-typedef struct DipSwitchesOld DipSwitchesOld, *PDipSwitchesOld;
-
-struct DipSwitchesOld { /* Unused struct - maybe I'll use it once Ghidra supports bitfields a bit nicer in the decompilation */
-    u32 DIP_DEBUG:1; /* Enables debug mode */
-    u32 DIP_DISP:1;
-    u32 DIP_STCOLI:1; /* Displays the level's collision and out of bounds areas */
-    u32 DIP_TRIANGLE:1; /* Replaces the level model with a triangle */
-    u32 DIP_TAIKEN:1;
-    u32 DIP_TIME_STOP:1; /* Freezes the timer at 60 seconds */
-    u32 DIP_NAMEENTRY:1;
-    u32 DIP_FIX_WORLD:1; /* Disables stage tilting */
-    u32 DIP_TEST_CAM:1; /* Free cam during gameplay */
-    u32 DIP_NO_INTR:1;
-    u32 DIP_CAPTURE:1;
-    u32 DIP_PERF_ALWAYS:1; /* Related to the SDK's PERF profiling */
-    u32 DIP_PLAY_STG_ALL:1; /* Unlock all */
-    u32 DIP_PLAY_PNT_x10:1; /* 10x play point gain */
-    u32 DIP_SARU_0:1;
-    u32 DIP_SWITCH15:1;
-    u32 DIP_ONLY24MB:1;
-    u32 DIP_SHADOW_DISP:1; /* Display object shadows on the UI */
-    u32 DIP_SPRITE_OFF:1; /* Hide most 2D graphics */
-    u32 DIP_SNDREQ_DISP:1;
-    u32 DIP_SE_VOL_RESET:1; /* Disable most sound effects */
-    u32 DIP_APE_FACEDIR:1; /* Shows what the monkey is looking at */
-    u32 DIP_SEL_ALL_CTRL:1; /* Control all 4 players at once with 1 controller */
-    u32 DIP_APE_NUMBER:1; /* Display character id above each monkey's head */
-    u32 DIP_1P_TEST_CAM:1;
-    u32 DIP_PREVIEW_SAVE:1; /* Display a preview in the upper left of the screen */
-    u32 DIP_AUTHOR_DEBUG:1; /* Show debug info during cutscenes */
-    u32 DIP_SWITCH27:1;
-    u32 DIP_SOA:1;
-    u32 DIP_TEST_TEAM:1;
-    u32 DIP_NO_MINIMAP:1; /* Hide minimap */
-    u32 DIP_NO_STAGE:1; /* Hide stage */
-} __attribute__((__packed__));
-
 enum {
     LOCALE_ENGLISH=0,
     LOCALE_GERMAN=1,
