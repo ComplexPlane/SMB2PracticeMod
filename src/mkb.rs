@@ -5723,3788 +5723,1292 @@ pub type __compar_fn_t = ::core::option::Option<
 pub type pointer = *mut ::core::ffi::c_void;
 extern "C" {
     pub static mut DVD_GAME_NAME: [::core::ffi::c_char; 4usize];
-}
-extern "C" {
     pub static mut DVD_COMPANY: [::core::ffi::c_char; 2usize];
-}
-extern "C" {
     pub static mut DVD_DISK_NUMBER: u8_;
-}
-extern "C" {
     pub static mut DVD_GAME_VERSION: u8_;
-}
-extern "C" {
     pub static mut DVD_STREAMING: u8_;
-}
-extern "C" {
     pub static mut DVD_STREAMING_BUF_SIZE: u8_;
-}
-extern "C" {
     pub static mut DVD_MAGIC_WORD: u32_;
-}
-extern "C" {
     pub static mut MAGIC_WORD: u32_;
-}
-extern "C" {
     pub static mut VERSION: u32_;
-}
-extern "C" {
     pub static mut PHYSICAL_MEMORY_SIZE: usize;
-}
-extern "C" {
     pub static mut CONSOLE_TYPE: u32_;
-}
-extern "C" {
     pub static mut ARENA_LO: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut ARENA_HI: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut FST_LOCATION: undefined4;
-}
-extern "C" {
     pub static mut FST_MAX_LENGTH: undefined4;
-}
-extern "C" {
     pub static mut IS_DEBUGGER_PRESENT: u32_;
-}
-extern "C" {
     pub static mut DEBUGGER_EXCEPTION_MASK: undefined4;
-}
-extern "C" {
     pub static mut DEBUGGER_EXCEPTION_HOOK_DESTINATION: undefined4;
-}
-extern "C" {
     pub static mut DEBUGGER_LR_TEMP: undefined4;
-}
-extern "C" {
     pub static mut current_os_context_physical: undefined4;
-}
-extern "C" {
     pub static mut previous_os_interrupt_mask: undefined4;
-}
-extern "C" {
     pub static mut current_os_interrupt_mask: undefined4;
-}
-extern "C" {
     pub static mut TV_MODE: u32_;
-}
-extern "C" {
     pub static mut ARAM_SIZE: usize;
-}
-extern "C" {
     pub static mut current_os_context_logical: undefined4;
-}
-extern "C" {
     pub static mut currentOsContextLogical: undefined4;
-}
-extern "C" {
     pub static mut default_os_thread: undefined4;
-}
-extern "C" {
     pub static mut active_thread_queue_head: undefined4;
-}
-extern "C" {
     pub static mut active_thread_queue_tail: undefined4;
-}
-extern "C" {
     pub static mut current_os_thread: undefined4;
-}
-extern "C" {
     pub static mut DEBUG_MONITOR_SIZE: undefined4;
-}
-extern "C" {
     pub static mut DEBUG_MONITOR_LOCATION: undefined4;
-}
-extern "C" {
     pub static mut MEMORY_SIZE: usize;
-}
-extern "C" {
     pub static mut DVD_BI2_LOCATION: undefined4;
-}
-extern "C" {
     pub static mut BUS_CLOCK_SPEED: undefined4;
-}
-extern "C" {
     pub static mut CPU_CLOCK_SPEED: undefined4;
-}
-extern "C" {
     pub static mut system_reset_exception_handler: undefined;
-}
-extern "C" {
     pub static mut machine_check_exception_handler: undefined;
-}
-extern "C" {
     pub static mut dsi_exception_handler: undefined;
-}
-extern "C" {
     pub static mut isi_exception_handler: undefined;
-}
-extern "C" {
     pub static mut external_interrupt_exception_handler: undefined;
-}
-extern "C" {
     pub static mut alignment_exception_handler: undefined;
-}
-extern "C" {
     pub static mut program_exception_handler: undefined;
-}
-extern "C" {
     pub static mut floating_point_unavailable_exception_handler: undefined;
-}
-extern "C" {
     pub static mut decrementer_exception_handler: undefined;
-}
-extern "C" {
     pub static mut system_call_exception_handler: undefined;
-}
-extern "C" {
     pub static mut trace_exception_handler: undefined;
-}
-extern "C" {
     pub static mut performance_monitor_interrupt_handler: undefined;
-}
-extern "C" {
     pub static mut instruction_address_breakpoint_exception_handler: undefined;
-}
-extern "C" {
     pub static mut system_management_interrupt_handler: undefined;
-}
-extern "C" {
     pub static mut thermal_management_interrupt_exception_handler: undefined;
-}
-extern "C" {
     pub static mut osStringTablePtr: undefined4;
-}
-extern "C" {
     pub static mut switchdataD_80081a8c: pointer;
-}
-extern "C" {
     pub static mut FONT_DEFINITIONS: [FontDefinition; 64usize];
-}
-extern "C" {
     pub static mut fullscreen_texture_buf: undefined;
-}
-extern "C" {
     pub static mut switchdataD_80110c1c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80111e20: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80111e3c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80111e7c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80111eb0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112104: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_801125a0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112608: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112670: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_801126d8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8011271c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112760: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_801127a4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_801127c0: *mut undefined;
-}
-extern "C" {
     pub static mut ntsc_interlaced_render_mode: GXRenderModeObj;
-}
-extern "C" {
     pub static mut ntsc_progressive_render_mode: GXRenderModeObj;
-}
-extern "C" {
     pub static mut mpal_interlaced_render_mode: GXRenderModeObj;
-}
-extern "C" {
     pub static mut pal_interlaced_render_mode: GXRenderModeObj;
-}
-extern "C" {
     pub static mut switchdataD_80112948: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112968: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112a5c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112b50: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112bd8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112c34: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80112e90: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_00014130: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80113160: *mut undefined;
-}
-extern "C" {
     pub static mut toneup_tab: undefined;
-}
-extern "C" {
     pub static mut tonedown_tab: undefined;
-}
-extern "C" {
     pub static mut dspAttenuationTab: undefined2;
-}
-extern "C" {
     pub static mut dspScale2IndexTab: undefined;
-}
-extern "C" {
     pub static mut dspDLSVolTab: undefined;
-}
-extern "C" {
     pub static mut musyx_vol_tab: undefined;
-}
-extern "C" {
     pub static mut pan_tab: undefined;
-}
-extern "C" {
     pub static mut pan_tab_dpl2: undefined;
-}
-extern "C" {
     pub static mut switchdataD_80114110: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_00012220: *mut undefined;
-}
-extern "C" {
     pub static mut sndSintab: undefined;
-}
-extern "C" {
     pub static mut rsmpTab12khz: undefined;
-}
-extern "C" {
     pub static mut g_some_new_thread_priority_1: undefined4;
-}
-extern "C" {
     pub static mut safe_thread_priority: undefined4;
-}
-extern "C" {
     pub static mut vsync_thread_priority: undefined4;
-}
-extern "C" {
     pub static mut mwidle_thread_priority: undefined4;
-}
-extern "C" {
     pub static mut switchdataD_801444c0: *mut undefined;
-}
-extern "C" {
     pub static mut ASCII_LOWERCASE: [::core::ffi::c_char; 256usize];
-}
-extern "C" {
     pub static mut ASCII_UPPERCASE: [::core::ffi::c_char; 256usize];
-}
-extern "C" {
     pub static mut switchdataD_80144920: pointer;
-}
-extern "C" {
     pub static mut switchdataD_801449a4: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80144a28: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80144b08: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80144b50: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80144c20: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80144c3c: *mut undefined;
-}
-extern "C" {
     pub static mut pad_status_groups: [PadStatusGroup; 4usize];
-}
-extern "C" {
     pub static mut merged_analog_inputs: AnalogInputGroup;
-}
-extern "C" {
     pub static mut merged_digital_inputs: DigitalInputGroup;
-}
-extern "C" {
     pub static mut analog_inputs: [AnalogInputGroup; 4usize];
-}
-extern "C" {
     pub static mut frames_since_last_input_change: dword;
-}
-extern "C" {
     pub static mut g_some_arq_request_src: undefined4;
-}
-extern "C" {
     pub static mut g_aram_font_file_buffer: undefined;
-}
-extern "C" {
     pub static mut g_aram_font_source_location: undefined;
-}
-extern "C" {
     pub static mut arq_task_struct: ARQRequest;
-}
-extern "C" {
     pub static mut sega_splash_tex: GXTexObj;
-}
-extern "C" {
     pub static mut synthGlobalVariable: undefined;
-}
-extern "C" {
     pub static mut shdwRegs: undefined;
-}
-extern "C" {
     pub static mut default_GXFifoObj: GXFifoObj;
-}
-extern "C" {
     pub static mut seqNote: undefined4;
-}
-extern "C" {
     pub static mut seqInstance: undefined4;
-}
-extern "C" {
     pub static mut seqMIDIPriority: undefined2;
-}
-extern "C" {
     pub static mut synthTicksPerSecond: undefined4;
-}
-extern "C" {
     pub static mut synthJobTable: undefined4;
-}
-extern "C" {
     pub static mut synthInfo: undefined4;
-}
-extern "C" {
     pub static mut synthMasterFader: undefined4;
-}
-extern "C" {
     pub static mut g_synthTrackVolume_or_synthVolume: undefined1;
-}
-extern "C" {
     pub static mut synthAuxACallback: undefined4;
-}
-extern "C" {
     pub static mut synthAuxBCallback: undefined4;
-}
-extern "C" {
     pub static mut synthITDDefault: undefined1;
-}
-extern "C" {
     pub static mut inpAuxB: undefined;
-}
-extern "C" {
     pub static mut vidList: undefined4;
-}
-extern "C" {
     pub static mut synth_last_started: undefined1;
-}
-extern "C" {
     pub static mut synth_last_fxstarted: undefined1;
-}
-extern "C" {
     pub static mut voicePrioSortVoices: undefined;
-}
-extern "C" {
     pub static mut voicePrioSortVoicesRoot: undefined1;
-}
-extern "C" {
     pub static mut voicePrioSortRootList: undefined;
-}
-extern "C" {
     pub static mut voiceList: undefined1;
-}
-extern "C" {
     pub static mut vs: undefined1;
-}
-extern "C" {
     pub static mut gs: undefined4;
-}
-extern "C" {
     pub static mut dspStudio: undefined4;
-}
-extern "C" {
     pub static mut dspHRTFOn: undefined4;
-}
-extern "C" {
     pub static mut startGroup: undefined4;
-}
-extern "C" {
     pub static mut startListNum: undefined;
-}
-extern "C" {
     pub static mut runList: undefined;
-}
-extern "C" {
     pub static mut fx_lastNote: undefined;
-}
-extern "C" {
     pub static mut inpFXChannelDefaults: undefined;
-}
-extern "C" {
     pub static mut safe_thread_stack_base: undefined;
-}
-extern "C" {
     pub static mut vsync_thread_stack_base: undefined;
-}
-extern "C" {
     pub static mut mwidle_thread_OSThread: undefined;
-}
-extern "C" {
     pub static mut vsync_thread_OSThread: undefined;
-}
-extern "C" {
     pub static mut safe_thread_OSThread: undefined;
-}
-extern "C" {
     pub static mut overscan_adjusted_render_mode: GXRenderModeObj;
-}
-extern "C" {
     pub static mut additional_GXFifoObj: GXFifoObj;
-}
-extern "C" {
     pub static mut projection_near_clip: f32_;
-}
-extern "C" {
     pub static mut projection_far_clip: f32_;
-}
-extern "C" {
     pub static mut g_some_projection_matrix: Mtx44;
-}
-extern "C" {
     pub static mut g_some_gmaflag_1: undefined4;
-}
-extern "C" {
     pub static mut INIT_REL_PATHS: [pointer; 2usize];
-}
-extern "C" {
     pub static mut currentHeap: OSHeapHandle;
-}
-extern "C" {
     pub static mut arena_lo: undefined4;
-}
-extern "C" {
     pub static mut g_some_internal_gx_struct: pointer;
-}
-extern "C" {
     pub static mut SHOULD_ALLOCATE_MEM_FROM_ARENA_HI: BOOL32;
-}
-extern "C" {
     pub static mut rand_next_value: undefined4;
-}
-extern "C" {
     pub static mut g_something_with_progressive_mode: bool_;
-}
-extern "C" {
     pub static mut init_rel_index: u32_;
-}
-extern "C" {
     pub static mut mainloop_rel_buffer_info: RelBufferInfo;
-}
-extern "C" {
     pub static mut locale: Locale;
-}
-extern "C" {
     pub static mut init_common_gma: *mut GmaBuffer;
-}
-extern "C" {
     pub static mut init_common_tpl: *mut TplBuffer;
-}
-extern "C" {
     pub static mut current_gx_settings: *mut OptiGXSettings;
-}
-extern "C" {
     pub static mut dvd_cancel_async_complete_callback_flag: undefined1;
-}
-extern "C" {
     pub static mut waiting_async_dvdread_callback_flag: bool_;
-}
-extern "C" {
     pub static mut g_some_func_ptr3: undefined4;
-}
-extern "C" {
     pub static mut g_some_card_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_some_func_ptr1: undefined4;
-}
-extern "C" {
     pub static mut g_some_OSTime: undefined4;
-}
-extern "C" {
     pub static mut console_reset_callback: ::core::option::Option<unsafe extern "C" fn() -> u32_>;
-}
-extern "C" {
     pub static mut aram_ptr: undefined4;
-}
-extern "C" {
     pub static mut aram_font_to_mram_font_spinlock: undefined4;
-}
-extern "C" {
     pub static mut g_some_arq_req_spinlock: undefined4;
-}
-extern "C" {
     pub static mut BootInfo: undefined4;
-}
-extern "C" {
     pub static mut BI2DebugFlag: undefined4;
-}
-extern "C" {
     pub static mut AreWeInitialized: undefined4;
-}
-extern "C" {
     pub static mut alloc_arena_start: undefined4;
-}
-extern "C" {
     pub static mut alloc_max_heaps: undefined4;
-}
-extern "C" {
     pub static mut post_OSInitAlloc_arena_start: undefined4;
-}
-extern "C" {
     pub static mut post_OSInitAlloc_arena_end_rounddown32: undefined4;
-}
-extern "C" {
     pub static mut arena_hi: undefined4;
-}
-extern "C" {
     pub static mut g_OSDispatchInterrupt_OSTime: undefined4;
-}
-extern "C" {
     pub static mut is_debugger_present_ptr: undefined4;
-}
-extern "C" {
     pub static mut retraceCount: undefined4;
-}
-extern "C" {
     pub static mut flushFlag: undefined4;
-}
-extern "C" {
     pub static mut PreCB: undefined4;
-}
-extern "C" {
     pub static mut PostCB: undefined4;
-}
-extern "C" {
     pub static mut encoderType: undefined4;
-}
-extern "C" {
     pub static mut displayOffsetH: undefined2;
-}
-extern "C" {
     pub static mut displayOffsetV: undefined2;
-}
-extern "C" {
     pub static mut showChangeMode: undefined4;
-}
-extern "C" {
     pub static mut shdwChanged: undefined4;
-}
-extern "C" {
     pub static mut g_arq_chunk_size: undefined4;
-}
-extern "C" {
     pub static mut CPUFifo: undefined4;
-}
-extern "C" {
     pub static mut GPFifo: undefined4;
-}
-extern "C" {
     pub static mut TokenCB: undefined4;
-}
-extern "C" {
     pub static mut DrawDoneCB: undefined4;
-}
-extern "C" {
     pub static mut g_has_finished_gx_work: undefined1;
-}
-extern "C" {
     pub static mut gx_thread_queue: OSThreadQueue;
-}
-extern "C" {
     pub static mut g_something_with_perf: undefined4;
-}
-extern "C" {
     pub static mut nextPublicID: undefined4;
-}
-extern "C" {
     pub static mut g_some_sound_alloc_memory_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_OSTick_after_AIInitDMA: undefined4;
-}
-extern "C" {
     pub static mut g_are_threads_initialized: undefined4;
-}
-extern "C" {
     pub static mut g_some_safe_thread_counter: undefined4;
-}
-extern "C" {
     pub static mut g_safe_thread_loop_counter: undefined4;
-}
-extern "C" {
     pub static mut mwidle_thread_loop_counter: undefined4;
-}
-extern "C" {
     pub static mut g_some_new_thread_priority_2: undefined4;
-}
-extern "C" {
     pub static mut g_vsync_thread_finished: undefined4;
-}
-extern "C" {
     pub static mut g_vsync_thread_enabled: undefined4;
-}
-extern "C" {
     pub static mut g_mwidle_thread_finished: undefined4;
-}
-extern "C" {
     pub static mut g_mwidle_thread_enabled: undefined4;
-}
-extern "C" {
     pub static mut g_safe_thread_finished: undefined4;
-}
-extern "C" {
     pub static mut g_safe_thread_enabled: undefined4;
-}
-extern "C" {
     pub static mut g_something_that_resumes_safe_thread_funcptr: undefined4;
-}
-extern "C" {
     pub static mut g_something_that_suspends_safe_thread_funcptr: undefined4;
-}
-extern "C" {
     pub static mut current_render_mode: *mut GXRenderModeObj;
-}
-extern "C" {
     pub static mut gx_draw_is_done: bool_;
-}
-extern "C" {
     pub static mut OSTick_after_gx_start_new_frame: undefined4;
-}
-extern "C" {
     pub static mut gx_start_new_frame_retrace_count: undefined4;
-}
-extern "C" {
     pub static mut retraces_per_frame: undefined4;
-}
-extern "C" {
     pub static mut gx_fifo_use_size2: u32_;
-}
-extern "C" {
     pub static mut g_some_gx_fifo_write_ptr: undefined4;
-}
-extern "C" {
     pub static mut gx_usage: GxUsageState;
-}
-extern "C" {
     pub static mut gx_fifo_size: u32_;
-}
-extern "C" {
     pub static mut locked_cache_region: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut old_arena_hi: undefined4;
-}
-extern "C" {
     pub static mut new_arena_hi: undefined4;
-}
-extern "C" {
     pub static mut mtxa: *mut Mtx;
-}
-extern "C" {
     pub static mut os_free_to_heap_func_ptr:
         ::core::option::Option<unsafe extern "C" fn(arg1: *mut ::core::ffi::c_void)>;
-}
-extern "C" {
     pub static mut os_alloc_from_heap_func_ptr:
         ::core::option::Option<unsafe extern "C" fn(arg1: u32_) -> *mut ::core::ffi::c_void>;
-}
-extern "C" {
     pub static mut g_some_empty_function_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_some_dvd_close_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_read_file_with_dvd_prio2_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_get_dvd_file_size_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_some_dvd_open_func_ptr: ::core::option::Option<
         unsafe extern "C" fn(arg1: *mut ::core::ffi::c_char, arg2: *mut DVDFileInfo) -> BOOL32,
     >;
-}
-extern "C" {
     pub static mut g_get_some_dvd_info_func_ptr:
         ::core::option::Option<unsafe extern "C" fn() -> *mut DVDFileInfo>;
-}
-extern "C" {
     pub static mut graphics_info: *mut GraphicsInfo;
-}
-extern "C" {
     pub static mut avdisp_post_add_color: GXColor;
-}
-extern "C" {
     pub static mut avdisp_post_mult_color: GXColor;
-}
-extern "C" {
     pub static mut avdisp_use_post_add_color: undefined4;
-}
-extern "C" {
     pub static mut avdisp_use_post_mult_color: undefined4;
-}
-extern "C" {
     pub static mut data_buffer: undefined4;
-}
-extern "C" {
     pub static mut i2fMagic: undefined8;
-}
-extern "C" {
     pub static mut value0_6: undefined4;
-}
-extern "C" {
     pub static mut value0_3: undefined4;
-}
-extern "C" {
     pub static mut FLOAT_ZERO: f32;
-}
-extern "C" {
     pub static mut FLOAT0: f32;
-}
-extern "C" {
     pub static mut FLOAT1: f32;
-}
-extern "C" {
     pub static mut FLOAT400: f32;
-}
-extern "C" {
     pub static mut g_something_with_camera: undefined4;
-}
-extern "C" {
     pub static mut g_related_to_camera_turn_rate_and_stage_tilt: f64;
-}
-extern "C" {
     pub static mut camera_near_clip_z: f32;
-}
-extern "C" {
     pub static mut camera_far_clip_z: f32;
-}
-extern "C" {
     pub static mut g_camera_fov: undefined4;
-}
-extern "C" {
     pub static mut g_camera_turn_rate_scale: f64;
-}
-extern "C" {
     pub static mut camera_height: f64;
-}
-extern "C" {
     pub static mut camera_pivot_height: f64;
-}
-extern "C" {
     pub static mut camera_distance: f32;
-}
-extern "C" {
     pub static mut g_some_array_related_to_lights_2: undefined4;
-}
-extern "C" {
     pub static mut g_some_light_color: undefined4;
-}
-extern "C" {
     pub static mut FLOAT20000: f32;
-}
-extern "C" {
     pub static mut FLOAT0_2: f32;
-}
-extern "C" {
     pub static mut FLOAT480: f32;
-}
-extern "C" {
     pub static mut FLOAT640: f32;
-}
-extern "C" {
     pub static mut g_bgm_id_lookup_table: [BgmTrack; 43usize];
-}
-extern "C" {
     pub static mut g_sound_group_GRPse04: GSoundGroup;
-}
-extern "C" {
     pub static mut g_sound_group_GRPse04_items: [GSoundGroupEntry; 1463usize];
-}
-extern "C" {
     pub static mut debugtext_bg_color: GXColor;
-}
-extern "C" {
     pub static mut MAX_GX_FIFO_BUF_SIZE: f32;
-}
-extern "C" {
     pub static mut visual_ball_size: f32;
-}
-extern "C" {
     pub static mut ball_friction: f32;
-}
-extern "C" {
     pub static mut epsilon: f32;
-}
-extern "C" {
     pub static mut g_goal_post_vertical_offset: f32;
-}
-extern "C" {
     pub static mut stage_tilt_multiplier: f32;
-}
-extern "C" {
     pub static mut g_itemgroup_anim_rate_post_dropin: undefined8;
-}
-extern "C" {
     pub static mut g_bg_animation_timescale: f32;
-}
-extern "C" {
     pub static mut bonus_stage_id_list: undefined4;
-}
-extern "C" {
     pub static mut jamabar_sensitivity: f64;
-}
-extern "C" {
     pub static mut jamabar_friction: f64;
-}
-extern "C" {
     pub static mut jamabar_lower_bound: f64;
-}
-extern "C" {
     pub static mut jamabar_lower_bound_2: f32;
-}
-extern "C" {
     pub static mut g_some_font_value_lookup_table: undefined;
-}
-extern "C" {
     pub static mut g_some_avtext_array: [[::core::ffi::c_char; 2usize]; 344usize];
-}
-extern "C" {
     pub static mut BTM_SetDefaultLinkSuperTout: undefined;
-}
-extern "C" {
     pub static mut THPSimpleGetCurrentFrame: undefined;
-}
-extern "C" {
     pub static mut ICE_FOG_THEME_ID: undefined1;
-}
-extern "C" {
     pub static mut ICE_FOG_TYPE: undefined1;
-}
-extern "C" {
     pub static mut ICE_FOG_START: f32;
-}
-extern "C" {
     pub static mut ICE_FOG_END: f32;
-}
-extern "C" {
     pub static mut ICE_FOG_RED: undefined1;
-}
-extern "C" {
     pub static mut ICE_FOG_GREEN: undefined1;
-}
-extern "C" {
     pub static mut ICE_FOG_BLUE: undefined1;
-}
-extern "C" {
     pub static mut divisor: undefined8;
-}
-extern "C" {
     pub static mut base: undefined8;
-}
-extern "C" {
     pub static mut heap_configs: [HeapConfig; 19usize];
-}
-extern "C" {
     pub static mut main_heap: OSHeapHandle;
-}
-extern "C" {
     pub static mut stage_heap: OSHeapHandle;
-}
-extern "C" {
     pub static mut bg_heap: OSHeapHandle;
-}
-extern "C" {
     pub static mut chara_heap: OSHeapHandle;
-}
-extern "C" {
     pub static mut replay_heap: OSHeapHandle;
-}
-extern "C" {
     pub static mut empty_string: [::core::ffi::c_char; 1usize];
-}
-extern "C" {
     pub static mut G_MAIN_MODE_ADDITIONAL_REL_PATHS: [*mut undefined; 8usize];
-}
-extern "C" {
     pub static mut main_mode_funcs: [::core::option::Option<unsafe extern "C" fn()>; 8usize];
-}
-extern "C" {
     pub static mut sub_mode_funcs: [::core::option::Option<unsafe extern "C" fn()>; 265usize];
-}
-extern "C" {
     pub static mut MAIN_MODE_NAMES: [*mut undefined; 8usize];
-}
-extern "C" {
     pub static mut SUB_MODE_NAMES: [*mut undefined; 265usize];
-}
-extern "C" {
     pub static mut additional_rel_buffer_info: RelBufferInfo;
-}
-extern "C" {
     pub static mut DEBUG_MENU_OPTION_NAMES: [*mut undefined; 7usize];
-}
-extern "C" {
     pub static mut switchdataD_80370704: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80370758: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80370794: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803707c8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80370848: *mut undefined;
-}
-extern "C" {
     pub static mut events: [Event; 23usize];
-}
-extern "C" {
     pub static mut switchdataD_80370d6c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80370ddc: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80370dfc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80370e5c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803727e4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80372878: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80374aac: pointer;
-}
-extern "C" {
     pub static mut g_some_submode_file_name_list: pointer;
-}
-extern "C" {
     pub static mut g_active_players: [u8_; 4usize];
-}
-extern "C" {
     pub static mut camera_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Camera, arg2: *mut Ball)>; 93usize];
-}
-extern "C" {
     pub static mut switchdataD_80374e54: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80375030: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8037ed0c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8037ed30: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8037ed54: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8037ed78: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8037edf8: *mut undefined;
-}
-extern "C" {
     pub static mut theme_lights: [theme_light; 41usize];
-}
-extern "C" {
     pub static mut init_common_p_lz: [::core::ffi::c_char; 17usize];
-}
-extern "C" {
     pub static mut init_common_lz: [::core::ffi::c_char; 15usize];
-}
-extern "C" {
     pub static mut bmp_infos: [BmpInfo; 25usize];
-}
-extern "C" {
     pub static mut bmp_tex_names: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803809d0: pointer;
-}
-extern "C" {
     pub static mut ui_sprite_draw_req: SpriteDrawRequest;
-}
-extern "C" {
     pub static mut monkey_flags: undefined4;
-}
-extern "C" {
     pub static mut SEL_WORLD_PTR: pointer;
-}
-extern "C" {
     pub static mut g_some_music_status_array: undefined;
-}
-extern "C" {
     pub static mut switchdataD_80391aa0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80391ad8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80391be8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80391e70: *mut undefined;
-}
-extern "C" {
     pub static mut g_debug_textdraw_color: undefined1;
-}
-extern "C" {
     pub static mut switchdataD_8039b19c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039b280: *mut undefined;
-}
-extern "C" {
     pub static mut g_debug_text_buffers: pointer;
-}
-extern "C" {
     pub static mut g_debug_color_bufers: pointer;
-}
-extern "C" {
     pub static mut s_RateIntp: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut s_CalcIntp: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut s_Face_Dir: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut s_No_loop: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut EVENT_STATUS_NAMES: [*mut ::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut physical_ball_size: f32;
-}
-extern "C" {
     pub static mut ball_accel: f32;
-}
-extern "C" {
     pub static mut ball_restitution: f32;
-}
-extern "C" {
     pub static mut ball_mode_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039c560: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039c5a4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039c5dc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8039c838: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039ccf8: pointer;
-}
-extern "C" {
     pub static mut g_fog_type: undefined1;
-}
-extern "C" {
     pub static mut g_current_stage_id: s32;
-}
-extern "C" {
     pub static mut g_stage_id_to_load: s32;
-}
-extern "C" {
     pub static mut g_smb1_stage_list: undefined1;
-}
-extern "C" {
     pub static mut s_stage: [::core::ffi::c_char; 6usize];
-}
-extern "C" {
     pub static mut LOCALE_STRINGS: *mut undefined;
-}
-extern "C" {
     pub static mut g_loaded_gmas_list: [*mut *mut GmaBuffer; 5usize];
-}
-extern "C" {
     pub static mut goal_gma_model_names: pointer;
-}
-extern "C" {
     pub static mut g_cached_button_itemgroup_count_stage: undefined2;
-}
-extern "C" {
     pub static mut cached_button_itemgroup_count: undefined4;
-}
-extern "C" {
     pub static mut effect_init_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Effect)>; 71usize];
-}
-extern "C" {
     pub static mut effect_tick_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Effect)>; 71usize];
-}
-extern "C" {
     pub static mut effect_disp_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Effect)>; 71usize];
-}
-extern "C" {
     pub static mut effect_dest_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Effect)>; 71usize];
-}
-extern "C" {
     pub static mut world_theme: WorldTheme;
-}
-extern "C" {
     pub static mut g_bg_related_timer: f32;
-}
-extern "C" {
     pub static mut g_some_theme_color: GXColor;
-}
-extern "C" {
     pub static mut g_something_with_world_theme_2: undefined4;
-}
-extern "C" {
     pub static mut g_something_with_world_theme_3: undefined4;
-}
-extern "C" {
     pub static mut g_smth_for_drawing: s32;
-}
-extern "C" {
     pub static mut g_maybe_some_bg_effect_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_some_bg_struct_ptr: *mut *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut g_something_with_world_theme_4: undefined2;
-}
-extern "C" {
     pub static mut g_something_with_world_theme_5: undefined2;
-}
-extern "C" {
     pub static mut BGApeTable: *mut *mut Ape;
-}
-extern "C" {
     pub static mut g_smth_with_bg_models: undefined4;
-}
-extern "C" {
     pub static mut bg_init_funcs: undefined;
-}
-extern "C" {
     pub static mut bg_tick_funcs: undefined;
-}
-extern "C" {
     pub static mut bg_dest_funcs: undefined;
-}
-extern "C" {
     pub static mut bg_disp_funcs: pointer;
-}
-extern "C" {
     pub static mut bg_item_coin_coli_funcs: undefined;
-}
-extern "C" {
     pub static mut g_bg_filename_list: [*mut ::core::ffi::c_char; 43usize];
-}
-extern "C" {
     pub static mut STAGE_WORLD_THEMES: [WorldTheme; 428usize];
-}
-extern "C" {
     pub static mut switchdataD_8039f024: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039f3f8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039f590: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039f61c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8039ff54: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a0864: *mut undefined;
-}
-extern "C" {
     pub static mut cm_entry_if_funcs: pointer;
-}
-extern "C" {
     pub static mut cm_entry_then_funcs: pointer;
-}
-extern "C" {
     pub static mut beginner_noex_cm_entries: [CourseCommand; 31usize];
-}
-extern "C" {
     pub static mut advanced_noex_cm_entries: [CourseCommand; 120usize];
-}
-extern "C" {
     pub static mut expert_noex_cm_entries: [CourseCommand; 208usize];
-}
-extern "C" {
     pub static mut beginner_ex_cm_entries: [CourseCommand; 35usize];
-}
-extern "C" {
     pub static mut advanced_ex_cm_entries: [CourseCommand; 32usize];
-}
-extern "C" {
     pub static mut expert_ex_cm_entries: [CourseCommand; 42usize];
-}
-extern "C" {
     pub static mut master_noex_cm_entries: [CourseCommand; 35usize];
-}
-extern "C" {
     pub static mut master_ex_cm_entries: [CourseCommand; 50usize];
-}
-extern "C" {
     pub static mut g_cm_entry_list9: [CourseCommand; 16usize];
-}
-extern "C" {
     pub static mut cm_courses: [*mut CourseCommand; 12usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world1: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world2: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world3: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world4: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world5: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world6: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world7: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world8: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world9: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_stage_infos_world10: [SmStageInfo; 10usize];
-}
-extern "C" {
     pub static mut sm_world_info: [SmWorldInfo; 10usize];
-}
-extern "C" {
     pub static mut item_init_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_tick_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_disp_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_coli_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_dest_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_replay_init_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut item_debug_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut coin_types: [CoinType; 5usize];
-}
-extern "C" {
     pub static mut stobj_init_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut stobj_tick_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut stobj_disp_funcs:
         [::core::option::Option<unsafe extern "C" fn(arg1: *mut Stobj)>; 14usize];
-}
-extern "C" {
     pub static mut stobj_coli_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut stobj_dest_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut stobj_cb_f_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut button_type_strs: *mut undefined;
-}
-extern "C" {
     pub static mut goal_LCD_small_common_gmatpl_idxes: [::core::ffi::c_short; 10usize];
-}
-extern "C" {
     pub static mut goal_LCD_large_common_gmatpl_idxes: [::core::ffi::c_short; 10usize];
-}
-extern "C" {
     pub static mut switchdataD_803a7210: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a7234: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a7258: *mut undefined;
-}
-extern "C" {
     pub static mut FONT_NAME_LIST: *mut undefined;
-}
-extern "C" {
     pub static mut FONT_STYLE_NAME_LIST: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a8264: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a83dc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a84b8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a86e8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a8770: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a8794: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a87b8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a87dc: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a8800: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a8894: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a88cc: *mut undefined;
-}
-extern "C" {
     pub static mut LOADIN_TEXT_ROUND: [::core::ffi::c_char; 9usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_WORLD: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_MASTER_EX: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_MASTER: [::core::ffi::c_char; 10usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_EXTRA: [::core::ffi::c_char; 9usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_STAGE: [::core::ffi::c_char; 9usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_BONUS_STAGE: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_FINAL_ROUND: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut LOADIN_TEXT_FINAL_STAGE: [::core::ffi::c_char; 12usize];
-}
-extern "C" {
     pub static mut stage_name_tilde_fmt_string: undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a96f8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a9e6c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803a9ea4: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803a9ee8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803aa0d4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803bdd6c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803bdda0: pointer;
-}
-extern "C" {
     pub static mut HUD_TEXT_EX: [::core::ffi::c_char; 3usize];
-}
-extern "C" {
     pub static mut HUD_TEXT_WORLD_STAGE_NO: [::core::ffi::c_char; 6usize];
-}
-extern "C" {
     pub static mut HUD_TEXT_STAGE_NO: [::core::ffi::c_char; 3usize];
-}
-extern "C" {
     pub static mut HUD_TEXT_STAGE_NAME: [::core::ffi::c_char; 3usize];
-}
-extern "C" {
     pub static mut sprite_banana_count_fmt_string: [::core::ffi::c_char; 5usize];
-}
-extern "C" {
     pub static mut g_minimap_mode: MinimapMode;
-}
-extern "C" {
     pub static mut minimap_zoom_level: undefined4;
-}
-extern "C" {
     pub static mut minimap_scale: undefined2;
-}
-extern "C" {
     pub static mut minimap_rotation: undefined2;
-}
-extern "C" {
     pub static mut switchdataD_803c0bc4: pointer;
-}
-extern "C" {
     pub static mut s_cannot_read_file: [::core::ffi::c_char; 18usize];
-}
-extern "C" {
     pub static mut switchdataD_803c12c8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803c14b8: *mut undefined;
-}
-extern "C" {
     pub static mut g_some_card_funcs: pointer;
-}
-extern "C" {
     pub static mut g_some_card_funcs2: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803ce82c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803ce880: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803ce908: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803ce978: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803ce9f4: *mut undefined;
-}
-extern "C" {
     pub static mut GXInitTexObjUserData: undefined;
-}
-extern "C" {
     pub static mut dGeomDisable: undefined;
-}
-extern "C" {
     pub static mut switchdataD_803d1240: pointer;
-}
-extern "C" {
     pub static mut RANKING_SMB1_MAIN_GAME_DEFAULT_NAMES: [[*mut undefined; 5usize]; 3usize];
-}
-extern "C" {
     pub static mut rumble_enabled_bitflag: undefined1;
-}
-extern "C" {
     pub static mut switchdataD_803d1624: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803d1c2c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803d35f0: *mut undefined;
-}
-extern "C" {
     pub static mut postfix_table: *mut undefined;
-}
-extern "C" {
     pub static mut postfix_table_s: *mut undefined;
-}
-extern "C" {
     pub static mut ape_name_enum: *mut undefined;
-}
-extern "C" {
     pub static mut storymode_ape_enum: *mut undefined;
-}
-extern "C" {
     pub static mut ape_lod_enum: *mut undefined;
-}
-extern "C" {
     pub static mut eye_string_table: *mut undefined;
-}
-extern "C" {
     pub static mut eye_name_table: [*mut *mut ::core::ffi::c_char; 17usize];
-}
-extern "C" {
     pub static mut game_name_enum: *mut undefined;
-}
-extern "C" {
     pub static mut enum_face_types: [*mut ::core::ffi::c_char; 9usize];
-}
-extern "C" {
     pub static mut ape_face_enum_alt: *mut undefined;
-}
-extern "C" {
     pub static mut ape_face_enum_monkey: *mut undefined;
-}
-extern "C" {
     pub static mut s_ape: [::core::ffi::c_char; 4usize];
-}
-extern "C" {
     pub static mut switchdataD_803d9220: *mut undefined;
-}
-extern "C" {
     pub static mut DIP_APENUM_FORMAT: [::core::ffi::c_char; 5usize];
-}
-extern "C" {
     pub static mut s_null: [::core::ffi::c_char; 5usize];
-}
-extern "C" {
     pub static mut s_HANDL_GHA: [::core::ffi::c_char; 10usize];
-}
-extern "C" {
     pub static mut s_HANDL_PHA: [::core::ffi::c_char; 10usize];
-}
-extern "C" {
     pub static mut s_HANDR_GHA: [::core::ffi::c_char; 10usize];
-}
-extern "C" {
     pub static mut s_HANDR_PHA: [::core::ffi::c_char; 10usize];
-}
-extern "C" {
     pub static mut RANKING_DEFAULT_NAMES: *mut undefined;
-}
-extern "C" {
     pub static mut RANKING_DEFAULT_SCORES: [u32_; 20usize];
-}
-extern "C" {
     pub static mut G_RANKING_DEFAULT_APE_IDS: [u32_; 20usize];
-}
-extern "C" {
     pub static mut switchdataD_803db7a0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803db9ec: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803dca38: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803dca6c: *mut undefined;
-}
-extern "C" {
     pub static mut g_some_chara_anim_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut g_active_scene_category: undefined4;
-}
-extern "C" {
     pub static mut switchdataD_803dd32c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803dd37c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803dd3c0: pointer;
-}
-extern "C" {
     pub static mut CUTSCENE_BIN_FILE_NAMES: [*mut ::core::ffi::c_char; 16usize];
-}
-extern "C" {
     pub static mut switchdataD_803de11c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803de8f8: pointer;
-}
-extern "C" {
     pub static mut scene_filenames: *mut undefined;
-}
-extern "C" {
     pub static mut dialog_locale_suffix: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803ded34: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803ded7c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803dedc4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803dee0c: pointer;
-}
-extern "C" {
     pub static mut switchdataD_803e7604: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_803edb94: pointer;
-}
-extern "C" {
     pub static mut unlock_info_ptr: *mut UnlockInfo;
-}
-extern "C" {
     pub static mut g_loaded_rel_count: undefined4;
-}
-extern "C" {
     pub static mut g_loaded_rel_infos: [*mut RelBufferInfo; 10usize];
-}
-extern "C" {
     pub static mut frame_counter: undefined4;
-}
-extern "C" {
     pub static mut g_font_char_var_3: undefined4;
-}
-extern "C" {
     pub static mut g_some_tpl_buffer: undefined;
-}
-extern "C" {
     pub static mut g_init_common_tpl_buf: undefined;
-}
-extern "C" {
     pub static mut g_some_nl_model_buffer_2: undefined;
-}
-extern "C" {
     pub static mut g_init_common_gma_buf: *mut *mut NlBuffer;
-}
-extern "C" {
     pub static mut scen_info: ScenInfo;
-}
-extern "C" {
     pub static mut g_ord_tbl_stuff: *mut Mtx;
-}
-extern "C" {
     pub static mut is_more_than_24_mib: undefined4;
-}
-extern "C" {
     pub static mut g_some_buffer_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_some_other_heap_lo: undefined4;
-}
-extern "C" {
     pub static mut g_some_other_heap_hi: undefined4;
-}
-extern "C" {
     pub static mut g_some_dead_heap_mem_lo: undefined4;
-}
-extern "C" {
     pub static mut g_some_dead_heap_mem_hi: undefined4;
-}
-extern "C" {
     pub static mut g_curr_heap_config_idx: undefined4;
-}
-extern "C" {
     pub static mut main_heap_size: undefined4;
-}
-extern "C" {
     pub static mut stage_heap_size: undefined4;
-}
-extern "C" {
     pub static mut bg_heap_size: undefined4;
-}
-extern "C" {
     pub static mut chara_heap_size: undefined4;
-}
-extern "C" {
     pub static mut replay_heap_size: undefined4;
-}
-extern "C" {
     pub static mut main_mode: MainMode;
-}
-extern "C" {
     pub static mut sub_mode: SubMode;
-}
-extern "C" {
     pub static mut main_mode_request: MainMode;
-}
-extern "C" {
     pub static mut sub_mode_request: SubMode;
-}
-extern "C" {
     pub static mut sub_mode_frame_counter: s32;
-}
-extern "C" {
     pub static mut curr_difficulty: Difficulty;
-}
-extern "C" {
     pub static mut mode_flags: ModeFlag;
-}
-extern "C" {
     pub static mut num_players: undefined4;
-}
-extern "C" {
     pub static mut main_game_mode: MainGameMode;
-}
-extern "C" {
     pub static mut curr_player_idx: undefined4;
-}
-extern "C" {
     pub static mut mode_number_of_players: undefined4;
-}
-extern "C" {
     pub static mut g_has_started_a_game: undefined2;
-}
-extern "C" {
     pub static mut g_3player_camera_setting: undefined1;
-}
-extern "C" {
     pub static mut stage_complete: bool_;
-}
-extern "C" {
     pub static mut widescreen_mode: WidescreenMode;
-}
-extern "C" {
     pub static mut g_curr_main_mode_name: *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub static mut g_curr_sub_mode_name: *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub static mut g_some_func_ptr_related_to_sub_mode2: undefined4;
-}
-extern "C" {
     pub static mut sub_mode_destination: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut test_draw_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_repause_cooldown_counter: undefined1;
-}
-extern "C" {
     pub static mut g_some_status_bitflag: undefined4;
-}
-extern "C" {
     pub static mut g_current_focused_pause_menu_entry: undefined4;
-}
-extern "C" {
     pub static mut g_current_pause_menu_entry_count: undefined4;
-}
-extern "C" {
     pub static mut pausemenu_type: PauseMenuType;
-}
-extern "C" {
     pub static mut g_pause_status: Status;
-}
-extern "C" {
     pub static mut g_some_render_flag: GRenderringFlags;
-}
-extern "C" {
     pub static mut g_mirror_pos1: Vec;
-}
-extern "C" {
     pub static mut g_some_scale_vec3: Vec;
-}
-extern "C" {
     pub static mut g_mirror_pos2: Vec;
-}
-extern "C" {
     pub static mut g_mirror_pos3: undefined4;
-}
-extern "C" {
     pub static mut g_pausemenu_screenshot_requested: undefined4;
-}
-extern "C" {
     pub static mut g_image_buffer_ptr: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut g_pausemenu_screenshot_left_px: undefined2;
-}
-extern "C" {
     pub static mut g_pausemenu_screenshot_top_px: undefined2;
-}
-extern "C" {
     pub static mut g_pausemenu_screenshot_width_px: undefined2;
-}
-extern "C" {
     pub static mut g_pausemenu_screenshot_height_px: undefined2;
-}
-extern "C" {
     pub static mut pausemenu_scrot_texfmt: undefined4;
-}
-extern "C" {
     pub static mut g_sub_mode3: SubMode;
-}
-extern "C" {
     pub static mut adv_demo_frame_counter: undefined4;
-}
-extern "C" {
     pub static mut g_focused_root_menu: undefined1;
-}
-extern "C" {
     pub static mut g_focused_partygame_menu: undefined1;
-}
-extern "C" {
     pub static mut g_focused_options_menu: undefined1;
-}
-extern "C" {
     pub static mut g_focused_maingame_menu: undefined1;
-}
-extern "C" {
     pub static mut selected_cm_difficulty2: undefined1;
-}
-extern "C" {
     pub static mut selected_cm_difficulty: undefined1;
-}
-extern "C" {
     pub static mut selected_characters: [u8_; 4usize];
-}
-extern "C" {
     pub static mut sel_menu_info: SelMenuInfo;
-}
-extern "C" {
     pub static mut number_of_starting_monkeys: s8;
-}
-extern "C" {
     pub static mut stageselect_is_storymode: bool_;
-}
-extern "C" {
     pub static mut stageselect_course_idx: [s8; 2usize];
-}
-extern "C" {
     pub static mut stageselect_course_stage_idx: [[s8; 10usize]; 2usize];
-}
-extern "C" {
     pub static mut g_last_selected_bowling_difficulty: undefined1;
-}
-extern "C" {
     pub static mut menu_tick_func: undefined4;
-}
-extern "C" {
     pub static mut menu_draw_func: undefined4;
-}
-extern "C" {
     pub static mut g_some_sel_ngc_rel_buffer: RelBufferInfo;
-}
-extern "C" {
     pub static mut g_something_with_camera3: undefined4;
-}
-extern "C" {
     pub static mut g_current_camera: *mut Camera;
-}
-extern "C" {
     pub static mut cameras: [Camera; 5usize];
-}
-extern "C" {
     pub static mut g_camera_aspect_ratio: f32;
-}
-extern "C" {
     pub static mut g_related_to_fov2: undefined1;
-}
-extern "C" {
     pub static mut g_minigame_camera_func: undefined4;
-}
-extern "C" {
     pub static mut g_camera_standstill_counters: [s16; 5usize];
-}
-extern "C" {
     pub static mut g_active_light_group: undefined4;
-}
-extern "C" {
     pub static mut g_some_array_related_to_lights_1: undefined2;
-}
-extern "C" {
     pub static mut g_light_group_stack: undefined4;
-}
-extern "C" {
     pub static mut num_light_groups: u8_;
-}
-extern "C" {
     pub static mut next_fifo_use_array_idx: undefined4;
-}
-extern "C" {
     pub static mut last_60_gx_fifo_use_sizes: [u32_; 60usize];
-}
-extern "C" {
     pub static mut tick_at_gx_finish_frame: undefined4;
-}
-extern "C" {
     pub static mut gx_fifo_use_size: u32_;
-}
-extern "C" {
     pub static mut g_video_mode_change_requested: BOOL32;
-}
-extern "C" {
     pub static mut mode_info: ModeInfo;
-}
-extern "C" {
     pub static mut g_bg_gma: *mut GmaBuffer;
-}
-extern "C" {
     pub static mut g_bg_tpl: *mut TplBuffer;
-}
-extern "C" {
     pub static mut active_sprite_draw_req_count: undefined4;
-}
-extern "C" {
     pub static mut g_smth_with_sprite_draw_reqs_widescreen: undefined4;
-}
-extern "C" {
     pub static mut g_smth_with_widescreen: undefined4;
-}
-extern "C" {
     pub static mut g_global_widescreen_translation_x: undefined2;
-}
-extern "C" {
     pub static mut sprite_draw_req_buffer: [SpriteDrawRequest; 640usize];
-}
-extern "C" {
     pub static mut g_profile_timer_start_times: [u32_; 9usize];
-}
-extern "C" {
     pub static mut g_something_with_perf_profiling: undefined4;
-}
-extern "C" {
     pub static mut g_enable_perf: BOOL32;
-}
-extern "C" {
     pub static mut g_some_draw_perf_var: s32;
-}
-extern "C" {
     pub static mut g_some_perf_time_elapsed: undefined4;
-}
-extern "C" {
     pub static mut some_time: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer_total_elapsed: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer1: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer2: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer3: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer4: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer5: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer6: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer7: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer8: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer9: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer10: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer11: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer12: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer14: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer13: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer15: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer17: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer18: undefined4;
-}
-extern "C" {
     pub static mut g_some_perf_timer16: undefined4;
-}
-extern "C" {
     pub static mut g_debug_sound_ram_usage: undefined4;
-}
-extern "C" {
     pub static mut g_debug_sound_aram_usage: undefined4;
-}
-extern "C" {
     pub static mut g_active_music_tracks: [s16; 10usize];
-}
-extern "C" {
     pub static mut g_something_related_to_bgm_track_id: undefined1;
-}
-extern "C" {
     pub static mut g_some_music_related_counter: undefined1;
-}
-extern "C" {
     pub static mut current_bgm_volume: undefined4;
-}
-extern "C" {
     pub static mut g_something_with_sound5: undefined4;
-}
-extern "C" {
     pub static mut g_smth_with_sound: undefined4;
-}
-extern "C" {
     pub static mut g_player_id_for_sound: undefined4;
-}
-extern "C" {
     pub static mut g_debug_textdraw_pos_x_2: undefined4;
-}
-extern "C" {
     pub static mut g_debug_textdraw_pos_x_1: undefined4;
-}
-extern "C" {
     pub static mut g_debug_textdraw_pos_y: undefined4;
-}
-extern "C" {
     pub static mut g_debug_text_buffer_0: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut g_debug_text_buffer_1: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut g_debug_text_color_buffer_0: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut g_debug_text_color_buffer_1: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut g_debugtext_unknown7: undefined2;
-}
-extern "C" {
     pub static mut g_debugtext_unknown8: undefined2;
-}
-extern "C" {
     pub static mut g_debugtext_unknown9: undefined2;
-}
-extern "C" {
     pub static mut g_debugtext_unknown10: undefined2;
-}
-extern "C" {
     pub static mut g_debug_text_buffer_2: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut g_debug_text_color_buffer_2: [::core::ffi::c_char; 1961usize];
-}
-extern "C" {
     pub static mut os_font_encoding: u16_;
-}
-extern "C" {
     pub static mut dip_switches: DipSwitch;
-}
-extern "C" {
     pub static mut g_some_other_flags: GOtherFlags;
-}
-extern "C" {
     pub static mut g_some_pad_idx: undefined2;
-}
-extern "C" {
     pub static mut ball_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut item_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut stobj_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut sprite_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut effect_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut g_some_pool_info2: PoolInfo;
-}
-extern "C" {
     pub static mut g_some_pool_info3: PoolInfo;
-}
-extern "C" {
     pub static mut camera_pool_info: PoolInfo;
-}
-extern "C" {
     pub static mut ball_status_list: [u8_; 4usize];
-}
-extern "C" {
     pub static mut item_status_list: [u8_; 256usize];
-}
-extern "C" {
     pub static mut stobj_status_list: [u8_; 144usize];
-}
-extern "C" {
     pub static mut sprite_status_list: [u8_; 80usize];
-}
-extern "C" {
     pub static mut effect_status_list: [u8_; 512usize];
-}
-extern "C" {
     pub static mut g_some_pool2_status_list: [u8_; 16usize];
-}
-extern "C" {
     pub static mut g_some_pool3_status_list: [u8_; 16usize];
-}
-extern "C" {
     pub static mut camera_status_list: [u8_; 5usize];
-}
-extern "C" {
     pub static mut g_effect_flag_ptr: *mut ::core::ffi::c_short;
-}
-extern "C" {
     pub static mut balls: [Ball; 8usize];
-}
-extern "C" {
     pub static mut current_ball: *mut Ball;
-}
-extern "C" {
     pub static mut active_monkey_id: [uint; 4usize];
-}
-extern "C" {
     pub static mut g_some_menu_func_1: undefined4;
-}
-extern "C" {
     pub static mut player_pad_map: [u32_; 4usize];
-}
-extern "C" {
     pub static mut world_infos: [WorldInfo; 4usize];
-}
-extern "C" {
     pub static mut g_gravity_dir: Vec;
-}
-extern "C" {
     pub static mut current_world_info: undefined4;
-}
-extern "C" {
     pub static mut g_some_frame_counter: ::core::ffi::c_int;
-}
-extern "C" {
     pub static mut g_some_frame_counter_float: f32;
-}
-extern "C" {
     pub static mut g_some_gameplay_flags: undefined4;
-}
-extern "C" {
     pub static mut itemgroups: *mut Itemgroup;
-}
-extern "C" {
     pub static mut stagedef: *mut StagedefFileHeader;
-}
-extern "C" {
     pub static mut seesaw_count: undefined2;
-}
-extern "C" {
     pub static mut g_something_with_wl: undefined1;
-}
-extern "C" {
     pub static mut stage_tpl: undefined4;
-}
-extern "C" {
     pub static mut stage_gma: *mut GmaBuffer;
-}
-extern "C" {
     pub static mut current_stage_id: undefined2;
-}
-extern "C" {
     pub static mut current_stage_name: [::core::ffi::c_char; 128usize];
-}
-extern "C" {
     pub static mut worm_surface_gma_model: undefined4;
-}
-extern "C" {
     pub static mut wormhole_gma_model: *mut GmaModel;
-}
-extern "C" {
     pub static mut continue_gma_model: *mut GmaModel;
-}
-extern "C" {
     pub static mut goal_gma_models: [*mut GmaModel; 3usize];
-}
-extern "C" {
     pub static mut itemgroups_copy: *mut Itemgroup;
-}
-extern "C" {
     pub static mut g_some_stage_id: undefined2;
-}
-extern "C" {
     pub static mut g_another_stage_id: undefined2;
-}
-extern "C" {
     pub static mut LOCALE_STGNAME_DVD_ENTRYNUMS: [s32; 6usize];
-}
-extern "C" {
     pub static mut g_current_stagename_dvd_entry_number: undefined4;
-}
-extern "C" {
     pub static mut stage_name_list_file_size: undefined4;
-}
-extern "C" {
     pub static mut stage_name_offsets: [::core::ffi::c_int; 422usize];
-}
-extern "C" {
     pub static mut g_some_32byte_lz_buffer: [u8_; 32usize];
-}
-extern "C" {
     pub static mut g_some_replay_data4: undefined4;
-}
-extern "C" {
     pub static mut replay_frames_remaining: undefined4;
-}
-extern "C" {
     pub static mut replay_curr_ball_pos: Vec;
-}
-extern "C" {
     pub static mut replay: *mut Replay;
-}
-extern "C" {
     pub static mut g_loaded_player_score: undefined4;
-}
-extern "C" {
     pub static mut next_effect_id: undefined2;
-}
-extern "C" {
     pub static mut effects: [Effect; 512usize];
-}
-extern "C" {
     pub static mut g_some_bg_mtx: undefined;
-}
-extern "C" {
     pub static mut g_related_to_texture_UV_map: Mtx;
-}
-extern "C" {
     pub static mut cm_unlock_entries: [u8_; 18usize];
-}
-extern "C" {
     pub static mut current_cm_entry: *mut CourseCommand;
-}
-extern "C" {
     pub static mut stage_jump_distance: ::core::ffi::c_int;
-}
-extern "C" {
     pub static mut in_practice_mode: BOOL32;
-}
-extern "C" {
     pub static mut g_stage_id_in_practice_mode: undefined2;
-}
-extern "C" {
     pub static mut g_mode_flags2: ModeFlag;
-}
-extern "C" {
     pub static mut g_some_course_length: undefined4;
-}
-extern "C" {
     pub static mut cm_player_progress: [CmPlayerProgress; 12usize];
-}
-extern "C" {
     pub static mut storymode_unlock_entries: [u8_; 13usize];
-}
-extern "C" {
     pub static mut g_next_item_id: undefined2;
-}
-extern "C" {
     pub static mut items: [Item; 256usize];
-}
-extern "C" {
     pub static mut next_stobj_id: undefined2;
-}
-extern "C" {
     pub static mut stobjs: [Stobj; 144usize];
-}
-extern "C" {
     pub static mut bumper_lods: undefined4;
-}
-extern "C" {
     pub static mut goaltapes: [GoalTape; 16usize];
-}
-extern "C" {
     pub static mut goalbags: [GoalBag; 16usize];
-}
-extern "C" {
     pub static mut goal_LCD_small_numbers: [*mut GmaModel; 10usize];
-}
-extern "C" {
     pub static mut goal_LCD_large_numbers: [*mut GmaModel; 10usize];
-}
-extern "C" {
     pub static mut sprites: [Sprite; 80usize];
-}
-extern "C" {
     pub static mut g_some_sprite_structs: [GSomeSpriteStruct; 82usize];
-}
-extern "C" {
     pub static mut g_some_sprite_width: undefined4;
-}
-extern "C" {
     pub static mut g_some_sprite_height: undefined4;
-}
-extern "C" {
     pub static mut g_screenfade_flags: undefined4;
-}
-extern "C" {
     pub static mut g_screenfade_color: u32_;
-}
-extern "C" {
     pub static mut g_screenfading1: undefined4;
-}
-extern "C" {
     pub static mut g_screenfading2: undefined4;
-}
-extern "C" {
     pub static mut g_some_font_ptr_array: [*mut ::core::ffi::c_void; 512usize];
-}
-extern "C" {
     pub static mut g_related_to_aram_font_pages: [s32; 145usize];
-}
-extern "C" {
     pub static mut textdraw_pos_x: f32;
-}
-extern "C" {
     pub static mut textdraw_pos: Vec2d;
-}
-extern "C" {
     pub static mut textdraw_font: Font16;
-}
-extern "C" {
     pub static mut textdraw_mul_color: undefined4;
-}
-extern "C" {
     pub static mut textdraw_add_color: undefined4;
-}
-extern "C" {
     pub static mut textdraw_rot_z: undefined2;
-}
-extern "C" {
     pub static mut textdraw_depth: f32;
-}
-extern "C" {
     pub static mut textdraw_width: f32;
-}
-extern "C" {
     pub static mut textdraw_height: f32;
-}
-extern "C" {
     pub static mut textdraw_alpha: undefined4;
-}
-extern "C" {
     pub static mut textdraw_flags: TextDrawFlags;
-}
-extern "C" {
     pub static mut textdraw_alignment: undefined1;
-}
-extern "C" {
     pub static mut g_textdraw_smth_with_letter_spacing_and_alignment: undefined2;
-}
-extern "C" {
     pub static mut textdraw_drop_shadow_offset_x: undefined2;
-}
-extern "C" {
     pub static mut textdraw_drop_shadow_offset_y: undefined2;
-}
-extern "C" {
     pub static mut textdraw_shadow_alpha: f32;
-}
-extern "C" {
     pub static mut g_textdraw_unk5: undefined4;
-}
-extern "C" {
     pub static mut g_textdraw_unk6: undefined4;
-}
-extern "C" {
     pub static mut g_textdraw_unk7: undefined4;
-}
-extern "C" {
     pub static mut textdraw_style: undefined1;
-}
-extern "C" {
     pub static mut textdraw_spacing: Vec2d;
-}
-extern "C" {
     pub static mut g_textdraw_counter: undefined2;
-}
-extern "C" {
     pub static mut g_textdraw_unk8: undefined4;
-}
-extern "C" {
     pub static mut g_font_char_var_1: undefined4;
-}
-extern "C" {
     pub static mut g_font_char_var_2: undefined4;
-}
-extern "C" {
     pub static mut g_how_to_bg_scale_x: undefined4;
-}
-extern "C" {
     pub static mut g_how_to_bg_scale_y: undefined4;
-}
-extern "C" {
     pub static mut g_banana_disp_efc_req_count: u8_;
-}
-extern "C" {
     pub static mut g_banana_disp_efc_stack: [undefined; 10usize];
-}
-extern "C" {
     pub static mut global_ape_lod: undefined4;
-}
-extern "C" {
     pub static mut g_is_waiting_on_some_arq_request: undefined4;
-}
-extern "C" {
     pub static mut discQueue: [gDiscQueueItem; 128usize];
-}
-extern "C" {
     pub static mut disc_queue_start: undefined4;
-}
-extern "C" {
     pub static mut disc_queue_end: undefined4;
-}
-extern "C" {
     pub static mut discQueueGroup: undefined4;
-}
-extern "C" {
     pub static mut g_cached_file_entries: [GCachedFileEntry; 128usize];
-}
-extern "C" {
     pub static mut g_last_filename_attempted_to_open: undefined4;
-}
-extern "C" {
     pub static mut g_minigame_tick_func: undefined4;
-}
-extern "C" {
     pub static mut g_mini_draw_func_ptr: undefined4;
-}
-extern "C" {
     pub static mut g_haze_type: undefined1;
-}
-extern "C" {
     pub static mut g_override_clear_r: undefined1;
-}
-extern "C" {
     pub static mut g_override_clear_g: undefined1;
-}
-extern "C" {
     pub static mut g_override_clear_b: undefined1;
-}
-extern "C" {
     pub static mut g_maybe_smth_related_to_pausing: undefined4;
-}
-extern "C" {
     pub static mut memcard_infos: [MemCardInfo; 2usize];
-}
-extern "C" {
     pub static mut storymode_save_files: [StoryModeSaveFile; 3usize];
-}
-extern "C" {
     pub static mut g_storymode_unlock_entries_copy: undefined1;
-}
-extern "C" {
     pub static mut g_cm_unlock_entries_copy: undefined1;
-}
-extern "C" {
     pub static mut g_some_string: undefined;
-}
-extern "C" {
     pub static mut g_some_pad_motor_array1: [GSomethingWithPadMotorsStruct; 4usize];
-}
-extern "C" {
     pub static mut g_some_pad_motor_array2: [GSomethingWithPadMotorsStruct; 4usize];
-}
-extern "C" {
     pub static mut g_some_heap_handle: OSHeapHandle;
-}
-extern "C" {
     pub static mut g_avdisp_bound_sphere_scale: f32;
-}
-extern "C" {
     pub static mut g_avdisp_material_alpha: f32;
-}
-extern "C" {
     pub static mut avdisp_tex_mtx: Mtx;
-}
-extern "C" {
     pub static mut main_mta_storage: undefined;
-}
-extern "C" {
     pub static mut face_bones: [GBone; 16usize];
-}
-extern "C" {
     pub static mut handR_bones: [GBone; 16usize];
-}
-extern "C" {
     pub static mut tailBone: GBone;
-}
-extern "C" {
     pub static mut handLbones: [GBone; 16usize];
-}
-extern "C" {
     pub static mut common_anim_storage: [*mut ::core::ffi::c_void; 17usize];
-}
-extern "C" {
     pub static mut game_mal_storage: [*mut ::core::ffi::c_void; 17usize];
-}
-extern "C" {
     pub static mut arc_location: *mut ArcFileInfo;
-}
-extern "C" {
     pub static mut common_mal_sizes: [*mut ::core::ffi::c_void; 17usize];
-}
-extern "C" {
     pub static mut game_mal_sizes: [::core::ffi::c_int; 17usize];
-}
-extern "C" {
     pub static mut ape_tpls: [*mut ::core::ffi::c_void; 68usize];
-}
-extern "C" {
     pub static mut rep_tpl_table: [*mut ::core::ffi::c_void; 17usize];
-}
-extern "C" {
     pub static mut ape_gma_table: [*mut ::core::ffi::c_void; 68usize];
-}
-extern "C" {
     pub static mut ape_skl_arc_handle: ARCHandle;
-}
-extern "C" {
     pub static mut ape_skl_arc_data: *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub static mut g_common_mtx: Mtx;
-}
-extern "C" {
     pub static mut g_some_floats: [f32; 64usize];
-}
-extern "C" {
     pub static mut ape_ref_count_table: undefined;
-}
-extern "C" {
     pub static mut registered_apes: [*mut Ape; 64usize];
-}
-extern "C" {
     pub static mut total_apes_registered: undefined4;
-}
-extern "C" {
     pub static mut g_ptr_to_something: undefined4;
-}
-extern "C" {
     pub static mut g_some_gift_menu_flags: undefined1;
-}
-extern "C" {
     pub static mut scene_data: undefined4;
-}
-extern "C" {
     pub static mut dialog_tbl: undefined4;
-}
-extern "C" {
     pub static mut g_author_frame: undefined2;
-}
-extern "C" {
     pub static mut scene_length: undefined2;
-}
-extern "C" {
     pub static mut g_some_author_related_data: undefined4;
-}
-extern "C" {
     pub static mut g_author_scene: undefined4;
-}
-extern "C" {
     pub static mut g_new_main_mode_req: undefined4;
-}
-extern "C" {
     pub static mut g_new_sub_mode_req: undefined4;
-}
-extern "C" {
     pub static mut g_some_author_tick_func: undefined4;
-}
-extern "C" {
     pub static mut g_some_author_cutscene_timer: undefined4;
-}
-extern "C" {
     pub static mut g_some_author_cutscene_flag: undefined4;
-}
-extern "C" {
     pub static mut g_playpoint_msg_counter: undefined4;
-}
-extern "C" {
     pub static mut unlock_info: UnlockInfo;
-}
-extern "C" {
     pub static mut sprite_decoration_bar_tick: [byte; 1usize];
-}
-extern "C" {
     pub static mut view_stage_aspect_ratio: f32;
-}
-extern "C" {
     pub static mut switchdataD_804ee064: pointer;
-}
-extern "C" {
     pub static mut story_mode_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_804eee68: pointer;
-}
-extern "C" {
     pub static mut switchdataD_804eee88: pointer;
-}
-extern "C" {
     pub static mut switchdataD_804eef70: pointer;
-}
-extern "C" {
     pub static mut switchdataD_804ef084: pointer;
-}
-extern "C" {
     pub static mut switchdataD_804ef11c: pointer;
-}
-extern "C" {
     pub static mut CHAR_SPACE_3: undefined;
-}
-extern "C" {
     pub static mut CHAR_SPACE_2: undefined;
-}
-extern "C" {
     pub static mut CHAR_A: undefined4;
-}
-extern "C" {
     pub static mut CHAR_B: undefined4;
-}
-extern "C" {
     pub static mut CHAR_C: undefined4;
-}
-extern "C" {
     pub static mut CHAR_D: undefined4;
-}
-extern "C" {
     pub static mut CHAR_E: undefined4;
-}
-extern "C" {
     pub static mut CHAR_F: undefined4;
-}
-extern "C" {
     pub static mut CHAR_G: undefined4;
-}
-extern "C" {
     pub static mut CHAR_H: undefined4;
-}
-extern "C" {
     pub static mut CHAR_I: undefined4;
-}
-extern "C" {
     pub static mut CHAR_J: undefined4;
-}
-extern "C" {
     pub static mut CHAR_K: undefined4;
-}
-extern "C" {
     pub static mut CHAR_L: undefined4;
-}
-extern "C" {
     pub static mut CHAR_M: undefined4;
-}
-extern "C" {
     pub static mut CHAR_N: undefined4;
-}
-extern "C" {
     pub static mut CHAR_O: undefined4;
-}
-extern "C" {
     pub static mut CHAR_P: undefined4;
-}
-extern "C" {
     pub static mut CHAR_Q: undefined4;
-}
-extern "C" {
     pub static mut CHAR_R: undefined4;
-}
-extern "C" {
     pub static mut CHAR_S: undefined4;
-}
-extern "C" {
     pub static mut CHAR_T: undefined4;
-}
-extern "C" {
     pub static mut CHAR_U: undefined4;
-}
-extern "C" {
     pub static mut CHAR_V: undefined4;
-}
-extern "C" {
     pub static mut CHAR_W: undefined4;
-}
-extern "C" {
     pub static mut CHAR_X: undefined4;
-}
-extern "C" {
     pub static mut CHAR_Y: undefined4;
-}
-extern "C" {
     pub static mut CHAR_Z: undefined4;
-}
-extern "C" {
     pub static mut CHAR_SPACE: undefined4;
-}
-extern "C" {
     pub static mut CHAR_a: undefined4;
-}
-extern "C" {
     pub static mut CHAR_b: undefined4;
-}
-extern "C" {
     pub static mut CHAR_c: undefined4;
-}
-extern "C" {
     pub static mut CHAR_d: undefined4;
-}
-extern "C" {
     pub static mut CHAR_e: undefined4;
-}
-extern "C" {
     pub static mut CHAR_f: undefined4;
-}
-extern "C" {
     pub static mut CHAR_g: undefined4;
-}
-extern "C" {
     pub static mut CHAR_h: undefined4;
-}
-extern "C" {
     pub static mut CHAR_i: undefined4;
-}
-extern "C" {
     pub static mut CHAR_j: undefined4;
-}
-extern "C" {
     pub static mut CHAR_k: undefined4;
-}
-extern "C" {
     pub static mut CHAR_l: undefined4;
-}
-extern "C" {
     pub static mut CHAR_m: undefined4;
-}
-extern "C" {
     pub static mut CHAR_n: undefined4;
-}
-extern "C" {
     pub static mut CHAR_o: undefined4;
-}
-extern "C" {
     pub static mut CHAR_p: undefined4;
-}
-extern "C" {
     pub static mut CHAR_q: undefined4;
-}
-extern "C" {
     pub static mut CHAR_r: undefined4;
-}
-extern "C" {
     pub static mut CHAR_s: undefined4;
-}
-extern "C" {
     pub static mut CHAR_t: undefined4;
-}
-extern "C" {
     pub static mut CHAR_u: undefined4;
-}
-extern "C" {
     pub static mut CHAR_v: undefined4;
-}
-extern "C" {
     pub static mut CHAR_x: undefined4;
-}
-extern "C" {
     pub static mut CHAR_y: undefined4;
-}
-extern "C" {
     pub static mut CHAR_z: undefined4;
-}
-extern "C" {
     pub static mut nameentry_character_ptr_list: *mut *mut *mut undefined4;
-}
-extern "C" {
     pub static mut DEFAULT_FILENAME: *mut undefined;
-}
-extern "C" {
     pub static mut DEFAULT_FILENAME_LOCALE_LIST: pointer;
-}
-extern "C" {
     pub static mut continue_saved_game_text: [::core::ffi::c_char; 40usize];
-}
-extern "C" {
     pub static mut start_game_from_beginning_text: [::core::ffi::c_char; 35usize];
-}
-extern "C" {
     pub static mut switchdataD_804f0588: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_804f0734: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_805435f0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80543614: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80543648: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80543690: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_805437a4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_805437cc: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80543840: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80543868: *mut undefined;
-}
-extern "C" {
     pub static mut scen_stgname_buffer: undefined4;
-}
-extern "C" {
     pub static mut g_scen_stage_names_loaded: undefined4;
-}
-extern "C" {
     pub static mut g_are_story_select_sprites_visible: undefined4;
-}
-extern "C" {
     pub static mut g_amount_of_stages_per_world: undefined2;
-}
-extern "C" {
     pub static mut g_amount_of_beaten_stages_in_world: undefined2;
-}
-extern "C" {
     pub static mut some_ape_float: f32;
-}
-extern "C" {
     pub static mut some_ape_float2: f32;
-}
-extern "C" {
     pub static mut some_ape_float3: f32;
-}
-extern "C" {
     pub static mut g_storymode_preview_textures: SpriteTex;
-}
-extern "C" {
     pub static mut g_storymode_stageselect_state: StoryModeStageSelectState;
-}
-extern "C" {
     pub static mut g_storymode_stageselect_framecounter: undefined2;
-}
-extern "C" {
     pub static mut g_some_storymode_stageid1: undefined4;
-}
-extern "C" {
     pub static mut g_some_storymode_stageid2: undefined4;
-}
-extern "C" {
     pub static mut g_some_storymode_stageid3: undefined4;
-}
-extern "C" {
     pub static mut story_file_name: [*mut ::core::ffi::c_char; 6usize];
-}
-extern "C" {
     pub static mut g_some_nameentry_length: undefined1;
-}
-extern "C" {
     pub static mut g_some_nameentry_flag: undefined1;
-}
-extern "C" {
     pub static mut g_storymode_are_you_sure_answer: bool_;
-}
-extern "C" {
     pub static mut data_select_menu_state: DataSelectMenuState;
-}
-extern "C" {
     pub static mut story_file_select_state: undefined1;
-}
-extern "C" {
     pub static mut selected_story_file_idx: undefined1;
-}
-extern "C" {
     pub static mut g_dataselect_menu_framecounter: undefined1;
-}
-extern "C" {
     pub static mut storymode_menu_state: StoryModeMenuState;
-}
-extern "C" {
     pub static mut g_some_ape: *mut Ape;
-}
-extern "C" {
     pub static mut view_stage_camera_x: undefined4;
-}
-extern "C" {
     pub static mut view_stage_camera_y: undefined4;
-}
-extern "C" {
     pub static mut view_stage_camera_z: undefined4;
-}
-extern "C" {
     pub static mut view_stage_camera_rot_x: undefined2;
-}
-extern "C" {
     pub static mut view_stage_camera_rot_y: undefined2;
-}
-extern "C" {
     pub static mut view_stage_camera_rot_z: undefined2;
-}
-extern "C" {
     pub static mut view_stage_timer: s16;
-}
-extern "C" {
     pub static mut view_stage_camera_zoom: undefined4;
-}
-extern "C" {
     pub static mut view_stage_camera_horizontal_rotation: u16_;
-}
-extern "C" {
     pub static mut view_stage_camera_vertical_pan: undefined2;
-}
-extern "C" {
     pub static mut view_stage_camera_horizontal_pan: undefined2;
-}
-extern "C" {
     pub static mut switchdataD_80574504: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80574614: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_805747cc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805748e8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805749f8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80574bb0: pointer;
-}
-extern "C" {
     pub static mut menu_mode_select_entries: MenuEntry;
-}
-extern "C" {
     pub static mut CAN_PLAY_NUM_PARTY_GAMES_STRING: [::core::ffi::c_char; 49usize];
-}
-extern "C" {
     pub static mut menu_party_game_select_entries: undefined;
-}
-extern "C" {
     pub static mut CAN_PURCHASE_PARTY_GAME_STRING: [::core::ffi::c_char; 93usize];
-}
-extern "C" {
     pub static mut CANNOT_SELECT_PARTY_GAME_STRING: [::core::ffi::c_char; 84usize];
-}
-extern "C" {
     pub static mut menu_option_entries: undefined;
-}
-extern "C" {
     pub static mut menu_number_of_players_entries: MenuEntry;
-}
-extern "C" {
     pub static mut menu_character_select_1_entries: [MenuEntry; 4usize];
-}
-extern "C" {
     pub static mut menu_character_select_2_entries: [MenuEntry; 4usize];
-}
-extern "C" {
     pub static mut menu_main_game_select_entries: [MenuEntry; 3usize];
-}
-extern "C" {
     pub static mut menu_level_select_1_entries: undefined;
-}
-extern "C" {
     pub static mut menu_level_select_2_entries: undefined;
-}
-extern "C" {
     pub static mut menu_stage_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_gameplay_settings_entries: undefined;
-}
-extern "C" {
     pub static mut menu_race_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_race_course_select_one_course_race_entries: undefined;
-}
-extern "C" {
     pub static mut menu_race_course_select_time_trial_entries: [MenuEntry; 6usize];
-}
-extern "C" {
     pub static mut menu_race_gameplay_settings_one_course_race_entries: undefined;
-}
-extern "C" {
     pub static mut menu_race_gameplay_settings_grand_prix_entries: undefined;
-}
-extern "C" {
     pub static mut menu_fight_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_fight_no_of_wins_entries: undefined;
-}
-extern "C" {
     pub static mut menu_fight_stage_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_fight_gameplay_settings_normal_entries: undefined;
-}
-extern "C" {
     pub static mut menu_fight_gameplay_settings_survival_entries: undefined;
-}
-extern "C" {
     pub static mut menu_target_empty_entries: undefined;
-}
-extern "C" {
     pub static mut menu_target_gameplay_settings_entries: undefined;
-}
-extern "C" {
     pub static mut menu_billiards_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_billiards_rule_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_billiards_game_settings_multiplayer_entries: undefined;
-}
-extern "C" {
     pub static mut menu_billiards_game_settings_1p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_bowling_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_bowling_rule_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_bowling_level_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_golf_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_golf_gameplay_settings_entries: undefined;
-}
-extern "C" {
     pub static mut menu_boat_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_boat_course_select_one_course_race_entries: undefined;
-}
-extern "C" {
     pub static mut menu_boat_course_select_time_attack_entries: undefined;
-}
-extern "C" {
     pub static mut menu_boat_game_settings_one_course_race_entries: undefined;
-}
-extern "C" {
     pub static mut menu_boat_game_settings_grand_prix_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_empty_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_stage_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_gameplay_settings_1p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_gameplay_settings_2p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_gameplay_settings_3p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_shot_gameplay_settings_4p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_dogfight_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_dogfight_stage_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_dogfight_game_settings_normal_entries: undefined;
-}
-extern "C" {
     pub static mut menu_dogfight_game_settings_survival_entries: undefined;
-}
-extern "C" {
     pub static mut menu_soccer_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_soccer_team_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_soccer_game_settings_no_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_soccer_game_settings_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_baseball_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_baseball_character_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_baseball_stadium_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_baseball_game_settings_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_baseball_game_settings_no_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_mode_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_pair_select_2p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_pair_select_3p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_pair_select_4p_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_court_select_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_game_settings_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_tennis_game_settings_no_com_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_replay_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_play_points_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_gift_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_ranking_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_game_data_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_controller_entries: undefined;
-}
-extern "C" {
     pub static mut menu_option_screen_entries: undefined;
-}
-extern "C" {
     pub static mut menu_screen_list: [MenuScreen; 87usize];
-}
-extern "C" {
     pub static mut switchdataD_80580b70: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805837fc: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80584584: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805846ac: *mut undefined;
-}
-extern "C" {
     pub static mut g_currently_visible_menu_screen: MenuScreenID;
-}
-extern "C" {
     pub static mut g_next_menu_screen: MenuScreenID;
-}
-extern "C" {
     pub static mut g_menu_transition_frametimer: undefined1;
-}
-extern "C" {
     pub static mut g_character_selected: byte;
-}
-extern "C" {
     pub static mut g_menu_description_text: *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub static mut g_active_pads_bitfield: undefined4;
-}
-extern "C" {
     pub static mut g_language_id: undefined1;
-}
-extern "C" {
     pub static mut locked_menu_items: undefined4;
-}
-extern "C" {
     pub static mut menu_apes: [*mut Ape; 4usize];
-}
-extern "C" {
     pub static mut g_menu_color_overlay_timer: undefined4;
-}
-extern "C" {
     pub static mut g_something_with_preview_textures: undefined;
-}
-extern "C" {
     pub static mut g_replay_stage_id_to_load: undefined4;
-}
-extern "C" {
     pub static mut g_gift_menu_cursor_pos: undefined1;
-}
-extern "C" {
     pub static mut switchdataD_80590050: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_805b1fc6: pointer;
-}
-extern "C" {
     pub static mut s_bmp: undefined;
-}
-extern "C" {
     pub static mut s_ape_: undefined;
-}
-extern "C" {
     pub static mut switchdataD_805b20d2: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805b22ae: pointer;
-}
-extern "C" {
     pub static mut switchdataD_805b22ea: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8060470c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80604780: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806047a0: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806047cc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806047ec: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8060480c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80604854: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80604b5c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80605210: pointer;
-}
-extern "C" {
     pub static mut test_mode_sub_mode_funcs: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80638fc4: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8063d714: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8063d738: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8063ec08: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80642514: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80642534: *mut undefined;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_id: undefined4;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_pan: undefined1;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_pitch: undefined2;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_doppler: undefined2;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_mod: undefined2;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_reverb: undefined1;
-}
-extern "C" {
     pub static mut g_debug_sound_fx_chorus: undefined1;
-}
-extern "C" {
     pub static mut g_debug_sound_ics: undefined1;
-}
-extern "C" {
     pub static mut g_debug_stream_se_id: undefined2;
-}
-extern "C" {
     pub static mut g_debug_sound_ics_volume: undefined1;
-}
-extern "C" {
     pub static mut g_debug_sound_ics_pan_L: undefined1;
-}
-extern "C" {
     pub static mut g_debug_sound_ics_pan_R: undefined1;
-}
-extern "C" {
     pub static mut g_debug_stream_bgm_id: undefined2;
-}
-extern "C" {
     pub static mut g_debug_sound_efc: undefined1;
-}
-extern "C" {
     pub static mut test_aram_font_type: Font16;
-}
-extern "C" {
     pub static mut test_aram_font_proportional: undefined1;
-}
-extern "C" {
     pub static mut test_aram_font_style: undefined1;
-}
-extern "C" {
     pub static mut test_aram_font_page: undefined1;
-}
-extern "C" {
     pub static mut test_aram_font_char: undefined4;
-}
-extern "C" {
     pub static mut g_something_with_test_cutscenes: u16_;
-}
-extern "C" {
     pub static mut test_scene_number: u16_;
-}
-extern "C" {
     pub static mut g_test_dialog_category_idx: undefined2;
-}
-extern "C" {
     pub static mut g_test_dialog_data_idx: undefined2;
-}
-extern "C" {
     pub static mut g_test_dialog_ptr: GDialogStruct;
-}
-extern "C" {
     pub static mut g_test_ape_ptr: *mut Ape;
-}
-extern "C" {
     pub static mut switchdataD_8065c7a0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80685ba0: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80686b64: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80686c20: pointer;
-}
-extern "C" {
     pub static mut player_count: undefined2;
-}
-extern "C" {
     pub static mut race_frames_remaining: undefined4;
-}
-extern "C" {
     pub static mut switchdataD_806c6ec4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c6ef8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c6fe0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c7010: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c7058: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c7418: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c7434: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806c777c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806cb4ac: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806cb6b8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_806cb6fc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806cb784: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806fd0d8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_806fd190: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80706bac: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8073c160: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8073c244: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8073c6dc: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8073c920: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_807b8b94: pointer;
-}
-extern "C" {
     pub static mut switchdataD_807b8bbc: pointer;
-}
-extern "C" {
     pub static mut switchdataD_807b9ca8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80801518: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80801724: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80804710: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808063ec: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8080640c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8080642c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8080644c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808064ac: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8080667c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80806734: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80806970: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808069a0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808609e4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860a20: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860a90: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860ac0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860ae0: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860c8c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860ca8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_80860cd8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808ddd64: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_808ddfa8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_808ddfc8: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809958d8: pointer;
-}
-extern "C" {
     pub static mut switchdataD_80995924: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8099ca88: pointer;
-}
-extern "C" {
     pub static mut switchdataD_8099cb74: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_8099f914: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809e535c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809e8b58: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809e8b78: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaa04: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaa28: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaa4c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaa70: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaa8c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaaac: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eaaf4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eab18: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eab34: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eab50: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eab70: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eab8c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eabac: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eabf4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eac2c: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eac48: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eadc4: *mut undefined;
-}
-extern "C" {
     pub static mut switchdataD_809eae20: pointer;
-}
-extern "C" {
     pub static mut switchdataD_809eae94: pointer;
-}
-extern "C" {
     pub static mut switchdataD_809f17e8: pointer;
-}
-extern "C" {
     pub static mut g_some_video_bitflag: undefined2;
-}
-extern "C" {
     pub static mut GXWGFifo: PPCWGPipe;
-}
-extern "C" {
     pub fn __check_pad3();
-}
-extern "C" {
     pub fn dol_entry();
-}
-extern "C" {
     pub fn __init_registers();
-}
-extern "C" {
     pub fn __init_data();
-}
-extern "C" {
     pub fn __init_hardware();
-}
-extern "C" {
     pub fn __flush_cache(param_1: uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn memset(
         ptr: *mut ::core::ffi::c_void,
         value: ::core::ffi::c_int,
         num: ::core::ffi::c_ulong,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn __fill_mem(
         ptr: *mut ::core::ffi::c_void,
         value: ::core::ffi::c_int,
         num: usize,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn memcpy(
         dest: *mut ::core::ffi::c_void,
         src: *mut ::core::ffi::c_void,
         count: usize,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn TRK_memset(
         param_1: ::core::ffi::c_int,
         param_2: byte,
         param_3: uint,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRK_memcpy(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_init_console();
-}
-extern "C" {
     pub fn g_some_heap_init();
-}
-extern "C" {
     pub fn load_run_main_loop_parent1();
-}
-extern "C" {
     pub fn read_and_set_os_string_table() -> uint;
-}
-extern "C" {
     pub fn load_main_loop_rel_and_run(
         rel_filepath: *mut ::core::ffi::c_char,
         buffer_info: *mut RelBufferInfo,
     );
-}
-extern "C" {
     pub fn unload_main_loop_rel(mainLoopBufPtrs: *mut *mut OSModuleInfo) -> *mut *mut OSModuleInfo;
-}
-extern "C" {
     pub fn load_common_gma_tpl();
-}
-extern "C" {
     pub fn set_init_rel_index(index: u32_);
-}
-extern "C" {
     pub fn g_clear_prev_GX_settings_something1() -> undefined4;
-}
-extern "C" {
     pub fn g_clear_prev_GX_settings_something2();
-}
-extern "C" {
     pub fn GXSetCullMode_cached(mode: GXCullMode);
-}
-extern "C" {
     pub fn GXSetBlendMode_cached(
         type_: GXBlendMode,
         src_factor: GXBlendFactor,
         dst_factor: GXBlendFactor,
         op: GXLogicOp,
     );
-}
-extern "C" {
     pub fn GXSetTevSwapModeTable_cached(
         id: GXTevSwapSel,
         red: GXTevColorChan,
@@ -9512,8 +7016,6 @@ extern "C" {
         blue: GXTevColorChan,
         alpha: GXTevColorChan,
     );
-}
-extern "C" {
     pub fn g_GXSetTevSwapModeTable_wrapper(
         param_1: GXTevSwapSel,
         param_2: GXTevColorChan,
@@ -9521,21 +7023,13 @@ extern "C" {
         param_4: GXTevColorChan,
         param_5: GXTevColorChan,
     );
-}
-extern "C" {
     pub fn GXSetTevSwapMode_cached(
         stage: GXTevStageID,
         ras_sel: GXTevSwapSel,
         tex_sel: GXTevSwapSel,
     );
-}
-extern "C" {
     pub fn GXSetColorUpdate_cached(update_enable: GXBool);
-}
-extern "C" {
     pub fn GXSetZCompLoc_cached(before_tex: GXBool);
-}
-extern "C" {
     pub fn GXSetTevColorIn_cached(
         stage: GXTevStageID,
         a: GXTevColorArg,
@@ -9543,8 +7037,6 @@ extern "C" {
         c: GXTevColorArg,
         d: GXTevColorArg,
     );
-}
-extern "C" {
     pub fn GXSetTevAlphaIn_cached(
         stage: GXTevStageID,
         a: GXTevAlphaArg,
@@ -9552,8 +7044,6 @@ extern "C" {
         c: GXTevAlphaArg,
         d: GXTevAlphaArg,
     );
-}
-extern "C" {
     pub fn GXSetTevColorOp_cached(
         stage: GXTevStageID,
         op: GXTevOp,
@@ -9562,8 +7052,6 @@ extern "C" {
         clamp: GXBool,
         out_reg: GXTevRegID,
     );
-}
-extern "C" {
     pub fn GXSetTevAlphaOp_cached(
         stage: GXTevStageID,
         op: GXTevOp,
@@ -9572,57 +7060,33 @@ extern "C" {
         clamp: GXBool,
         out_reg: GXTevRegID,
     );
-}
-extern "C" {
     pub fn g_GXSetTevColorIn_GXSetTevAlphaIn_wrapper(
         param_1: GXTevStageID,
         param_2: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_GXSetTevOrder_wrapper(
         param_1: GXTevStageID,
         param_2: GXTexCoordID,
         param_3: GXTexCoordID,
         param_4: GXChannelID,
     );
-}
-extern "C" {
     pub fn GXSetTevKColorSel_cached(stage: GXTevStageID, sel: GXTevKColorSel);
-}
-extern "C" {
     pub fn GXSetTevKAlphaSel_cached(stage: GXTevStageID, sel: GXTevKAlphaSel);
-}
-extern "C" {
     pub fn GXSetNumTevStages_cached(nStages: u8_);
-}
-extern "C" {
     pub fn GXSetTevKColor_cached(id: GXTevKColorID, color: *mut GXColor);
-}
-extern "C" {
     pub fn GXLoadTexObj_cached(tex_obj: *mut GXTexObj, tex_map_id: GXTexMapID);
-}
-extern "C" {
     pub fn g_something_with_GXSetProjectionv(param_1: *mut undefined4, param_2: uint);
-}
-extern "C" {
     pub fn GXSetNumIndStages_cached(nstages: u8_);
-}
-extern "C" {
     pub fn GXSetIndTexOrder_cached(
         ind_stage: GXIndTexStageID,
         tex_coord: GXTexCoordID,
         tex_map: GXTexMapID,
     );
-}
-extern "C" {
     pub fn g_GXSetIndTexMtx_wrapper(
         param_1: GXIndTexMtxID,
         param_2: *mut [f32; 3usize],
         param_3: ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn GXSetTevIndirect_cached(
         tev_stage: GXTevStageID,
         ind_stage: GXIndTexStageID,
@@ -9635,29 +7099,13 @@ extern "C" {
         utc_lod: GXBool,
         alpha_sel: GXIndTexAlphaSel,
     );
-}
-extern "C" {
     pub fn g_GXSetTevIndirect_zero_if_different(param_1: GXTevStageID);
-}
-extern "C" {
     pub fn GXSetScissor_cached(xOrig: u32_, yOrig: u32_, wd: u32_, ht: u32_);
-}
-extern "C" {
     pub fn GXSetDispCopySrc_cached(left: u16_, top: u16_, wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetTexCopySrc_cached(left: u16_, top: u16_, wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetDispCopyDst_cached(wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetTexCopyDst_cached(wd: u16_, ht: u16_, fmt: GXTexFmt, mipmap: GXBool);
-}
-extern "C" {
     pub fn GXSetCopyClear_cached(clear_clr: GXColor, clear_z: u32_);
-}
-extern "C" {
     pub fn GXSetTexCoordGen2_cached(
         dst_coord: GXTexCoordID,
         func: GXTexGenType,
@@ -9666,17 +7114,9 @@ extern "C" {
         normalize: GXBool,
         postmtx: u32_,
     );
-}
-extern "C" {
     pub fn GXSetNumTexGens_cached(nTexGens: u8_);
-}
-extern "C" {
     pub fn GXSetLineWidth_cached(width: u8_, tex_offsets: GXTexOffset);
-}
-extern "C" {
     pub fn GXSetNumChans_cached(nChans: u8_);
-}
-extern "C" {
     pub fn opti_GXSetChanCtrl(
         chan: GXChannelID,
         enable: GXBool,
@@ -9686,246 +7126,102 @@ extern "C" {
         diff_fn: GXDiffuseFn,
         attn_fn: GXAttnFn,
     );
-}
-extern "C" {
     pub fn GXSetZMode_cached(compare_enable: GXBool, func: GXCompare, update_enable: GXBool);
-}
-extern "C" {
     pub fn g_read_something_from_prev_GX_settings(
         param_1: *mut undefined,
         param_2: *mut undefined4,
         param_3: *mut undefined,
     );
-}
-extern "C" {
     pub fn g_set_some_gx_settings();
-}
-extern "C" {
     pub fn g_draw_something(param_1: f64, param_2: f64, param_3: f64, param_4: *mut ushort);
-}
-extern "C" {
     pub fn mark_finished_waiting_for_dvdread(result: s32, file_info: *mut DVDFileInfo);
-}
-extern "C" {
     pub fn read_entire_file_using_dvdread_prio_async(
         fileInfo: *mut DVDFileInfo,
         addr: *mut ::core::ffi::c_void,
         length: s32,
         offset: s32,
     ) -> u32_;
-}
-extern "C" {
     pub fn dvd_cancel_async_callback(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn call_dvd_cancel_async_and_wait_for_completion(
         block: *mut ::core::ffi::c_void,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_something_with_disc_cover();
-}
-extern "C" {
     pub fn g_idle_function(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_set_some_func_ptr1(param_1: undefined4);
-}
-extern "C" {
     pub fn g_set_some_card_func_ptr(param_1: undefined4);
-}
-extern "C" {
     pub fn g_set_some_func_ptr3(param_1: undefined4);
-}
-extern "C" {
     pub fn pad_init();
-}
-extern "C" {
     pub fn g_read_inputs_and_maybe_reset_console();
-}
-extern "C" {
     pub fn g_PADRead_and_handle_errors(pad_status: *mut PADStatus);
-}
-extern "C" {
     pub fn g_reset_console(status: *mut PADStatus, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_reset_console_wrapper(status: *mut PADStatus);
-}
-extern "C" {
     pub fn g_smth_which_may_reset_console(status: *mut PADStatus);
-}
-extern "C" {
     pub fn set_console_reset_callback(
         callback: ::core::option::Option<unsafe extern "C" fn() -> u32_>,
     );
-}
-extern "C" {
     pub fn get_console_reset_callback() -> ::core::option::Option<unsafe extern "C" fn() -> u32_>;
-}
-extern "C" {
     pub fn OSAlloc(size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSFree(ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_some_arq_request_callback();
-}
-extern "C" {
     pub fn aram_font_to_mram_font_callback();
-}
-extern "C" {
     pub fn g_load_aram_font();
-}
-extern "C" {
     pub fn gARAMFont_DVDRead(
         param_1: *mut DVDFileInfo,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_some_arq_request(source: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn aram_font_to_mram_font(
         font: Font8,
         g_char_idx: ::core::ffi::c_int,
         dest: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn memcpy_handler(
         dest: *mut ::core::ffi::c_void,
         src: *mut ::core::ffi::c_void,
         count: usize,
     );
-}
-extern "C" {
     pub fn g_something_with_video_progressive_mode();
-}
-extern "C" {
     pub fn bootup_draw_sega_splash();
-}
-extern "C" {
     pub fn init_sega_splash_tex(tex_obj: *mut GXTexObj);
-}
-extern "C" {
     pub fn draw_sega_splash(param_1: *mut GXTexObj);
-}
-extern "C" {
     pub fn draw_sega_splash_wrapper();
-}
-extern "C" {
     pub fn PPCMfmsr();
-}
-extern "C" {
     pub fn PPCMtmsr();
-}
-extern "C" {
     pub fn PPCMfhid0();
-}
-extern "C" {
     pub fn PPCMthid0();
-}
-extern "C" {
     pub fn PPCMfl2cr();
-}
-extern "C" {
     pub fn PPCMtl2cr();
-}
-extern "C" {
     pub fn PPCMtdec();
-}
-extern "C" {
     pub fn PPCSync();
-}
-extern "C" {
     pub fn PPCHalt();
-}
-extern "C" {
     pub fn PPCMtmmcr0();
-}
-extern "C" {
     pub fn PPCMtmmcr1();
-}
-extern "C" {
     pub fn PPCMfpmc1();
-}
-extern "C" {
     pub fn PPCMtpmc1();
-}
-extern "C" {
     pub fn PPCMtpmc2();
-}
-extern "C" {
     pub fn PPCMfpmc3();
-}
-extern "C" {
     pub fn PPCMtpmc3();
-}
-extern "C" {
     pub fn PPCMfpmc4();
-}
-extern "C" {
     pub fn PPCMtpmc4();
-}
-extern "C" {
     pub fn PPCMfhid2();
-}
-extern "C" {
     pub fn PPCMthid2();
-}
-extern "C" {
     pub fn PPCMfwpar();
-}
-extern "C" {
     pub fn PPCMtwpar();
-}
-extern "C" {
     pub fn PPCDisableSpeculation();
-}
-extern "C" {
     pub fn PPCSetFpNonIEEEMode();
-}
-extern "C" {
     pub fn OSGetConsoleType() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn ClearArena();
-}
-extern "C" {
     pub fn InquiryCallback(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSInit();
-}
-extern "C" {
     pub fn OSExceptionInit();
-}
-extern "C" {
     pub fn __OSDBINITSTART() -> undefined4;
-}
-extern "C" {
     pub fn __OSSetExceptionHandler(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn __OSGetExceptionHandler(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn __OSPSInit() -> undefined4;
-}
-extern "C" {
     pub fn __OSGetDIConfig() -> uint;
-}
-extern "C" {
     pub fn OSInitAlarm();
-}
-extern "C" {
     pub fn OSCreateAlarm(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn InsertAlarm(
         param_1: *mut undefined4,
         param_2: undefined4,
@@ -9933,8 +7229,6 @@ extern "C" {
         param_4: uint,
         param_5: undefined4,
     );
-}
-extern "C" {
     pub fn OSSetAlarm(
         param_1: *mut undefined4,
         param_2: undefined4,
@@ -9942,8 +7236,6 @@ extern "C" {
         param_4: undefined4,
         param_5: undefined4,
     );
-}
-extern "C" {
     pub fn OSSetPeriodicAlarm(
         param_1: *mut undefined4,
         param_2: undefined4,
@@ -9953,134 +7245,58 @@ extern "C" {
         param_6: undefined4,
         param_7: undefined4,
     );
-}
-extern "C" {
     pub fn OSCancelAlarm(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DecrementerExceptionCallback(param_1: undefined4, param_2: *mut OSContext)
         -> undefined8;
-}
-extern "C" {
     pub fn DLInsert(
         free_chunk_list: *mut ChunkInfo,
         new_free_chunk: *mut ChunkInfo,
     ) -> *mut ChunkInfo;
-}
-extern "C" {
     pub fn OSAllocFromHeap(heap: OSHeapHandle, size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSFreeToHeap(heap: OSHeapHandle, ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn OSSetCurrentHeap(heap: OSHeapHandle) -> OSHeapHandle;
-}
-extern "C" {
     pub fn OSInitAlloc(
         arena_start: *mut ::core::ffi::c_void,
         arena_end: *mut ::core::ffi::c_void,
         max_heaps: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSCreateHeap(
         start: *mut ::core::ffi::c_void,
         end: *mut ::core::ffi::c_void,
     ) -> OSHeapHandle;
-}
-extern "C" {
     pub fn OSDestroyHeap(heap: OSHeapHandle);
-}
-extern "C" {
     pub fn OSCheckHeap(heap: OSHeapHandle) -> ::core::ffi::c_long;
-}
-extern "C" {
     pub fn OSGetArenaHi() -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSGetArenaLo() -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSSetArenaHi(newHi: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn OSSetArenaLo(newLo: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn OSAllocFromArenaLo(size: u32_, align: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn OSAllocFromArenaHi(size: u32_, align: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn __OSInitAudioSystem();
-}
-extern "C" {
     pub fn __OSStopAudioSystem();
-}
-extern "C" {
     pub fn DCEnable() -> uint;
-}
-extern "C" {
     pub fn DCInvalidateRange(startAddr: *mut ::core::ffi::c_void, nBytes: u32_);
-}
-extern "C" {
     pub fn DCFlushRange(startAddr: *mut ::core::ffi::c_void, nBytes: u32_);
-}
-extern "C" {
     pub fn DCStoreRange(param_1: uint, param_2: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn DCFlushRangeNoSync(param_1: uint, param_2: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn DCStoreRangeNoSync(param_1: uint, param_2: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn ICInvalidateRange(startAddr: *mut ::core::ffi::c_void, nBytes: u32_);
-}
-extern "C" {
     pub fn ICFlashInvalidate() -> uint;
-}
-extern "C" {
     pub fn ICEnable() -> uint;
-}
-extern "C" {
     pub fn __LCEnable() -> ulonglong;
-}
-extern "C" {
     pub fn LCEnable();
-}
-extern "C" {
     pub fn LCDisable() -> ulonglong;
-}
-extern "C" {
     pub fn LCLoadBlocks();
-}
-extern "C" {
     pub fn LCStoreBlocks(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn LCQueueWait(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn L2GlobalInvalidate();
-}
-extern "C" {
     pub fn DMAErrorHandler(param_1: undefined4, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn __OSCacheInit();
-}
-extern "C" {
     pub fn __OSLoadFPUContext(
         param_1: undefined8,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     ) -> undefined8;
-}
-extern "C" {
     pub fn __OSSaveFPUContext(
         param_1: f64,
         param_2: f64,
@@ -10094,99 +7310,43 @@ extern "C" {
         param_10: undefined4,
         param_11: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn OSSetCurrentContext(context: *mut OSContext);
-}
-extern "C" {
     pub fn OSGetCurrentContext() -> *mut OSContext;
-}
-extern "C" {
     pub fn OSSaveContext(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn OSLoadContext(param_1: ::core::ffi::c_int) -> undefined8;
-}
-extern "C" {
     pub fn OSGetStackPointer() -> u32_;
-}
-extern "C" {
     pub fn OSClearContext(context: *mut OSContext);
-}
-extern "C" {
     pub fn OSInitContext(param_1: *mut OSContext, param_2: u32_, param_3: u32_);
-}
-extern "C" {
     pub fn OSDumpContext(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn __OSContextInit();
-}
-extern "C" {
     pub fn OSReport(msg: *mut ::core::ffi::c_char, ...);
-}
-extern "C" {
     pub fn OSPanic(
         file: *mut ::core::ffi::c_char,
         line: ::core::ffi::c_int,
         msg: *mut ::core::ffi::c_char,
         ...
     );
-}
-extern "C" {
     pub fn OSSetErrorHandler(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn Decode(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSGetFontEncode() -> u16_;
-}
-extern "C" {
     pub fn ReadROM(param_1: *mut ::core::ffi::c_void, param_2: u32_, param_3: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn ExpandFontSheet(param_1: ::core::ffi::c_int, param_2: uint);
-}
-extern "C" {
     pub fn OSInitFont(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn OSDisableInterrupts() -> BOOL32;
-}
-extern "C" {
     pub fn OSEnableInterrupts() -> BOOL32;
-}
-extern "C" {
     pub fn OSRestoreInterrupts(enable: BOOL32) -> BOOL32;
-}
-extern "C" {
     pub fn __OSSetInterruptHandler(
         param_1: ::core::ffi::c_short,
         param_2: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __OSGetInterruptHandler(
         interrupt: __OSInterrupt,
     ) -> ::core::option::Option<unsafe extern "C" fn(interrupt: __OSInterrupt, arg1: *mut OSContext)>;
-}
-extern "C" {
     pub fn __OSInterruptInit();
-}
-extern "C" {
     pub fn SetInterruptMask(mask: OSInterruptMask) -> OSInterruptMask;
-}
-extern "C" {
     pub fn __OSMaskInterrupts(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn __OSUnmaskInterrupts(mask: OSInterruptMask) -> OSInterruptMask;
-}
-extern "C" {
     pub fn __OSDispatchInterrupt(param_1: undefined4, param_2: ::core::ffi::c_int) -> undefined8;
-}
-extern "C" {
     pub fn ExternalInterruptHandler(
         param_1: undefined4,
         param_2: *mut undefined4,
@@ -10197,170 +7357,68 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     ) -> undefined8;
-}
-extern "C" {
     pub fn empty_function();
-}
-extern "C" {
     pub fn OSSetStringTable(stringTable: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn Relocate(module1: *mut OSModuleHeader, module2: *mut OSModuleHeader) -> undefined4;
-}
-extern "C" {
     pub fn OSLink(newModule: *mut OSModuleHeader, bss: *mut ::core::ffi::c_void) -> bool_;
-}
-extern "C" {
     pub fn Undo(param_1: *mut ::core::ffi::c_int, param_2: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn OSUnlink(oldModule: *mut OSModuleInfo) -> bool_;
-}
-extern "C" {
     pub fn __OSModuleInit();
-}
-extern "C" {
     pub fn OSGetConsoleSimulatedMemSize() -> u32_;
-}
-extern "C" {
     pub fn OnReset(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn MEMIntrruptHandler(param_1: undefined4, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn RealMode() -> uint;
-}
-extern "C" {
     pub fn __OSInitMemoryProtection();
-}
-extern "C" {
     pub fn __OSUnlockAllMutex(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn Run();
-}
-extern "C" {
     pub fn __OSReboot();
-}
-extern "C" {
     pub fn OSRegisterResetFunction(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn Reset(param_1: undefined4);
-}
-extern "C" {
     pub fn __OSDoHotReset(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSResetSystem(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> bool_;
-}
-extern "C" {
     pub fn OSGetResetCode() -> uint;
-}
-extern "C" {
     pub fn __OSResetSWInterruptHandler();
-}
-extern "C" {
     pub fn OSGetResetButtonState() -> uint;
-}
-extern "C" {
     pub fn OSGetResetSwitchState();
-}
-extern "C" {
     pub fn WriteSramCallback();
-}
-extern "C" {
     pub fn WriteSram(
         param_1: *mut byte,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn __OSInitSram();
-}
-extern "C" {
     pub fn __OSLockSram() -> *mut undefined2;
-}
-extern "C" {
     pub fn __OSLockSramEx() -> *mut undefined2;
-}
-extern "C" {
     pub fn UnlockSram(param_1: ::core::ffi::c_int, param_2: uint) -> uint;
-}
-extern "C" {
     pub fn __OSUnlockSram(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __OSUnlockSramEx(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __OSSyncSram() -> undefined4;
-}
-extern "C" {
     pub fn __OSReadROM(
         param_1: *mut ::core::ffi::c_void,
         param_2: u32_,
         param_3: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn OSGetSoundMode() -> u32_;
-}
-extern "C" {
     pub fn OSSetSoundMode(param_1: uint);
-}
-extern "C" {
     pub fn OSGetProgressiveMode() -> u32_;
-}
-extern "C" {
     pub fn OSSetProgressiveMode(param_1: uint);
-}
-extern "C" {
     pub fn OSGetWirelessID(param_1: ::core::ffi::c_int) -> undefined2;
-}
-extern "C" {
     pub fn OSSetWirelessID(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn __OSInitSystemCall();
-}
-extern "C" {
     pub fn __OSThreadInit();
-}
-extern "C" {
     pub fn OSInitThreadQueue(queue: *mut OSThreadQueue);
-}
-extern "C" {
     pub fn OSGetCurrentThread() -> undefined4;
-}
-extern "C" {
     pub fn OSDisableScheduler() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn OSEnableScheduler() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn UnsetRun(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __OSGetEffectivePriority(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SetEffectivePriority(param_1: ::core::ffi::c_int, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn SelectThread(param_1: ::core::ffi::c_int) -> *mut OSContext;
-}
-extern "C" {
     pub fn __OSReschedule();
-}
-extern "C" {
     pub fn OSCreateThread(
         thread: *mut OSThread,
         func: *mut ::core::ffi::c_void,
@@ -10370,86 +7428,34 @@ extern "C" {
         priority: OSPriority,
         attribute: u16_,
     ) -> undefined4;
-}
-extern "C" {
     pub fn OSExitThread(param_1: u32_);
-}
-extern "C" {
     pub fn OSCancelThread(param_1: *mut OSContext);
-}
-extern "C" {
     pub fn OSResumeThread(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn OSSuspendThread(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn OSSleepThread(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSWakeupThread(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSSetThreadPriority(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn OSGetThreadPriority(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn OSGetTime();
-}
-extern "C" {
     pub fn OSGetTick() -> OSTick;
-}
-extern "C" {
     pub fn __OSGetSystemTime() -> ulonglong;
-}
-extern "C" {
     pub fn __OSTimeToSystemTime(param_1: ::core::ffi::c_int, param_2: uint) -> undefined8;
-}
-extern "C" {
     pub fn GetDates(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn OSTicksToCalendarTime(param_1: uint, param_2: uint, param_3: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn init_cpp_wrapper();
-}
-extern "C" {
     pub fn __init_cpp();
-}
-extern "C" {
     pub fn ppc_halt_wrapper();
-}
-extern "C" {
     pub fn SIBusy() -> undefined4;
-}
-extern "C" {
     pub fn SIIsChanBusy(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn CompleteTransfer() -> uint;
-}
-extern "C" {
     pub fn SIInterruptHandler(param_1: undefined4, param_2: undefined4);
-}
-extern "C" {
     pub fn SIEnablePollingInterrupt(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn SIRegisterPollingHandler(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn SIUnregisterPollingHandler(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn SIInit();
-}
-extern "C" {
     pub fn __SITransfer(
         param_1: uint,
         param_2: *mut undefined4,
@@ -10458,35 +7464,17 @@ extern "C" {
         param_5: ::core::ffi::c_int,
         param_6: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn SIGetStatus(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn SISetCommand(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn SITransferCommands();
-}
-extern "C" {
     pub fn SISetXY(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn SIEnablePolling(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn SIDisablePolling(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn SIGetResponseRaw(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn SIGetResponse(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SITransfer(
         param_1: uint,
         param_2: *mut undefined4,
@@ -10497,26 +7485,12 @@ extern "C" {
         param_7: uint,
         param_8: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn GetTypeCallback(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn SIGetType(param_1: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SIGetTypeAsync(param_1: uint, param_2: *mut undefined) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SISetSamplingRate(param_1: uint);
-}
-extern "C" {
     pub fn SIRefreshSamplingRate();
-}
-extern "C" {
     pub fn SetExiInterruptMask(param_1: ::core::ffi::c_int, param_2: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn EXIImm(
         param_1: ::core::ffi::c_int,
         param_2: *mut byte,
@@ -10524,16 +7498,12 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn EXIImmEx(
         param_1: ::core::ffi::c_int,
         param_2: *mut byte,
         param_3: ::core::ffi::c_int,
         param_4: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn EXIDma(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -10541,115 +7511,55 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn EXISync(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn EXIClearInterrupts(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
         param_4: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn EXISetExiCallback(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __EXIProbe(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn EXIProbe(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn EXIProbeEx(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn EXIAttach(param_1: ::core::ffi::c_int, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn EXIDetach(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn EXISelect(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn EXIDeselect(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TCIntrruptHandler(param_1: ::core::ffi::c_short, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn EXIInit();
-}
-extern "C" {
     pub fn EXILock(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn EXIUnlock(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn sndReadFlag(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn EXIGetID(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: *mut undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn InitializeUART() -> undefined4;
-}
-extern "C" {
     pub fn WriteUARTN(param_1: *mut byte, param_2: uint) -> undefined4;
-}
-extern "C" {
     pub fn DBInit();
-}
-extern "C" {
     pub fn __DBExceptionDestinationAux();
-}
-extern "C" {
     pub fn __DBExceptionDestination();
-}
-extern "C" {
     pub fn __DBIsExceptionMarked(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn DBPrintf();
-}
-extern "C" {
     pub fn PSMTXIdentity(param_1: *mut undefined4) -> undefined8;
-}
-extern "C" {
     pub fn PSMTXCopy(param_1: *mut f32, param_2: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn PSMTXConcat(param_1: *mut f32, param_2: *mut f32, param_3: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn PSMTXInverse(param_1: *mut f32, param_2: *mut f32) -> undefined4;
-}
-extern "C" {
     pub fn PSMTXScale(param_1: f64, param_2: f64, param_3: f64, param_4: *mut f32);
-}
-extern "C" {
     pub fn C_MTXLookAt(mtx: *mut Mtx, cam_pos: *mut Vec, cam_up: *mut Vec, target: *mut Vec);
-}
-extern "C" {
     pub fn C_MTXFrustum(
         param_1: f64,
         param_2: f64,
@@ -10659,11 +7569,7 @@ extern "C" {
         param_6: f64,
         param_7: *mut f32,
     );
-}
-extern "C" {
     pub fn C_MTXPerspective(m: *mut Mtx44, fovy: f64, aspect: f64, n: f64, f: f64);
-}
-extern "C" {
     pub fn C_MTXOrtho(
         param_1: f64,
         param_2: f64,
@@ -10673,133 +7579,67 @@ extern "C" {
         param_6: f64,
         m: *mut f32,
     );
-}
-extern "C" {
     pub fn PSVECAdd(param_1: *mut f32, param_2: *mut f32, param_3: *mut f32);
-}
-extern "C" {
     pub fn PSVECSubtract(param_1: *mut f32, param_2: *mut f32, param_3: *mut f32);
-}
-extern "C" {
     pub fn PSVECScale(param_1: f64, param_2: *mut f32, param_3: *mut f32);
-}
-extern "C" {
     pub fn PSVECNormalize(param_1: *mut f32, param_2: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn PSVECCrossProduct(param_1: *mut f32, param_2: *mut f32, param_3: *mut f32)
         -> undefined8;
-}
-extern "C" {
     pub fn __DVDInitWA();
-}
-extern "C" {
     pub fn AlarmHandlerForTimeout(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn Read(param_1: undefined4, param_2: uint, param_3: uint, param_4: undefined4);
-}
-extern "C" {
     pub fn SeekTwiceBeforeRead(
         param_1: undefined4,
         param_2: undefined4,
         param_3: uint,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn DVDLowRead(
         param_1: undefined4,
         param_2: uint,
         param_3: uint,
         param_4: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowSeek(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowWaitCoverClose(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowReadDiskID(param_1: undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowStopMotor(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowRequestError(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowInquiry(param_1: undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowAudioStream(
         param_1: uint,
         param_2: undefined4,
         param_3: uint,
         param_4: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowRequestAudioStatus(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowAudioBufferConfig(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDLowReset();
-}
-extern "C" {
     pub fn DVDLowBreak() -> undefined4;
-}
-extern "C" {
     pub fn DVDLowClearCallback() -> undefined4;
-}
-extern "C" {
     pub fn __DVDLowSetWAType(param_1: undefined4, param_2: undefined4);
-}
-extern "C" {
     pub fn __DVDFSInit();
-}
-extern "C" {
     pub fn DVDConvertPathToEntrynum(fileName: *mut ::core::ffi::c_char) -> s32;
-}
-extern "C" {
     pub fn DVDFastOpen(entrynum: s32, fileInfo: *mut DVDFileInfo) -> BOOL32;
-}
-extern "C" {
     pub fn DVDOpen(fileName: *mut ::core::ffi::c_char, fileInfo: *mut DVDFileInfo) -> BOOL32;
-}
-extern "C" {
     pub fn DVDClose(fileInfo: *mut DVDFileInfo) -> BOOL32;
-}
-extern "C" {
     pub fn entryToPath(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn DVDConvertEntrynumToPath(
         entry_num: s32,
         out_path: *mut ::core::ffi::c_char,
         max_path_size: usize,
     ) -> bool_;
-}
-extern "C" {
     pub fn DVDGetCurrentDir(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int)
         -> undefined4;
-}
-extern "C" {
     pub fn DVDChangeDir(dirName: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn DVDReadAsyncPrio(
         fileInfo: *mut DVDFileInfo,
         addr: *mut ::core::ffi::c_void,
@@ -10808,11 +7648,7 @@ extern "C" {
         callback: ::core::option::Option<unsafe extern "C" fn(arg1: s32, arg2: *mut DVDFileInfo)>,
         prio: s32,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn cbForReadAsync(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DVDReadPrio(
         fileInfo: *mut DVDFileInfo,
         addr: *mut ::core::ffi::c_void,
@@ -10820,82 +7656,34 @@ extern "C" {
         offset: s32,
         prio: s32,
     ) -> s32;
-}
-extern "C" {
     pub fn cbForCancelSync();
-}
-extern "C" {
     pub fn DVDOpenDir(dirName: *mut ::core::ffi::c_char, dir: *mut DVDDir) -> BOOL32;
-}
-extern "C" {
     pub fn DVDReadDir(dir: *mut DVDDir, dirent: *mut DVDDirEntry) -> BOOL32;
-}
-extern "C" {
     pub fn DVDPrepareStreamAsync(
         param_1: *mut undefined4,
         param_2: uint,
         param_3: uint,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn DVDInit();
-}
-extern "C" {
     pub fn cbForStateError(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn stateTimeout();
-}
-extern "C" {
     pub fn stateGettingError();
-}
-extern "C" {
     pub fn CategorizeError(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn cbForStateGettingError(param_1: uint);
-}
-extern "C" {
     pub fn cbForUnrecoveredError(param_1: uint);
-}
-extern "C" {
     pub fn cbForUnrecoveredErrorRetry(param_1: uint);
-}
-extern "C" {
     pub fn cbForStateGoToRetry(param_1: uint);
-}
-extern "C" {
     pub fn stateCheckID();
-}
-extern "C" {
     pub fn stateCheckID3();
-}
-extern "C" {
     pub fn stateCheckID2();
-}
-extern "C" {
     pub fn cbForStateCheckID1(param_1: uint);
-}
-extern "C" {
     pub fn cbForStateCheckID3(param_1: uint);
-}
-extern "C" {
     pub fn stateCoverClosed();
-}
-extern "C" {
     pub fn cbForStateCoverClosed(param_1: uint);
-}
-extern "C" {
     pub fn cbForStateMotorStopped();
-}
-extern "C" {
     pub fn stateReady();
-}
-extern "C" {
     pub fn stateBusy(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DVDReadAbsAsyncPrio(
         param_1: *mut undefined4,
         param_2: undefined4,
@@ -10904,8 +7692,6 @@ extern "C" {
         param_5: undefined4,
         param_6: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDReadAbsAsyncForBS(
         param_1: *mut undefined4,
         param_2: undefined4,
@@ -10913,114 +7699,54 @@ extern "C" {
         param_4: undefined4,
         param_5: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDReadDiskID(
         param_1: *mut undefined4,
         param_2: undefined4,
         param_3: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDPrepareStreamAbsAsync(
         param_1: *mut undefined4,
         param_2: undefined4,
         param_3: undefined4,
         param_4: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDCancelStreamAsync(param_1: *mut undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDStopStreamAtEndAsync(param_1: *mut undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDGetStreamErrorStatusAsync(
         param_1: *mut undefined4,
         param_2: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDGetStreamPlayAddrAsync(param_1: *mut undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn DVDInquiryAsync(
         param_1: *mut undefined4,
         param_2: undefined4,
         param_3: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DVDReset();
-}
-extern "C" {
     pub fn DVDGetCommandBlockStatus(commandBlock: *mut DVDCommandBlock) -> s32;
-}
-extern "C" {
     pub fn DVDGetDriveStatus() -> s32;
-}
-extern "C" {
     pub fn DVDCancelAsync(param_1: *mut ::core::ffi::c_int, param_2: *mut undefined) -> undefined4;
-}
-extern "C" {
     pub fn DVDCancel(block: *mut DVDCommandBlock) -> s32;
-}
-extern "C" {
     pub fn DVDGetCurrentDiskID() -> *mut DVDDiskID;
-}
-extern "C" {
     pub fn DVDCheckDisk() -> undefined4;
-}
-extern "C" {
     pub fn __DVDPrepareResetAsync(param_1: *mut undefined);
-}
-extern "C" {
     pub fn __DVDClearWaitingQueue();
-}
-extern "C" {
     pub fn __DVDPushWaitingQueue(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __DVDPopWaitingQueue() -> *mut *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __DVDCheckWaitingQueue() -> undefined4;
-}
-extern "C" {
     pub fn __DVDDequeueWaitingQueue(param_1: *mut ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn ErrorCode2Num(param_1: uint) -> ::core::ffi::c_char;
-}
-extern "C" {
     pub fn __DVDStoreErrorCode(param_1: uint);
-}
-extern "C" {
     pub fn cb(param_1: ::core::ffi::c_int, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn __fstLoad();
-}
-extern "C" {
     pub fn __VIRetraceHandler(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn getTiming(param_1: undefined4) -> *mut undefined;
-}
-extern "C" {
     pub fn __VIInit(param_1: uint);
-}
-extern "C" {
     pub fn VIInit();
-}
-extern "C" {
     pub fn VIWaitForRetrace();
-}
-extern "C" {
     pub fn setFbbRegs(
         param_1: ::core::ffi::c_int,
         param_2: *mut uint,
@@ -11028,8 +7754,6 @@ extern "C" {
         param_4: *mut uint,
         param_5: *mut uint,
     );
-}
-extern "C" {
     pub fn setVerticalRegs(
         param_1: ushort,
         param_2: ushort,
@@ -11041,188 +7765,72 @@ extern "C" {
         param_8: ::core::ffi::c_short,
         param_9: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn VIConfigure(rm: *mut GXRenderModeObj);
-}
-extern "C" {
     pub fn VIFlush();
-}
-extern "C" {
     pub fn VISetNextFrameBuffer(fb: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn VISetBlack(black: bool_);
-}
-extern "C" {
     pub fn VIGetRetraceCount() -> u32_;
-}
-extern "C" {
     pub fn getCurrentFieldEvenOdd() -> undefined4;
-}
-extern "C" {
     pub fn VIGetCurrentLine() -> uint;
-}
-extern "C" {
     pub fn VIGetTvFormat() -> u32_;
-}
-extern "C" {
     pub fn VIGetDTVStatus() -> u32_;
-}
-extern "C" {
     pub fn UpdateOrigin(param_1: uint);
-}
-extern "C" {
     pub fn PADOriginCallback(param_1: undefined4, param_2: uint);
-}
-extern "C" {
     pub fn PADProbeCallback(param_1: undefined4, param_2: uint);
-}
-extern "C" {
     pub fn PADTypeAndStatusCallback(param_1: undefined4, param_2: uint);
-}
-extern "C" {
     pub fn PADReset(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn PADRecalibrate(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn PADInit() -> undefined4;
-}
-extern "C" {
     pub fn PADRead(status: *mut PADStatus) -> u32_;
-}
-extern "C" {
     pub fn PADControlAllMotors(commandArray: *mut u32_);
-}
-extern "C" {
     pub fn PADControlMotor(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn PADSetSpec(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn SPEC0_MakeStatus(param_1: undefined4, param_2: *mut ushort, param_3: *mut uint);
-}
-extern "C" {
     pub fn SPEC1_MakeStatus(param_1: undefined4, param_2: *mut ushort, param_3: *mut uint);
-}
-extern "C" {
     pub fn SPEC2_MakeStatus(
         param_1: ::core::ffi::c_int,
         param_2: *mut ushort,
         param_3: *mut undefined4,
     );
-}
-extern "C" {
     pub fn PADSetAnalogMode(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn SamplingHandler(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn PADSetSamplingCallback(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn __PADDisableRecalibration(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn AIRegisterDMACallback(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn AIInitDMA(param_1: undefined4, param_2: uint);
-}
-extern "C" {
     pub fn AIStartDMA();
-}
-extern "C" {
     pub fn AIStopDMA();
-}
-extern "C" {
     pub fn AIGetStreamSampleCount() -> undefined4;
-}
-extern "C" {
     pub fn AIResetStreamSampleCount();
-}
-extern "C" {
     pub fn AISetStreamTrigger(param_1: undefined4);
-}
-extern "C" {
     pub fn AISetStreamPlayState(param_1: uint);
-}
-extern "C" {
     pub fn AIGetStreamPlayState() -> uint;
-}
-extern "C" {
     pub fn AISetDSPSampleRate(param_1: uint);
-}
-extern "C" {
     pub fn AIGetDSPSampleRate() -> uint;
-}
-extern "C" {
     pub fn __AI_set_stream_sample_rate(param_1: uint);
-}
-extern "C" {
     pub fn AIGetStreamSampleRate() -> uint;
-}
-extern "C" {
     pub fn AISetStreamVolLeft(param_1: uint);
-}
-extern "C" {
     pub fn AIGetStreamVolLeft() -> uint;
-}
-extern "C" {
     pub fn AISetStreamVolRight(param_1: uint);
-}
-extern "C" {
     pub fn AIGetStreamVolRight() -> uint;
-}
-extern "C" {
     pub fn AIInit(param_1: undefined4);
-}
-extern "C" {
     pub fn __AISHandler(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn __AICallbackStackSwitch(param_1: *mut undefined);
-}
-extern "C" {
     pub fn __AI_SRC_INIT();
-}
-extern "C" {
     pub fn ARGetDMAStatus() -> ushort;
-}
-extern "C" {
     pub fn ARStartDMA(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
         param_3: undefined4,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn ARInit(param_1: undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn ARGetBaseAddress() -> undefined4;
-}
-extern "C" {
     pub fn __ARHandler(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn __ARChecksize();
-}
-extern "C" {
     pub fn __ARQServiceQueueLo();
-}
-extern "C" {
     pub fn __ARQInterruptServiceRoutine();
-}
-extern "C" {
     pub fn ARQInit();
-}
-extern "C" {
     pub fn ARQPostRequest(
         request: *mut ARQRequest,
         owner: u32_,
@@ -11233,205 +7841,93 @@ extern "C" {
         length: u32_,
         callback: ::core::option::Option<unsafe extern "C" fn(arg1: u32_)>,
     );
-}
-extern "C" {
     pub fn ARQSetChunkSize(param_1: uint);
-}
-extern "C" {
     pub fn g_get_arq_chunk_size() -> undefined4;
-}
-extern "C" {
     pub fn hwExit();
-}
-extern "C" {
     pub fn hwDisableIrq();
-}
-extern "C" {
     pub fn salExitAi();
-}
-extern "C" {
     pub fn hwEnableIrq();
-}
-extern "C" {
     pub fn __AXOutQuit();
-}
-extern "C" {
     pub fn salExitDspCtrl();
-}
-extern "C" {
     pub fn salExitDsp();
-}
-extern "C" {
     pub fn DSPCheckMailToDSP() -> ushort;
-}
-extern "C" {
     pub fn DSPCheckMailFromDSP() -> ushort;
-}
-extern "C" {
     pub fn DSPReadMailFromDSP() -> undefined4;
-}
-extern "C" {
     pub fn DSPSendMailToDSP(param_1: undefined4);
-}
-extern "C" {
     pub fn DSPInit();
-}
-extern "C" {
     pub fn DSPReset();
-}
-extern "C" {
     pub fn DSPHalt();
-}
-extern "C" {
     pub fn DSPGetDMAStatus() -> ushort;
-}
-extern "C" {
     pub fn DSPAddTask(param_1: *mut undefined4) -> *mut undefined4;
-}
-extern "C" {
     pub fn __DSPHandler(param_1: undefined4, param_2: *mut OSContext);
-}
-extern "C" {
     pub fn __DSP_exec_task(param_1: ::core::ffi::c_int, param_2: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __DSP_boot_task(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __DSP_insert_task(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __DSP_remove_task(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn __DTKCallbackForFlush() -> uint;
-}
-extern "C" {
     pub fn DTKInit();
-}
-extern "C" {
     pub fn DTKQueueTrack(
         param_1: *mut ::core::ffi::c_char,
         param_2: *mut undefined4,
         param_3: undefined4,
         param_4: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DTKFlushTracks(param_1: undefined4);
-}
-extern "C" {
     pub fn g_DTK_set_something(param_1: undefined4);
-}
-extern "C" {
     pub fn DTKSetState(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DTKNextTrack();
-}
-extern "C" {
     pub fn DTKPrevTrack();
-}
-extern "C" {
     pub fn g_DTK_get_something1() -> undefined4;
-}
-extern "C" {
     pub fn g_GTK_get_something2() -> undefined4;
-}
-extern "C" {
     pub fn DTKSetVolume(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn __CARDExtHandler(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDExiHandler(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDTxHandler(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDUnlockedHandler(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDEnableInterrupt(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDReadStatus(param_1: ::core::ffi::c_int, param_2: *mut byte) -> undefined4;
-}
-extern "C" {
     pub fn __CARDClearStatus(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TimeoutHandler(param_1: *mut undefined);
-}
-extern "C" {
     pub fn Retry(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn UnlockedCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDStart(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDReadSegment(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __CARDWritePage(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __CARDEraseSector(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDInit();
-}
-extern "C" {
     pub fn __CARDSetDiskID(param_1: *mut undefined);
-}
-extern "C" {
     pub fn __CARDGetControlBlock(
         param_1: ::core::ffi::c_int,
         param_2: *mut *mut ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDPutControlBlock(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDGetResultCode(param_1: ::core::ffi::c_int) -> s32;
-}
-extern "C" {
     pub fn CARDFreeBlocks(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_int,
         param_3: *mut ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn bitrev(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn ReadArrayUnlock(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -11439,23 +7935,11 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DummyLen() -> uint;
-}
-extern "C" {
     pub fn __CARDUnlock(param_1: ::core::ffi::c_int, param_2: *mut uint) -> undefined4;
-}
-extern "C" {
     pub fn InitCallback(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DoneCallback(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn BlockReadCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDRead(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
@@ -11463,11 +7947,7 @@ extern "C" {
         param_4: undefined4,
         param_5: undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn BlockWriteCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDWrite(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
@@ -11475,151 +7955,83 @@ extern "C" {
         param_4: undefined4,
         param_5: undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDGetXferredBytes(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn __CARDGetFatBlock(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn WriteCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn EraseCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDAllocBlock(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDFreeBlock(
         param_1: ::core::ffi::c_int,
         param_2: ushort,
         param_3: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDUpdateFatBlock(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_short,
         param_3: undefined4,
     );
-}
-extern "C" {
     pub fn __CARDGetDirBlock(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn __CARDUpdateDir(param_1: ::core::ffi::c_int, param_2: undefined4) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __CARDCheckSum(
         param_1: *mut ushort,
         param_2: uint,
         param_3: *mut ::core::ffi::c_short,
         param_4: *mut ::core::ffi::c_short,
     );
-}
-extern "C" {
     pub fn VerifyID(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn VerifyDir(param_1: ::core::ffi::c_int, param_2: *mut uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn VerifyFAT(param_1: ::core::ffi::c_int, param_2: *mut uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __CARDVerify(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDCheckExAsync(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined4,
         param_3: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDCheckAsync(param_1: ::core::ffi::c_int, param_2: *mut undefined);
-}
-extern "C" {
     pub fn IsCard(param_1: *mut ::core::ffi::c_char) -> undefined4;
-}
-extern "C" {
     pub fn CARDProbeEx(chan: s32, memSize: *mut s32, sectorSize: *mut s32) -> s32;
-}
-extern "C" {
     pub fn DoMount(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __CARDMountCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn CARDMountAsync(
         chan: s32,
         workArea: *mut ::core::ffi::c_void,
         detachCallback: *mut ::core::ffi::c_void,
         attachCallback: *mut ::core::ffi::c_void,
     ) -> s32;
-}
-extern "C" {
     pub fn DoUnmount(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn CARDUnmount(chan: s32) -> s32;
-}
-extern "C" {
     pub fn FormatCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __CARDFormatRegionAsync(
         param_1: ::core::ffi::c_int,
         param_2: ushort,
         param_3: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDFormatAsync(param_1: ::core::ffi::c_int, param_2: *mut undefined);
-}
-extern "C" {
     pub fn __CARDCompareFileName(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDAccess(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __CARDIsPublic(param_1: *mut ::core::ffi::c_char) -> undefined4;
-}
-extern "C" {
     pub fn __CARDGetFileNo(
         param_1: *mut ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn CARDOpen(
         chan: s32,
         fileName: *mut ::core::ffi::c_char,
         fileInfo: *mut CARDFileInfo,
     ) -> s32;
-}
-extern "C" {
     pub fn return_0() -> undefined4;
-}
-extern "C" {
     pub fn CreateCallbackFat(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn CARDCreateAsync(
         chan: s32,
         fileName: *mut ::core::ffi::c_char,
@@ -11627,19 +8039,13 @@ extern "C" {
         fileInfo: *mut CARDFileInfo,
         callback: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn __CARDSeek(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
         param_4: *mut *mut ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn ReadCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn CARDReadAsync(
         fileInfo: *mut CARDFileInfo,
         buf: *mut ::core::ffi::c_void,
@@ -11647,8 +8053,6 @@ extern "C" {
         offset: s32,
         callback: *mut ::core::ffi::c_void,
     ) -> s32;
-}
-extern "C" {
     pub fn CARDWriteAsync(
         fileInfo: *mut CARDFileInfo,
         buf: *mut ::core::ffi::c_void,
@@ -11656,77 +8060,41 @@ extern "C" {
         offset: s32,
         callback: *mut ::core::ffi::c_void,
     ) -> s32;
-}
-extern "C" {
     pub fn DeleteCallback(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn CARDFastDeleteAsync(chan: s32, fileNo: s32, callback: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn CARDDeleteAsync(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn UpdateIconOffsets(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn CARDGetStatus(chan: s32, fileNo: s32, stat: *mut CARDStat) -> s32;
-}
-extern "C" {
     pub fn CARDSetStatusAsync(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
         param_4: undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDRenameAsync(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut ::core::ffi::c_char,
         param_4: undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CARDGetSerialNo(param_1: ::core::ffi::c_int, param_2: *mut uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn GXInit(base: *mut ::core::ffi::c_void, size: u32_) -> *mut GXFifoObj;
-}
-extern "C" {
     pub fn __GXInitGX();
-}
-extern "C" {
     pub fn GXInitFifoBase(fifo: *mut GXFifoObj, base: *mut ::core::ffi::c_void, size: u32_);
-}
-extern "C" {
     pub fn GXInitFifoPtrs(
         fifo: *mut GXFifoObj,
         read_ptr: *mut ::core::ffi::c_void,
         write_ptr: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn GXInitFifoLimits(fifo: *mut GXFifoObj, hi_water_mark: u32_, lo_water_mark: u32_);
-}
-extern "C" {
     pub fn GXSetCPUFifo(fifo: *mut GXFifoObj);
-}
-extern "C" {
     pub fn GXSetGPFifo(fifo: *mut GXFifoObj);
-}
-extern "C" {
     pub fn GXSaveCPUFifo(fifo: *mut GXFifoObj);
-}
-extern "C" {
     pub fn __GXSaveCPUFifoAux(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn GXGetGPStatus(
         overhi: *mut GXBool,
         underlow: *mut GXBool,
@@ -11734,63 +8102,27 @@ extern "C" {
         cmdIdle: *mut GXBool,
         brkpt: *mut GXBool,
     );
-}
-extern "C" {
     pub fn GXGetFifoPtrs(
         fifo: *mut GXFifoObj,
         read_ptr: *mut *mut ::core::ffi::c_void,
         write_ptr: *mut *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn __GXFifoInit();
-}
-extern "C" {
     pub fn __GXFifoReadEnable();
-}
-extern "C" {
     pub fn __GXFifoReadDisable();
-}
-extern "C" {
     pub fn __GXFifoLink(param_1: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn __GXWriteFifoIntEnable(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn __GXWriteFifoIntReset(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn GXGetCPUFifo() -> *mut GXFifoObj;
-}
-extern "C" {
     pub fn GXGetGPFifo() -> *mut GXFifoObj;
-}
-extern "C" {
     pub fn __GXXfVtxSpecs();
-}
-extern "C" {
     pub fn GXSetVtxDesc(attr: GXAttr, type_: GXAttrType);
-}
-extern "C" {
     pub fn GXSetVtxDescv(param_1: *mut GXVtxDescList);
-}
-extern "C" {
     pub fn __GXSetVCD();
-}
-extern "C" {
     pub fn g_GX_internal_unknown1();
-}
-extern "C" {
     pub fn GXGetVtxDesc(attr: GXAttr, type_: *mut GXAttrType);
-}
-extern "C" {
     pub fn GXGetVtxDescv(attr_list: *mut GXVtxDescList);
-}
-extern "C" {
     pub fn GXClearVtxDesc();
-}
-extern "C" {
     pub fn GXSetVtxAttrFmt(
         vtxfmt: GXVtxFmt,
         attr: GXAttr,
@@ -11798,14 +8130,8 @@ extern "C" {
         type_: GXCompType,
         frac: u8_,
     );
-}
-extern "C" {
     pub fn GXSetVtxAttrFmtv(vtxfmt: GXVtxFmt, list: *mut GXVtxAttrFmtList);
-}
-extern "C" {
     pub fn __GXSetVAT();
-}
-extern "C" {
     pub fn GXGetVtxAttrFmt(
         vtxfmt: GXVtxFmt,
         attr: GXAttr,
@@ -11813,17 +8139,9 @@ extern "C" {
         type_: *mut GXCompType,
         frac: *mut u8_,
     );
-}
-extern "C" {
     pub fn GXGetVtxAttrFmtv(vtxfmt: GXVtxFmt, list: *mut GXVtxAttrFmtList);
-}
-extern "C" {
     pub fn GXSetArray(attr: GXAttr, base_ptr: *mut ::core::ffi::c_void, stride: u8_);
-}
-extern "C" {
     pub fn GXInvalidateVtxCache();
-}
-extern "C" {
     pub fn GXSetTexCoordGen2(
         dst_coord: GXTexCoordID,
         func: GXTexGenType,
@@ -11832,194 +8150,78 @@ extern "C" {
         normalize: GXBool,
         postmtx: u32_,
     );
-}
-extern "C" {
     pub fn GXSetNumTexGens(nTexGens: u8_);
-}
-extern "C" {
     pub fn GXSetMisc(token: GXMiscToken, value: u32_);
-}
-extern "C" {
     pub fn GXFlush();
-}
-extern "C" {
     pub fn GXResetWriteGatherPipe();
-}
-extern "C" {
     pub fn GXSetDrawSync(token: u16_);
-}
-extern "C" {
     pub fn GXSetDrawDone();
-}
-extern "C" {
     pub fn GXDrawDone();
-}
-extern "C" {
     pub fn GXPixModeSync();
-}
-extern "C" {
     pub fn GXPokeAlphaMode(func: GXCompare, threshold: u8_);
-}
-extern "C" {
     pub fn GXPokeAlphaRead(mode: GXAlphaReadMode);
-}
-extern "C" {
     pub fn GXPokeAlphaUpdate(update_enable: GXBool);
-}
-extern "C" {
     pub fn GXPokeBlendMode(
         type_: GXBlendMode,
         src_factor: GXBlendFactor,
         dst_factor: GXBlendFactor,
         op: GXLogicOp,
     );
-}
-extern "C" {
     pub fn GXPokeColorUpdate(update_enable: GXBool);
-}
-extern "C" {
     pub fn GXPokeDstAlpha(enable: GXBool, alpha: u8_);
-}
-extern "C" {
     pub fn GXPokeDither(dither: GXBool);
-}
-extern "C" {
     pub fn GXPokeZMode(compare_enable: GXBool, func: GXCompare, update_enable: GXBool);
-}
-extern "C" {
     pub fn GXPeekZ(x: u16_, y: u16_, z: *mut u32_);
-}
-extern "C" {
     pub fn GXSetDrawSyncCallback(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn GXTokenInterruptHandler(interrupt: __OSInterrupt, context: *mut OSContext);
-}
-extern "C" {
     pub fn GXSetDrawDoneCallback(param_1: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn GXFinishInterruptHandler(interrupt: __OSInterrupt, context: *mut OSContext);
-}
-extern "C" {
     pub fn __GXPEInit();
-}
-extern "C" {
     pub fn __GXSetDirtyState(param_1: undefined4, param_2: undefined4, param_3: uint);
-}
-extern "C" {
     pub fn GXBegin(type_: GXPrimitive, vtxfmt: GXVtxFmt, nverts: u16_);
-}
-extern "C" {
     pub fn __GXSendFlushPrim();
-}
-extern "C" {
     pub fn GXSetLineWidth(width: u8_, tex_offsets: GXTexOffset);
-}
-extern "C" {
     pub fn GXSetPointSize(size: u8_, tex_offsets: GXTexOffset);
-}
-extern "C" {
     pub fn GXEnableTexOffsets(coord: GXTexCoordID, line_enable: GXBool, point_enable: GXBool);
-}
-extern "C" {
     pub fn GXSetCullMode(mode: GXCullMode);
-}
-extern "C" {
     pub fn GXSetCoPlanar(enable: GXBool);
-}
-extern "C" {
     pub fn __GXSetGenMode();
-}
-extern "C" {
     pub fn GXAdjustForOverscan(
         rmin: *mut GXRenderModeObj,
         rmout: *mut GXRenderModeObj,
         hor: u16_,
         ver: u16_,
     );
-}
-extern "C" {
     pub fn GXSetDispCopySrc(left: u16_, top: u16_, wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetTexCopySrc(left: u16_, top: u16_, wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetDispCopyDst(wd: u16_, ht: u16_);
-}
-extern "C" {
     pub fn GXSetTexCopyDst(wd: u16_, ht: u16_, fmt: GXTexFmt, mipmap: GXBool);
-}
-extern "C" {
     pub fn GXSetDispCopyFrame2Field(mode: GXCopyMode);
-}
-extern "C" {
     pub fn GXSetCopyClamp(clamp: GXFBClamp);
-}
-extern "C" {
     pub fn GXSetDispCopyYScale(yscale: undefined) -> u32_;
-}
-extern "C" {
     pub fn GXSetCopyClear(clear_clr: GXColor, clear_z: u32_);
-}
-extern "C" {
     pub fn GXSetCopyFilter(aa: GXBool, sample_pattern: undefined, vf: GXBool, vfilter: *mut u8_);
-}
-extern "C" {
     pub fn GXSetDispCopyGamma(gamma: GXGamma);
-}
-extern "C" {
     pub fn GXCopyDisp(dest: *mut ::core::ffi::c_void, clear: GXBool);
-}
-extern "C" {
     pub fn GXCopyTex(dest: *mut ::core::ffi::c_void, clear: GXBool);
-}
-extern "C" {
     pub fn GXClearBoundingBox();
-}
-extern "C" {
     pub fn GXInitLightAttnK(lt_obj: *mut GXLightObj, k0: f32, k1: f32, k2: f32);
-}
-extern "C" {
     pub fn GXInitLightSpot(lt_obj: *mut GXLightObj, cutoff: f32, spot_func: GXSpotFn);
-}
-extern "C" {
     pub fn GXInitLightDistAttn(
         lt_obj: *mut GXLightObj,
         ref_distance: f32,
         ref_brightness: f32,
         dist_func: GXDistAttnFn,
     );
-}
-extern "C" {
     pub fn GXInitLightPos(lt_obj: *mut GXLightObj, x: f32, y: f32, z: f32);
-}
-extern "C" {
     pub fn GXGetLightPos(lt_obj: *mut GXLightObj, x: *mut f32, y: *mut f32, z: *mut f32);
-}
-extern "C" {
     pub fn GXInitLightDir(lt_obj: *mut GXLightObj, nx: f32, ny: f32, nz: f32);
-}
-extern "C" {
     pub fn GXInitLightColor(lt_obj: *mut GXLightObj, color: GXColor);
-}
-extern "C" {
     pub fn GXGetLightColor(lt_obj: *mut GXLightObj, color: *mut GXColor);
-}
-extern "C" {
     pub fn GXLoadLightObjImm(lt_obj: *mut GXLightObj, light: GXLightID);
-}
-extern "C" {
     pub fn GXSetChanAmbColor(chan: GXChannelID, amb_color: GXColor);
-}
-extern "C" {
     pub fn GXSetChanMatColor(chan: GXChannelID, mat_color: GXColor);
-}
-extern "C" {
     pub fn GXSetNumChans(nChans: u8_);
-}
-extern "C" {
     pub fn GXSetChanCtrl(
         chan: GXChannelID,
         enable: GXBool,
@@ -12029,8 +8231,6 @@ extern "C" {
         diff_fn: GXDiffuseFn,
         attn_fn: GXAttnFn,
     );
-}
-extern "C" {
     pub fn GXGetTexBufferSize(
         width: u16_,
         height: u16_,
@@ -12038,8 +8238,6 @@ extern "C" {
         mipmap: GXBool,
         max_lod: u8_,
     ) -> u32_;
-}
-extern "C" {
     pub fn __GetImageTileCount(
         param_1: ::core::ffi::c_int,
         param_2: ushort,
@@ -12048,8 +8246,6 @@ extern "C" {
         param_5: *mut ::core::ffi::c_int,
         param_6: *mut undefined4,
     );
-}
-extern "C" {
     pub fn GXInitTexObj(
         obj: *mut GXTexObj,
         image_ptr: *mut ::core::ffi::c_void,
@@ -12060,8 +8256,6 @@ extern "C" {
         wrap_t: GXTexWrapMode,
         mipmap: GXBool,
     );
-}
-extern "C" {
     pub fn GXInitTexObjLOD(
         obj: *mut GXTexObj,
         min_filt: GXTexFilter,
@@ -12073,14 +8267,8 @@ extern "C" {
         do_edge_lod: GXBool,
         max_aniso: GXAnisotropy,
     );
-}
-extern "C" {
     pub fn GXInitTexObjData(obj: *mut GXTexObj, image_ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn GXInitTexObjWrapMode(obj: *mut GXTexObj, wrap_s: GXTexWrapMode, wrap_t: GXTexWrapMode);
-}
-extern "C" {
     pub fn GXGetTexObjAll(
         obj: *mut GXTexObj,
         image_ptr: *mut *mut ::core::ffi::c_void,
@@ -12091,29 +8279,13 @@ extern "C" {
         wrap_t: *mut GXTexWrapMode,
         mipmap: *mut GXBool,
     );
-}
-extern "C" {
     pub fn GXGetTexObjData(obj: *mut GXTexObj) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn GXGetTexObjWidth(obj: *mut GXTexObj) -> u16_;
-}
-extern "C" {
     pub fn GXGetTexObjHeight(obj: *mut GXTexObj) -> u16_;
-}
-extern "C" {
     pub fn GXGetTexObjFmt(obj: *mut GXTexObj) -> GXTexFmt;
-}
-extern "C" {
     pub fn GXGetTexObjWrapS(obj: *mut GXTexObj) -> GXTexWrapMode;
-}
-extern "C" {
     pub fn GXGetTexObjWrapT(obj: *mut GXTexObj) -> GXTexWrapMode;
-}
-extern "C" {
     pub fn GXGetTexObjMipMap(obj: *mut GXTexObj) -> GXBool;
-}
-extern "C" {
     pub fn g_GX_something(
         param_1: *mut uint,
         param_2: *mut uint,
@@ -12125,14 +8297,8 @@ extern "C" {
         param_8: *mut undefined,
         param_9: *mut uint,
     );
-}
-extern "C" {
     pub fn GXLoadTexObjPreLoaded(obj: *mut GXTexObj, region: *mut GXTexRegion, id: GXTexMapID);
-}
-extern "C" {
     pub fn GXLoadTexObj(obj: *mut GXTexObj, id: GXTexMapID);
-}
-extern "C" {
     pub fn GXInitTexCacheRegion(
         region: *mut GXTexRegion,
         is_32b_mipmap: GXBool,
@@ -12141,14 +8307,8 @@ extern "C" {
         tmem_odd: u32_,
         size_odd: GXTexCacheSize,
     );
-}
-extern "C" {
     pub fn GXInitTlutRegion(region: *mut GXTlutRegion, tmem_addr: u32_, tlut_size: GXTlutSize);
-}
-extern "C" {
     pub fn GXInvalidateTexAll();
-}
-extern "C" {
     pub fn GXSetTexRegionCallback(
         f: ::core::option::Option<
             unsafe extern "C" fn(arg1: *mut GXTexObj, arg2: GXTexMapID) -> *mut GXTexRegion,
@@ -12156,22 +8316,12 @@ extern "C" {
     ) -> ::core::option::Option<
         unsafe extern "C" fn(f: *mut GXTexObj, arg1: GXTexMapID) -> *mut GXTexRegion,
     >;
-}
-extern "C" {
     pub fn GXSetTlutRegionCallback(
         f: ::core::option::Option<unsafe extern "C" fn(arg1: u32_) -> GXTlutRegion>,
     ) -> ::core::option::Option<unsafe extern "C" fn(f: u32_) -> GXTlutRegion>;
-}
-extern "C" {
     pub fn __SetSURegs(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __GXSetSUTexRegs();
-}
-extern "C" {
     pub fn __GXSetTmemConfig(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn GXSetTevIndirect(
         tev_stage: GXTevStageID,
         ind_stage: GXIndTexStageID,
@@ -12184,40 +8334,22 @@ extern "C" {
         utc_lod: GXBool,
         alpha_sel: GXIndTexAlphaSel,
     );
-}
-extern "C" {
     pub fn GXSetIndTexMtx(mtx_sel: GXIndTexMtxID, offset_mtx: *mut [f32; 3usize], scale_exp: s8);
-}
-extern "C" {
     pub fn GXSetIndTexCoordScale(
         ind_stage: GXIndTexStageID,
         scale_s: GXIndTexScale,
         scale_t: GXIndTexScale,
     );
-}
-extern "C" {
     pub fn GXSetIndTexOrder(
         ind_stage: GXIndTexStageID,
         tex_coord: GXTexCoordID,
         tex_map: GXTexMapID,
     );
-}
-extern "C" {
     pub fn GXSetNumIndStages(nstages: u8_);
-}
-extern "C" {
     pub fn GXSetTevDirect(tev_stage: GXTevStageID);
-}
-extern "C" {
     pub fn __GXUpdateBPMask(param_1: undefined4, param_2: undefined4, param_3: uint);
-}
-extern "C" {
     pub fn __GXFlushTextureState();
-}
-extern "C" {
     pub fn GXSetTevOp(id: GXTevStageID, mode: GXTevMode);
-}
-extern "C" {
     pub fn GXSetTevColorIn(
         stage: GXTevStageID,
         a: GXTevColorArg,
@@ -12225,8 +8357,6 @@ extern "C" {
         c: GXTevColorArg,
         d: GXTevColorArg,
     );
-}
-extern "C" {
     pub fn GXSetTevAlphaIn(
         stage: GXTevStageID,
         a: GXTevAlphaArg,
@@ -12234,8 +8364,6 @@ extern "C" {
         c: GXTevAlphaArg,
         d: GXTevAlphaArg,
     );
-}
-extern "C" {
     pub fn GXSetTevColorOp(
         stage: GXTevStageID,
         op: GXTevOp,
@@ -12244,8 +8372,6 @@ extern "C" {
         clamp: GXBool,
         out_reg: GXTevRegID,
     );
-}
-extern "C" {
     pub fn GXSetTevAlphaOp(
         stage: GXTevStageID,
         op: GXTevOp,
@@ -12254,23 +8380,11 @@ extern "C" {
         clamp: GXBool,
         out_reg: GXTevRegID,
     );
-}
-extern "C" {
     pub fn GXSetTevColor(id: GXTevRegID, color: GXColor);
-}
-extern "C" {
     pub fn GXSetTevKColor(id: GXTevKColorID, color: GXColor);
-}
-extern "C" {
     pub fn GXSetTevKColorSel(stage: GXTevStageID, sel: GXTevKColorSel);
-}
-extern "C" {
     pub fn GXSetTevKAlphaSel(stage: GXTevStageID, sel: GXTevKAlphaSel);
-}
-extern "C" {
     pub fn GXSetTevSwapMode(stage: GXTevStageID, ras_sel: GXTevSwapSel, tex_sel: GXTevSwapSel);
-}
-extern "C" {
     pub fn GXSetTevSwapModeTable(
         id: GXTevSwapSel,
         red: GXTevColorChan,
@@ -12278,8 +8392,6 @@ extern "C" {
         blue: GXTevColorChan,
         alpha: GXTevColorChan,
     );
-}
-extern "C" {
     pub fn GXSetAlphaCompare(
         comp0: GXCompare,
         ref0: u8_,
@@ -12287,22 +8399,14 @@ extern "C" {
         comp1: GXCompare,
         ref1: u8_,
     );
-}
-extern "C" {
     pub fn GXSetZTexture(op: GXZTexOp, fmt: GXTexFmt, bias: u32_);
-}
-extern "C" {
     pub fn GXSetTevOrder(
         stage: GXTevStageID,
         coord: GXTexCoordID,
         map: GXTexMapID,
         color: GXChannelID,
     );
-}
-extern "C" {
     pub fn GXSetNumTevStages(nStages: u8_);
-}
-extern "C" {
     pub fn GXSetFog(
         type_: GXFogType,
         startz: f32,
@@ -12311,52 +8415,24 @@ extern "C" {
         farz: f32,
         color: GXColor,
     );
-}
-extern "C" {
     pub fn GXSetFogRangeAdj(enable: GXBool, center: u16_, table: *mut GXFogAdjTable);
-}
-extern "C" {
     pub fn GXSetBlendMode(
         type_: GXBlendMode,
         src_factor: GXBlendFactor,
         dst_factor: GXBlendFactor,
         op: GXLogicOp,
     );
-}
-extern "C" {
     pub fn GXSetColorUpdate(update_enable: GXBool);
-}
-extern "C" {
     pub fn GXSetAlphaUpdate(update_enable: GXBool);
-}
-extern "C" {
     pub fn GXSetZMode(compare_enable: GXBool, func: GXCompare, update_enable: GXBool);
-}
-extern "C" {
     pub fn GXSetZCompLoc(before_tex: GXBool);
-}
-extern "C" {
     pub fn GXSetPixelFmt(pix_fmt: GXPixelFmt, z_fmt: GXZFmt16);
-}
-extern "C" {
     pub fn GXSetDither(dither: GXBool);
-}
-extern "C" {
     pub fn GXSetDstAlpha(enable: GXBool, alpha: u8_);
-}
-extern "C" {
     pub fn GXSetFieldMask(odd_mask: GXBool, even_mask: GXBool);
-}
-extern "C" {
     pub fn GXSetFieldMode(field_mode: GXBool, half_aspect_ratio: GXBool);
-}
-extern "C" {
     pub fn GXDrawCylinder(numEdges: u8_);
-}
-extern "C" {
     pub fn GXDrawSphere(numMajor: u8_, numMinor: u8_);
-}
-extern "C" {
     pub fn GXDrawCubeFace(
         param_1: f64,
         param_2: f64,
@@ -12369,53 +8445,21 @@ extern "C" {
         param_4_00: ::core::ffi::c_int,
         param_5_00: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn GXDrawCube();
-}
-extern "C" {
     pub fn __GXSetRange();
-}
-extern "C" {
     pub fn GXBeginDisplayList(list: *mut ::core::ffi::c_void, size: u32_);
-}
-extern "C" {
     pub fn GXEndDisplayList() -> u32_;
-}
-extern "C" {
     pub fn GXCallDisplayList(list: *mut ::core::ffi::c_void, nbytes: u32_);
-}
-extern "C" {
     pub fn GXSetProjection(mtx: *mut [f32_; 4usize], type_: GXProjectionType);
-}
-extern "C" {
     pub fn GXSetProjectionv(ptr: *mut f32_);
-}
-extern "C" {
     pub fn GXGetProjectionv(ptr: *mut f32);
-}
-extern "C" {
     pub fn WriteMTXPS4x3(param_1: *mut f32, param_2: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn WriteMTXPS3x3from3x4(param_1: *mut f32, param_2: *mut f32);
-}
-extern "C" {
     pub fn WriteMTXPS4x2(param_1: *mut f32, param_2: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn GXLoadPosMtxImm(mtxPtr: *mut [f32; 4usize], id: u32_);
-}
-extern "C" {
     pub fn GXLoadNrmMtxImm(mtxPtr: *mut [f32; 4usize], id: u32_);
-}
-extern "C" {
     pub fn GXSetCurrentMtx(id: u32_);
-}
-extern "C" {
     pub fn GXLoadTexMtxImm(mtxPtr: *mut f32, id: u32_, type_: GXTexMtxType);
-}
-extern "C" {
     pub fn GXSetViewportJitter(
         xOrig: f32,
         yOrig: f32,
@@ -12425,84 +8469,42 @@ extern "C" {
         farZ: f32,
         field: u32_,
     );
-}
-extern "C" {
     pub fn GXSetViewport(xOrig: f32, yOrig: f32, wd: f32, ht: f32, nearZ: f32, farZ: f32);
-}
-extern "C" {
     pub fn GXGetViewportv(vp: *mut f32);
-}
-extern "C" {
     pub fn GXSetScissor(xOrig: u32_, yOrig: u32_, wd: u32_, ht: u32_);
-}
-extern "C" {
     pub fn GXGetScissor(xOrig: *mut u32_, yOrig: *mut u32_, wd: *mut u32_, ht: *mut u32_);
-}
-extern "C" {
     pub fn GXSetScissorBoxOffset(xoffset: s32, yoffset: s32);
-}
-extern "C" {
     pub fn GXSetClipMode(mode: GXClipMode);
-}
-extern "C" {
     pub fn __GXSetMatrixIndex(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn GXSetGPMetric(perf0: GXPerf0, perf1: GXPerf1);
-}
-extern "C" {
     pub fn GXClearGPMetric();
-}
-extern "C" {
     pub fn GXInitXfRasMetric();
-}
-extern "C" {
     pub fn GXReadXfRasMetric(
         param_1: *mut undefined4,
         param_2: *mut undefined4,
         param_3: *mut undefined4,
         param_4: *mut undefined4,
     );
-}
-extern "C" {
     pub fn ARCInitHandle(
         arc_data: *mut ::core::ffi::c_void,
         out_arc_handle: *mut ARCHandle,
     ) -> undefined4;
-}
-extern "C" {
     pub fn ARCOpen(
         arc_handle: *mut ARCHandle,
         file: *mut ::core::ffi::c_char,
         arcFileInfo: *mut ArcFileInfo,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn arc_path_to_entrynum(arcHandle: *mut ARCHandle, file: *mut ::core::ffi::c_char) -> uint;
-}
-extern "C" {
     pub fn arc_get_dir(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn ARCGetStartAddrInMem(param_1: *mut *mut ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn arcGetLength(fileInfo: *mut ArcFileInfo) -> undefined4;
-}
-extern "C" {
     pub fn return_1() -> undefined4;
-}
-extern "C" {
     pub fn g_some_perf_init_func();
-}
-extern "C" {
     pub fn PERFGetAllMemMetrics(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn PERFInit(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -12511,77 +8513,29 @@ extern "C" {
         param_5: undefined4,
         param_6: undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn PERFSetEvent(param_1: uint, param_2: undefined4, param_3: undefined4);
-}
-extern "C" {
     pub fn PERFStartFrame();
-}
-extern "C" {
     pub fn PERFEndFrame();
-}
-extern "C" {
     pub fn PERFEventStart(id: PERFId);
-}
-extern "C" {
     pub fn PERFEventEnd(param_1: uint);
-}
-extern "C" {
     pub fn PERFStartAutoSample();
-}
-extern "C" {
     pub fn PERFEndAutoSample();
-}
-extern "C" {
     pub fn PERFStartAutoSampling(param_1: f64);
-}
-extern "C" {
     pub fn PERFStopAutoSampling();
-}
-extern "C" {
     pub fn __PERFDrawInit(param_1: undefined4);
-}
-extern "C" {
     pub fn PERFPreDraw();
-}
-extern "C" {
     pub fn DrawBWBar(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn DrawKey();
-}
-extern "C" {
     pub fn PERFDumpScreen();
-}
-extern "C" {
     pub fn PERFPostDraw();
-}
-extern "C" {
     pub fn g_set_something_with_perf(value: undefined4);
-}
-extern "C" {
     pub fn ResetNotes(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn AllocateNote(param_1: undefined4, param_2: byte) -> *mut undefined4;
-}
-extern "C" {
     pub fn HandleNotes() -> undefined4;
-}
-extern "C" {
     pub fn KeyOffNotes();
-}
-extern "C" {
     pub fn seqFreeKeyOffNote(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn GetPublicId(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn seqGetPrivateId(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn seqStartPlay(
         param_1: *mut ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_int,
@@ -12591,82 +8545,36 @@ extern "C" {
         param_6: undefined,
         param_7: undefined2,
     ) -> uint;
-}
-extern "C" {
     pub fn HandleMasterTrack(param_1: uint);
-}
-extern "C" {
     pub fn StartPause(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn seqPause(param_1: uint);
-}
-extern "C" {
     pub fn seqStop(param_1: uint);
-}
-extern "C" {
     pub fn seqKillInstancesByGroupID(param_1: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn seqSpeed(param_1: uint, param_2: undefined2);
-}
-extern "C" {
     pub fn seqContinue(param_1: uint);
-}
-extern "C" {
     pub fn seqMute(param_1: uint, param_2: undefined4, param_3: undefined4);
-}
-extern "C" {
     pub fn seqVolume(param_1: uint, param_2: uint, param_3: uint, param_4: byte);
-}
-extern "C" {
     pub fn seqCrossFade(param_1: *mut uint, param_2: *mut uint, param_3: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn GetStreamValue(
         param_1: *mut byte,
         param_2: *mut ushort,
         param_3: *mut ::core::ffi::c_short,
     ) -> *mut byte;
-}
-extern "C" {
     pub fn GenerateNextTrackEvent(param_1: byte) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn InsertGlobalEvent(param_1: ::core::ffi::c_int, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn HandleEvent(
         param_1: ::core::ffi::c_int,
         param_2: byte,
         param_3: *mut uint,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn InitTrackEvents();
-}
-extern "C" {
     pub fn InitTrackEventsSection(param_1: uint);
-}
-extern "C" {
     pub fn HandleTrackEvents(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn seqHandle(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn seqInit() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn synthSetBpm(param_1: ::core::ffi::c_int, param_2: byte, param_3: uint);
-}
-extern "C" {
     pub fn synthGetTicksPerSecond(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn synthInitPortamento(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn do_voice_portamento(
         param_1: byte,
         param_2: ::core::ffi::c_char,
@@ -12674,8 +8582,6 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: *mut undefined4,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn StartLayer(
         param_1: undefined2,
         param_2: ::core::ffi::c_int,
@@ -12694,8 +8600,6 @@ extern "C" {
         param_15: undefined,
         param_16: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn StartKeymap(
         param_1: undefined2,
         param_2: ::core::ffi::c_short,
@@ -12714,8 +8618,6 @@ extern "C" {
         param_15: undefined,
         param_16: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn synthStartSound(
         param_1: uint,
         param_2: ::core::ffi::c_int,
@@ -12733,33 +8635,17 @@ extern "C" {
         param_14: undefined,
         param_15: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn synthAddJob(
         param_1: *mut ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn synthStartSynthJobHandling(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn synthForceLowPrecisionUpdate(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn synthKeyStateUpdate(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn HandleJobQueue(param_1: *mut ::core::ffi::c_int, param_2: *mut undefined);
-}
-extern "C" {
     pub fn HandleFaderTermination(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn synthHandle(param_1: uint);
-}
-extern "C" {
     pub fn synthFXStart(
         param_1: undefined2,
         param_2: byte,
@@ -12767,20 +8653,10 @@ extern "C" {
         param_4: undefined,
         param_5: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn synthFXSetCtrl(param_1: uint, param_2: byte, param_3: byte) -> undefined4;
-}
-extern "C" {
     pub fn synthFXSetCtrl14(param_1: uint, param_2: byte, param_3: uint) -> undefined4;
-}
-extern "C" {
     pub fn synthFXCloneMidiSetup(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn synthSendKeyOff(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn synthVolume(
         param_1: uint,
         param_2: uint,
@@ -12788,57 +8664,31 @@ extern "C" {
         param_4: undefined,
         param_5: undefined4,
     );
-}
-extern "C" {
     pub fn synthIsFadeOutActive(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn synthSetMusicVolumeType(param_1: uint, param_2: undefined);
-}
-extern "C" {
     pub fn synthInit(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sndSeqSpeed(param_1: uint, param_2: undefined2);
-}
-extern "C" {
     pub fn sndSeqContinue(param_1: uint);
-}
-extern "C" {
     pub fn sndSeqMute(param_1: uint, param_2: undefined4, param_3: undefined4);
-}
-extern "C" {
     pub fn sndSeqVolume(param_1: uint, param_2: uint, param_3: uint, param_4: byte);
-}
-extern "C" {
     pub fn seqGetMIDIPriority(param_1: uint, param_2: uint) -> undefined2;
-}
-extern "C" {
     pub fn g_call_synthFXSetCtrl_with_irq_disabled(
         param_1: uint,
         param_2: byte,
         param_3: byte,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_call_synthFXSetCtrl14_with_irq_disabled(
         param_1: uint,
         param_2: byte,
         param_3: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn sndFXKeyOff(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn sndFXStartEx(
         param_1: undefined2,
         param_2: byte,
         param_3: uint,
         param_4: byte,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndFXStartParaInfo(
         param_1: undefined2,
         param_2: byte,
@@ -12846,22 +8696,14 @@ extern "C" {
         param_4: byte,
         param_5: *mut byte,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndFXCheck(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn sndVolume(param_1: uint, param_2: uint, param_3: uint);
-}
-extern "C" {
     pub fn sndMasterVolume(
         param_1: uint,
         param_2: uint,
         param_3: ::core::ffi::c_char,
         param_4: ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn sndSetAuxProcessingCallbacks(
         param_1: uint,
         param_2: ::core::ffi::c_int,
@@ -12873,35 +8715,15 @@ extern "C" {
         param_8: ::core::ffi::c_char,
         param_9: uint,
     );
-}
-extern "C" {
     pub fn synthActivateStudio(param_1: uint, param_2: undefined, param_3: undefined4);
-}
-extern "C" {
     pub fn synthDeactivateStudio(param_1: uint);
-}
-extern "C" {
     pub fn synthAddStudioInput(param_1: uint, param_2: *mut byte);
-}
-extern "C" {
     pub fn synthRemoveStudioInput(param_1: uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn streamInit();
-}
-extern "C" {
     pub fn streamHandle();
-}
-extern "C" {
     pub fn streamCorrectLoops();
-}
-extern "C" {
     pub fn streamKill(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn GetPrivateIndex(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndStreamARAMUpdate(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -12909,11 +8731,7 @@ extern "C" {
         param_4: uint,
         param_5: uint,
     );
-}
-extern "C" {
     pub fn CheckOutputMode(param_1: *mut undefined, param_2: *mut undefined);
-}
-extern "C" {
     pub fn sndStreamAllocEx(
         param_1: undefined,
         param_2: undefined4,
@@ -12930,134 +8748,54 @@ extern "C" {
         param_13: undefined4,
         param_14: *mut undefined2,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndStreamAllocLength(param_1: ::core::ffi::c_int, param_2: uint) -> uint;
-}
-extern "C" {
     pub fn sndStreamADPCMParameter(param_1: ::core::ffi::c_int, param_2: *mut undefined2);
-}
-extern "C" {
     pub fn sndStreamFrq(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn sndStreamFree(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sndStreamActivate(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn sndStreamDeactivate(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn dataInsertKeymap(param_1: ushort, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveKeymap(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataInsertLayer(param_1: ushort, param_2: undefined4, param_3: undefined2)
         -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveLayer(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataInsertCurve(param_1: ushort, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveCurve(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataInsertSDir(param_1: *mut ::core::ffi::c_short, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveSDir(param_1: *mut ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataAddSampleReference(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveSampleReference(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataInsertFX(
         param_1: ::core::ffi::c_short,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveFX(param_1: ::core::ffi::c_short) -> undefined4;
-}
-extern "C" {
     pub fn dataInsertMacro(param_1: uint, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn dataRemoveMacro(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn dataGetMacro(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn dataGetSample(param_1: undefined2, param_2: *mut undefined4) -> undefined4;
-}
-extern "C" {
     pub fn dataGetCurve(param_1: undefined2) -> undefined4;
-}
-extern "C" {
     pub fn dataGetKeymap(param_1: undefined2) -> undefined4;
-}
-extern "C" {
     pub fn dataGetLayer(param_1: undefined2, param_2: *mut undefined2) -> undefined4;
-}
-extern "C" {
     pub fn dataGetFX(param_1: undefined2) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn dataInit(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn mcmdWait(param_1: ::core::ffi::c_int, param_2: *mut uint) -> undefined4;
-}
-extern "C" {
     pub fn mcmdLoop(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn mcmdPlayMacro(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn mcmdStartSample(param_1: *mut ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn mcmdVibrato(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn DoSetPitch(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn mcmdSetADSR(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn mcmdSetPitchADSR(param_1: ::core::ffi::c_int, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn DoPanningSetup(param_1: ::core::ffi::c_int, param_2: *mut uint, param_3: uint);
-}
-extern "C" {
     pub fn TranslateVolume(param_1: uint, param_2: ::core::ffi::c_short) -> uint;
-}
-extern "C" {
     pub fn DoEnvelopeCalculation(
         param_1: ::core::ffi::c_int,
         param_2: *mut uint,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn mcmdRandomKey(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn SelectSource(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
@@ -13067,69 +8805,35 @@ extern "C" {
         param_6: uint,
         param_7: uint,
     );
-}
-extern "C" {
     pub fn mcmdPortamento(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn varGet32(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> uint;
-}
-extern "C" {
     pub fn varGet(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn varSet32(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn mcmdVarCalculation(param_1: ::core::ffi::c_int, param_2: *mut uint, param_3: byte);
-}
-extern "C" {
     pub fn mcmdSendMessage(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn mcmdSetKeyGroup(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn macHandleActive(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn macHandle(param_1: uint);
-}
-extern "C" {
     pub fn macSampleEndNotify(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn macSetExternalKeyoff(param_1: *mut ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn macSetPedalState(param_1: *mut ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TimeQueueAdd(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn UnYieldMacro(param_1: *mut ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn macMakeActive(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn macMakeInactive(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn macStart(
         param_1: uint,
         param_2: byte,
@@ -13148,156 +8852,76 @@ extern "C" {
         param_15: undefined,
         param_16: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn macInit();
-}
-extern "C" {
     pub fn vidInit() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn get_vidlist(param_1: uint) -> *mut undefined4;
-}
-extern "C" {
     pub fn vidRemoveVoiceReferences(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn vidMakeRoot(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn vidMakeNew(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn vidGetInternalId(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn voiceRemovePriority(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn voiceSetPriority(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn voiceAllocate(
         param_1: byte,
         param_2: byte,
         param_3: ::core::ffi::c_short,
         param_4: ::core::ffi::c_char,
     ) -> uint;
-}
-extern "C" {
     pub fn voiceFree(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn synthInitAllocationAids();
-}
-extern "C" {
     pub fn voiceBlock(param_1: byte) -> uint;
-}
-extern "C" {
     pub fn voiceUnblock(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn voiceKill(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn voiceKillSound(param_1: uint) -> undefined4;
-}
-extern "C" {
     pub fn synthKillVoicesByMacroReferences(param_1: *mut ushort);
-}
-extern "C" {
     pub fn voiceIsLastStarted(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn voiceSetLastStarted(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn voiceResetLastStarted(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn voiceInitLastStarted();
-}
-extern "C" {
     pub fn sndPitchUpOne(param_1: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndGetPitch(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn adsrConvertTimeCents();
-}
-extern "C" {
     pub fn salChangeADSRState(param_1: *mut ::core::ffi::c_char) -> undefined4;
-}
-extern "C" {
     pub fn g_mcmdWaitMs_or_adsrSetup(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn adsrStartRelease(param_1: *mut ::core::ffi::c_char, param_2: uint) -> undefined4;
-}
-extern "C" {
     pub fn adsrRelease(param_1: *mut byte) -> undefined4;
-}
-extern "C" {
     pub fn adsrHandle(
         param_1: *mut ::core::ffi::c_char,
         param_2: *mut undefined2,
         param_3: *mut ::core::ffi::c_short,
     ) -> undefined4;
-}
-extern "C" {
     pub fn adsrHandleLowPrecision(
         param_1: *mut ::core::ffi::c_char,
         param_2: *mut undefined2,
         param_3: *mut ::core::ffi::c_short,
     ) -> undefined4;
-}
-extern "C" {
     pub fn vsInit();
-}
-extern "C" {
     pub fn vsSampleStartNotify(param_1: byte) -> uint;
-}
-extern "C" {
     pub fn vsSampleEndNotify(param_1: uint);
-}
-extern "C" {
     pub fn vsUpdateBuffer(param_1: ::core::ffi::c_int, param_2: uint);
-}
-extern "C" {
     pub fn vsSampleUpdates();
-}
-extern "C" {
     pub fn dataInitStack();
-}
-extern "C" {
     pub fn InsertData(
         param_1: uint,
         param_2: *mut ::core::ffi::c_int,
         param_3: byte,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn ScanIDList(
         param_1: *mut ushort,
         param_2: *mut ::core::ffi::c_int,
         param_3: byte,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn ScanIDListReverse(
         param_1: *mut ushort,
         param_2: *mut ::core::ffi::c_int,
         param_3: byte,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn sndPushGroup(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_short,
@@ -13305,11 +8929,7 @@ extern "C" {
         param_4: *mut ::core::ffi::c_int,
         param_5: *mut ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn sndPopGroup() -> undefined4;
-}
-extern "C" {
     pub fn seqPlaySong(
         param_1: ::core::ffi::c_short,
         param_2: ::core::ffi::c_short,
@@ -13318,8 +8938,6 @@ extern "C" {
         param_5: ::core::ffi::c_char,
         param_6: undefined,
     ) -> uint;
-}
-extern "C" {
     pub fn sndSeqPlayEx(
         param_1: ::core::ffi::c_short,
         param_2: ::core::ffi::c_short,
@@ -13327,20 +8945,10 @@ extern "C" {
         param_4: *mut uint,
         param_5: undefined,
     );
-}
-extern "C" {
     pub fn salInitDspCtrl(param_1: byte, param_2: byte, param_3: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn salInitHRTFBuffer();
-}
-extern "C" {
     pub fn salActivateStudio(param_1: uint, param_2: undefined, param_3: undefined4);
-}
-extern "C" {
     pub fn salDeactivateStudio(param_1: uint);
-}
-extern "C" {
     pub fn salCheckVolErrorAndResetDelta(
         param_1: *mut undefined2,
         param_2: *mut undefined2,
@@ -13349,42 +8957,22 @@ extern "C" {
         param_5: ::core::ffi::c_int,
         param_6: ushort,
     ) -> undefined4;
-}
-extern "C" {
     pub fn HandleDepopVoice(param_1: ::core::ffi::c_int, param_2: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn SortVoices(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn salBuildCommandList(param_1: undefined4, param_2: uint);
-}
-extern "C" {
     pub fn salSynthSendMessage(param_1: ::core::ffi::c_int, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn salActivateVoice(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn salDeactivateVoice(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn salAddStudioInput(param_1: ::core::ffi::c_int, param_2: *mut byte) -> undefined4;
-}
-extern "C" {
     pub fn salRemoveStudioInput(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn salHandleAuxProcessing();
-}
-extern "C" {
     pub fn salCalcVolume(
         param_1: f64,
         param_2: f64,
@@ -13396,17 +8984,9 @@ extern "C" {
         param_8: ::core::ffi::c_int,
         param_9: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn UpdateRoomDistances();
-}
-extern "C" {
     pub fn CheckRoomStatus();
-}
-extern "C" {
     pub fn CheckDoorStatus();
-}
-extern "C" {
     pub fn CalcEmitter(
         param_1: ::core::ffi::c_int,
         param_2: *mut f32,
@@ -13415,8 +8995,6 @@ extern "C" {
         param_5: *mut f32,
         param_6: *mut f32,
     );
-}
-extern "C" {
     pub fn SetFXParameters(
         param_1: f64,
         param_2: f64,
@@ -13425,17 +9003,9 @@ extern "C" {
         param_5: f64,
         param_6: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn EmitterShutdown(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn s3dKillEmitterByFXID(param_1: *mut ::core::ffi::c_short, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn AddRunningEmitter(param_1: f64, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn AddStartingEmitter(
         param_1: f64,
         param_2: f64,
@@ -13444,17 +9014,9 @@ extern "C" {
         param_5: f64,
         param_6: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn StartContinousEmitters();
-}
-extern "C" {
     pub fn s3dHandle();
-}
-extern "C" {
     pub fn s3dInit(param_1: uint);
-}
-extern "C" {
     pub fn sndInit(
         param_1: byte,
         param_2: undefined,
@@ -13463,35 +9025,15 @@ extern "C" {
         param_5: uint,
         param_6: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn salApplyMatrix(param_1: *mut f32, param_2: *mut f32, param_3: *mut f32);
-}
-extern "C" {
     pub fn salNormalizeVector(param_1: *mut f32);
-}
-extern "C" {
     pub fn inpSetGlobalMIDIDirtyFlag(param_1: uint, param_2: uint, param_3: uint);
-}
-extern "C" {
     pub fn inpSetMidiCtrl(param_1: byte, param_2: byte, param_3: byte, param_4: byte);
-}
-extern "C" {
     pub fn inpSetMidiCtrl14(param_1: byte, param_2: byte, param_3: byte, param_4: uint);
-}
-extern "C" {
     pub fn inpResetMidiCtrl(param_1: uint, param_2: uint, param_3: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn inpGetMidiCtrl(param_1: uint, param_2: uint, param_3: uint) -> uint;
-}
-extern "C" {
     pub fn inpGetChannelDefaults(param_1: uint, param_2: uint) -> *mut undefined;
-}
-extern "C" {
     pub fn inpResetChannelDefaults(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn inpAddCtrl(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -13499,67 +9041,29 @@ extern "C" {
         param_4: byte,
         param_5: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn inpFXCopyCtrl(param_1: uint, param_2: ::core::ffi::c_int, param_3: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn inpSetMidiLastNote(param_1: uint, param_2: uint, param_3: undefined);
-}
-extern "C" {
     pub fn inpGetMidiLastNote(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn _GetInputValue(
         param_1: ::core::ffi::c_int,
         param_2: *mut byte,
         param_3: uint,
         param_4: uint,
     ) -> uint;
-}
-extern "C" {
     pub fn inpInit(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn inpTranslateExCtrl(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn return_0x82() -> undefined4;
-}
-extern "C" {
     pub fn return_0xa0() -> undefined4;
-}
-extern "C" {
     pub fn return_0xa1() -> undefined4;
-}
-extern "C" {
     pub fn return_0x83() -> undefined4;
-}
-extern "C" {
     pub fn return_0x84() -> undefined4;
-}
-extern "C" {
     pub fn return_0xa2() -> undefined4;
-}
-extern "C" {
     pub fn return_0xa3() -> undefined4;
-}
-extern "C" {
     pub fn return_0xa4() -> undefined4;
-}
-extern "C" {
     pub fn inpGetExCtrl(param_1: ::core::ffi::c_int, param_2: uint) -> uint;
-}
-extern "C" {
     pub fn inpSetExCtrl(param_1: ::core::ffi::c_int, param_2: uint, param_3: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn sndRand() -> uint;
-}
-extern "C" {
     pub fn sndSin(param_1: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndBSearch(
         param_1: undefined4,
         param_2: ::core::ffi::c_int,
@@ -13567,40 +9071,20 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn sndConvertMs(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sndConvertTicks(param_1: *mut uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sndConvert2Ms(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn snd_handle_irq();
-}
-extern "C" {
     pub fn hwInit(
         param_1: *mut undefined4,
         param_2: byte,
         param_3: byte,
         param_4: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn hwSetTimeOffset(param_1: undefined);
-}
-extern "C" {
     pub fn WPADGetDpdSensitivity();
-}
-extern "C" {
     pub fn hwIsActive(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn hwSetPriority(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn hwInitSamplePlayback(
         param_1: ::core::ffi::c_int,
         param_2: undefined2,
@@ -13611,48 +9095,22 @@ extern "C" {
         param_7: ::core::ffi::c_int,
         param_8: ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn hwBreak(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwSetADSR(param_1: ::core::ffi::c_int, param_2: *mut uint, param_3: byte);
-}
-extern "C" {
     pub fn hwSetVirtualSampleLoopBuffer(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
         param_3: undefined4,
     );
-}
-extern "C" {
     pub fn hwGetVirtualSampleState(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwGetSampleID(param_1: ::core::ffi::c_int) -> undefined2;
-}
-extern "C" {
     pub fn hwSetStreamLoopPS(param_1: ::core::ffi::c_int, param_2: undefined);
-}
-extern "C" {
     pub fn hwStart(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn hwKeyOff(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwSetPitch(param_1: ::core::ffi::c_int, param_2: ushort);
-}
-extern "C" {
     pub fn hwSetSRCType(param_1: ::core::ffi::c_int, param_2: uint);
-}
-extern "C" {
     pub fn hwSetPolyPhaseFilter(param_1: ::core::ffi::c_int, param_2: uint);
-}
-extern "C" {
     pub fn hwSetITDMode(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn hwSetVolume(
         param_1: f64,
         param_2: f64,
@@ -13662,11 +9120,7 @@ extern "C" {
         param_6: uint,
         param_7: uint,
     );
-}
-extern "C" {
     pub fn hwOff(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwSetAUXProcessingCallbacks(
         param_1: uint,
         param_2: undefined4,
@@ -13674,11 +9128,7 @@ extern "C" {
         param_4: undefined4,
         param_5: undefined4,
     );
-}
-extern "C" {
     pub fn hwGetPos(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn hwFlushStream(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -13687,44 +9137,18 @@ extern "C" {
         param_5: undefined4,
         param_6: undefined4,
     );
-}
-extern "C" {
     pub fn hwInitStream(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwExitStream(param_1: uint);
-}
-extern "C" {
     pub fn hwGetStreamPlayBuffer(param_1: uint);
-}
-extern "C" {
     pub fn hwTransAddr();
-}
-extern "C" {
     pub fn hwFrq2Pitch(param_1: undefined4);
-}
-extern "C" {
     pub fn hwInitSampleMem(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn hwSaveSample(param_1: *mut ::core::ffi::c_int, param_2: *mut *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn hwRemoveSample(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn hwSyncSampleMem();
-}
-extern "C" {
     pub fn sndSetHooks(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn hwGetVirtualSampleID(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn hwVoiceInStartup(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn aramUploadData(
         param_1: undefined4,
         param_2: undefined4,
@@ -13733,86 +9157,34 @@ extern "C" {
         param_5: undefined4,
         param_6: undefined4,
     );
-}
-extern "C" {
     pub fn aramSyncTransferQueue();
-}
-extern "C" {
     pub fn aramInit(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn aramGetZeroBuffer();
-}
-extern "C" {
     pub fn aramStoreData(
         param_1: *mut ::core::ffi::c_void,
         param_2: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn aramRemoveData(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn InitStreamBuffers();
-}
-extern "C" {
     pub fn aramAllocateStreamBuffer(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn aramGetStreamBufferAddress(param_1: uint, param_2: *mut undefined4) -> undefined4;
-}
-extern "C" {
     pub fn aramFreeStreamBuffer(param_1: uint);
-}
-extern "C" {
     pub fn salCallback();
-}
-extern "C" {
     pub fn Destroy();
-}
-extern "C" {
     pub fn salInitAi(param_1: undefined4, param_2: undefined4, param_3: *mut undefined4) -> bool_;
-}
-extern "C" {
     pub fn salStartAi();
-}
-extern "C" {
     pub fn salAiGetDest() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn salInitDsp() -> undefined4;
-}
-extern "C" {
     pub fn salCtrlDsp(param_1: undefined4);
-}
-extern "C" {
     pub fn salGetStartDelay() -> uint;
-}
-extern "C" {
     pub fn hwInitIrq();
-}
-extern "C" {
     pub fn hwIRQEnterCritical();
-}
-extern "C" {
     pub fn hwIRQLeaveCritical();
-}
-extern "C" {
     pub fn salMalloc();
-}
-extern "C" {
     pub fn salFree();
-}
-extern "C" {
     pub fn sndAuxCallbackUpdateSettingsReverbHI(param_1: *mut ::core::ffi::c_void) -> undefined4;
-}
-extern "C" {
     pub fn sndAuxCallbackPrepareReverbHI(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_something_with_sound8_wrapper(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn ReverbHICreate(
         param_1: f64,
         param_2: f64,
@@ -13822,8 +9194,6 @@ extern "C" {
         param_6: f64,
         param_7: *mut ::core::ffi::c_void,
     ) -> undefined4;
-}
-extern "C" {
     pub fn ReverbHIModify(
         param_1: f64,
         param_2: f64,
@@ -13833,108 +9203,48 @@ extern "C" {
         param_6: f64,
         param_7: *mut ::core::ffi::c_void,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DoCrossTalk(param_1: f64, param_2: f64, param_3: *mut uint, param_4: *mut uint);
-}
-extern "C" {
     pub fn HandleReverb(
         param_1: *mut uint,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn ReverbHICallback(
         param_1: *mut uint,
         param_2: *mut uint,
         param_3: *mut uint,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn ReverbHIFree(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn do_src1(param_1: *mut *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn do_src2(param_1: *mut *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sndAuxCallbackUpdateSettingsChorus(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn sndAuxCallbackPrepareChorus(param_1: *mut ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn sndAuxCallbackShutdownChorus() -> undefined4;
-}
-extern "C" {
     pub fn g_GXGetTexObjUserData_dup1_maybe_not(obj: *mut GXTexObj) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn SEQGetState(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn g_GXGetTexObjTlut_maybe_not(obj: *mut GXTexObj) -> u32_;
-}
-extern "C" {
     pub fn g_GXGetTexObjUserData_dup2_maybe_not(obj: *mut GXTexObj) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_GXGetTexObjFmt_dup2(obj: *mut GXTexObj) -> GXTexFmt;
-}
-extern "C" {
     pub fn g_GXInitTexObjUserData_dup1(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn g_GXInitTexObjUserData_dup2(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn g_GXInitTexObjUserData_dup3(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn g_GXInitTexObjUserData_dup4(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn g_GXGetTexObjFmt_dup3(obj: *mut GXTexObj) -> GXTexFmt;
-}
-extern "C" {
     pub fn g_adxt_set_out_pan(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_GXInitTexObjUserData_dup5(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn IFFifoAlloc(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_create_some_threads(g_optional_initial_thread_priorities: *mut undefined4);
-}
-extern "C" {
     pub fn mwidle_thread_entrypoint(param: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn vsync_thread_entrypoint(param: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn safe_thread_entrypoint(param: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_adxm_goto_mwidle_border();
-}
-extern "C" {
     pub fn g_something_that_suspends_safe_thread();
-}
-extern "C" {
     pub fn g_something_that_resumes_safe_thread();
-}
-extern "C" {
     pub fn g_some_printf_function_0(
         param_1: undefined8,
         param_2: undefined8,
@@ -13953,68 +9263,26 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn g_cvFsAddDev(param_1: *mut ::core::ffi::c_char, param_2: *mut undefined);
-}
-extern "C" {
     pub fn math_init() -> undefined4;
-}
-extern "C" {
     pub fn CHUNK__math_rsqrt(param_1: f32, param_2: f32) -> f32;
-}
-extern "C" {
     pub fn math_sqrt(param_1: f32) -> f32;
-}
-extern "C" {
     pub fn math_rsqrt(param_1: f64) -> f32;
-}
-extern "C" {
     pub fn math_sqrt_rsqrt(param_1: f64, param_2: *mut f32) -> f32;
-}
-extern "C" {
     pub fn g_math_unknown1(param_1: f64, param_2: f64) -> f64;
-}
-extern "C" {
     pub fn g_math_unknown2(param_1: f64) -> f64;
-}
-extern "C" {
     pub fn math_sin(angle: s16) -> f32;
-}
-extern "C" {
     pub fn math_sin_cos_v(param_1: s16, param_2: *mut f32);
-}
-extern "C" {
     pub fn g_math_sin_cos_wrapper(angle: s16, out_sin: *mut f32, out_cos: *mut f32);
-}
-extern "C" {
     pub fn CHUNK__math_sin_cos(angle: s16);
-}
-extern "C" {
     pub fn math_sin_cos(angle: s16, out_sin: *mut f32, out_cos: *mut f32);
-}
-extern "C" {
     pub fn math_tan(param_1: s16) -> f32;
-}
-extern "C" {
     pub fn math_atan2(param_1: f64, param_2: f64) -> s16;
-}
-extern "C" {
     pub fn math_atan(param_1: f64) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn CHUNK__math_atan() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_math_unk3(param_1: f64) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_math_unk4(param_1: f64) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn vec_dot_normalized_safe(vec1: *mut Vec, vec2: *mut Vec) -> f32;
-}
-extern "C" {
     pub fn CHUNK__vec_dot_normalized_safe(
         param_1: f64,
         param_2: f64,
@@ -14023,149 +9291,53 @@ extern "C" {
         param_5: f64,
         param_6: f64,
     ) -> f64;
-}
-extern "C" {
     pub fn ray_scale(scale: f32, ray_start: *mut Vec, ray_end: *mut Vec, out_ray_end: *mut Vec);
-}
-extern "C" {
     pub fn vec_set_len(len: f32, src: *mut Vec, dest: *mut Vec);
-}
-extern "C" {
     pub fn vec_normalize_len(vec: *mut Vec) -> f32;
-}
-extern "C" {
     pub fn vec_dot_normalized(vec1: *mut Vec, vec2: *mut Vec) -> f32;
-}
-extern "C" {
     pub fn mtxa_from_identity() -> undefined8;
-}
-extern "C" {
     pub fn mtx_from_identity(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_sq_from_identity() -> undefined8;
-}
-extern "C" {
     pub fn mtxa_from_translate(translate: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_from_translate_xyz(x: f32, y: f32, z: f32);
-}
-extern "C" {
     pub fn mtxa_from_rotate_x(angle: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn mtxa_from_rotate_y(angle: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn mtxa_from_rotate_z(angle: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn mtxa_from_mtxb_translate(vec: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_from_mtxb_translate_xyz(param_1: f64, param_2: f64, param_3: f64) -> f64;
-}
-extern "C" {
     pub fn mtxa_normalize_basis();
-}
-extern "C" {
     pub fn mtxa_push() -> undefined8;
-}
-extern "C" {
     pub fn mtxa_pop();
-}
-extern "C" {
     pub fn mtxa_to_mtx(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_from_mtx(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_peek() -> undefined8;
-}
-extern "C" {
     pub fn mtxa_sq_to_mtx(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_sq_from_mtx(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_from_mtxb() -> undefined8;
-}
-extern "C" {
     pub fn mtxa_to_mtxb() -> undefined8;
-}
-extern "C" {
     pub fn mtx_copy(src: *mut Mtx, dest: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_invert();
-}
-extern "C" {
     pub fn mtxa_rigid_invert();
-}
-extern "C" {
     pub fn mtxa_mult_right(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_mult_left(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_from_mtxb_mult_mtx(mtx: *mut Mtx);
-}
-extern "C" {
     pub fn mtx_mult(mtx1: *mut Mtx, mtx2: *mut Mtx, dest: *mut Mtx);
-}
-extern "C" {
     pub fn mtxa_translate(vec: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_translate_xyz(x: f32, y: f32, z: f32);
-}
-extern "C" {
     pub fn mtxa_translate_neg(vec: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_translate_neg_xyz(x: f32, y: f32, z: f32);
-}
-extern "C" {
     pub fn mtxa_scale(vec: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_scale_s(scale: f32);
-}
-extern "C" {
     pub fn mtxa_scale_xyz(x: f32, y: f32, z: f32);
-}
-extern "C" {
     pub fn mtxa_tf_point(src: *mut Vec, dest: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_tf_vec(src: *mut Vec, dest: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_tf_point_xyz(x: f32, y: f32, z: f32, dest: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_tf_vec_xyz(x: f32, y: f32, z: f32, param_4: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_rigid_inv_tf_point(src: *mut Vec, dst: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_rigid_inv_tf_point_xyz(x: f32, y: f32, z: f32, dst: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_rigid_inv_tf_tl(dst: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_rigid_inv_tf_vec(src: *mut Vec, dst: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_rigid_inv_tf_vec_xyz(x: f32, y: f32, z: f32, dst: *mut Vec);
-}
-extern "C" {
     pub fn CHUNK__mtxa_rigid_inv_tf_vec_xyz(
         x: f32,
         y: f32,
@@ -14174,362 +9346,154 @@ extern "C" {
         dst: *mut Vec,
         mtxa: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn mtxa_rotate_x(angle: s16);
-}
-extern "C" {
     pub fn mtxa_rotate_x_sin_cos(sin_x_angle: f32, cos_x_angle: f32);
-}
-extern "C" {
     pub fn mtxa_rotate_y(angle: s16);
-}
-extern "C" {
     pub fn mtxa_rotate_y_sin_cos(sin_y_angle: f32, cos_y_angle: f32);
-}
-extern "C" {
     pub fn mtxa_rotate_z(angle: s16);
-}
-extern "C" {
     pub fn mtxa_rotate_z_sin_cos(sin_z_angle: f32, cos_z_angle: f32);
-}
-extern "C" {
     pub fn mtxa_from_quat(quat: *mut Quat);
-}
-extern "C" {
     pub fn quat_mult(dest: *mut Quat, quat1: *mut Quat, quat2: *mut Quat);
-}
-extern "C" {
     pub fn g_math_smth1(param_1: *mut f32) -> undefined8;
-}
-extern "C" {
     pub fn g_math_unk6(param_1: *mut f32);
-}
-extern "C" {
     pub fn g_math_unk7(param_1: f64, param_2: *mut Quat, param_3: *mut f32, param_4: *mut f32);
-}
-extern "C" {
     pub fn g_math_unk8(param_1: f64, param_2: *mut Quat, param_3: *mut f32, param_4: *mut f32);
-}
-extern "C" {
     pub fn mtxa_to_quat(out_quat: *mut Quat);
-}
-extern "C" {
     pub fn quat_from_axis_angle(quat: *mut Quat, axis: *mut Vec, angle: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_math_unk9_smth_w_quats(param_1: f64, param_2: *mut Quat, param_3: *mut Vec);
-}
-extern "C" {
     pub fn quat_to_axis_angle(quat: *mut Quat, out_axis: undefined4);
-}
-extern "C" {
     pub fn quat_normalize(quat: *mut Quat);
-}
-extern "C" {
     pub fn quat_from_dirs(out_quat: *mut Quat, start: *mut Vec, end: *mut Vec);
-}
-extern "C" {
     pub fn quat_slerp(t: f32, dest: *mut Quat, quat1: *mut Quat, quat2: *mut Quat);
-}
-extern "C" {
     pub fn g_math_quat_smth2(dst: *mut Quat, quat1: *mut Quat, quat2: *mut Quat);
-}
-extern "C" {
     pub fn g_math_unk10(param_1: *mut Vec, param_2: *mut Vec);
-}
-extern "C" {
     pub fn g_math_unk11(param_1: *mut Vec, param_2: *mut Vec);
-}
-extern "C" {
     pub fn ray_to_euler(param_1: *mut Vec, param_2: *mut Vec, param_3: *mut S16Vec);
-}
-extern "C" {
     pub fn ray_to_euler_xy(
         param_1: *mut f32,
         param_2: *mut f32,
         param_3: *mut s16,
         param_4: *mut s16,
     );
-}
-extern "C" {
     pub fn vec_to_euler(vec: *mut Vec, rot: *mut S16Vec);
-}
-extern "C" {
     pub fn vec_to_euler_xy(vec: *mut Vec, out_x_rot: *mut s16, out_y_rot: *mut s16);
-}
-extern "C" {
     pub fn g_math_unk12(param_1: *mut Vec, param_2: *mut f32);
-}
-extern "C" {
     pub fn g_math_unk13(param_1: undefined4, param_2: undefined4, param_3: *mut Vec);
-}
-extern "C" {
     pub fn mtxa_to_euler_yxz(rot_y: *mut s16, rot_x: *mut s16, rot_z: *mut s16);
-}
-extern "C" {
     pub fn mtxa_to_euler(rot: S16Vec);
-}
-extern "C" {
     pub fn g_math_unk14(
         param_1: *mut ::core::ffi::c_short,
         param_2: *mut s16,
         param_3: *mut s16,
     ) -> undefined8;
-}
-extern "C" {
     pub fn g_math_unk15(param_1: f64, param_2: *mut Vec, param_3: *mut Vec);
-}
-extern "C" {
     pub fn g_math_unk16(param_1: f32, param_2: undefined4, param_3: undefined4);
-}
-extern "C" {
     pub fn g_math_unk17(param_1: f64, param_2: f64, param_3: *mut Vec, param_4: *mut Vec);
-}
-extern "C" {
     pub fn g_math_unk18(param_1: f64, param_2: f64, param_3: *mut Vec, param_4: *mut Vec);
-}
-extern "C" {
     pub fn g_math_unk19(param_1: f64, param_2: f64, param_3: *mut Vec, param_4: *mut Vec);
-}
-extern "C" {
     pub fn g_init_console_gx();
-}
-extern "C" {
     pub fn gx_start_new_frame();
-}
-extern "C" {
     pub fn gp_wait();
-}
-extern "C" {
     pub fn video_finish_frame();
-}
-extern "C" {
     pub fn get_gx_fifo_use_size2() -> u32_;
-}
-extern "C" {
     pub fn g_gx_reset_z_and_alpha_compare_modes();
-}
-extern "C" {
     pub fn swap_gx_cpu_fifo() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn wait_for_gp_read_idle();
-}
-extern "C" {
     pub fn gx_draw_done_callback_func();
-}
-extern "C" {
     pub fn g_set_gx_vtx_formats();
-}
-extern "C" {
     pub fn init_loched_cache(use_locked_cache: BOOL32);
-}
-extern "C" {
     pub fn g_something_with_locked_cache(param_1: uint) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_make_arena_simulate_24mb_console();
-}
-extern "C" {
     pub fn auto_set_render_mode(use_progressive_for_ntsc: BOOL32);
-}
-extern "C" {
     pub fn g_init_gx(
         make_second_fifo: BOOL32,
         fifo_size: u32_,
         g_something_with_alpha: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_init_locked_cache_mtx_stack(
         matrix_stack: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn allocate_mem_from_arena(size: ::core::ffi::c_int) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_set_some_func_ptrs2(
         param_1: *mut ::core::option::Option<unsafe extern "C" fn() -> *mut DVDFileInfo>,
     );
-}
-extern "C" {
     pub fn g_set_some_dvd_func_ptrs();
-}
-extern "C" {
     pub fn set_alloc_from_heap_func_ptr(
         new_func: ::core::option::Option<
             unsafe extern "C" fn(arg1: u32_) -> *mut ::core::ffi::c_void,
         >,
     ) -> ::core::option::Option<unsafe extern "C" fn(new_func: u32_) -> *mut ::core::ffi::c_void>;
-}
-extern "C" {
     pub fn set_free_to_heap_func_ptr(
         new_func: ::core::option::Option<unsafe extern "C" fn(arg1: *mut ::core::ffi::c_void)>,
     ) -> ::core::option::Option<unsafe extern "C" fn(new_func: *mut ::core::ffi::c_void)>;
-}
-extern "C" {
     pub fn reset_heap_alloc_func_ptrs();
-}
-extern "C" {
     pub fn g_load_raw_gma(
         gma_file_name: *mut ::core::ffi::c_char,
         tpl: *mut TplBuffer,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_load_gma(file_path: *mut ::core::ffi::c_char, tpl: *mut TplBuffer) -> *mut GmaBuffer;
-}
-extern "C" {
     pub fn g_something_freeing_heap(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_load_tpl(tpl_file_path: *mut ::core::ffi::c_char) -> *mut TplBuffer;
-}
-extern "C" {
     pub fn g_something_freeing_heap_2(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_panic_in_avload(param_1: *mut ::core::ffi::c_char, param_2: undefined4);
-}
-extern "C" {
     pub fn alloc_from_set_heap(size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_free_mem_to_heap_via_func_ptr(mem: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_init_gma_texture(
         tex_desc: *mut GmaTevLayer,
         tpl_texture: *mut TplTextureHeader,
         tpl: *mut TplBuffer,
     );
-}
-extern "C" {
     pub fn os_alloc_from_heap_wrapper(size: u32_);
-}
-extern "C" {
     pub fn os_free_to_heap_wrapper(ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_get_some_dvd_file_info() -> *mut DVDFileInfo;
-}
-extern "C" {
     pub fn dvd_open_wrapper(
         file_name: *mut ::core::ffi::c_char,
         file_info: *mut DVDFileInfo,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn dvd_read_with_prio2(
         fileInfo: *mut DVDFileInfo,
         addr: *mut ::core::ffi::c_void,
         length: s32,
         offset: s32,
     ) -> s32;
-}
-extern "C" {
     pub fn dvd_close_wrapper(file_info: *mut DVDFileInfo) -> BOOL32;
-}
-extern "C" {
     pub fn g_something_with_fog(param_1: f64, param_2: f64, param_3: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_raster_state(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_set_some_projection_matrix(fov: f64, aspect_ratio: f64, near_clip: f64, far_clip: f64);
-}
-extern "C" {
     pub fn g_smth_with_projection_mtx(param_1: *mut f32);
-}
-extern "C" {
     pub fn gx_begin_display_list_wrapper(list: *mut ::core::ffi::c_void, size: u32_);
-}
-extern "C" {
     pub fn gx_end_display_list_wrapper() -> u32_;
-}
-extern "C" {
     pub fn g_zero_something();
-}
-extern "C" {
     pub fn g_something_with_GX_vtx_desc(param_1: uint);
-}
-extern "C" {
     pub fn load_gx_pos_nrm_mtx(mtx: *mut Mtx, id: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_smth_with_gpu_and_locked_cache_mtx() -> undefined8;
-}
-extern "C" {
     pub fn g_something_with_texture_scroll_3(param_1: undefined4, param_2: *mut Mtx);
-}
-extern "C" {
     pub fn avdisp_set_post_mult_color(red: f64, green: f64, blue: f64, alpha: f64);
-}
-extern "C" {
     pub fn avdisp_set_post_add_color(red: f64, green: f64, blue: f64, alpha: f64);
-}
-extern "C" {
     pub fn g_avdisp_set_ambient(g_red: f64, g_green: f64, g_blue: f64);
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func7(gma_struct: *mut GmaShape, param_2: *mut GXTevStageID);
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func(param_1: *mut GmaShape) -> f64;
-}
-extern "C" {
     pub fn g_avdisp_smth_with_tex_materials(
         gma_header: *mut GmaModel,
         gma_struct: *mut GmaShape,
     ) -> f64;
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func3(shape: *mut GmaShape, g_some_gma_value: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_GmaSomeStruct_GXBlendFactor(gma_struct: *mut GmaShape);
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func5_GXSetChanCtrl(gma_struct: *mut GmaShape);
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func6(gma_struct: *mut GmaShape, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func5(gma_struct: *mut GmaShape) -> undefined8;
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func4(param_1: *mut GmaShape);
-}
-extern "C" {
     pub fn g_free_some_memory();
-}
-extern "C" {
     pub fn draw_poly(param_1: ::core::ffi::c_int, param_2: *mut *mut Mtx) -> *mut Mtx;
-}
-extern "C" {
     pub fn pointer_range_advance(
         g_frame_pointer: *mut byte,
         toset: *mut ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn g_avdisp_draw_model_now1(model: *mut GmaModel);
-}
-extern "C" {
     pub fn g_avdisp_draw_model_now2(model: *mut GmaModel);
-}
-extern "C" {
     pub fn g_avdisp_draw_model_now3(model: *mut GmaModel);
-}
-extern "C" {
     pub fn g_write_to_gfx_fifos(param_1: *mut GmaShape, param_2: undefined4);
-}
-extern "C" {
     pub fn avdisp_draw_deformable_shape(
         param_1: *mut uint,
         param_2: ::core::ffi::c_int,
@@ -14537,566 +9501,276 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         gma_header: *mut GmaModel,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_avdisp_smth_with_transforms(vert_control: *mut GmaShape) -> undefined8;
-}
-extern "C" {
     pub fn avdisp_draw_deformable_model(
         model: *mut GmaModel,
         first_shape: *mut GmaShape,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_avdisp_draw_deformable_model2(
         model: *mut GmaModel,
         shape: *mut GmaShape,
         param_3: ::core::ffi::c_int,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn avdisp_draw_static_shape_now(
         model: *mut GmaModel,
         shape: *mut GmaShape,
         tev_layers: *mut GmaTevLayer,
     ) -> *mut GmaShape;
-}
-extern "C" {
     pub fn g_some_GmaSomeStruct_func2(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_iteratively_multiply_model_matrices(model: *mut GmaModel);
-}
-extern "C" {
     pub fn g_avdisp_func8(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_maybe_something_with_normals(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_init_gma(gma_buffer: *mut GmaBuffer, gma_header: *mut Gma, tpl: *mut TplBuffer);
-}
-extern "C" {
     pub fn g_init_gma_model_materials(
         model: *mut GmaModel,
         tpl: *mut TplBuffer,
         texobj_array: *mut GXTexObj,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_memcpy_using_locked_cache(
         dest: *mut ::core::ffi::c_void,
         curr_src_1_1_1_1_1_1_1_1_1_1: *mut ::core::ffi::c_void,
         count: usize,
     );
-}
-extern "C" {
     pub fn g_something_with_locked_cache_2(
         param_1: *mut ::core::ffi::c_void,
         param_2: uint,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn memcpy2(dest: *mut ::core::ffi::c_void, src: *mut ::core::ffi::c_void, count: usize);
-}
-extern "C" {
     pub fn __va_arg(
         param_1: *mut ::core::ffi::c_char,
         param_2: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __destroy_global_chain();
-}
-extern "C" {
     pub fn __cvt_fp2unsigned(param_1: f64) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn _savefpr_14();
-}
-extern "C" {
     pub fn _savefpr_15();
-}
-extern "C" {
     pub fn _savefpr_16();
-}
-extern "C" {
     pub fn _savefpr_17();
-}
-extern "C" {
     pub fn _savefpr_18();
-}
-extern "C" {
     pub fn _savefpr_19();
-}
-extern "C" {
     pub fn _savefpr_20();
-}
-extern "C" {
     pub fn _savefpr_21();
-}
-extern "C" {
     pub fn _savefpr_22();
-}
-extern "C" {
     pub fn _savefpr_23();
-}
-extern "C" {
     pub fn _savefpr_24();
-}
-extern "C" {
     pub fn _savefpr_25();
-}
-extern "C" {
     pub fn _savefpr_26();
-}
-extern "C" {
     pub fn _savefpr_27();
-}
-extern "C" {
     pub fn _savefpr_28();
-}
-extern "C" {
     pub fn _savefpr_29();
-}
-extern "C" {
     pub fn _savefpr_30();
-}
-extern "C" {
     pub fn _savefpr_31();
-}
-extern "C" {
     pub fn _restfpr_14();
-}
-extern "C" {
     pub fn _restfpr_15();
-}
-extern "C" {
     pub fn _restfpr_16();
-}
-extern "C" {
     pub fn _restfpr_17();
-}
-extern "C" {
     pub fn _restfpr_18();
-}
-extern "C" {
     pub fn _restfpr_19();
-}
-extern "C" {
     pub fn _restfpr_20();
-}
-extern "C" {
     pub fn _restfpr_21();
-}
-extern "C" {
     pub fn _restfpr_22();
-}
-extern "C" {
     pub fn _restfpr_23();
-}
-extern "C" {
     pub fn _restfpr_24();
-}
-extern "C" {
     pub fn _restfpr_25();
-}
-extern "C" {
     pub fn _restfpr_26();
-}
-extern "C" {
     pub fn _restfpr_27();
-}
-extern "C" {
     pub fn _restfpr_28();
-}
-extern "C" {
     pub fn _restfpr_29();
-}
-extern "C" {
     pub fn _restfpr_30();
-}
-extern "C" {
     pub fn _restfpr_31();
-}
-extern "C" {
     pub fn _savegpr_14();
-}
-extern "C" {
     pub fn _savegpr_15();
-}
-extern "C" {
     pub fn _savegpr_16();
-}
-extern "C" {
     pub fn _savegpr_17();
-}
-extern "C" {
     pub fn _savegpr_18();
-}
-extern "C" {
     pub fn _savegpr_19();
-}
-extern "C" {
     pub fn _savegpr_20();
-}
-extern "C" {
     pub fn _savegpr_21();
-}
-extern "C" {
     pub fn _savegpr_22();
-}
-extern "C" {
     pub fn _savegpr_23();
-}
-extern "C" {
     pub fn _savegpr_24();
-}
-extern "C" {
     pub fn _savegpr_25();
-}
-extern "C" {
     pub fn _savegpr_26();
-}
-extern "C" {
     pub fn _savegpr_27();
-}
-extern "C" {
     pub fn _savegpr_28();
-}
-extern "C" {
     pub fn _savegpr_29();
-}
-extern "C" {
     pub fn _savegpr_30();
-}
-extern "C" {
     pub fn _savegpr_31();
-}
-extern "C" {
     pub fn _restgpr_14();
-}
-extern "C" {
     pub fn _restgpr_15();
-}
-extern "C" {
     pub fn _restgpr_16();
-}
-extern "C" {
     pub fn _restgpr_17();
-}
-extern "C" {
     pub fn _restgpr_18();
-}
-extern "C" {
     pub fn _restgpr_19();
-}
-extern "C" {
     pub fn _restgpr_20();
-}
-extern "C" {
     pub fn _restgpr_21();
-}
-extern "C" {
     pub fn _restgpr_22();
-}
-extern "C" {
     pub fn _restgpr_23();
-}
-extern "C" {
     pub fn _restgpr_24();
-}
-extern "C" {
     pub fn _restgpr_25();
-}
-extern "C" {
     pub fn _restgpr_26();
-}
-extern "C" {
     pub fn _restgpr_27();
-}
-extern "C" {
     pub fn _restgpr_28();
-}
-extern "C" {
     pub fn _restgpr_29();
-}
-extern "C" {
     pub fn _restgpr_30();
-}
-extern "C" {
     pub fn _restgpr_31();
-}
-extern "C" {
     pub fn __div2u(
         param_1: uint,
         param_2: uint,
         param_3: ::core::ffi::c_int,
         param_4: uint,
     ) -> undefined8;
-}
-extern "C" {
     pub fn __div2i(param_1: uint, param_2: uint, param_3: uint, param_4: uint) -> undefined8;
-}
-extern "C" {
     pub fn __mod2u(
         param_1: uint,
         param_2: uint,
         param_3: ::core::ffi::c_int,
         param_4: uint,
     ) -> undefined8;
-}
-extern "C" {
     pub fn __mod2i(
         param_1: uint,
         param_2: uint,
         param_3: ::core::ffi::c_int,
         param_4: uint,
     ) -> undefined8;
-}
-extern "C" {
     pub fn __shl2i(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: ::core::ffi::c_int,
     ) -> undefined8;
-}
-extern "C" {
     pub fn __shr2u(param_1: uint, param_2: uint, param_3: ::core::ffi::c_int) -> undefined8;
-}
-extern "C" {
     pub fn __shr2i(param_1: ::core::ffi::c_int, param_2: uint, param_3: uint) -> undefined8;
-}
-extern "C" {
     pub fn __cvt_sll_flt(param_1: uint, param_2: uint) -> f64;
-}
-extern "C" {
     pub fn __cvt_dbl_usll(param_1: ulonglong) -> undefined8;
-}
-extern "C" {
     pub fn __fini_cpp_exceptions();
-}
-extern "C" {
     pub fn __init_cpp_exceptions();
-}
-extern "C" {
     pub fn __unregister_fragment(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn __register_fragment(param_1: undefined4, param_2: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn free(__ptr: *mut *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn deallocate_from_fixed_pools(
         param_1: *mut *mut ::core::ffi::c_int,
         param_2: *mut *mut ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn soft_allocate_from_var_pools(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: *mut uint,
     ) -> *mut uint;
-}
-extern "C" {
     pub fn SubBlock_merge_next(param_1: *mut uint, param_2: *mut *mut uint);
-}
-extern "C" {
     pub fn Block_link(param_1: ::core::ffi::c_int, param_2: *mut uint);
-}
-extern "C" {
     pub fn __flush_all() -> undefined4;
-}
-extern "C" {
     pub fn __close_all();
-}
-extern "C" {
     pub fn __find_unopened_file() -> *mut uint;
-}
-extern "C" {
     pub fn __num2dec(
         param_1_00: f64,
         param_2: ::core::ffi::c_int,
         param_3: *mut ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn __num2dec_internal(param_1: f64, param_2: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn __equals_dec(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn __two_exp(param_1: *mut undefined4, param_2: ushort);
-}
-extern "C" {
     pub fn __timesdec(
         param_1: *mut undefined,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn __ull2dec(param_1: *mut undefined, param_2: undefined4, param_3: uint, param_4: uint);
-}
-extern "C" {
     pub fn __count_trailing_zerol(param_1: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __flush_buffer(param_1: *mut undefined4, param_2: *mut undefined4)
         -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __prep_buffer(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_very_similar_to_puts(str_: *mut ::core::ffi::c_char) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __put_char(param_1: uint, param_2: *mut FILE) -> uint;
-}
-extern "C" {
     pub fn to_lower(c: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __fwrite(
         buffer: *mut ::core::ffi::c_void,
         size: usize,
         count: usize,
         stream: *mut FILE,
     ) -> usize;
-}
-extern "C" {
     pub fn __fwrite2(
         buffer: *mut ::core::ffi::c_void,
         size: usize,
         count: usize,
         stream: *mut FILE,
     ) -> usize;
-}
-extern "C" {
     pub fn fflush(__stream: *mut FILE) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn fclose(__stream: *mut FILE) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn _fseek(
         __stream: *mut FILE,
         __off: ::core::ffi::c_long,
         __whence: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn ftell(__stream: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn wcstombs(__s: ::core::ffi::c_int, __pwcs: *mut ushort, __n: uint) -> uint;
-}
-extern "C" {
     pub fn unicode_to_UTF8(param_1: ::core::ffi::c_int, param_2: uint) -> uint;
-}
-extern "C" {
     pub fn memcmp(
         __s1: *mut ::core::ffi::c_void,
         __s2: *mut ::core::ffi::c_void,
         __n: usize,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __memrchr(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_char,
         param_3: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn memchr(
         __s: *mut ::core::ffi::c_void,
         __c: ::core::ffi::c_int,
         __n: usize,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn memmove(
         __dest: *mut ::core::ffi::c_void,
         __src: *mut ::core::ffi::c_void,
         __n: usize,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn __copy_longs_rev_unaligned(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn __copy_longs_unaligned(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn __copy_longs_rev_aligned(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn __copy_longs_aligned(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     );
-}
-extern "C" {
     pub fn __sinit_AILoader_cpp();
-}
-extern "C" {
     pub fn sprintf(
         buffer: *mut ::core::ffi::c_char,
         format: *mut ::core::ffi::c_char,
         ...
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn vsprintf(
         out_str: *mut ::core::ffi::c_char,
         format_str: *mut ::core::ffi::c_char,
         args: va_list,
     ) -> s32;
-}
-extern "C" {
     pub fn vprintf(format: *mut ::core::ffi::c_char, args: va_list) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn printf(format: *mut ::core::ffi::c_char, ...) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __StringWrite(
         osc: *mut __OutStrCtrl,
         Buffer: *mut ::core::ffi::c_char,
         NumChars: usize,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn __FileWrite(
         File: *mut FILE,
         Buffer: *mut ::core::ffi::c_char,
         NumChars: usize,
     ) -> *mut FILE;
-}
-extern "C" {
     pub fn __pformatter(
         WriteProc: ::core::option::Option<
             unsafe extern "C" fn(
@@ -15110,125 +9784,81 @@ extern "C" {
         arg: va_list,
         is_secure: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn float2str(
         param_1: f64,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> *mut byte;
-}
-extern "C" {
     pub fn round_decimal(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn double2hex(
         param_1: f64,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn longlong2str(
         param_1: uint,
         param_2: uint,
         param_3: ::core::ffi::c_int,
         param_4: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn long2str(
         param_1: uint,
         param_2: ::core::ffi::c_int,
         param_3: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn parse_format(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut uint,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn qsort(
         __base: *mut ::core::ffi::c_void,
         __nmemb: usize,
         __size: usize,
         __compar: __compar_fn_t,
     );
-}
-extern "C" {
     pub fn srand(seed: u32_);
-}
-extern "C" {
     pub fn rand() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __StringRead(
         param_1: *mut *mut byte,
         param_2: *mut byte,
         param_3: ::core::ffi::c_int,
     ) -> *mut byte;
-}
-extern "C" {
     pub fn strstr(
         __haystack: *mut ::core::ffi::c_char,
         __needle: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn strchr(
         __s: *mut ::core::ffi::c_char,
         __c: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn strncmp(
         __s1: *mut ::core::ffi::c_char,
         __s2: *mut ::core::ffi::c_char,
         __n: usize,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn strcmp(
         __s1: *mut ::core::ffi::c_char,
         __s2: *mut ::core::ffi::c_char,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn strncat(
         __dest: *mut ::core::ffi::c_char,
         __src: *mut ::core::ffi::c_char,
         __n: usize,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn strcat(dest: *mut ::core::ffi::c_char, src: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn strncpy(
         __dest: *mut ::core::ffi::c_char,
         __src: *mut ::core::ffi::c_char,
         __n: usize,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn strcpy(
         __dest: *mut ::core::ffi::c_char,
         __src: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn strlen(__s: *mut ::core::ffi::c_char) -> usize;
-}
-extern "C" {
     pub fn atof(__nptr: *mut ::core::ffi::c_char) -> f64;
-}
-extern "C" {
     pub fn atoi(__nptr: *mut ::core::ffi::c_char) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __strtoul(
         param_1: uint,
         param_2: uint,
@@ -15238,30 +9868,16 @@ extern "C" {
         param_6: *mut undefined4,
         param_7: *mut undefined4,
     ) -> uint;
-}
-extern "C" {
     pub fn __write_console(
         param_1: undefined4,
         param_2: *mut byte,
         param_3: *mut uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn fwide(stream: *mut FILE, mode: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn __ieee754_acos(__x: f64) -> f64;
-}
-extern "C" {
     pub fn pow_internal(x: f64, y: f64) -> f64;
-}
-extern "C" {
     pub fn __ieee754_rem_pio2(param_1: f64, param_2: *mut f64) -> uint;
-}
-extern "C" {
     pub fn __kernel_cos(param_1: f64, param_2: f64) -> f64;
-}
-extern "C" {
     pub fn __kernel_rem_pio2(
         param_1: *mut f64,
         param_2: *mut f64,
@@ -15270,62 +9886,24 @@ extern "C" {
         param_5: ::core::ffi::c_int,
         param_6: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn __kernel_sin(param_1: f64, param_2: f64, param_3: ::core::ffi::c_int) -> f64;
-}
-extern "C" {
     pub fn __kernel_tan(param_1: f64, param_2: f64, param_3: uint) -> f64;
-}
-extern "C" {
     pub fn atan(__x: f64) -> f64;
-}
-extern "C" {
     pub fn copysign(__x: f64, __y: f64) -> f64;
-}
-extern "C" {
     pub fn cos(__x: f64) -> f64;
-}
-extern "C" {
     pub fn floor(__x: f64) -> f64;
-}
-extern "C" {
     pub fn frexp(x: f64, exponent: *mut ::core::ffi::c_int) -> f64;
-}
-extern "C" {
     pub fn ldexp(__x: f64, __exponent: ::core::ffi::c_int) -> f64;
-}
-extern "C" {
     pub fn modf(__x: f64, __iptr: *mut f64) -> f64;
-}
-extern "C" {
     pub fn sin(__x: f64) -> f64;
-}
-extern "C" {
     pub fn tan(__x: f64) -> f64;
-}
-extern "C" {
     pub fn acosf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn pow(x: f64, y: f64) -> f64;
-}
-extern "C" {
     pub fn floorf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn powf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn tanf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn sinf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn cosf(__x: f32) -> f32;
-}
-extern "C" {
     pub fn TRKNubMainLoop(
         param_1: undefined4,
         param_2: undefined4,
@@ -15336,172 +9914,90 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn TRKDestructEvent(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKConstructEvent(param_1: *mut undefined, param_2: undefined);
-}
-extern "C" {
     pub fn TRKPostEvent(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TRKGetNextEvent(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TRKInitializeEventQueue() -> undefined4;
-}
-extern "C" {
     pub fn TRKNubWelcome();
-}
-extern "C" {
     pub fn TRKTerminateNub() -> undefined4;
-}
-extern "C" {
     pub fn TRKInitializeNub() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKMessageSend(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKReadBuffer_ui32(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn TRKReadBuffer_ui8(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn TRKReadBuffer1_ui64(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKReadBuffer1_ui32(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKReadBuffer1_ui16(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKReadBuffer1_ui8(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKAppendBuffer_ui32(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined4,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn TRKAppendBuffer_ui8(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKAppendBuffer1_ui64(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
         param_3: undefined4,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn TRKAppendBuffer1_ui32(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn TRKAppendBuffer1_ui16(param_1: ::core::ffi::c_int, param_2: undefined2);
-}
-extern "C" {
     pub fn TRKReadBuffer(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKAppendBuffer(
         param_1: ::core::ffi::c_int,
         param_2: *mut undefined,
         param_3: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKSetBufferPosition(param_1: ::core::ffi::c_int, param_2: uint) -> undefined4;
-}
-extern "C" {
     pub fn TRKResetBuffer(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn TRKReleaseBuffer(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKGetBuffer(param_1: ::core::ffi::c_int) -> *mut undefined;
-}
-extern "C" {
     pub fn TRKGetFreeBuffer(
         param_1: *mut ::core::ffi::c_int,
         param_2: *mut undefined4,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKInitializeMessageBuffers() -> undefined4;
-}
-extern "C" {
     pub fn TRKTerminateSerialHandler() -> undefined4;
-}
-extern "C" {
     pub fn TRKInitializeSerialHandler() -> undefined4;
-}
-extern "C" {
     pub fn TRKProcessInput(param_1: undefined4);
-}
-extern "C" {
     pub fn TRKGetInput();
-}
-extern "C" {
     pub fn TRKTestForPacket() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn usr_put_initialize();
-}
-extern "C" {
     pub fn usr_puts_serial(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn TRKDispatchMessage(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetStop() -> undefined4;
-}
-extern "C" {
     pub fn TRKDoSetOption(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoStop(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoStep(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoContinue(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
@@ -15512,72 +10008,36 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn TRKDoFlushCache(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoWriteRegisters(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoReadRegisters(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoWriteMemory(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoReadMemory(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoCPUType(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoSupportMask(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoVersions(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoReset(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn TRKDoDisconnect(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKDoConnect(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKDoUnsupported(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKStandardACK(param_1: ::core::ffi::c_int, param_2: undefined, param_3: undefined);
-}
-extern "C" {
     pub fn SetTRKConnected(param_1: undefined4);
-}
-extern "C" {
     pub fn HandlePositionFileSupportRequest(
         param_1: undefined4,
         param_2: *mut undefined4,
         param_3: undefined,
         param_4: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn HandleCloseFileSupportRequest(
         param_1: undefined4,
         param_2: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn HandleOpenFileSupportRequest(
         param_1: *mut ::core::ffi::c_char,
         param_2: undefined,
         param_3: *mut undefined4,
         param_4: *mut undefined,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKRequestSend(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_int,
@@ -15585,8 +10045,6 @@ extern "C" {
         param_4: ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKSuppAccessFile(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
@@ -15595,80 +10053,40 @@ extern "C" {
         param_5: ::core::ffi::c_int,
         param_6: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKDoNotifyStopped(param_1: ::core::ffi::c_char) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRK_flush_cache(param_1: uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRK_fill_mem(param_1: ::core::ffi::c_int, param_2: byte, param_3: uint);
-}
-extern "C" {
     pub fn __TRK_get_MSR();
-}
-extern "C" {
     pub fn __TRK_set_MSR();
-}
-extern "C" {
     pub fn TRK_ppc_memcpy(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn TRKPPCAccessFPRegister(
         param_1: *mut undefined4,
         param_2: uint,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetStopped() -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetFlushCache(param_1: undefined4, param_2: uint, param_3: uint) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetSupportRequest() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKTargetGetPC() -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetStepOutOfRange(
         param_1: undefined4,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetSingleStep(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetAddExceptionInfo(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKTargetAddStopInfo(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKTargetInterrupt(param_1: *mut byte) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKTargetCPUType(param_1: *mut undefined) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetSupportMask(param_1: *mut undefined) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetVersions(param_1: *mut undefined) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetAccessExtended2(
         param_1: uint,
         param_2: uint,
@@ -15676,8 +10094,6 @@ extern "C" {
         param_4: *mut ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKTargetAccessExtended1(
         param_1: uint,
         param_2: uint,
@@ -15685,8 +10101,6 @@ extern "C" {
         param_4: *mut ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn TRKTargetAccessFP(
         param_1: uint,
         param_2: uint,
@@ -15694,8 +10108,6 @@ extern "C" {
         param_4: *mut ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKTargetAccessDefault(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -15703,8 +10115,6 @@ extern "C" {
         param_4: *mut ::core::ffi::c_int,
         param_5: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetAccessMemory(
         param_1: ::core::ffi::c_int,
         param_2: uint,
@@ -15712,18 +10122,12 @@ extern "C" {
         param_4: undefined4,
         param_5: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKValidMemory32(
         param_1: uint,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_twi_0();
-}
-extern "C" {
     pub fn InitMetroTRK(
         param_1: undefined4,
         param_2: undefined4,
@@ -15734,26 +10138,12 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     ) -> undefined8;
-}
-extern "C" {
     pub fn TRKInitializeTarget() -> undefined4;
-}
-extern "C" {
     pub fn TRKTargetTranslate(param_1: uint) -> uint;
-}
-extern "C" {
     pub fn EnableMetroTRKInterrupts();
-}
-extern "C" {
     pub fn TRKSaveExtended1Block();
-}
-extern "C" {
     pub fn TRKRestoreExtended1Block();
-}
-extern "C" {
     pub fn TRKTargetCPUMinorType() -> undefined4;
-}
-extern "C" {
     pub fn TRK_main(
         param_1: undefined4,
         param_2: undefined4,
@@ -15764,8 +10154,6 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn TRKLoadContext(
         param_1: *mut undefined4,
         param_2: ::core::ffi::c_int,
@@ -15776,29 +10164,13 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn TRK_board_display(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn UnreserveEXI2Port();
-}
-extern "C" {
     pub fn TRKReadUARTPoll(param_1: *mut undefined) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn WriteUART1(param_1: undefined) -> undefined4;
-}
-extern "C" {
     pub fn WriteUARTFlush() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn TRKInitializeIntDrivenUART() -> undefined4;
-}
-extern "C" {
     pub fn InitMetroTRKCommTable(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn TRKEXICallBack(
         param_1: undefined4,
         param_2: *mut undefined4,
@@ -15809,8 +10181,6 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn TRKTargetContinue(
         param_1: undefined4,
         param_2: undefined4,
@@ -15821,238 +10191,96 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn SetUseSerialIO(param_1: undefined);
-}
-extern "C" {
     pub fn __position_file() -> undefined4;
-}
-extern "C" {
     pub fn __close_file() -> undefined4;
-}
-extern "C" {
     pub fn __write_file(
         param_1: undefined4,
         param_2: undefined4,
         param_3: *mut undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn __TRK_write_console(
         param_1: undefined4,
         param_2: undefined4,
         param_3: *mut undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn DBWrite(param_1: *mut undefined4, param_2: uint) -> undefined4;
-}
-extern "C" {
     pub fn DBRead(param_1: *mut undefined4, param_2: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn DBQueryData() -> uint;
-}
-extern "C" {
     pub fn DBInitInterrupts();
-}
-extern "C" {
     pub fn DBInitComm(param_1: *mut undefined4, param_2: undefined4);
-}
-extern "C" {
     pub fn DBGHandler(param_1: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn MWCallback();
-}
-extern "C" {
     pub fn DBGReadStatus(param_1: *mut byte) -> uint;
-}
-extern "C" {
     pub fn DBGWrite(param_1: uint, param_2: *mut undefined4, param_3: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn DBGRead(param_1: uint, param_2: *mut undefined4, param_3: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn DBGEXIImm(
         param_1: *mut byte,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn load_additional_rel(
         rel_filepath: *mut ::core::ffi::c_char,
         rel_buffer_ptrs: *mut RelBufferInfo,
     );
-}
-extern "C" {
     pub fn g_purge_rel(rel_buffer_info: *mut RelBufferInfo);
-}
-extern "C" {
     pub fn g_purge_rel2();
-}
-extern "C" {
     pub fn main_loop_prolog();
-}
-extern "C" {
     pub fn main_loop_epilog();
-}
-extern "C" {
     pub fn main_loop_unlinked_func();
-}
-extern "C" {
     pub fn g_something_with_sound6_and_stop_pad_motors_callback();
-}
-extern "C" {
     pub fn g_something_with_card_callback();
-}
-extern "C" {
     pub fn g_something_with_sound11_callback();
-}
-extern "C" {
     pub fn revert_console_reset_callback();
-}
-extern "C" {
     pub fn console_reset_callback_impl() -> uint;
-}
-extern "C" {
     pub fn g_init_some_stuff();
-}
-extern "C" {
     pub fn cd_to_dvd_root2();
-}
-extern "C" {
     pub fn cd_to_dvd_root();
-}
-extern "C" {
     pub fn g_create_initial_main_heap();
-}
-extern "C" {
     pub fn g_remake_initial_main_heap_somehow();
-}
-extern "C" {
     pub fn g_setup_and_create_game_heaps();
-}
-extern "C" {
     pub fn g_something_with_sound7_and_game_heaps(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn create_game_heaps(heap_config_idx: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn destroy_game_heaps();
-}
-extern "C" {
     pub fn alloc_from_heap_or_panic(
         heap: OSHeapHandle,
         size: u32_,
         file: *mut ::core::ffi::c_char,
         line: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_set_some_initial_state();
-}
-extern "C" {
     pub fn mode_tick();
-}
-extern "C" {
     pub fn g_something_with_title_debug_menu() -> undefined4;
-}
-extern "C" {
     pub fn handle_start_button_with_debug_mode();
-}
-extern "C" {
     pub fn handle_start_button_no_debug_mode();
-}
-extern "C" {
     pub fn smd_null();
-}
-extern "C" {
     pub fn set_sub_mode_destination(func: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn call_then_reset_sub_mode_destination();
-}
-extern "C" {
     pub fn get_next_player_idx() -> uint;
-}
-extern "C" {
     pub fn g_get_next_stage_id() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_construct_pause_menu_sprite(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_check_input_in_pausemenu(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn handle_pausemenu_selection(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_pause_game();
-}
-extern "C" {
     pub fn init_events();
-}
-extern "C" {
     pub fn tick_events();
-}
-extern "C" {
     pub fn event_init(event_id: EventID);
-}
-extern "C" {
     pub fn event_dest(event_id: EventID);
-}
-extern "C" {
     pub fn event_freeze(event_id: EventID);
-}
-extern "C" {
     pub fn event_restart(event_id: EventID);
-}
-extern "C" {
     pub fn dest_all_events();
-}
-extern "C" {
     pub fn polydisp_main();
-}
-extern "C" {
     pub fn draw_func_handler();
-}
-extern "C" {
     pub fn adv_draw_func_handler();
-}
-extern "C" {
     pub fn game_main_draw_func();
-}
-extern "C" {
     pub fn g_draw_world_child();
-}
-extern "C" {
     pub fn game_extra_draw_func();
-}
-extern "C" {
     pub fn game_result_draw_func();
-}
-extern "C" {
     pub fn handle_test_camera();
-}
-extern "C" {
     pub fn g_set_clear_color();
-}
-extern "C" {
     pub fn g_smth_with_bg_color_drawing(param_1: GXColor);
-}
-extern "C" {
     pub fn g_draw_func_init();
-}
-extern "C" {
     pub fn g_something_with_view_stage();
-}
-extern "C" {
     pub fn take_pausemenu_screenshot(
         out_image_buffer: *mut ::core::ffi::c_void,
         src_left_px: undefined4,
@@ -16061,172 +10289,64 @@ extern "C" {
         height_px: ::core::ffi::c_short,
         fmt: GXTexFmt,
     );
-}
-extern "C" {
     pub fn init_pausemenu_screenshot_texobj(param_1: *mut GXTexObj);
-}
-extern "C" {
     pub fn g_draw_pausemenu_screenshot(tex: *mut GXTexObj);
-}
-extern "C" {
     pub fn md_adv_func();
-}
-extern "C" {
     pub fn smd_adv_logo_init();
-}
-extern "C" {
     pub fn smd_adv_logo_tick();
-}
-extern "C" {
     pub fn smd_adv_demo_init();
-}
-extern "C" {
     pub fn smd_adv_demo_tick();
-}
-extern "C" {
     pub fn test_mode_sub_mode_handler();
-}
-extern "C" {
     pub fn smd_adv_movie_return();
-}
-extern "C" {
     pub fn g_smth_with_adv_sprites_and_stage_loading(param_1: s32);
-}
-extern "C" {
     pub fn smd_adv_title_init();
-}
-extern "C" {
     pub fn smd_adv_title_reinit();
-}
-extern "C" {
     pub fn smd_adv_title_tick();
-}
-extern "C" {
     pub fn smd_adv_info_init();
-}
-extern "C" {
     pub fn smd_adv_info_tick();
-}
-extern "C" {
     pub fn caseD_f3();
-}
-extern "C" {
     pub fn smd_adv_game_ready_init();
-}
-extern "C" {
     pub fn smd_adv_game_ready_tick();
-}
-extern "C" {
     pub fn smd_adv_game_play_init();
-}
-extern "C" {
     pub fn smd_adv_game_play_tick();
-}
-extern "C" {
     pub fn smd_adv_ranking_init();
-}
-extern "C" {
     pub fn smd_adv_ranking_tick();
-}
-extern "C" {
     pub fn return_0x2c() -> undefined4;
-}
-extern "C" {
     pub fn smd_adv_start_init();
-}
-extern "C" {
     pub fn smd_adv_start_tick();
-}
-extern "C" {
     pub fn g_init_some_globals_for_adv();
-}
-extern "C" {
     pub fn smd_adv_prog_init();
-}
-extern "C" {
     pub fn smd_adv_prog_tick();
-}
-extern "C" {
     pub fn smd_adv_first_logo_init();
-}
-extern "C" {
     pub fn smd_adv_first_logo_tick();
-}
-extern "C" {
     pub fn g_maybe_draw_sega_splash();
-}
-extern "C" {
     pub fn g_something_with_loading_stages_on_gamestart();
-}
-extern "C" {
     pub fn g_something_w_adv_demo_init();
-}
-extern "C" {
     pub fn adv_demo_tick_function() -> undefined4;
-}
-extern "C" {
     pub fn g_camera_func30_child(camera: *mut Camera);
-}
-extern "C" {
     pub fn create_demo_mes_sprite();
-}
-extern "C" {
     pub fn sprite_demo_mes_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_demo_mes_disp(param_1: *mut Sprite);
-}
-extern "C" {
     pub fn create_demo_mask_sprites();
-}
-extern "C" {
     pub fn sprite_demo_mask_banana_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_set_lots_of_initial_state();
-}
-extern "C" {
     pub fn md_sel_func();
-}
-extern "C" {
     pub fn smd_sel_ngc_dest();
-}
-extern "C" {
     pub fn g_return_to_sel_mode(param_1: undefined4);
-}
-extern "C" {
     pub fn g_load_stage_for_menu_bg(param_1: ::core::ffi::c_char, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_set_some_sel_ngc_global_func_ptrs(
         func1: *mut ::core::ffi::c_void,
         func2: *mut ::core::ffi::c_void,
         func3: *mut ::core::ffi::c_void,
         func4: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn smd_sel_ngc_init();
-}
-extern "C" {
     pub fn smd_sel_ngc_tick();
-}
-extern "C" {
     pub fn g_sel_draw_func_handler();
-}
-extern "C" {
     pub fn g_sel_ngc_sub_mode_destination();
-}
-extern "C" {
     pub fn init_cameras();
-}
-extern "C" {
     pub fn event_camera_init();
-}
-extern "C" {
     pub fn event_camera_tick();
-}
-extern "C" {
     pub fn g_some_camera_parent_func(
         param_1: undefined,
         param_2: undefined,
@@ -16246,20 +10366,10 @@ extern "C" {
         param_16: undefined4,
         param_17: undefined4,
     );
-}
-extern "C" {
     pub fn event_camera_dest();
-}
-extern "C" {
     pub fn enable_camera(camera_idx: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn disable_all_cameras();
-}
-extern "C" {
     pub fn g_something_setting_camera_status();
-}
-extern "C" {
     pub fn set_camera_view_settings(
         viewport_pos_x: f32,
         viewport_pos_y: f32,
@@ -16267,670 +10377,262 @@ extern "C" {
         viewport_size_y: f32,
         camera_idx: undefined4,
     );
-}
-extern "C" {
     pub fn g_something_with_camera2(player_number: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_camera_setup_function();
-}
-extern "C" {
     pub fn g_smth_with_camera_and_reflective_objects(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_cameras();
-}
-extern "C" {
     pub fn g_set_mode_of_all_cameras_optionally(param_1: u8_);
-}
-extern "C" {
     pub fn g_set_camera_mode(param_1: uint, mode: byte);
-}
-extern "C" {
     pub fn g_camera_func27(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func28(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func29(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func30(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func54(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func55(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func43(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func12(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func13(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func52(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func53(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func80(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func81_mainmenu(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func87(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func88(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func10(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func11_spinin(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func38(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func0(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func1(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func2(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func3_setup(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func62(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func4_fallout(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func5(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func6(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func7(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func8(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func9(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func14(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func15_goal(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func16(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func17(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func18(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func19(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func20(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func21(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func22_23_24_timeover(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func25(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func26(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func31(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func32(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func33(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func34(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func35(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func36(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func37(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func39(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func40(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func41(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func42(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func44(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func45(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func46(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func47(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func48(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func49(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func50(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func51(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func56(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func57(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func63(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func66(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func68(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func69(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func70(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func71(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func72(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func73(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_default_func(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_main_camera_function_func75(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func76_gameplay(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func82(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func83(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func84(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func85(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func91(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func92(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_is_sphere_visible(radius: undefined8, center: *mut Vec) -> bool_;
-}
-extern "C" {
     pub fn g_is_sphere_visible_scaled(radius: f64, g_scale: f64, center: *mut Vec) -> bool_;
-}
-extern "C" {
     pub fn g_init_lights();
-}
-extern "C" {
     pub fn g_something_to_do_with_lights();
-}
-extern "C" {
     pub fn g_some_stage_init_func(param_1: *mut ::core::ffi::c_void) -> undefined4;
-}
-extern "C" {
     pub fn g_set_active_light_group(g_smth_with_lights: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn get_active_light_group() -> undefined4;
-}
-extern "C" {
     pub fn push_light_group();
-}
-extern "C" {
     pub fn pop_light_group();
-}
-extern "C" {
     pub fn g_set_light_color_maybe(
         param_1: f64,
         param_2: f64,
         param_3: f64,
         param_4: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_smth_with_avdisp_globals(param_1: f64, param_2: f64, param_3: f64);
-}
-extern "C" {
     pub fn g_something_with_gx_modes_and_compare();
-}
-extern "C" {
     pub fn gx_finish_frame_and_reset_z_and_alpha_compare_modes();
-}
-extern "C" {
     pub fn g_something_with_graphics_processor2();
-}
-extern "C" {
     pub fn g_something_with_video_this_also_finishes_a_frame();
-}
-extern "C" {
     pub fn gp_wait_wrapper();
-}
-extern "C" {
     pub fn get_gx_fifo_use_size() -> u32_;
-}
-extern "C" {
     pub fn g_reset_cm_course();
-}
-extern "C" {
     pub fn event_info_init();
-}
-extern "C" {
     pub fn event_info_tick();
-}
-extern "C" {
     pub fn event_info_dest();
-}
-extern "C" {
     pub fn g_reset_mode_info_stuff();
-}
-extern "C" {
     pub fn did_ball_enter_goal(
         ball: *mut Ball,
         out_stage_goal_idx: *mut ::core::ffi::c_int,
         out_itemgroup_id: *mut ::core::ffi::c_int,
         out_goal_flags: *mut byte,
     ) -> bool_;
-}
-extern "C" {
     pub fn did_ball_enter_wormhole(
         ball: *mut Ball,
         out_wormhole_idx: *mut ::core::ffi::c_int,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn g_set_goaled();
-}
-extern "C" {
     pub fn sprite_bonus_plus000_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_bonus_banana_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_ranking_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_ranking_disp();
-}
-extern "C" {
     pub fn create_ranking_sprite(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_something_with_goals_and_ball(
         ball: *mut Ball,
         goal_idx: ::core::ffi::c_int,
         ig_idx: ::core::ffi::c_int,
         param_4: undefined,
     );
-}
-extern "C" {
     pub fn did_ball_fallout(ball: *mut Ball) -> BOOL32;
-}
-extern "C" {
     pub fn g_something_playing_soundeffects(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_load_init_common();
-}
-extern "C" {
     pub fn g_load_minigame_gma_tpl(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_loading_wl_tpls(world_number: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_load_efcmdl_gmatpl();
-}
-extern "C" {
     pub fn load_efcmdl_files_from_disc();
-}
-extern "C" {
     pub fn g_something_freeing_heap_parent();
-}
-extern "C" {
     pub fn process_inputs();
-}
-extern "C" {
     pub fn threshold_analog_inputs();
-}
-extern "C" {
     pub fn g_calc_frames_since_last_input_change();
-}
-extern "C" {
     pub fn merge_inputs();
-}
-extern "C" {
     pub fn g_some_bmp_init_func();
-}
-extern "C" {
     pub fn load_bmp(filepath: *mut ::core::ffi::c_char) -> *mut TplBuffer;
-}
-extern "C" {
     pub fn load_bmp_by_id_child(g_idx: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_freeing_memory(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn free_nl2ngc_tpl_buf_to_heap(param_1: *mut TplBuffer);
-}
-extern "C" {
     pub fn g_zero_some_sprite_related_state();
-}
-extern "C" {
     pub fn g_some_sprite_reset_gx_state_func();
-}
-extern "C" {
     pub fn draw_ui();
-}
-extern "C" {
     pub fn g_draw_sprite_requests_from_buffer();
-}
-extern "C" {
     pub fn g_get_bmp_width(param_1: uint) -> u16_;
-}
-extern "C" {
     pub fn g_get_bmp_height(param_1: uint) -> u16_;
-}
-extern "C" {
     pub fn init_ui_element_sprite_with_defaults();
-}
-extern "C" {
     pub fn set_ui_element_sprite_pos(x: f64, y: f64);
-}
-extern "C" {
     pub fn set_ui_element_sprite_depth(depth: f64);
-}
-extern "C" {
     pub fn g_set_ui_element_sprite_flags(param_1: SpriteDrawReqFlags);
-}
-extern "C" {
     pub fn set_ui_element_sprite_scale(x: f64, y: f64);
-}
-extern "C" {
     pub fn set_ui_element_sprite_mult_color_from_u32(param_1: u32_);
-}
-extern "C" {
     pub fn set_ui_element_sprite_mult_color(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: uint,
         param_4: uint,
     );
-}
-extern "C" {
     pub fn set_ui_element_sprite_add_color_from_u32(param_1: u32_);
-}
-extern "C" {
     pub fn set_ui_element_sprite_add_color(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: uint,
         param_4: uint,
     );
-}
-extern "C" {
     pub fn set_ui_element_sprite_alpha(alpha: f64);
-}
-extern "C" {
     pub fn set_ui_element_sprite_rot_z(param_1: s32);
-}
-extern "C" {
     pub fn g_set_some_ui_element_sprite_flag(param_1: SpriteDrawReqFlags);
-}
-extern "C" {
     pub fn draw_ui_element(texture_id: s32);
-}
-extern "C" {
     pub fn draw_ui_box(g_texture_id: uint);
-}
-extern "C" {
     pub fn draw_ui_box_only_borders(param_1: uint);
-}
-extern "C" {
     pub fn perf_init_timer(timer_id: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn perf_stop_timer(timer_id: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn g_init_perf_profiling();
-}
-extern "C" {
     pub fn g_perf_finish_frame();
-}
-extern "C" {
     pub fn g_perf_start_frame();
-}
-extern "C" {
     pub fn g_reset_draw_perf_counters();
-}
-extern "C" {
     pub fn g_printf_sound_error(
         is_error: BOOL32,
         origin: *mut ::core::ffi::c_char,
         g_error_format: undefined4,
         ...
     );
-}
-extern "C" {
     pub fn try_alloc_memory_for_sound(size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_OSFree_wrapper(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn init_sound();
-}
-extern "C" {
     pub fn g_something_with_music_fading();
-}
-extern "C" {
     pub fn hwExit_wrapper();
-}
-extern "C" {
     pub fn ReadMusyXData(param_1: undefined);
-}
-extern "C" {
     pub fn g_something_calls_sndPopGroup();
-}
-extern "C" {
     pub fn g_something_calls_sndPopGroup_2();
-}
-extern "C" {
     pub fn event_sound_init();
-}
-extern "C" {
     pub fn event_sound_tick();
-}
-extern "C" {
     pub fn event_sound_dest();
-}
-extern "C" {
     pub fn g_smth_called_by_event_tick_sound_1(
         param_1: ::core::ffi::c_char,
         param_2: ::core::ffi::c_short,
     ) -> f64;
-}
-extern "C" {
     pub fn g_smth_called_by_event_tick_sound_2();
-}
-extern "C" {
     pub fn g_set_smth_with_sound(param_1: undefined);
-}
-extern "C" {
     pub fn g_smth_calls_sndFXStartParaInfo(cue: *mut GSoundCue);
-}
-extern "C" {
     pub fn g_something_with_volume(
         param_1: *mut uint,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_something_calls_sndFXKeyOff(
         param_1: uint,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn SoundReq(g_some_id: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SoundReqDirect(sfx_id: uint) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn SoundReqID(g_sfx_id: uint, param_2: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn call_SoundReqID_arg_0(g_sfx_id: u32_);
-}
-extern "C" {
     pub fn call_SoundReqID_arg_1(g_sfx_id: uint);
-}
-extern "C" {
     pub fn call_SoundReqID_arg_2(g_sfx_id: uint);
-}
-extern "C" {
     pub fn call_SoundReqID_arg_1_copy(param_1: uint);
-}
-extern "C" {
     pub fn SoundOff(param_1: uint);
-}
-extern "C" {
     pub fn SoundVol(param_1: uint, param_2: byte);
-}
-extern "C" {
     pub fn SoundPan(param_1: uint, param_2: ::core::ffi::c_char, param_3: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn SoundPitch(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn SoundDop(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn SoundMod(param_1: uint, param_2: uint);
-}
-extern "C" {
     pub fn SoundRev(param_1: uint, param_2: byte);
-}
-extern "C" {
     pub fn SoundCho(param_1: uint, param_2: byte);
-}
-extern "C" {
     pub fn SoundOffID(param_1: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn SoundVolID(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn SoundPanID(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_char,
         param_3: ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn SoundRevID(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn SoundChoID(param_1: ::core::ffi::c_int, param_2: byte);
-}
-extern "C" {
     pub fn SoundCheckStateID(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn SoundIcsReq(param_1: uint, param_2: byte, param_3: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn g_fade_track_volume(volume: u32_, param_2: u8_);
-}
-extern "C" {
     pub fn get_smgr_port(
         param_1: ::core::ffi::c_char,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_char,
         param_4: *mut ::core::ffi::c_short,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_something_with_bgm();
-}
-extern "C" {
     pub fn g_crossfade_music();
-}
-extern "C" {
     pub fn SoftStreamSEReq(
         param_1: ::core::ffi::c_char,
         sfx_id: ::core::ffi::c_int,
@@ -16938,44 +10640,26 @@ extern "C" {
         sfx_pan_L: uint,
         sfx_pan_R: uint,
     );
-}
-extern "C" {
     pub fn call_SoftStreamSEReq_arg_0(
         sfx_id: ::core::ffi::c_int,
         sfx_volume: uint,
         sfx_pan_L: uint,
         sfx_pan_R: uint,
     );
-}
-extern "C" {
     pub fn g_stop_music_sound_debug(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_dvd_read_async_sound_callback2(
         param_1: undefined4,
         param_2: *mut DVDCommandBlock,
     );
-}
-extern "C" {
     pub fn SoftStreamStart(g_looping_state: u32_, g_bgm_id: BgmTrack, param_3: u32_) -> s32;
-}
-extern "C" {
     pub fn g_SoftStreamStart_with_some_defaults(param_1: BgmTrack);
-}
-extern "C" {
     pub fn g_SoftStreamStart_with_some_defaults_2(param_1: BgmTrack);
-}
-extern "C" {
     pub fn g_another_SoftStreamStart_wrapper_of_some_sort(param_1: BgmTrack, param_2: u32_);
-}
-extern "C" {
     pub fn play_track_and_fade_out_other_tracks(
         param_1: undefined4,
         param_2: undefined4,
         volume: byte,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_smth_related_to_music(
         param_1_00: s32,
         param_2_00: s32,
@@ -16983,53 +10667,21 @@ extern "C" {
         param_4: u8_,
         param_5: u8_,
     ) -> s32;
-}
-extern "C" {
     pub fn g_handle_world_bgm(g_volume: u32_);
-}
-extern "C" {
     pub fn g_something_with_stopping_music_or_sfx(param_1: BgmTrack);
-}
-extern "C" {
     pub fn g_maybe_related_to_music_crossfading(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_check_current_track(track_id: BgmTrack) -> undefined4;
-}
-extern "C" {
     pub fn g_maybe_smth_with_music(param_1: s32, param_2: u8_);
-}
-extern "C" {
     pub fn g_change_music_volume(param_1: s32, param_2: s32, volume: u8_);
-}
-extern "C" {
     pub fn SoundEffectInit();
-}
-extern "C" {
     pub fn g_something_with_sound9();
-}
-extern "C" {
     pub fn g_snd_dbg_call_sndAuxCallbackupdateSettingsReverbHI_1(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn g_snd_dbg_call_sndAuxCallbackUpdateSettingsChorus_2(param_1: *mut undefined4);
-}
-extern "C" {
     pub fn g_snd_dbg_call_sndAuxCallbackUpdateSettingsReverbHI_2();
-}
-extern "C" {
     pub fn g_snd_dbg_call_sndAuxCallbackUpdateSettingsChorus_1();
-}
-extern "C" {
     pub fn g_set_some_sound_data();
-}
-extern "C" {
     pub fn g_something_with_sound6();
-}
-extern "C" {
     pub fn g_something_with_sound11();
-}
-extern "C" {
     pub fn g_something_with_sound4(
         param_1: *mut undefined,
         param_2: undefined4,
@@ -17038,8 +10690,6 @@ extern "C" {
         param_5: undefined,
         param_6: undefined,
     ) -> uint;
-}
-extern "C" {
     pub fn g_smgr_allocate_stereo(
         param_1: undefined4,
         param_2: undefined4,
@@ -17049,11 +10699,7 @@ extern "C" {
         param_6: *mut ::core::ffi::c_char,
         param_7: ::core::ffi::c_char,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_some_dvd_read_async_sound_callback(result: s32, file_info: *mut DVDFileInfo);
-}
-extern "C" {
     pub fn event_adx_init(
         param_1: undefined8,
         param_2: undefined8,
@@ -17072,8 +10718,6 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn event_adx_tick(
         param_1: undefined4,
         param_2: undefined4,
@@ -17084,53 +10728,21 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn event_adx_dest();
-}
-extern "C" {
     pub fn g_adx_error_call_back(param_1: undefined4, param_2: undefined4);
-}
-extern "C" {
     pub fn g_draw_ingame_debug_menu(param_1: *mut uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_draw_debug_window_boundaries(param_1: *mut uint);
-}
-extern "C" {
     pub fn draw_debugtext();
-}
-extern "C" {
     pub fn window_init();
-}
-extern "C" {
     pub fn g_something_with_replays3();
-}
-extern "C" {
     pub fn debug_textdraw_set_pos(g_x_pos: uint, g_y_pos: uint);
-}
-extern "C" {
     pub fn debug_window_printf(param_1: undefined, format: *mut ::core::ffi::c_char, ...);
-}
-extern "C" {
     pub fn debug_textdraw_set_color(color: u8);
-}
-extern "C" {
     pub fn debug_textdraw_put(buffer_idx: ::core::ffi::c_int, string: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn g_set_up_debugtext_buffer();
-}
-extern "C" {
     pub fn debug_textdraw_vsprintf_buf_0(fmt: *mut ::core::ffi::c_char, ...) -> undefined4;
-}
-extern "C" {
     pub fn debug_textdraw_vsprintf_buf_1(format: *mut ::core::ffi::c_char, ...);
-}
-extern "C" {
     pub fn debug_textdraw_put_buf_1(text: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn g_some_printf_function_2(
         param_1: undefined8,
         param_2: undefined8,
@@ -17149,89 +10761,39 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     ) -> undefined4;
-}
-extern "C" {
     pub fn draw_debugtext_char_en(x: u32_, y: u32_, ch: ::core::ffi::c_char, color_rrggbbaa: u8_);
-}
-extern "C" {
     pub fn draw_debugtext_char_jp(x: u32_, y: u32_, ch: *mut byte, color_unknown_format: uint);
-}
-extern "C" {
     pub fn draw_debugtext_window_bg(x1: f64, y1: f64, x2: f64, y2: f64);
-}
-extern "C" {
     pub fn g_is_sjis_and_more_than_24_mib() -> bool_;
-}
-extern "C" {
     pub fn g_debug_print_ape(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn debug_overlay_draw_fifo();
-}
-extern "C" {
     pub fn unset_all_dip_switches();
-}
-extern "C" {
     pub fn g_check_debug_mode_input();
-}
-extern "C" {
     pub fn pool_init();
-}
-extern "C" {
     pub fn pool_tick();
-}
-extern "C" {
     pub fn pool_update_idxs_of_all_pools();
-}
-extern "C" {
     pub fn pool_update_idxs(tlm: *mut PoolInfo, event_filter: EventID);
-}
-extern "C" {
     pub fn g_do_nothing();
-}
-extern "C" {
     pub fn pool_alloc(tlm: *mut PoolInfo, status: u8_) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn pool_clear(info: *mut PoolInfo);
-}
-extern "C" {
     pub fn g_set_some_draw_values(param_1: f32, param_2: f32, param_3: f32);
-}
-extern "C" {
     pub fn nl2ngc(
         out_nl_buffer: *mut *mut NlBuffer,
         out_tpl_buffer: undefined4,
         p_lz_path: *mut ::core::ffi::c_char,
         lz_path: *mut ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn g_nl2ngc_gma_func(nl_buf: *mut NlBuffer) -> undefined4;
-}
-extern "C" {
     pub fn g_nl2ngc_tpl_func(param_1: *mut NlBuffer, param_2: *mut TplBuffer);
-}
-extern "C" {
     pub fn g_nl_model_draw_func(param_1: *mut GmaModel);
-}
-extern "C" {
     pub fn nl2ngc_set_fog_params(param_1: f64, param_2: f64, param_3: undefined4);
-}
-extern "C" {
     pub fn nl2ngc_set_fog_color(r: u8_, g: u8_, b: u8_);
-}
-extern "C" {
     pub fn g_ape_upright(ball: *mut Ape);
-}
-extern "C" {
     pub fn g_move_ape_into_ball(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_default_ape_draw(
         ape: *mut Ape,
         param_2: undefined4,
@@ -17242,14 +10804,8 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn event_ball_init();
-}
-extern "C" {
     pub fn g_call_maybe_sets_number_of_starting_monkeys(ball: *mut Ball);
-}
-extern "C" {
     pub fn create_stage_player(
         player_index: byte,
         physicsmode: BallMode,
@@ -17259,8 +10815,6 @@ extern "C" {
         draw_func: *mut ::core::ffi::c_void,
         g_variant: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_create_stage_player_wrapper(
         player_index: byte,
         physicsMode: BallMode,
@@ -17269,174 +10823,82 @@ extern "C" {
         LOD: ApeLOD,
         draw_func: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn challenge_mode_init();
-}
-extern "C" {
     pub fn event_ball_tick();
-}
-extern "C" {
     pub fn event_ball_dest();
-}
-extern "C" {
     pub fn add_bananas(bananas_to_add: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_translating_items(
         param_1: f64,
         param_2: ::core::ffi::c_int,
         param_position: *mut Vec,
     );
-}
-extern "C" {
     pub fn g_maybe_sets_number_of_starting_monkeys(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_reset_ball(in_ball: *mut Ball);
-}
-extern "C" {
     pub fn ball_physics_g_something_w_postgoal_slowdown(param_1: *mut Ball);
-}
-extern "C" {
     pub fn ball_physics_g_something_w_postgoal_blast_up(param_1: *mut Ball);
-}
-extern "C" {
     pub fn g_ball_mode_play_replay(ball: *mut Ball);
-}
-extern "C" {
     pub fn ball_physics_g_something_w_poastgoal_slowdown_blast_up(param_1: *mut Ball);
-}
-extern "C" {
     pub fn ball_physics_g_something_w_postgoal_blast_up2(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_move_and_collide(ball: *mut Ball, physicsBall: *mut PhysicsBall);
-}
-extern "C" {
     pub fn g_apply_ball_velocity(ball: *mut Ball);
-}
-extern "C" {
     pub fn collide_with_stage(ball: *mut Ball, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn position_ball(ball: *mut Ball, phys_ball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn set_ball_properties(ball: *mut Ball, constants_idx: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn ball_collision_stars(ball: *mut Ball);
-}
-extern "C" {
     pub fn init_physicsball_from_ball(ball: *mut Ball, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn g_copy_physicsball_to_ball(ball: *mut Ball, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn g_ball_ape_rotation(ball: *mut Ball);
-}
-extern "C" {
     pub fn spawn_postgoal_ball_sparkle();
-}
-extern "C" {
     pub fn g_some_ballfunc(param_1: *mut Ball);
-}
-extern "C" {
     pub fn ball_sounds_gameplay(ball: *mut Ball);
-}
-extern "C" {
     pub fn ball_movement_sparks(ball: *mut Ball) -> *mut G_BallMode;
-}
-extern "C" {
     pub fn set_visual_scale(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_draw_ball_and_ape();
-}
-extern "C" {
     pub fn g_something_with_view_stage_and_ball();
-}
-extern "C" {
     pub fn g_some_ball_stage_coli_func(
         physicsball: *mut PhysicsBall,
         stagedef: *mut StagedefFileHeader,
     ) -> *mut undefined4;
-}
-extern "C" {
     pub fn meshcoli_grid_lookup(x: f32, z: f32, coli_header: *mut StagedefColiHeader)
         -> undefined4;
-}
-extern "C" {
     pub fn stcoli_sub03(physicsball: *mut PhysicsBall, tri: *mut StagedefColiTri);
-}
-extern "C" {
     pub fn stcoli_sub04(physball: *mut PhysicsBall, tri: *mut StagedefColiTri);
-}
-extern "C" {
     pub fn stcoli_sub05(
         param_1: *mut PhysicsBall,
         param_2: *mut Vec,
         param_3: *mut Vec,
         param_4: *mut f32,
     );
-}
-extern "C" {
     pub fn stcoli_sub06(physball: *mut PhysicsBall, tri: *mut StagedefColiTri);
-}
-extern "C" {
     pub fn stcoli_sub07(
         param_1: *mut PhysicsBall,
         param_2: *mut f32,
         param_3: *mut f32,
     ) -> undefined8;
-}
-extern "C" {
     pub fn g_some_jamabar_coli_func(physicsball: *mut PhysicsBall, param_2: *mut f32);
-}
-extern "C" {
     pub fn g_cylinder_coli_something(
         physball: *mut PhysicsBall,
         cylinder: *mut StagedefColiCylinder,
     );
-}
-extern "C" {
     pub fn stcoli_sub10(param_1: *mut PhysicsBall, param_2: *mut Vec);
-}
-extern "C" {
     pub fn g_sphere_coli_something(param_1: *mut PhysicsBall, param_2: *mut StagedefColiSphere);
-}
-extern "C" {
     pub fn g_cone_coli_something(param_1: *mut PhysicsBall, param_2: *mut StagedefColiCone);
-}
-extern "C" {
     pub fn g_something_with_physicsball_restitution(
         physicsball: *mut PhysicsBall,
         param_2: *mut Vec,
     );
-}
-extern "C" {
     pub fn line_intersects_rect(lineStart: *mut Vec, lineEnd: *mut Vec, rect: *mut Rect) -> BOOL32;
-}
-extern "C" {
     pub fn stobj_jamabar_child_coli(physicsball: *mut PhysicsBall, stobj: *mut Stobj);
-}
-extern "C" {
     pub fn raycast_stage_down(
         origin: *mut Vec,
         out_hit: *mut RaycastHit,
         out_vel_at_point: *mut Vec,
     );
-}
-extern "C" {
     pub fn raycast_tri(
         line_origin: *mut Vec,
         line_dir: *mut Vec,
         tri: *mut StagedefColiTri,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn raycast_cone(
         line_origin: *mut Vec,
         line_dir: undefined4,
@@ -17444,8 +10906,6 @@ extern "C" {
         out_hit_pos: *mut Vec,
         out_hit_normal: *mut Vec,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn raycast_sphere(
         line_origin: *mut Vec,
         line_dir: *mut Vec,
@@ -17453,8 +10913,6 @@ extern "C" {
         out_hit_pos: *mut Vec,
         out_hit_normal: *mut Vec,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn raycast_cylinder(
         line_origin: undefined4,
         line_dir: undefined4,
@@ -17462,17 +10920,9 @@ extern "C" {
         out_hit_pos: undefined4,
         out_hit_normal: undefined4,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn g_goal_coli_something(param_1: *mut PhysicsBall, param_2: *mut StagedefGoal) -> uint;
-}
-extern "C" {
     pub fn stcoli_sub22(param_1: *mut PhysicsBall, param_2: *mut Vec);
-}
-extern "C" {
     pub fn stcoli_sub24(param_1: *mut PhysicsBall, param_2: *mut Vec);
-}
-extern "C" {
     pub fn stcoli_sub25(
         param_1: *mut PhysicsBall,
         param_2: ::core::ffi::c_int,
@@ -17483,17 +10933,9 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn g_draw_stage_collision();
-}
-extern "C" {
     pub fn stcoli_sub27(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn stcoli_sub28(param_1: *mut Vec);
-}
-extern "C" {
     pub fn stcoli_sub29(
         param_1: *mut f32,
         param_2: *mut f32,
@@ -17504,786 +10946,312 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn tf_physicsball_by_mtxa(physicsball1: *mut PhysicsBall, physicsball2: *mut PhysicsBall);
-}
-extern "C" {
     pub fn inv_tf_physicsball_by_mtxa(
         src_physicsball: *mut PhysicsBall,
         dest_physicsball: *mut PhysicsBall,
     );
-}
-extern "C" {
     pub fn tf_physball_to_itemgroup_space(
         physicsball: *mut PhysicsBall,
         itemgroup_idx: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_w_ig_and_coli_headers(
         ig_list: *mut Itemgroup,
         coli_header_list: *mut StagedefColiHeader,
         param_3: undefined4,
         physicsball_x: *mut Vec,
     ) -> uint;
-}
-extern "C" {
     pub fn g_something_w_ig_and_coli_headers_2(
         ig_list: *mut Itemgroup,
         coli_header_list: *mut StagedefColiHeader,
         physicsball_pos: *mut Vec,
     ) -> undefined4;
-}
-extern "C" {
     pub fn event_world_init();
-}
-extern "C" {
     pub fn event_world_tick();
-}
-extern "C" {
     pub fn event_world_dest();
-}
-extern "C" {
     pub fn evaluate_stagedef_keyframe(
         g_anim_frame: f64,
         count: ::core::ffi::c_int,
         keyframe: *mut StagedefAnimKeyframe,
     ) -> f64;
-}
-extern "C" {
     pub fn event_stage_init();
-}
-extern "C" {
     pub fn event_stage_tick();
-}
-extern "C" {
     pub fn event_stage_dest();
-}
-extern "C" {
     pub fn g_advance_itemgroup_anim_frame(
         itemgroup: *mut Itemgroup,
         colis_header: *mut StagedefColiHeader,
     ) -> f64;
-}
-extern "C" {
     pub fn g_advance_stage_animation();
-}
-extern "C" {
     pub fn g_transform_some_itemgroup_vec();
-}
-extern "C" {
     pub fn get_GmaBuffer_entry(
         buffer: *mut GmaBuffer,
         name: *mut ::core::ffi::c_char,
     ) -> *mut GmaModel;
-}
-extern "C" {
     pub fn g_stgname_init();
-}
-extern "C" {
     pub fn init_itemgroups();
-}
-extern "C" {
     pub fn load_stage(stage_id: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn unload_stage();
-}
-extern "C" {
     pub fn queue_stage_load(stage_number: uint);
-}
-extern "C" {
     pub fn g_load_stage_gma_tpl_lz(stage_id: u32_);
-}
-extern "C" {
     pub fn g_handle_bonus_wave_collision(
         param_1: *mut f32,
         param_2: *mut f32,
         param_3: *mut f32,
     ) -> undefined4;
-}
-extern "C" {
     pub fn get_stage_world_theme(stage_id: ::core::ffi::c_int) -> WorldTheme;
-}
-extern "C" {
     pub fn g_smth_with_stage_anim_groups(anim_group_id: ::core::ffi::c_int, param_2: uint);
-}
-extern "C" {
     pub fn g_smth_with_buttons(anim_group_id: ::core::ffi::c_int, param_2: uint) -> BOOL32;
-}
-extern "C" {
     pub fn g_init_smth_with_seesaws();
-}
-extern "C" {
     pub fn get_seesaw_replay_state_size(seesaw_info: *mut SeesawInfo) -> undefined4;
-}
-extern "C" {
     pub fn g_smth_with_stage_fog(param_1: f64);
-}
-extern "C" {
     pub fn is_stage_id_not_for_party_game(stage_id: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn seesaw_init(seesaw_info: *mut SeesawInfo);
-}
-extern "C" {
     pub fn seesaw_dest();
-}
-extern "C" {
     pub fn seesaw_tick(seesaw_info: *mut SeesawInfo);
-}
-extern "C" {
     pub fn seesaw_coli(seesaw_info: *mut SeesawInfo, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_seesaw_func5(param_1: ::core::ffi::c_int, param_2: *mut undefined4);
-}
-extern "C" {
     pub fn g_seesaw_replay_smth(
         param_1: f64,
         param_2: *mut ::core::ffi::c_short,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_init_smth_with_stage_models();
-}
-extern "C" {
     pub fn g_draw_stage_models();
-}
-extern "C" {
     pub fn g_draw_goalpost_models();
-}
-extern "C" {
     pub fn g_draw_wormhole_models();
-}
-extern "C" {
     pub fn g_draw_generator_models();
-}
-extern "C" {
     pub fn g_draw_start_position_marker();
-}
-extern "C" {
     pub fn g_draw_stage();
-}
-extern "C" {
     pub fn g_draw_collision_triangles();
-}
-extern "C" {
     pub fn is_stage_id_348_revolution() -> bool_;
-}
-extern "C" {
     pub fn g_special_handler_for_st348_revolution();
-}
-extern "C" {
     pub fn g_handle_hardcoded_special_case_stages();
-}
-extern "C" {
     pub fn g_special_load_for_st348();
-}
-extern "C" {
     pub fn g_smth_hardcoded_for_meltingpot();
-}
-extern "C" {
     pub fn g_smth_hardcoded_for_totalitarianism_and_meltingpot();
-}
-extern "C" {
     pub fn g_smth_hardcoded_for_st340();
-}
-extern "C" {
     pub fn g_smth_hardcoded_for_trainworm_and_nintendo();
-}
-extern "C" {
     pub fn g_init_shadows();
-}
-extern "C" {
     pub fn g_smth_with_viewstage_and_whs();
-}
-extern "C" {
     pub fn g_something_with_shadow_cast() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_load_stgname_file(locale_index: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_load_stgname_dvd_entrynum(stgname_dvd_entrynum: s32) -> undefined4;
-}
-extern "C" {
     pub fn g_get_storymode_stage_name_buf_size() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_queue_stage_name_load() -> bool_;
-}
-extern "C" {
     pub fn g_read_storymode_select_stage_names_from_dvd(
         param_1: *mut ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn read_stage_name_from_dvd(
         stage_id: ::core::ffi::c_int,
         out_stage_name: *mut ::core::ffi::c_char,
         out_stage_name_buf_size: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn load_stage_models();
-}
-extern "C" {
     pub fn init_seesaws();
-}
-extern "C" {
     pub fn load_stagedef(stage_id: u32_);
-}
-extern "C" {
     pub fn g_free_stage();
-}
-extern "C" {
     pub fn g_something_with_replays5();
-}
-extern "C" {
     pub fn event_recplay_init();
-}
-extern "C" {
     pub fn event_recplay_tick();
-}
-extern "C" {
     pub fn event_recplay_dest();
-}
-extern "C" {
     pub fn g_something_with_recplay2();
-}
-extern "C" {
     pub fn g_something_with_recplay3(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_smth_with_replay_playback(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn is_itemgroup_playable(itemgroup_idx: u32_) -> bool_;
-}
-extern "C" {
     pub fn get_playable_itemgroup_count() -> u32_;
-}
-extern "C" {
     pub fn compute_playable_itemgroup_count() -> u32_;
-}
-extern "C" {
     pub fn g_smth_with_wormhole_replays(ball_idx: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_get_replay_frame_data(
         replay_frames_remaining: f64,
         param_2: ::core::ffi::c_int,
         position_out: *mut Vec,
     );
-}
-extern "C" {
     pub fn g_smth_with_seesaws_and_replays(
         param_1: ::core::ffi::c_int,
         param_2: uint,
         param_3: uint,
         param_4: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn g_something_with_stage_world_themes(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_replays4();
-}
-extern "C" {
     pub fn g_something_with_replays6(param_1: ::core::ffi::c_int) -> f64;
-}
-extern "C" {
     pub fn g_something_with_replays(param_1: ::core::ffi::c_int, param_2: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_something_with_bundled_replays();
-}
-extern "C" {
     pub fn g_LoadRecFile(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn g_something_with_replays2(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn g_something_with_score();
-}
-extern "C" {
     pub fn g_advance_replay2(replay_frames_remaining: f64, param_2: *mut f32);
-}
-extern "C" {
     pub fn rle_encode(
         input: *mut ::core::ffi::c_void,
         output: *mut ::core::ffi::c_void,
         inputSize: uint,
     ) -> uint;
-}
-extern "C" {
     pub fn get_compressed_replay_size() -> uint;
-}
-extern "C" {
     pub fn compress_replay(outCompressedReplay: *mut ::core::ffi::c_void) -> uint;
-}
-extern "C" {
     pub fn g_smth_with_cmp_recplay(param_1: *mut ::core::ffi::c_void) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn init_replay(replay: *mut Replay, stage_time_limit: ::core::ffi::c_int) -> *mut Replay;
-}
-extern "C" {
     pub fn init_replay_playable_ig_and_seesaw_state(
         replay: *mut Replay,
         param_2: *mut ::core::ffi::c_short,
         param_3: ::core::ffi::c_int,
         playableIgAndSeesawSize: u32_,
     ) -> undefined4;
-}
-extern "C" {
     pub fn create_replay(stage_time_limit: ::core::ffi::c_int) -> *mut Replay;
-}
-extern "C" {
     pub fn convert_replay_ptrs_to_offsets(replay: *mut Replay, outReplay: *mut Replay);
-}
-extern "C" {
     pub fn convert_replay_offsets_to_ptrs(replay: *mut Replay);
-}
-extern "C" {
     pub fn increment_score(g_some_flag: ::core::ffi::c_int, score: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn get_goal_score(
         g_jump_dist_ptr: *mut uint,
         g_score_ptr: *mut ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn event_effect_init();
-}
-extern "C" {
     pub fn event_effect_tick();
-}
-extern "C" {
     pub fn event_effect_dest();
-}
-extern "C" {
     pub fn g_draw_effects();
-}
-extern "C" {
     pub fn spawn_effect(effect: *mut Effect) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn overwrite_effect_funcs(
         effect_type: EffectType,
         new_effect_funcs: *mut ::core::option::Option<unsafe extern "C" fn(arg1: *mut Effect)>,
     );
-}
-extern "C" {
     pub fn effect_default_init();
-}
-extern "C" {
     pub fn effect_default_tick();
-}
-extern "C" {
     pub fn effect_default_disp();
-}
-extern "C" {
     pub fn effect_default_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_paperfrag_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_paperfrag_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_paperfrag_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_paperfrag_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_get_banana_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_get_banana_tick(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_get_banana_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_get_banana_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_particle_init_coli(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_particle_tick_coli(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_particle_disp_coli(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_particle_dest_coli(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_holding_banana_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_holding_banana_tick(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_holding_banana_disp(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_holding_banana_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_levitate_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_levitate_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_levitate_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_levitate_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_colistar_particle_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_colistar_particle_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_colistar_particle_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_colistar_particle_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_base_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_base_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_base_disp();
-}
-extern "C" {
     pub fn effect_bgwat_bubble_base_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgwat_bubble_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_meteo_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_meteo_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_meteo_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_meteo_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_meteo_fix_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_meteo_fix_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_meteo_fix_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_meteo_fix_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_coliflash_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_coliflash_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_coliflash_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_coliflash_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bns_stg_star_init(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bns_stg_star_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bns_stg_star_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bns_stg_star_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bns_stg_star_tail_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bns_stg_star_tail_tick(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bns_stg_star_tail_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bns_stg_star_tail_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgmst_gen_cloud_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgmst_gen_cloud_tick(param_1: *mut ushort);
-}
-extern "C" {
     pub fn effect_bgmst_gen_cloud_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgmst_gen_cloud_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgstm_rainripple_init(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn effect_bgstm_rainripple_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgstm_rainripple_disp(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgstm_rainripple_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgmst_water_init();
-}
-extern "C" {
     pub fn effect_bgmst_water_tick();
-}
-extern "C" {
     pub fn effect_bgmst_water_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgmst_water_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_commendfrag_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_commendfrag_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_commendfrag_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_commendfrag_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_banana_drop_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_banana_drop_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_banana_drop_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_banana_drop_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgend_water_init();
-}
-extern "C" {
     pub fn effect_bgend_water_tick();
-}
-extern "C" {
     pub fn effect_bgend_water_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgend_water_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_bgbtmfire_ptcl_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgbtmfire_ptcl_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgbtmfire_ptcl_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_bgbtmfire_ptcl_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_piyo_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_piyo_tick(param_1: *mut ::core::ffi::c_short, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_piyo_disp(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_piyo_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn event_background_init();
-}
-extern "C" {
     pub fn event_background_tick();
-}
-extern "C" {
     pub fn event_background_dest();
-}
-extern "C" {
     pub fn g_maybe_some_bg_effect_handler();
-}
-extern "C" {
     pub fn g_draw_bg();
-}
-extern "C" {
     pub fn g_something_with_world_themes();
-}
-extern "C" {
     pub fn g_something_with_init_or_maybe_leftover_from_smb1(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_stage_world_themes2(theme_id: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_view_stage_and_bg();
-}
-extern "C" {
     pub fn call_item_coin_coli_func_for_cur_world_theme();
-}
-extern "C" {
     pub fn bg_init_base();
-}
-extern "C" {
     pub fn bg_tick_base();
-}
-extern "C" {
     pub fn bg_dest_base();
-}
-extern "C" {
     pub fn bg_disp_base();
-}
-extern "C" {
     pub fn bg_item_coin_coli_base();
-}
-extern "C" {
     pub fn g_handle_bg_fg_model_anim(
         bg_model_ptr: *mut StagedefBackgroundModel,
         bg_model_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_render_foreground_objects(
         g_stage_tilt_mtx: *mut Mtx,
         fg_model: *mut StagedefForegroundModel,
         foreground_model_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_with_texture_scroll(tex_scroll: *mut StagedefTextureScroll);
-}
-extern "C" {
     pub fn bg_nig_init();
-}
-extern "C" {
     pub fn bg_nig_tick();
-}
-extern "C" {
     pub fn bg_nig_dest();
-}
-extern "C" {
     pub fn bg_nig_disp();
-}
-extern "C" {
     pub fn bg_nig_item_coin_coli();
-}
-extern "C" {
     pub fn bg_ice2_init();
-}
-extern "C" {
     pub fn bg_ice2_tick();
-}
-extern "C" {
     pub fn bg_ice2_dest();
-}
-extern "C" {
     pub fn bg_ice2_disp();
-}
-extern "C" {
     pub fn bg_ice2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_bil_init();
-}
-extern "C" {
     pub fn bg_bil_tick();
-}
-extern "C" {
     pub fn bg_bil_dest();
-}
-extern "C" {
     pub fn bg_bil_disp();
-}
-extern "C" {
     pub fn bg_bil_item_coin_coli();
-}
-extern "C" {
     pub fn bg_gol_init();
-}
-extern "C" {
     pub fn bg_gol_tick();
-}
-extern "C" {
     pub fn bg_gol_dest();
-}
-extern "C" {
     pub fn bg_gol_disp();
-}
-extern "C" {
     pub fn bg_gol_item_coin_coli();
-}
-extern "C" {
     pub fn bg_bow_init();
-}
-extern "C" {
     pub fn bg_bow_tick();
-}
-extern "C" {
     pub fn bg_bow_dest();
-}
-extern "C" {
     pub fn bg_bow_disp();
-}
-extern "C" {
     pub fn bg_bow_item_coin_coli();
-}
-extern "C" {
     pub fn bg_futsal_init();
-}
-extern "C" {
     pub fn bg_futsal_tick(
         param_1: undefined4,
         param_2: undefined4,
@@ -18294,305 +11262,111 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn bg_futsal_dest();
-}
-extern "C" {
     pub fn bg_futsal_disp();
-}
-extern "C" {
     pub fn bg_futsal_item_coin_coli();
-}
-extern "C" {
     pub fn bg_electric_init();
-}
-extern "C" {
     pub fn bg_electric_tick();
-}
-extern "C" {
     pub fn bg_electric_dest();
-}
-extern "C" {
     pub fn bg_electric_disp();
-}
-extern "C" {
     pub fn bg_electric_item_coin_coli();
-}
-extern "C" {
     pub fn bg_boat_init();
-}
-extern "C" {
     pub fn bg_boat_tick();
-}
-extern "C" {
     pub fn bg_boat_dest();
-}
-extern "C" {
     pub fn bg_boat_disp();
-}
-extern "C" {
     pub fn bg_boat_item_coin_coli();
-}
-extern "C" {
     pub fn bg_park_init();
-}
-extern "C" {
     pub fn bg_park_tick();
-}
-extern "C" {
     pub fn bg_park_dest();
-}
-extern "C" {
     pub fn bg_park_disp();
-}
-extern "C" {
     pub fn bg_park_item_coin_coli();
-}
-extern "C" {
     pub fn g_smth_with_bg_model_names(
         model: *mut GmaModelEntry,
         g_some_func: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn g_init_stagedef_bg_fg_models(
         model: *mut StagedefBackgroundModel,
         count: ::core::ffi::c_int,
         some_bg_struct: *mut GSomeBgStruct,
         g_effect_func: *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn is_game_paused_and_in_view_stage() -> BOOL32;
-}
-extern "C" {
     pub fn g_smth_with_challenge_mode_var_and_3p() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn bg_jun_init();
-}
-extern "C" {
     pub fn bg_jun_tick();
-}
-extern "C" {
     pub fn bg_jun_dest();
-}
-extern "C" {
     pub fn bg_jun_disp();
-}
-extern "C" {
     pub fn bg_jun_item_coin_coli();
-}
-extern "C" {
     pub fn bg_snd_init();
-}
-extern "C" {
     pub fn bg_snd_tick();
-}
-extern "C" {
     pub fn bg_snd_dest();
-}
-extern "C" {
     pub fn bg_snd_disp();
-}
-extern "C" {
     pub fn bg_snd_item_coin_coli();
-}
-extern "C" {
     pub fn bg_wat_init();
-}
-extern "C" {
     pub fn bg_wat_tick();
-}
-extern "C" {
     pub fn bg_wat_dest();
-}
-extern "C" {
     pub fn bg_wat_disp();
-}
-extern "C" {
     pub fn bg_wat_item_coin_coli();
-}
-extern "C" {
     pub fn g_set_bgwat_bubble_effect(param_1: ::core::ffi::c_int, param_2: *mut uint)
         -> undefined4;
-}
-extern "C" {
     pub fn bg_spa_init();
-}
-extern "C" {
     pub fn bg_spa_tick();
-}
-extern "C" {
     pub fn bg_spa_dest();
-}
-extern "C" {
     pub fn bg_spa_disp();
-}
-extern "C" {
     pub fn bg_spa_item_coin_coli();
-}
-extern "C" {
     pub fn bg_sun_init();
-}
-extern "C" {
     pub fn bg_sun_tick();
-}
-extern "C" {
     pub fn bg_sun_dest();
-}
-extern "C" {
     pub fn bg_sun_disp();
-}
-extern "C" {
     pub fn bg_sun_item_coin_coli();
-}
-extern "C" {
     pub fn bg_bns_init();
-}
-extern "C" {
     pub fn bg_bns_tick();
-}
-extern "C" {
     pub fn bg_bns_dest();
-}
-extern "C" {
     pub fn bg_bns_disp();
-}
-extern "C" {
     pub fn bg_bns_item_coin_coli(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn bg_stm_init();
-}
-extern "C" {
     pub fn bg_stm_tick();
-}
-extern "C" {
     pub fn bg_stm_dest();
-}
-extern "C" {
     pub fn bg_stm_disp();
-}
-extern "C" {
     pub fn bg_stm_item_coin_coli();
-}
-extern "C" {
     pub fn bg_mst_init();
-}
-extern "C" {
     pub fn bg_mst_tick();
-}
-extern "C" {
     pub fn bg_mst_dest();
-}
-extern "C" {
     pub fn bg_mst_disp();
-}
-extern "C" {
     pub fn bg_mst_item_coin_coli();
-}
-extern "C" {
     pub fn bg_pil_init();
-}
-extern "C" {
     pub fn bg_pil_tick();
-}
-extern "C" {
     pub fn bg_pil_dest();
-}
-extern "C" {
     pub fn bg_pil_disp();
-}
-extern "C" {
     pub fn bg_pil_item_coin_coli();
-}
-extern "C" {
     pub fn bg_end_init();
-}
-extern "C" {
     pub fn bg_end_tick();
-}
-extern "C" {
     pub fn bg_end_dest();
-}
-extern "C" {
     pub fn bg_end_disp();
-}
-extern "C" {
     pub fn bg_end_item_coin_coli();
-}
-extern "C" {
     pub fn bg_lava_init();
-}
-extern "C" {
     pub fn bg_lava_tick();
-}
-extern "C" {
     pub fn bg_lava_dest();
-}
-extern "C" {
     pub fn bg_lava_disp();
-}
-extern "C" {
     pub fn bg_lava_item_coin_coli();
-}
-extern "C" {
     pub fn g_draw_lava_particles(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_lava_theme(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn bg_wat2_init();
-}
-extern "C" {
     pub fn bg_wat2_tick();
-}
-extern "C" {
     pub fn bg_wat2_dest();
-}
-extern "C" {
     pub fn bg_wat2_disp();
-}
-extern "C" {
     pub fn bg_wat2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_pil2_init();
-}
-extern "C" {
     pub fn bg_pil2_tick();
-}
-extern "C" {
     pub fn bg_pil2_dest();
-}
-extern "C" {
     pub fn bg_pil2_disp();
-}
-extern "C" {
     pub fn bg_pil2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_spa2_init();
-}
-extern "C" {
     pub fn bg_spa2_tick();
-}
-extern "C" {
     pub fn bg_spa2_dest();
-}
-extern "C" {
     pub fn bg_spa2_disp();
-}
-extern "C" {
     pub fn bg_spa2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_bil2_init();
-}
-extern "C" {
     pub fn bg_bil2_tick(
         param_1: undefined4,
         param_2: undefined4,
@@ -18603,371 +11377,151 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn bg_bil2_dest();
-}
-extern "C" {
     pub fn bg_bil2_disp();
-}
-extern "C" {
     pub fn bg_bil2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_pot_init();
-}
-extern "C" {
     pub fn bg_pot_tick();
-}
-extern "C" {
     pub fn bg_pot_dest();
-}
-extern "C" {
     pub fn bg_pot_disp();
-}
-extern "C" {
     pub fn bg_pot_item_coin_coli();
-}
-extern "C" {
     pub fn bg_pot_fgt_init();
-}
-extern "C" {
     pub fn bg_pot_fgt_tick();
-}
-extern "C" {
     pub fn bg_pot_fgt_dest();
-}
-extern "C" {
     pub fn bg_pot_fgt_disp();
-}
-extern "C" {
     pub fn bg_pot_fgt_item_coin_coli();
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_pot_theme(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn bg_whale_init();
-}
-extern "C" {
     pub fn bg_whale_tick();
-}
-extern "C" {
     pub fn bg_whale_dest();
-}
-extern "C" {
     pub fn bg_whale_disp();
-}
-extern "C" {
     pub fn bg_whale_item_coin_coli();
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_whale_theme(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_whale_theme2(
         param_1: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_short;
-}
-extern "C" {
     pub fn bg_bubble_init();
-}
-extern "C" {
     pub fn bg_bubble_tick();
-}
-extern "C" {
     pub fn bg_bubble_dest();
-}
-extern "C" {
     pub fn bg_bubble_disp();
-}
-extern "C" {
     pub fn bg_bubble_item_coin_coli();
-}
-extern "C" {
     pub fn bg_gear_init();
-}
-extern "C" {
     pub fn bg_gear_author_tick();
-}
-extern "C" {
     pub fn bg_gear_author_dest();
-}
-extern "C" {
     pub fn bg_gear_author_disp();
-}
-extern "C" {
     pub fn bg_gear_item_coin_coli();
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_gear_theme(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn bg_jun2_init();
-}
-extern "C" {
     pub fn bg_jun2_tick();
-}
-extern "C" {
     pub fn bg_jun2_dest();
-}
-extern "C" {
     pub fn bg_jun2_disp();
-}
-extern "C" {
     pub fn bg_jun2_item_coin_coli();
-}
-extern "C" {
     pub fn g_load_ape_bg();
-}
-extern "C" {
     pub fn bg_bns2_init();
-}
-extern "C" {
     pub fn bg_bns2_tick();
-}
-extern "C" {
     pub fn bg_bns2_dest();
-}
-extern "C" {
     pub fn bg_bns2_disp();
-}
-extern "C" {
     pub fn bg_bns2_item_coin_coli();
-}
-extern "C" {
     pub fn bg_bow2_author_init();
-}
-extern "C" {
     pub fn bg_bow2_author_tick();
-}
-extern "C" {
     pub fn bg_bow2_author_dest();
-}
-extern "C" {
     pub fn bg_bow2_author_disp();
-}
-extern "C" {
     pub fn bg_bow2_author_item_coin_coli();
-}
-extern "C" {
     pub fn clear_unlocked_cm_stages();
-}
-extern "C" {
     pub fn init_course();
-}
-extern "C" {
     pub fn event_course_init();
-}
-extern "C" {
     pub fn event_course_tick();
-}
-extern "C" {
     pub fn event_course_dest();
-}
-extern "C" {
     pub fn is_stage_complete(entry: *mut CourseCommand) -> bool_;
-}
-extern "C" {
     pub fn entered_goal_has_type(entry: *mut CourseCommand) -> bool_;
-}
-extern "C" {
     pub fn did_beat_stage_faster_than(entry: *mut CourseCommand) -> bool_;
-}
-extern "C" {
     pub fn calc_stage_jump_distance(entry: *mut CourseCommand);
-}
-extern "C" {
     pub fn clear_next_cm_stage_id2(entry: *mut CourseCommand);
-}
-extern "C" {
     pub fn clear_next_cm_stage_id(entry: *mut CourseCommand);
-}
-extern "C" {
     pub fn get_current_cm_stage_time_limit() -> s32;
-}
-extern "C" {
     pub fn g_update_cm_course(
         difficulty: Difficulty,
         course_stage_num: s32,
         mode_flags: ModeFlag,
     ) -> u32_;
-}
-extern "C" {
     pub fn calc_course_idx(difficulty: Difficulty, mode_flags: ModeFlag) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_get_some_difficulty_count_2(
         param_1: ::core::ffi::c_int,
         mode_flags: ModeFlag,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_are_on_final_course_level(
         difficulty_id: ::core::ffi::c_int,
         course_stage: ::core::ffi::c_int,
         difficulty_flags: uint,
     ) -> bool_;
-}
-extern "C" {
     pub fn is_bonus_stage(stage_id: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn g_something_with_cm_entries_practice_mode();
-}
-extern "C" {
     pub fn g_smth_with_cm_entries_in_main_menu(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: uint,
     ) -> undefined4;
-}
-extern "C" {
     pub fn update_cm_unlocked_levels(
         difficulty: Difficulty,
         param_2: ::core::ffi::c_int,
         mode_flags: ModeFlag,
     );
-}
-extern "C" {
     pub fn clear_cm_player_progress();
-}
-extern "C" {
     pub fn update_course_progress();
-}
-extern "C" {
     pub fn g_something_with_cm_player_progress();
-}
-extern "C" {
     pub fn sprite_debug_course_display_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_save_cm_unlock_entries();
-}
-extern "C" {
     pub fn g_load_cm_unlock_entries();
-}
-extern "C" {
     pub fn get_world_stage_count(world: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn get_world_unbeaten_stage_count(world: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn get_story_mode_stage_id(
         world_idx: ::core::ffi::c_int,
         world_stage_idx: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn get_story_mode_stage_difficulty(
         world: ::core::ffi::c_int,
         stage: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn is_storymode_stage_beaten(
         world: ::core::ffi::c_int,
         world_stage: ::core::ffi::c_int,
     ) -> uint;
-}
-extern "C" {
     pub fn clear_unlocked_storymode_stages();
-}
-extern "C" {
     pub fn g_save_storymode_unlock_entries();
-}
-extern "C" {
     pub fn g_load_storymode_unlock_entries();
-}
-extern "C" {
     pub fn get_storymode_stage_time_limit(
         world: ::core::ffi::c_int,
         world_stage: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn event_item_init();
-}
-extern "C" {
     pub fn event_item_tick();
-}
-extern "C" {
     pub fn event_item_dest();
-}
-extern "C" {
     pub fn draw_items();
-}
-extern "C" {
     pub fn spawn_item(item: *mut Item) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_something_with_view_stage_and_item();
-}
-extern "C" {
     pub fn init_coli_header_items(
         coli_header: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn item_default_init();
-}
-extern "C" {
     pub fn item_default_tick();
-}
-extern "C" {
     pub fn item_default_disp();
-}
-extern "C" {
     pub fn item_default_coli();
-}
-extern "C" {
     pub fn item_default_dest();
-}
-extern "C" {
     pub fn item_default_replay_init();
-}
-extern "C" {
     pub fn item_debug_default();
-}
-extern "C" {
     pub fn item_coin_init(item: *mut Item);
-}
-extern "C" {
     pub fn item_coin_tick(item: *mut Item);
-}
-extern "C" {
     pub fn item_coin_disp(item: *mut Item);
-}
-extern "C" {
     pub fn item_coin_coli(item: *mut Item, phys_ball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn item_coin_dest();
-}
-extern "C" {
     pub fn item_coin_replay_init(item: *mut Item);
-}
-extern "C" {
     pub fn item_debug_coin(item: *mut Item);
-}
-extern "C" {
     pub fn g_something_with_coins(param_1: *mut *mut ::core::ffi::c_int) -> *mut GmaModel;
-}
-extern "C" {
     pub fn event_stobj_collision_init();
-}
-extern "C" {
     pub fn event_stobj_collision_tick();
-}
-extern "C" {
     pub fn event_stobj_collision_dest();
-}
-extern "C" {
     pub fn event_stobj_collision_child_tick();
-}
-extern "C" {
     pub fn g_some_item_collision_check(
         ball_scale: f64,
         item_scale: f64,
@@ -18976,8 +11530,6 @@ extern "C" {
         item_pos_copy: *mut Vec,
         item_pos: *mut Vec,
     ) -> uint;
-}
-extern "C" {
     pub fn g_something_with_item_coli(
         param_1: f64,
         param_2: f64,
@@ -18985,494 +11537,204 @@ extern "C" {
         param_4: *mut Vec,
         param_5: *mut Vec,
     );
-}
-extern "C" {
     pub fn event_stobj_init();
-}
-extern "C" {
     pub fn event_stobj_tick();
-}
-extern "C" {
     pub fn event_stobj_dest();
-}
-extern "C" {
     pub fn g_draw_stobjs();
-}
-extern "C" {
     pub fn g_stobj_sound_something();
-}
-extern "C" {
     pub fn spawn_stobj(stobj: *mut Stobj) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_something_with_bumper_LODs();
-}
-extern "C" {
     pub fn load_bumper_stobjs(
         coli_header_list: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn load_jamabar_stobjs(
         coli_header_list: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn load_button_stobjs(
         coli_header_list: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn stobj_bumper_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_bumper_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_bumper_bgspecial_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_jamabar_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_jamabar_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_jamabar_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_jamabar_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_jamabar_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_jamabar_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_default_init();
-}
-extern "C" {
     pub fn stobj_default_tick();
-}
-extern "C" {
     pub fn stobj_default_disp();
-}
-extern "C" {
     pub fn stobj_default_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_default_dest();
-}
-extern "C" {
     pub fn stobj_default_cb_f();
-}
-extern "C" {
     pub fn stobj_button_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_button_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_button_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_button_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_button_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_button_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn load_goaltape_and_goalbag_stobjs(
         coli_header_list: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn stobj_goaltape_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goaltape_tick(stobj: *mut Stobj) -> f64;
-}
-extern "C" {
     pub fn stobj_goaltape_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goaltape_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_goaltape_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goaltape_cb_f();
-}
-extern "C" {
     pub fn stobj_goalbag_init(stobj: *mut Stobj) -> f64;
-}
-extern "C" {
     pub fn stobj_goalbag_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_goalbag_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_init(stobj: *mut Stobj) -> f64;
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_goalbag_exmaster_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn g_something_with_goals_and_physicsball(
         goal_idx: ::core::ffi::c_int,
         physicsball: *mut PhysicsBall,
     );
-}
-extern "C" {
     pub fn g_get_sphere_camera_zdist_clamped(radius: f32, origin: *mut Vec) -> f32;
-}
-extern "C" {
     pub fn load_returngate_stobjs(
         coli_header_list: *mut StagedefColiHeader,
         coli_header_count: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn stobj_returngate_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_returngate_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_returngate_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_returngate_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_returngate_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_returngate_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn event_sprite_init();
-}
-extern "C" {
     pub fn event_sprite_tick();
-}
-extern "C" {
     pub fn event_sprite_dest();
-}
-extern "C" {
     pub fn g_smth_with_drawing_all_sprites(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn draw_sprite(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn load_bmp_by_id(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_call_smth_with_freeing_memory(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_iteratively_freeing_memory();
-}
-extern "C" {
     pub fn create_sprite() -> *mut Sprite;
-}
-extern "C" {
     pub fn create_linked_sprite(sprite: *mut Sprite) -> *mut Sprite;
-}
-extern "C" {
     pub fn destroy_sprite_with_unique_id(unique_id: SpriteUniqueID);
-}
-extern "C" {
     pub fn dest_all_sprites();
-}
-extern "C" {
     pub fn get_sprite_with_unique_id(unique_id: SpriteUniqueID) -> *mut Sprite;
-}
-extern "C" {
     pub fn g_get_font_char_width(
         character: *mut ::core::ffi::c_char,
         font: Font32,
         g_font_struct: *mut FontDefinition,
     );
-}
-extern "C" {
     pub fn g_get_font_char_width_scaling(character: *mut ::core::ffi::c_char, font: Font32) -> f64;
-}
-extern "C" {
     pub fn textdraw_reset();
-}
-extern "C" {
     pub fn textdraw_set_font(font_type: Font32);
-}
-extern "C" {
     pub fn textdraw_set_mul_color(param_1: uint);
-}
-extern "C" {
     pub fn textdraw_set_add_color(param_1: undefined4);
-}
-extern "C" {
     pub fn textdraw_set_rot_z(param_1: undefined2);
-}
-extern "C" {
     pub fn textdraw_set_depth(param_1: f32);
-}
-extern "C" {
     pub fn textdraw_set_scale(width: f32, height: f32);
-}
-extern "C" {
     pub fn textdraw_set_alpha(alpha: f64);
-}
-extern "C" {
     pub fn textdraw_set_flags(param_1: TextDrawFlags);
-}
-extern "C" {
     pub fn textdraw_clear_flags(param_1: uint);
-}
-extern "C" {
     pub fn textdraw_set_alignment(alignment: SpriteAlignment);
-}
-extern "C" {
     pub fn textdraw_set_drop_shadow_with_params(alpha: f32, offset_x: s16, offset_y: s16);
-}
-extern "C" {
     pub fn textdraw_set_drop_shadow();
-}
-extern "C" {
     pub fn textdraw_clear_drop_shadow();
-}
-extern "C" {
     pub fn textdraw_set_border();
-}
-extern "C" {
     pub fn textdraw_clear_border();
-}
-extern "C" {
     pub fn g_textdraw_set_unk6(param_1: f64);
-}
-extern "C" {
     pub fn g_textdraw_set_unk7(param_1: undefined4);
-}
-extern "C" {
     pub fn textdraw_set_font_style(style: FontStyle);
-}
-extern "C" {
     pub fn textdraw_set_spacing(x: f32, y: f32);
-}
-extern "C" {
     pub fn g_textdraw_set_counter(param_1: undefined2);
-}
-extern "C" {
     pub fn textdraw_set_pos_for_aram_font_test(x: f64, y: f64);
-}
-extern "C" {
     pub fn textdraw_set_pos(x: f32, y: f32);
-}
-extern "C" {
     pub fn textdraw_put_char(ch: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn textdraw_print(string: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn textdraw_printf(format: *mut ::core::ffi::c_char, ...);
-}
-extern "C" {
     pub fn draw_text_sprite(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn draw_bmp_sprite(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn draw_texture_sprite(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn textdraw_print_and_fit_to_width(width: f64, string: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn textdraw_printf_and_fit_to_width(g_width: f64, format: *mut ::core::ffi::c_char, ...);
-}
-extern "C" {
     pub fn g_get_font_def_aram_flag(param_1: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_get_string_sprite_width_2(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn g_call_get_string_sprite_width_3_discard_result(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn textdraw_get_pixel_width_of_string_as_double(string: *mut ::core::ffi::c_char) -> f64;
-}
-extern "C" {
     pub fn textdraw_get_pixel_width_of_string(str_: *mut ::core::ffi::c_char) -> f32;
-}
-extern "C" {
     pub fn textdraw_get_pixel_height_of_string(param_1: *mut ::core::ffi::c_char) -> f64;
-}
-extern "C" {
     pub fn g_smth_with_fonts_chara_load_wrapper_discard_result(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn textdraw_get_line_count_of_string(str_: *mut ::core::ffi::c_char) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_smth_with_screen_fading();
-}
-extern "C" {
     pub fn fade_screen_to_color(flags: uint, color: u32_, frames: uint);
-}
-extern "C" {
     pub fn draw_sprite_draw_request(request: *mut SpriteDrawRequest) -> undefined4;
-}
-extern "C" {
     pub fn g_scale_sprite_for_widescreen(param_1: uint);
-}
-extern "C" {
     pub fn g_reset_sprite_mtx_for_widescreen();
-}
-extern "C" {
     pub fn g_something_loading_fonts();
-}
-extern "C" {
     pub fn g_load_specific_font(font: Font32);
-}
-extern "C" {
     pub fn g_draw_sprite_draw_request_unbuffered(request: *mut SpriteDrawRequest);
-}
-extern "C" {
     pub fn g_parse_avtext_non_alphanumeric(next_two_chars_as_uint: u32_) -> uint;
-}
-extern "C" {
     pub fn g_parse_avtext_other_codes(
         string: *mut ::core::ffi::c_char,
         next_two_chars: *mut ushort,
     ) -> undefined4;
-}
-extern "C" {
     pub fn parse_avtext_color_codes(
         string: *mut ::core::ffi::c_char,
         sprite_draw_req: *mut SpriteDrawRequest,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_some_avtext_array_lookup(
         next_two_chars: ushort,
         some_float: f32,
         float_as_short_ptr: *mut ::core::ffi::c_short,
     ) -> uint;
-}
-extern "C" {
     pub fn g_get_tex_id(
         param_1: undefined4,
         param_2: ushort,
         param_3: *mut ushort,
         param_4: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_some_textdraw_print_internal_func(string: *mut byte);
-}
-extern "C" {
     pub fn textdraw_chara_load(
         string: *mut ::core::ffi::c_char,
         stop_on_newline: BOOL32,
         return_parameter: TextdrawCharaLoadReturnParameter,
     ) -> f32;
-}
-extern "C" {
     pub fn g_get_string_sprite_width_3(param_1: *mut ::core::ffi::c_char) -> f64;
-}
-extern "C" {
     pub fn textdraw_get_pixel_width_of_string_as_double_child(
         string: *mut ::core::ffi::c_char,
     ) -> f64;
-}
-extern "C" {
     pub fn textdraw_get_pixel_width_of_string_child(string: *mut ::core::ffi::c_char) -> f32;
-}
-extern "C" {
     pub fn g_smth_with_fonts_chara_load_wrapper(
         param_1: *mut ::core::ffi::c_char,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn textdraw_get_line_count_of_string_child(
         param_1: *mut ::core::ffi::c_char,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_display_playpoint_or_gift_message_child(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: *mut ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_smth_with_playpoint_or_gift_msg(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn g_some_printf_function_4(
         param_1: undefined8,
         param_2: undefined8,
@@ -19491,134 +11753,48 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn create_pausemenu_sprite();
-}
-extern "C" {
     pub fn g_smth_creates_gameover_sprite(param_1: undefined4, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_pausemenu_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_titlescreen_press_start_sprites(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sprite_titlescreen_press_start_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_copyright_text_disp(param_1: *mut Sprite);
-}
-extern "C" {
     pub fn g_create_smd_adv_logo_sprites();
-}
-extern "C" {
     pub fn sprite_logo_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_copyright_text_sprites(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sprite_copyright_text_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_title_sprite(param_1: s32);
-}
-extern "C" {
     pub fn sprite_title_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_title_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_create_some_controls_description_sprite();
-}
-extern "C" {
     pub fn create_stage_loadin_text_sprites();
-}
-extern "C" {
     pub fn sprite_loadin_stage_name_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_loadin_stage_name_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_player_num_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_player_num_and_ready_sprites(param_1: s32);
-}
-extern "C" {
     pub fn sprite_ready_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_bonus_stage_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_final_stage_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_final_stage_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_go_sprite(param_1: s32);
-}
-extern "C" {
     pub fn sprite_go_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_go_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_goal_and_jump_to_stage_sprites(g_num_frames: s32);
-}
-extern "C" {
     pub fn sprite_goal_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_jump_to_stage_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_jump_to_stage_duplicate_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_fallout_or_bonus_finish_sprite(param_1: s32);
-}
-extern "C" {
     pub fn sprite_fallout_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_time_over_sprite(param_1: s32);
-}
-extern "C" {
     pub fn sprite_time_over_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_bonus_finish_or_perfect_sprite();
-}
-extern "C" {
     pub fn create_bonus_finish_sprite();
-}
-extern "C" {
     pub fn sprite_bonus_finish_or_perfect_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_continue_sprites();
-}
-extern "C" {
     pub fn sprite_continue_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_continues_remaining_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_continue_yes_or_no_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_create_some_game_over_and_player_num_sprites(param_1: s32);
-}
-extern "C" {
     pub fn create_game_over_letter_sprite(
         param_1: s32,
         x: uint,
@@ -19626,88 +11802,38 @@ extern "C" {
         param_4: s32,
         letter: *mut ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn sprite_game_over_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_1up_sprite(param_1: s32);
-}
-extern "C" {
     pub fn sprite_1up_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_replay_sprite(param_1: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn sprite_replay_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_go_to_extra_or_master_stages_sprites();
-}
-extern "C" {
     pub fn g_sprite_extra_all_mask_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_go_to_the_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_go_to_the_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_postgoal_score_sprites(param_1: undefined4, param_2: undefined4, param_3: uint);
-}
-extern "C" {
     pub fn sprite_clear_score_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_warp_bonus_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_time_bonus_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_stage_score_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_goal_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_make_some_continue_screen_sprites();
-}
-extern "C" {
     pub fn create_save_sprite();
-}
-extern "C" {
     pub fn sprite_save_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_save_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_monkey_counter_icon_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_smth_with_get_active_monkey_icon(
         param_1: undefined4,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_create_how_to_sprite();
-}
-extern "C" {
     pub fn g_sprite_how_to_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_how_to_sprite_draw_controller_tooltips(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: *mut SpriteDrawRequest,
     );
-}
-extern "C" {
     pub fn g_how_to_sprite_draw_rules_page(
         param_1: ::core::ffi::c_char,
         sprite: *mut Sprite,
@@ -19717,330 +11843,126 @@ extern "C" {
         param_6: ::core::ffi::c_char,
         param_7: ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn g_sprite_how_to_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_how_to_dest();
-}
-extern "C" {
     pub fn create_hud_sprites();
-}
-extern "C" {
     pub fn create_score_sprites(pos_x: f32, pos_y: f32);
-}
-extern "C" {
     pub fn create_timer_sprites(param_1: f32, param_2: f32);
-}
-extern "C" {
     pub fn create_speed_sprites(param_1: f32, param_2: f32);
-}
-extern "C" {
     pub fn create_hud_stage_name_sprites(param_1: f32, param_2: f32);
-}
-extern "C" {
     pub fn create_banana_counter_sprites(param_1: f64, param_2: f64);
-}
-extern "C" {
     pub fn create_monkey_counter_sprites(x: f64, y: f64);
-}
-extern "C" {
     pub fn create_final_stage_sprite();
-}
-extern "C" {
     pub fn create_debug_course_display_sprites();
-}
-extern "C" {
     pub fn sprite_score_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_score_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_timer_ball_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_current_stage_display_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_current_stage_display_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_hud_stage_name_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_banana_icon_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_banana_icon_shadow_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_banana_count_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_banana_disp_efc_req(bananas_collected: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn sprite_monkey_counter_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_hud_player_num_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn event_minimap_init();
-}
-extern "C" {
     pub fn event_minimap_tick();
-}
-extern "C" {
     pub fn event_minimap_dest();
-}
-extern "C" {
     pub fn set_minimap_mode(minimap_mode: MinimapMode);
-}
-extern "C" {
     pub fn toggle_minimap_zoom();
-}
-extern "C" {
     pub fn g_draw_minimap();
-}
-extern "C" {
     pub fn g_smth_with_rendefc_reflective_height(height: f64);
-}
-extern "C" {
     pub fn ord_tbl_get_entry_for_pos(pos: *mut Vec) -> *mut OrdTblNode;
-}
-extern "C" {
     pub fn ord_tbl_draw_nodes();
-}
-extern "C" {
     pub fn ord_tbl_alloc_node(size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_replay_screen_stage_name();
-}
-extern "C" {
     pub fn set_global_ape_LOD_1();
-}
-extern "C" {
     pub fn load_ape_gameplay_id_only(monkey_id: ::core::ffi::c_int) -> *mut Ape;
-}
-extern "C" {
     pub fn set_global_LOD(lod: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_ape_anim_head(ape: *mut Ape, ape_facedir_point: *mut Vec, flags: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn decompress_lz(in_compressed: *mut byte, out_decompressed: *mut byte) -> uint;
-}
-extern "C" {
     pub fn g_some_arq_callback(pointerToARQRequest: u32_);
-}
-extern "C" {
     pub fn load_disc_queue();
-}
-extern "C" {
     pub fn g_something_with_dvd(entry_num: s32, param_2: *mut undefined4) -> BOOL32;
-}
-extern "C" {
     pub fn dvd_open_file(
         file_path: *mut ::core::ffi::c_char,
         fileStruct: *mut GSomeFileStruct,
     ) -> BOOL32;
-}
-extern "C" {
     pub fn dvd_close(file: *mut GSomeFileStruct) -> BOOL32;
-}
-extern "C" {
     pub fn g_some_ARQPostRequest_callback();
-}
-extern "C" {
     pub fn dvd_read_file_into_buffer(
         dvdEntrynum: *mut ::core::ffi::c_int,
         buffer: *mut ::core::ffi::c_void,
         length: u32_,
         offset: ::core::ffi::c_int,
     ) -> u32_;
-}
-extern "C" {
     pub fn get_file_size(file_struct: *mut GSomeFileStruct) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_some_dvd_callback(result: s32, fileInfo: *mut DVDFileInfo);
-}
-extern "C" {
     pub fn g_something_with_dvd2(param_1: uint, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn add_one_wrap_if_over127(num: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn disc_queue_load(entrynum: ::core::ffi::c_int) -> bool_;
-}
-extern "C" {
     pub fn queue_disc_read(file_name: *mut ::core::ffi::c_char) -> BOOL32;
-}
-extern "C" {
     pub fn get_load_group_status();
-}
-extern "C" {
     pub fn disc_queue_status(identifier: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn disc_queue_distance(identifier: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_get_debug_level_select_loading_left_asterisks() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_swapDiscQueueGroup(newValue: undefined4) -> undefined4;
-}
-extern "C" {
     pub fn g_fill_some_memory_with_0x0_and_0xff(ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_some_shadow_draw_func(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_check_some_condition(param_1: ushort) -> undefined4;
-}
-extern "C" {
     pub fn debug_draw_shadow_textures();
-}
-extern "C" {
     pub fn md_mini_func();
-}
-extern "C" {
     pub fn g_set_minigame_specific_funcs(
         param_1: undefined4,
         param_2: undefined4,
         param_3: undefined4,
         param_4: undefined4,
     );
-}
-extern "C" {
     pub fn g_smd_mini_generic_init();
-}
-extern "C" {
     pub fn g_smd_mini_generic_tick();
-}
-extern "C" {
     pub fn g_mini_draw_func_handler();
-}
-extern "C" {
     pub fn smd_mini_select_init();
-}
-extern "C" {
     pub fn smd_mini_select_tick();
-}
-extern "C" {
     pub fn smd_mini_ending_init();
-}
-extern "C" {
     pub fn smd_mini_ending_tick();
-}
-extern "C" {
     pub fn mini_ending_draw_func();
-}
-extern "C" {
     pub fn smd_mini_s_roll_init();
-}
-extern "C" {
     pub fn smd_mini_s_roll_tick();
-}
-extern "C" {
     pub fn mini_nameentry_draw_func();
-}
-extern "C" {
     pub fn event_mouse_init();
-}
-extern "C" {
     pub fn event_mouse_tick();
-}
-extern "C" {
     pub fn event_mouse_dest();
-}
-extern "C" {
     pub fn g_smth_with_drawing_text_sprites();
-}
-extern "C" {
     pub fn event_rend_efc_init();
-}
-extern "C" {
     pub fn event_rend_efc_tick();
-}
-extern "C" {
     pub fn event_rend_efc_dest();
-}
-extern "C" {
     pub fn g_something_with_rend_efc(param_1: uint);
-}
-extern "C" {
     pub fn g_init_rendefc_for_stage();
-}
-extern "C" {
     pub fn g_smth_with_loading_reflective_stgobjs(param_1: *mut undefined);
-}
-extern "C" {
     pub fn g_smth_calling_reflective_obj_draw_hdlr(
         g_some_flag: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_reflective_object_draw_handler(
         g_some_flag: ::core::ffi::c_int,
         g_some_ptr: *mut ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_reflective_object_draw_handler_2(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_rendefc_func_1(param_1: *mut undefined);
-}
-extern "C" {
     pub fn g_smth_with_pil2_ref(param_1: *mut undefined);
-}
-extern "C" {
     pub fn g_something_with_stage_heap_and_target_theme(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_rendefc_func_2(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_smth_with_reflective_models(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_smth_with_wormhole_surfaces(param_1: *mut undefined);
-}
-extern "C" {
     pub fn fog_main();
-}
-extern "C" {
     pub fn g_set_something3(param_1: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn smd_mini_commend_init();
-}
-extern "C" {
     pub fn smd_mini_commend_tick();
-}
-extern "C" {
     pub fn g_mini_commend_draw_func();
-}
-extern "C" {
     pub fn g_something_with_rotation_not_aiai(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_something_with_drawing_apes();
-}
-extern "C" {
     pub fn event_commend_init();
-}
-extern "C" {
     pub fn event_commend_tick(
         param_1: f64,
         param_2: undefined4,
@@ -20052,59 +11974,23 @@ extern "C" {
         param_8: undefined4,
         param_9: undefined4,
     );
-}
-extern "C" {
     pub fn event_commend_dest();
-}
-extern "C" {
     pub fn load_commend_stage();
-}
-extern "C" {
     pub fn g_something_with_card13();
-}
-extern "C" {
     pub fn g_something_with_card3();
-}
-extern "C" {
     pub fn print_card_submode_error(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_memcard_func_1(info: *mut MemCardInfo);
-}
-extern "C" {
     pub fn g_memcard_func_2(info: *mut MemCardInfo);
-}
-extern "C" {
     pub fn mount_memory_card(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_memcard_func_4(info: *mut MemCardInfo);
-}
-extern "C" {
     pub fn g_something_free_card_blocks(param_1: *mut MemCardFile);
-}
-extern "C" {
     pub fn g_open_card_file(file: *mut MemCardFile);
-}
-extern "C" {
     pub fn something_that_calls_CARDCreateAsync(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_calls_CARDWriteAsync(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_related_to_memcard_rw(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_something_with_card12(param_1: *mut byte);
-}
-extern "C" {
     pub fn g_something_with_card();
-}
-extern "C" {
     pub fn g_something_with_card10(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn g_some_printf_function_5(
         param_1: undefined8,
         param_2: undefined8,
@@ -20123,8 +12009,6 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn g_something_with_card11(
         param_1: undefined8,
         param_2: undefined8,
@@ -20135,8 +12019,6 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_something_with_card9(
         param_1: undefined8,
         param_2: undefined8,
@@ -20147,8 +12029,6 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_something_with_card5(
         param_1: undefined8,
         param_2: undefined8,
@@ -20159,8 +12039,6 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_something_with_card4(
         param_1: undefined8,
         param_2: undefined8,
@@ -20171,11 +12049,7 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_something_with_card8();
-}
-extern "C" {
     pub fn g_something_with_card6(
         param_1: undefined8,
         param_2: undefined8,
@@ -20186,14 +12060,8 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_something_with_card2(card_chan: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_with_fonts() -> uint;
-}
-extern "C" {
     pub fn g_some_printf_function_6(
         param_1: undefined8,
         param_2: undefined8,
@@ -20212,14 +12080,8 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn smd_mini_ranking_init();
-}
-extern "C" {
     pub fn smd_mini_ranking_tick();
-}
-extern "C" {
     pub fn g_load_preview_texture(
         sprite_tex: *mut SpriteTex,
         file_path: *mut ::core::ffi::c_char,
@@ -20228,228 +12090,92 @@ extern "C" {
         height: u16_,
         format: GXTexFmt,
     );
-}
-extern "C" {
     pub fn g_some_dvd_callback2(result: s32, file_info: *mut DVDFileInfo);
-}
-extern "C" {
     pub fn g_load_sprite_tex_from_dvd(sprite_tex: *mut SpriteTex);
-}
-extern "C" {
     pub fn g_maybe_save_previews();
-}
-extern "C" {
     pub fn g_something_with_smb1_ranking_main_game_defaults_wrapper();
-}
-extern "C" {
     pub fn event_name_entry_init();
-}
-extern "C" {
     pub fn event_name_entry_tick();
-}
-extern "C" {
     pub fn event_name_entry_dest();
-}
-extern "C" {
     pub fn g_something_with_name_entry();
-}
-extern "C" {
     pub fn g_something_with_smb1_ranking_main_game_defaults();
-}
-extern "C" {
     pub fn effect_nameent_code_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_nameent_code_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_nameent_code_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_nameent_code_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn effect_get_nameent_code_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_get_nameent_code_tick(param_1: *mut ::core::ffi::c_short);
-}
-extern "C" {
     pub fn effect_get_nameent_code_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_get_nameent_code_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn stobj_nameent_btn_init(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_nameent_btn_tick(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_nameent_btn_disp(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_nameent_btn_coli(stobj: *mut Stobj, physicsball: *mut PhysicsBall);
-}
-extern "C" {
     pub fn stobj_nameent_btn_dest(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn stobj_nameent_btn_cb_f(stobj: *mut Stobj);
-}
-extern "C" {
     pub fn event_vibration_init();
-}
-extern "C" {
     pub fn event_vibration_tick();
-}
-extern "C" {
     pub fn event_vibration_dest();
-}
-extern "C" {
     pub fn g_rumble_controller(
         controller_idx: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_alloc_memory_for_ending();
-}
-extern "C" {
     pub fn g_set_effect_ending_ballfrag();
-}
-extern "C" {
     pub fn g_clear_effect_ending_ballfrag();
-}
-extern "C" {
     pub fn effect_ending_ballfrag_init(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_ending_ballfrag_tick(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_ending_ballfrag_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn effect_ending_ballfrag_dest(effect: *mut Effect);
-}
-extern "C" {
     pub fn g_init_something_with_heaps();
-}
-extern "C" {
     pub fn g_free_some_memory2();
-}
-extern "C" {
     pub fn avdisp_draw_model_unculled_sort_auto(model: *mut GmaModel);
-}
-extern "C" {
     pub fn avdisp_draw_model_culled_sort_auto(model: *mut GmaModel);
-}
-extern "C" {
     pub fn avdisp_draw_model_unculled_sort_never(gma_model: *mut GmaModel);
-}
-extern "C" {
     pub fn avdisp_draw_model_culled_sort_never(model: *mut GmaModel);
-}
-extern "C" {
     pub fn avdisp_draw_model_unculled_sort_always(model: *mut GmaModel);
-}
-extern "C" {
     pub fn avdisp_draw_model_culled_sort_always(gma_model: *mut GmaModel);
-}
-extern "C" {
     pub fn g_some_ord_node_func1(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_ord_node_func2(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn call_g_avdisp_set_ambient(param_1: f64, param_2: f64, param_3: f64);
-}
-extern "C" {
     pub fn avdisp_set_alpha(param_1: f32);
-}
-extern "C" {
     pub fn g_something_with_texture_scroll_2(param_1: ::core::ffi::c_int) -> undefined4;
-}
-extern "C" {
     pub fn g_stores_doubles(param_1: f64, param_2: f64, param_3: f64, param_4: f64);
-}
-extern "C" {
     pub fn g_stores_doubles2(param_1: f64, param_2: f64, param_3: f64, param_4: f64);
-}
-extern "C" {
     pub fn avdisp_set_fog_params(param_1: f64, param_2: f64, param_3: undefined);
-}
-extern "C" {
     pub fn avdisp_set_fog_color(r: u8_, g: u8_, b: u8_);
-}
-extern "C" {
     pub fn g_yet_another_unk_draw_func(param_1: undefined4);
-}
-extern "C" {
     pub fn g_avdisp_reset_alpha_and_bound_sphere_scale();
-}
-extern "C" {
     pub fn g_get_some_dvd_file_info2() -> *mut DVDFileInfo;
-}
-extern "C" {
     pub fn alloc_from_current_heap(size: u32_) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn free_from_current_heap(ptr: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn teleport_through_wormhole(
         ball_idx: ::core::ffi::c_int,
         wormhole_idx: ::core::ffi::c_int,
     ) -> undefined8;
-}
-extern "C" {
     pub fn g_compute_wormhole_tf(wormhole_idx: ::core::ffi::c_int, param_2: *mut f32_)
         -> *mut f32_;
-}
-extern "C" {
     pub fn g_mtx_mult_right(ret: *mut Mtx, param_2: *mut Mtx);
-}
-extern "C" {
     pub fn apply_wormhole_tf_to_mtx(src_tf: *mut Mtx, wormhole_tf: *mut Mtx);
-}
-extern "C" {
     pub fn apply_wormhole_tf_to_vec(vec: *mut Vec, wormhole_tf: *mut Mtx);
-}
-extern "C" {
     pub fn g_apply_wormhole_pos_to_camera(
         camera_pos: *mut Vec,
         camera_vel: *mut Vec,
         mtx: *mut Mtx,
     );
-}
-extern "C" {
     pub fn apply_wormhole_tf_to_quat(quat: *mut Quat, wormhole_tf: *mut Mtx);
-}
-extern "C" {
     pub fn g_load_skl(sklRoot: *mut SKLRoot, boneData: *mut SKLInfo, sklFile: *mut SKLFile);
-}
-extern "C" {
     pub fn g_handL_SKL_func(param_1: *mut ::core::ffi::c_void, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn gan_setanim_wrapper(
         param_1: *mut ::core::ffi::c_void,
         param_2: *mut ::core::ffi::c_char,
     );
-}
-extern "C" {
     pub fn gan_setAnim(
         mal: *mut ::core::ffi::c_void,
         param_2: *mut undefined,
         animation_number: ::core::ffi::c_short,
     );
-}
-extern "C" {
     pub fn gan_setanim_edance(
         param_1: undefined4,
         param_2: undefined,
@@ -20457,95 +12183,49 @@ extern "C" {
         param_4: uint,
         param_5: uint,
     );
-}
-extern "C" {
     pub fn g_init_floatthing(param_1: *mut gFloats);
-}
-extern "C" {
     pub fn gan_incframe(g_speed: f64, ape: *mut Ape);
-}
-extern "C" {
     pub fn g_set_more_ape_state(param_1: *mut undefined2, param_2: *mut undefined2);
-}
-extern "C" {
     pub fn g_smth_with_quat_slerp(param_1: *mut ushort);
-}
-extern "C" {
     pub fn g_something_arc(fileInfo: *mut ArcFileInfo);
-}
-extern "C" {
     pub fn g_table_index(param1: *mut SKLRoot, str_: *mut ::core::ffi::c_char) -> uint;
-}
-extern "C" {
     pub fn load_ape_body(ape_index: ::core::ffi::c_int, game_index: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn gan_setanim_estagebegin(
         ape: *mut Ape,
         chara_index: ::core::ffi::c_int,
         scene_index: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_freeing_chara_heap_3(param_1: *mut *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_something_with_new_ape(
         ape: *mut Ape,
         chara_index: ::core::ffi::c_int,
         scene_index: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn event_ape_init() -> ulonglong;
-}
-extern "C" {
     pub fn event_ape_tick();
-}
-extern "C" {
     pub fn event_ape_dest();
-}
-extern "C" {
     pub fn load_ape(
         chara_index: ::core::ffi::c_int,
         LOD: ApeLOD,
         game_index: ::core::ffi::c_int,
         s_mal: ::core::ffi::c_int,
     ) -> *mut Ape;
-}
-extern "C" {
     pub fn load_ape_s(
         chara_id: ::core::ffi::c_int,
         LOD: ::core::ffi::c_int,
         game_index: ::core::ffi::c_int,
     ) -> *mut Ape;
-}
-extern "C" {
     pub fn load_ape_gameplay(
         monkey_id: ::core::ffi::c_int,
         LOD: undefined4,
         g_variant: ::core::ffi::c_int,
     ) -> *mut Ape;
-}
-extern "C" {
     pub fn load_ape_gameplay_LOD(monkey_id: ::core::ffi::c_int, LOD: ApeLOD) -> *mut Ape;
-}
-extern "C" {
     pub fn draw_ape_subroutine(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_draw_ape1(param_1: f64, ape2: *mut Ape);
-}
-extern "C" {
     pub fn draw_ape(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_something_with_freeing_chara_heap_ape(ape: *mut Ape);
-}
-extern "C" {
     pub fn ape_default_anim(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_ape_anim_body(
         ape: *mut Ape,
         param_2: undefined4,
@@ -20556,117 +12236,65 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn g_load_mal_files_from_disc(
         chara_index: ::core::ffi::c_int,
         LOD: ::core::ffi::c_int,
         s_mal: ::core::ffi::c_int,
         game_index: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_freeing_chara_heap_4(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_freeing_chara_heap_2(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn assign_model_pointers(ape: *mut Ape, lod: ApeLOD);
-}
-extern "C" {
     pub fn gan_getsomeframe(ape: *mut Ape, index: ::core::ffi::c_int) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn body_frame_add72(ape: *mut Ape) -> f64;
-}
-extern "C" {
     pub fn get_ape_game_string(ape: *mut Ape) -> *mut undefined;
-}
-extern "C" {
     pub fn get_ape_anim_flags(
         ape: *mut Ape,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn preload_ape(
         chara_index: ::core::ffi::c_int,
         LOD: ::core::ffi::c_int,
         s_mal: ::core::ffi::c_int,
         game_index: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_load_ape_mta_mal_files(
         game_index: ::core::ffi::c_int,
         chara_index: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_something_with_comparing_strings(
         param_1: undefined4,
         param_2: *mut ::core::ffi::c_char,
     ) -> uint;
-}
-extern "C" {
     pub fn register_ape(ape: *mut Ape);
-}
-extern "C" {
     pub fn unregister_ape(ape: *mut Ape);
-}
-extern "C" {
     pub fn get_ape_index(__return_storage_ptr__: *mut Ape, index: ::core::ffi::c_int) -> Ape;
-}
-extern "C" {
     pub fn dip_apenum_draw(ape: *mut Ape);
-}
-extern "C" {
     pub fn get_ape_name_string(ape: *mut Ape) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn get_ape_lod_string(ape: *mut Ape) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn get_ape_face_string(ape: *mut Ape) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn seek(param_1: *mut ::core::ffi::c_char) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_load_models(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_get_structure_from_ape_common_mal_struct(common_mal: *mut Mal) -> *mut SomeApeState;
-}
-extern "C" {
     pub fn g_something_freeing_heap_3(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn g_get_ape_flag(
         ape: *mut Ape,
         g_something_with_game: undefined4,
         param_3: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_alloc_some_ape_state_0x8(
         g_some_ape_state: *mut SomeApeState,
         chara_idx: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn gan_setanim_e4(ape: *mut Ape);
-}
-extern "C" {
     pub fn g_set_ape_dance_state1(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
@@ -20676,8 +12304,6 @@ extern "C" {
         param_6: undefined4,
         param_7: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_set_ape_dance_state2(
         g_some_ape_state: *mut SomeApeState,
         param_2: uint,
@@ -20688,15 +12314,11 @@ extern "C" {
         param_7: undefined4,
         param_8: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn gan_setAnim2(
         ape: *mut Ape,
         param_2: ::core::ffi::c_int,
         param_3: *mut ::core::ffi::c_short,
     );
-}
-extern "C" {
     pub fn g_some_ape_anim_func2(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
@@ -20704,105 +12326,43 @@ extern "C" {
         param_4: undefined4,
         param_5: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_set_ape_stuff_in_chara_heap(param_1: *mut undefined2, param_2: *mut undefined2);
-}
-extern "C" {
     pub fn g_something_with_GXPeekZ();
-}
-extern "C" {
     pub fn g_init_rankings_to_defaults_wrapper();
-}
-extern "C" {
     pub fn g_init_rankings_to_defaults();
-}
-extern "C" {
     pub fn g_NameEntry2_InitFirst();
-}
-extern "C" {
     pub fn g_nameentry2_init();
-}
-extern "C" {
     pub fn game_nameentry_draw_func();
-}
-extern "C" {
     pub fn ape_assignment();
-}
-extern "C" {
     pub fn sprite_rank_tick();
-}
-extern "C" {
     pub fn sprite_rank_disp();
-}
-extern "C" {
     pub fn g_something_with_name_entry_get_course(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_ape_anim_func1(ape: *mut Ape);
-}
-extern "C" {
     pub fn set_ape_anim(ape: *mut Ape, animationType: undefined);
-}
-extern "C" {
     pub fn g_some_set_ape_anim(ape: *mut Ape, chara_anim_type: undefined, param_3: undefined2);
-}
-extern "C" {
     pub fn run_anim_funcs(ape: *mut Ape);
-}
-extern "C" {
     pub fn load_scene_files(scene_category: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn load_scene_data(scene_category: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn g_parse_scene_data(param_1: *mut ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_something_freeing_heap_4();
-}
-extern "C" {
     pub fn g_something_with_cutscenes_func2();
-}
-extern "C" {
     pub fn g_something_with_cutscenes_func(g_something_cutscene: u16_) -> undefined4;
-}
-extern "C" {
     pub fn g_dump_scene_info();
-}
-extern "C" {
     pub fn g_something_to_do_with_soft_fx(
         param_1: undefined4,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn load_dialog_tbl(scene_id: ::core::ffi::c_int) -> *mut OSHeapHandle;
-}
-extern "C" {
     pub fn g_smth_with_dialog2(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn load_scene_sound(param_1_00: ::core::ffi::c_char);
-}
-extern "C" {
     pub fn smd_author_select_init();
-}
-extern "C" {
     pub fn smd_author_select_tick();
-}
-extern "C" {
     pub fn g_print_author_debug_data();
-}
-extern "C" {
     pub fn smd_author_play_init();
-}
-extern "C" {
     pub fn smd_author_play_tick(
         param_1: undefined4,
         param_2: undefined4,
@@ -20813,81 +12373,33 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn smd_author_play_story_init();
-}
-extern "C" {
     pub fn smd_author_play_ending_init();
-}
-extern "C" {
     pub fn smd_author_play_from_sel();
-}
-extern "C" {
     pub fn smd_author_play_ret_sel();
-}
-extern "C" {
     pub fn md_author_func();
-}
-extern "C" {
     pub fn author_draw_func();
-}
-extern "C" {
     pub fn g_assign_new_main_and_sub_mode_for_play_tick(param_1: MainMode, param_2: SubMode);
-}
-extern "C" {
     pub fn g_set_some_author_tick_func(param_1: undefined4);
-}
-extern "C" {
     pub fn g_get_some_author_related_data() -> undefined4;
-}
-extern "C" {
     pub fn g_get_author_scene() -> undefined4;
-}
-extern "C" {
     pub fn g_get_author_scene_max() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_get_author_frame() -> undefined2;
-}
-extern "C" {
     pub fn g_get_author_frame_max() -> undefined2;
-}
-extern "C" {
     pub fn g_some_author_cutscene_related_func();
-}
-extern "C" {
     pub fn g_load_stageselect_after_cutscene();
-}
-extern "C" {
     pub fn g_preload_next_stage_files(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn clear_unlock_info();
-}
-extern "C" {
     pub fn g_is_master_unlocked() -> byte;
-}
-extern "C" {
     pub fn g_set_unlockables_status();
-}
-extern "C" {
     pub fn g_handle_goal();
-}
-extern "C" {
     pub fn compare_play_points_with_99999_after_exit_game();
-}
-extern "C" {
     pub fn get_play_point_count() -> dword;
-}
-extern "C" {
     pub fn g_display_playpoint_or_gift_message(g_x_pos: f64, g_y_pos: f64, param_3: undefined);
-}
-extern "C" {
     pub fn g_playpoint_or_gift_msg_disp(
         param_1_00: undefined8,
         param_2: undefined8,
@@ -20906,558 +12418,196 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn is_able_to_unlock_party_game() -> bool_;
-}
-extern "C" {
     pub fn unlock_party_game(party_game: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn is_able_to_unlock_gift() -> bool_;
-}
-extern "C" {
     pub fn g_something_with_assinging_unlockables();
-}
-extern "C" {
     pub fn unlock_movie(movie: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn unlock_staff_credits_game();
-}
-extern "C" {
     pub fn are_all_gifts_unlocked() -> uint;
-}
-extern "C" {
     pub fn g_check_if_partygame_unlocked(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn get_num_of_unlocked_party_games() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn are_all_party_games_unlocked() -> bool_;
-}
-extern "C" {
     pub fn set_unlocked_monkeys_to_three();
-}
-extern "C" {
     pub fn get_num_unlocked_monkeys() -> byte;
-}
-extern "C" {
     pub fn are_all_extra_monkeys_unlocked() -> bool_;
-}
-extern "C" {
     pub fn g_set_movie_as_unlocked(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_is_movie_unlocked(param_1: ::core::ffi::c_int) -> uint;
-}
-extern "C" {
     pub fn are_all_movies_unlocked() -> bool_;
-}
-extern "C" {
     pub fn is_staff_credits_game_unlocked() -> byte;
-}
-extern "C" {
     pub fn return_5() -> undefined4;
-}
-extern "C" {
     pub fn main_game_rel_prolog();
-}
-extern "C" {
     pub fn main_game_rel_epilog();
-}
-extern "C" {
     pub fn main_game_rel_unlinked();
-}
-extern "C" {
     pub fn md_game_func();
-}
-extern "C" {
     pub fn smd_game_first_init();
-}
-extern "C" {
     pub fn smd_game_restart_init();
-}
-extern "C" {
     pub fn smd_game_ready_init();
-}
-extern "C" {
     pub fn smd_game_ready_tick();
-}
-extern "C" {
     pub fn smd_game_play_init();
-}
-extern "C" {
     pub fn smd_game_play_tick();
-}
-extern "C" {
     pub fn smd_game_goal_init();
-}
-extern "C" {
     pub fn smd_game_goal_tick();
-}
-extern "C" {
     pub fn smd_game_goal_replay_init();
-}
-extern "C" {
     pub fn smd_game_goal_replay_tick();
-}
-extern "C" {
     pub fn smd_game_continue_init();
-}
-extern "C" {
     pub fn smd_game_continue_tick();
-}
-extern "C" {
     pub fn smd_game_timeover_init();
-}
-extern "C" {
     pub fn smd_game_timeover_tick();
-}
-extern "C" {
     pub fn smd_game_ringout_init();
-}
-extern "C" {
     pub fn smd_game_ringout_tick();
-}
-extern "C" {
     pub fn smd_game_bonus_clear_init();
-}
-extern "C" {
     pub fn smd_game_bonus_clear_tick();
-}
-extern "C" {
     pub fn smd_game_first_tick();
-}
-extern "C" {
     pub fn smd_game_over_init();
-}
-extern "C" {
     pub fn smd_game_over_point_init();
-}
-extern "C" {
     pub fn smd_game_over_point_tick();
-}
-extern "C" {
     pub fn smd_game_scenario_init();
-}
-extern "C" {
     pub fn smd_game_scenario_tick();
-}
-extern "C" {
     pub fn g_some_dest_function_handler();
-}
-extern "C" {
     pub fn smd_game_scenario_return();
-}
-extern "C" {
     pub fn smd_game_retry_init();
-}
-extern "C" {
     pub fn smd_game_retry_tick();
-}
-extern "C" {
     pub fn smd_game_over_save();
-}
-extern "C" {
     pub fn smd_game_over_dest();
-}
-extern "C" {
     pub fn smd_game_nameentry_ready_init();
-}
-extern "C" {
     pub fn smd_game_nameentry_ready_tick();
-}
-extern "C" {
     pub fn smd_game_nameentry_init();
-}
-extern "C" {
     pub fn smd_game_nameentry_tick();
-}
-extern "C" {
     pub fn smd_game_roll_init();
-}
-extern "C" {
     pub fn smd_game_roll_tick(
         param_1: undefined4,
         param_2_00: undefined4,
         param_3: ::core::ffi::c_short,
     );
-}
-extern "C" {
     pub fn smd_game_extra_init();
-}
-extern "C" {
     pub fn smd_game_extra_tick();
-}
-extern "C" {
     pub fn smd_game_result_init();
-}
-extern "C" {
     pub fn smd_game_result_tick();
-}
-extern "C" {
     pub fn smd_game_result_menu();
-}
-extern "C" {
     pub fn smd_game_intr_sel_init();
-}
-extern "C" {
     pub fn smd_game_intr_sel_tick();
-}
-extern "C" {
     pub fn smd_game_sugg_save_init();
-}
-extern "C" {
     pub fn smd_game_sugg_save_tick();
-}
-extern "C" {
     pub fn get_next_stage_id() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_decrement_active_ball_monkey_count() -> uint;
-}
-extern "C" {
     pub fn smd_game_force_exit_init();
-}
-extern "C" {
     pub fn smd_game_force_exit_tick();
-}
-extern "C" {
     pub fn smd_game_scenscnplay_return();
-}
-extern "C" {
     pub fn smd_game_force_over_init();
-}
-extern "C" {
     pub fn smd_game_force_over_tick();
-}
-extern "C" {
     pub fn g_preload_stage_or_results();
-}
-extern "C" {
     pub fn g_challenge_mode_start(ball: *mut Ball);
-}
-extern "C" {
     pub fn challenge_mode_physics(ball: *mut Ball);
-}
-extern "C" {
     pub fn apply_velocity(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_smth_with_mystery_3(ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func89(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn g_camera_func90(camera: *mut Camera, ball: *mut Ball);
-}
-extern "C" {
     pub fn smd_game_scenario_init_child();
-}
-extern "C" {
     pub fn smd_game_scenario_tick_child();
-}
-extern "C" {
     pub fn g_some_storymode_dest_function();
-}
-extern "C" {
     pub fn game_scenario_draw_func();
-}
-extern "C" {
     pub fn get_storymode_score() -> undefined4;
-}
-extern "C" {
     pub fn set_storymode_score(value: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn get_storymode_banana_count() -> undefined4;
-}
-extern "C" {
     pub fn set_storymode_bananas(banana_count: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_preload_ape_model_for_stageselect();
-}
-extern "C" {
     pub fn g_save_storymode_progress(param_1: *mut ::core::ffi::c_void);
-}
-extern "C" {
     pub fn get_current_storymode_stage_time_limit() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn get_storymode_stage_time_limit_wrapper(
         world: ::core::ffi::c_int,
         world_stage: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn g_some_scenario_init_func_1();
-}
-extern "C" {
     pub fn g_some_storymode_mode_handler();
-}
-extern "C" {
     pub fn g_get_storymode_playtime_frames();
-}
-extern "C" {
     pub fn dmd_scen_select_init();
-}
-extern "C" {
     pub fn dmd_scen_select_main();
-}
-extern "C" {
     pub fn dmd_scen_1st_init();
-}
-extern "C" {
     pub fn dmd_scen_return_init();
-}
-extern "C" {
     pub fn dmd_scen_newgame_init();
-}
-extern "C" {
     pub fn dmd_scen_newgame_main();
-}
-extern "C" {
     pub fn dmd_scen_loadgame_init();
-}
-extern "C" {
     pub fn dmd_scen_loadgame_main();
-}
-extern "C" {
     pub fn dmd_scen_loadgame_restore();
-}
-extern "C" {
     pub fn dmd_scen_sceneplay_init();
-}
-extern "C" {
     pub fn dmd_scen_sceneplay_main();
-}
-extern "C" {
     pub fn dmd_scen_scnplay_return();
-}
-extern "C" {
     pub fn dmd_scen_scnplay_return_loading();
-}
-extern "C" {
     pub fn dmd_scen_sel_world_init();
-}
-extern "C" {
     pub fn dmd_scen_sel_world_next();
-}
-extern "C" {
     pub fn dmd_scen_sel_floor_init();
-}
-extern "C" {
     pub fn dmd_scen_sel_floor_main();
-}
-extern "C" {
     pub fn dmd_scen_game_init();
-}
-extern "C" {
     pub fn dmd_scen_game_main();
-}
-extern "C" {
     pub fn dmd_scen_game_clear_init();
-}
-extern "C" {
     pub fn dmd_scen_game_clear_main();
-}
-extern "C" {
     pub fn dmd_scen_nameentry_init();
-}
-extern "C" {
     pub fn dmd_scen_nameentry_main();
-}
-extern "C" {
     pub fn dmd_scen_game_over_init();
-}
-extern "C" {
     pub fn dmd_scen_game_over_main();
-}
-extern "C" {
     pub fn dmd_scen_entry_init();
-}
-extern "C" {
     pub fn dmd_scen_entry_main();
-}
-extern "C" {
     pub fn g_some_storymode_mode_func();
-}
-extern "C" {
     pub fn get_current_storymode_save_file() -> *mut StoryModeSaveFile;
-}
-extern "C" {
     pub fn g_some_scenario_init_func_4();
-}
-extern "C" {
     pub fn g_free_scen_stage_name_buffer();
-}
-extern "C" {
     pub fn g_create_storymode_select_sprites(param_1: uint);
-}
-extern "C" {
     pub fn g_related_to_loading_story_stageselect(param_1: uint);
-}
-extern "C" {
     pub fn sprite_story_stage_select_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_story_stage_select_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_handle_story_clear_stage_balls(param_1: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn sprite_clear_floors_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_clear_floors_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_decoration_bar_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_world_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_world_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_animate_story_select_sprites(param_1: undefined2);
-}
-extern "C" {
     pub fn g_sprite_world_info_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_world_info_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_scen_stagesel_stage_name_tick(param_1: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_scen_stagesel_stage_name_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_story_difficulty_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_story_difficulty_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_draw_story_stage_preview_ball(param_1: undefined2);
-}
-extern "C" {
     pub fn g_sprite_story_stage_info_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_sprite_story_stage_info_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn g_preload_all_story_preview_images();
-}
-extern "C" {
     pub fn g_draw_now_loading_text();
-}
-extern "C" {
     pub fn g_get_storymode_next_world() -> uint;
-}
-extern "C" {
     pub fn g_check_if_game_over_or_after_credits_sequence(
         param_1: ::core::ffi::c_int,
         param_2: *mut ::core::ffi::c_void,
     ) -> *mut ::core::ffi::c_void;
-}
-extern "C" {
     pub fn g_some_scenario_init_func_3();
-}
-extern "C" {
     pub fn g_handle_storymode_stageselect_state();
-}
-extern "C" {
     pub fn dmd_scen_sel_floor_init_child();
-}
-extern "C" {
     pub fn g_set_some_storymode_stageids();
-}
-extern "C" {
     pub fn g_load_new_storymode_stage(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_some_scenario_init_func_2();
-}
-extern "C" {
     pub fn g_smth_with_storymode();
-}
-extern "C" {
     pub fn sprite_story_file_nameentry_disp();
-}
-extern "C" {
     pub fn create_story_file_nameentry_sprite();
-}
-extern "C" {
     pub fn dmd_scen_entry_main_child();
-}
-extern "C" {
     pub fn g_get_story_file_name(param_1: *mut ::core::ffi::c_char);
-}
-extern "C" {
     pub fn draw_storymode_save_file(saveFile: *mut StoryModeSaveFile, index: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_related_to_loading_dataselect_menu();
-}
-extern "C" {
     pub fn dmd_scen_loadgame_main_child();
-}
-extern "C" {
     pub fn get_storymode_menu_state() -> ::core::ffi::c_int;
-}
-extern "C" {
     pub fn staff_roll_init();
-}
-extern "C" {
     pub fn game_roll_draw_func();
-}
-extern "C" {
     pub fn game_continue_draw_func();
-}
-extern "C" {
     pub fn event_view_init();
-}
-extern "C" {
     pub fn event_view_tick();
-}
-extern "C" {
     pub fn event_view_dest();
-}
-extern "C" {
     pub fn g_something_with_view_stage2();
-}
-extern "C" {
     pub fn draw_reflective_objects_in_viewstage();
-}
-extern "C" {
     pub fn g_call_advance_stage_animation();
-}
-extern "C" {
     pub fn g_increment_bg_related_timer();
-}
-extern "C" {
     pub fn view_stage_draw_bananas();
-}
-extern "C" {
     pub fn g_smth_with_rendering_models_for_reflective_surfaces();
-}
-extern "C" {
     pub fn g_draw_stobjs_in_viewstage();
-}
-extern "C" {
     pub fn g_something_with_view_stage_camera(camera: *mut Camera);
-}
-extern "C" {
     pub fn sel_ngc_prolog(
         param_1: undefined8,
         param_2: undefined8,
@@ -21468,20 +12618,10 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn sel_ngc_epilog();
-}
-extern "C" {
     pub fn sel_ngc_unlinked_func();
-}
-extern "C" {
     pub fn did_any_pad_press_input(input_id: PadInputID) -> bool_;
-}
-extern "C" {
     pub fn g_create_main_menu();
-}
-extern "C" {
     pub fn g_initialize_sel_ngc(
         param_1: undefined8,
         param_2: undefined8,
@@ -21492,29 +12632,13 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn g_reinitialize_sel_ngc();
-}
-extern "C" {
     pub fn g_called_when_fading_to_storymode() -> undefined4;
-}
-extern "C" {
     pub fn g_sel_ngc_item_selected(play_menu_selction_sound: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_b_button_pressed_on_menu(param_1_00: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_is_screen_in_screen_stack(g_screen_id: byte) -> BOOL32;
-}
-extern "C" {
     pub fn menu_tick();
-}
-extern "C" {
     pub fn g_something_with_menus(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn menu_mode_select_tick(
         param_1: undefined8,
         param_2: undefined8,
@@ -21525,8 +12649,6 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn menu_party_game_select_tick(
         param_1: undefined8,
         param_2: undefined8,
@@ -21537,159 +12659,59 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn menu_option_tick();
-}
-extern "C" {
     pub fn menu_return_to_title();
-}
-extern "C" {
     pub fn menu_number_of_players_tick();
-}
-extern "C" {
     pub fn menu_character_select_tick();
-}
-extern "C" {
     pub fn menu_gameplay_settings_tick();
-}
-extern "C" {
     pub fn menu_main_game_select_tick();
-}
-extern "C" {
     pub fn menu_level_select_tick();
-}
-extern "C" {
     pub fn g_get_some_challenge_mode_difficulty_info(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn g_get_some_category_count(
         flag: ::core::ffi::c_int,
         g_out_1: *mut undefined4,
         g_out_2: *mut ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn menu_stage_select_tick();
-}
-extern "C" {
     pub fn menu_start_story_mode();
-}
-extern "C" {
     pub fn menu_start_challenge_mode();
-}
-extern "C" {
     pub fn menu_start_practice_mode();
-}
-extern "C" {
     pub fn menu_race_mode_select_tick();
-}
-extern "C" {
     pub fn menu_race_course_select_tick();
-}
-extern "C" {
     pub fn menu_start_race();
-}
-extern "C" {
     pub fn menu_fight_mode_select_tick();
-}
-extern "C" {
     pub fn menu_fight_no_of_wins_tick();
-}
-extern "C" {
     pub fn menu_fight_stage_select_tick();
-}
-extern "C" {
     pub fn menu_start_fight();
-}
-extern "C" {
     pub fn menu_start_target();
-}
-extern "C" {
     pub fn menu_billiards_mode_select_tick();
-}
-extern "C" {
     pub fn menu_billiards_rule_select_tick();
-}
-extern "C" {
     pub fn menu_start_billiards();
-}
-extern "C" {
     pub fn menu_bowling_mode_select_tick();
-}
-extern "C" {
     pub fn menu_bowling_rule_select_tick();
-}
-extern "C" {
     pub fn menu_bowling_level_select_tick();
-}
-extern "C" {
     pub fn menu_start_bowling();
-}
-extern "C" {
     pub fn menu_golf_mode_select_tick();
-}
-extern "C" {
     pub fn menu_start_golf();
-}
-extern "C" {
     pub fn menu_boat_mode_select_entries_tick();
-}
-extern "C" {
     pub fn menu_boat_course_select_tick();
-}
-extern "C" {
     pub fn menu_start_boat();
-}
-extern "C" {
     pub fn menu_shot_stage_select_tick();
-}
-extern "C" {
     pub fn menu_start_shot();
-}
-extern "C" {
     pub fn menu_dogfight_mode_select_tick();
-}
-extern "C" {
     pub fn menu_dogfight_stage_select_tick();
-}
-extern "C" {
     pub fn menu_start_dogfight();
-}
-extern "C" {
     pub fn menu_soccer_mode_select_tick();
-}
-extern "C" {
     pub fn menu_start_soccer();
-}
-extern "C" {
     pub fn menu_baseball_mode_select_tick();
-}
-extern "C" {
     pub fn menu_baseball_stadium_select_tick();
-}
-extern "C" {
     pub fn menu_start_baseball();
-}
-extern "C" {
     pub fn menu_tennis_mode_select_tick();
-}
-extern "C" {
     pub fn menu_tennis_pair_select_tick();
-}
-extern "C" {
     pub fn menu_tennis_court_select_tick();
-}
-extern "C" {
     pub fn menu_start_tennis();
-}
-extern "C" {
     pub fn menu_option_replay_tick();
-}
-extern "C" {
     pub fn menu_option_play_points_tick();
-}
-extern "C" {
     pub fn menu_option_gift_tick(
         param_1: undefined8,
         param_2: undefined8,
@@ -21708,134 +12730,50 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn menu_option_ranking_tick();
-}
-extern "C" {
     pub fn menu_option_game_data_tick();
-}
-extern "C" {
     pub fn menu_option_controller_tick();
-}
-extern "C" {
     pub fn menu_option_screen_tick();
-}
-extern "C" {
     pub fn g_handle_starting_monkeys_count(
         param_1: ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> *mut ::core::ffi::c_char;
-}
-extern "C" {
     pub fn create_main_menu_sprites();
-}
-extern "C" {
     pub fn g_display_game_settings_sprite();
-}
-extern "C" {
     pub fn create_practice_mode_stage_select_sprite();
-}
-extern "C" {
     pub fn sprite_title_str_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_title_str_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_info_str_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_info_str_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_start_mask_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_menu_basic_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_menu_basic_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_menu_basic_stack_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_menu_basic_title_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_menu_basic_title_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_game_settings_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_game_settings_disp(param_1: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_practice_stage_select_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_practice_stage_select_disp(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn sprite_fight_stage_select_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_fight_stage_select_disp(param_1: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_button_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_button_disp(param_1: *mut Sprite);
-}
-extern "C" {
     pub fn g_blink_selected_menu_item();
-}
-extern "C" {
     pub fn g_something_with_menus5();
-}
-extern "C" {
     pub fn g_load_select_apes();
-}
-extern "C" {
     pub fn g_load_some_apes();
-}
-extern "C" {
     pub fn menu_draw_background();
-}
-extern "C" {
     pub fn g_draw_menu_bg_overlay(param_1: *mut GXColor, param_2: GXTexFmt);
-}
-extern "C" {
     pub fn free_some_apes();
-}
-extern "C" {
     pub fn g_draw_stage_0x9f_for_menu_bg();
-}
-extern "C" {
     pub fn g_draw_stage_0x8a_for_menu_bg();
-}
-extern "C" {
     pub fn g_draw_stage_for_menu_bg_2();
-}
-extern "C" {
     pub fn sprite_practice_stage_preview_tick(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_practice_stage_preview_disp(sprite: *mut Sprite);
-}
-extern "C" {
     pub fn sprite_practice_stage_preview_mask_disp(status: *mut u8_, sprite: *mut Sprite);
-}
-extern "C" {
     pub fn create_practice_mode_preview_sprites();
-}
-extern "C" {
     pub fn g_draw_controller_sprites();
-}
-extern "C" {
     pub fn g_draw_gift_menu(
         param_1: undefined8,
         param_2: undefined8,
@@ -21854,26 +12792,12 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn sel_stage_unlinked_func();
-}
-extern "C" {
     pub fn g_references_420_03();
-}
-extern "C" {
     pub fn bowling_rel_prolog();
-}
-extern "C" {
     pub fn bowling_rel_epilog();
-}
-extern "C" {
     pub fn bowling_rel_unlinked();
-}
-extern "C" {
     pub fn g_init_bowling();
-}
-extern "C" {
     pub fn g_bowl_drawFunc(
         param_1: *mut Ape,
         param_2: ::core::ffi::c_int,
@@ -21884,38 +12808,16 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn g_load_missing_apes();
-}
-extern "C" {
     pub fn g_load_commend_apes();
-}
-extern "C" {
     pub fn g_load_selthing();
-}
-extern "C" {
     pub fn ballid_matches_chara(chara_index: u32_) -> BOOL32;
-}
-extern "C" {
     pub fn mini_billiards_unlinked_func();
-}
-extern "C" {
     pub fn g_references_420_04();
-}
-extern "C" {
     pub fn sample_unlinked_func();
-}
-extern "C" {
     pub fn test_mode_prolog();
-}
-extern "C" {
     pub fn test_mode_epilog();
-}
-extern "C" {
     pub fn test_mode_unlinked_func();
-}
-extern "C" {
     pub fn smd_test_select_init(
         param_1: undefined8,
         param_2: undefined8,
@@ -21934,38 +12836,16 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn smd_test_select_main();
-}
-extern "C" {
     pub fn test_select_draw_func();
-}
-extern "C" {
     pub fn smd_test_dip_init();
-}
-extern "C" {
     pub fn smd_test_dip_main();
-}
-extern "C" {
     pub fn smd_test_input_init();
-}
-extern "C" {
     pub fn smd_test_input_main();
-}
-extern "C" {
     pub fn smd_test_sound_init();
-}
-extern "C" {
     pub fn smd_test_sound_main();
-}
-extern "C" {
     pub fn test_sound_draw_func();
-}
-extern "C" {
     pub fn smd_test_adx_init();
-}
-extern "C" {
     pub fn smd_test_adx_main(
         param_1: undefined8,
         param_2: undefined8,
@@ -21984,71 +12864,27 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn smd_test_blur_init();
-}
-extern "C" {
     pub fn smd_test_blur_main();
-}
-extern "C" {
     pub fn test_blur_draw_func();
-}
-extern "C" {
     pub fn smd_test_shadow_init();
-}
-extern "C" {
     pub fn smd_test_shadow_main();
-}
-extern "C" {
     pub fn smd_test_focus_init();
-}
-extern "C" {
     pub fn smd_test_focus_main();
-}
-extern "C" {
     pub fn smd_test_indirect_init();
-}
-extern "C" {
     pub fn smd_test_indirect_main();
-}
-extern "C" {
     pub fn smd_test_nlobject_init();
-}
-extern "C" {
     pub fn smd_test_nlobject_main();
-}
-extern "C" {
     pub fn smd_test_bitmap_init();
-}
-extern "C" {
     pub fn smd_test_bitmap_main();
-}
-extern "C" {
     pub fn test_bitmap_draw_func();
-}
-extern "C" {
     pub fn smd_test_font_init();
-}
-extern "C" {
     pub fn smd_test_font_main();
-}
-extern "C" {
     pub fn test_font_draw_func();
-}
-extern "C" {
     pub fn smd_test_aram_font_init();
-}
-extern "C" {
     pub fn smd_test_aram_font_main();
-}
-extern "C" {
     pub fn test_aram_font_draw_func();
-}
-extern "C" {
     pub fn smd_test_motion_init();
-}
-extern "C" {
     pub fn smd_test_motion_main(
         param_1: undefined4,
         param_2: undefined4,
@@ -22059,11 +12895,7 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn smd_test_newmotion_init();
-}
-extern "C" {
     pub fn smd_test_newmotion_main(
         param_1: undefined4,
         param_2: undefined4,
@@ -22074,68 +12906,26 @@ extern "C" {
         param_7: ::core::ffi::c_int,
         param_8: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn smd_test_advreplay_init();
-}
-extern "C" {
     pub fn smd_test_model_init();
-}
-extern "C" {
     pub fn smd_test_model_main();
-}
-extern "C" {
     pub fn test_model_draw_func();
-}
-extern "C" {
     pub fn smd_test_newmodel_init();
-}
-extern "C" {
     pub fn smd_test_newmodel_main();
-}
-extern "C" {
     pub fn test_newmodel_draw_func();
-}
-extern "C" {
     pub fn smd_test_pattern_init();
-}
-extern "C" {
     pub fn smd_test_pattern_main();
-}
-extern "C" {
     pub fn test_pattern_draw_func();
-}
-extern "C" {
     pub fn smd_test_romfont_init();
-}
-extern "C" {
     pub fn smd_test_romfont_main();
-}
-extern "C" {
     pub fn smd_test_prerend_init();
-}
-extern "C" {
     pub fn smd_test_prerend_main();
-}
-extern "C" {
     pub fn test_prerend_draw_func();
-}
-extern "C" {
     pub fn smd_test_preview_init();
-}
-extern "C" {
     pub fn smd_test_preview_main();
-}
-extern "C" {
     pub fn smd_test_replay_init();
-}
-extern "C" {
     pub fn smd_test_replay_main();
-}
-extern "C" {
     pub fn smd_test_scene_play_init();
-}
-extern "C" {
     pub fn smd_test_scene_play_main(
         param_1: undefined4,
         param_2: undefined4,
@@ -22146,14 +12936,8 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn test_scene_play_draw_func();
-}
-extern "C" {
     pub fn smd_test_dialog_init();
-}
-extern "C" {
     pub fn smd_test_dialog_main(
         param_1: undefined4,
         param_2: undefined4,
@@ -22164,26 +12948,12 @@ extern "C" {
         param_7: undefined4,
         param_8: undefined4,
     );
-}
-extern "C" {
     pub fn test_dialog_draw_func();
-}
-extern "C" {
     pub fn smd_test_difficulty_init();
-}
-extern "C" {
     pub fn smd_test_difficulty_main();
-}
-extern "C" {
     pub fn test_difficulty_draw_func();
-}
-extern "C" {
     pub fn smd_test_chk_repsize_init();
-}
-extern "C" {
     pub fn smd_test_chk_repsize_main();
-}
-extern "C" {
     pub fn test_draw_func_handler(
         param_1: undefined8,
         param_2: undefined8,
@@ -22194,29 +12964,13 @@ extern "C" {
         param_7: undefined8,
         param_8: undefined8,
     );
-}
-extern "C" {
     pub fn smd_test_shadow_main_child();
-}
-extern "C" {
     pub fn g_test_shadow_draw_func_1();
-}
-extern "C" {
     pub fn g_test_shadow_draw_func_2();
-}
-extern "C" {
     pub fn smd_test_focus_main_child();
-}
-extern "C" {
     pub fn test_focus_draw_func();
-}
-extern "C" {
     pub fn smd_test_indirect_main_child();
-}
-extern "C" {
     pub fn test_indirect_draw_func();
-}
-extern "C" {
     pub fn g_some_printf_function_7(
         param_1: undefined8,
         param_2: undefined8,
@@ -22235,37 +12989,21 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn g_test_motion_main_draw_func() -> undefined8;
-}
-extern "C" {
     pub fn test_adx_draw_func();
-}
-extern "C" {
     pub fn test_newmotion_draw_func();
-}
-extern "C" {
     pub fn g_something_freeing_something_from_main_heap_2();
-}
-extern "C" {
     pub fn gan_setanim_e5(
         param_1: *mut *mut ArcFileInfo,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut *mut ::core::ffi::c_void,
     );
-}
-extern "C" {
     pub fn gan_set_anim_e6(param_1: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn gan_setanim_e7(
         param_1: ::core::ffi::c_int,
         param_2: undefined4,
         param_3: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn gan_setanim_e8(
         param_1: undefined4,
         param_2: undefined4,
@@ -22273,62 +13011,24 @@ extern "C" {
         param_4: undefined4,
         param_5: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn option_prolog();
-}
-extern "C" {
     pub fn option_epilog();
-}
-extern "C" {
     pub fn option_unlinked_func();
-}
-extern "C" {
     pub fn option_draw_func();
-}
-extern "C" {
     pub fn g_references_420_06(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_short);
-}
-extern "C" {
     pub fn race2_rel_prolog();
-}
-extern "C" {
     pub fn race2_rel_epilog();
-}
-extern "C" {
     pub fn race2_rel_unresolved();
-}
-extern "C" {
     pub fn race2_tick();
-}
-extern "C" {
     pub fn g_load_race();
-}
-extern "C" {
     pub fn g_draw_race_timer_ui();
-}
-extern "C" {
     pub fn g_print_race_time_remaining(param_1: undefined4, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn golf2_unlinked_func();
-}
-extern "C" {
     pub fn g_golf_init();
-}
-extern "C" {
     pub fn mini_fight2_unlinked_func();
-}
-extern "C" {
     pub fn g_references_420_07(param_1: f64, param_2: f64, param_3: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn pilot2_unlinked_func();
-}
-extern "C" {
     pub fn g_load_pilot();
-}
-extern "C" {
     pub fn g_some_printf_function_8(
         param_1: undefined8,
         param_2: undefined8,
@@ -22347,8 +13047,6 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn g_some_printf_function_9(
         param_1: f64,
         param_2: f64,
@@ -22367,64 +13065,30 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn item_pilot_init(item: *mut Item);
-}
-extern "C" {
     pub fn item_pilot_tick(item: *mut Item);
-}
-extern "C" {
     pub fn item_pilot_disp(item: *mut Item);
-}
-extern "C" {
     pub fn item_pilot_coli(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn item_pilot_dest();
-}
-extern "C" {
     pub fn item_pilot_replay_init();
-}
-extern "C" {
     pub fn item_debug_pilot();
-}
-extern "C" {
     pub fn boat_unlinked_func();
-}
-extern "C" {
     pub fn g_load_boat();
-}
-extern "C" {
     pub fn shooting_unlinked_func();
-}
-extern "C" {
     pub fn g_read_something_for_shooting_from_dvd(
         param_1: *mut ::core::ffi::c_char,
         param_2: *mut *mut ArcFileInfo,
         param_3: *mut ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_read_something_for_shooting_2(
         param_1: *mut *mut SKLFile,
         param_2: *mut ::core::ffi::c_char,
         param_3: *mut *mut SKLRoot,
     );
-}
-extern "C" {
     pub fn mini_futsal_unlinked_func();
-}
-extern "C" {
     pub fn load_bg_ape();
-}
-extern "C" {
     pub fn dogfight_unlinked_func();
-}
-extern "C" {
     pub fn g_load_dog();
-}
-extern "C" {
     pub fn g_some_printf_function_10(
         param_1: undefined8,
         param_2: undefined8,
@@ -22443,38 +13107,16 @@ extern "C" {
         param_15: undefined4,
         param_16: undefined4,
     );
-}
-extern "C" {
     pub fn item_dogfight_init(item: *mut Item);
-}
-extern "C" {
     pub fn item_dogfight_tick(item: *mut Item);
-}
-extern "C" {
     pub fn item_dogfight_disp(item: *mut Item);
-}
-extern "C" {
     pub fn item_dogfight_coli(param_1: ::core::ffi::c_int, param_2: ::core::ffi::c_int);
-}
-extern "C" {
     pub fn item_dogfight_dest();
-}
-extern "C" {
     pub fn item_dogfight_replay_init();
-}
-extern "C" {
     pub fn item_debug_dogfight();
-}
-extern "C" {
     pub fn g_baseball_prolog();
-}
-extern "C" {
     pub fn baseball_unlinked_func();
-}
-extern "C" {
     pub fn g_baseball_game_loop() -> undefined4;
-}
-extern "C" {
     pub fn g_load_baseball(
         player_id: byte,
         param_2: BallMode,
@@ -22485,46 +13127,20 @@ extern "C" {
         param_7: *mut ::core::ffi::c_void,
         param_8: ::core::ffi::c_int,
     );
-}
-extern "C" {
     pub fn g_baseball_init_seesaws();
-}
-extern "C" {
     pub fn g_get_sprite_work(
         param_1: *mut ::core::ffi::c_int,
         param_2: ::core::ffi::c_int,
     ) -> undefined4;
-}
-extern "C" {
     pub fn g_tennis_prolog();
-}
-extern "C" {
     pub fn tennis_unlinked_func();
-}
-extern "C" {
     pub fn something_with_distance_sq(param_1: *mut f32, param_2: *mut f32) -> f64;
-}
-extern "C" {
     pub fn GXResetOverflowCount(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn ttyClearProperty(param_1: ::core::ffi::c_int, param_2: undefined4);
-}
-extern "C" {
     pub fn exoption_prolog();
-}
-extern "C" {
     pub fn exoption_epilog();
-}
-extern "C" {
     pub fn exoption_unlinked_func();
-}
-extern "C" {
     pub fn exoption_draw_func();
-}
-extern "C" {
     pub fn create_replay_hud_sprites();
-}
-extern "C" {
     pub fn create_replay_stage_name_sprites(x: f32, y: f32);
 }
