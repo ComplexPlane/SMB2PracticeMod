@@ -1,6 +1,7 @@
 extern crate alloc;
 
 use core::cell::RefCell;
+use core::ffi::c_int;
 use core::ffi::c_void;
 use critical_section::Mutex;
 use once_cell::sync::Lazy;
@@ -11,6 +12,7 @@ use crate::mods::ballcolor::BallColor;
 use crate::mods::banans::Banans;
 use crate::mods::cmseg::CmSeg;
 use crate::mods::dpad;
+use crate::mods::fallout::Fallout;
 use crate::mods::freecam::Freecam;
 use crate::mods::inputdisp::InputDisplay;
 use crate::mods::savestates_ui;
@@ -75,6 +77,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         let pref = &mut cx.pref.borrow_mut();
 
         cx.menu_impl.borrow_mut().tick(pad, pref, draw, binds, &mut cx.cmseg.borrow_mut());
+        cx.fallout.borrow_mut().tick(pref, &mut cx.freecam.borrow_mut());
         // fallout::tick();
         // jump::tick();     // (edits physics preset)
         // physics::tick();  // anything editing physics presets must run before physics::tick()
@@ -220,6 +223,22 @@ hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, || {
     });
 });
 
+hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball| {
+    with_app(|cx| {
+        let orig_result = cx.did_ball_fallout_hook.borrow().call(ball);
+        cx.fallout.borrow_mut().on_did_ball_fallout(ball, orig_result, &mut cx.pref.borrow_mut())
+    })
+});
+
+// Chained hook. The possibility of the hook's instructions moving during initialization prevents
+// per-module hooks for now
+hook!(LoadStagedefHook2, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
+    with_app(|cx| {
+        let hook = &mut cx.load_stagedef_hook.borrow_mut();
+        cx.fallout.borrow_mut().on_load_stagedef(stage_id, |s| hook.call(s));
+    });
+});
+
 pub struct AppContext {
     pub padread_hook: RefCell<PADReadHook>,
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
@@ -233,6 +252,7 @@ pub struct AppContext {
     pub create_speed_sprites_hook: RefCell<CreateSpeedSpritesHook>,
     pub load_stagedef_hook: RefCell<LoadStagedefHook>,
     pub reset_cm_course_hook: RefCell<ResetCmCourseHook>,
+    pub did_ball_fallout_hook: RefCell<DidBallFalloutHook>,
 
     pub draw: RefCell<Draw>,
     pub pad: RefCell<Pad>,
@@ -248,6 +268,7 @@ pub struct AppContext {
     pub banans: RefCell<Banans>,
     pub timer: RefCell<Timer>,
     pub cmseg: RefCell<CmSeg>,
+    pub fallout: RefCell<Fallout>,
     pub scratch: RefCell<Scratch>,
 }
 
@@ -269,6 +290,7 @@ impl AppContext {
             create_speed_sprites_hook: RefCell::new(CreateSpeedSpritesHook::new()),
             load_stagedef_hook: RefCell::new(LoadStagedefHook::new()),
             reset_cm_course_hook: RefCell::new(ResetCmCourseHook::new()),
+            did_ball_fallout_hook: RefCell::new(DidBallFalloutHook::new()),
 
             draw: RefCell::new(Draw::new()),
             pad: RefCell::new(Pad::new()),
@@ -284,6 +306,7 @@ impl AppContext {
             banans: RefCell::new(Banans::new()),
             timer: RefCell::new(Timer::new()),
             cmseg: RefCell::new(CmSeg::new()),
+            fallout: RefCell::new(Fallout::new()),
             scratch: RefCell::new(Scratch::new()),
         }
     }
@@ -296,15 +319,12 @@ impl AppContext {
             // physics::init();
             // iw::init();
             // timer::init();
-            // inputdisp::init();
             // cmseg::init();
-            // ballcolor::init();
+            // ballcolor::init();;
             // sfx::init();
             // menu_defn::init();
             // hide::init();
             // ilmark::init();
-            // camera::init();
-            // fallout::init();
             // stage_edits::init();
             // validate::init();
 
@@ -318,6 +338,7 @@ impl AppContext {
             cx.create_speed_sprites_hook.borrow_mut().hook();
             cx.load_stagedef_hook.borrow_mut().hook();
             cx.reset_cm_course_hook.borrow_mut().hook();
+            cx.did_ball_fallout_hook.borrow_mut().hook();
         });
     }
 }
