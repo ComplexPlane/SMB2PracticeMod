@@ -16,20 +16,18 @@ use crate::{
 };
 
 app_modules!(
+    Pad { MainLoopLoad, Tick },
     Binds { Tick },
     Unlock { Tick },
-    Pad { MainLoopLoad, Tick },
     LibSaveState { MainLoopLoad },
     SaveStatesUi { MainLoopLoad, Tick },
     Fallout { MainLoopLoad, Tick },
     InputDisplay { Tick, Draw },
-    Timer { Draw },
     CmSeg {
         MainLoopLoad,
         Tick,
         Draw
     },
-    MenuImpl { Tick, Draw },
     Banans { Tick },
     BallColor {
         MainLoopLoad,
@@ -37,9 +35,11 @@ app_modules!(
         Tick
     },
     Freecam { MainLoopLoad, Tick },
+    Timer { Draw },
+    MenuImpl { Tick, Draw },
     Dpad { MainLoopLoad },
-    Draw { Draw },
     Scratch { Tick, Draw },
+    Draw { Draw },
     Pref { Tick },
 );
 

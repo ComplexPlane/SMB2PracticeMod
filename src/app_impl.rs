@@ -47,6 +47,10 @@ macro_rules! app_modules {
                 }
 
                 fn init(&self) {
+                    self.process_inputs_hook.borrow_mut().hook();
+                    self.draw_debug_text_hook.borrow_mut().hook();
+                    self.oslink_hook.borrow_mut().hook();
+
                     // Generate calls to on_main_loop_load functions
                     $(
                         $crate::app_modules!(@main_loop_load $module_name {$($event),*} self);
