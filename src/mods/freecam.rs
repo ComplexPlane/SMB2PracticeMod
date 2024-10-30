@@ -1,3 +1,8 @@
+use core::cell::RefCell;
+
+use critical_section::Mutex;
+use once_cell::sync::Lazy;
+
 use crate::app_defn::{self, AppContext};
 use crate::mkb::{S16Vec, Vec};
 use crate::systems::binds::Binds;
@@ -14,8 +19,14 @@ pub const TURBO_SPEED_MAX: u8 = 200;
 hook!(EventCameraTickHook => (), mkb::event_camera_tick, |cx| {
     cx.freecam.borrow_mut().on_event_camera_tick(&mut cx.pref.borrow_mut());
 
-    cx.freecam.borrow().event_camera_tick_hook.call();
+    critical_section::with(|cs| {
+        EVENT_CAMERA_TICK_HOOK.borrow(cs).borrow().call();
+    });
 });
+
+// Unfortunately we must move the hook out of Freecam to avoid double borrows
+static EVENT_CAMERA_TICK_HOOK: Lazy<Mutex<RefCell<EventCameraTickHook>>> =
+    Lazy::new(|| Mutex::new(RefCell::new(EventCameraTickHook::new())));
 
 struct Context<'a> {
     pref: &'a mut Pref,
@@ -30,8 +41,6 @@ pub struct Freecam {
 
     enabled_this_tick: bool,
     enabled_prev_tick: bool,
-
-    pub event_camera_tick_hook: EventCameraTickHook,
 }
 
 impl Freecam {
@@ -44,12 +53,13 @@ impl Freecam {
             rot: Default::default(),
             enabled_this_tick: false,
             enabled_prev_tick: false,
-            event_camera_tick_hook: EventCameraTickHook::new(),
         }
     }
 
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.event_camera_tick_hook.hook();
+        critical_section::with(|cs| {
+            EVENT_CAMERA_TICK_HOOK.borrow(cs).borrow_mut().hook();
+        })
     }
 
     fn in_correct_mode() -> bool {

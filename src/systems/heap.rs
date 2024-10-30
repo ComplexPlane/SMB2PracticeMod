@@ -63,7 +63,8 @@ unsafe fn make_heap_info() -> mkb::HeapInfo {
 }
 
 impl Heap {
-    pub fn init(&self, modlink: &ModLink) {
+    pub fn init(&self) {
+        let modlink = ModLink::new();
         unsafe {
             match modlink.heap_info {
                 Some(heap_info) => {

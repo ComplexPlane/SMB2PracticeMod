@@ -26,6 +26,8 @@ macro_rules! app_modules {
 
             impl AppContext {
                 fn new() -> Self {
+                    $crate::systems::heap::HEAP.init();
+
                     // Check for valid module events
                     $(
                         $(
