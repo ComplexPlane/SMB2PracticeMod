@@ -1,16 +1,28 @@
 use core::ffi::c_void;
 
 use super::memstore::{self, MemStore};
-use crate::{mkb, mods::timer::Timer};
+use crate::{app_defn::AppContext, hook, mkb, mods::timer::Timer};
+
+hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx, cx| {
+    let libsavestate = &cx.lib_save_state.borrow();
+    if !libsavestate.state_loaded_this_frame {
+        cx.lib_save_state.borrow().sound_req_id_hook.call(sfx_idx);
+    }
+});
 
 #[derive(Default)]
 pub struct LibSaveState {
+    sound_req_id_hook: SoundReqIdHook,
     pub state_loaded_this_frame: bool,
 }
 
 impl LibSaveState {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
+        self.sound_req_id_hook.hook();
     }
 }
 

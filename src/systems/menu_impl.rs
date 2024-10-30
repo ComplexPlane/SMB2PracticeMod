@@ -1,5 +1,6 @@
 use arrayvec::{ArrayString, ArrayVec};
 
+use crate::app_defn::AppContext;
 use crate::mods::cmseg::CmSeg;
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
@@ -290,20 +291,13 @@ impl MenuImpl {
         }
     }
 
-    pub fn tick(
-        &mut self,
-        pad: &mut Pad,
-        pref: &mut Pref,
-        draw: &mut Draw,
-        binds: &mut Binds,
-        cmseg: &mut CmSeg,
-    ) {
+    pub fn tick(&mut self, cx: &AppContext) {
         let cx = &mut MenuContext {
-            pad,
-            pref,
-            draw,
-            binds,
-            cmseg,
+            pad: &mut cx.pad.borrow_mut(),
+            pref: &mut cx.pref.borrow_mut(),
+            draw: &mut cx.draw.borrow_mut(),
+            binds: &mut cx.binds.borrow_mut(),
+            cm_seg: &mut cx.cm_seg.borrow_mut(),
         };
 
         if self.binding == BindingState::Active {
@@ -671,20 +665,13 @@ impl MenuImpl {
         );
     }
 
-    pub fn disp(
-        &self,
-        pad: &mut Pad,
-        pref: &mut Pref,
-        draw: &mut Draw,
-        binds: &mut Binds,
-        cmseg: &mut CmSeg,
-    ) {
+    pub fn draw(&self, cx: &AppContext) {
         let cx = &mut MenuContext {
-            pad,
-            pref,
-            draw,
-            binds,
-            cmseg,
+            pad: &mut cx.pad.borrow_mut(),
+            pref: &mut cx.pref.borrow_mut(),
+            draw: &mut cx.draw.borrow_mut(),
+            binds: &mut cx.binds.borrow_mut(),
+            cm_seg: &mut cx.cm_seg.borrow_mut(),
         };
 
         if !self.visible {

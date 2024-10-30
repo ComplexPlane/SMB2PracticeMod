@@ -10,6 +10,7 @@ num_enum = { version = "0.7.3", default-features = false }
 once_cell = { version = "1.20.2", default-features = false, features = [
     "critical-section",
 ] }
+paste = "1.0.15"
 zerocopy = { version = "0.8.6", features = ["derive"] }
 
 [profile.dev]

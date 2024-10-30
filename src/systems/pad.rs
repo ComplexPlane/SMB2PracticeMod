@@ -1,4 +1,4 @@
-use crate::{mkb, utils::misc::for_c_arr_idx};
+use crate::{app_defn::AppContext, hook, mkb, utils::misc::for_c_arr_idx};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {
@@ -50,8 +50,19 @@ pub const MAX_TRIGGER: i32 = 128;
 const DIR_REPEAT_PERIOD: u32 = 3;
 const DIR_REPEAT_WAIT: u32 = 14;
 
+hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx| {
+    let ret = cx.pad.borrow_mut().pad_read_hook.call(statuses);
+
+    let status_array = unsafe { core::slice::from_raw_parts(statuses, 4)};
+    let status_array: &[mkb::PADStatus; 4] = status_array.try_into().unwrap();
+    cx.pad.borrow_mut().on_padread(status_array);
+
+    ret
+});
+
 #[derive(Default)]
 pub struct Pad {
+    pad_read_hook: PadReadHook,
     analog_state: AnalogState,
     konami_progress: i32,
     konami_input_prev_tick: bool,
@@ -70,6 +81,10 @@ pub struct Pad {
 impl Pad {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
+        self.pad_read_hook.hook();
     }
 
     pub fn get_merged_stick(&self) -> StickState {
@@ -374,7 +389,7 @@ impl Pad {
         }
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, _cx: &AppContext) {
         unsafe {
             self.merged_analog_inputs = mkb::merged_analog_inputs;
             self.merged_digital_inputs = mkb::merged_digital_inputs;

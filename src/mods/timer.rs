@@ -1,4 +1,5 @@
 use crate::{
+    app_defn::AppContext,
     mkb,
     systems::{
         draw,
@@ -26,7 +27,10 @@ impl Timer {
         }
     }
 
-    pub fn disp(&mut self, pref: &mut Pref, freecam: &mut Freecam) {
+    pub fn draw(&mut self, cx: &AppContext) {
+        let pref = &mut cx.pref.borrow_mut();
+        let freecam = &mut cx.freecam.borrow_mut();
+
         unsafe {
             if mkb::main_mode != mkb::MD_GAME {
                 return;

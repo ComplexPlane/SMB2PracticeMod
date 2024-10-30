@@ -1,4 +1,5 @@
 use crate::{
+    app_defn::AppContext,
     systems::pref::{BoolPref, Pref},
     utils::patch,
 };
@@ -10,7 +11,8 @@ impl Banans {
         Self {}
     }
 
-    pub fn tick(&self, pref: &mut Pref) {
+    pub fn tick(&self, cx: &AppContext) {
+        let pref = &mut cx.pref.borrow_mut();
         if pref.did_change_bool(BoolPref::BananaCounter9999) {
             if pref.get_bool(BoolPref::BananaCounter9999) {
                 unsafe {

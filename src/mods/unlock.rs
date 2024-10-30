@@ -1,32 +1,19 @@
+use crate::app_defn::AppContext;
 use crate::mkb;
 use crate::systems::pref::{BoolPref, Pref};
 use crate::utils::misc::for_c_arr;
 
 pub struct Unlock {
     should_unlock: bool,
+    first_frame: bool,
 }
 
 impl Unlock {
-    pub fn new(pref: &Pref) -> Self {
-        let mut unlock = Self {
+    pub fn new() -> Self {
+        Self {
+            first_frame: true,
             should_unlock: false,
-        };
-        // Unlock progress every frame (so it works even if a saved game is loaded), but only enact this
-        // policy if the corresponding setting was enabled on startup.
-        unsafe {
-            let game_matches =
-                mkb::DVD_GAME_NAME == [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
-            let company_matches = mkb::DVD_COMPANY == [b'8' as i8, b'P' as i8];
-            if game_matches && company_matches {
-                if pref.get_bool(BoolPref::UnlockVanilla) {
-                    unlock.should_unlock = true;
-                }
-            } else if pref.get_bool(BoolPref::UnlockRomhacks) {
-                unlock.should_unlock = true;
-            }
         }
-
-        unlock
     }
 
     fn do_unlock() {
@@ -53,8 +40,30 @@ impl Unlock {
         }
     }
 
-    pub fn tick(&self) {
+    fn should_unlock(pref: &mut Pref) -> bool {
+        unsafe {
+            let game_matches =
+                mkb::DVD_GAME_NAME == [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
+            let company_matches = mkb::DVD_COMPANY == [b'8' as i8, b'P' as i8];
+            if game_matches && company_matches {
+                if pref.get_bool(BoolPref::UnlockVanilla) {
+                    return true;
+                }
+            } else if pref.get_bool(BoolPref::UnlockRomhacks) {
+                return true;
+            }
+            false
+        }
+    }
+
+    pub fn tick(&mut self, cx: &AppContext) {
+        if self.first_frame && Self::should_unlock(&mut cx.pref.borrow_mut()) {
+            self.should_unlock = true;
+        }
+        self.first_frame = false;
         if self.should_unlock {
+            // Unlock progress every frame (so it works even if a saved game is loaded), but only enact this
+            // policy if the corresponding setting was enabled on startup.
             Self::do_unlock();
         }
     }

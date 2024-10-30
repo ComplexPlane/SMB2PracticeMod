@@ -1,7 +1,8 @@
 use core::cell::RefCell;
 
 use crate::{
-    fmt, mkb,
+    app_defn::AppContext,
+    fmt, hook, mkb,
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
@@ -13,8 +14,30 @@ use crate::{
 
 use super::timer::Timer;
 
+hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode, cx| {
+    let pref = &mut cx.pref.borrow_mut();
+    unsafe {
+        if !savestates_enabled(pref)
+            || !(mkb::main_mode == mkb::MD_GAME
+            && mkb::main_game_mode == mkb::PRACTICE_MODE &&
+            mode == mkb::MINIMAP_SHRINK)
+        {
+            cx.save_states_ui.borrow().set_minimap_mode_hook.call(mode);
+        }
+    }
+});
+
+struct Context<'a> {
+    pad: &'a mut Pad,
+    draw: &'a mut Draw,
+    binds: &'a mut Binds,
+    libsavestate: &'a mut LibSaveState,
+    timer: &'a mut Timer,
+}
+
 #[derive(Default)]
 pub struct SaveStatesUi {
+    set_minimap_mode_hook: SetMinimapModeHook,
     states: [SaveState; 8],
     active_state_slot: i32,
     created_state_last_frame: bool,
@@ -26,26 +49,22 @@ impl SaveStatesUi {
         Self::default()
     }
 
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
+        self.set_minimap_mode_hook.hook();
+    }
+
     fn is_either_trigger_held(&self, pad: &Pad) -> bool {
         pad.analog_down(mkb::PAI_LTRIG as mkb::PadAnalogInput, Prio::Low)
             || pad.analog_down(mkb::PAI_RTRIG as mkb::PadAnalogInput, Prio::Low)
     }
 
-    pub fn tick(
-        &mut self,
-        pad: &mut Pad,
-        pref: &RefCell<Pref>,
-        draw: &mut Draw,
-        binds: &Binds,
-        libsavestate: &mut LibSaveState,
-        timer: &mut Timer,
-    ) {
+    pub fn tick(&mut self, cx: &AppContext) {
         // We must tightly scope our Pref usage to avoid a double borrow. libsavestate calls
         // mkb::set_minimap_mode(), we hook it, and it uses pref
         let disable_overwrite;
         let clear_bind;
         {
-            let pref = &mut pref.borrow_mut();
+            let pref = &mut cx.pref.borrow_mut();
             if !savestates_enabled(pref) {
                 return;
             }
@@ -53,12 +72,20 @@ impl SaveStatesUi {
             clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
         }
 
+        let cx = Context {
+            pad: &mut cx.pad.borrow_mut(),
+            draw: &mut cx.draw.borrow_mut(),
+            binds: &mut cx.binds.borrow_mut(),
+            libsavestate: &mut cx.lib_save_state.borrow_mut(),
+            timer: &mut cx.timer.borrow_mut(),
+        };
+
         // Must tick savestates every frame
         for state in &mut self.states {
-            state.tick(libsavestate, timer);
+            state.tick(cx.libsavestate, cx.timer);
         }
 
-        if !self.is_either_trigger_held(pad) {
+        if !self.is_either_trigger_held(cx.pad) {
             self.frame_advance_mode = false;
         }
 
@@ -68,21 +95,24 @@ impl SaveStatesUi {
         }
 
         // Change the savestate slot with C stick
-        let cstick_dir = pad.get_cstick_dir(Prio::Low);
+        let cstick_dir = cx.pad.get_cstick_dir(Prio::Low);
         if cstick_dir != Dir::None {
             self.active_state_slot = cstick_dir as i32;
-            draw.notify(
+            cx.draw.notify(
                 draw::WHITE,
                 NotifyDuration::Short,
                 &fmt!(32, c"Slot %d Selected", self.active_state_slot + 1),
             );
         }
 
-        if pad.button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+        {
             let state = &mut self.states[self.active_state_slot as usize];
 
             if !state.is_empty() && disable_overwrite {
-                draw.notify(
+                cx.draw.notify(
                     draw::RED,
                     NotifyDuration::Short,
                     &fmt!(32, c"Slot {} Full", self.active_state_slot + 1),
@@ -90,14 +120,14 @@ impl SaveStatesUi {
                 return;
             }
 
-            match state.save(timer) {
+            match state.save(cx.timer) {
                 Ok(()) => {}
                 Err(SaveError::MainMode) => {
                     // Unreachable
                     panic!("Unreachable state in savestate save");
                 }
                 Err(SaveError::PostFallout) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate After Fallout",
@@ -105,7 +135,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::PostGoal) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate After Goal",
@@ -113,7 +143,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::DuringRetry) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate During Retry",
@@ -121,7 +151,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::PostTimeout) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate After Timeout",
@@ -129,7 +159,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::SubMode) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate Here",
@@ -137,7 +167,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::ViewStage) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate in View Stage",
@@ -145,7 +175,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(SaveError::InsufficientMemory) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Create Savestate: Not Enough Memory",
@@ -155,15 +185,15 @@ impl SaveStatesUi {
             }
 
             // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
-            self.frame_advance_mode = self.is_either_trigger_held(pad);
+            self.frame_advance_mode = self.is_either_trigger_held(cx.pad);
             if self.frame_advance_mode {
-                draw.notify(
+                cx.draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
                     &fmt!(32, c"Slot {} Frame Advance", self.active_state_slot + 1),
                 );
             } else {
-                draw.notify(
+                cx.draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
                     &fmt!(32, c"Slot {} Saved", self.active_state_slot + 1),
@@ -171,29 +201,33 @@ impl SaveStatesUi {
             }
 
             self.created_state_last_frame = true;
-        } else if binds.bind_pressed(clear_bind, Prio::Low, pad) {
+        } else if cx.binds.bind_pressed(clear_bind, Prio::Low, cx.pad) {
             let state = &mut self.states[self.active_state_slot as usize];
             state.clear();
-            draw.notify(
+            cx.draw.notify(
                 draw::BLUE,
                 NotifyDuration::Short,
                 &fmt!(32, c"Slot %d Cleared", self.active_state_slot + 1),
             );
-        } else if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
-            || (pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+        } else if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+            || (cx
+                .pad
+                .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
                 && self.created_state_last_frame)
             || self.frame_advance_mode
-            || (self.is_either_trigger_held(pad) && cstick_dir != Dir::None)
+            || (self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None)
         {
             let state = &mut self.states[self.active_state_slot as usize];
-            match state.load(libsavestate, timer) {
+            match state.load(cx.libsavestate, cx.timer) {
                 Ok(()) => {}
                 Err(LoadError::MainMode) => {
                     // Unreachable
                     panic!("Unreachable state in savestate load");
                 }
                 Err(LoadError::SubMode) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Load Savestate Here",
@@ -201,7 +235,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::TimeOver) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         "Cannot Load Savestate After Time Over",
@@ -209,7 +243,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::Empty) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         &fmt!(32, c"Slot {} Empty", self.active_state_slot + 1),
@@ -217,7 +251,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::WrongStage) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         &fmt!(32, c"Slot {} Wrong Stage", self.active_state_slot + 1),
@@ -226,7 +260,7 @@ impl SaveStatesUi {
                 }
                 Err(LoadError::WrongMonkey) => {
                     // Thank you StevenCW for finding this marvelous bug
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         &fmt!(32, c"Slot {} Wrong Monkey", self.active_state_slot + 1),
@@ -234,7 +268,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::ViewStage) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         &fmt!(32, c"Cannot Load Savestate in View Stage"),
@@ -242,7 +276,7 @@ impl SaveStatesUi {
                     return;
                 }
                 Err(LoadError::PausedAndNonGameplaySubmode) => {
-                    draw.notify(
+                    cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
                         &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
@@ -252,7 +286,7 @@ impl SaveStatesUi {
             }
 
             if !self.created_state_last_frame {
-                draw.notify(
+                cx.draw.notify(
                     draw::BLUE,
                     NotifyDuration::Short,
                     &fmt!(32, c"Slot %d Loaded", self.active_state_slot + 1),

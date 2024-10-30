@@ -1,3 +1,8 @@
+use core::cell::RefCell;
+
+use critical_section::Mutex;
+use once_cell::sync::Lazy;
+
 #[macro_export]
 macro_rules! hook {
     ($name:ident $(, $argname:ident: $arg:ty)* => $ret:ty, $their_func:expr, $our_func:expr) => {
@@ -8,14 +13,20 @@ macro_rules! hook {
             our_func_c: extern "C" fn($($arg,)*) -> $ret,
         }
 
-        impl $name {
-            pub const fn new() -> Self {
+        impl Default for $name {
+            fn default() -> Self {
                 Self {
                     instrs: [0, 0],
                     chained_func: None,
                     their_func: $their_func,
                     our_func_c: Self::c_hook,
                 }
+            }
+        }
+
+        impl $name {
+            pub fn new() -> Self {
+                Self::default()
             }
 
             pub fn hook(&mut self) {
@@ -36,7 +47,10 @@ macro_rules! hook {
             }
 
             extern "C" fn c_hook($($argname: $arg, )*) -> $ret {
-                $our_func($($argname, )*)
+                let f: fn($($arg,)* &$crate::app_defn::AppContext) -> $ret = $our_func;
+                critical_section::with(|cs| {
+                    f($($argname, )* $crate::app_defn::APP_CONTEXT.borrow(cs))
+                })
             }
         }
     }

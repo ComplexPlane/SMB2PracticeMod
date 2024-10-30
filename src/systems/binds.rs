@@ -1,4 +1,4 @@
-use crate::mkb;
+use crate::{app_defn::AppContext, mkb};
 use arrayvec::ArrayString;
 
 use super::pad::{Pad, Prio};
@@ -119,8 +119,8 @@ impl Binds {
 
     pub fn init(&mut self) {}
 
-    pub fn tick(&mut self, pad: &mut Pad) {
-        self.get_button_values(pad);
+    pub fn tick(&mut self, cx: &AppContext) {
+        self.get_button_values(&mut cx.pad.borrow_mut());
 
         let mut pressed_count = 0;
         let mut current_pressed = [Self::INVALID; 2];

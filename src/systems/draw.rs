@@ -4,6 +4,7 @@ use core::ptr::addr_of;
 
 use arrayvec::ArrayString;
 
+use crate::app_defn::AppContext;
 use crate::asm;
 use crate::mkb;
 use crate::mkb_suppl::GXPosition3f32;
@@ -310,7 +311,7 @@ impl Draw {
         }
     }
 
-    pub fn disp(&mut self) {
+    pub fn draw(&mut self, _cx: &AppContext) {
         let notify_len = self.notify_msg_buf.chars().count();
         let draw_x = 640 - notify_len as u32 * DEBUG_CHAR_WIDTH - 12;
         let draw_y = 426;

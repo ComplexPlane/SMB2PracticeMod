@@ -1,7 +1,8 @@
 extern crate alloc;
 
 use crate::{
-    cstr, fmt, mkb_suppl::CARDResult, systems::draw::NotifyDuration, utils::modlink::ModLink,
+    app_defn::AppContext, cstr, fmt, mkb_suppl::CARDResult, systems::draw::NotifyDuration,
+    utils::modlink::ModLink,
 };
 use alloc::vec;
 use alloc::vec::Vec;
@@ -260,9 +261,9 @@ pub struct Pref {
 }
 
 impl Pref {
-    pub fn new(modlink: &ModLink) -> Self {
+    pub fn new() -> Self {
         let mut pref = Self {
-            cardio: CardIo::new(modlink),
+            cardio: CardIo::new(),
             curr_state: PrefState::default(),
             prev_state: PrefState::default(),
             default_state: PrefState::default(),
@@ -421,7 +422,9 @@ impl Pref {
         self.curr_state = self.default_state.clone();
     }
 
-    pub fn tick(&mut self, draw: &mut Draw) {
+    pub fn tick(&mut self, cx: &AppContext) {
+        let draw = &mut cx.draw.borrow_mut();
+
         self.cardio.tick();
         // Runs after all prefs have been set on a frame
         self.prev_state = self.curr_state.clone();

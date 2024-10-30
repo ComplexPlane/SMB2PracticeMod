@@ -1,3 +1,4 @@
+use crate::{app_defn::AppContext, hook};
 use core::ffi::c_int;
 
 use num_enum::TryFromPrimitive;
@@ -27,7 +28,33 @@ enum TimerType {
     CountUpwards,
 }
 
+hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball, cx| {
+    let orig_result = cx.fallout.borrow().did_ball_fallout_hook.call(ball);
+    cx.fallout.borrow_mut().on_did_ball_fallout(ball, orig_result, &mut cx.pref.borrow_mut())
+});
+
+// Chained hook. The possibility of the hook's instructions moving during initialization prevents
+// per-module hooks for now
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
+    let mut fallout = cx.fallout.borrow_mut();
+    // Set the current default values before loading the stagedef
+    unsafe {
+        patch::write_word(0x80297548 as *mut usize, fallout.timeover_condition);
+        patch::write_word(0x80297534 as *mut usize, fallout.timer_increment);
+        fallout.load_stagedef_hook.call(stage_id);
+        // Stardust's custom code sets the timers after loading the stagedef, this will run
+        // afterwards and collect those timer defaults
+        // For non-Stardust packs, this will simply collect the default values again (and not affect
+        // anything)
+        fallout.timeover_condition = *(0x80297548 as *const usize);
+        fallout.timer_increment = *(0x80297534 as *const usize);
+    }
+});
+
 pub struct Fallout {
+    did_ball_fallout_hook: DidBallFalloutHook,
+    load_stagedef_hook: LoadStagedefHook,
+
     timeover_condition: usize, // Timeover at 0.00
     timer_increment: usize,    // Add -1 to timer each frame
     toggled_freecam: bool,
@@ -36,10 +63,18 @@ pub struct Fallout {
 impl Fallout {
     pub fn new() -> Self {
         Self {
+            did_ball_fallout_hook: DidBallFalloutHook::new(),
+            load_stagedef_hook: LoadStagedefHook::new(),
+
             timeover_condition: 0x2c000000,
             timer_increment: 0x3803ffff,
             toggled_freecam: false,
         }
+    }
+
+    pub fn on_main_loop_load(&mut self, cx: &AppContext) {
+        self.did_ball_fallout_hook.hook();
+        self.load_stagedef_hook.hook();
     }
 
     pub fn freeze_timer(&mut self, pref: &mut Pref, freecam: &mut Freecam) {
@@ -142,25 +177,7 @@ impl Fallout {
         }
     }
 
-    pub fn on_load_stagedef<F>(&mut self, stage_id: u32, their_func: F)
-    where
-        F: FnOnce(u32),
-    {
-        // Set the current default values before loading the stagedef
-        unsafe {
-            patch::write_word(0x80297548 as *mut usize, self.timeover_condition);
-            patch::write_word(0x80297534 as *mut usize, self.timer_increment);
-            their_func(stage_id);
-            // Stardust's custom code sets the timers after loading the stagedef, this will run
-            // afterwards and collect those timer defaults
-            // For non-Stardust packs, this will simply collect the default values again (and not affect
-            // anything)
-            self.timeover_condition = *(0x80297548 as *const usize);
-            self.timer_increment = *(0x80297534 as *const usize);
-        }
-    }
-
-    pub fn tick(&mut self, pref: &mut Pref, freecam: &mut Freecam) {
-        self.freeze_timer(pref, freecam);
+    pub fn tick(&mut self, cx: &AppContext) {
+        self.freeze_timer(&mut cx.pref.borrow_mut(), &mut cx.freecam.borrow_mut());
     }
 }

@@ -1,7 +1,8 @@
 use core::{ffi::c_long, ptr::null_mut};
 
 use crate::{
-    mkb,
+    app_defn::AppContext,
+    hook, mkb,
     systems::{
         draw,
         pref::{BoolPref, Pref},
@@ -9,7 +10,10 @@ use crate::{
     utils::timerdisp,
 };
 
-use super::freecam::Freecam;
+hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, |cx| {
+    cx.cm_seg.borrow().reset_cm_course_hook.call();
+    cx.cm_seg.borrow_mut().on_reset_cm_course();
+});
 
 #[derive(Copy, Clone, PartialEq, Default)]
 enum State {
@@ -51,6 +55,7 @@ enum Chara {
 
 #[derive(Default)]
 pub struct CmSeg {
+    reset_cm_course_hook: ResetCmCourseHook,
     state: State,
     seg_request: Seg,
     start_time: u32,
@@ -76,6 +81,10 @@ impl CmSeg {
             pbs: [u32::MAX; 14],
             ..Self::default()
         }
+    }
+
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
+        self.reset_cm_course_hook.hook();
     }
 
     fn gen_course(&mut self, course_idx: usize, start_course_stage_num: u16, stage_count: u16) {
@@ -357,7 +366,7 @@ impl CmSeg {
         }
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self, _cx: &AppContext) {
         unsafe {
             match self.state {
                 State::LoadMenu => self.state_load_menu(),
@@ -369,7 +378,9 @@ impl CmSeg {
         }
     }
 
-    pub fn disp(&self, pref: &mut Pref, freecam: &mut Freecam) {
+    pub fn draw(&self, cx: &AppContext) {
+        let pref = &mut cx.pref.borrow_mut();
+        let freecam = &mut cx.freecam.borrow_mut();
         if !pref.get_bool(BoolPref::CmTimer) || freecam.should_hide_hud(pref) {
             return;
         }

@@ -1,4 +1,4 @@
-use crate::app::with_app;
+use crate::app_defn::{self, AppContext};
 use crate::mkb::{S16Vec, Vec};
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
@@ -6,18 +6,32 @@ use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
-use crate::{fmt, mkb};
+use crate::{fmt, hook, mkb};
 
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;
 
-#[derive(Default)]
+hook!(EventCameraTickHook => (), mkb::event_camera_tick, |cx| {
+    cx.freecam.borrow_mut().on_event_camera_tick(&mut cx.pref.borrow_mut());
+
+    cx.freecam.borrow().event_camera_tick_hook.call();
+});
+
+struct Context<'a> {
+    pref: &'a mut Pref,
+    pad: &'a mut Pad,
+    draw: &'a mut Draw,
+    binds: &'a mut Binds,
+}
+
 pub struct Freecam {
     eye: Vec,
     rot: S16Vec,
 
     enabled_this_tick: bool,
     enabled_prev_tick: bool,
+
+    pub event_camera_tick_hook: EventCameraTickHook,
 }
 
 impl Freecam {
@@ -25,7 +39,17 @@ impl Freecam {
         unsafe {
             patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
         }
-        Self::default()
+        Self {
+            eye: Default::default(),
+            rot: Default::default(),
+            enabled_this_tick: false,
+            enabled_prev_tick: false,
+            event_camera_tick_hook: EventCameraTickHook::new(),
+        }
+    }
+
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
+        self.event_camera_tick_hook.hook();
     }
 
     fn in_correct_mode() -> bool {
@@ -137,13 +161,15 @@ impl Freecam {
     }
 
     unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb::Camera, ball: *mut mkb::Ball) {
-        with_app(|cx| {
+        // TODO let write_branch_bl do some of this accessing globals work
+        critical_section::with(|cs| {
+            let cx = app_defn::APP_CONTEXT.borrow(cs);
             let pref = &mut cx.pref.borrow_mut();
             let pad = &mut cx.pad.borrow_mut();
             cx.freecam
                 .borrow_mut()
                 .on_camera_func(camera, ball, pref, pad);
-        });
+        })
     }
 
     pub fn on_camera_func(
@@ -173,41 +199,57 @@ impl Freecam {
         }
     }
 
-    pub fn tick(&mut self, pref: &mut Pref, pad: &mut Pad, draw: &mut Draw, binds: &mut Binds) {
+    pub fn tick(&mut self, cx: &AppContext) {
+        let cx = Context {
+            pref: &mut cx.pref.borrow_mut(),
+            pad: &mut cx.pad.borrow_mut(),
+            draw: &mut cx.draw.borrow_mut(),
+            binds: &mut cx.binds.borrow_mut(),
+        };
+
         self.enabled_prev_tick = self.enabled_this_tick;
 
         // Optionally toggle freecam
-        if binds.bind_pressed(pref.get_u8(U8Pref::FreecamToggleBind), Prio::Low, pad)
+        if cx
+            .binds
+            .bind_pressed(cx.pref.get_u8(U8Pref::FreecamToggleBind), Prio::Low, cx.pad)
             && Self::in_correct_mode()
         {
-            pref.set_bool(BoolPref::Freecam, !pref.get_bool(BoolPref::Freecam));
-            pref.save();
+            cx.pref
+                .set_bool(BoolPref::Freecam, !cx.pref.get_bool(BoolPref::Freecam));
+            cx.pref.save();
         }
 
         self.enabled_this_tick = false;
-        if self.enabled(pref) {
+        if self.enabled(cx.pref) {
             self.enabled_this_tick = true;
 
             // Adjust turbo speed multiplier
-            let mut speed_mult = pref.get_u8(U8Pref::FreecamSpeedMult);
+            let mut speed_mult = cx.pref.get_u8(U8Pref::FreecamSpeedMult);
             let mut input_made = false;
-            if pad.button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low) {
+            if cx
+                .pad
+                .button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low)
+            {
                 speed_mult -= 1;
                 input_made = true;
             }
-            if pad.button_repeat(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low) {
+            if cx
+                .pad
+                .button_repeat(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low)
+            {
                 speed_mult += 1;
                 input_made = true;
             }
             speed_mult = speed_mult.clamp(TURBO_SPEED_MIN, TURBO_SPEED_MAX);
             if input_made {
-                draw.notify(
+                cx.draw.notify(
                     draw::WHITE,
                     NotifyDuration::Short,
                     &fmt!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
                 );
-                pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
-                pref.save();
+                cx.pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
+                cx.pref.save();
             }
         }
     }

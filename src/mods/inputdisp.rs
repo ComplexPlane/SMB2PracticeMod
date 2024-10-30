@@ -3,6 +3,7 @@ use core::ffi::CStr;
 use num_enum::TryFromPrimitive;
 
 use crate::{
+    app_defn::AppContext,
     fmt,
     mkb::{self, Vec2d},
     mkb_suppl::{GXPosition3f32, GXTexCoord2f32},
@@ -22,6 +23,13 @@ pub enum InputDispColorType {
     RGB = 1,
     Rainbow = 2,
     MatchBall = 3,
+}
+
+struct Context<'a> {
+    pad: &'a mut Pad,
+    pref: &'a mut Pref,
+    freecam: &'a mut Freecam,
+    ball_color: &'a mut BallColor,
 }
 
 pub struct InputDisplay {
@@ -145,7 +153,8 @@ impl InputDisplay {
         }
     }
 
-    pub fn tick(&mut self, pref: &mut Pref) {
+    pub fn tick(&mut self, cx: &AppContext) {
+        let pref = &mut cx.pref.borrow_mut();
         self.rainbow = (self.rainbow + 3) % 1080;
         self.set_sprite_visible(
             !pref.get_bool(BoolPref::InputDisp)
@@ -213,21 +222,21 @@ impl InputDisplay {
         draw::BLACK,  // Black
     ];
 
-    fn get_color(&self, pref: &mut Pref, ballcolor: &mut BallColor) -> mkb::GXColor {
-        let color_pref = pref.get_u8(U8Pref::InputDispColorType);
+    fn get_color(&self, cx: &mut Context) -> mkb::GXColor {
+        let color_pref = cx.pref.get_u8(U8Pref::InputDispColorType);
         match InputDispColorType::try_from(color_pref).unwrap() {
             InputDispColorType::Default => {
-                Self::COLOR_MAP[pref.get_u8(U8Pref::InputDispColor) as usize]
+                Self::COLOR_MAP[cx.pref.get_u8(U8Pref::InputDispColor) as usize]
             }
             InputDispColorType::RGB => mkb::GXColor {
-                r: pref.get_u8(U8Pref::InputDispRed),
-                g: pref.get_u8(U8Pref::InputDispGreen),
-                b: pref.get_u8(U8Pref::InputDispBlue),
+                r: cx.pref.get_u8(U8Pref::InputDispRed),
+                g: cx.pref.get_u8(U8Pref::InputDispGreen),
+                b: cx.pref.get_u8(U8Pref::InputDispBlue),
                 a: 0xff,
             },
             InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow as i32),
             InputDispColorType::MatchBall => {
-                let mut color = ballcolor.get_current_color();
+                let mut color = cx.ball_color.get_current_color();
                 color.a = 0xff;
                 color
             }
@@ -239,10 +248,9 @@ impl InputDisplay {
         raw_stick_inputs: &StickState,
         center: &Vec2d,
         scale: f32,
-        pref: &mut Pref,
-        ballcolor: &mut BallColor,
+        cx: &mut Context,
     ) {
-        let chosen_color = self.get_color(pref, ballcolor);
+        let chosen_color = self.get_color(cx);
 
         self.draw_ring(
             8,
@@ -287,9 +295,12 @@ impl InputDisplay {
         );
     }
 
-    fn draw_buttons(&self, center: &Vec2d, scale: f32, pad: &mut Pad) {
+    fn draw_buttons(&self, center: &Vec2d, scale: f32, cx: &mut Context) {
         // We floor floats for now because no-std doesn't include a float rounding func
-        if pad.button_down(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 45.0 * scale) as u32,
@@ -297,7 +308,10 @@ impl InputDisplay {
                 "Start",
             );
         }
-        if pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 25.0 * scale) as u32,
@@ -305,7 +319,10 @@ impl InputDisplay {
                 "A",
             );
         }
-        if pad.button_down(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y - 25.0 * scale) as u32,
@@ -313,7 +330,10 @@ impl InputDisplay {
                 "B",
             );
         }
-        if pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 05.0 * scale) as u32,
@@ -321,7 +341,10 @@ impl InputDisplay {
                 "X",
             );
         }
-        if pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y - 05.0 * scale) as u32,
@@ -329,7 +352,10 @@ impl InputDisplay {
                 "Y",
             );
         }
-        if pad.button_down(mkb::PAD_TRIGGER_L as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_TRIGGER_L as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,
@@ -337,7 +363,10 @@ impl InputDisplay {
                 "L",
             );
         }
-        if pad.button_down(mkb::PAD_TRIGGER_R as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_TRIGGER_R as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,
@@ -345,7 +374,10 @@ impl InputDisplay {
                 "R",
             );
         }
-        if pad.button_down(mkb::PAD_TRIGGER_Z as mkb::PadDigitalInput, Prio::Low) {
+        if cx
+            .pad
+            .button_down(mkb::PAD_TRIGGER_Z as mkb::PadDigitalInput, Prio::Low)
+        {
             draw::debug_text(
                 (center.x + 115.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,
@@ -360,9 +392,9 @@ impl InputDisplay {
         stick_inputs: &StickState,
         center: &Vec2d,
         scale: f32,
-        pref: &mut Pref,
+        cx: &mut Context,
     ) {
-        if !pref.get_bool(BoolPref::InputDispNotchIndicators) {
+        if !cx.pref.get_bool(BoolPref::InputDispNotchIndicators) {
             return;
         }
 
@@ -390,14 +422,14 @@ impl InputDisplay {
         &self,
         raw_stick_inputs: &StickState,
         stick_inputs: &StickState,
-        pref: &mut Pref,
+        cx: &mut Context,
     ) {
-        if !pref.get_bool(BoolPref::InputDispRawStickInputs) {
+        if !cx.pref.get_bool(BoolPref::InputDispRawStickInputs) {
             return;
         }
 
         let center = Vec2d {
-            x: if pref.get_bool(BoolPref::InputDispCenterLocation) {
+            x: if cx.pref.get_bool(BoolPref::InputDispCenterLocation) {
                 540.0
             } else {
                 390.0
@@ -431,13 +463,14 @@ impl InputDisplay {
         );
     }
 
-    pub fn disp(
-        &mut self,
-        pad: &mut Pad,
-        pref: &mut Pref,
-        freecam: &mut Freecam,
-        ballcolor: &mut BallColor,
-    ) {
+    pub fn draw(&mut self, cx: &AppContext) {
+        let cx = &mut Context {
+            pad: &mut cx.pad.borrow_mut(),
+            pref: &mut cx.pref.borrow_mut(),
+            freecam: &mut cx.freecam.borrow_mut(),
+            ball_color: &mut cx.ball_color.borrow_mut(),
+        };
+
         let in_replay = unsafe {
             mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT
                 || mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_MAIN
@@ -447,24 +480,27 @@ impl InputDisplay {
                 || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN
         };
 
-        if !pref.get_bool(BoolPref::InputDisp) || freecam.should_hide_hud(pref) || in_replay {
+        if !cx.pref.get_bool(BoolPref::InputDisp)
+            || cx.freecam.should_hide_hud(cx.pref)
+            || in_replay
+        {
             return;
         }
 
-        let center = if pref.get_bool(BoolPref::InputDispCenterLocation) {
+        let center = if cx.pref.get_bool(BoolPref::InputDispCenterLocation) {
             Vec2d { x: 430.0, y: 60.0 }
         } else {
             Vec2d { x: 534.0, y: 60.0 }
         };
         let scale = 0.6;
 
-        let stick = pad.get_merged_stick();
-        let raw_stick = pad.get_merged_raw_stick();
+        let stick = cx.pad.get_merged_stick();
+        let raw_stick = cx.pad.get_merged_raw_stick();
 
-        self.draw_stick(&raw_stick, &center, scale, pref, ballcolor);
-        self.draw_buttons(&center, scale, pad);
+        self.draw_stick(&raw_stick, &center, scale, cx);
+        self.draw_buttons(&center, scale, cx);
 
-        self.draw_notch_indicators(&stick, &center, scale, pref);
-        self.draw_raw_stick_inputs(&raw_stick, &stick, pref);
+        self.draw_notch_indicators(&stick, &center, scale, cx);
+        self.draw_raw_stick_inputs(&raw_stick, &stick, cx);
     }
 }

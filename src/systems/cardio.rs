@@ -72,7 +72,8 @@ pub struct CardIo {
 }
 
 impl CardIo {
-    pub fn new(modlink: &ModLink) -> Self {
+    pub fn new() -> Self {
+        let modlink = ModLink::new();
         let card_work_area = unsafe {
             match modlink.card_work_area {
                 Some(work_area) => {
