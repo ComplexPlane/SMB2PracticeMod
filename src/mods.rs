@@ -5,6 +5,7 @@ pub mod cmseg;
 pub mod dpad;
 pub mod fallout;
 pub mod freecam;
+pub mod gotostory;
 pub mod inputdisp;
 pub mod savestates_ui;
 pub mod scratch;

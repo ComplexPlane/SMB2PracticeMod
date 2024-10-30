@@ -298,6 +298,7 @@ impl MenuImpl {
             draw: &mut cx.draw.borrow_mut(),
             binds: &mut cx.binds.borrow_mut(),
             cm_seg: &mut cx.cm_seg.borrow_mut(),
+            go_to_story: &mut cx.go_to_story.borrow_mut(),
         };
 
         if self.binding == BindingState::Active {
@@ -672,6 +673,7 @@ impl MenuImpl {
             draw: &mut cx.draw.borrow_mut(),
             binds: &mut cx.binds.borrow_mut(),
             cm_seg: &mut cx.cm_seg.borrow_mut(),
+            go_to_story: &mut cx.go_to_story.borrow_mut(),
         };
 
         if !self.visible {

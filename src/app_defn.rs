@@ -2,8 +2,8 @@ use crate::{
     app_modules, mkb,
     mods::{
         ballcolor::BallColor, banans::Banans, cmseg::CmSeg, dpad::Dpad, fallout::Fallout,
-        freecam::Freecam, inputdisp::InputDisplay, savestates_ui::SaveStatesUi, scratch::Scratch,
-        timer::Timer, unlock::Unlock,
+        freecam::Freecam, gotostory::GoToStory, inputdisp::InputDisplay,
+        savestates_ui::SaveStatesUi, scratch::Scratch, timer::Timer, unlock::Unlock,
     },
     systems::{
         binds::Binds,
@@ -23,6 +23,7 @@ app_modules!(
     SaveStatesUi { MainLoopLoad, Tick },
     Fallout { MainLoopLoad, Tick },
     InputDisplay { Tick, Draw },
+    GoToStory { Tick },
     CmSeg {
         MainLoopLoad,
         Tick,

@@ -1,6 +1,7 @@
 use arrayvec::ArrayString;
 
 use crate::mods::cmseg::{CmSeg, Seg};
+use crate::mods::gotostory::GoToStory;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
@@ -17,6 +18,7 @@ pub struct MenuContext<'a> {
     pub draw: &'a mut Draw,
     pub binds: &'a mut Binds,
     pub cm_seg: &'a mut CmSeg,
+    pub go_to_story: &'a mut GoToStory,
     // physics: &'a mut Physics,
 }
 
@@ -875,7 +877,7 @@ static SAVESTATE_WIDGETS: &[Widget] = &[
 static TOOLS_WIDGETS: &[Widget] = &[
     Widget::Button {
         label: "Go To Story Mode",
-        push: |_| {}, // TODO: Implement gotostory::load_storymode
+        push: |cx| cx.go_to_story.load_storymode(),
         after: AfterPush::CloseMenu,
     },
     Widget::Menu {
