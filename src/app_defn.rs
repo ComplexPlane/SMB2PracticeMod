@@ -18,6 +18,7 @@ use crate::{
 app_modules!(
     Pad { MainLoopLoad, Tick },
     Binds { Tick },
+    MenuImpl { Tick, Draw },
     Unlock { Tick },
     LibSaveState { MainLoopLoad },
     SaveStatesUi { MainLoopLoad, Tick },
@@ -37,7 +38,6 @@ app_modules!(
     },
     Freecam { MainLoopLoad, Tick },
     Timer { Draw },
-    MenuImpl { Tick, Draw },
     Dpad { MainLoopLoad },
     Scratch { Tick, Draw },
     Draw { Draw },
