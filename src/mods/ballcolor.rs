@@ -23,10 +23,7 @@ static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
     Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::new())));
 
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
-    // stage_edits::smd_game_ready_init();
-    {
-        cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
-    }
+    cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
     critical_section::with(|cs| {
         GAME_READY_INIT_HOOK.borrow(cs).borrow().call();
     })
