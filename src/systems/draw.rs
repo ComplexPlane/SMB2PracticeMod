@@ -203,7 +203,7 @@ pub fn heart() {
     }
 }
 
-pub fn num_to_rainbow(num: i32) -> mkb::GXColor {
+pub fn num_to_rainbow(num: u32) -> mkb::GXColor {
     const LOW_COLOR: u8 = 0x41;
     const HIGH_COLOR: u8 = 0xf5;
 

@@ -234,7 +234,7 @@ impl InputDisplay {
                 b: cx.pref.get_u8(U8Pref::InputDispBlue),
                 a: 0xff,
             },
-            InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow as i32),
+            InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow),
             InputDispColorType::MatchBall => {
                 let mut color = cx.ball_color.get_current_color();
                 color.a = 0xff;

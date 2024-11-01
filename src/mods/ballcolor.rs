@@ -176,7 +176,7 @@ impl BallColor {
                     if !paused_now {
                         self.rainbow = (self.rainbow + 3) % 1080;
                     }
-                    self.current_color = draw::num_to_rainbow(self.rainbow as i32);
+                    self.current_color = draw::num_to_rainbow(self.rainbow);
                     *(0x80472a34 as *mut mkb::GXColor) = self.current_color;
                 }
                 BallColorType::Random => {
