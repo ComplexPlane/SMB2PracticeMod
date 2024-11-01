@@ -72,6 +72,8 @@ macro_rules! app_modules {
                 $(
                     $crate::app_modules!(@draw $module_name {$($event),*} cx);
                 )*
+                // Hardcode drawing the menu last
+                cx.menu_impl.borrow_mut().draw(cx);
                 cx.draw_debug_text_hook.borrow().call();
             });
 

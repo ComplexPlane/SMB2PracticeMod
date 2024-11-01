@@ -18,7 +18,7 @@ use crate::{
 app_modules!(
     Pad { MainLoopLoad, Tick },
     Binds { Tick },
-    MenuImpl { Tick, Draw },
+    MenuImpl { Tick },
     Unlock { Tick },
     LibSaveState { MainLoopLoad },
     SaveStatesUi { MainLoopLoad, Tick },
