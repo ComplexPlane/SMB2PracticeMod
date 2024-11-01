@@ -6,7 +6,7 @@ use once_cell::sync::Lazy;
 
 use crate::{
     app_defn::AppContext,
-    hook,
+    hook, log,
     mkb::{self},
     systems::{
         draw,
@@ -18,10 +18,18 @@ pub const NUM_COLORS: u32 = 9;
 pub const COLOR_MIN: u8 = 0;
 pub const COLOR_MAX: u8 = 0xff;
 
+// Unfortunately we must move the hook out of BallColor to avoid double borrows
+static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
+    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::new())));
+
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
     // stage_edits::smd_game_ready_init();
-    cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
-    cx.ball_color.borrow().game_ready_init_hook.call();
+    {
+        cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
+    }
+    critical_section::with(|cs| {
+        GAME_READY_INIT_HOOK.borrow(cs).borrow().call();
+    })
 });
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
@@ -60,8 +68,7 @@ pub struct BallColor {
     rainbow: u32,
     default_color: mkb::GXColor,
     current_color: mkb::GXColor,
-    pub game_ready_init_hook: GameReadyInitHook,
-    pub load_stagedef_hook: LoadStagedefHook,
+    load_stagedef_hook: LoadStagedefHook,
 }
 
 impl BallColor {
@@ -70,7 +77,6 @@ impl BallColor {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
             current_color: mkb::GXColor::default(),
-            game_ready_init_hook: GameReadyInitHook::new(),
             load_stagedef_hook: LoadStagedefHook::new(),
         }
     }
@@ -80,7 +86,9 @@ impl BallColor {
     }
 
     pub fn on_main_game_load(&mut self, _cx: &AppContext) {
-        self.game_ready_init_hook.hook();
+        critical_section::with(|cs| {
+            GAME_READY_INIT_HOOK.borrow(cs).borrow_mut().hook();
+        });
     }
 
     pub fn get_current_color(&self) -> mkb::GXColor {

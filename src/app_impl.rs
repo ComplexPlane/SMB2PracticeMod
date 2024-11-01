@@ -87,6 +87,9 @@ macro_rules! app_modules {
 
                 let module_id = $crate::utils::relutil::ModuleId::try_from(unsafe{*rel_buffer}.info.id);
                 if let Ok($crate::utils::relutil::ModuleId::MainGame) = module_id {
+                    $(
+                        $crate::app_modules!(@main_game_load $module_name {$($event),*} cx);
+                    )*
                 }
 
                 ret
