@@ -420,7 +420,6 @@ impl IlBattle {
     }
 
     pub fn validate_attempt(&mut self) {
-        log!(c"Validating attempt");
         unsafe {
             // TODO
             // if !validate::was_run_valid(true) {
