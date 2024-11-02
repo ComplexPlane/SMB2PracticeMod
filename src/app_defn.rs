@@ -39,7 +39,11 @@ app_modules!(
     Freecam { MainLoopLoad, Tick },
     Timer { Draw },
     Dpad { MainLoopLoad },
-    IlBattle { Tick, Draw },
+    IlBattle {
+        MainGameLoad,
+        Tick,
+        Draw,
+    },
     Scratch { Tick, Draw },
     Draw { Draw },
     Pref { Tick },

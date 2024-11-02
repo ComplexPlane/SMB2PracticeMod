@@ -3,7 +3,7 @@ use num_enum::TryFromPrimitive;
 
 use crate::{
     app_defn::AppContext,
-    cstr_buf, fmt, mkb,
+    cstr_buf, fmt, hook, log, mkb,
     systems::{
         binds::{self, Binds},
         draw,
@@ -14,6 +14,12 @@ use crate::{
 
 use super::freecam::Freecam;
 
+hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, |cx| {
+    let mut il_battle = cx.il_battle.borrow_mut();
+    il_battle.game_play_tick_hook.call();
+    il_battle.validate_attempt();
+});
+
 struct Context<'a> {
     pref: &'a mut Pref,
     freecam: &'a mut Freecam,
@@ -21,8 +27,9 @@ struct Context<'a> {
     pad: &'a mut Pad,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum IlBattleState {
+    #[default]
     NotReady,
     WaitForFirstRetry,    // Mod is enabled but first retry hasn't occurred
     BattleRunning,        // Battle is running
@@ -51,7 +58,10 @@ const SECOND_FRAMES: u32 = 60; // frames per second
 const MINUTE_FRAMES: u32 = SECOND_FRAMES * 60; // frames per minute
 const HOUR_FRAMES: u32 = MINUTE_FRAMES * 60; // frames per hour
 
+#[derive(Default)]
 pub struct IlBattle {
+    game_play_tick_hook: GamePlayTickHook,
+
     // main state
     state: IlBattleState,
 
@@ -83,26 +93,11 @@ pub struct IlBattle {
 
 impl IlBattle {
     pub fn new() -> Self {
-        Self {
-            state: IlBattleState::NotReady,
-            battle_frames: 0,
-            battle_length: 0,
-            battle_stage_id: 0,
-            main_mode_play_timer: 0,
-            best_frames: 0,
-            best_score: 0,
-            best_score_bananas: 0,
-            best_score_frames: 0,
-            best_frames_ties: 0,
-            best_score_ties: 0,
-            attempts: 0,
-            accepted_tie: false,
-            accepted_retry: false,
-            buzzer_message_count: 0,
-            rainbow: 0,
-            time_buzzer: false,
-            score_buzzer: false,
-        }
+        Self::default()
+    }
+
+    pub fn on_main_game_load(&mut self, _cx: &AppContext) {
+        self.game_play_tick_hook.hook();
     }
 
     fn old_buzzer_display(&mut self, start_y: u32) {
@@ -425,6 +420,7 @@ impl IlBattle {
     }
 
     pub fn validate_attempt(&mut self) {
+        log!(c"Validating attempt");
         unsafe {
             // TODO
             // if !validate::was_run_valid(true) {
