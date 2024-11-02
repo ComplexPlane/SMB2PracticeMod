@@ -373,8 +373,8 @@ impl IlBattle {
                 self.accepted_retry = true;
             }
 
-            let battle_length: IlBattleLength =
-                core::mem::transmute(cx.pref.get_u8(U8Pref::IlBattleLength));
+            let battle_length = cx.pref.get_u8(U8Pref::IlBattleLength);
+            let battle_length = IlBattleLength::try_from(battle_length).unwrap();
             if matches!(battle_length, IlBattleLength::Endless) {
                 // timer is endless
                 self.battle_frames += 1;
