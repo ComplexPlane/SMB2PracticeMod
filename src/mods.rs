@@ -8,6 +8,8 @@ pub mod freecam;
 pub mod gotostory;
 pub mod ilbattle;
 pub mod inputdisp;
+pub mod jump;
+pub mod physics;
 pub mod savestates_ui;
 pub mod scratch;
 pub mod timer;
