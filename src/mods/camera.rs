@@ -1,10 +1,15 @@
 use num_enum::TryFromPrimitive;
 
+use crate::app_defn::AppContext;
 use crate::mkb;
 use crate::patch;
 use crate::systems::pref::Pref;
 use crate::systems::pref::{self, U8Pref};
 use crate::utils::ppc;
+
+struct Context<'a> {
+    pref: &'a mut Pref,
+}
 
 #[derive(TryFromPrimitive)]
 #[repr(u8)]
@@ -14,15 +19,20 @@ enum CameraType {
     ForceSMB1 = 2,
 }
 
-struct Camera {}
+#[derive(Default)]
+pub struct Camera {}
 
 impl Camera {
-    unsafe fn tick_unsafe(&self, pref: &mut Pref) {
-        let value = pref.get_u8(U8Pref::Camera).try_into().unwrap();
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    unsafe fn tick_unsafe(&self, cx: &mut Context) {
+        let value = cx.pref.get_u8(U8Pref::Camera).try_into().unwrap();
 
         match value {
             CameraType::Default => {
-                if pref.did_change_u8(pref::U8Pref::Camera) {
+                if cx.pref.did_change_u8(pref::U8Pref::Camera) {
                     // restore cam to smb2 once (so toggle still works)
                     if mkb::cameras[0].mode == 0x1 {
                         mkb::cameras[0].mode = 0x4c;
@@ -63,9 +73,12 @@ impl Camera {
         }
     }
 
-    fn tick(&self, pref: &mut Pref) {
+    pub fn tick(&mut self, cx: &AppContext) {
+        let cx = &mut Context {
+            pref: &mut cx.pref.borrow_mut(),
+        };
         unsafe {
-            self.tick_unsafe(pref);
+            self.tick_unsafe(cx);
         }
     }
 }

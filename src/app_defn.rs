@@ -1,10 +1,10 @@
 use crate::{
     app_modules, mkb,
     mods::{
-        ballcolor::BallColor, banans::Banans, cmseg::CmSeg, dpad::Dpad, fallout::Fallout,
-        freecam::Freecam, gotostory::GoToStory, ilbattle::IlBattle, inputdisp::InputDisplay,
-        jump::Jump, physics::Physics, savestates_ui::SaveStatesUi, scratch::Scratch, timer::Timer,
-        unlock::Unlock,
+        ballcolor::BallColor, banans::Banans, camera::Camera, cmseg::CmSeg, dpad::Dpad,
+        fallout::Fallout, freecam::Freecam, gotostory::GoToStory, ilbattle::IlBattle,
+        inputdisp::InputDisplay, jump::Jump, physics::Physics, savestates_ui::SaveStatesUi,
+        scratch::Scratch, timer::Timer, unlock::Unlock,
     },
     systems::{
         binds::Binds,
@@ -47,6 +47,7 @@ app_modules!(
         Tick,
         Draw,
     },
+    Camera { Tick },
     Scratch { Tick, Draw },
     Draw { Draw },
     Pref { Tick },
