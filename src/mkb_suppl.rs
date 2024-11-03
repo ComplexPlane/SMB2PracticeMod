@@ -79,3 +79,12 @@ pub fn GXTexCoord2f32(s: f32, t: f32) {
 }
 
 pub const CARD_WORKAREA_SIZE: usize = 5 * 8 * 1024;
+
+impl From<mkb::GXColor> for u32 {
+    fn from(color: mkb::GXColor) -> Self {
+        ((color.a as u32) << 24)
+            | ((color.b as u32) << 16)
+            | ((color.g as u32) << 8)
+            | ((color.r as u32) << 0)
+    }
+}
