@@ -13,5 +13,6 @@ pub mod jump;
 pub mod physics;
 pub mod savestates_ui;
 pub mod scratch;
+pub mod sfx;
 pub mod timer;
 pub mod unlock;
