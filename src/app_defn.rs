@@ -3,8 +3,8 @@ use crate::{
     mods::{
         ballcolor::BallColor, banans::Banans, camera::Camera, cmseg::CmSeg, dpad::Dpad,
         fallout::Fallout, freecam::Freecam, gotostory::GoToStory, hide::Hide, ilbattle::IlBattle,
-        inputdisp::InputDisplay, jump::Jump, physics::Physics, savestates_ui::SaveStatesUi,
-        scratch::Scratch, sfx::Sfx, timer::Timer, unlock::Unlock,
+        ilmark::IlMark, inputdisp::InputDisplay, jump::Jump, physics::Physics,
+        savestates_ui::SaveStatesUi, scratch::Scratch, sfx::Sfx, timer::Timer, unlock::Unlock,
     },
     systems::{
         binds::Binds,
@@ -47,6 +47,7 @@ app_modules!(
         Tick,
         Draw,
     },
+    IlMark { Tick, Draw },
     Camera { Tick },
     Hide { MainLoopLoad },
     Sfx { MainLoopLoad },

@@ -131,7 +131,7 @@ void init() {
         s_process_inputs_tramp.dest();
 
         // These run after all controller inputs have been processed on the current frame,
-        // to ensure lowest input delay
+    // to ensure lowest input delay
         pad::tick();
         binds::tick();
         cardio::tick();

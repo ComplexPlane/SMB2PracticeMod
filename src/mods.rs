@@ -8,6 +8,7 @@ pub mod freecam;
 pub mod gotostory;
 pub mod hide;
 pub mod ilbattle;
+pub mod ilmark;
 pub mod inputdisp;
 pub mod jump;
 pub mod physics;
