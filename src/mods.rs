@@ -11,6 +11,7 @@ pub mod ilbattle;
 pub mod ilmark;
 pub mod inputdisp;
 pub mod jump;
+pub mod marathon;
 pub mod physics;
 pub mod savestates_ui;
 pub mod scratch;
