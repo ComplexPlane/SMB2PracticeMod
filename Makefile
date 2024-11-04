@@ -16,7 +16,7 @@ LINKER_FLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sect
 all: SMB2PracticeMod.gci
 
 debug: RUSTFLAGS := ""
-debug: CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json
+debug: CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
 debug: SMB2PracticeMod.gci
 
 .PHONY: elf2rel
