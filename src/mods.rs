@@ -16,5 +16,6 @@ pub mod physics;
 pub mod savestates_ui;
 pub mod scratch;
 pub mod sfx;
+pub mod stage_edits;
 pub mod timer;
 pub mod unlock;

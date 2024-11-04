@@ -2,6 +2,7 @@ use arrayvec::ArrayString;
 
 use crate::mods::cmseg::{CmSeg, Seg};
 use crate::mods::gotostory::GoToStory;
+use crate::mods::stage_edits::StageEdits;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
@@ -19,6 +20,7 @@ pub struct MenuContext<'a> {
     pub binds: &'a mut Binds,
     pub cm_seg: &'a mut CmSeg,
     pub go_to_story: &'a mut GoToStory,
+    pub stage_edits: &'a mut StageEdits,
     // physics: &'a mut Physics,
 }
 
@@ -1065,7 +1067,7 @@ static STAGE_EDIT_VARIANTS: &[&str] = &["None", "Golden Banana", "Dark Banana", 
 
 static REVERSE_GOAL_WIDGETS: &[Widget] = &[Widget::Button {
     label: "Select New Goal",
-    push: |_| {}, // TODO: Implement stage_edits::select_new_goal()
+    push: |cx| cx.stage_edits.select_new_goal(),
     after: AfterPush::CloseMenu,
 }];
 

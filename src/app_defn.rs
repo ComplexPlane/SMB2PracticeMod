@@ -4,7 +4,8 @@ use crate::{
         ballcolor::BallColor, banans::Banans, camera::Camera, cmseg::CmSeg, dpad::Dpad,
         fallout::Fallout, freecam::Freecam, gotostory::GoToStory, hide::Hide, ilbattle::IlBattle,
         ilmark::IlMark, inputdisp::InputDisplay, jump::Jump, marathon::Marathon, physics::Physics,
-        savestates_ui::SaveStatesUi, scratch::Scratch, sfx::Sfx, timer::Timer, unlock::Unlock,
+        savestates_ui::SaveStatesUi, scratch::Scratch, sfx::Sfx, stage_edits::StageEdits,
+        timer::Timer, unlock::Unlock,
     },
     systems::{
         binds::Binds,
@@ -50,6 +51,11 @@ app_modules!(
     },
     IlMark { Tick, Draw },
     Camera { Tick },
+    StageEdits {
+        MainLoopLoad,
+        MainGameLoad,
+        Tick
+    },
     Hide { MainLoopLoad },
     Sfx { MainLoopLoad },
     Scratch { Tick, Draw },

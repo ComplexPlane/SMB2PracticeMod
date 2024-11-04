@@ -23,7 +23,7 @@ static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
     Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::new())));
 
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
-    cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
+    cx.ball_color.borrow_mut().switch_monkey(&cx.pref.borrow());
     critical_section::with(|cs| {
         GAME_READY_INIT_HOOK.borrow(cs).borrow().call();
     })
@@ -108,7 +108,7 @@ impl BallColor {
         }
     }
 
-    pub fn switch_monkey(&self, pref: &mut Pref) {
+    pub fn switch_monkey(&self, pref: &Pref) {
         unsafe {
             match MonkeyType::try_from(pref.get_u8(U8Pref::MonkeyType)).unwrap() {
                 MonkeyType::Default => (),
