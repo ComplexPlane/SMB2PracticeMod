@@ -83,7 +83,7 @@ impl Freecam {
         }
     }
 
-    fn enabled(&self, pref: &mut Pref) -> bool {
+    fn enabled(&self, pref: &Pref) -> bool {
         pref.get_bool(BoolPref::Freecam) && Self::in_correct_mode()
     }
 
@@ -91,7 +91,7 @@ impl Freecam {
         self.enabled(pref) && pref.get_bool(BoolPref::FreecamFreezeTimer)
     }
 
-    pub fn should_hide_hud(&self, pref: &mut Pref) -> bool {
+    pub fn should_hide_hud(&self, pref: &Pref) -> bool {
         self.enabled(pref) && pref.get_bool(BoolPref::FreecamHideHud)
     }
 

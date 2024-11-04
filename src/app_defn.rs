@@ -2,7 +2,7 @@ use crate::{
     app_modules, mkb,
     mods::{
         ballcolor::BallColor, banans::Banans, camera::Camera, cmseg::CmSeg, dpad::Dpad,
-        fallout::Fallout, freecam::Freecam, gotostory::GoToStory, ilbattle::IlBattle,
+        fallout::Fallout, freecam::Freecam, gotostory::GoToStory, hide::Hide, ilbattle::IlBattle,
         inputdisp::InputDisplay, jump::Jump, physics::Physics, savestates_ui::SaveStatesUi,
         scratch::Scratch, timer::Timer, unlock::Unlock,
     },
@@ -48,6 +48,7 @@ app_modules!(
         Draw,
     },
     Camera { Tick },
+    Hide { MainLoopLoad },
     Scratch { Tick, Draw },
     Draw { Draw },
     Pref { Tick },

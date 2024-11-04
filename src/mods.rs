@@ -6,6 +6,7 @@ pub mod dpad;
 pub mod fallout;
 pub mod freecam;
 pub mod gotostory;
+pub mod hide;
 pub mod ilbattle;
 pub mod inputdisp;
 pub mod jump;
