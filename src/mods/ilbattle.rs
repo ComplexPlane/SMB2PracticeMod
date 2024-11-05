@@ -12,12 +12,13 @@ use crate::{
     },
 };
 
-use super::freecam::Freecam;
+use super::{freecam::Freecam, validate::Validate};
 
 hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, |cx| {
-    let mut il_battle = cx.il_battle.borrow_mut();
+    let il_battle = &mut cx.il_battle.borrow_mut();
+    let validate = &mut cx.validate.borrow_mut();
     il_battle.game_play_tick_hook.call();
-    il_battle.validate_attempt();
+    il_battle.validate_attempt(validate);
 });
 
 struct Context<'a> {
@@ -419,12 +420,11 @@ impl IlBattle {
         }
     }
 
-    pub fn validate_attempt(&mut self) {
+    pub fn validate_attempt(&mut self, validate: &mut Validate) {
         unsafe {
-            // TODO
-            // if !validate::was_run_valid(true) {
-            //     return;
-            // }
+            if !validate.was_run_valid(true) {
+                return;
+            }
 
             let on_incorrect_stage = self.main_mode_play_timer > 0
                 && self.battle_stage_id != mkb::current_stage_id as u32

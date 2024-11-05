@@ -1,7 +1,6 @@
 // Wrap OSReport() because Rust's formatting functions have a large code size footprint (especially
 // for floats). It would be cool if there was some safe macro wrapper around printf-style
 // formatting.
-// TODO handle converting string arguments to C strings
 #[macro_export]
 macro_rules! log {
     ($fmt:literal $(, $arg:expr)* $(,)?) => {{

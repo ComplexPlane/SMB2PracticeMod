@@ -39,8 +39,6 @@ pub const B_OPCODE_MASK: usize = 0xFC000000;
 pub const B_OPCODE: usize = 0x48000000;
 pub const B_DEST_MASK: usize = 0x03FFFFFC;
 
-// TODO: PPC_INSR_CMPWI
-
 pub enum Reg {
     R0 = 0,
     R1 = 1,

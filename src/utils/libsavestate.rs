@@ -111,12 +111,31 @@ impl SaveState {
             Self::pass_over_regions(&mut MemStore::Save(&mut save), timer);
             self.stage_id = mkb::current_stage_id;
             self.character = mkb::active_monkey_id[mkb::curr_player_idx as usize];
-            // handle_pause_menu_save(); // TODO
+            self.handle_pause_menu_save();
 
             self.memstore = Some(memstore::Load::from(save));
         }
 
         Ok(())
+    }
+
+    unsafe fn handle_pause_menu_save(&mut self) {
+        self.pause_menu_sprite_status = 0;
+
+        // Look for an active sprite that has the same dest func pointer as the pause menu sprite
+        for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+                continue;
+            }
+
+            let sprite = &raw mut mkb::sprites[i];
+            let disp_func = (*sprite).disp_func;
+            if disp_func == Some(mkb::sprite_pausemenu_disp) {
+                self.pause_menu_sprite_status = *mkb::sprite_pool_info.status_list.add(i);
+                self.pause_menu_sprite = *sprite;
+                break;
+            }
+        }
     }
 
     pub fn load(

@@ -3,6 +3,8 @@ use arrayvec::ArrayString;
 use crate::mods::cmseg::{CmSeg, Seg};
 use crate::mods::gotostory::GoToStory;
 use crate::mods::stage_edits::StageEdits;
+use crate::mods::unlock::Unlock;
+use crate::mods::validate::Validate;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
@@ -21,6 +23,9 @@ pub struct MenuContext<'a> {
     pub cm_seg: &'a mut CmSeg,
     pub go_to_story: &'a mut GoToStory,
     pub stage_edits: &'a mut StageEdits,
+    pub unlock: &'a mut Unlock,
+    pub validate: &'a mut Validate,
+    // TODO?
     // physics: &'a mut Physics,
 }
 
@@ -729,9 +734,7 @@ static UNLOCK_CONFIRM_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Confirm",
-        // TODO
-        // push: |_| unlock::unlock_everything(),
-        push: |_| {},
+        push: |cx| cx.unlock.unlock_everything(),
         after: AfterPush::GoBack,
     },
 ];
@@ -927,7 +930,7 @@ static RESET_ILMARK_WIDGETS: &[Widget] = &[
     },
     Widget::Button {
         label: "Confirm",
-        push: |_| {}, // TODO: Implement validate::disable_invalidating_settings()
+        push: |cx| Validate::disable_invalidating_settings(cx.pref),
         after: AfterPush::GoBack,
     },
 ];

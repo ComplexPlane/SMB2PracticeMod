@@ -63,7 +63,7 @@ impl Validate {
         self.did_ball_enter_goal_hook.hook();
     }
 
-    fn disable_invalidating_settings(pref: &mut Pref) {
+    pub fn disable_invalidating_settings(pref: &mut Pref) {
         // Set all bool prefs to default
         for &invalid_pref in INVALID_BOOL_PREFS {
             pref.set_bool(invalid_pref, pref.get_default_bool(invalid_pref));

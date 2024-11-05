@@ -12,6 +12,8 @@ use crate::{
     utils::version,
 };
 
+use super::validate::Validate;
+
 pub struct IlMark {
     valid_run: bool,
     is_romhack: bool,
@@ -30,11 +32,10 @@ impl IlMark {
         }
     }
 
-    pub fn validate_attempt(&mut self) {
-        // TODO:
-        // if !validate::was_run_valid(false) {
-        //     return;
-        // }
+    pub fn validate_attempt(&mut self, validate: &Validate) {
+        if !validate.was_run_valid(false) {
+            return;
+        }
         self.valid_run = true;
     }
 
