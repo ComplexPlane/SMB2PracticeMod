@@ -6,7 +6,7 @@ use once_cell::sync::Lazy;
 
 use crate::{
     app_defn::AppContext,
-    hook, log,
+    hook,
     mkb::{self},
     systems::{
         draw,

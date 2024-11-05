@@ -1,4 +1,3 @@
-use core::ffi::c_char;
 
 use num_enum::TryFromPrimitive;
 

@@ -1,7 +1,4 @@
-use core::cell::RefCell;
 
-use critical_section::Mutex;
-use once_cell::sync::Lazy;
 
 #[macro_export]
 macro_rules! hook {

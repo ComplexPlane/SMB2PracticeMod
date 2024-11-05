@@ -3,9 +3,9 @@ use num_enum::TryFromPrimitive;
 
 use crate::{
     app_defn::AppContext,
-    cstr_buf, fmt, hook, log, mkb,
+    cstr_buf, fmt, hook, mkb,
     systems::{
-        binds::{self, Binds},
+        binds::{Binds},
         draw,
         pad::{Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},

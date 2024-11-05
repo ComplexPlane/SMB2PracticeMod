@@ -5,7 +5,7 @@ use crate::{
     hook, mkb,
     systems::{
         draw,
-        pref::{BoolPref, Pref},
+        pref::BoolPref,
     },
     utils::timerdisp,
 };

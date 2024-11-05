@@ -9,7 +9,7 @@ use crate::{
     utils::{math::fabs, patch},
 };
 
-use super::freecam::{self, Freecam};
+use super::freecam::{Freecam};
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
 #[repr(u8)]

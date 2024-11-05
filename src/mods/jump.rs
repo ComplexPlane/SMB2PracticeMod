@@ -1,4 +1,3 @@
-use core::ffi::c_void;
 
 use num_enum::TryFromPrimitive;
 
@@ -237,7 +236,7 @@ impl Jump {
                         Self::jump_curve(self.jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.x);
                     ball.vel.z +=
                         Self::jump_curve(self.jump_frames, JUMP_LENGTH) * (0.05 * -normal_vec.z);
-                    let expected_height = (0.1 * -normal_vec.y);
+                    let expected_height = 0.1 * -normal_vec.y;
                     let bonus_height = (1.0 - fabs(normal_vec.y)) * 0.08;
                     let lerped_height = Self::jump_curve(self.jump_frames, JUMP_LENGTH)
                         * (expected_height + bonus_height);

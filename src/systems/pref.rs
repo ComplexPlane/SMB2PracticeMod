@@ -2,7 +2,6 @@ extern crate alloc;
 
 use crate::{
     app_defn::AppContext, cstr, fmt, mkb_suppl::CARDResult, systems::draw::NotifyDuration,
-    utils::modlink::ModLink,
 };
 use alloc::vec;
 use alloc::vec::Vec;
@@ -11,7 +10,7 @@ use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout, Unaligned};
 
 use super::{
     cardio::CardIo,
-    draw::{self, Draw},
+    draw::{self},
 };
 
 macro_rules! pref_defn {

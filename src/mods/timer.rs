@@ -3,12 +3,11 @@ use crate::{
     mkb,
     systems::{
         draw,
-        pref::{BoolPref, Pref},
+        pref::BoolPref,
     },
     utils::{memstore::MemStore, timerdisp},
 };
 
-use super::freecam::Freecam;
 
 pub struct Timer {
     retrace_count: u32,

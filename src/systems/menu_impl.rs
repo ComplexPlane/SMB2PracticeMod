@@ -1,17 +1,15 @@
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::app_defn::AppContext;
-use crate::mods::cmseg::CmSeg;
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
 use crate::{mkb, utils::tinymap::TinyMap};
 
-use super::binds::{self, Binds};
-use super::draw::Draw;
+use super::binds::{self};
 use super::menu_defn::{self, AfterPush, MenuContext, Widget, ROOT_MENU};
-use super::pad::{Dir, Pad, Prio};
-use super::pref::{Pref, U8Pref};
+use super::pad::{Dir, Prio};
+use super::pref::U8Pref;
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum BindingState {

@@ -1,6 +1,6 @@
 use crate::{
     app_defn::AppContext,
-    systems::pref::{BoolPref, Pref},
+    systems::pref::BoolPref,
     utils::patch,
 };
 
