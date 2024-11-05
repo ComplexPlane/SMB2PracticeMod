@@ -115,7 +115,7 @@ impl SaveStatesUi {
                 cx.draw.notify(
                     draw::RED,
                     NotifyDuration::Short,
-                    &fmt!(32, c"Slot {} Full", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot %d Full", self.active_state_slot + 1),
                 );
                 return;
             }
@@ -189,13 +189,13 @@ impl SaveStatesUi {
                 cx.draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    &fmt!(32, c"Slot {} Frame Advance", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot %d Frame Advance", self.active_state_slot + 1),
                 );
             } else {
                 cx.draw.notify(
                     draw::PINK,
                     NotifyDuration::Short,
-                    &fmt!(32, c"Slot {} Saved", self.active_state_slot + 1),
+                    &fmt!(32, c"Slot %d Saved", self.active_state_slot + 1),
                 );
             }
 
@@ -245,7 +245,7 @@ impl SaveStatesUi {
                     cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt!(32, c"Slot {} Empty", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot %d Empty", self.active_state_slot + 1),
                     );
                     return;
                 }
@@ -253,7 +253,7 @@ impl SaveStatesUi {
                     cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt!(32, c"Slot {} Wrong Stage", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot %d Wrong Stage", self.active_state_slot + 1),
                     );
                     return;
                 }
@@ -262,7 +262,7 @@ impl SaveStatesUi {
                     cx.draw.notify(
                         draw::RED,
                         NotifyDuration::Short,
-                        &fmt!(32, c"Slot {} Wrong Monkey", self.active_state_slot + 1),
+                        &fmt!(32, c"Slot %d Wrong Monkey", self.active_state_slot + 1),
                     );
                     return;
                 }
