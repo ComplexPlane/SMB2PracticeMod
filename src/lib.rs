@@ -87,15 +87,14 @@ unsafe fn perform_assembly_patches() {
     // disabled
     patch::write_nop(0x80299f54 as *mut usize);
     // Nop this pausemenu screenshot call so we can call it when we want to
-    // TODO uncomment when we deal with this? Currently bugs out when when pausing
-    // patch::write_nop(0x80270aac as *mut u32);
+    patch::write_nop(0x80270aac as *mut usize);
 
     // Titlescreen patches
     let msg = c"SMB2 PRACTICE MOD";
     core::ptr::copy_nonoverlapping(
         msg.as_ptr(),
         0x8047f4ec as *mut c_char,
-        msg.count_bytes() + 1,
+        msg.to_bytes_with_nul().len(),
     );
     patch::write_branch(
         0x8032ad0c as *mut usize,

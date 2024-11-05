@@ -184,7 +184,6 @@ impl SaveStatesUi {
                 }
             }
 
-            // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
             self.frame_advance_mode = self.is_either_trigger_held(cx.pad);
             if self.frame_advance_mode {
                 cx.draw.notify(

@@ -69,6 +69,17 @@ macro_rules! app_modules {
             // Draw functions hook
             $crate::hook!(DrawDebugTextHook => (), $crate::mkb::draw_debugtext, |cx| {
                 cx.draw.borrow().predraw();
+
+                // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
+                // elements. The original screenshot call is nopped.
+                unsafe {
+                    if (mkb::g_pause_status == 1) {
+                        mkb::take_pausemenu_screenshot(&raw mut mkb::fullscreen_texture_buf as *mut _, 0, 0,
+                                                    (*mkb::current_render_mode).fbWidth as i16,
+                                                    (*mkb::current_render_mode).efbHeight as i16, mkb::GX_TF_RGB5A3);
+                    }
+                }
+
                 $(
                     $crate::app_modules!(@draw $module_name {$($event),*} cx);
                 )*

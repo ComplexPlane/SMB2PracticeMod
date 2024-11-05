@@ -151,7 +151,6 @@ impl SaveState {
 
             self.reload_state = false;
 
-            // TODO allow loading savestate during timeover
             if mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT
                 || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN
             {

@@ -19,7 +19,7 @@ pub struct Save {
 }
 
 impl TryFrom<Prealloc> for Save {
-    type Error = (); // TODO better error type
+    type Error = ();
 
     fn try_from(prealloc: Prealloc) -> Result<Self, Self::Error> {
         let mut buf = Vec::new();
