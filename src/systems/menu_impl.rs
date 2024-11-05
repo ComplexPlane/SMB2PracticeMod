@@ -703,7 +703,7 @@ impl MenuImpl {
         }
     }
 
-    fn is_visible(&self) -> bool {
+    pub fn is_visible(&self) -> bool {
         self.visible
     }
 

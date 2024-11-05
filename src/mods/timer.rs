@@ -30,6 +30,7 @@ impl Timer {
     pub fn draw(&mut self, cx: &AppContext) {
         let pref = &mut cx.pref.borrow_mut();
         let freecam = &mut cx.freecam.borrow_mut();
+        let validate = &cx.validate.borrow();
 
         unsafe {
             if mkb::main_mode != mkb::MD_GAME {
@@ -88,9 +89,7 @@ impl Timer {
                 _ => return,
             }
 
-            // TODO
-            // let framesave = validate::get_framesave();
-            let framesave = 0;
+            let framesave = validate.get_framesave();
 
             if pref.get_bool(BoolPref::TimerShowSubtick) && !freecam.should_hide_hud(pref) {
                 timerdisp::draw_subtick_timer(

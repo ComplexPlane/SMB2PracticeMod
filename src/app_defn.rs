@@ -5,7 +5,7 @@ use crate::{
         fallout::Fallout, freecam::Freecam, gotostory::GoToStory, hide::Hide, ilbattle::IlBattle,
         ilmark::IlMark, inputdisp::InputDisplay, iw::Iw, jump::Jump, marathon::Marathon,
         physics::Physics, savestates_ui::SaveStatesUi, scratch::Scratch, sfx::Sfx,
-        stage_edits::StageEdits, timer::Timer, unlock::Unlock,
+        stage_edits::StageEdits, timer::Timer, unlock::Unlock, validate::Validate,
     },
     systems::{
         binds::Binds,
@@ -60,6 +60,7 @@ app_modules!(
     Hide { MainLoopLoad },
     Sfx { MainLoopLoad },
     Scratch { Tick, Draw },
+    Validate { Tick, MainLoopLoad },
     Draw { Draw },
     Pref { Tick },
 );

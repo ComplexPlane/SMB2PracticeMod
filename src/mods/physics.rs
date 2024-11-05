@@ -47,8 +47,8 @@ impl Physics {
         }
     }
 
-    fn using_custom_physics(&self, cx: &mut Context) -> bool {
-        let preset: PhysicsPreset = cx.pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
+    pub fn using_custom_physics(&self, pref: &Pref) -> bool {
+        let preset: PhysicsPreset = pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
         preset != PhysicsPreset::Default
     }
 
@@ -120,7 +120,7 @@ impl Physics {
                 return;
             }
 
-            if self.using_custom_physics(cx)
+            if self.using_custom_physics(cx.pref)
                 && cx.pref.get_bool(BoolPref::CustomPhysicsDisp)
                 && !cx.freecam.should_hide_hud(cx.pref)
             {
