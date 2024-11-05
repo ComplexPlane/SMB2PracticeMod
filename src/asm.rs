@@ -6,7 +6,7 @@ extern "C" {
     pub static mut debug_text_color: u32;
     pub static stage_select_menu_hook: u8;
     pub static pause_menu_text_hook: u8;
-    pub static is_iw_complete: u8;
+    pub fn is_iw_complete() -> bool;
     pub static mut currently_playing_iw: u32;
 }
 

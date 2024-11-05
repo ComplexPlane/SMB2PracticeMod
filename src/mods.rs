@@ -10,6 +10,7 @@ pub mod hide;
 pub mod ilbattle;
 pub mod ilmark;
 pub mod inputdisp;
+pub mod iw;
 pub mod jump;
 pub mod marathon;
 pub mod physics;

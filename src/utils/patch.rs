@@ -9,12 +9,12 @@ pub unsafe fn clear_dc_ic_cache(ptr: *mut c_void, size: usize) {
     mkb::ICInvalidateRange(ptr as *mut _, size as u32);
 }
 
-pub unsafe fn write_branch(ptr: *mut usize, destination: *mut c_void) -> usize {
+pub unsafe fn write_branch(ptr: *mut usize, destination: *const c_void) -> usize {
     let branch: usize = 0x48000000; // b
     write_branch_main(ptr, destination, branch)
 }
 
-pub unsafe fn write_branch_bl(ptr: *mut usize, destination: *mut c_void) -> usize {
+pub unsafe fn write_branch_bl(ptr: *mut usize, destination: *const c_void) -> usize {
     let branch: usize = 0x48000001; // bl
     write_branch_main(ptr, destination, branch)
 }
@@ -23,7 +23,11 @@ pub unsafe fn write_blr(ptr: *mut usize) -> usize {
     write_word(ptr, 0x4e800020)
 }
 
-unsafe fn write_branch_main(ptr: *mut usize, destination: *mut c_void, mut branch: usize) -> usize {
+unsafe fn write_branch_main(
+    ptr: *mut usize,
+    destination: *const c_void,
+    mut branch: usize,
+) -> usize {
     let delta = destination as usize - ptr as usize;
 
     branch |= delta & 0x03FFFFFC;
