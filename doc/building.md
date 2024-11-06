@@ -12,7 +12,7 @@ Install Xcode command line tools:
 xcode-select --install
 ```
 
-[Install homebrew](https://brew.sh/), then install some dependencies:
+[Install Homebrew](https://brew.sh/), then install some dependencies:
 
 ```sh
 brew install cmake boost python3
@@ -46,7 +46,7 @@ Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc` (Ubuntu
 
 [Install the base Rust toolchain](https://www.rust-lang.org/tools/install).
 
-Install Rust Nightly and Rust sources:
+Next, install Rust Nightly and Rust sources:
 
 ```sh
 rustup toolchain install nightly
@@ -62,6 +62,8 @@ cd SMB2PracticeMod
 
 ## Build It
 
-Run `make` to produce `SMB2PracticeMod.gci`.
+Run one of:
 
-For a build that includes file/line/column panic debug information, run `make debug`. This info isn't included by default as it significantly increases the binary size.
+- `make`: Standard build that produces `SMB2PracticeMod.gci`.
+- `make debug`: Build that includes file/line/column panic debug information. This is very helpful for debugging crashes, but isn't the default as it significantly increases the binary size.
+- `make fix`: Auto-fix problems in the code like unused imports.
