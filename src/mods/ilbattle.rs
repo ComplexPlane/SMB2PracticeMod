@@ -290,7 +290,7 @@ impl IlBattle {
 
     fn score_calc(score: u32) -> u32 {
         unsafe {
-            let igt_score = (mkb::mode_info.stage_time_frames_remaining * 100 / 60) as u32; // Score from timer
+            let igt_score = mkb::mode_info.stage_time_frames_remaining as u32 * 100 / 60; // Score from timer
             let mut goal_bonus = 0; // Blue goal (no bonus)
             if mkb::mode_info.entered_goal_type == 1 {
                 goal_bonus = 10000; // Green goal bonus
