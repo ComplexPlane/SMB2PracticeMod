@@ -12,11 +12,6 @@ use crate::{
 
 use super::physics::PhysicsPreset;
 
-struct Context<'a> {
-    pref: &'a mut Pref,
-    pad: &'a mut Pad,
-}
-
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive)]
 #[repr(u8)]
 enum MaxJumpCount {
@@ -65,11 +60,11 @@ impl Jump {
         self.aerial_jumps = 0;
     }
 
-    fn patch_minimap(&mut self, cx: &mut Context) {
+    fn patch_minimap(&mut self, pref: &Pref) {
         // Patch out Minimap Toggle
         // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
         unsafe {
-            if mkb::main_mode == mkb::MD_GAME && cx.pref.get_bool(BoolPref::JumpMod) {
+            if mkb::main_mode == mkb::MD_GAME && pref.get_bool(BoolPref::JumpMod) {
                 let patch1_loc = 0x808f4d18 as *mut u32;
                 let patch2_loc = 0x808f5168 as *mut u32;
 
@@ -94,22 +89,20 @@ impl Jump {
         }
     }
 
-    fn enable(&mut self, cx: &mut Context) {
-        self.patch_minimap(cx);
-        if cx.pref.get_bool(BoolPref::JumpChangePhysics) {
-            cx.pref
-                .set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
-            cx.pref.save();
+    fn enable(&mut self, pref: &mut Pref) {
+        self.patch_minimap(pref);
+        if pref.get_bool(BoolPref::JumpChangePhysics) {
+            pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+            pref.save();
         }
         self.reset();
     }
 
-    fn disable(&mut self, cx: &mut Context) {
+    fn disable(&mut self, pref: &mut Pref) {
         self.restore_minimap();
-        if cx.pref.get_bool(BoolPref::JumpChangePhysics) {
-            cx.pref
-                .set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
-            cx.pref.save();
+        if pref.get_bool(BoolPref::JumpChangePhysics) {
+            pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+            pref.save();
         }
     }
 
@@ -123,21 +116,19 @@ impl Jump {
         lerp * lerp * lerp
     }
 
-    fn toggle_minimap(cx: &mut Context) {
+    fn toggle_minimap(pad: &Pad) {
         // Minimap Toggle with B
         unsafe {
             if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN
                 || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)
-                && cx
-                    .pad
-                    .button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
+                && pad.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
             {
                 mkb::toggle_minimap_zoom();
             }
         }
     }
 
-    fn jumping(&mut self, cx: &mut Context) {
+    fn jumping(&mut self, pref: &Pref, pad: &Pad) {
         // Reset state on READY_INIT
         unsafe {
             if mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT
@@ -148,15 +139,11 @@ impl Jump {
 
             // Setup vars
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
-            let a_pressed = cx
-                .pad
-                .button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = cx
-                .pad
-                .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_released = cx
-                .pad
-                .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_pressed =
+                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_released =
+                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
             let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
             let normal_vec = mkb::balls[mkb::curr_player_idx as usize].g_last_collision_normal;
 
@@ -168,12 +155,12 @@ impl Jump {
             }
 
             let valid_location =
-                normal_vec.y < WALLJUMP_NORMAL || cx.pref.get_bool(BoolPref::JumpAllowWalljumps);
+                normal_vec.y < WALLJUMP_NORMAL || pref.get_bool(BoolPref::JumpAllowWalljumps);
             // Track Ground Touched
             if ground_touched && valid_location {
                 self.ticks_since_ground = 0;
 
-                let count = MaxJumpCount::try_from(cx.pref.get_u8(U8Pref::JumpCount)).unwrap();
+                let count = MaxJumpCount::try_from(pref.get_u8(U8Pref::JumpCount)).unwrap();
                 if count == MaxJumpCount::Two {
                     self.aerial_jumps = 1;
                 } else {
@@ -189,7 +176,7 @@ impl Jump {
                 ground_touched && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
             let coyote_late = self.ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
             // check extra jump count
-            let max_jump = MaxJumpCount::try_from(cx.pref.get_u8(U8Pref::JumpCount)).unwrap();
+            let max_jump = MaxJumpCount::try_from(pref.get_u8(U8Pref::JumpCount)).unwrap();
             let aerial_jumped =
                 (self.aerial_jumps > 0 || max_jump == MaxJumpCount::Infinite) && a_pressed;
             let start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT
@@ -247,7 +234,7 @@ impl Jump {
         }
     }
 
-    fn classic_jumping(&mut self, cx: &mut Context) {
+    fn classic_jumping(&mut self, pad: &Pad) {
         unsafe {
             if mkb::sub_mode != mkb::SMD_GAME_READY_MAIN
                 && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT
@@ -262,15 +249,11 @@ impl Jump {
 
             // Setup vars
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
-            let a_pressed = cx
-                .pad
-                .button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = cx
-                .pad
-                .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_released = cx
-                .pad
-                .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_pressed =
+                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_released =
+                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
             let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
 
             if a_pressed {
@@ -318,41 +301,44 @@ impl Jump {
     }
 
     pub fn tick(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pref: &mut cx.pref.borrow_mut(),
-            pad: &mut cx.pad.borrow_mut(),
-        };
+        let mut pref = cx.pref.borrow_mut();
+        let pad = cx.pad.borrow_mut();
 
-        let enabled = cx.pref.get_bool(BoolPref::JumpMod);
-        if cx.pref.did_change_bool(BoolPref::JumpMod) {
+        let enabled = pref.get_bool(BoolPref::JumpMod);
+        if pref.did_change_bool(BoolPref::JumpMod) {
             if enabled {
-                self.enable(cx);
+                self.enable(&mut pref);
             } else {
-                self.disable(cx);
+                self.disable(&mut pref);
             }
         }
         if enabled {
-            if cx.pref.did_change_bool(BoolPref::JumpChangePhysics) {
-                if cx.pref.get_bool(BoolPref::JumpChangePhysics) {
-                    cx.pref
-                        .set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+            if pref.did_change_bool(BoolPref::JumpChangePhysics) {
+                if pref.get_bool(BoolPref::JumpChangePhysics) {
+                    pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
                 } else {
-                    cx.pref
-                        .set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+                    pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
                 }
-                cx.pref.save();
+                pref.save();
             }
+
+            // Jumping calls soundreqid which reads pref, so drop mutable borrow to pref
+            drop(pref);
+            let pref = cx.pref.borrow();
+
             // Don't run logic while paused
             let paused_now = unsafe { *(0x805BC474 as *const u32) & 8 };
             if paused_now != 0 {
                 return;
             }
-            Self::toggle_minimap(cx);
+            Self::toggle_minimap(&pad);
 
-            if cx.pref.get_u8(U8Pref::JumpProfile) == 0 {
-                self.jumping(cx);
+            let new_jump_profile = pref.get_u8(U8Pref::JumpProfile) == 0;
+
+            if new_jump_profile {
+                self.jumping(&pref, &pad);
             } else {
-                self.classic_jumping(cx);
+                self.classic_jumping(&pad);
             }
         }
     }
