@@ -38,9 +38,9 @@ macro_rules! hook {
             }
 
             extern "C" fn c_hook($($argname: $arg, )*) -> $ret {
-                let f: fn($($arg,)* &$crate::app_defn::AppContext) -> $ret = $our_func;
+                let f: fn($($arg,)* &$crate::app::AppContext) -> $ret = $our_func;
                 critical_section::with(|cs| {
-                    f($($argname, )* $crate::app_defn::APP_CONTEXT.borrow(cs))
+                    f($($argname, )* $crate::app::APP_CONTEXT.borrow(cs))
                 })
             }
         }

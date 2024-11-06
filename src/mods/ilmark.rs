@@ -3,7 +3,7 @@ use core::ffi::c_char;
 use arrayvec::ArrayString;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     cstr_buf, mkb,
     systems::{
         draw,

@@ -1,7 +1,7 @@
 use core::ffi::CStr;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     asm, mkb,
     systems::{
         draw,

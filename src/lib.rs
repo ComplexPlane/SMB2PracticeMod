@@ -5,8 +5,7 @@
 
 extern crate alloc;
 
-mod app_defn;
-mod app_impl;
+mod app;
 mod asm;
 #[allow(dead_code)]
 #[allow(non_upper_case_globals)]
@@ -66,13 +65,13 @@ extern "C" fn _unresolved() {}
 
 unsafe fn init() {
     perform_assembly_patches();
-    app_defn::init();
+    app::init();
 
     log!(c"SMB2 Practice Mod loaded");
 }
 
 unsafe extern "C" fn tick() {
-    app_defn::tick();
+    app::tick();
 }
 
 unsafe fn perform_assembly_patches() {

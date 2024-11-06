@@ -1,4 +1,4 @@
-use crate::{app_defn::AppContext, mkb};
+use crate::{app::AppContext, mkb};
 use arrayvec::ArrayString;
 
 use super::pad::{Pad, Prio};

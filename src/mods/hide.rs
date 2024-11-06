@@ -1,5 +1,5 @@
 use crate::{
-    app_defn::{self, AppContext},
+    app::{self, AppContext},
     hook, mkb,
     systems::pref::{BoolPref, Pref},
     utils::patch,
@@ -123,7 +123,7 @@ fn should_hide_bg(pref: &Pref) -> bool {
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`
 unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
     critical_section::with(|cs| {
-        let cx = app_defn::APP_CONTEXT.borrow(cs);
+        let cx = app::APP_CONTEXT.borrow(cs);
         if should_hide_bg(&cx.pref.borrow()) {
             mkb::avdisp_set_fog_color(0, 0, 0);
         } else {
@@ -134,7 +134,7 @@ unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
 
 unsafe extern "C" fn nl2ngc_set_fog_color_hook(r: u8, g: u8, b: u8) {
     critical_section::with(|cs| {
-        let cx = app_defn::APP_CONTEXT.borrow(cs);
+        let cx = app::APP_CONTEXT.borrow(cs);
         if should_hide_bg(&cx.pref.borrow()) {
             mkb::nl2ngc_set_fog_color(0, 0, 0);
         } else {

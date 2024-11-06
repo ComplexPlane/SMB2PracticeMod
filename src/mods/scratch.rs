@@ -1,4 +1,4 @@
-use crate::app_defn::AppContext;
+use crate::app::AppContext;
 
 pub struct Scratch {}
 

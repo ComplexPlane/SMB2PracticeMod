@@ -1,6 +1,6 @@
 use arrayvec::{ArrayString, ArrayVec};
 
-use crate::app_defn::AppContext;
+use crate::app::AppContext;
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};

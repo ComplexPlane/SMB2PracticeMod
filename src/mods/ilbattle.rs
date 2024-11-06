@@ -2,7 +2,7 @@ use arrayvec::ArrayString;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     cstr_buf, fmt, hook, mkb,
     systems::{
         binds::Binds,

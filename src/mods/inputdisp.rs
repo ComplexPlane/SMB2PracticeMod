@@ -3,7 +3,7 @@ use core::ffi::CStr;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     fmt,
     mkb::{self, Vec2d},
     mkb_suppl::{GXPosition3f32, GXTexCoord2f32},

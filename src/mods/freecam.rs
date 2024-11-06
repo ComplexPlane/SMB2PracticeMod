@@ -3,7 +3,7 @@ use core::cell::RefCell;
 use critical_section::Mutex;
 use once_cell::sync::Lazy;
 
-use crate::app_defn::{self, AppContext};
+use crate::app::{self, AppContext};
 use crate::mkb::{S16Vec, Vec};
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
@@ -173,7 +173,7 @@ impl Freecam {
     unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb::Camera, ball: *mut mkb::Ball) {
         // TODO let write_branch_bl do some of this accessing globals work
         critical_section::with(|cs| {
-            let cx = app_defn::APP_CONTEXT.borrow(cs);
+            let cx = app::APP_CONTEXT.borrow(cs);
             let pref = &mut cx.pref.borrow_mut();
             let pad = &mut cx.pad.borrow_mut();
             cx.freecam

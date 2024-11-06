@@ -4,21 +4,10 @@ use critical_section::Mutex;
 use num_enum::TryFromPrimitive;
 use once_cell::sync::Lazy;
 
-use crate::{app_defn::AppContext, hook, mkb, systems::pref::U8Pref};
-
-// Unfortunately we must move the hook out of StageEdigts to avoid double borrows
-static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::default())));
+use crate::{app::AppContext, hook, mkb, systems::pref::U8Pref};
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
     cx.stage_edits.borrow_mut().on_load_stagedef(stage_id, cx);
-});
-
-hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
-    cx.stage_edits.borrow_mut().on_ready_init(cx);
-    critical_section::with(|cs| {
-        GAME_READY_INIT_HOOK.borrow(cs).borrow().call();
-    })
 });
 
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive, Default)]
@@ -46,12 +35,6 @@ impl StageEdits {
 
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.load_stagedef_hook.hook();
-    }
-
-    pub fn on_main_game_load(&mut self, _cx: &AppContext) {
-        critical_section::with(|cs| {
-            GAME_READY_INIT_HOOK.borrow(cs).borrow_mut().hook();
-        });
     }
 
     pub fn select_new_goal(&mut self) {
@@ -154,7 +137,7 @@ impl StageEdits {
         }
     }
 
-    fn on_ready_init(&mut self, cx: &AppContext) {
+    pub fn on_game_ready_init(&mut self, cx: &AppContext) {
         let pref = &cx.pref.borrow();
         let next_mode = ActiveMode::try_from(pref.get_u8(U8Pref::StageEditVariant)).unwrap();
         if self.current_mode != next_mode {

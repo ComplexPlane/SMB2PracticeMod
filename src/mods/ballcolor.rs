@@ -5,7 +5,7 @@ use num_enum::TryFromPrimitive;
 use once_cell::sync::Lazy;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     hook,
     mkb::{self},
     systems::{
@@ -16,17 +16,6 @@ use crate::{
 
 pub const COLOR_MIN: u8 = 0;
 pub const COLOR_MAX: u8 = 0xff;
-
-// Unfortunately we must move the hook out of BallColor to avoid double borrows
-static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::default())));
-
-hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
-    cx.ball_color.borrow_mut().switch_monkey(&cx.pref.borrow());
-    critical_section::with(|cs| {
-        GAME_READY_INIT_HOOK.borrow(cs).borrow().call();
-    })
-});
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
     cx.ball_color.borrow().load_stagedef_hook.call(stage_id);
@@ -79,12 +68,6 @@ impl BallColor {
 
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.load_stagedef_hook.hook();
-    }
-
-    pub fn on_main_game_load(&mut self, _cx: &AppContext) {
-        critical_section::with(|cs| {
-            GAME_READY_INIT_HOOK.borrow(cs).borrow_mut().hook();
-        });
     }
 
     pub fn get_current_color(&self) -> mkb::GXColor {

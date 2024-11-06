@@ -3,7 +3,7 @@ use core::{cell::Cell, ffi::c_int};
 use critical_section::Mutex;
 
 use crate::{
-    app_defn::AppContext,
+    app::AppContext,
     hook,
     mkb::{self, byte, Vec},
     systems::{
@@ -78,7 +78,7 @@ impl Validate {
         pref.save();
     }
 
-    fn validate_run(
+    pub fn validate_run(
         &mut self,
         pref: &Pref,
         lib_save_state: &LibSaveState,

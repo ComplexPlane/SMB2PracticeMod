@@ -4,7 +4,7 @@ use core::ptr::addr_of;
 
 use arrayvec::ArrayString;
 
-use crate::app_defn::AppContext;
+use crate::app::AppContext;
 use crate::asm;
 use crate::mkb;
 use crate::mkb_suppl::GXPosition3f32;
