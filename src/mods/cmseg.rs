@@ -1,11 +1,13 @@
 use core::{ffi::c_long, ptr::null_mut};
 
+use num_enum::TryFromPrimitive;
+
 use crate::{
     app_defn::AppContext,
     hook, mkb,
     systems::{
         draw,
-        pref::BoolPref,
+        pref::{BoolPref, Pref, U8Pref},
     },
     utils::timerdisp,
 };
@@ -44,7 +46,8 @@ pub enum Seg {
     MasterExtra,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, TryFromPrimitive)]
+#[repr(u8)]
 enum Chara {
     AiAi,
     MeeMee,
@@ -186,16 +189,9 @@ impl CmSeg {
         }
     }
 
-    unsafe fn state_seg_active(&mut self) {
+    unsafe fn state_seg_active(&mut self, pref: &Pref) {
         if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
-            let ch = match mkb::rand() % 4 {
-                0 => Chara::AiAi,
-                1 => Chara::MeeMee,
-                2 => Chara::Baby,
-                3 => Chara::GonGon,
-                _ => Chara::AiAi,
-            };
-
+            let ch = Chara::try_from(pref.get_u8(U8Pref::CmChara)).unwrap();
             mkb::active_monkey_id[0] = match ch {
                 Chara::Random => APE_CHARAS[mkb::rand() as usize % 4],
                 _ => APE_CHARAS[ch as usize],
@@ -366,12 +362,13 @@ impl CmSeg {
         }
     }
 
-    pub fn tick(&mut self, _cx: &AppContext) {
+    pub fn tick(&mut self, cx: &AppContext) {
         unsafe {
+            let pref = &cx.pref.borrow();
             match self.state {
                 State::LoadMenu => self.state_load_menu(),
                 State::EnterCm => self.state_enter_cm(),
-                State::SegActive => self.state_seg_active(),
+                State::SegActive => self.state_seg_active(pref),
                 State::SegComplete => self.state_seg_complete(),
                 State::Default => {}
             }

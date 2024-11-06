@@ -58,7 +58,6 @@ pub fn to_card_result(raw_result: c_long) -> CARDResult {
 }
 
 pub const CARD_READ_SIZE: i32 = 512;
-pub const CARD_FILENAME_MAX: i32 = 32;
 
 // A few inline GX functions we need
 #[allow(non_snake_case)]

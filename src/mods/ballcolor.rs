@@ -14,13 +14,12 @@ use crate::{
     },
 };
 
-pub const NUM_COLORS: u32 = 9;
 pub const COLOR_MIN: u8 = 0;
 pub const COLOR_MAX: u8 = 0xff;
 
 // Unfortunately we must move the hook out of BallColor to avoid double borrows
 static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::new())));
+    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::default())));
 
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
     cx.ball_color.borrow_mut().switch_monkey(&cx.pref.borrow());
@@ -74,7 +73,7 @@ impl BallColor {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
             current_color: mkb::GXColor::default(),
-            load_stagedef_hook: LoadStagedefHook::new(),
+            load_stagedef_hook: LoadStagedefHook::default(),
         }
     }
 

@@ -9,7 +9,7 @@ use crate::{
     utils::{math::fabs, patch},
 };
 
-use super::freecam::{Freecam};
+use super::freecam::Freecam;
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
 #[repr(u8)]
@@ -63,8 +63,8 @@ pub struct Fallout {
 impl Fallout {
     pub fn new() -> Self {
         Self {
-            did_ball_fallout_hook: DidBallFalloutHook::new(),
-            load_stagedef_hook: LoadStagedefHook::new(),
+            did_ball_fallout_hook: DidBallFalloutHook::default(),
+            load_stagedef_hook: LoadStagedefHook::default(),
 
             timeover_condition: 0x2c000000,
             timer_increment: 0x3803ffff,
@@ -72,7 +72,7 @@ impl Fallout {
         }
     }
 
-    pub fn on_main_loop_load(&mut self, cx: &AppContext) {
+    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.did_ball_fallout_hook.hook();
         self.load_stagedef_hook.hook();
     }

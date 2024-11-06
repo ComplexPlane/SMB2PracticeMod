@@ -5,7 +5,7 @@ use crate::{
     app_defn::AppContext,
     cstr_buf, fmt, hook, mkb,
     systems::{
-        binds::{Binds},
+        binds::Binds,
         draw,
         pad::{Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},

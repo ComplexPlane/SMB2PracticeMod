@@ -1,6 +1,5 @@
-
 use crate::mkb;
-use crate::utils::version::{SemVer};
+use crate::utils::version::SemVer;
 use core::ffi::c_void;
 
 const MAGIC: u32 = 0xFEEDC0DE;

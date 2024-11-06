@@ -8,7 +8,7 @@ use crate::{app_defn::AppContext, hook, mkb, systems::pref::U8Pref};
 
 // Unfortunately we must move the hook out of StageEdigts to avoid double borrows
 static GAME_READY_INIT_HOOK: Lazy<Mutex<RefCell<GameReadyInitHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::new())));
+    Lazy::new(|| Mutex::new(RefCell::new(GameReadyInitHook::default())));
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
     cx.stage_edits.borrow_mut().on_load_stagedef(stage_id, cx);

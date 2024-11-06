@@ -26,7 +26,7 @@ hook!(EventCameraTickHook => (), mkb::event_camera_tick, |cx| {
 
 // Unfortunately we must move the hook out of Freecam to avoid double borrows
 static EVENT_CAMERA_TICK_HOOK: Lazy<Mutex<RefCell<EventCameraTickHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(EventCameraTickHook::new())));
+    Lazy::new(|| Mutex::new(RefCell::new(EventCameraTickHook::default())));
 
 struct Context<'a> {
     pref: &'a mut Pref,

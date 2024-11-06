@@ -1,4 +1,6 @@
-use core::ffi::c_int;
+use core::{cell::Cell, ffi::c_int};
+
+use critical_section::Mutex;
 
 use crate::{
     app_defn::AppContext,
@@ -23,8 +25,7 @@ hook!(DidBallEnterGoalHook, ball: *mut mkb::Ball, out_stage_goal_idx: *mut c_int
         out_itemgroup_id, out_goal_flags);
     if result != 0 {
         // Determine framesave percentage
-        validate.find_framesave(ball, out_stage_goal_idx, out_itemgroup_id,
-            out_goal_flags);
+        validate.find_framesave(ball);
         validate.entered_goal = result != 0;
     }
     result
@@ -177,18 +178,11 @@ impl Validate {
         }
     }
 
-    fn find_framesave(
-        &mut self,
-        ball: *mut mkb::Ball,
-        out_stage_goal_idx: *mut c_int,
-        out_itemgroup_id: *mut c_int,
-        out_goal_flags: *mut byte,
-    ) {
+    fn find_framesave(&mut self, ball: *mut mkb::Ball) {
         unsafe {
             let mut physicsball = mkb::PhysicsBall::default();
             mkb::init_physicsball_from_ball(ball, &raw mut physicsball);
 
-            let mut stage_goal_idx = 0;
             let mut itemgroup = (*mkb::stagedef).coli_header_list;
             let mut itemgroup_idx = 0;
 
@@ -206,7 +200,7 @@ impl Validate {
                     }
 
                     let mut goal = (*itemgroup).goal_list;
-                    for itemgroup_goal_idx in 0..(*itemgroup).goal_count {
+                    for _itemgroup_goal_idx in 0..(*itemgroup).goal_count {
                         mkb::mtxa_from_translate(&raw mut (*goal).position);
                         mkb::mtxa_rotate_z((*goal).rotation.z);
                         mkb::mtxa_rotate_y((*goal).rotation.y);
@@ -229,7 +223,6 @@ impl Validate {
                             return; // Found goal ball travelled through
                         }
 
-                        stage_goal_idx += 1;
                         goal = goal.add(1);
                     }
                 }

@@ -1,5 +1,3 @@
-
-
 #[macro_export]
 macro_rules! hook {
     ($name:ident $(, $argname:ident: $arg:ty)* => $ret:ty, $their_func:expr, $our_func:expr) => {
@@ -22,10 +20,6 @@ macro_rules! hook {
         }
 
         impl $name {
-            pub fn new() -> Self {
-                Self::default()
-            }
-
             pub fn hook(&mut self) {
                 unsafe {
                     let mut chained_func_addr = core::ptr::null();

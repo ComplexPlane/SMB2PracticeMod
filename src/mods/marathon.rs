@@ -47,32 +47,32 @@ impl Marathon {
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
 
             let goal_idx = mkb::mode_info.entered_goal_idx as usize;
-            let goalIG_idx = mkb::mode_info.entered_goal_itemgroup_idx as usize;
+            let goal_ig_idx = mkb::mode_info.entered_goal_itemgroup_idx as usize;
 
             // Set up the TF matrix for Goal ---> World (Inverse of World ---> Goal)
-            mkb::mtxa_from_mtx(&raw mut (*mkb::itemgroups.add(goalIG_idx)).transform);
+            mkb::mtxa_from_mtx(&raw mut (*mkb::itemgroups.add(goal_ig_idx)).transform);
             mkb::mtxa_translate(
-                &raw mut (*(*(*mkb::stagedef).coli_header_list.add(goalIG_idx))
+                &raw mut (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .position,
             );
             mkb::mtxa_rotate_z(
-                (*(*(*mkb::stagedef).coli_header_list.add(goalIG_idx))
+                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation
                 .z,
             );
             mkb::mtxa_rotate_y(
-                (*(*(*mkb::stagedef).coli_header_list.add(goalIG_idx))
+                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation
                 .y,
             );
             mkb::mtxa_rotate_x(
-                (*(*(*mkb::stagedef).coli_header_list.add(goalIG_idx))
+                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation

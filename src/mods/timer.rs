@@ -1,13 +1,9 @@
 use crate::{
     app_defn::AppContext,
     mkb,
-    systems::{
-        draw,
-        pref::BoolPref,
-    },
+    systems::{draw, pref::BoolPref},
     utils::{memstore::MemStore, timerdisp},
 };
-
 
 pub struct Timer {
     retrace_count: u32,
@@ -96,7 +92,6 @@ impl Timer {
                     "SUB:",
                     row,
                     draw::WHITE,
-                    true,
                     framesave,
                     false,
                 );

@@ -36,9 +36,9 @@ macro_rules! app_modules {
                     )*
 
                     Self {
-                        process_inputs_hook: core::cell::RefCell::new(ProcessInputsHook::new()),
-                        draw_debug_text_hook: core::cell::RefCell::new(DrawDebugTextHook::new()),
-                        oslink_hook: core::cell::RefCell::new(OSLinkHook::new()),
+                        process_inputs_hook: core::cell::RefCell::new(ProcessInputsHook::default()),
+                        draw_debug_text_hook: core::cell::RefCell::new(DrawDebugTextHook::default()),
+                        oslink_hook: core::cell::RefCell::new(OSLinkHook::default()),
 
                         $(
                         [<$module_name:snake>]: core::cell::RefCell::new($module_name::new()),

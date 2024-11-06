@@ -3,7 +3,7 @@ use core::ffi::c_long;
 use crate::{app_defn::AppContext, hook, mkb, systems::pref::BoolPref};
 
 hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb::BgmTrack, param_3: u32 => c_long,
-    mkb::SoftStreamStart, |looping_state, g_bgm_id, param_3, _cx| {
+    mkb::SoftStreamStart, |_looping_state, _g_bgm_id, _param_3, _cx| {
         0
     }
 );
@@ -23,8 +23,8 @@ pub struct Sfx {
 impl Sfx {
     pub fn new() -> Self {
         Self {
-            soft_stream_start_hook: SoftStreamStartHook::new(),
-            sound_req_id_hook: SoundReqIdHook::new(),
+            soft_stream_start_hook: SoftStreamStartHook::default(),
+            sound_req_id_hook: SoundReqIdHook::default(),
         }
     }
 

@@ -74,7 +74,6 @@ pub fn draw_subtick_timer(
     prefix: &str,
     row: u32,
     color: mkb::GXColor,
-    show_minutes: bool,
     framesave: u32,
     extra_precision: bool,
 ) {
