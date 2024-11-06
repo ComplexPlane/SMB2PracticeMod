@@ -62,10 +62,6 @@ pub struct SaveState {
 }
 
 impl SaveState {
-    pub fn new() -> Self {
-        SaveState::default()
-    }
-
     pub fn tick(&mut self, libsavestate: &mut LibSaveState, timer: &mut Timer) {
         libsavestate.state_loaded_this_frame = false;
         if self.reload_state {

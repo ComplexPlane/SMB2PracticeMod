@@ -1,4 +1,3 @@
-
 use num_enum::TryFromPrimitive;
 
 use crate::{

@@ -144,16 +144,6 @@ pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
     }
 }
 
-fn debug_text_palette() {
-    for c in 0..0x80u8 {
-        let x = (c % 16) as u32 * DEBUG_CHAR_WIDTH;
-        let y = (c / 16) as u32 * DEBUG_CHAR_WIDTH;
-        unsafe {
-            mkb::draw_debugtext_char_en(x, y, c as c_char, (c * 2).try_into().unwrap());
-        }
-    }
-}
-
 pub fn heart() {
     unsafe {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??

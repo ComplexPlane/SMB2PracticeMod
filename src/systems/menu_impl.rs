@@ -203,11 +203,10 @@ impl MenuImpl {
                     match after {
                         AfterPush::CloseMenu => self.visible = false,
                         AfterPush::GoBack => self.pop_menu(cx),
-                        AfterPush::None => {}
                     }
                 }
             }
-            Widget::IntEdit { pref, min, max, .. } | Widget::FloatEdit { pref, min, max, .. } => {
+            Widget::IntEdit { pref, min, max, .. } => {
                 let mut next = cx.pref.get_u8(*pref) as i32;
 
                 if cx
@@ -299,7 +298,6 @@ impl MenuImpl {
             go_to_story: &mut cx.go_to_story.borrow_mut(),
             stage_edits: &mut cx.stage_edits.borrow_mut(),
             unlock: &mut cx.unlock.borrow_mut(),
-            validate: &mut cx.validate.borrow_mut(),
         };
 
         if self.binding == BindingState::Active {
@@ -471,16 +469,6 @@ impl MenuImpl {
                 *selectable_idx += 1;
                 *y += LINE_HEIGHT;
             }
-            Widget::FloatView { label, get } => {
-                draw::debug_text(MARGIN + PAD, *y, draw::WHITE, label);
-                draw::debug_text(
-                    MARGIN + PAD + PREF_OFFSET,
-                    *y,
-                    draw::GREEN,
-                    &fmt!(16, c"%.3Ef", get(cx) as f64),
-                );
-                *y += LINE_HEIGHT;
-            }
             Widget::Choose {
                 label,
                 choices,
@@ -541,35 +529,6 @@ impl MenuImpl {
                     color,
                     &fmt!(8, c"%d", cx.pref.get_u8(*pref) as u32),
                 );
-                *y += LINE_HEIGHT;
-                *selectable_idx += 1;
-            }
-            Widget::FloatEdit {
-                label,
-                pref,
-                precision,
-                floor,
-                decimals,
-                ..
-            } => {
-                if selected_idx == *selectable_idx {
-                    draw_selectable_highlight(*y as f32);
-                }
-                let color = if selected_idx == *selectable_idx {
-                    lerped_color
-                } else {
-                    UNFOCUSED_COLOR
-                };
-                draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
-
-                let display = (cx.pref.get_u8(*pref) as f32 + *floor as f32) / *precision as f32;
-
-                let buf = match decimals {
-                    2 => fmt!(16, c"%0.2f", display as f64),
-                    _ => fmt!(16, c"%0.3f", display as f64),
-                };
-                draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, color, &buf);
-
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
             }
@@ -677,7 +636,6 @@ impl MenuImpl {
             go_to_story: &mut cx.go_to_story.borrow_mut(),
             stage_edits: &mut cx.stage_edits.borrow_mut(),
             unlock: &mut cx.unlock.borrow_mut(),
-            validate: &mut cx.validate.borrow_mut(),
         };
 
         if !self.visible {
@@ -730,7 +688,6 @@ fn is_widget_selectable(widget: &'static Widget) -> bool {
             | Widget::Choose { .. }
             | Widget::Button { .. }
             | Widget::IntEdit { .. }
-            | Widget::FloatEdit { .. }
             | Widget::InputSelect { .. }
     )
 }
@@ -879,7 +836,7 @@ fn draw_help(widget: &Widget) {
             draw_bind_help("Y", "Previous", 1, draw::GRAY);
             draw_bind_help("X", "Reset", 2, draw::GRAY);
         }
-        Widget::IntEdit { .. } | Widget::FloatEdit { .. } => {
+        Widget::IntEdit { .. } => {
             draw_bind_help("A", "Increase", 0, draw::LIGHT_GREEN);
             draw_bind_help("Y", "Decrease", 1, draw::GRAY);
             draw_bind_help("X", "Reset", 2, draw::GRAY);

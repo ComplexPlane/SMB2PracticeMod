@@ -117,8 +117,6 @@ impl Binds {
         }
     }
 
-    pub fn init(&mut self) {}
-
     pub fn tick(&mut self, cx: &AppContext) {
         self.get_button_values(&mut cx.pad.borrow_mut());
 
@@ -194,20 +192,6 @@ impl Binds {
             pad.button_pressed(input1, priority)
         } else {
             pad.button_chord_pressed(input1, input2, priority)
-        }
-    }
-
-    pub fn bind_down(&self, bind_id: u8, priority: Prio, pad: &mut Pad) -> bool {
-        if bind_id == Self::INVALID {
-            return false;
-        }
-        let input1 = INPUT_DEFNS[self.get_input1(bind_id) as usize].input;
-        let input2 = INPUT_DEFNS[self.get_input2(bind_id) as usize].input;
-
-        if input1 == input2 {
-            pad.button_down(input1, priority)
-        } else {
-            pad.button_down(input1, priority) && pad.button_down(input2, priority)
         }
     }
 }

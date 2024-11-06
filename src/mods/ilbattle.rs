@@ -3,7 +3,7 @@ use num_enum::TryFromPrimitive;
 
 use crate::{
     app::AppContext,
-    cstr_buf, fmt, hook, mkb,
+    cstr_buf, fmt, mkb,
     systems::{
         binds::Binds,
         draw,
@@ -13,13 +13,6 @@ use crate::{
 };
 
 use super::{freecam::Freecam, validate::Validate};
-
-hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, |cx| {
-    let il_battle = &mut cx.il_battle.borrow_mut();
-    let validate = &mut cx.validate.borrow_mut();
-    il_battle.game_play_tick_hook.call();
-    il_battle.validate_attempt(validate);
-});
 
 struct Context<'a> {
     pref: &'a mut Pref,
@@ -61,8 +54,6 @@ const HOUR_FRAMES: u32 = MINUTE_FRAMES * 60; // frames per hour
 
 #[derive(Default)]
 pub struct IlBattle {
-    game_play_tick_hook: GamePlayTickHook,
-
     // main state
     state: IlBattleState,
 
@@ -97,20 +88,14 @@ impl IlBattle {
         Self::default()
     }
 
-    pub fn on_main_game_load(&mut self, _cx: &AppContext) {
-        self.game_play_tick_hook.hook();
-    }
-
     fn old_buzzer_display(&mut self, start_y: u32) {
         self.buzzer_message_count = (self.buzzer_message_count + 1) % 30;
-        if self.buzzer_message_count >= 0 {
-            draw::debug_text(
-                X - 12 * CWIDTH,
-                start_y + 1 * CHEIGHT,
-                draw::RED,
-                "EPIC BUZZER BEATER B)",
-            );
-        }
+        draw::debug_text(
+            X - 12 * CWIDTH,
+            start_y + 1 * CHEIGHT,
+            draw::RED,
+            "EPIC BUZZER BEATER B)",
+        );
         if self.buzzer_message_count >= 5 {
             draw::debug_text(
                 X - 12 * CWIDTH,

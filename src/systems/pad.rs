@@ -64,8 +64,6 @@ hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses
 pub struct Pad {
     pad_read_hook: PadReadHook,
     analog_state: AnalogState,
-    konami_progress: i32,
-    konami_input_prev_tick: bool,
     curr_priority: Prio,
     priority_request: Prio,
 
@@ -143,89 +141,6 @@ impl Pad {
         (priority >= self.curr_priority) && self.merged_analog_inputs.pressed & analog_input != 0
     }
 
-    pub fn analog_released(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_analog_inputs.released & analog_input != 0
-    }
-
-    pub fn any_input_down(&self) -> bool {
-        (self.merged_analog_inputs.raw | self.merged_digital_inputs.raw) != 0
-    }
-
-    pub fn any_input_pressed(&self) -> bool {
-        (self.merged_analog_inputs.pressed | self.merged_digital_inputs.pressed) != 0
-    }
-
-    fn update_konami(&mut self) {
-        if self.konami_progress >= 11 {
-            self.konami_progress = 0;
-        }
-
-        if self.konami_input_prev_tick && self.any_input_down() {
-            return;
-        }
-
-        if !self.any_input_pressed() {
-            self.konami_input_prev_tick = false;
-            return;
-        }
-
-        self.konami_input_prev_tick = true;
-        match self.konami_progress {
-            0 | 1 => {
-                if self.dir_pressed(Dir::Up, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            2 | 3 => {
-                if self.dir_pressed(Dir::Down, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            4 | 6 => {
-                if self.dir_pressed(Dir::Left, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            5 | 7 => {
-                if self.dir_pressed(Dir::Right, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            8 => {
-                if self.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            9 => {
-                if self.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            10 => {
-                if self.button_pressed(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::High) {
-                    self.konami_progress += 1;
-                } else {
-                    self.konami_progress = 0;
-                }
-            }
-            _ => {
-                self.konami_progress = 0;
-            }
-        }
-    }
-
     pub fn button_chord_pressed(
         &self,
         btn1: mkb::PadDigitalInput,
@@ -234,16 +149,6 @@ impl Pad {
     ) -> bool {
         (self.button_down(btn1, priority) && self.button_pressed(btn2, priority))
             || (self.button_pressed(btn1, priority) && self.button_down(btn2, priority))
-    }
-
-    pub fn analog_chord_pressed(
-        &self,
-        analog1: mkb::PadAnalogInput,
-        analog2: mkb::PadAnalogInput,
-        priority: Prio,
-    ) -> bool {
-        (self.analog_down(analog1, priority) && self.analog_pressed(analog2, priority))
-            || (self.analog_pressed(analog1, priority) && self.analog_down(analog2, priority))
     }
 
     pub fn get_cstick_dir(&self, priority: Prio) -> Dir {
@@ -338,16 +243,8 @@ impl Pad {
         self.dir_down_time = [0; 8];
     }
 
-    pub fn konami_pressed(&self) -> bool {
-        self.konami_progress == 11
-    }
-
     pub fn set_priority(&mut self, priority: Prio) {
         self.priority_request = priority;
-    }
-
-    pub fn get_priority(&self) -> Prio {
-        self.curr_priority
     }
 
     pub fn on_frame_start(&mut self) {
@@ -432,7 +329,6 @@ impl Pad {
                 self.analog_state.trigger_r = self.analog_state.trigger_r.clamp(0, MAX_TRIGGER);
             }
 
-            self.update_konami();
             self.update_dir_times();
         }
     }

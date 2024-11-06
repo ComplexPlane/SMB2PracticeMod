@@ -78,6 +78,7 @@ impl Heap {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_free_space(&self) -> usize {
         let mut space = 0usize;
         unsafe {

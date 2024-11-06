@@ -3,42 +3,15 @@
  * Credits to CraftedCart for writing these
  */
 
-pub fn instr_b(target: usize) -> usize {
-    0x48000000 + (target & 0x3FFFFFF)
-}
-
-pub fn instr_ba(target: usize) -> usize {
-    0x48000002 + (target & 0x3FFFFFF)
-}
-
-pub fn instr_bl(target: usize) -> usize {
-    0x48000001 + (target & 0x3FFFFFF)
-}
-
-pub fn instr_bla(target: usize) -> usize {
-    0x48000003 + (target & 0x3FFFFFF)
-}
-
-pub fn instr_blr() -> usize {
-    0x4E800020
-}
-
 pub fn instr_li(dest_register: Reg, value: u16) -> usize {
     0x38000000 + ((dest_register as usize & 0x1F) << 21) + (value as usize)
-}
-
-pub fn instr_lis(dest_register: Reg, value: u16) -> usize {
-    0x3C000000 + ((dest_register as usize & 0x1F) << 21) + (value as usize)
-}
-
-pub fn instr_nop() -> usize {
-    0x60000000
 }
 
 pub const B_OPCODE_MASK: usize = 0xFC000000;
 pub const B_OPCODE: usize = 0x48000000;
 pub const B_DEST_MASK: usize = 0x03FFFFFC;
 
+#[allow(dead_code)]
 pub enum Reg {
     R0 = 0,
     R1 = 1,

@@ -19,10 +19,6 @@ pub unsafe fn write_branch_bl(ptr: *mut usize, destination: *const c_void) -> us
     write_branch_main(ptr, destination, branch)
 }
 
-pub unsafe fn write_blr(ptr: *mut usize) -> usize {
-    write_word(ptr, 0x4e800020)
-}
-
 unsafe fn write_branch_main(
     ptr: *mut usize,
     destination: *const c_void,
@@ -52,13 +48,6 @@ pub unsafe fn write_word(ptr: *mut usize, data: usize) -> usize {
 
 pub unsafe fn write_nop(ptr: *mut usize) -> usize {
     write_word(ptr, 0x60000000)
-}
-
-pub unsafe fn hook_function_internal(func: *mut c_void, dest: *mut c_void) {
-    // Branch directly to the destination function from the original function,
-    // leaving no option to call the original function
-    let instructions = func as *mut usize;
-    write_branch(instructions, dest);
 }
 
 pub unsafe fn hook_function(

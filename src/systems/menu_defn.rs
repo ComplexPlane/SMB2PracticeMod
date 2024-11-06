@@ -24,13 +24,11 @@ pub struct MenuContext<'a> {
     pub go_to_story: &'a mut GoToStory,
     pub stage_edits: &'a mut StageEdits,
     pub unlock: &'a mut Unlock,
-    pub validate: &'a mut Validate,
     // TODO?
     // physics: &'a mut Physics,
 }
 
 pub enum AfterPush {
-    None,
     CloseMenu,
     GoBack,
 }
@@ -62,10 +60,6 @@ pub enum Widget {
         get: fn(&mut MenuContext) -> bool,
         set: fn(bool, &mut MenuContext),
     },
-    FloatView {
-        label: &'static str,
-        get: fn(&mut MenuContext) -> f32,
-    },
     Choose {
         label: &'static str,
         choices: &'static [&'static str],
@@ -81,15 +75,6 @@ pub enum Widget {
         pref: U8Pref,
         min: u8,
         max: u8,
-    },
-    FloatEdit {
-        label: &'static str,
-        pref: U8Pref,
-        precision: u32, // denominator, 100
-        min: u8,
-        max: u8,
-        floor: i32,
-        decimals: u8,
     },
     InputSelect {
         label: &'static str,

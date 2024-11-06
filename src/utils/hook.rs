@@ -33,6 +33,8 @@ macro_rules! hook {
                 }
             }
 
+            // We sometimes want to replace the hooked function entirely and never call the original
+            #[allow(dead_code)]
             pub fn call(&self $(, $argname: $arg)*) -> $ret {
                 (self.chained_func.unwrap())($($argname,)*)
             }

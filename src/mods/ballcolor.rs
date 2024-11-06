@@ -1,8 +1,5 @@
-use core::cell::RefCell;
 
-use critical_section::Mutex;
 use num_enum::TryFromPrimitive;
-use once_cell::sync::Lazy;
 
 use crate::{
     app::AppContext,

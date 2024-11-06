@@ -61,7 +61,7 @@ struct WriteRequest {
     write_size: usize,
     state: WriteState,
     // Sets fake gamecube when request started, unsets when completed
-    fake_gamecode: FakeGamecode,
+    _fake_gamecode: FakeGamecode,
     card_result: CARDResult,
 }
 
@@ -176,7 +176,7 @@ impl CardIo {
             buf,
             write_size: 0,
             state: WriteState::Probe,
-            fake_gamecode: FakeGamecode::new(),
+            _fake_gamecode: FakeGamecode::new(),
             card_result: CARDResult::Ready,
         });
     }

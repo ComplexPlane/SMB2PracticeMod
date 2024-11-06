@@ -160,7 +160,7 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, |cx| {
     // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
     // elements. The original screenshot call is nopped.
     unsafe {
-        if (mkb::g_pause_status == 1) {
+        if mkb::g_pause_status == 1 {
             mkb::take_pausemenu_screenshot(
                 &raw mut mkb::fullscreen_texture_buf as *mut _,
                 0,

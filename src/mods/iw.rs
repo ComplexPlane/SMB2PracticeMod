@@ -6,7 +6,7 @@ use crate::{
     systems::{
         draw,
         pad::{Pad, Prio},
-        pref::{BoolPref, Pref},
+        pref::BoolPref,
     },
     utils::{patch, timerdisp},
 };
@@ -23,7 +23,6 @@ pub struct Iw {
 
 struct Context<'a> {
     pad: &'a mut Pad,
-    pref: &'a mut Pref,
 }
 
 impl Iw {
@@ -123,7 +122,7 @@ impl Iw {
                 if self.iw_files & (1 << i) != 0 {
                     let anim_frame = self.anim_counter as usize / 2 % (ANIM_STRS.len());
                     mkb::sprintf(
-                        story_save.file_name.as_mut_ptr(),
+                        &raw mut story_save.file_name as *mut _,
                         c"W%02d IW %s".as_ptr() as *mut _,
                         story_save.current_world as i32 + 1,
                         ANIM_STRS[anim_frame].as_ptr(),
@@ -159,12 +158,9 @@ impl Iw {
         }
     }
 
-    pub fn init(&mut self) {}
-
     pub fn tick(&mut self, cx: &AppContext) {
         let cx = &mut Context {
             pad: &mut cx.pad.borrow_mut(),
-            pref: &mut cx.pref.borrow_mut(),
         };
 
         unsafe {
@@ -178,12 +174,12 @@ impl Iw {
             let msg = c"Up/Down to Change World.";
             core::ptr::copy_nonoverlapping(
                 msg.as_ptr(),
-                mkb::continue_saved_game_text.as_mut_ptr(),
+                &raw mut mkb::continue_saved_game_text as *mut _,
                 msg.to_bytes_with_nul().len(),
             );
             core::ptr::copy_nonoverlapping(
                 msg.as_ptr(),
-                mkb::start_game_from_beginning_text.as_mut_ptr(),
+                &raw mut mkb::start_game_from_beginning_text as *mut _,
                 msg.to_bytes_with_nul().len(),
             );
 

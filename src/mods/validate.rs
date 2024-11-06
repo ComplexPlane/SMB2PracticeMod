@@ -1,6 +1,5 @@
-use core::{cell::Cell, ffi::c_int};
+use core::ffi::c_int;
 
-use critical_section::Mutex;
 
 use crate::{
     app::AppContext,
