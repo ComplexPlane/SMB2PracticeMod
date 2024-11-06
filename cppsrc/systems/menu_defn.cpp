@@ -590,7 +590,7 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, may also be"}},
+    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods may also be"}},
     {.type = WidgetType::Text, .text = {"  disallowed for for IL leaderboard submissions."}},
     {.type = WidgetType::Text, .text = {"  The IL validation does not account for these"}},
     {.type = WidgetType::Text, .text = {"  visual-only mods."}},
