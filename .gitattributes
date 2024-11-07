@@ -66,7 +66,7 @@
 #*.RTF   diff=astextplain
 dep/* linguist-vendored
 
-src/*.h linguist-vendored=true
-src/mkb.rs linguist-vendored=true
-src/*.lst linguist-vendored=true
-3rdparty/* linguist-vendored=true
+src/*.h linguist-generated
+src/mkb.rs linguist-generated
+src/*.lst linguist-generated
+3rdparty/* linguist-vendored
