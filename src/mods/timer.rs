@@ -12,8 +12,8 @@ pub struct Timer {
     pause_timer: i32,
 }
 
-impl Timer {
-    pub fn new() -> Self {
+impl Default for Timer {
+    fn default() -> Self {
         Self {
             retrace_count: unsafe { mkb::VIGetRetraceCount() },
             prev_retrace_count: 0,
@@ -21,7 +21,9 @@ impl Timer {
             pause_timer: 0,
         }
     }
+}
 
+impl Timer {
     pub fn draw(&mut self, cx: &AppContext) {
         let pref = &mut cx.pref.borrow_mut();
         let freecam = &mut cx.freecam.borrow_mut();

@@ -75,8 +75,8 @@ pub struct MenuImpl {
     menu_pos_map: TinyMap<usize, u32, 64>,
 }
 
-impl MenuImpl {
-    pub fn new() -> Self {
+impl Default for MenuImpl {
+    fn default() -> Self {
         let mut menu_stack = ArrayVec::<Menu, 5>::new();
         match ROOT_MENU {
             Widget::Menu { label, widgets } => {
@@ -98,7 +98,9 @@ impl MenuImpl {
             menu_pos_map: get_menu_widget_sel_map(),
         }
     }
+}
 
+impl MenuImpl {
     fn push_menu(&mut self, menu: Menu, cx: &mut MenuContext) {
         self.menu_stack.push(menu);
         self.cursor_frame = 0;

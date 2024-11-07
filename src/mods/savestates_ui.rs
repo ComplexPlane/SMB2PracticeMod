@@ -43,10 +43,6 @@ pub struct SaveStatesUi {
 }
 
 impl SaveStatesUi {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.set_minimap_mode_hook.hook();
     }

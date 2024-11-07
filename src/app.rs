@@ -22,6 +22,7 @@ use crate::{
 pub static APP_CONTEXT: once_cell::sync::Lazy<critical_section::Mutex<AppContext>> =
     once_cell::sync::Lazy::new(|| critical_section::Mutex::new(AppContext::new()));
 
+#[derive(Default)]
 pub struct AppContext {
     pub process_inputs_hook: RefCell<ProcessInputsHook>,
     pub draw_debug_text_hook: RefCell<DrawDebugTextHook>,
@@ -63,45 +64,7 @@ pub struct AppContext {
 impl AppContext {
     fn new() -> Self {
         crate::systems::heap::HEAP.init();
-
-        // TODO: derive default?
-        Self {
-            process_inputs_hook: RefCell::new(ProcessInputsHook::default()),
-            draw_debug_text_hook: RefCell::new(DrawDebugTextHook::default()),
-            oslink_hook: RefCell::new(OSLinkHook::default()),
-            game_ready_init_hook: RefCell::new(GameReadyInitHook::default()),
-            game_play_tick_hook: RefCell::new(GamePlayTickHook::default()),
-
-            pad: RefCell::new(Pad::new()),
-            binds: RefCell::new(Binds::new()),
-            menu_impl: RefCell::new(MenuImpl::new()),
-            unlock: RefCell::new(Unlock::new()),
-            iw: RefCell::new(Iw::new()),
-            lib_save_state: RefCell::new(LibSaveState::new()),
-            save_states_ui: RefCell::new(SaveStatesUi::new()),
-            fallout: RefCell::new(Fallout::new()),
-            jump: RefCell::new(Jump::new()),
-            physics: RefCell::new(Physics::new()),
-            input_display: RefCell::new(InputDisplay::new()),
-            go_to_story: RefCell::new(GoToStory::new()),
-            cm_seg: RefCell::new(CmSeg::new()),
-            banans: RefCell::new(Banans::new()),
-            marathon: RefCell::new(Marathon::new()),
-            ball_color: RefCell::new(BallColor::new()),
-            freecam: RefCell::new(Freecam::new()),
-            timer: RefCell::new(Timer::new()),
-            dpad: RefCell::new(Dpad::new()),
-            il_battle: RefCell::new(IlBattle::new()),
-            il_mark: RefCell::new(IlMark::new()),
-            camera: RefCell::new(Camera::new()),
-            stage_edits: RefCell::new(StageEdits::new()),
-            hide: RefCell::new(Hide::new()),
-            sfx: RefCell::new(Sfx::new()),
-            scratch: RefCell::new(Scratch::new()),
-            validate: RefCell::new(Validate::new()),
-            draw: RefCell::new(Draw::new()),
-            pref: RefCell::new(Pref::new()),
-        }
+        Self::default()
     }
 
     fn init(&self) {

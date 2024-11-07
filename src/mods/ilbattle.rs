@@ -84,10 +84,6 @@ pub struct IlBattle {
 }
 
 impl IlBattle {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     fn old_buzzer_display(&mut self, start_y: u32) {
         self.buzzer_message_count = (self.buzzer_message_count + 1) % 30;
         draw::debug_text(

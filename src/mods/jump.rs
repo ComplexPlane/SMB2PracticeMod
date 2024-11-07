@@ -48,10 +48,6 @@ pub struct Jump {
 }
 
 impl Jump {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     fn reset(&mut self) {
         self.ticks_since_jump_input = EARLY_BUFFER_LENGTH + 1;
         self.ticks_since_ground = LATE_BUFFER_LENGTH + 1;

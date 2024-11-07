@@ -29,14 +29,13 @@ pub enum PhysicsPreset {
     JumpPhysics,
 }
 
-#[derive(Default)]
 pub struct Physics {
     orig_friction: f32,    // = 0.010
     orig_restitution: f32, // = 0.50
 }
 
-impl Physics {
-    pub fn new() -> Self {
+impl Default for Physics {
+    fn default() -> Self {
         unsafe {
             Self {
                 orig_friction: mkb::ball_friction,
@@ -44,7 +43,9 @@ impl Physics {
             }
         }
     }
+}
 
+impl Physics {
     pub fn using_custom_physics(&self, pref: &Pref) -> bool {
         let preset: PhysicsPreset = pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
         preset != PhysicsPreset::Default

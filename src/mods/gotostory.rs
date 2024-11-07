@@ -8,17 +8,12 @@ enum State {
     LoadStoryReq,
 }
 
+#[derive(Default)]
 pub struct GoToStory {
     state: State,
 }
 
 impl GoToStory {
-    pub fn new() -> Self {
-        Self {
-            state: State::Default,
-        }
-    }
-
     pub fn load_storymode(&mut self) {
         unsafe {
             if mkb::main_mode == mkb::MD_SEL {

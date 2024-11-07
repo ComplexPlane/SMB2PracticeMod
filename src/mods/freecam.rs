@@ -43,8 +43,8 @@ pub struct Freecam {
     enabled_prev_tick: bool,
 }
 
-impl Freecam {
-    pub fn new() -> Self {
+impl Default for Freecam {
+    fn default() -> Self {
         unsafe {
             patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
         }
@@ -55,7 +55,9 @@ impl Freecam {
             enabled_prev_tick: false,
         }
     }
+}
 
+impl Freecam {
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         critical_section::with(|cs| {
             EVENT_CAMERA_TICK_HOOK.borrow(cs).borrow_mut().hook();

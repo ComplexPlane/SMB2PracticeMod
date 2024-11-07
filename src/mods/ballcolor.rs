@@ -1,4 +1,3 @@
-
 use num_enum::TryFromPrimitive;
 
 use crate::{
@@ -53,8 +52,8 @@ pub struct BallColor {
     load_stagedef_hook: LoadStagedefHook,
 }
 
-impl BallColor {
-    pub fn new() -> Self {
+impl Default for BallColor {
+    fn default() -> Self {
         Self {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
@@ -62,7 +61,9 @@ impl BallColor {
             load_stagedef_hook: LoadStagedefHook::default(),
         }
     }
+}
 
+impl BallColor {
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.load_stagedef_hook.hook();
     }

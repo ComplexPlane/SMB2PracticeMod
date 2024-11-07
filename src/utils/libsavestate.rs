@@ -17,10 +17,6 @@ pub struct LibSaveState {
 }
 
 impl LibSaveState {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.sound_req_id_hook.hook();
     }

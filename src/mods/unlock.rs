@@ -8,14 +8,16 @@ pub struct Unlock {
     first_frame: bool,
 }
 
-impl Unlock {
-    pub fn new() -> Self {
+impl Default for Unlock {
+    fn default() -> Self {
         Self {
             first_frame: true,
             should_unlock: false,
         }
     }
+}
 
+impl Unlock {
     fn do_unlock() {
         // Don't yet know how to unlock the staff credits game from a fresh save...
         unsafe {

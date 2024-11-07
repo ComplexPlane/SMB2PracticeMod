@@ -257,8 +257,8 @@ pub struct Pref {
     save_queued: bool,
 }
 
-impl Pref {
-    pub fn new() -> Self {
+impl Default for Pref {
+    fn default() -> Self {
         let mut pref = Self {
             cardio: CardIo::new(),
             curr_state: PrefState::default(),
@@ -283,7 +283,9 @@ impl Pref {
         }
         pref
     }
+}
 
+impl Pref {
     fn export_to_card_buf(&self, mut buf: &mut [u8]) {
         buf.fill(0);
 

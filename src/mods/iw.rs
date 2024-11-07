@@ -13,7 +13,6 @@ use crate::{
 
 const ANIM_STRS: &[&CStr] = &[c"/", c"-", c"\\", c" |"];
 
-#[derive(Default)]
 pub struct Iw {
     anim_counter: u32,
     iw_files: u32, // Bitflag for which save files are IW save files
@@ -21,12 +20,8 @@ pub struct Iw {
     prev_retrace_count: u32,
 }
 
-struct Context<'a> {
-    pad: &'a mut Pad,
-}
-
-impl Iw {
-    pub fn new() -> Self {
+impl Default for Iw {
+    fn default() -> Self {
         unsafe {
             patch::write_branch(
                 0x80274804 as *mut _,
@@ -44,7 +39,13 @@ impl Iw {
             prev_retrace_count: 0,
         }
     }
+}
 
+struct Context<'a> {
+    pad: &'a mut Pad,
+}
+
+impl Iw {
     fn handle_iw_selection(&mut self, cx: &mut Context) {
         unsafe {
             if mkb::scen_info.mode != 5 {

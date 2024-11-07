@@ -32,15 +32,12 @@ struct Context<'a> {
     ball_color: &'a mut BallColor,
 }
 
+#[derive(Default)]
 pub struct InputDisplay {
     rainbow: u32,
 }
 
 impl InputDisplay {
-    pub fn new() -> Self {
-        Self { rainbow: 0 }
-    }
-
     fn draw_ring(
         &self,
         pts: u32,

@@ -60,8 +60,8 @@ pub struct Fallout {
     toggled_freecam: bool,
 }
 
-impl Fallout {
-    pub fn new() -> Self {
+impl Default for Fallout {
+    fn default() -> Self {
         Self {
             did_ball_fallout_hook: DidBallFalloutHook::default(),
             load_stagedef_hook: LoadStagedefHook::default(),
@@ -71,7 +71,9 @@ impl Fallout {
             toggled_freecam: false,
         }
     }
+}
 
+impl Fallout {
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.did_ball_fallout_hook.hook();
         self.load_stagedef_hook.hook();

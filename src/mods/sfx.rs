@@ -60,6 +60,7 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
     }
 });
 
+#[derive(Default)]
 pub struct Sfx {
     soft_stream_start_hook: SoftStreamStartHook,
     sound_req_id_hook: SoundReqIdHook,
@@ -67,14 +68,6 @@ pub struct Sfx {
 }
 
 impl Sfx {
-    pub fn new() -> Self {
-        Self {
-            soft_stream_start_hook: SoftStreamStartHook::default(),
-            sound_req_id_hook: SoundReqIdHook::default(),
-            sprite_go_disp_hook: SpriteGoDispHook::default(),
-        }
-    }
-
     pub fn on_main_loop_load(&mut self, cx: &AppContext) {
         // Only hook if the preference is initially set, so we don't affect background music until game
         // is rebooted

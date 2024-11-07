@@ -1,6 +1,5 @@
 use core::ffi::c_int;
 
-
 use crate::{
     app::AppContext,
     hook,
@@ -55,10 +54,6 @@ const INVALID_U8_PREFS: &[U8Pref] = &[
 ];
 
 impl Validate {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.did_ball_enter_goal_hook.hook();
     }

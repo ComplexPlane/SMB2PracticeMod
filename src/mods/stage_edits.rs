@@ -1,4 +1,3 @@
-
 use num_enum::TryFromPrimitive;
 
 use crate::{app::AppContext, hook, mkb, systems::pref::U8Pref};
@@ -26,10 +25,6 @@ pub struct StageEdits {
 }
 
 impl StageEdits {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.load_stagedef_hook.hook();
     }

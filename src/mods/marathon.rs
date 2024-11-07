@@ -10,19 +10,13 @@ enum MarathonState {
     WaitForApplyOrGoal, // Vel stored, waiting to be applied or stored again
 }
 
+#[derive(Default)]
 pub struct Marathon {
     state: MarathonState,
     saved_vel: mkb::Vec,
 }
 
 impl Marathon {
-    pub fn new() -> Self {
-        Self {
-            state: MarathonState::default(),
-            saved_vel: mkb::Vec::default(),
-        }
-    }
-
     fn apply_saved_vel(&self) {
         unsafe {
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];

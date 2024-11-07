@@ -157,10 +157,6 @@ pub struct Hide {
 }
 
 impl Hide {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         unsafe {
             patch::write_branch_bl(0x80352e58 as *mut _, avdisp_set_fog_color_hook as *mut _);

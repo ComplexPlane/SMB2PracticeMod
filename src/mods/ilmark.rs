@@ -19,8 +19,8 @@ pub struct IlMark {
     is_romhack: bool,
 }
 
-impl IlMark {
-    pub fn new() -> Self {
+impl Default for IlMark {
+    fn default() -> Self {
         const VANILLA_GAME_NAME: [c_char; 4] = [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
         const VANILLA_GAME_COMPANY: [c_char; 2] = [b'8' as i8, b'P' as i8];
         let is_romhack = unsafe {
@@ -31,7 +31,9 @@ impl IlMark {
             is_romhack,
         }
     }
+}
 
+impl IlMark {
     pub fn validate_attempt(&mut self, validate: &Validate) {
         if !validate.was_run_valid(false) {
             return;

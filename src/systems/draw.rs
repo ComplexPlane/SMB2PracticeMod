@@ -269,8 +269,8 @@ pub struct Draw {
     notify_duration: NotifyDuration,
 }
 
-impl Draw {
-    pub fn new() -> Self {
+impl Default for Draw {
+    fn default() -> Self {
         unsafe {
             patch::write_branch(
                 0x802aeca4 as *mut usize,
@@ -284,7 +284,9 @@ impl Draw {
             notify_duration: NotifyDuration::Short,
         }
     }
+}
 
+impl Draw {
     pub fn predraw(&self) {
         unsafe {
             mkb::GXSetZMode_cached(GX_TRUE, mkb::GX_ALWAYS, GX_FALSE);

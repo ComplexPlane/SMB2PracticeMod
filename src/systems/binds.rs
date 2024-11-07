@@ -74,10 +74,8 @@ pub struct Binds {
     num_prev_held: u8,
 }
 
-impl Binds {
-    pub const INVALID: u8 = 255;
-
-    pub fn new() -> Self {
+impl Default for Binds {
+    fn default() -> Self {
         Self {
             pressed: [false; INPUT_DEFNS.len()],
             prev_pressed: [Self::INVALID; 2],
@@ -86,6 +84,10 @@ impl Binds {
             num_prev_held: 0,
         }
     }
+}
+
+impl Binds {
+    pub const INVALID: u8 = 255;
 
     fn get_button_values(&mut self, pad: &mut Pad) {
         for (i, input_defn) in INPUT_DEFNS.iter().enumerate() {

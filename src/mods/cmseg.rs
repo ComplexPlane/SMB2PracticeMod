@@ -56,7 +56,6 @@ enum Chara {
     Random,
 }
 
-#[derive(Default)]
 pub struct CmSeg {
     reset_cm_course_hook: ResetCmCourseHook,
     state: State,
@@ -70,6 +69,18 @@ pub struct CmSeg {
     pbs: [u32; 14],
 }
 
+#[derive(Default)]
+struct CmSegDefault(CmSeg);
+
+impl Default for CmSeg {
+    fn default() -> Self {
+        Self {
+            pbs: [u32::MAX; 14],
+            ..CmSegDefault::default().0
+        }
+    }
+}
+
 const APE_CHARAS: [mkb::ApeCharacter; 4] = [
     mkb::APE_AIAI,
     mkb::APE_MEEMEE,
@@ -78,14 +89,6 @@ const APE_CHARAS: [mkb::ApeCharacter; 4] = [
 ];
 
 impl CmSeg {
-    pub fn new() -> Self {
-        Self {
-            // Set PBs to maximum time
-            pbs: [u32::MAX; 14],
-            ..Self::default()
-        }
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.reset_cm_course_hook.hook();
     }

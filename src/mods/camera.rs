@@ -23,10 +23,6 @@ enum CameraType {
 pub struct Camera {}
 
 impl Camera {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     unsafe fn tick_unsafe(&self, cx: &mut Context) {
         let value = cx.pref.get_u8(U8Pref::Camera).try_into().unwrap();
 

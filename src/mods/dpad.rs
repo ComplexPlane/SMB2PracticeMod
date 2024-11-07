@@ -24,10 +24,6 @@ pub struct Dpad {
 }
 
 impl Dpad {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
         self.pad_read_hook.hook();
         self.create_speed_sprites_hook.hook();
