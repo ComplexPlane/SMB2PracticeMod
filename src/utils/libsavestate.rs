@@ -228,14 +228,14 @@ impl SaveState {
 
         if paused_now && !paused_in_state {
             // Destroy the pause menu sprite that currently exists
-            for i in 0..mkb::sprite_pool_info.upper_bound {
-                if *mkb::sprite_pool_info.status_list.offset(i as isize) == 0 {
+            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                     continue;
                 }
 
                 if let Some(f) = mkb::sprites[i as usize].disp_func {
                     if f as usize == 0x8032a4bc {
-                        *mkb::sprite_pool_info.status_list.offset(i as isize) = 0;
+                        *mkb::sprite_pool_info.status_list.add(i) = 0;
                         break;
                     }
                 }
@@ -252,7 +252,7 @@ impl SaveState {
 
     unsafe fn destruct_non_gameplay_sprites() {
         for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-            if *mkb::sprite_pool_info.status_list.offset(i as isize) == 0 {
+            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                 continue;
             }
 
@@ -283,7 +283,7 @@ impl SaveState {
 
             let post_goal_sprite = post_goal_sprite_disp || post_goal_sprite_tick;
             if post_goal_sprite {
-                *mkb::sprite_pool_info.status_list.offset(i as isize) = 0;
+                *mkb::sprite_pool_info.status_list.add(i) = 0;
             }
         }
     }
@@ -293,7 +293,7 @@ impl SaveState {
         // generated when changing position by a large amount.
         // Also destruct banana grabbing effects
         for i in 0..(mkb::effect_pool_info.upper_bound as usize) {
-            if *mkb::effect_pool_info.status_list.offset(i as isize) == 0 {
+            if *mkb::effect_pool_info.status_list.add(i) == 0 {
                 continue;
             }
 
@@ -301,7 +301,7 @@ impl SaveState {
                 mkb::effects[i].type_ as u32,
                 mkb::EFFECT_COLI_PARTICLE | mkb::EFFECT_HOLDING_BANANA | mkb::EFFECT_GET_BANANA
             ) {
-                *mkb::effect_pool_info.status_list.offset(i as isize) = 0;
+                *mkb::effect_pool_info.status_list.add(i) = 0;
             }
         }
     }
@@ -343,7 +343,7 @@ impl SaveState {
 
         // Goal tape, party ball, and button stage objects
         for i in 0..(mkb::stobj_pool_info.upper_bound as usize) {
-            if *mkb::stobj_pool_info.status_list.offset(i as isize) == 0 {
+            if *mkb::stobj_pool_info.status_list.add(i) == 0 {
                 continue;
             }
 
@@ -360,14 +360,11 @@ impl SaveState {
         }
 
         // Seesaws
-        for i in 0..(*mkb::stagedef).coli_header_count {
-            if (*(*mkb::stagedef).coli_header_list.offset(i as isize)).anim_loop_type_and_seesaw
+        for i in 0..((*mkb::stagedef).coli_header_count as usize) {
+            if (*(*mkb::stagedef).coli_header_list.add(i)).anim_loop_type_and_seesaw
                 == mkb::ANIM_SEESAW as mkb::StagedefAnimType
             {
-                memstore.scan_region(
-                    (*(*mkb::itemgroups.offset(i as isize)).seesaw_info).state as *mut _,
-                    12,
-                );
+                memstore.scan_region((*(*mkb::itemgroups.add(i)).seesaw_info).state as *mut _, 12);
             }
         }
 
@@ -386,7 +383,7 @@ impl SaveState {
         memstore.scan_region(0x805BC474 as *mut _, 4); // Pause menu bitfield
 
         for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-            if *mkb::sprite_pool_info.status_list.offset(i as isize) == 0 {
+            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                 continue;
             }
             let sprite = &raw mut mkb::sprites[i];

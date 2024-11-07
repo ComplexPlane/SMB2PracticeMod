@@ -125,8 +125,8 @@ impl InputDisplay {
             }
 
             // Hide distracting score sprites under the input display
-            for i in 0..mkb::sprite_pool_info.upper_bound {
-                if *mkb::sprite_pool_info.status_list.offset(i as isize) == 0 {
+            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                     continue;
                 }
 

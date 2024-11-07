@@ -55,8 +55,8 @@ struct RelHeader {
 
 pub unsafe fn compute_mainloop_reldata_boundary(start: usize) -> usize {
     let module = *(0x800030C8 as *mut *mut RelHeader);
-    for imp_idx in 0..((*module).imp_size / size_of::<Imp>() as u32) {
-        let imp = &*(*module).imp_offset.offset(imp_idx as isize);
+    for imp_idx in 0..(((*module).imp_size as usize) / size_of::<Imp>()) {
+        let imp = &*(*module).imp_offset.add(imp_idx);
         // Look for end of relocation data against main_loop.rel itself
         if imp.module_id != 1 {
             continue;
@@ -69,10 +69,10 @@ pub unsafe fn compute_mainloop_reldata_boundary(start: usize) -> usize {
         let first_valid = first_valid_ptr as *mut RelEntry;
 
         let mut rel_idx = 0;
-        while (*first_valid.offset(rel_idx as isize)).type_ != 203 {
+        while (*first_valid.add(rel_idx)).type_ != 203 {
             rel_idx += 1;
         }
-        return first_valid.offset((rel_idx + 1) as isize) as usize;
+        return first_valid.add(rel_idx + 1) as usize;
     }
     0
 }

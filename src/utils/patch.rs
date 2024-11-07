@@ -81,7 +81,7 @@ pub unsafe fn hook_function(
         // Branch to original func past hook
         write_branch(
             &mut tramp_instrs[1] as *mut usize,
-            transmute(func.offset(1) as *const _),
+            transmute(func.add(1) as *const _),
         );
 
         // The function pointer to run as the original function is the addr of the trampoline
