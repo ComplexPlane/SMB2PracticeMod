@@ -69,14 +69,19 @@ pub struct CmSeg {
     pbs: [u32; 14],
 }
 
-#[derive(Default)]
-struct CmSegDefault(CmSeg);
-
 impl Default for CmSeg {
     fn default() -> Self {
         Self {
+            reset_cm_course_hook: Default::default(),
+            state: Default::default(),
+            seg_request: Default::default(),
+            start_time: 0,
+            seg_time: 0,
+            overwritten_course_idx: 0,
+            overwritten_entry_idx: 0,
+            overwritten_opcode: 0,
+            overwritten_starting_monkeys: 0,
             pbs: [u32::MAX; 14],
-            ..CmSegDefault::default().0
         }
     }
 }
