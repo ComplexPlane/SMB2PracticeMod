@@ -3,7 +3,7 @@ import os
 import struct
 import ctypes
 import math
-from datetime import datetime
+import datetime
 
 inputFilename = sys.argv[1]
 inputFile = open(inputFilename, "rb")
@@ -38,13 +38,18 @@ blockCount = math.ceil(fileLength / 0x2000)
 paddingLength = blockCount * 0x2000 - fileLength
 paddingBuffer = ctypes.create_string_buffer(paddingLength)
 
+# Calculate modified timestamp
+now = datetime.datetime.now(datetime.UTC)
+base = datetime.datetime(2000, 1, 1).astimezone(datetime.UTC)
+timestamp_sec = int((now - base).total_seconds())
+
 # Create header
 headerBuffer = ctypes.create_string_buffer(0x40)
 struct.pack_into("6s",  headerBuffer,  0x00, sys.argv[7].encode()) # game code + maker code
 struct.pack_into(">B",  headerBuffer,  0x06, 0xFF)			# unused
 struct.pack_into(">B",  headerBuffer,  0x07, 2)				# banner flags (RGB5A3)
 struct.pack_into("32s", headerBuffer,  0x08, sys.argv[2].encode())	# filename
-struct.pack_into(">L",  headerBuffer,  0x28, int((datetime.utcnow() - datetime(2000, 1, 1)).total_seconds())) # modified time
+struct.pack_into(">L",  headerBuffer,  0x28, timestamp_sec) # modified time
 struct.pack_into(">L",  headerBuffer,  0x2C, 0)				# image offset
 struct.pack_into(">H",  headerBuffer,  0x30, 2)				# icon format
 struct.pack_into(">H",  headerBuffer,  0x32, 3)				# animation speed (1 icon for 12 frames)

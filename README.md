@@ -27,11 +27,7 @@ To install the Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc
 
 # Usage
 
-Press L+R at the same time on your controller to toggle the in-game menu. Go to the Help menu to see controller bindings
-for savestates and other features. For individual-world practice, head to Story Mode and press Up/Down on a savefile
-to change world.
-
-Be sure to look for the Easter egg!
+Press L+R at the same time on your controller to toggle the in-game menu. You can use the menu to enable and configure many different features. Go to the Help submenu to see the controller bindings for various features.
 
 # Building
 
@@ -61,10 +57,12 @@ Thank you to:
 
 **Yoshimaster96** for labelling hundreds of functions and data in Super Monkey Ball 1, many of which were ported to Super Monkey Ball 2.
 
-**TheBombSquad** for their decompile contributions as well, and for writing the current version of the ISO REL loader.
+**TheBombSquad** for their Ghidra decompilation contributions, and for writing the current version of the ISO REL loader.
 
 **Alist** and **PetresInc** for providing insightful feedback on a pre-release alpha needed before publishing an initial beta version of the mod.
 
 **Nambo** for suggesting and implementing numerous features of their own!
+
+**Rehtrop** for many new features and ideas.
 
 **The Monkey Ball Speedrunning Scene** for inspiring this mod! Thank you for being so fun to be a part of.
