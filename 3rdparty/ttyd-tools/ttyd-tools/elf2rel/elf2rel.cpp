@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	{
 		relFilename = elfFilename.substr(0, elfFilename.find_last_of('.')) + ".rel";
 	}
-	
+
 	// Load input file
 	ELFIO::elfio inputElf;
 	if (!inputElf.load(elfFilename))
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 		printf("Failed to load input file\n");
 		return 1;
 	}
-	
+
 	auto externalSymbolMap = loadSymbolMap(lstFilename);
 
 	// Find special sections
@@ -364,7 +364,7 @@ int main(int argc, char **argv)
 					ELFIO::section *targetSection = inputElf.sections[rel.targetSection];
 					if (writtenSections.find(targetSection) == writtenSections.end() && targetSection->get_type() != SHT_NOBITS)
 					{
-						printf("Relocation from section '%s' offset %lx against symbol '%s' in unwritten section '%s'\n",
+						printf("Relocation from section '%s' offset %llx against symbol '%s' in unwritten section '%s'\n",
 							   relocatedSection->get_name().c_str(),
 							   offset,
 							   symbolName.c_str(),
@@ -443,7 +443,7 @@ int main(int argc, char **argv)
 	{
 		Relocation nextRel = allRelocations.front();
 		allRelocations.pop_front();
-		
+
 		// Resolve early if possible
 		if (nextRel.moduleID == moduleID && (nextRel.type == R_PPC_REL24 || nextRel.type == R_PPC_REL32))
 		{
@@ -452,7 +452,7 @@ int main(int argc, char **argv)
 			std::vector<uint8_t> instructionBuffer(outputBuffer.begin() + offset, outputBuffer.begin() + offset + 4);
 			uint32_t patchedData;
 			load(instructionBuffer, patchedData);
-			
+
 			if (nextRel.type == R_PPC_REL24)
 			{
 				patchedData |= (delta & 0x03FFFFFC);
@@ -461,7 +461,7 @@ int main(int argc, char **argv)
 			{
 				patchedData = delta;
 			}
-			
+
 			save(instructionBuffer, patchedData);
 			std::copy(instructionBuffer.begin(), instructionBuffer.end(), outputBuffer.begin() + offset);
 
@@ -497,7 +497,7 @@ int main(int argc, char **argv)
 			writeRelocation(outputBuffer, 0, R_DOLPHIN_NOP, 0, 0);
 			targetDelta -= 0xFFFF;
 		}
-		
+
 		// #todo-elf2rel: Add runtime unresolved symbol handling here
 		// At this point, only symbols that OSLink can handle should remain
 		switch (nextRel.type)
@@ -530,7 +530,7 @@ int main(int argc, char **argv)
 	// Write final import infos
 	int importInfoSize = importInfoBuffer.size();
 	std::copy(importInfoBuffer.begin(), importInfoBuffer.end(), outputBuffer.begin() + importInfoOffset);
-		
+
 	// Write final header
 	std::vector<uint8_t> headerBuffer;
 	writeModuleHeader(headerBuffer,
@@ -552,6 +552,6 @@ int main(int argc, char **argv)
 	// Write final REL file
 	std::ofstream outputStream(relFilename, std::ios::binary);
 	outputStream.write(reinterpret_cast<const char *>(outputBuffer.data()), outputBuffer.size());
-	
+
 	return 0;
 }
