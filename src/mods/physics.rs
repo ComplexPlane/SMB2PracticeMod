@@ -1,8 +1,10 @@
+#![cfg(feature = "mkb2")]
+
 use num_enum::TryFromPrimitive;
 
 use crate::{
     app::AppContext,
-    mkb,
+    mkb2::mkb2,
     systems::{
         draw,
         pref::{BoolPref, Pref, U8Pref},
@@ -38,8 +40,8 @@ impl Default for Physics {
     fn default() -> Self {
         unsafe {
             Self {
-                orig_friction: mkb::ball_friction,
-                orig_restitution: mkb::ball_restitution,
+                orig_friction: mkb2::ball_friction,
+                orig_restitution: mkb2::ball_restitution,
             }
         }
     }
@@ -54,9 +56,9 @@ impl Physics {
     fn change_physics(&mut self, cx: &mut Context) {
         unsafe {
             // restore physics momentarily
-            mkb::ball_friction = self.orig_friction;
-            mkb::ball_restitution = self.orig_restitution;
-            mkb::balls[mkb::curr_player_idx as usize].restitution = self.orig_restitution;
+            mkb2::ball_friction = self.orig_friction;
+            mkb2::ball_restitution = self.orig_restitution;
+            mkb2::balls[mkb2::curr_player_idx as usize].restitution = self.orig_restitution;
 
             // update physics depending on preset
             let preset = cx.pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
@@ -64,34 +66,34 @@ impl Physics {
                 PhysicsPreset::Default => {}
                 PhysicsPreset::LightBall => {
                     let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
-                    if mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now {
-                        mkb::balls[mkb::curr_player_idx as usize].vel.y += 0.005;
+                    if mkb2::sub_mode == mkb2::SMD_GAME_PLAY_MAIN && !paused_now {
+                        mkb2::balls[mkb2::curr_player_idx as usize].vel.y += 0.005;
                     }
                 }
                 PhysicsPreset::NoFriction => {
-                    mkb::ball_friction = 0.0;
+                    mkb2::ball_friction = 0.0;
                 }
                 PhysicsPreset::HeavyBall => {
                     let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
-                    if mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now {
-                        mkb::balls[mkb::curr_player_idx as usize].vel.y -= 0.005;
+                    if mkb2::sub_mode == mkb2::SMD_GAME_PLAY_MAIN && !paused_now {
+                        mkb2::balls[mkb2::curr_player_idx as usize].vel.y -= 0.005;
                     }
                 }
                 PhysicsPreset::BouncyBall => {
-                    mkb::ball_restitution = 1.20;
-                    mkb::balls[mkb::curr_player_idx as usize].restitution = 1.20;
+                    mkb2::ball_restitution = 1.20;
+                    mkb2::balls[mkb2::curr_player_idx as usize].restitution = 1.20;
                 }
                 PhysicsPreset::StickyBall => {
-                    mkb::ball_restitution = 0.01;
-                    mkb::balls[mkb::curr_player_idx as usize].restitution = 0.01;
+                    mkb2::ball_restitution = 0.01;
+                    mkb2::balls[mkb2::curr_player_idx as usize].restitution = 0.01;
                 }
                 PhysicsPreset::HighFriction => {
-                    mkb::ball_friction = 0.020;
+                    mkb2::ball_friction = 0.020;
                 }
                 PhysicsPreset::JumpPhysics => {
-                    mkb::ball_friction = 0.015;
-                    mkb::ball_restitution = 0.25;
-                    mkb::balls[mkb::curr_player_idx as usize].restitution = 0.25;
+                    mkb2::ball_friction = 0.015;
+                    mkb2::ball_restitution = 0.25;
+                    mkb2::balls[mkb2::curr_player_idx as usize].restitution = 0.25;
                 }
             }
         }
@@ -111,10 +113,10 @@ impl Physics {
             freecam: &mut cx.freecam.borrow_mut(),
         };
         unsafe {
-            if mkb::sub_mode != mkb::SMD_GAME_READY_INIT
-                && mkb::sub_mode != mkb::SMD_GAME_READY_MAIN
-                && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT
-                && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN
+            if mkb2::sub_mode != mkb2::SMD_GAME_READY_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_READY_MAIN
+                && mkb2::sub_mode != mkb2::SMD_GAME_PLAY_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_PLAY_MAIN
             {
                 return;
             }
@@ -123,16 +125,16 @@ impl Physics {
                 && cx.pref.get_bool(BoolPref::CustomPhysicsDisp)
                 && !cx.freecam.should_hide_hud(cx.pref)
             {
-                mkb::textdraw_reset();
-                mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);
+                mkb2::textdraw_reset();
+                mkb2::textdraw_set_font(mkb2::FONT32_ASC_8x16);
                 let x = 634.0;
                 let y = 474.0;
-                mkb::textdraw_set_pos(x, y);
-                mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
-                mkb::textdraw_set_scale(1.2, 0.9);
+                mkb2::textdraw_set_pos(x, y);
+                mkb2::textdraw_set_alignment(mkb2::ALIGN_UPPER_LEFT as mkb2::SpriteAlignment);
+                mkb2::textdraw_set_scale(1.2, 0.9);
                 let color = draw::WHITE;
-                mkb::textdraw_set_mul_color(color.into());
-                mkb::textdraw_print(c"Custom Physics".as_ptr() as *mut _);
+                mkb2::textdraw_set_mul_color(color.into());
+                mkb2::textdraw_print(c"Custom Physics".as_ptr() as *mut _);
             }
         }
     }

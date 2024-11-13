@@ -1,6 +1,9 @@
+#![cfg(feature = "mkb2")]
+
 use crate::{
     app::AppContext,
-    fmt, hook, mkb,
+    fmt, hook,
+    mkb2::mkb2,
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
@@ -12,13 +15,13 @@ use crate::{
 
 use super::timer::Timer;
 
-hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode, cx| {
+hook!(SetMinimapModeHook, mode: mkb2::MinimapMode => (), mkb2::set_minimap_mode, |mode, cx| {
     let pref = &mut cx.pref.borrow_mut();
     unsafe {
         if !savestates_enabled(pref)
-            || !(mkb::main_mode == mkb::MD_GAME
-            && mkb::main_game_mode == mkb::PRACTICE_MODE &&
-            mode == mkb::MINIMAP_SHRINK)
+            || !(mkb2::main_mode == mkb2::MD_GAME
+            && mkb2::main_game_mode == mkb2::PRACTICE_MODE &&
+            mode == mkb2::MINIMAP_SHRINK)
         {
             cx.save_states_ui.borrow().set_minimap_mode_hook.call(mode);
         }
@@ -48,13 +51,13 @@ impl SaveStatesUi {
     }
 
     fn is_either_trigger_held(&self, pad: &Pad) -> bool {
-        pad.analog_down(mkb::PAI_LTRIG as mkb::PadAnalogInput, Prio::Low)
-            || pad.analog_down(mkb::PAI_RTRIG as mkb::PadAnalogInput, Prio::Low)
+        pad.analog_down(mkb2::PAI_LTRIG as mkb2::PadAnalogInput, Prio::Low)
+            || pad.analog_down(mkb2::PAI_RTRIG as mkb2::PadAnalogInput, Prio::Low)
     }
 
     pub fn tick(&mut self, cx: &AppContext) {
         // We must tightly scope our Pref usage to avoid a double borrow. libsavestate calls
-        // mkb::set_minimap_mode(), we hook it, and it uses pref
+        // mkb2::set_minimap_mode(), we hook it, and it uses pref
         let disable_overwrite;
         let clear_bind;
         {
@@ -84,7 +87,7 @@ impl SaveStatesUi {
         }
 
         // Must be in main game
-        if unsafe { mkb::main_mode } != mkb::MD_GAME {
+        if unsafe { mkb2::main_mode } != mkb2::MD_GAME {
             return;
         }
 
@@ -101,7 +104,7 @@ impl SaveStatesUi {
 
         if cx
             .pad
-            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+            .button_pressed(mkb2::PAD_BUTTON_X as mkb2::PadDigitalInput, Prio::Low)
         {
             let state = &mut self.states[self.active_state_slot as usize];
 
@@ -204,10 +207,10 @@ impl SaveStatesUi {
             );
         } else if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::Low)
             || (cx
                 .pad
-                .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+                .button_down(mkb2::PAD_BUTTON_X as mkb2::PadDigitalInput, Prio::Low)
                 && self.created_state_last_frame)
             || self.frame_advance_mode
             || (self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None)

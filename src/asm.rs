@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use core::arch::global_asm;
 
 extern "C" {

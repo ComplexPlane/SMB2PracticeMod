@@ -1,10 +1,13 @@
+#![cfg(feature = "mkb2")]
+
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::app::AppContext;
+use crate::mkb2::mkb2;
 use crate::systems::draw::{self, NotifyDuration};
+use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
-use crate::{mkb, utils::tinymap::TinyMap};
 
 use super::binds::{self};
 use super::menu_defn::{self, AfterPush, MenuContext, Widget, ROOT_MENU};
@@ -29,8 +32,8 @@ const PREF_OFFSET: u32 = 25 * draw::DEBUG_CHAR_WIDTH;
 
 const L_R_BIND: u8 = 64; // bind id for an L+R bind
 
-static FOCUSED_COLOR: mkb::GXColor = draw::LIGHT_GREEN;
-static UNFOCUSED_COLOR: mkb::GXColor = draw::LIGHT_PURPLE;
+static FOCUSED_COLOR: mkb2::GXColor = draw::LIGHT_GREEN;
+static UNFOCUSED_COLOR: mkb2::GXColor = draw::LIGHT_PURPLE;
 
 // Contents of a Widget::Menu
 #[derive(Clone, Copy)]
@@ -129,19 +132,19 @@ impl MenuImpl {
 
         let a_pressed = cx
             .pad
-            .button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High);
+            .button_pressed(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::High);
         let x_pressed = cx
             .pad
-            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High);
+            .button_pressed(mkb2::PAD_BUTTON_X as mkb2::PadDigitalInput, Prio::High);
         let y_pressed = cx
             .pad
-            .button_pressed(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High);
+            .button_pressed(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::High);
         let a_repeat = cx
             .pad
-            .button_repeat(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High);
+            .button_repeat(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::High);
         let y_repeat = cx
             .pad
-            .button_repeat(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High);
+            .button_repeat(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::High);
 
         // slow down scroll
         if self.edit_tick > 0 {
@@ -213,13 +216,13 @@ impl MenuImpl {
 
                 if cx
                     .pad
-                    .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
+                    .button_released(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::High)
                     && self.edit_tick > 0
                 {
                     self.edit_tick = 0;
                 } else if cx
                     .pad
-                    .button_released(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
+                    .button_released(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::High)
                     && self.edit_tick < 0
                 {
                     self.edit_tick = 0;
@@ -230,14 +233,14 @@ impl MenuImpl {
                 } else if a_repeat
                     && !cx
                         .pad
-                        .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
+                        .button_down(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::High)
                 {
                     self.edit_tick += 5;
                     next += self.edit_tick / 5;
                 } else if y_repeat
                     && !cx
                         .pad
-                        .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
+                        .button_down(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::High)
                 {
                     self.edit_tick -= 5;
                     next += self.edit_tick / 5;
@@ -257,7 +260,7 @@ impl MenuImpl {
                 if self.binding == BindingState::Requested
                     && cx
                         .pad
-                        .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
+                        .button_released(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::High)
                 {
                     self.binding = BindingState::Active;
                 } else if self.binding == BindingState::Active {
@@ -314,7 +317,7 @@ impl MenuImpl {
             self.visible ^= toggle;
         } else if cx
             .pad
-            .button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High)
+            .button_pressed(mkb2::PAD_BUTTON_B as mkb2::PadDigitalInput, Prio::High)
         {
             self.pop_menu(cx);
         }
@@ -332,8 +335,8 @@ impl MenuImpl {
             // what you changed it to
             let input = cx.pref.get_u8(U8Pref::MenuBind);
             if cx.pad.button_chord_pressed(
-                mkb::PAD_TRIGGER_L as mkb::PadDigitalInput,
-                mkb::PAD_TRIGGER_R as mkb::PadDigitalInput,
+                mkb2::PAD_TRIGGER_L as mkb2::PadDigitalInput,
+                mkb2::PAD_TRIGGER_R as mkb2::PadDigitalInput,
                 Prio::High,
             ) && input != L_R_BIND
             {
@@ -378,7 +381,7 @@ impl MenuImpl {
         selected_idx: u32,
         selectable_idx: &mut u32,
         y: &mut u32,
-        lerped_color: mkb::GXColor,
+        lerped_color: mkb2::GXColor,
         cx: &mut MenuContext,
     ) {
         match widget {
@@ -594,7 +597,7 @@ impl MenuImpl {
 
         let mut x = MARGIN + PAD;
         for (i, menu) in self.menu_stack.iter().enumerate() {
-            let grey = mkb::GXColor {
+            let grey = mkb2::GXColor {
                 r: 0xE0,
                 g: 0xE0,
                 b: 0xE0,
@@ -649,7 +652,7 @@ impl MenuImpl {
             MARGIN as f32,
             (SCREEN_WIDTH - MARGIN) as f32,
             (SCREEN_HEIGHT - MARGIN) as f32,
-            mkb::GXColor {
+            mkb2::GXColor {
                 r: 0x00,
                 g: 0x00,
                 b: 0x00,
@@ -675,7 +678,7 @@ impl MenuImpl {
                 as f32
                 * 0x8000 as f32
                 / (period_frames as f32 / 2.0);
-            let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
+            let lerp = (mkb2::math_sin(angle as i16) as f32 + 1.0) / 2.0;
             lerp
         }
     }
@@ -751,13 +754,13 @@ fn get_selectable_widget_count(widgets: &'static [Widget], cx: &mut MenuContext)
     selectable_count
 }
 
-fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXColor {
+fn lerp_colors(color1: mkb2::GXColor, color2: mkb2::GXColor, t: f32) -> mkb2::GXColor {
     let r = (1.0 - t) * color1.r as f32 + t * color2.r as f32;
     let g = (1.0 - t) * color1.g as f32 + t * color2.g as f32;
     let b = (1.0 - t) * color1.b as f32 + t * color2.b as f32;
     let a = (1.0 - t) * color1.a as f32 + t * color2.a as f32;
 
-    mkb::GXColor {
+    mkb2::GXColor {
         r: r.clamp(0.0, 255.0) as u8,
         g: g.clamp(0.0, 255.0) as u8,
         b: b.clamp(0.0, 255.0) as u8,
@@ -767,7 +770,7 @@ fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXCol
 
 fn draw_selectable_highlight(y: f32) {
     // let new_y = y * 1.072 - 3.0; // Do NOT ask why we need this
-    // draw::rect(MARGIN as f32, new_y, SCREEN_WIDTH as f32 - MARGIN as f32, (new_y + LINE_HEIGHT as f32), mkb::GXColor { r: 0, g: 0, b: 0, a: 0xFF });
+    // draw::rect(MARGIN as f32, new_y, SCREEN_WIDTH as f32 - MARGIN as f32, (new_y + LINE_HEIGHT as f32), mkb2::GXColor { r: 0, g: 0, b: 0, a: 0xFF });
 
     // Draw selection arrow
     draw::debug_text(MARGIN + PAD + 2, y as u32, FOCUSED_COLOR, "\x1c");
@@ -804,7 +807,7 @@ fn draw_help_layout() {
     );
 }
 
-fn draw_bind_help(bind: &str, label: &str, index: u32, color: mkb::GXColor) {
+fn draw_bind_help(bind: &str, label: &str, index: u32, color: mkb2::GXColor) {
     draw::debug_text(START + index * BLOCK_WIDTH, Y_HEIGHT, color, bind);
     draw::debug_text(
         (index + 1) * BLOCK_WIDTH - BUTTON_OFFSET,

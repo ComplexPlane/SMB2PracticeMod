@@ -13,6 +13,11 @@ once_cell = { version = "1.20.2", default-features = false, features = [
 paste = "1.0.15"
 zerocopy = { version = "0.8.6", features = ["derive"] }
 
+[features]
+default = ["mkb2"]
+mkb1 = []
+mkb2 = []
+
 [profile.dev]
 panic = "abort"
 

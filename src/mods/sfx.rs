@@ -1,33 +1,36 @@
+#![cfg(feature = "mkb2")]
+
 use core::ffi::c_long;
 
-use crate::{app::AppContext, hook, mkb, systems::pref::BoolPref};
+use crate::mkb2::mkb2;
+use crate::{app::AppContext, hook, systems::pref::BoolPref};
 
-hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb::BgmTrack, param_3: u32 => c_long,
-    mkb::SoftStreamStart, |_looping_state, _g_bgm_id, _param_3, _cx| {
+hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb2::BgmTrack, param_3: u32 => c_long,
+    mkb2::SoftStreamStart, |_looping_state, _g_bgm_id, _param_3, _cx| {
         0
     }
 );
 
-hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx, cx| {
+hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb2::call_SoundReqID_arg_0, |sfx_idx, cx| {
     let sfx = cx.sfx.borrow();
     if !(cx.pref.borrow().get_bool(BoolPref::MuteTimerDing) && sfx_idx == 0x0003d806) {
         sfx.sound_req_id_hook.call(sfx_idx);
     }
 });
 
-hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sprite, cx| {
+hook!(SpriteGoDispHook, sprite: *mut mkb2::Sprite => (), mkb2::sprite_go_disp, |sprite, cx| {
     unsafe {
         let t = (*sprite).para1 - (*sprite).g_counter as c_long;
-        mkb::textdraw_reset();
-        mkb::textdraw_set_font((*sprite).font as u32);
-        mkb::textdraw_set_depth((*sprite).depth);
-        mkb::textdraw_set_flags((*sprite).g_flags1);
-        mkb::textdraw_set_alpha((*sprite).alpha as f64);
-        let mult_color = mkb::GXColor { r: (*sprite).mult_color.red, g: (*sprite).mult_color.green, b: (*sprite).mult_color.blue, a: 0};
-        let add_color = mkb::GXColor { r: (*sprite).add_color.red, g: (*sprite).add_color.green, b: (*sprite).add_color.blue, a: 0};
-        mkb::textdraw_set_mul_color(mult_color.into());
-        mkb::textdraw_set_add_color(add_color.into());
-        mkb::textdraw_set_scale(1.5 * (*sprite).width, 1.5 * (*sprite).height);
+        mkb2::textdraw_reset();
+        mkb2::textdraw_set_font((*sprite).font as u32);
+        mkb2::textdraw_set_depth((*sprite).depth);
+        mkb2::textdraw_set_flags((*sprite).g_flags1);
+        mkb2::textdraw_set_alpha((*sprite).alpha as f64);
+        let mult_color = mkb2::GXColor { r: (*sprite).mult_color.red, g: (*sprite).mult_color.green, b: (*sprite).mult_color.blue, a: 0};
+        let add_color = mkb2::GXColor { r: (*sprite).add_color.red, g: (*sprite).add_color.green, b: (*sprite).add_color.blue, a: 0};
+        mkb2::textdraw_set_mul_color(mult_color.into());
+        mkb2::textdraw_set_add_color(add_color.into());
+        mkb2::textdraw_set_scale(1.5 * (*sprite).width, 1.5 * (*sprite).height);
         let x_offset = 1.5 * (36.0 * (*sprite).width);
         let y_offset = 1.5 * (32.0 * (*sprite).height);
 
@@ -35,7 +38,7 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
             let (x_add, y_add, phi_f30_2);
             if t < 15 {
                 phi_f30_2 = if i == 0 { -320.0 } else { 320.0 };
-                x_add = phi_f30_2 * mkb::math_sin(((0xF - t) * 0x444) as i16);
+                x_add = phi_f30_2 * mkb2::math_sin(((0xF - t) * 0x444) as i16);
                 y_add = 0.0;
             } else if t < 30 {
                 x_add = 0.0;
@@ -50,12 +53,12 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
                 }
                 x_add = if i == 0 { -x_fudge } else { x_fudge };
                 phi_f30_2 = if i == 0 { -240.0 } else { 240.0 };
-                y_add = phi_f30_2 * mkb::math_sin((0xF - (*sprite).g_counter) * 0x444);
+                y_add = phi_f30_2 * mkb2::math_sin((0xF - (*sprite).g_counter) * 0x444);
             }
-            mkb::textdraw_set_pos(
+            mkb2::textdraw_set_pos(
                 ((*sprite).pos.x + x_add) - x_offset + (if i == 0 { -x_offset } else { x_offset }),
                 ((*sprite).pos.y + y_add) - y_offset);
-            mkb::textdraw_put_char(if i == 0 { 0x47 } else { 0x4F });
+            mkb2::textdraw_put_char(if i == 0 { 0x47 } else { 0x4F });
         }
     }
 });

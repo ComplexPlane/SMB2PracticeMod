@@ -1,8 +1,10 @@
+#![cfg(feature = "mkb2")]
+
 use num_enum::TryFromPrimitive;
 
 use crate::{
     app::AppContext,
-    mkb,
+    mkb2::mkb2,
     systems::{
         pad::{Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
@@ -60,7 +62,7 @@ impl Jump {
         // Patch out Minimap Toggle
         // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
         unsafe {
-            if mkb::main_mode == mkb::MD_GAME && pref.get_bool(BoolPref::JumpMod) {
+            if mkb2::main_mode == mkb2::MD_GAME && pref.get_bool(BoolPref::JumpMod) {
                 let patch1_loc = 0x808f4d18 as *mut u32;
                 let patch2_loc = 0x808f5168 as *mut u32;
 
@@ -77,7 +79,7 @@ impl Jump {
 
     fn restore_minimap(&self) {
         unsafe {
-            if mkb::main_mode == mkb::MD_GAME {
+            if mkb2::main_mode == mkb2::MD_GAME {
                 // These overwrites exist in main_game.rel which isn't always loaded
                 patch::write_word(0x808f4d18 as *mut usize, self.patch1);
                 patch::write_word(0x808f5168 as *mut usize, self.patch2);
@@ -115,11 +117,11 @@ impl Jump {
     fn toggle_minimap(pad: &Pad) {
         // Minimap Toggle with B
         unsafe {
-            if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN
-                || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)
-                && pad.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
+            if (mkb2::sub_mode == mkb2::SMD_GAME_READY_MAIN
+                || mkb2::sub_mode == mkb2::SMD_GAME_PLAY_MAIN)
+                && pad.button_pressed(mkb2::PAD_BUTTON_B as mkb2::PadDigitalInput, Prio::Low)
             {
-                mkb::toggle_minimap_zoom();
+                mkb2::toggle_minimap_zoom();
             }
         }
     }
@@ -127,21 +129,22 @@ impl Jump {
     fn jumping(&mut self, pref: &Pref, pad: &Pad) {
         // Reset state on READY_INIT
         unsafe {
-            if mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT
+            if mkb2::sub_mode != mkb2::SMD_GAME_PLAY_MAIN
+                && mkb2::sub_mode != mkb2::SMD_GAME_PLAY_INIT
             {
                 self.reset();
                 return;
             }
 
             // Setup vars
-            let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
+            let ball = &mut mkb2::balls[mkb2::curr_player_idx as usize];
             let a_pressed =
-                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+                pad.button_pressed(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
+            let a_down = pad.button_down(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
             let a_released =
-                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
-            let normal_vec = mkb::balls[mkb::curr_player_idx as usize].g_last_collision_normal;
+                pad.button_released(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
+            let ground_touched = (ball.phys_flags & mkb2::PHYS_ON_GROUND) != 0;
+            let normal_vec = mkb2::balls[mkb2::curr_player_idx as usize].g_last_collision_normal;
 
             // Track Jump Presses
             if a_pressed {
@@ -175,7 +178,7 @@ impl Jump {
             let max_jump = MaxJumpCount::try_from(pref.get_u8(U8Pref::JumpCount)).unwrap();
             let aerial_jumped =
                 (self.aerial_jumps > 0 || max_jump == MaxJumpCount::Infinite) && a_pressed;
-            let start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT
+            let start_jump = mkb2::sub_mode == mkb2::SMD_GAME_PLAY_INIT
                 && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH
                 && a_down;
 
@@ -200,7 +203,7 @@ impl Jump {
             if self.jumping == JumpState::GroundedJump || self.jumping == JumpState::AerialJump {
                 // first frame of jump
                 if self.jump_frames == 0 {
-                    mkb::call_SoundReqID_arg_0(268);
+                    mkb2::call_SoundReqID_arg_0(268);
                     if ball.vel.y < 0.0 {
                         ball.vel.y = 0.0;
                     }
@@ -232,9 +235,9 @@ impl Jump {
 
     fn classic_jumping(&mut self, pad: &Pad) {
         unsafe {
-            if mkb::sub_mode != mkb::SMD_GAME_READY_MAIN
-                && mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT
-                && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN
+            if mkb2::sub_mode != mkb2::SMD_GAME_READY_MAIN
+                && mkb2::sub_mode != mkb2::SMD_GAME_PLAY_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_PLAY_MAIN
             {
                 self.ticks_since_jump_input = CLASSIC_EARLY_BUFFER_LENGTH + 1;
                 self.ticks_since_ground = CLASSIC_LATE_BUFFER_LENGTH + 1;
@@ -244,13 +247,13 @@ impl Jump {
             }
 
             // Setup vars
-            let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
+            let ball = &mut mkb2::balls[mkb2::curr_player_idx as usize];
             let a_pressed =
-                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+                pad.button_pressed(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
+            let a_down = pad.button_down(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
             let a_released =
-                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
+                pad.button_released(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low);
+            let ground_touched = (ball.phys_flags & mkb2::PHYS_ON_GROUND) != 0;
 
             if a_pressed {
                 self.ticks_since_jump_input = 0;
@@ -266,7 +269,7 @@ impl Jump {
             let before =
                 ground_touched && self.ticks_since_jump_input < CLASSIC_EARLY_BUFFER_LENGTH;
             let after = a_pressed && self.ticks_since_ground < CLASSIC_LATE_BUFFER_LENGTH;
-            let go_buffered_press = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && a_down;
+            let go_buffered_press = mkb2::sub_mode == mkb2::SMD_GAME_PLAY_INIT && a_down;
 
             if before || after || go_buffered_press {
                 self.jumping = JumpState::GroundedJump;
@@ -279,7 +282,7 @@ impl Jump {
 
             if self.jumping == JumpState::GroundedJump {
                 if self.jump_frames == 0 {
-                    mkb::call_SoundReqID_arg_0(268);
+                    mkb2::call_SoundReqID_arg_0(268);
                 }
 
                 self.jump_frames += 1;

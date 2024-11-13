@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use core::ffi::c_char;
 use core::ffi::c_void;
 use core::ptr::addr_of;
@@ -6,11 +8,11 @@ use arrayvec::ArrayString;
 
 use crate::app::AppContext;
 use crate::asm;
-use crate::mkb;
-use crate::mkb_suppl::GXPosition3f32;
-use crate::mkb_suppl::GXTexCoord2f32;
-use crate::mkb_suppl::GX_FALSE;
-use crate::mkb_suppl::GX_TRUE;
+use crate::mkb2::mkb2;
+use crate::mkb2::mkb_suppl::GXPosition3f32;
+use crate::mkb2::mkb_suppl::GXTexCoord2f32;
+use crate::mkb2::mkb_suppl::GX_FALSE;
+use crate::mkb2::mkb_suppl::GX_TRUE;
 use crate::patch;
 
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
@@ -18,85 +20,85 @@ pub const NOTIFY_DURATION_SHORT: u32 = 40;
 pub const NOTIFY_DURATION_LONG: u32 = 120;
 pub const NOTIFY_FADE_DURATION: u32 = 20;
 
-pub const WHITE: mkb::GXColor = mkb::GXColor {
+pub const WHITE: mkb2::GXColor = mkb2::GXColor {
     r: 0xff,
     g: 0xff,
     b: 0xff,
     a: 0xff,
 };
-pub const BLACK: mkb::GXColor = mkb::GXColor {
+pub const BLACK: mkb2::GXColor = mkb2::GXColor {
     r: 0x00,
     g: 0x00,
     b: 0x00,
     a: 0xff,
 };
-pub const RED: mkb::GXColor = mkb::GXColor {
+pub const RED: mkb2::GXColor = mkb2::GXColor {
     r: 0xfd,
     g: 0x68,
     b: 0x75,
     a: 0xff,
 };
-pub const LIGHT_RED: mkb::GXColor = mkb::GXColor {
+pub const LIGHT_RED: mkb2::GXColor = mkb2::GXColor {
     r: 0xff,
     g: 0x77,
     b: 0x71,
     a: 0xff,
 };
-pub const ORANGE: mkb::GXColor = mkb::GXColor {
+pub const ORANGE: mkb2::GXColor = mkb2::GXColor {
     r: 0xfd,
     g: 0xac,
     b: 0x68,
     a: 0xff,
 };
-pub const BLUE: mkb::GXColor = mkb::GXColor {
+pub const BLUE: mkb2::GXColor = mkb2::GXColor {
     r: 0x9d,
     g: 0xe3,
     b: 0xff,
     a: 0xff,
 };
-pub const PINK: mkb::GXColor = mkb::GXColor {
+pub const PINK: mkb2::GXColor = mkb2::GXColor {
     r: 0xdf,
     g: 0x7f,
     b: 0xfa,
     a: 0xff,
 };
-pub const PURPLE: mkb::GXColor = mkb::GXColor {
+pub const PURPLE: mkb2::GXColor = mkb2::GXColor {
     r: 0xb1,
     g: 0x5a,
     b: 0xff,
     a: 0xff,
 };
-pub const GREEN: mkb::GXColor = mkb::GXColor {
+pub const GREEN: mkb2::GXColor = mkb2::GXColor {
     r: 0x00,
     g: 0xff,
     b: 0x00,
     a: 0xff,
 };
-pub const LIGHT_GREEN: mkb::GXColor = mkb::GXColor {
+pub const LIGHT_GREEN: mkb2::GXColor = mkb2::GXColor {
     r: 0xad,
     g: 0xff,
     b: 0xa6,
     a: 0xff,
 };
-pub const LIGHT_PURPLE: mkb::GXColor = mkb::GXColor {
+pub const LIGHT_PURPLE: mkb2::GXColor = mkb2::GXColor {
     r: 0xa2,
     g: 0xad,
     b: 0xff,
     a: 0xff,
 };
-pub const BRIGHT_PURPLE: mkb::GXColor = mkb::GXColor {
+pub const BRIGHT_PURPLE: mkb2::GXColor = mkb2::GXColor {
     r: 0xCE,
     g: 0x4F,
     b: 0xFF,
     a: 0xFF,
 };
-pub const GOLD: mkb::GXColor = mkb::GXColor {
+pub const GOLD: mkb2::GXColor = mkb2::GXColor {
     r: 0xFF,
     g: 0xD7,
     b: 0x00,
     a: 0xFF,
 };
-pub const GRAY: mkb::GXColor = mkb::GXColor {
+pub const GRAY: mkb2::GXColor = mkb2::GXColor {
     r: 0x70,
     g: 0x70,
     b: 0x70,
@@ -104,35 +106,35 @@ pub const GRAY: mkb::GXColor = mkb::GXColor {
 };
 
 // Too lazy to make index buffer or display list or whatnot
-static HEART_VERTS: &[mkb::Vec2d] = &[
-    mkb::Vec2d { x: 65.0, y: 118.14 },
-    mkb::Vec2d { x: 113.0, y: 74.0 },
-    mkb::Vec2d { x: 120.0, y: 63.0 },
-    mkb::Vec2d { x: 122.0, y: 52.0 },
-    mkb::Vec2d { x: 123.0, y: 40.0 },
-    mkb::Vec2d { x: 116.0, y: 22.5 },
-    mkb::Vec2d {
+static HEART_VERTS: &[mkb2::Vec2d] = &[
+    mkb2::Vec2d { x: 65.0, y: 118.14 },
+    mkb2::Vec2d { x: 113.0, y: 74.0 },
+    mkb2::Vec2d { x: 120.0, y: 63.0 },
+    mkb2::Vec2d { x: 122.0, y: 52.0 },
+    mkb2::Vec2d { x: 123.0, y: 40.0 },
+    mkb2::Vec2d { x: 116.0, y: 22.5 },
+    mkb2::Vec2d {
         x: 103.25,
         y: 13.88,
     },
-    mkb::Vec2d { x: 88.63, y: 12.63 },
-    mkb::Vec2d { x: 77.88, y: 16.25 },
-    mkb::Vec2d { x: 65.25, y: 29.25 },
+    mkb2::Vec2d { x: 88.63, y: 12.63 },
+    mkb2::Vec2d { x: 77.88, y: 16.25 },
+    mkb2::Vec2d { x: 65.25, y: 29.25 },
 ];
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
+pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb2::GXColor) {
     unsafe {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
-        mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+        let texobj = 0x807ad0e0 as *mut mkb2::GXTexObj;
+        mkb2::GXLoadTexObj_cached(texobj, mkb2::GX_TEXMAP0);
 
         // Specify the color of the rectangle
-        mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
+        mkb2::GXSetTevColor(mkb2::GX_TEVREG0, color);
 
         let z = -1.0f32 / 128.0f32;
 
-        mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT7, 4);
+        mkb2::GXBegin(mkb2::GX_QUADS, mkb2::GX_VTXFMT7, 4);
         GXPosition3f32(x1, y1, z);
         GXTexCoord2f32(0.0, 0.0);
         GXPosition3f32(x2, y1, z);
@@ -147,11 +149,11 @@ pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
 pub fn heart() {
     unsafe {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
-        mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
-        mkb::GXSetTevColor(
-            mkb::GX_TEVREG0,
-            mkb::GXColor {
+        let texobj = 0x807ad0e0 as *mut mkb2::GXTexObj;
+        mkb2::GXLoadTexObj_cached(texobj, mkb2::GX_TEXMAP0);
+        mkb2::GXSetTevColor(
+            mkb2::GX_TEVREG0,
+            mkb2::GXColor {
                 r: 0xFF,
                 g: 0x07,
                 b: 0x07,
@@ -166,12 +168,12 @@ pub fn heart() {
         const OFFSET_Y: f32 = 100.0;
         const PERIOD: u32 = 120;
 
-        let t = (mkb::frame_counter % PERIOD) as f32 / PERIOD as f32 - 0.5;
-        let scale = mkb::math_sin((t * 0xFFFF as f32) as i16) * 0.02 + SCALE;
+        let t = (mkb2::frame_counter % PERIOD) as f32 / PERIOD as f32 - 0.5;
+        let scale = mkb2::math_sin((t * 0xFFFF as f32) as i16) * 0.02 + SCALE;
 
-        mkb::GXBegin(
-            mkb::GX_TRIANGLEFAN,
-            mkb::GX_VTXFMT7,
+        mkb2::GXBegin(
+            mkb2::GX_TRIANGLEFAN,
+            mkb2::GX_VTXFMT7,
             (HEART_VERTS.len() * 2 - 1) as u16,
         );
         for i in (0..HEART_VERTS.len()).rev() {
@@ -193,13 +195,13 @@ pub fn heart() {
     }
 }
 
-pub fn num_to_rainbow(num: u32) -> mkb::GXColor {
+pub fn num_to_rainbow(num: u32) -> mkb2::GXColor {
     const LOW_COLOR: u8 = 0x41;
     const HIGH_COLOR: u8 = 0xf5;
 
     let state = num / 180;
     let loc = (num % 180) as u8;
-    let mut color = mkb::GXColor {
+    let mut color = mkb2::GXColor {
         r: LOW_COLOR,
         g: LOW_COLOR,
         b: LOW_COLOR,
@@ -241,7 +243,7 @@ pub fn num_to_rainbow(num: u32) -> mkb::GXColor {
     color
 }
 
-pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
+pub fn debug_text(x: u32, y: u32, color: mkb2::GXColor, buf: &str) {
     unsafe {
         asm::debug_text_color = ((color.r as u32) << 24)
             | ((color.g as u32) << 16)
@@ -250,7 +252,7 @@ pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
         for (i, c) in buf.chars().enumerate() {
             // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
             if c != ' ' {
-                mkb::draw_debugtext_char_en(x + i as u32 * DEBUG_CHAR_WIDTH, y, c as c_char, 0);
+                mkb2::draw_debugtext_char_en(x + i as u32 * DEBUG_CHAR_WIDTH, y, c as c_char, 0);
             }
         }
         asm::debug_text_color = 0;
@@ -265,7 +267,7 @@ pub enum NotifyDuration {
 pub struct Draw {
     notify_msg_buf: ArrayString<64>,
     notify_frame_counter: u32,
-    notify_color: mkb::GXColor,
+    notify_color: mkb2::GXColor,
     notify_duration: NotifyDuration,
 }
 
@@ -289,17 +291,17 @@ impl Default for Draw {
 impl Draw {
     pub fn predraw(&self) {
         unsafe {
-            mkb::GXSetZMode_cached(GX_TRUE, mkb::GX_ALWAYS, GX_FALSE);
+            mkb2::GXSetZMode_cached(GX_TRUE, mkb2::GX_ALWAYS, GX_FALSE);
 
             // Seems necessary to avoid discoloration / lighting interference when using
             // debugtext-drawing-related funcs
-            let tev1_color = mkb::GXColor {
+            let tev1_color = mkb2::GXColor {
                 r: 0,
                 g: 0,
                 b: 0,
                 a: 0,
             };
-            mkb::GXSetTevColor(mkb::GX_TEVREG1, tev1_color);
+            mkb2::GXSetTevColor(mkb2::GX_TEVREG1, tev1_color);
         }
     }
 
@@ -326,7 +328,7 @@ impl Draw {
             .clamp(0, duration + NOTIFY_FADE_DURATION);
     }
 
-    pub fn notify(&mut self, color: mkb::GXColor, duration: NotifyDuration, msg: &str) {
+    pub fn notify(&mut self, color: mkb2::GXColor, duration: NotifyDuration, msg: &str) {
         self.notify_msg_buf.clear();
         self.notify_msg_buf.push_str(msg);
         self.notify_frame_counter = 0;

@@ -1,22 +1,24 @@
+#![cfg(feature = "mkb2")]
+
 use core::cell::RefCell;
 
 use critical_section::Mutex;
 use once_cell::sync::Lazy;
 
 use crate::app::{self, AppContext};
-use crate::mkb::{S16Vec, Vec};
+use crate::mkb2::mkb2::{self, S16Vec, Vec};
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
-use crate::{fmt, hook, mkb};
+use crate::{fmt, hook};
 
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;
 
-hook!(EventCameraTickHook => (), mkb::event_camera_tick, |cx| {
+hook!(EventCameraTickHook => (), mkb2::event_camera_tick, |cx| {
     cx.freecam.borrow_mut().on_event_camera_tick(&mut cx.pref.borrow_mut());
 
     critical_section::with(|cs| {
@@ -67,19 +69,19 @@ impl Freecam {
     fn in_correct_mode() -> bool {
         unsafe {
             let correct_main_mode = matches!(
-                mkb::main_mode,
-                mkb::MD_GAME | mkb::MD_ADV | mkb::MD_MINI | mkb::MD_AUTHOR | mkb::MD_EXOPT
+                mkb2::main_mode,
+                mkb2::MD_GAME | mkb2::MD_ADV | mkb2::MD_MINI | mkb2::MD_AUTHOR | mkb2::MD_EXOPT
             );
             let correct_sub_mode = !matches!(
-                mkb::sub_mode,
-                mkb::SMD_GAME_SCENARIO_INIT
-                    | mkb::SMD_GAME_SCENARIO_MAIN
-                    | mkb::SMD_GAME_SCENARIO_RETURN
-                    | mkb::SMD_ADV_TITLE_INIT
-                    | mkb::SMD_ADV_TITLE_MAIN
-                    | mkb::SMD_ADV_TITLE_REINIT
-                    | mkb::SMD_EXOPT_REPLAY_LOAD_INIT
-                    | mkb::SMD_EXOPT_REPLAY_LOAD_MAIN
+                mkb2::sub_mode,
+                mkb2::SMD_GAME_SCENARIO_INIT
+                    | mkb2::SMD_GAME_SCENARIO_MAIN
+                    | mkb2::SMD_GAME_SCENARIO_RETURN
+                    | mkb2::SMD_ADV_TITLE_INIT
+                    | mkb2::SMD_ADV_TITLE_MAIN
+                    | mkb2::SMD_ADV_TITLE_REINIT
+                    | mkb2::SMD_EXOPT_REPLAY_LOAD_INIT
+                    | mkb2::SMD_EXOPT_REPLAY_LOAD_MAIN
             );
             correct_main_mode && correct_sub_mode
         }
@@ -99,15 +101,15 @@ impl Freecam {
 
     fn update_cam(
         &mut self,
-        camera: &mut mkb::Camera,
-        ball: &mut mkb::Ball,
+        camera: &mut mkb2::Camera,
+        ball: &mut mkb2::Ball,
         pref: &mut Pref,
         pad: &mut Pad,
     ) {
         unsafe {
             if !self.enabled_prev_tick {
-                self.eye = mkb::cameras[0].pos;
-                self.rot = mkb::cameras[0].rot;
+                self.eye = mkb2::cameras[0].pos;
+                self.rot = mkb2::cameras[0].rot;
             }
 
             let stick = pad.get_merged_stick();
@@ -120,8 +122,8 @@ impl Freecam {
             let substick_y = substick.y as f32 / pad::MAX_STICK as f32;
             let trigger_left = trigger.l as f32 / pad::MAX_TRIGGER as f32;
             let trigger_right = trigger.r as f32 / pad::MAX_TRIGGER as f32;
-            let fast = pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low);
-            let slow = pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low);
+            let fast = pad.button_down(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::Low);
+            let slow = pad.button_down(mkb2::PAD_BUTTON_X as mkb2::PadDigitalInput, Prio::Low);
 
             let speed_mult = if fast {
                 pref.get_u8(pref::U8Pref::FreecamSpeedMult) as f32
@@ -144,12 +146,12 @@ impl Freecam {
                 y: 0.0,
                 z: -stick_y * speed_mult,
             };
-            mkb::mtxa_push();
-            mkb::mtxa_from_rotate_y(self.rot.y);
-            mkb::mtxa_rotate_x(self.rot.x);
-            mkb::mtxa_rotate_z(self.rot.z);
-            mkb::mtxa_tf_vec(&mut delta_pos, &mut delta_pos);
-            mkb::mtxa_pop();
+            mkb2::mtxa_push();
+            mkb2::mtxa_from_rotate_y(self.rot.y);
+            mkb2::mtxa_rotate_x(self.rot.x);
+            mkb2::mtxa_rotate_z(self.rot.z);
+            mkb2::mtxa_tf_vec(&mut delta_pos, &mut delta_pos);
+            mkb2::mtxa_pop();
 
             self.eye.x += delta_pos.x;
             self.eye.y += delta_pos.y + (-trigger_left + trigger_right) * speed_mult;
@@ -160,10 +162,10 @@ impl Freecam {
 
             // Lock ball in place
             let lock_ball =
-                mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN || mkb::main_mode == mkb::MD_MINI;
+                mkb2::sub_mode == mkb2::SMD_GAME_PLAY_MAIN || mkb2::main_mode == mkb2::MD_MINI;
             if lock_ball {
-                if !mkb::stagedef.is_null() && !(*mkb::stagedef).start.is_null() {
-                    ball.pos = (*(*mkb::stagedef).start).position;
+                if !mkb2::stagedef.is_null() && !(*mkb2::stagedef).start.is_null() {
+                    ball.pos = (*(*mkb2::stagedef).start).position;
                 }
                 ball.vel.x = 0.0;
                 ball.vel.y = 0.0;
@@ -172,7 +174,7 @@ impl Freecam {
         }
     }
 
-    unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb::Camera, ball: *mut mkb::Ball) {
+    unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb2::Camera, ball: *mut mkb2::Ball) {
         // TODO let write_branch_bl do some of this accessing globals work
         critical_section::with(|cs| {
             let cx = app::APP_CONTEXT.borrow(cs);
@@ -186,8 +188,8 @@ impl Freecam {
 
     pub fn on_camera_func(
         &mut self,
-        camera: *mut mkb::Camera,
-        ball: *mut mkb::Ball,
+        camera: *mut mkb2::Camera,
+        ball: *mut mkb2::Ball,
         pref: &mut Pref,
         pad: &mut Pad,
     ) {
@@ -195,7 +197,7 @@ impl Freecam {
             if self.enabled_this_tick {
                 self.update_cam(&mut *camera, &mut *ball, pref, pad);
             } else {
-                mkb::camera_funcs[(*camera).mode as usize].unwrap()(camera, ball);
+                mkb2::camera_funcs[(*camera).mode as usize].unwrap()(camera, ball);
             }
         }
     }
@@ -203,7 +205,7 @@ impl Freecam {
     pub fn on_event_camera_tick(&self, pref: &mut Pref) {
         unsafe {
             if self.enabled(pref) {
-                for_c_arr(&raw mut mkb::world_infos, |world_info| {
+                for_c_arr(&raw mut mkb2::world_infos, |world_info| {
                     (*world_info).stage_tilt_x = 0;
                     (*world_info).stage_tilt_z = 0;
                 });
@@ -241,14 +243,14 @@ impl Freecam {
             let mut input_made = false;
             if cx
                 .pad
-                .button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low)
+                .button_repeat(mkb2::PAD_BUTTON_DOWN as mkb2::PadDigitalInput, Prio::Low)
             {
                 speed_mult -= 1;
                 input_made = true;
             }
             if cx
                 .pad
-                .button_repeat(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low)
+                .button_repeat(mkb2::PAD_BUTTON_UP as mkb2::PadDigitalInput, Prio::Low)
             {
                 speed_mult += 1;
                 input_made = true;

@@ -1,12 +1,13 @@
+#![cfg(feature = "mkb2")]
 use core::ffi::c_void;
 use core::mem::{self, transmute};
 
-use crate::mkb;
+use crate::mkb2::mkb2;
 use crate::utils::ppc;
 
 pub unsafe fn clear_dc_ic_cache(ptr: *mut c_void, size: usize) {
-    mkb::DCFlushRange(ptr as *mut _, size as u32);
-    mkb::ICInvalidateRange(ptr as *mut _, size as u32);
+    mkb2::DCFlushRange(ptr as *mut _, size as u32);
+    mkb2::ICInvalidateRange(ptr as *mut _, size as u32);
 }
 
 pub unsafe fn write_branch(ptr: *mut usize, destination: *const c_void) -> usize {

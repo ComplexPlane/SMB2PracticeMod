@@ -1,10 +1,13 @@
+#![cfg(feature = "mkb2")]
+
 use core::{ffi::c_long, ptr::null_mut};
 
 use num_enum::TryFromPrimitive;
 
 use crate::{
     app::AppContext,
-    hook, mkb,
+    hook,
+    mkb2::mkb2,
     systems::{
         draw,
         pref::{BoolPref, Pref, U8Pref},
@@ -12,7 +15,7 @@ use crate::{
     utils::timerdisp,
 };
 
-hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, |cx| {
+hook!(ResetCmCourseHook => (), mkb2::g_reset_cm_course, |cx| {
     cx.cm_seg.borrow().reset_cm_course_hook.call();
     cx.cm_seg.borrow_mut().on_reset_cm_course();
 });
@@ -64,7 +67,7 @@ pub struct CmSeg {
     seg_time: u32,
     overwritten_course_idx: usize,
     overwritten_entry_idx: usize,
-    overwritten_opcode: mkb::CourseCommandOpcode,
+    overwritten_opcode: mkb2::CourseCommandOpcode,
     overwritten_starting_monkeys: i8,
     pbs: [u32; 14],
 }
@@ -86,11 +89,11 @@ impl Default for CmSeg {
     }
 }
 
-const APE_CHARAS: [mkb::ApeCharacter; 4] = [
-    mkb::APE_AIAI,
-    mkb::APE_MEEMEE,
-    mkb::APE_BABY,
-    mkb::APE_GONGON,
+const APE_CHARAS: [mkb2::ApeCharacter; 4] = [
+    mkb2::APE_AIAI,
+    mkb2::APE_MEEMEE,
+    mkb2::APE_BABY,
+    mkb2::APE_GONGON,
 ];
 
 impl CmSeg {
@@ -104,11 +107,11 @@ impl CmSeg {
 
         let mut curr_stage_count = 0;
         unsafe {
-            let course = mkb::cm_courses[course_idx];
+            let course = mkb2::cm_courses[course_idx];
             let mut i = 0;
             loop {
                 let entry = course.add(i as usize);
-                if (*entry).opcode == mkb::COURSE_CMD_INFO as mkb::CourseCommandOpcode
+                if (*entry).opcode == mkb2::COURSE_CMD_INFO as mkb2::CourseCommandOpcode
                     && (*entry).type_ == 0
                 {
                     curr_stage_count += 1;
@@ -118,7 +121,7 @@ impl CmSeg {
                         end_entry_idx = Some(i);
                         break;
                     }
-                } else if (*entry).opcode == mkb::COURSE_CMD_END as mkb::CourseCommandOpcode {
+                } else if (*entry).opcode == mkb2::COURSE_CMD_END as mkb2::CourseCommandOpcode {
                     if curr_stage_count == start_course_stage_num + stage_count - 1 {
                         end_entry_idx = Some(i);
                     }
@@ -135,93 +138,93 @@ impl CmSeg {
             self.overwritten_entry_idx = end_entry_idx;
             let overwritten_entry = course.add(end_entry_idx);
             self.overwritten_opcode = (*overwritten_entry).opcode;
-            (*overwritten_entry).opcode = mkb::COURSE_CMD_END as mkb::CourseCommandOpcode;
+            (*overwritten_entry).opcode = mkb2::COURSE_CMD_END as mkb2::CourseCommandOpcode;
 
             let first_stage_id = (*course.add(start_entry_idx as usize)).value as u16;
-            mkb::mode_info.cm_course_stage_num = start_course_stage_num;
-            mkb::mode_info.cm_stage_id = first_stage_id as i16;
-            mkb::current_cm_entry = course.add((start_entry_idx + 1) as usize);
-            mkb::g_another_stage_id = first_stage_id;
+            mkb2::mode_info.cm_course_stage_num = start_course_stage_num;
+            mkb2::mode_info.cm_stage_id = first_stage_id as i16;
+            mkb2::current_cm_entry = course.add((start_entry_idx + 1) as usize);
+            mkb2::g_another_stage_id = first_stage_id;
 
             // Make up "previous" stage for "current" stage
-            let curr_stage = &mut mkb::cm_player_progress[0].curr_stage;
+            let curr_stage = &mut mkb2::cm_player_progress[0].curr_stage;
             curr_stage.stage_course_num = (start_course_stage_num - 1) as c_long;
             curr_stage.stage_id = (first_stage_id - 1) as c_long;
 
             // Next stage for player is the first one we want to start on
-            let next_stage = &mut mkb::cm_player_progress[0].next_stages[0];
+            let next_stage = &mut mkb2::cm_player_progress[0].next_stages[0];
             next_stage.stage_course_num = start_course_stage_num as c_long;
             next_stage.stage_id = first_stage_id as c_long;
         }
     }
 
     unsafe fn state_load_menu(&mut self) {
-        mkb::g_some_other_flags &= !mkb::OF_GAME_PAUSED;
-        mkb::main_mode_request = mkb::MD_SEL;
-        mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+        mkb2::g_some_other_flags &= !mkb2::OF_GAME_PAUSED;
+        mkb2::main_mode_request = mkb2::MD_SEL;
+        mkb2::sub_mode_request = mkb2::SMD_SEL_NGC_REINIT;
 
-        mkb::sel_menu_info.menu_stack_ptr = 1;
-        mkb::sel_menu_info.menu_stack[0] = 0;
-        mkb::sel_menu_info.menu_stack[1] = 7;
-        mkb::g_focused_root_menu = 0;
-        mkb::g_focused_maingame_menu = 1;
+        mkb2::sel_menu_info.menu_stack_ptr = 1;
+        mkb2::sel_menu_info.menu_stack[0] = 0;
+        mkb2::sel_menu_info.menu_stack[1] = 7;
+        mkb2::g_focused_root_menu = 0;
+        mkb2::g_focused_maingame_menu = 1;
 
-        mkb::fade_screen_to_color(0x100, 0, 0x1e);
+        mkb2::fade_screen_to_color(0x100, 0, 0x1e);
 
         self.state = State::EnterCm;
     }
 
     unsafe fn state_enter_cm(&mut self) {
-        mkb::num_players = 1;
-        self.overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
-        mkb::number_of_starting_monkeys = 100;
-        mkb::menu_start_challenge_mode();
+        mkb2::num_players = 1;
+        self.overwritten_starting_monkeys = mkb2::number_of_starting_monkeys;
+        mkb2::number_of_starting_monkeys = 100;
+        mkb2::menu_start_challenge_mode();
 
-        mkb::g_playpoint_msg_counter = 0;
+        mkb2::g_playpoint_msg_counter = 0;
 
-        self.start_time = mkb::VIGetRetraceCount();
+        self.start_time = mkb2::VIGetRetraceCount();
         self.state = State::SegActive;
     }
 
     unsafe fn restore_overwritten_state(&mut self) {
         let overwritten_entry =
-            mkb::cm_courses[self.overwritten_course_idx].add(self.overwritten_entry_idx);
+            mkb2::cm_courses[self.overwritten_course_idx].add(self.overwritten_entry_idx);
         (*overwritten_entry).opcode = self.overwritten_opcode;
-        mkb::number_of_starting_monkeys = self.overwritten_starting_monkeys;
+        mkb2::number_of_starting_monkeys = self.overwritten_starting_monkeys;
     }
 
     unsafe fn check_exit_seg(&mut self) {
-        if mkb::main_mode != mkb::MD_GAME {
+        if mkb2::main_mode != mkb2::MD_GAME {
             self.restore_overwritten_state();
             self.state = State::Default;
         }
     }
 
     unsafe fn state_seg_active(&mut self, pref: &Pref) {
-        if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
+        if mkb2::sub_mode_request == mkb2::SMD_GAME_READY_INIT {
             let ch = Chara::try_from(pref.get_u8(U8Pref::CmChara)).unwrap();
-            mkb::active_monkey_id[0] = match ch {
-                Chara::Random => APE_CHARAS[mkb::rand() as usize % 4],
+            mkb2::active_monkey_id[0] = match ch {
+                Chara::Random => APE_CHARAS[mkb2::rand() as usize % 4],
                 _ => APE_CHARAS[ch as usize],
             };
         }
 
-        if self.overwritten_opcode != mkb::COURSE_CMD_END as mkb::CourseCommandOpcode {
-            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+        if self.overwritten_opcode != mkb2::COURSE_CMD_END as mkb2::CourseCommandOpcode {
+            for i in 0..(mkb2::sprite_pool_info.upper_bound as usize) {
+                if *mkb2::sprite_pool_info.status_list.add(i) == 0 {
                     continue;
                 }
-                let sprite = &raw mut mkb::sprites[i];
+                let sprite = &raw mut mkb2::sprites[i];
                 let tick_func = (*sprite).tick_func;
-                if tick_func == Some(mkb::sprite_final_stage_tick) {
-                    *mkb::sprite_pool_info.status_list.add(i) = 0;
+                if tick_func == Some(mkb2::sprite_final_stage_tick) {
+                    *mkb2::sprite_pool_info.status_list.add(i) = 0;
                     break;
                 }
             }
         }
 
-        self.seg_time = mkb::VIGetRetraceCount() - self.start_time;
-        if mkb::mode_info.cm_stage_id == -1 && mkb::is_stage_complete(null_mut()) != 0 {
+        self.seg_time = mkb2::VIGetRetraceCount() - self.start_time;
+        if mkb2::mode_info.cm_stage_id == -1 && mkb2::is_stage_complete(null_mut()) != 0 {
             let seg = self.seg_request as u32;
             if self.seg_time < self.pbs[seg as usize] {
                 self.pbs[seg as usize] = self.seg_time;
@@ -233,31 +236,31 @@ impl CmSeg {
     }
 
     unsafe fn state_seg_complete(&mut self) {
-        if mkb::mode_info.cm_stage_id == -1
-            && mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE != 0
+        if mkb2::mode_info.cm_stage_id == -1
+            && mkb2::mode_info.ball_mode & mkb2::BALLMODE_ON_BONUS_STAGE != 0
         {
-            if mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
-                || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT
+            if mkb2::sub_mode == mkb2::SMD_GAME_RINGOUT_INIT
+                || mkb2::sub_mode == mkb2::SMD_GAME_TIMEOVER_INIT
             {
-                mkb::sub_mode_frame_counter += 120;
-            } else if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
-                || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN)
-                && mkb::sub_mode_frame_counter == 0x3c
+                mkb2::sub_mode_frame_counter += 120;
+            } else if (mkb2::sub_mode == mkb2::SMD_GAME_RINGOUT_MAIN
+                || mkb2::sub_mode == mkb2::SMD_GAME_TIMEOVER_MAIN)
+                && mkb2::sub_mode_frame_counter == 0x3c
             {
-                mkb::fade_screen_to_color(0x101, 0, 0x3d);
-                mkb::g_fade_track_volume(0x3c, 2);
-            } else if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
-                mkb::main_mode_request = mkb::MD_SEL;
-                mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+                mkb2::fade_screen_to_color(0x101, 0, 0x3d);
+                mkb2::g_fade_track_volume(0x3c, 2);
+            } else if mkb2::sub_mode_request == mkb2::SMD_GAME_READY_INIT {
+                mkb2::main_mode_request = mkb2::MD_SEL;
+                mkb2::sub_mode_request = mkb2::SMD_SEL_NGC_REINIT;
             }
         }
 
-        if mkb::sub_mode_request == mkb::SMD_GAME_EXTRA_INIT
-            || mkb::sub_mode_request == mkb::SMD_GAME_RESULT_INIT
-            || mkb::main_mode_request == mkb::MD_AUTHOR
+        if mkb2::sub_mode_request == mkb2::SMD_GAME_EXTRA_INIT
+            || mkb2::sub_mode_request == mkb2::SMD_GAME_RESULT_INIT
+            || mkb2::main_mode_request == mkb2::MD_AUTHOR
         {
-            mkb::main_mode_request = mkb::MD_SEL;
-            mkb::sub_mode_request = mkb::SMD_SEL_NGC_REINIT;
+            mkb2::main_mode_request = mkb2::MD_SEL;
+            mkb2::sub_mode_request = mkb2::SMD_SEL_NGC_REINIT;
         }
 
         self.check_exit_seg();
@@ -267,86 +270,86 @@ impl CmSeg {
         let course_idx;
         let start_course_stage_num;
 
-        mkb::mode_flags &= !(mkb::MF_G_PLAYING_MASTER_COURSE
-            | mkb::MF_PLAYING_EXTRA_COURSE
-            | mkb::MF_PLAYING_MASTER_NOEX_COURSE
-            | mkb::MF_PLAYING_MASTER_EX_COURSE);
+        mkb2::mode_flags &= !(mkb2::MF_G_PLAYING_MASTER_COURSE
+            | mkb2::MF_PLAYING_EXTRA_COURSE
+            | mkb2::MF_PLAYING_MASTER_NOEX_COURSE
+            | mkb2::MF_PLAYING_MASTER_EX_COURSE);
 
         match self.seg_request {
             Seg::Beginner1 => {
-                mkb::curr_difficulty = mkb::DIFF_BEGINNER;
+                mkb2::curr_difficulty = mkb2::DIFF_BEGINNER;
                 course_idx = 0;
                 start_course_stage_num = 1;
             }
             Seg::BeginnerExtra => {
-                mkb::curr_difficulty = mkb::DIFF_BEGINNER;
-                mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
+                mkb2::curr_difficulty = mkb2::DIFF_BEGINNER;
+                mkb2::mode_flags |= mkb2::MF_PLAYING_EXTRA_COURSE;
                 course_idx = 3;
                 start_course_stage_num = 1;
             }
             Seg::Advanced1 => {
-                mkb::curr_difficulty = mkb::DIFF_ADVANCED;
+                mkb2::curr_difficulty = mkb2::DIFF_ADVANCED;
                 course_idx = 1;
                 start_course_stage_num = 1;
             }
             Seg::Advanced11 => {
-                mkb::curr_difficulty = mkb::DIFF_ADVANCED;
+                mkb2::curr_difficulty = mkb2::DIFF_ADVANCED;
                 course_idx = 1;
                 start_course_stage_num = 11;
             }
             Seg::Advanced21 => {
-                mkb::curr_difficulty = mkb::DIFF_ADVANCED;
+                mkb2::curr_difficulty = mkb2::DIFF_ADVANCED;
                 course_idx = 1;
                 start_course_stage_num = 21;
             }
             Seg::AdvancedExtra => {
-                mkb::curr_difficulty = mkb::DIFF_ADVANCED;
-                mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
+                mkb2::curr_difficulty = mkb2::DIFF_ADVANCED;
+                mkb2::mode_flags |= mkb2::MF_PLAYING_EXTRA_COURSE;
                 course_idx = 4;
                 start_course_stage_num = 1;
             }
             Seg::Expert1 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
                 course_idx = 2;
                 start_course_stage_num = 1;
             }
             Seg::Expert11 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
                 course_idx = 2;
                 start_course_stage_num = 11;
             }
             Seg::Expert21 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
                 course_idx = 2;
                 start_course_stage_num = 21;
             }
             Seg::Expert31 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
                 course_idx = 2;
                 start_course_stage_num = 31;
             }
             Seg::Expert41 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
                 course_idx = 2;
                 start_course_stage_num = 41;
             }
             Seg::ExpertExtra => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
-                mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
+                mkb2::mode_flags |= mkb2::MF_PLAYING_EXTRA_COURSE;
                 course_idx = 5;
                 start_course_stage_num = 1;
             }
             Seg::Master1 => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
-                mkb::mode_flags |= mkb::MF_PLAYING_EXTRA_COURSE
-                    | mkb::MF_G_PLAYING_MASTER_COURSE
-                    | mkb::MF_PLAYING_MASTER_NOEX_COURSE;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
+                mkb2::mode_flags |= mkb2::MF_PLAYING_EXTRA_COURSE
+                    | mkb2::MF_G_PLAYING_MASTER_COURSE
+                    | mkb2::MF_PLAYING_MASTER_NOEX_COURSE;
                 course_idx = 6;
                 start_course_stage_num = 1;
             }
             Seg::MasterExtra => {
-                mkb::curr_difficulty = mkb::DIFF_EXPERT;
-                mkb::mode_flags = 0x0280071D;
+                mkb2::curr_difficulty = mkb2::DIFF_EXPERT;
+                mkb2::mode_flags = 0x0280071D;
                 course_idx = 7;
                 start_course_stage_num = 1;
             }
@@ -362,7 +365,7 @@ impl CmSeg {
             }
         }
         unsafe {
-            if mkb::main_mode == mkb::MD_SEL {
+            if mkb2::main_mode == mkb2::MD_SEL {
                 self.state = State::EnterCm;
             } else {
                 self.state = State::LoadMenu;

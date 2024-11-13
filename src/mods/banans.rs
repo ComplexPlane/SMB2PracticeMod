@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use crate::{app::AppContext, systems::pref::BoolPref, utils::patch};
 
 #[derive(Default)]

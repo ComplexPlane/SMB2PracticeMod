@@ -1,9 +1,12 @@
+#![cfg(feature = "mkb2")]
+
 use arrayvec::ArrayString;
 use num_enum::TryFromPrimitive;
 
 use crate::{
     app::AppContext,
-    cstr_buf, fmt, mkb,
+    cstr_buf, fmt,
+    mkb2::mkb2,
     systems::{
         binds::Binds,
         draw,
@@ -134,7 +137,7 @@ impl IlBattle {
         }
     }
 
-    fn battle_display(&mut self, text_color: mkb::GXColor, cx: &mut Context) {
+    fn battle_display(&mut self, text_color: mkb2::GXColor, cx: &mut Context) {
         let battle_hours = self.battle_frames / HOUR_FRAMES;
         let battle_minutes = self.battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
         let battle_seconds = self.battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
@@ -286,15 +289,15 @@ impl IlBattle {
 
     fn score_calc(score: u32) -> u32 {
         unsafe {
-            let igt_score = mkb::mode_info.stage_time_frames_remaining as u32 * 100 / 60; // Score from timer
+            let igt_score = mkb2::mode_info.stage_time_frames_remaining as u32 * 100 / 60; // Score from timer
             let mut goal_bonus = 0; // Blue goal (no bonus)
-            if mkb::mode_info.entered_goal_type == 1 {
+            if mkb2::mode_info.entered_goal_type == 1 {
                 goal_bonus = 10000; // Green goal bonus
-            } else if mkb::mode_info.entered_goal_type == 2 {
+            } else if mkb2::mode_info.entered_goal_type == 2 {
                 goal_bonus = 20000; // Red goal bonus
             }
-            if mkb::mode_info.stage_time_frames_remaining as u16
-                > mkb::mode_info.stage_time_limit / 2
+            if mkb2::mode_info.stage_time_frames_remaining as u16
+                > mkb2::mode_info.stage_time_limit / 2
             {
                 // With time bonus
                 score + (igt_score + goal_bonus) * 2
@@ -339,17 +342,17 @@ impl IlBattle {
     fn track_first_retry(&mut self, cx: &mut Context) {
         unsafe {
             let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
-            if !paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
+            if !paused_now && mkb2::sub_mode == mkb2::SMD_GAME_READY_INIT {
                 self.new_battle(cx);
                 self.state = IlBattleState::BattleRunning;
-                self.battle_stage_id = mkb::current_stage_id as u32;
+                self.battle_stage_id = mkb2::current_stage_id as u32;
             }
         }
     }
 
     fn run_battle_timer(&mut self, cx: &mut Context) {
         unsafe {
-            if mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && !self.accepted_retry {
+            if mkb2::sub_mode == mkb2::SMD_GAME_PLAY_INIT && !self.accepted_retry {
                 // track attempt counts
                 self.attempts += 1;
                 self.accepted_retry = true;
@@ -370,8 +373,8 @@ impl IlBattle {
 
     fn update_best(&mut self) {
         unsafe {
-            let current_frames = mkb::mode_info.stage_time_frames_remaining;
-            let current_score = mkb::balls[mkb::curr_player_idx as usize].score as u32;
+            let current_frames = mkb2::mode_info.stage_time_frames_remaining;
+            let current_score = mkb2::balls[mkb2::curr_player_idx as usize].score as u32;
 
             let calculated_score = Self::score_calc(current_score);
 
@@ -395,7 +398,7 @@ impl IlBattle {
                 self.best_score_ties = 0;
                 self.best_score = calculated_score;
                 self.best_score_bananas =
-                    mkb::balls[mkb::curr_player_idx as usize].banana_count as u32;
+                    mkb2::balls[mkb2::curr_player_idx as usize].banana_count as u32;
                 self.best_score_frames = current_frames as u32;
             }
         }
@@ -408,8 +411,8 @@ impl IlBattle {
             }
 
             let on_incorrect_stage = self.main_mode_play_timer > 0
-                && self.battle_stage_id != mkb::current_stage_id as u32
-                && mkb::main_mode == mkb::MD_GAME;
+                && self.battle_stage_id != mkb2::current_stage_id as u32
+                && mkb2::main_mode == mkb2::MD_GAME;
 
             if on_incorrect_stage {
                 return;
@@ -444,10 +447,10 @@ impl IlBattle {
             let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
             // End battle if: Paused, Fallout, or Time Over
             if paused_now
-                || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
-                || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
-                || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT
-                || mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN
+                || mkb2::sub_mode == mkb2::SMD_GAME_RINGOUT_INIT
+                || mkb2::sub_mode == mkb2::SMD_GAME_RINGOUT_MAIN
+                || mkb2::sub_mode == mkb2::SMD_GAME_TIMEOVER_INIT
+                || mkb2::sub_mode == mkb2::SMD_GAME_TIMEOVER_MAIN
             {
                 self.state = IlBattleState::BattleDone;
             }
@@ -456,7 +459,8 @@ impl IlBattle {
 
     fn track_postgoal(&mut self) {
         unsafe {
-            if mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT && mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN
+            if mkb2::sub_mode != mkb2::SMD_GAME_GOAL_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_GOAL_MAIN
             {
                 let pre_buzzer_score = self.best_score;
                 self.update_best();
@@ -483,23 +487,23 @@ impl IlBattle {
                 self.state = IlBattleState::NotReady;
             }
 
-            if mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT {
+            if mkb2::sub_mode != mkb2::SMD_GAME_PLAY_INIT {
                 self.accepted_retry = false;
             }
 
-            if mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN {
+            if mkb2::sub_mode != mkb2::SMD_GAME_PLAY_MAIN {
                 self.accepted_tie = false;
             }
 
-            if mkb::main_mode == mkb::MD_GAME {
+            if mkb2::main_mode == mkb2::MD_GAME {
                 self.main_mode_play_timer += 1;
             } else {
                 self.main_mode_play_timer = 0;
             }
 
-            if mkb::main_mode == mkb::MD_GAME
-                && (mkb::main_game_mode == mkb::STORY_MODE
-                    || mkb::main_game_mode == mkb::CHALLENGE_MODE)
+            if mkb2::main_mode == mkb2::MD_GAME
+                && (mkb2::main_game_mode == mkb2::STORY_MODE
+                    || mkb2::main_game_mode == mkb2::CHALLENGE_MODE)
             {
                 self.new_battle(cx);
                 return;
@@ -524,7 +528,7 @@ impl IlBattle {
             }
 
             // Reset display if menu when battle over
-            if mkb::main_mode != mkb::MD_GAME
+            if mkb2::main_mode != mkb2::MD_GAME
                 && (self.state == IlBattleState::WaitForFirstRetry
                     || self.state == IlBattleState::BattleDone)
             {
@@ -533,7 +537,7 @@ impl IlBattle {
             }
 
             // Resets battles when Dpad Down is pressed
-            if mkb::main_mode == mkb::MD_GAME
+            if mkb2::main_mode == mkb2::MD_GAME
                 && cx.binds.bind_pressed(
                     cx.pref.get_u8(U8Pref::IlBattleReadyBind),
                     Prio::Low,
@@ -554,9 +558,9 @@ impl IlBattle {
         };
 
         unsafe {
-            if mkb::main_mode == mkb::MD_GAME
-                && (mkb::main_game_mode == mkb::STORY_MODE
-                    || mkb::main_game_mode == mkb::CHALLENGE_MODE)
+            if mkb2::main_mode == mkb2::MD_GAME
+                && (mkb2::main_game_mode == mkb2::STORY_MODE
+                    || mkb2::main_game_mode == mkb2::CHALLENGE_MODE)
             {
                 return;
             }
@@ -568,7 +572,7 @@ impl IlBattle {
 
         match self.state {
             IlBattleState::NotReady => {
-                if unsafe { mkb::main_mode } != mkb::MD_GAME {
+                if unsafe { mkb2::main_mode } != mkb2::MD_GAME {
                     return;
                 }
                 let input = cx.pref.get_u8(U8Pref::IlBattleReadyBind);
@@ -583,15 +587,15 @@ impl IlBattle {
                 );
             }
             IlBattleState::WaitForFirstRetry => {
-                if unsafe { mkb::main_mode } == mkb::MD_GAME {
+                if unsafe { mkb2::main_mode } == mkb2::MD_GAME {
                     draw::debug_text(X - 12 * CWIDTH, Y, draw::GOLD, "READY");
                     draw::debug_text(X - 12 * CWIDTH, Y + CHEIGHT, draw::GOLD, "Retry to begin");
                 }
             }
             IlBattleState::BattleRunning | IlBattleState::BuzzerBeater => {
                 if self.main_mode_play_timer > 0
-                    && self.battle_stage_id != unsafe { mkb::current_stage_id } as u32
-                    && unsafe { mkb::main_mode } == mkb::MD_GAME
+                    && self.battle_stage_id != unsafe { mkb2::current_stage_id } as u32
+                    && unsafe { mkb2::main_mode } == mkb2::MD_GAME
                 {
                     draw::debug_text(X - 12 * CWIDTH, Y, draw::RED, "WRONG STAGE");
                 } else {

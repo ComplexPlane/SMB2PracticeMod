@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use core::ffi::{c_char, c_void};
 
 use num_enum::TryFromPrimitive;

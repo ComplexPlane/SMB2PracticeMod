@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use core::cmp::Ordering;
 
 use arrayvec::ArrayString;

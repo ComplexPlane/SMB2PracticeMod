@@ -1,9 +1,11 @@
+#![cfg(feature = "mkb2")]
+
 use core::ffi::c_int;
 
 use crate::{
     app::AppContext,
     hook,
-    mkb::{self, byte, Vec},
+    mkb2::mkb2::{self, byte, Vec},
     systems::{
         menu_impl::MenuImpl,
         pad::{Pad, Prio},
@@ -14,8 +16,8 @@ use crate::{
 
 use super::physics::Physics;
 
-hook!(DidBallEnterGoalHook, ball: *mut mkb::Ball, out_stage_goal_idx: *mut c_int,
-      out_itemgroup_id: *mut c_int, out_goal_flags: *mut byte => u8, mkb::did_ball_enter_goal,
+hook!(DidBallEnterGoalHook, ball: *mut mkb2::Ball, out_stage_goal_idx: *mut c_int,
+      out_itemgroup_id: *mut c_int, out_goal_flags: *mut byte => u8, mkb2::did_ball_enter_goal,
       |ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags, cx| {
 
     let validate = &mut cx.validate.borrow_mut();
@@ -94,10 +96,10 @@ impl Validate {
 
             // Using dpad controls is disallowed
             let dpad_down = pad
-                .button_down(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low);
+                .button_down(mkb2::PAD_BUTTON_DOWN as mkb2::PadDigitalInput, Prio::Low)
+                || pad.button_down(mkb2::PAD_BUTTON_LEFT as mkb2::PadDigitalInput, Prio::Low)
+                || pad.button_down(mkb2::PAD_BUTTON_RIGHT as mkb2::PadDigitalInput, Prio::Low)
+                || pad.button_down(mkb2::PAD_BUTTON_UP as mkb2::PadDigitalInput, Prio::Low);
             if pref.get_bool(BoolPref::DpadControls) && dpad_down {
                 self.used_mods = true;
             }
@@ -127,17 +129,17 @@ impl Validate {
         }
     }
 
-    fn line_intersects(&mut self, line_start: &Vec, line_end: &Vec, rect: &mut mkb::Rect) -> bool {
+    fn line_intersects(&mut self, line_start: &Vec, line_end: &Vec, rect: &mut mkb2::Rect) -> bool {
         let mut start: Vec = *line_start;
         let mut end: Vec = *line_end;
 
         unsafe {
-            mkb::mtxa_from_translate(&raw mut rect.pos);
-            mkb::mtxa_rotate_z(rect.rot.z);
-            mkb::mtxa_rotate_y(rect.rot.y);
-            mkb::mtxa_rotate_x(rect.rot.x);
-            mkb::mtxa_rigid_inv_tf_point(&raw mut start, &raw mut start);
-            mkb::mtxa_rigid_inv_tf_point(&raw mut end, &raw mut end);
+            mkb2::mtxa_from_translate(&raw mut rect.pos);
+            mkb2::mtxa_rotate_z(rect.rot.z);
+            mkb2::mtxa_rotate_y(rect.rot.y);
+            mkb2::mtxa_rotate_x(rect.rot.x);
+            mkb2::mtxa_rigid_inv_tf_point(&raw mut start, &raw mut start);
+            mkb2::mtxa_rigid_inv_tf_point(&raw mut end, &raw mut end);
 
             if (end.z < 0.0 && start.z < 0.0) || (0.0 < end.z && 0.0 < start.z) {
                 return false;
@@ -160,10 +162,10 @@ impl Validate {
             }
 
             // Update framesave if first goal entered
-            if mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT
-                && mkb::sub_mode != mkb::SMD_GAME_GOAL_MAIN
-                && mkb::sub_mode != mkb::SMD_GAME_GOAL_REPLAY_INIT
-                && mkb::sub_mode != mkb::SMD_GAME_GOAL_REPLAY_MAIN
+            if mkb2::sub_mode != mkb2::SMD_GAME_GOAL_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_GOAL_MAIN
+                && mkb2::sub_mode != mkb2::SMD_GAME_GOAL_REPLAY_INIT
+                && mkb2::sub_mode != mkb2::SMD_GAME_GOAL_REPLAY_MAIN
             {
                 self.framesave = ((start.z / (start.z - end.z)) * 100.0) as u32;
             }
@@ -172,22 +174,22 @@ impl Validate {
         }
     }
 
-    fn find_framesave(&mut self, ball: *mut mkb::Ball) {
+    fn find_framesave(&mut self, ball: *mut mkb2::Ball) {
         unsafe {
-            let mut physicsball = mkb::PhysicsBall::default();
-            mkb::init_physicsball_from_ball(ball, &raw mut physicsball);
+            let mut physicsball = mkb2::PhysicsBall::default();
+            mkb2::init_physicsball_from_ball(ball, &raw mut physicsball);
 
-            let mut itemgroup = (*mkb::stagedef).coli_header_list;
+            let mut itemgroup = (*mkb2::stagedef).coli_header_list;
             let mut itemgroup_idx = 0;
 
             loop {
-                if itemgroup_idx >= (*mkb::stagedef).coli_header_count {
+                if itemgroup_idx >= (*mkb2::stagedef).coli_header_count {
                     break;
                 }
 
                 if (*itemgroup).goal_count > 0 {
                     if itemgroup_idx != physicsball.itemgroup_idx {
-                        mkb::tf_physball_to_itemgroup_space(
+                        mkb2::tf_physball_to_itemgroup_space(
                             &raw mut physicsball,
                             itemgroup_idx as c_int,
                         );
@@ -195,16 +197,16 @@ impl Validate {
 
                     let mut goal = (*itemgroup).goal_list;
                     for _itemgroup_goal_idx in 0..(*itemgroup).goal_count {
-                        mkb::mtxa_from_translate(&raw mut (*goal).position);
-                        mkb::mtxa_rotate_z((*goal).rotation.z);
-                        mkb::mtxa_rotate_y((*goal).rotation.y);
-                        mkb::mtxa_rotate_x((*goal).rotation.x);
+                        mkb2::mtxa_from_translate(&raw mut (*goal).position);
+                        mkb2::mtxa_rotate_z((*goal).rotation.z);
+                        mkb2::mtxa_rotate_y((*goal).rotation.y);
+                        mkb2::mtxa_rotate_x((*goal).rotation.x);
 
-                        let mut goal_trigger = mkb::Rect::default();
+                        let mut goal_trigger = mkb2::Rect::default();
                         goal_trigger.pos.x = 0.0;
                         goal_trigger.pos.y = 1.5;
                         goal_trigger.pos.z = 0.0;
-                        mkb::mtxa_tf_point(&raw mut goal_trigger.pos, &raw mut goal_trigger.pos);
+                        mkb2::mtxa_tf_point(&raw mut goal_trigger.pos, &raw mut goal_trigger.pos);
                         goal_trigger.rot = (*goal).rotation;
                         goal_trigger.width = 3.0;
                         goal_trigger.height = 3.0;
@@ -229,7 +231,7 @@ impl Validate {
 
     pub fn tick(&mut self, _cx: &AppContext) {
         unsafe {
-            if mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT {
+            if mkb2::sub_mode == mkb2::SMD_GAME_PLAY_INIT {
                 self.entered_goal = false;
                 self.used_mods = false;
                 self.has_paused = false;

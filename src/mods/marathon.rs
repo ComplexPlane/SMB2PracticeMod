@@ -1,4 +1,7 @@
-use crate::{app::AppContext, mkb, systems::pref::BoolPref};
+#![cfg(feature = "mkb2")]
+
+use crate::mkb2::mkb2;
+use crate::{app::AppContext, systems::pref::BoolPref};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum MarathonState {
@@ -13,24 +16,24 @@ enum MarathonState {
 #[derive(Default)]
 pub struct Marathon {
     state: MarathonState,
-    saved_vel: mkb::Vec,
+    saved_vel: mkb2::Vec,
 }
 
 impl Marathon {
     fn apply_saved_vel(&self) {
         unsafe {
-            let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
+            let ball = &mut mkb2::balls[mkb2::curr_player_idx as usize];
 
             // Set up the TF matrix for World ---> Start
-            mkb::mtxa_from_rotate_z((*(*mkb::stagedef).start).rotation.z);
-            mkb::mtxa_rotate_y((*(*mkb::stagedef).start).rotation.y);
-            mkb::mtxa_rotate_x((*(*mkb::stagedef).start).rotation.x);
+            mkb2::mtxa_from_rotate_z((*(*mkb2::stagedef).start).rotation.z);
+            mkb2::mtxa_rotate_y((*(*mkb2::stagedef).start).rotation.y);
+            mkb2::mtxa_rotate_x((*(*mkb2::stagedef).start).rotation.x);
 
-            let mut entered_goal_vel_rt_start = mkb::Vec::default();
+            let mut entered_goal_vel_rt_start = mkb2::Vec::default();
 
             let mut saved_vel = self.saved_vel;
 
-            mkb::mtxa_tf_vec(&raw mut saved_vel, &raw mut entered_goal_vel_rt_start);
+            mkb2::mtxa_tf_vec(&raw mut saved_vel, &raw mut entered_goal_vel_rt_start);
 
             ball.vel = entered_goal_vel_rt_start;
         }
@@ -38,48 +41,48 @@ impl Marathon {
 
     fn store_saved_vel(&mut self) {
         unsafe {
-            let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
+            let ball = &mut mkb2::balls[mkb2::curr_player_idx as usize];
 
-            let goal_idx = mkb::mode_info.entered_goal_idx as usize;
-            let goal_ig_idx = mkb::mode_info.entered_goal_itemgroup_idx as usize;
+            let goal_idx = mkb2::mode_info.entered_goal_idx as usize;
+            let goal_ig_idx = mkb2::mode_info.entered_goal_itemgroup_idx as usize;
 
             // Set up the TF matrix for Goal ---> World (Inverse of World ---> Goal)
-            mkb::mtxa_from_mtx(&raw mut (*mkb::itemgroups.add(goal_ig_idx)).transform);
-            mkb::mtxa_translate(
-                &raw mut (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
+            mkb2::mtxa_from_mtx(&raw mut (*mkb2::itemgroups.add(goal_ig_idx)).transform);
+            mkb2::mtxa_translate(
+                &raw mut (*(*(*mkb2::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .position,
             );
-            mkb::mtxa_rotate_z(
-                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
+            mkb2::mtxa_rotate_z(
+                (*(*(*mkb2::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation
                 .z,
             );
-            mkb::mtxa_rotate_y(
-                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
+            mkb2::mtxa_rotate_y(
+                (*(*(*mkb2::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation
                 .y,
             );
-            mkb::mtxa_rotate_x(
-                (*(*(*mkb::stagedef).coli_header_list.add(goal_ig_idx))
+            mkb2::mtxa_rotate_x(
+                (*(*(*mkb2::stagedef).coli_header_list.add(goal_ig_idx))
                     .goal_list
                     .add(goal_idx))
                 .rotation
                 .x,
             );
 
-            let mut entered_goal_vel_rt_world = mkb::Vec {
+            let mut entered_goal_vel_rt_world = mkb2::Vec {
                 x: ball.vel.x,
                 y: ball.vel.y,
                 z: ball.vel.z,
             };
-            let mut entered_goal_vel_rt_goal = mkb::Vec::default();
-            mkb::mtxa_rigid_inv_tf_vec(
+            let mut entered_goal_vel_rt_goal = mkb2::Vec::default();
+            mkb2::mtxa_rigid_inv_tf_vec(
                 &raw mut entered_goal_vel_rt_world,
                 &raw mut entered_goal_vel_rt_goal,
             );
@@ -91,7 +94,8 @@ impl Marathon {
 
     fn wait_for_goal(&mut self) {
         unsafe {
-            if mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN
+            if mkb2::sub_mode == mkb2::SMD_GAME_GOAL_INIT
+                || mkb2::sub_mode == mkb2::SMD_GAME_GOAL_MAIN
             {
                 self.state = MarathonState::StoringVel;
             }
@@ -100,8 +104,8 @@ impl Marathon {
 
     fn wait_for_apply(&mut self) {
         unsafe {
-            if mkb::mode_info.stage_time_frames_remaining
-                == (mkb::mode_info.stage_time_limit - 1) as i16
+            if mkb2::mode_info.stage_time_frames_remaining
+                == (mkb2::mode_info.stage_time_limit - 1) as i16
             {
                 self.apply_saved_vel();
                 self.state = MarathonState::WaitForApplyOrGoal;

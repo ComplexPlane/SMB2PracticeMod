@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 // Tinymap is a map with small code size. It simply uses a fixed-size sorted array as the backing
 // store which is binary-searched over.
 

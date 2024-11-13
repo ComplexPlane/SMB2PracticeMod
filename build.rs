@@ -27,7 +27,7 @@ fn generate_bindings() {
     let bindings = bindgen::Builder::default()
         // The input header we would like to generate
         // bindings for.
-        .header("src/mkb2_ghidra.h")
+        .header("src/mkb2/mkb2_ghidra.h")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
@@ -47,7 +47,7 @@ fn generate_bindings() {
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     bindings
-        .write_to_file("src/mkb.rs")
+        .write_to_file("src/mkb2/mkb2.rs")
         .expect("Couldn't write bindings!");
 }
 

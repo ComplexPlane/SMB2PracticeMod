@@ -2,7 +2,7 @@ use core::{ffi::c_long, ptr::write_volatile};
 
 use num_enum::TryFromPrimitive;
 
-use crate::mkb;
+use crate::mkb2::mkb2;
 
 // Originally #define'd
 pub const GX_TRUE: u8 = 1;
@@ -63,24 +63,24 @@ pub const CARD_READ_SIZE: i32 = 512;
 #[allow(non_snake_case)]
 pub fn GXPosition3f32(x: f32, y: f32, z: f32) {
     unsafe {
-        write_volatile(&raw mut mkb::GXWGFifo.v_f32, x);
-        write_volatile(&raw mut mkb::GXWGFifo.v_f32, y);
-        write_volatile(&raw mut mkb::GXWGFifo.v_f32, z);
+        write_volatile(&raw mut mkb2::GXWGFifo.v_f32, x);
+        write_volatile(&raw mut mkb2::GXWGFifo.v_f32, y);
+        write_volatile(&raw mut mkb2::GXWGFifo.v_f32, z);
     }
 }
 
 #[allow(non_snake_case)]
 pub fn GXTexCoord2f32(s: f32, t: f32) {
     unsafe {
-        write_volatile(&raw mut mkb::GXWGFifo.v_f32, s);
-        write_volatile(&raw mut mkb::GXWGFifo.v_f32, t);
+        write_volatile(&raw mut mkb2::GXWGFifo.v_f32, s);
+        write_volatile(&raw mut mkb2::GXWGFifo.v_f32, t);
     }
 }
 
 pub const CARD_WORKAREA_SIZE: usize = 5 * 8 * 1024;
 
-impl From<mkb::GXColor> for u32 {
-    fn from(color: mkb::GXColor) -> Self {
+impl From<mkb2::GXColor> for u32 {
+    fn from(color: mkb2::GXColor) -> Self {
         ((color.a as u32) << 24)
             | ((color.r as u32) << 16)
             | ((color.g as u32) << 8)

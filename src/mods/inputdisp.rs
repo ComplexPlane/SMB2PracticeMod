@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use core::ffi::CStr;
 
 use num_enum::TryFromPrimitive;
@@ -5,8 +7,8 @@ use num_enum::TryFromPrimitive;
 use crate::{
     app::AppContext,
     fmt,
-    mkb::{self, Vec2d},
-    mkb_suppl::{GXPosition3f32, GXTexCoord2f32},
+    mkb2::mkb2::{self, Vec2d},
+    mkb2::mkb_suppl::{GXPosition3f32, GXTexCoord2f32},
     systems::{
         draw,
         pad::{self, Pad, Prio, StickState},
@@ -44,25 +46,25 @@ impl InputDisplay {
         center: Vec2d,
         inner_radius: f32,
         outer_radius: f32,
-        color: mkb::GXColor,
+        color: mkb2::GXColor,
     ) {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
+        let texobj = 0x807ad0e0 as *mut mkb2::GXTexObj;
         unsafe {
-            mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
-            mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
+            mkb2::GXLoadTexObj_cached(texobj, mkb2::GX_TEXMAP0);
+            mkb2::GXSetTevColor(mkb2::GX_TEVREG0, color);
         }
         let z = -1.0f32 / 128.0f32;
 
         unsafe {
-            mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT0, (pts * 4) as u16);
+            mkb2::GXBegin(mkb2::GX_QUADS, mkb2::GX_VTXFMT0, (pts * 4) as u16);
         }
 
         for i in 0..pts {
             let angle = 0xFFFF * i / pts;
             let mut sin_cos = [0f32; 2];
             unsafe {
-                mkb::math_sin_cos_v(angle as i16, sin_cos.as_mut_ptr());
+                mkb2::math_sin_cos_v(angle as i16, sin_cos.as_mut_ptr());
             }
             let curr_inner_x = sin_cos[0] * inner_radius + center.x;
             let curr_inner_y = sin_cos[1] * inner_radius + center.y;
@@ -72,7 +74,7 @@ impl InputDisplay {
             let next_angle = 0xFFFF * ((i + 1) % pts) / pts;
             let mut next_sin_cos = [0f32; 2];
             unsafe {
-                mkb::math_sin_cos_v(next_angle as i16, next_sin_cos.as_mut_ptr());
+                mkb2::math_sin_cos_v(next_angle as i16, next_sin_cos.as_mut_ptr());
             }
             let next_inner_x = next_sin_cos[0] * inner_radius + center.x;
             let next_inner_y = next_sin_cos[1] * inner_radius + center.y;
@@ -90,17 +92,17 @@ impl InputDisplay {
         }
     }
 
-    fn draw_circle(&self, pts: u32, center: Vec2d, radius: f32, color: mkb::GXColor) {
+    fn draw_circle(&self, pts: u32, center: Vec2d, radius: f32, color: mkb2::GXColor) {
         // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
+        let texobj = 0x807ad0e0 as *mut mkb2::GXTexObj;
         unsafe {
-            mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
-            mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
+            mkb2::GXLoadTexObj_cached(texobj, mkb2::GX_TEXMAP0);
+            mkb2::GXSetTevColor(mkb2::GX_TEVREG0, color);
         }
         let z = -1.0f32 / 128.0f32;
 
         unsafe {
-            mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT0, (pts + 2) as u16);
+            mkb2::GXBegin(mkb2::GX_TRIANGLEFAN, mkb2::GX_VTXFMT0, (pts + 2) as u16);
             GXPosition3f32(center.x, center.y, z);
             GXTexCoord2f32(0.0, 0.0);
         }
@@ -109,7 +111,7 @@ impl InputDisplay {
             let angle = 0xFFFF * i as u32 / pts;
             let mut sin_cos = [0f32; 2];
             unsafe {
-                mkb::math_sin_cos_v(angle as i16, sin_cos.as_mut_ptr());
+                mkb2::math_sin_cos_v(angle as i16, sin_cos.as_mut_ptr());
                 let x = sin_cos[0] * radius + center.x;
                 let y = sin_cos[1] * radius + center.y;
                 GXPosition3f32(x, y, z);
@@ -120,28 +122,28 @@ impl InputDisplay {
 
     fn set_sprite_visible(&self, visible: bool) {
         unsafe {
-            if mkb::main_mode != mkb::MD_GAME {
+            if mkb2::main_mode != mkb2::MD_GAME {
                 return;
             }
 
             // Hide distracting score sprites under the input display
-            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+            for i in 0..(mkb2::sprite_pool_info.upper_bound as usize) {
+                if *mkb2::sprite_pool_info.status_list.add(i) == 0 {
                     continue;
                 }
 
-                let sprite = &mut mkb::sprites[i as usize];
+                let sprite = &mut mkb2::sprites[i as usize];
                 let tick_func = sprite.tick_func;
                 let disp_func = sprite.disp_func;
                 if (sprite.bmp == 0x503
-                    || tick_func == Some(mkb::sprite_monkey_counter_tick)
-                    || disp_func == Some(mkb::sprite_monkey_counter_icon_disp)
+                    || tick_func == Some(mkb2::sprite_monkey_counter_tick)
+                    || disp_func == Some(mkb2::sprite_monkey_counter_icon_disp)
                     || sprite.bmp == 0x502
-                    || tick_func == Some(mkb::sprite_banana_icon_tick)
-                    || tick_func == Some(mkb::sprite_banana_icon_shadow_tick)
-                    || tick_func == Some(mkb::sprite_banana_count_tick)
+                    || tick_func == Some(mkb2::sprite_banana_icon_tick)
+                    || tick_func == Some(mkb2::sprite_banana_icon_shadow_tick)
+                    || tick_func == Some(mkb2::sprite_banana_count_tick)
                     || CStr::from_ptr(&raw const sprite.text[0]) == c":"
-                    || disp_func == Some(mkb::sprite_hud_player_num_disp))
+                    || disp_func == Some(mkb2::sprite_hud_player_num_disp))
                     && ((visible && sprite.depth < 0.0) || (!visible && sprite.depth >= 0.0))
                 {
                     sprite.depth = -sprite.depth;
@@ -193,23 +195,23 @@ impl InputDisplay {
         notch_found
     }
 
-    const COLOR_MAP: &[mkb::GXColor] = &[
+    const COLOR_MAP: &[mkb2::GXColor] = &[
         draw::PURPLE, // Purple
         draw::RED,    // Red
         draw::ORANGE, // Orange
-        mkb::GXColor {
+        mkb2::GXColor {
             r: 0xfd,
             g: 0xfb,
             b: 0x78,
             a: 0xff,
         }, // Yellow
-        mkb::GXColor {
+        mkb2::GXColor {
             r: 0x78,
             g: 0xfd,
             b: 0x85,
             a: 0xff,
         }, // Green
-        mkb::GXColor {
+        mkb2::GXColor {
             r: 0x78,
             g: 0xca,
             b: 0xfd,
@@ -219,13 +221,13 @@ impl InputDisplay {
         draw::BLACK,  // Black
     ];
 
-    fn get_color(&self, cx: &mut Context) -> mkb::GXColor {
+    fn get_color(&self, cx: &mut Context) -> mkb2::GXColor {
         let color_pref = cx.pref.get_u8(U8Pref::InputDispColorType);
         match InputDispColorType::try_from(color_pref).unwrap() {
             InputDispColorType::Default => {
                 Self::COLOR_MAP[cx.pref.get_u8(U8Pref::InputDispColor) as usize]
             }
-            InputDispColorType::RGB => mkb::GXColor {
+            InputDispColorType::RGB => mkb2::GXColor {
                 r: cx.pref.get_u8(U8Pref::InputDispRed),
                 g: cx.pref.get_u8(U8Pref::InputDispGreen),
                 b: cx.pref.get_u8(U8Pref::InputDispBlue),
@@ -254,7 +256,7 @@ impl InputDisplay {
             *center,
             54.0 * scale,
             60.0 * scale,
-            mkb::GXColor {
+            mkb2::GXColor {
                 r: 0x00,
                 g: 0x00,
                 b: 0x00,
@@ -265,7 +267,7 @@ impl InputDisplay {
             8,
             *center,
             54.0 * scale,
-            mkb::GXColor {
+            mkb2::GXColor {
                 r: 0x00,
                 g: 0x00,
                 b: 0x00,
@@ -283,7 +285,7 @@ impl InputDisplay {
             16,
             scaled_input,
             9.0 * scale,
-            mkb::GXColor {
+            mkb2::GXColor {
                 r: 0xFF,
                 g: 0xFF,
                 b: 0xFF,
@@ -296,7 +298,7 @@ impl InputDisplay {
         // We floor floats for now because no-std doesn't include a float rounding func
         if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_START as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
@@ -307,7 +309,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_A as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
@@ -318,7 +320,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_B as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
@@ -329,7 +331,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_X as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
@@ -340,7 +342,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_BUTTON_Y as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
@@ -351,7 +353,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_TRIGGER_L as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_TRIGGER_L as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
@@ -362,7 +364,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_TRIGGER_R as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_TRIGGER_R as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
@@ -373,7 +375,7 @@ impl InputDisplay {
         }
         if cx
             .pad
-            .button_down(mkb::PAD_TRIGGER_Z as mkb::PadDigitalInput, Prio::Low)
+            .button_down(mkb2::PAD_TRIGGER_Z as mkb2::PadDigitalInput, Prio::Low)
         {
             draw::debug_text(
                 (center.x + 115.0 * scale) as u32,
@@ -405,7 +407,7 @@ impl InputDisplay {
                 6,
                 notch_pos,
                 5.0 * scale,
-                mkb::GXColor {
+                mkb2::GXColor {
                     r: 0xFF,
                     g: 0xFF,
                     b: 0xFF,
@@ -469,12 +471,12 @@ impl InputDisplay {
         };
 
         let in_replay = unsafe {
-            mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_INIT
-                || mkb::sub_mode == mkb::SMD_OPTION_REPLAY_PLAY_MAIN
-                || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_INIT
-                || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_LOAD_MAIN
-                || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_INIT
-                || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN
+            mkb2::sub_mode == mkb2::SMD_OPTION_REPLAY_PLAY_INIT
+                || mkb2::sub_mode == mkb2::SMD_OPTION_REPLAY_PLAY_MAIN
+                || mkb2::sub_mode == mkb2::SMD_EXOPT_REPLAY_LOAD_INIT
+                || mkb2::sub_mode == mkb2::SMD_EXOPT_REPLAY_LOAD_MAIN
+                || mkb2::sub_mode == mkb2::SMD_EXOPT_REPLAY_INIT
+                || mkb2::sub_mode == mkb2::SMD_EXOPT_REPLAY_MAIN
         };
 
         if !cx.pref.get_bool(BoolPref::InputDisp)

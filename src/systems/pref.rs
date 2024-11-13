@@ -1,6 +1,10 @@
+#![cfg(feature = "mkb2")]
+
 extern crate alloc;
 
-use crate::{app::AppContext, cstr, fmt, mkb_suppl::CARDResult, systems::draw::NotifyDuration};
+use crate::{
+    app::AppContext, cstr, fmt, mkb2::mkb_suppl::CARDResult, systems::draw::NotifyDuration,
+};
 use alloc::vec;
 use alloc::vec::Vec;
 use num_enum::TryFromPrimitive;

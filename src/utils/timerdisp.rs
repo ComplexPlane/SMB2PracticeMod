@@ -1,4 +1,7 @@
-use crate::{cstr, fmt, mkb, systems::draw};
+#![cfg(feature = "mkb2")]
+
+use crate::mkb2::mkb2;
+use crate::{cstr, fmt, systems::draw};
 
 const SECOND_FRAMES: u32 = 60;
 const MINUTE_FRAMES: u32 = SECOND_FRAMES * 60;
@@ -7,7 +10,7 @@ const HOUR_FRAMES: u32 = MINUTE_FRAMES * 60;
 const X: u32 = 378;
 const Y: u32 = 24;
 
-pub fn draw_timer(frames: i32, prefix: &str, row: u32, color: mkb::GXColor, show_seconds: bool) {
+pub fn draw_timer(frames: i32, prefix: &str, row: u32, color: mkb2::GXColor, show_seconds: bool) {
     let positive = frames >= 0;
     let frames = frames.unsigned_abs();
     let sign = if positive { "" } else { "-" };
@@ -73,7 +76,7 @@ pub fn draw_subtick_timer(
     frames: i32,
     prefix: &str,
     row: u32,
-    color: mkb::GXColor,
+    color: mkb2::GXColor,
     framesave: u32,
     extra_precision: bool,
 ) {
@@ -114,7 +117,7 @@ pub fn draw_subtick_timer(
     }
 }
 
-pub fn draw_percentage(fsave: i32, prefix: &str, row: u32, color: mkb::GXColor) {
+pub fn draw_percentage(fsave: i32, prefix: &str, row: u32, color: mkb2::GXColor) {
     let y = Y + row * 16;
     draw::debug_text(X, y, color, prefix);
     draw::debug_text(X + 48, y, color, &fmt!(32, c"%2d%", fsave));

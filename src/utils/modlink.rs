@@ -1,4 +1,6 @@
-use crate::mkb;
+#![cfg(feature = "mkb2")]
+
+use crate::mkb2::mkb2;
 use crate::utils::version::SemVer;
 use core::ffi::c_void;
 
@@ -38,7 +40,7 @@ struct ModLinkRaw {
     // load itself, then uses `heap_info` and its own heap functions for other
     // heap usage at runtime.
     malloc_func: extern "C" fn(size: u32) -> *mut c_void,
-    heap_info: *mut mkb::HeapInfo,
+    heap_info: *mut mkb2::HeapInfo,
 
     // As of ModLink v1.1.0: pointer to remainder of ModLink structure
     // Extending the ModLink structure inside the limited unused interrupt
@@ -51,7 +53,7 @@ struct ModLinkRaw {
 pub struct ModLink {
     pub wsmod_version: Option<SemVer>,
     pub malloc_func: Option<extern "C" fn(u32) -> *mut c_void>,
-    pub heap_info: Option<*mut mkb::HeapInfo>,
+    pub heap_info: Option<*mut mkb2::HeapInfo>,
     pub card_work_area: Option<*mut c_void>,
 }
 

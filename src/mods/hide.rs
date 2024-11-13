@@ -1,12 +1,15 @@
+#![cfg(feature = "mkb2")]
+
 use crate::{
     app::{self, AppContext},
-    hook, mkb,
+    hook,
+    mkb2::mkb2,
     systems::pref::{BoolPref, Pref},
     utils::patch,
 };
 
 // BG
-hook!(DrawBgHook => (), mkb::g_draw_bg, |cx| {
+hook!(DrawBgHook => (), mkb2::g_draw_bg, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !should_hide_bg(pref) {
@@ -14,27 +17,27 @@ hook!(DrawBgHook => (), mkb::g_draw_bg, |cx| {
     }
 });
 
-hook!(ClearHook => (), mkb::g_set_clear_color, |cx| {
+hook!(ClearHook => (), mkb2::g_set_clear_color, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if should_hide_bg(pref) {
         unsafe {
-            let backup_color = mkb::g_some_theme_color;
-            let backup_override_r = mkb::g_override_clear_r;
-            let backup_override_g = mkb::g_override_clear_g;
-            let backup_override_b = mkb::g_override_clear_b;
+            let backup_color = mkb2::g_some_theme_color;
+            let backup_override_r = mkb2::g_override_clear_r;
+            let backup_override_g = mkb2::g_override_clear_g;
+            let backup_override_b = mkb2::g_override_clear_b;
 
-            mkb::g_some_theme_color = mkb::GXColor {r: 0, g: 0, b: 0, a: 0xff};
-            mkb::g_override_clear_r = 0;
-            mkb::g_override_clear_g = 0;
-            mkb::g_override_clear_b = 0;
+            mkb2::g_some_theme_color = mkb2::GXColor {r: 0, g: 0, b: 0, a: 0xff};
+            mkb2::g_override_clear_r = 0;
+            mkb2::g_override_clear_g = 0;
+            mkb2::g_override_clear_b = 0;
 
             hide.clear_hook.call();
 
-            mkb::g_some_theme_color = backup_color;
-            mkb::g_override_clear_r = backup_override_r;
-            mkb::g_override_clear_g = backup_override_g;
-            mkb::g_override_clear_b = backup_override_b;
+            mkb2::g_some_theme_color = backup_color;
+            mkb2::g_override_clear_r = backup_override_r;
+            mkb2::g_override_clear_g = backup_override_g;
+            mkb2::g_override_clear_b = backup_override_b;
         }
     } else {
         hide.clear_hook.call();
@@ -42,7 +45,7 @@ hook!(ClearHook => (), mkb::g_set_clear_color, |cx| {
 });
 
 // HUD
-hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite, cx| {
+hook!(DrawSpriteHook, sprite: *mut mkb2::Sprite => (), mkb2::draw_sprite, |sprite, cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     let freecam = &mut cx.freecam.borrow_mut();
@@ -50,16 +53,16 @@ hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite,
         // Hide every sprite except the pause menu
         let hide_hud = pref.get_bool(BoolPref::HideHud);
         let freecam_hide = freecam.should_hide_hud(pref);
-        let correct_mode = mkb::main_mode == mkb::MD_GAME;
+        let correct_mode = mkb2::main_mode == mkb2::MD_GAME;
         let disp_func = (*sprite).disp_func;
-        let is_pausemenu_sprite = disp_func == Some(mkb::sprite_pausemenu_disp);
+        let is_pausemenu_sprite = disp_func == Some(mkb2::sprite_pausemenu_disp);
         if !((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite) {
             hide.draw_sprite_hook.call(sprite);
         }
     }
 });
 
-hook!(DrawMinimapHook => (), mkb::g_draw_minimap, |cx| {
+hook!(DrawMinimapHook => (), mkb2::g_draw_minimap, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     let freecam = &mut cx.freecam.borrow_mut();
@@ -72,7 +75,7 @@ hook!(DrawMinimapHook => (), mkb::g_draw_minimap, |cx| {
 });
 
 // Stage
-hook!(DrawStageHook => (), mkb::g_draw_stage, |cx| {
+hook!(DrawStageHook => (), mkb2::g_draw_stage, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !pref.get_bool(BoolPref::HideStage) {
@@ -81,7 +84,7 @@ hook!(DrawStageHook => (), mkb::g_draw_stage, |cx| {
 });
 
 // Ball
-hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, |cx| {
+hook!(DrawBallHook => (), mkb2::g_draw_ball_and_ape, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !pref.get_bool(BoolPref::HideBall) {
@@ -90,7 +93,7 @@ hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, |cx| {
 });
 
 // Items
-hook!(DrawItemsHook => (), mkb::draw_items, |cx| {
+hook!(DrawItemsHook => (), mkb2::draw_items, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !pref.get_bool(BoolPref::HideItems) {
@@ -99,7 +102,7 @@ hook!(DrawItemsHook => (), mkb::draw_items, |cx| {
 });
 
 // Stage objects
-hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, |cx| {
+hook!(DrawStobjsHook => (), mkb2::g_draw_stobjs, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !pref.get_bool(BoolPref::HideStobjs) {
@@ -108,7 +111,7 @@ hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, |cx| {
 });
 
 // Effects
-hook!(DrawEffectsHook => (), mkb::g_draw_effects, |cx| {
+hook!(DrawEffectsHook => (), mkb2::g_draw_effects, |cx| {
     let hide = &cx.hide.borrow();
     let pref = &cx.pref.borrow();
     if !pref.get_bool(BoolPref::HideEffects) {
@@ -117,7 +120,7 @@ hook!(DrawEffectsHook => (), mkb::g_draw_effects, |cx| {
 });
 
 fn should_hide_bg(pref: &Pref) -> bool {
-    pref.get_bool(BoolPref::HideBg) && unsafe { mkb::main_mode != mkb::MD_ADV }
+    pref.get_bool(BoolPref::HideBg) && unsafe { mkb2::main_mode != mkb2::MD_ADV }
 }
 
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`
@@ -125,9 +128,9 @@ unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
     critical_section::with(|cs| {
         let cx = app::APP_CONTEXT.borrow(cs);
         if should_hide_bg(&cx.pref.borrow()) {
-            mkb::avdisp_set_fog_color(0, 0, 0);
+            mkb2::avdisp_set_fog_color(0, 0, 0);
         } else {
-            mkb::avdisp_set_fog_color(r, g, b);
+            mkb2::avdisp_set_fog_color(r, g, b);
         }
     });
 }
@@ -136,9 +139,9 @@ unsafe extern "C" fn nl2ngc_set_fog_color_hook(r: u8, g: u8, b: u8) {
     critical_section::with(|cs| {
         let cx = app::APP_CONTEXT.borrow(cs);
         if should_hide_bg(&cx.pref.borrow()) {
-            mkb::nl2ngc_set_fog_color(0, 0, 0);
+            mkb2::nl2ngc_set_fog_color(0, 0, 0);
         } else {
-            mkb::nl2ngc_set_fog_color(r, g, b);
+            mkb2::nl2ngc_set_fog_color(r, g, b);
         }
     });
 }

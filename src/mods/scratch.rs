@@ -1,3 +1,5 @@
+#![cfg(feature = "mkb2")]
+
 use crate::app::AppContext;
 
 #[derive(Default)]

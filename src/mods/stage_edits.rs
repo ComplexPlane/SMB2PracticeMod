@@ -1,8 +1,11 @@
+#![cfg(feature = "mkb2")]
+
 use num_enum::TryFromPrimitive;
 
-use crate::{app::AppContext, hook, mkb, systems::pref::U8Pref};
+use crate::mkb2::mkb2;
+use crate::{app::AppContext, hook, systems::pref::U8Pref};
 
-hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb2::load_stagedef, |stage_id, cx| {
     cx.stage_edits.borrow_mut().on_load_stagedef(stage_id, cx);
 });
 
@@ -38,18 +41,18 @@ impl StageEdits {
             ActiveMode::None => {}
             ActiveMode::Golden => {
                 // disable goals somehow
-                for i in 0..((*mkb::stagedef).goal_count as usize) {
-                    (*(*mkb::stagedef).goal_list.add(i)).position.y += 10000.0;
+                for i in 0..((*mkb2::stagedef).goal_count as usize) {
+                    (*(*mkb2::stagedef).goal_list.add(i)).position.y += 10000.0;
                 }
             }
             ActiveMode::Dark => {}
             ActiveMode::Reverse => {
-                if (*mkb::stagedef).goal_count < 1 {
+                if (*mkb2::stagedef).goal_count < 1 {
                     return;
                 }
 
-                let start = (*mkb::stagedef).start;
-                let goal = (*mkb::stagedef).goal_list.add(self.rev_goal_idx as usize);
+                let start = (*mkb2::stagedef).start;
+                let goal = (*mkb2::stagedef).goal_list.add(self.rev_goal_idx as usize);
 
                 let x = (*start).position.x;
                 let y = (*start).position.y;
@@ -80,19 +83,19 @@ impl StageEdits {
             ActiveMode::None => {}
             ActiveMode::Golden => {
                 // disable goals somehow
-                for i in 0..((*mkb::stagedef).goal_count as usize) {
-                    (*(*mkb::stagedef).goal_list.add(i)).position.y -= 10000.0;
+                for i in 0..((*mkb2::stagedef).goal_count as usize) {
+                    (*(*mkb2::stagedef).goal_list.add(i)).position.y -= 10000.0;
                 }
             }
             ActiveMode::Dark => {}
             ActiveMode::Reverse => {
-                if (*mkb::stagedef).goal_count < 1 {
+                if (*mkb2::stagedef).goal_count < 1 {
                     return;
                 }
-                self.rev_goal_idx %= (*mkb::stagedef).goal_count as u32;
+                self.rev_goal_idx %= (*mkb2::stagedef).goal_count as u32;
 
-                let start = (*mkb::stagedef).start;
-                let goal = (*mkb::stagedef).goal_list.add(self.rev_goal_idx as usize);
+                let start = (*mkb2::stagedef).start;
+                let goal = (*mkb2::stagedef).goal_list.add(self.rev_goal_idx as usize);
 
                 let x = (*start).position.x;
                 let y = (*start).position.y;
@@ -153,15 +156,15 @@ impl StageEdits {
             match self.current_mode {
                 ActiveMode::None => {}
                 ActiveMode::Golden => {
-                    if mkb::mode_info.bananas_remaining == 0 {
-                        mkb::mode_info.ball_mode |= 0x228;
+                    if mkb2::mode_info.bananas_remaining == 0 {
+                        mkb2::mode_info.ball_mode |= 0x228;
                     }
                 }
                 ActiveMode::Dark => {
-                    if !mkb::stagedef.is_null()
-                        && mkb::mode_info.bananas_remaining != (*mkb::stagedef).banana_count
+                    if !mkb2::stagedef.is_null()
+                        && mkb2::mode_info.bananas_remaining != (*mkb2::stagedef).banana_count
                     {
-                        mkb::mode_info.ball_mode |= mkb::BALLMODE_FALLEN_OUT;
+                        mkb2::mode_info.ball_mode |= mkb2::BALLMODE_FALLEN_OUT;
                     }
                 }
                 ActiveMode::Reverse => {}

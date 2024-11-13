@@ -1,10 +1,13 @@
+#![cfg(feature = "mkb2")]
+
 use crate::{
     app::AppContext,
-    hook, mkb,
+    hook,
+    mkb2::mkb2,
     systems::pref::{BoolPref, Pref},
 };
 
-hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx| {
+hook!(PadReadHook, statuses: *mut mkb2::PADStatus => u32, mkb2::PADRead, |statuses, cx| {
     let dpad = &mut cx.dpad.borrow_mut();
     let pref = &mut cx.pref.borrow_mut();
 
@@ -13,7 +16,7 @@ hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses
     ret
 });
 
-hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |x, y, cx| {
+hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb2::create_speed_sprites, |x, y, cx| {
     cx.dpad.borrow().create_speed_sprites_hook.call(x + 5.0, y);
 });
 
@@ -29,7 +32,7 @@ impl Dpad {
         self.create_speed_sprites_hook.hook();
     }
 
-    pub fn on_pad_read(&self, statuses: *mut mkb::PADStatus, pref: &mut Pref) {
+    pub fn on_pad_read(&self, statuses: *mut mkb2::PADStatus, pref: &mut Pref) {
         unsafe {
             if !pref.get_bool(BoolPref::DpadControls) {
                 return;
@@ -37,14 +40,14 @@ impl Dpad {
 
             for i in 0..4 {
                 let status = statuses.add(i);
-                if (*status).err != mkb::PAD_ERR_NONE as mkb::PadError {
+                if (*status).err != mkb2::PAD_ERR_NONE as mkb2::PadError {
                     continue;
                 }
 
-                let up = (*status).button & mkb::PAD_BUTTON_UP as mkb::PadDigitalInput != 0;
-                let down = (*status).button & mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput != 0;
-                let left = (*status).button & mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput != 0;
-                let right = (*status).button & mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput != 0;
+                let up = (*status).button & mkb2::PAD_BUTTON_UP as mkb2::PadDigitalInput != 0;
+                let down = (*status).button & mkb2::PAD_BUTTON_DOWN as mkb2::PadDigitalInput != 0;
+                let left = (*status).button & mkb2::PAD_BUTTON_LEFT as mkb2::PadDigitalInput != 0;
+                let right = (*status).button & mkb2::PAD_BUTTON_RIGHT as mkb2::PadDigitalInput != 0;
 
                 let mut new_x = (*status).stickX as i32;
                 let mut new_y = (*status).stickY as i32;

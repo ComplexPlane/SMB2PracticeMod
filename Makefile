@@ -9,15 +9,25 @@ GCIPACK := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/gcipack/gcipack.py
 BANNERFILE := $(CURDIR)/images/banner_us.raw
 ICONFILE := $(CURDIR)/images/icon_us.raw
 
-CARGO_BASE := -Z build-std=core,alloc,panic_abort -Z build-std-features=panic_immediate_abort --target powerpc-unknown-eabi.json --release
+CARGO_BASE := -Z build-std=core,alloc,panic_abort -Z build-std-features=panic_immediate_abort --target powerpc-unknown-eabi.json --release --no-default-features
 RUSTFLAGS := -Zlocation-detail=none -Zfmt-debug=none
 LINKER_FLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
-all: SMB2PracticeMod.gci
+all: mkb1 mkb2
+
+mkb1: GAME_CODE := "GMBE8P"
+mkb1: CARGO_FEATURES := "mkb1"
+mkb1: SYMBOLS_FILE := "$(CURDIR)/src/mkb1/supermonkeyball.lst"
+mkb1: SMB1PracticeMod.gci
+
+mkb2: GAME_CODE := "GM2E8P"
+mkb2: CARGO_FEATURES := "mkb2"
+mkb2: SYMBOLS_FILE := "$(CURDIR)/src/mkb2/mkb2.us.lst"
+mkb2: SMB2PracticeMod.gci
 
 debug: RUSTFLAGS := ""
-debug: CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release
-debug: SMB2PracticeMod.gci
+debug: CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release --no-default-features
+debug: mkb1 mkb2
 
 .PHONY: elf2rel
 elf2rel:
@@ -26,18 +36,20 @@ elf2rel:
 	cd $(ELF2REL_BUILD) && cmake ..
 	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 
-.PHONY: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
-$(RUST_BUILD_DIR)/libsmb2_practice_mod.a:
-	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly build $(CARGO_BASE)
+.PHONY: %.a
+%.a:
+	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly build $(CARGO_BASE) --features $(CARGO_FEATURES)
+	@mv $(RUST_BUILD_DIR)/libsmb2_practice_mod.a $@
 
-SMB2PracticeMod.elf: $(RUST_BUILD_DIR)/libsmb2_practice_mod.a
+%.elf: %.a
 	@$(DEVKITPPC)/bin/powerpc-eabi-gcc $(LINKER_FLAGS) -o $@ $<
 
-SMB2PracticeMod.rel: elf2rel SMB2PracticeMod.elf
-	@$(ELF2REL) SMB2PracticeMod.elf -s $(CURDIR)/src/mkb2.us.lst --rel-version 2 --rel-id 101
+.PRECIOUS: %.rel # I like to keep an eye on exact REL sizes
+%.rel: %.elf elf2rel
+	@$(ELF2REL) $< -s $(SYMBOLS_FILE) --rel-version 2 --rel-id 101
 
-SMB2PracticeMod.gci: SMB2PracticeMod.rel
-	@python3 $(GCIPACK) $< rel "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
+%.gci: %.rel
+	@python3 $(GCIPACK) $< rel "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) $(GAME_CODE)
 
 .PHONY: fix
 fix:
@@ -46,6 +58,6 @@ fix:
 .PHONY: clean
 clean:
 	@cargo clean
-	@rm -f SMB2PracticeMod.elf SMB2PracticeMod.rel SMB2PracticeMod.gci
+	@rm -f *.elf *.rel *.gci
 	@rm -rf $(ELF2REL_BUILD)
 	@rm -rf $(CURDIR)/build

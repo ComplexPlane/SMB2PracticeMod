@@ -1,5 +1,8 @@
+#![cfg(feature = "mkb2")]
+
 use arrayvec::ArrayString;
 
+use crate::mkb2::mkb2;
 use crate::mods::cmseg::{CmSeg, Seg};
 use crate::mods::gotostory::GoToStory;
 use crate::mods::stage_edits::StageEdits;
@@ -8,7 +11,7 @@ use crate::mods::validate::Validate;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
-use crate::{cstr_buf, fmt_buf, mkb};
+use crate::{cstr_buf, fmt_buf};
 
 use super::binds::Binds;
 use super::draw::{self, Draw};
@@ -42,7 +45,7 @@ pub enum Widget {
     },
     ColoredText {
         label: &'static str,
-        color: mkb::GXColor,
+        color: mkb2::GXColor,
     },
     Header {
         label: &'static str,
@@ -310,15 +313,15 @@ static IL_BATTLE_WIDGETS: &[Widget] = &[
 ];
 
 fn rumble_get(controller_idx: usize) -> bool {
-    unsafe { mkb::rumble_enabled_bitflag & (1 << controller_idx) != 0 }
+    unsafe { mkb2::rumble_enabled_bitflag & (1 << controller_idx) != 0 }
 }
 
 fn rumble_set(controller_idx: usize, value: bool) {
     unsafe {
         if value {
-            mkb::rumble_enabled_bitflag |= 1 << controller_idx;
+            mkb2::rumble_enabled_bitflag |= 1 << controller_idx;
         } else {
-            mkb::rumble_enabled_bitflag &= !(1 << controller_idx);
+            mkb2::rumble_enabled_bitflag &= !(1 << controller_idx);
         }
     }
 }

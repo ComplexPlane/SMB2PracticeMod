@@ -1,10 +1,11 @@
-use crate::{app::AppContext, hook};
+#![cfg(feature = "mkb2")]
+
+use crate::{app::AppContext, hook, mkb2::mkb2};
 use core::ffi::c_int;
 
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    mkb,
     systems::pref::{BoolPref, Pref, U8Pref},
     utils::{math::fabs, patch},
 };
@@ -28,14 +29,14 @@ enum TimerType {
     CountUpwards,
 }
 
-hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball, cx| {
+hook!(DidBallFalloutHook, ball: *mut mkb2::Ball => c_int, mkb2::did_ball_fallout, |ball, cx| {
     let orig_result = cx.fallout.borrow().did_ball_fallout_hook.call(ball);
     cx.fallout.borrow_mut().on_did_ball_fallout(ball, orig_result, &mut cx.pref.borrow_mut())
 });
 
 // Chained hook. The possibility of the hook's instructions moving during initialization prevents
 // per-module hooks for now
-hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb2::load_stagedef, |stage_id, cx| {
     let mut fallout = cx.fallout.borrow_mut();
     // Set the current default values before loading the stagedef
     unsafe {
@@ -109,7 +110,7 @@ impl Fallout {
                     // time over at -60 frames (so timer is able to stop at 0.00)
                     patch::write_word(0x80297548 as *mut usize, 0x2c00ffa0);
 
-                    if mkb::mode_info.stage_time_frames_remaining <= 0 {
+                    if mkb2::mode_info.stage_time_frames_remaining <= 0 {
                         // when timer hits 0, add 0 to timer each frame
                         patch::write_word(0x80297534 as *mut usize, 0x38030000);
                     } else {
@@ -119,14 +120,14 @@ impl Fallout {
                 }
 
                 TimerType::CountUpwards => {
-                    if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
-                        mkb::mode_info.stage_time_frames_remaining = 0;
+                    if mkb2::sub_mode == mkb2::SMD_GAME_READY_INIT {
+                        mkb2::mode_info.stage_time_frames_remaining = 0;
                     }
                     // time over at -60 frames (so timer is able to stop at 0.00)
                     patch::write_word(0x80297548 as *mut usize, 0x2c00ffa0);
 
                     // getting close to signed integer overflow, freeze timer to prevent time-over
-                    if mkb::mode_info.stage_time_frames_remaining >= 32400 {
+                    if mkb2::mode_info.stage_time_frames_remaining >= 32400 {
                         // add 0 to timer each frame
                         patch::write_word(0x80297534 as *mut usize, 0x38030000);
                     } else {
@@ -140,12 +141,12 @@ impl Fallout {
 
     pub fn on_did_ball_fallout(
         &self,
-        ball: *mut mkb::Ball,
+        ball: *mut mkb2::Ball,
         orig_result: c_int,
         pref: &mut Pref,
     ) -> c_int {
         unsafe {
-            let below_fallout = (*ball).pos.y < (*(*mkb::stagedef).fallout).y;
+            let below_fallout = (*ball).pos.y < (*(*mkb2::stagedef).fallout).y;
             let volumes_disabled = pref.get_bool(BoolPref::DisableFalloutVolumes);
             let plane_type =
                 FalloutPlaneType::try_from(pref.get_u8(U8Pref::FalloutPlaneType)).unwrap();

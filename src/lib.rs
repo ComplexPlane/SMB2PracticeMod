@@ -7,19 +7,18 @@ extern crate alloc;
 
 mod app;
 mod asm;
-#[allow(dead_code)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod mkb;
-mod mkb_suppl;
+mod mkb1;
+mod mkb2;
 mod mods;
+mod platform;
 mod systems;
 mod utils;
 
+#[cfg(feature = "mkb2")]
 use crate::utils::patch;
 
 use core::{
+    alloc::{GlobalAlloc, Layout},
     ffi::{c_char, c_void},
     panic::PanicInfo,
     ptr::addr_of,
@@ -64,6 +63,7 @@ extern "C" fn _epilog() {}
 extern "C" fn _unresolved() {}
 
 unsafe fn init() {
+    #[cfg(feature = "mkb2")]
     perform_assembly_patches();
     app::init();
 
@@ -74,6 +74,7 @@ unsafe extern "C" fn tick() {
     app::tick();
 }
 
+#[cfg(feature = "mkb2")]
 unsafe fn perform_assembly_patches() {
     patch::write_branch_bl(0x80270718 as *mut usize, tick as *mut c_void);
 
@@ -99,6 +100,20 @@ unsafe fn perform_assembly_patches() {
         0x8032ad0c as *mut usize,
         addr_of!(asm::custom_titlescreen_text_color) as *mut c_void,
     );
+}
+
+struct DummyAllocator;
+
+#[cfg(feature = "mkb1")]
+#[global_allocator]
+static ALLOCATOR: DummyAllocator = DummyAllocator;
+
+unsafe impl GlobalAlloc for DummyAllocator {
+    unsafe fn alloc(&self, _layout: Layout) -> *mut u8 {
+        core::ptr::null_mut()
+    }
+
+    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {}
 }
 
 // We're never running multiple "threads" or hooking interrupts, so establishing a critical section
