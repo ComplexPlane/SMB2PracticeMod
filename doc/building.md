@@ -84,5 +84,5 @@ To turn the Gecko code text into a .gct for use with Nintendont:
 - Get Gecko Code Manager: https://www.zeldacodes.org/downloads/code-manager
 - Use GMBE8P as the gamecode for SMB1, and GM2E8P for SMB2
 - Add a code, paste in the Gecko code,
-- Save modifications
-- Export to GCT
+- Store modifications
+- Check the box next to the code and export to GCT
