@@ -68,14 +68,11 @@ fn generate_git_hash() {
     println!("cargo:rustc-env=GIT_HASH={}", git_hash);
 }
 
-fn generate_bindings() {
+fn get_base_bindgen_builder() -> bindgen::Builder {
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
-    let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
-        .header("src/mkb2/mkb2_ghidra.h")
+    bindgen::Builder::default()
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
@@ -88,7 +85,53 @@ fn generate_bindings() {
         .layout_tests(false)
         // Clean up some redundant noise in the output.
         .merge_extern_blocks(true)
+}
+
+fn generate_mkb1_bindings() {
+    let mut builder = get_base_bindgen_builder();
+
+    // Find all .h files
+    for entry in std::fs::read_dir("3rdparty/smb-decomp/src").unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if path
+            .file_name()
+            .map_or(true, |n| n == "rel_sample.c" || n == "sel_stage_rel.c")
+        {
+            continue;
+        }
+        if path
+            .extension()
+            .map_or(true, |ext| ext != "h" && ext != "c")
+        {
+            continue;
+        }
+        builder = builder.header(path.to_str().unwrap());
+    }
+
+    let bindings = builder
+        .clang_args([
+            "-I3rdparty/smb-decomp/include",
+            "-DC_ONLY",
+            "-DNONMATCHING",
+            // Treat all .c files as header files so their definitions are included in bindings
+            "-x",
+            "c-header",
+        ])
         // Finish the builder and generate the bindings.
+        .generate()
+        // Unwrap the Result and panic on failure.
+        .expect("Unable to generate bindings");
+
+    // Write the bindings to the $OUT_DIR/bindings.rs file.
+    bindings
+        .write_to_file("src/mkb1/mkb1.rs")
+        .expect("Couldn't write bindings!");
+}
+
+fn generate_mkb2_bindings() {
+    let bindings = get_base_bindgen_builder()
+        .header("src/mkb2/mkb2_ghidra.h")
         .generate()
         // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
@@ -101,7 +144,8 @@ fn generate_bindings() {
 
 fn main() {
     generate_git_hash();
-    generate_bindings();
+    generate_mkb1_bindings();
+    generate_mkb2_bindings();
 
     println!("cargo::rerun-if-changed={}", MKB1_MAP);
     let map_path = Path::new(MKB1_MAP);

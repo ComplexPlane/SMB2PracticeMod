@@ -2,3 +2,6 @@
 [submodule "3rdparty/ttyd-tools"]
 	path = 3rdparty/ttyd-tools
 	url = https://github.com/ComplexPlane/ttyd-tools.git
+[submodule "3rdparty/smb-decomp"]
+	path = 3rdparty/smb-decomp
+	url = https://github.com/ComplexPlane/smb-decomp.git
