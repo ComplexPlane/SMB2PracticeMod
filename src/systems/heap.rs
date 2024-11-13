@@ -2,7 +2,6 @@
 
 extern crate alloc;
 
-use core::alloc::Layout;
 use core::{alloc::GlobalAlloc, cell::UnsafeCell, ptr::null_mut};
 
 use crate::mkb2::mkb2;

@@ -56,7 +56,7 @@ elf2rel:
 
 .PHONY: fix
 fix:
-	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly fix $(CARGO_BASE) --allow-dirty
+	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly fix $(CARGO_BASE) --features mkb2 --allow-dirty
 
 .PHONY: clean
 clean:
