@@ -56,7 +56,7 @@ rustup component add rust-src --toolchain nightly
 ## Clone Source
 
 ```sh
-git clone https://github.com/ComplexPlane/SMB2PracticeMod.git
+git clone https://github.com/ComplexPlane/SMB2PracticeMod.git --recursive
 cd SMB2PracticeMod
 ```
 
