@@ -13,20 +13,24 @@ CARGO_BASE := -Z build-std=core,alloc,panic_abort -Z build-std-features=panic_im
 RUSTFLAGS := -Zlocation-detail=none -Zfmt-debug=none
 LINKER_FLAGS := -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
+.PHONY: all
 all: mkb1 mkb2
 
 mkb1: GAME_CODE := "GMBE8P"
 mkb1: CARGO_FEATURES := "mkb1"
 mkb1: SYMBOLS_FILE := "$(CURDIR)/src/mkb1/supermonkeyball.lst"
+.PHONY: mkb1
 mkb1: SMB1PracticeMod.gci
 
 mkb2: GAME_CODE := "GM2E8P"
 mkb2: CARGO_FEATURES := "mkb2"
 mkb2: SYMBOLS_FILE := "$(CURDIR)/src/mkb2/mkb2.us.lst"
+.PHONY: mkb2
 mkb2: SMB2PracticeMod.gci
 
 debug: RUSTFLAGS := ""
 debug: CARGO_BASE := -Z build-std=core,alloc --target powerpc-unknown-eabi.json --release --no-default-features
+.PHONY: debug
 debug: mkb1 mkb2
 
 .PHONY: elf2rel
@@ -36,7 +40,6 @@ elf2rel:
 	cd $(ELF2REL_BUILD) && cmake ..
 	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
 
-.PHONY: %.a
 %.a:
 	RUSTFLAGS="$(RUSTFLAGS)" cargo +nightly build $(CARGO_BASE) --features $(CARGO_FEATURES)
 	@mv $(RUST_BUILD_DIR)/libsmb2_practice_mod.a $@
