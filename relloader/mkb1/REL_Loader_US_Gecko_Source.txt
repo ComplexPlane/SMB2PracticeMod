@@ -1,7 +1,8 @@
 # Original code created by PistonMiner and Zephiles for Paper Mario: The Thousand-Year Door
 # Code ported to Super Monkey Ball by Zephiles
 
-# 800068E8 - Address to hook for this code
+# Gamecode: GMBE8P
+# Insertion address: 800068E8
 
 # Set global function/variable/offset locations/values
 .set HEAP_HANDLE_OFFSET,-0x66B4
@@ -37,7 +38,7 @@ ori r26,r26,0x4240 # Check 1,000,000 times
 checkForMemoryCardLoop:
 ori r3,r30,CARDProbeEx@l
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 li r4,0 # Pointer to the Memory Size (Not needed, so NULL)
 li r5,0 # Pointer to the Sector Size (Not needed, so NULL)
 blrl
@@ -55,7 +56,7 @@ bne- exit
 # Mount the Memory Card
 ori r3,r30,CARDMount@l
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 lis r4,MEMCARD_WORK_AREA@h
 ori r4,r4,MEMCARD_WORK_AREA@l
 li r5,0 # Detach Callback function (Want to avoid using, so NULL)
@@ -73,7 +74,7 @@ mr r26,r3
 # Open the file
 ori r3,r30,CARDOpen@l
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 ori r4,r28,INTERNAL_FILENAME_LOCATION@l
 mr r5,r26 # Pointer to CardFileInfo
 blrl
@@ -206,7 +207,7 @@ mflr r14
 finishAsyncFunctionLoop:
 ori r3,r30,CARDGetResultCode@l
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 blrl
 cmpwi r3,-1 # CARD_RESULT_BUSY
 beq+ finishAsyncFunctionLoop
@@ -240,7 +241,7 @@ bl freeMemory
 # Unmount the Memory Card
 ori r3,r30,CARDUnmount@l
 mtlr r3
-li r3,0 # Memory Card Slot A
+li r3,1 # Memory Card Slot B
 blrl
 
 # Run the REL Prolog if the load was successful

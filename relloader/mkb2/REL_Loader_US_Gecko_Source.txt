@@ -1,25 +1,12 @@
-# 80006D0C - Address to hook for this code
-
-# HOW TO BUILD ME:
-# 
-# To turn into a Gecko code:
-# - Get CodeWrite: https://github.com/TheGag96/CodeWrite
-# - Use 80006D0C as insertion address
-# - Paste in asm and generate Gecko code
-# - Prepend this line to generated Gecko code: 040044C0 72656C00
-#
-# To turn into a .gct for use with Nintendont:
-# - Build Gecko code with CodeWrite like above
-# - Get Gecko Code Manager: https://www.zeldacodes.org/downloads/code-manager
-# - Set GM2E8P gamecode
-# - Add a code, paste in Gecko, save modifications, export to GCT
+# Gamecode: GM2E8P
+# Insertion address: 80006D0C
 
 # SMB2 Workshop Mod writes a ModLink struct to 0x800a9cb4 after it loads.
 #
 # ModLink format:
 #
 # 0x0:  u32 magic; // 0xFEEDC0DE
-# 0x4:  u16 modlink_semver_major; 
+# 0x4:  u16 modlink_semver_major;
 # 0x6:  u16 modlink_semver_minor;
 # 0x8:  u16 modlink_semver_patch;
 # 0xA:  u16 wsmod_semver_major;
@@ -78,7 +65,7 @@ bne- exit
 # Back up the current Arena Low
 lwz r25,-0x7f50(r13) # Arena Low
 
-# Allocate memory for the CARDMount work area, CardFileInfo, 
+# Allocate memory for the CARDMount work area, CardFileInfo,
 # and the initial 0x200 bytes for reading from the memory card
 ori r3,r27,0xa220
 bl allocateFromArenaLow

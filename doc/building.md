@@ -60,10 +60,29 @@ git clone https://github.com/ComplexPlane/SMB2PracticeMod.git --recursive
 cd SMB2PracticeMod
 ```
 
-## Build It
+## Build Main Binary
 
 Run one of:
 
 - `make`: Standard build that produces `SMB2PracticeMod.gci`.
 - `make debug`: Build that includes file/line/column panic debug information. This is very helpful for debugging crashes, but isn't the default as it significantly increases the binary size.
 - `make fix`: Auto-fix problems in the code like unused imports.
+
+## Build Gecko Codes
+
+Building the Gecko codes from source requires using some Windows programs. Please tell me if you know of another way.
+
+To generate the Gecko code text:
+
+- Get CodeWrite: https://github.com/TheGag96/CodeWrite
+- Use the insertion address noted at the top of the Gecko source
+- Paste in the assembly and generate Gecko code
+- Prepend this line to generated code: `040044C0 72656C00`
+
+To turn the Gecko code text into a .gct for use with Nintendont:
+
+- Get Gecko Code Manager: https://www.zeldacodes.org/downloads/code-manager
+- Use GMBE8P as the gamecode for SMB1, and GM2E8P for SMB2
+- Add a code, paste in the Gecko code,
+- Save modifications
+- Export to GCT
