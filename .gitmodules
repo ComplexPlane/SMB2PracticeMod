@@ -1,1 +1,4 @@
 
+[submodule "3rdparty/ttyd-tools"]
+	path = 3rdparty/ttyd-tools
+	url = https://github.com/ComplexPlane/ttyd-tools.git
