@@ -1,4 +1,52 @@
+use std::path::Path;
 use std::process::Command;
+
+use std::fs::File;
+use std::io::{BufRead, BufReader, BufWriter, Write};
+
+const SYMBOL_SECTIONS: [&str; 8] = [
+    ".text", ".rodata", ".data", ".bss", ".sdata", ".sbss", ".sdata2", ".sbss2",
+];
+
+const MKB1_MAP: &str = "src/mkb1/supermonkeyball.map";
+
+fn convert_smb1_symbol_map(in_path: &Path, out_path: &Path) {
+    let in_file = File::open(in_path).unwrap();
+    let mut in_file = BufReader::new(in_file);
+    let out_file = File::create(out_path).unwrap();
+    let mut out_file = BufWriter::new(out_file);
+
+    let mut line = String::new();
+    let mut last_section_line = String::new();
+    while {
+        line.clear();
+        in_file.read_line(&mut line).unwrap()
+    } > 0
+    {
+        if line.starts_with(".") {
+            last_section_line.clone_from(&line);
+        }
+
+        let first_word = last_section_line.split(" ").next().unwrap_or("");
+        if !SYMBOL_SECTIONS.contains(&first_word) {
+            continue;
+        }
+        let splits: Vec<&str> = line.split_whitespace().collect();
+        if splits.len() < 5 {
+            continue;
+        }
+        let addr = splits[2];
+        let mut symbol = splits[3];
+        if symbol.chars().all(|c| c.is_numeric()) {
+            symbol = splits[4];
+        }
+        if symbol.starts_with('@') || symbol.starts_with('.') {
+            continue;
+        }
+
+        writeln!(out_file, "{}:{}", addr, symbol).unwrap();
+    }
+}
 
 fn generate_git_hash() {
     let output = Command::new("git")
@@ -54,4 +102,9 @@ fn generate_bindings() {
 fn main() {
     generate_git_hash();
     generate_bindings();
+
+    println!("cargo::rerun-if-changed={}", MKB1_MAP);
+    let map_path = Path::new(MKB1_MAP);
+    let lst_path = map_path.with_extension("lst");
+    convert_smb1_symbol_map(map_path, &lst_path);
 }
