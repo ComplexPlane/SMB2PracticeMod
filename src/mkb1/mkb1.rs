@@ -355,6 +355,155 @@ pub const RAND_MAX: u32 = 32767;
 pub const TEXTBOX_FONT_SIZE: u32 = 24;
 pub const XF_AMBIENT0_ID: u32 = 4106;
 pub const XF_MATERIAL0_ID: u32 = 4108;
+pub const GX_GENMODE_ID: u32 = 0;
+pub const GX_GENMODE_REG_ID_SIZE: u32 = 8;
+pub const GX_GENMODE_REG_ID_SHIFT: u32 = 24;
+pub const GX_GENMODE_REG_ID_MASK: u32 = 4278190080;
+pub const GX_BPMASK_ID: u32 = 15;
+pub const GX_BPMASK_REG_ID_SIZE: u32 = 8;
+pub const GX_BPMASK_REG_ID_SHIFT: u32 = 24;
+pub const GX_BPMASK_REG_ID_MASK: u32 = 4278190080;
+pub const GX_LPSIZE_ID: u32 = 34;
+pub const GX_LPSIZE_REG_ID_SIZE: u32 = 8;
+pub const GX_LPSIZE_REG_ID_SHIFT: u32 = 24;
+pub const GX_LPSIZE_REG_ID_MASK: u32 = 4278190080;
+pub const TEV_COLOR_ENV_REG_ID_SIZE: u32 = 8;
+pub const TEV_COLOR_ENV_REG_ID_SHIFT: u32 = 24;
+pub const TEV_COLOR_ENV_REG_ID_MASK: u32 = 4278190080;
+pub const TEV_ALPHA_ENV_REG_ID_SIZE: u32 = 8;
+pub const TEV_ALPHA_ENV_REG_ID_SHIFT: u32 = 24;
+pub const TEV_ALPHA_ENV_REG_ID_MASK: u32 = 4278190080;
+pub const TEV_COLOR_ENV_0_ID: u32 = 192;
+pub const TEV_ALPHA_ENV_0_ID: u32 = 193;
+pub const TEV_COLOR_ENV_1_ID: u32 = 194;
+pub const TEV_ALPHA_ENV_1_ID: u32 = 195;
+pub const TEV_COLOR_ENV_2_ID: u32 = 196;
+pub const TEV_ALPHA_ENV_2_ID: u32 = 197;
+pub const TEV_COLOR_ENV_3_ID: u32 = 198;
+pub const TEV_ALPHA_ENV_3_ID: u32 = 199;
+pub const TEV_COLOR_ENV_4_ID: u32 = 200;
+pub const TEV_ALPHA_ENV_4_ID: u32 = 201;
+pub const TEV_COLOR_ENV_5_ID: u32 = 202;
+pub const TEV_ALPHA_ENV_5_ID: u32 = 203;
+pub const TEV_COLOR_ENV_6_ID: u32 = 204;
+pub const TEV_ALPHA_ENV_6_ID: u32 = 205;
+pub const TEV_COLOR_ENV_7_ID: u32 = 206;
+pub const TEV_ALPHA_ENV_7_ID: u32 = 207;
+pub const TEV_COLOR_ENV_8_ID: u32 = 208;
+pub const TEV_ALPHA_ENV_8_ID: u32 = 209;
+pub const TEV_COLOR_ENV_9_ID: u32 = 210;
+pub const TEV_ALPHA_ENV_9_ID: u32 = 211;
+pub const TEV_COLOR_ENV_A_ID: u32 = 212;
+pub const TEV_ALPHA_ENV_A_ID: u32 = 213;
+pub const TEV_COLOR_ENV_B_ID: u32 = 214;
+pub const TEV_ALPHA_ENV_B_ID: u32 = 215;
+pub const TEV_COLOR_ENV_C_ID: u32 = 216;
+pub const TEV_ALPHA_ENV_C_ID: u32 = 217;
+pub const TEV_COLOR_ENV_D_ID: u32 = 218;
+pub const TEV_ALPHA_ENV_D_ID: u32 = 219;
+pub const TEV_COLOR_ENV_E_ID: u32 = 220;
+pub const TEV_ALPHA_ENV_E_ID: u32 = 221;
+pub const TEV_COLOR_ENV_F_ID: u32 = 222;
+pub const TEV_ALPHA_ENV_F_ID: u32 = 223;
+pub const TEV_KSEL_REG_ID_SIZE: u32 = 8;
+pub const TEV_KSEL_REG_ID_SHIFT: u32 = 24;
+pub const TEV_KSEL_REG_ID_MASK: u32 = 4278190080;
+pub const TEV_KSEL_0_ID: u32 = 246;
+pub const TEV_KSEL_1_ID: u32 = 247;
+pub const TEV_KSEL_2_ID: u32 = 248;
+pub const TEV_KSEL_3_ID: u32 = 249;
+pub const TEV_KSEL_4_ID: u32 = 250;
+pub const TEV_KSEL_5_ID: u32 = 251;
+pub const TEV_KSEL_6_ID: u32 = 252;
+pub const TEV_KSEL_7_ID: u32 = 253;
+pub const RAS_IREF_ID: u32 = 39;
+pub const RAS_IREF_REG_ID_SIZE: u32 = 8;
+pub const RAS_IREF_REG_ID_SHIFT: u32 = 24;
+pub const RAS_IREF_REG_ID_MASK: u32 = 4278190080;
+pub const RAS_TREF0_ID: u32 = 40;
+pub const RAS_TREF_REG_ID_SIZE: u32 = 8;
+pub const RAS_TREF_REG_ID_SHIFT: u32 = 24;
+pub const RAS_TREF_REG_ID_MASK: u32 = 4278190080;
+pub const SU_TS0_REG_ID_SIZE: u32 = 8;
+pub const SU_TS0_REG_ID_SHIFT: u32 = 24;
+pub const SU_TS0_REG_ID_MASK: u32 = 4278190080;
+pub const SU_TS1_REG_ID_SIZE: u32 = 8;
+pub const SU_TS1_REG_ID_SHIFT: u32 = 24;
+pub const SU_TS1_REG_ID_MASK: u32 = 4278190080;
+pub const SU_SCIS0_ID: u32 = 32;
+pub const SU_SCIS1_ID: u32 = 33;
+pub const SU_SCIS0_REG_ID_SIZE: u32 = 8;
+pub const SU_SCIS0_REG_ID_SHIFT: u32 = 24;
+pub const SU_SCIS0_REG_ID_MASK: u32 = 4278190080;
+pub const SU_SCIS1_REG_ID_SIZE: u32 = 8;
+pub const SU_SCIS1_REG_ID_SHIFT: u32 = 24;
+pub const SU_SCIS1_REG_ID_MASK: u32 = 4278190080;
+pub const SU_SSIZE0_ID: u32 = 48;
+pub const SU_TSIZE0_ID: u32 = 49;
+pub const SU_SSIZE1_ID: u32 = 50;
+pub const SU_TSIZE1_ID: u32 = 51;
+pub const SU_SSIZE2_ID: u32 = 52;
+pub const SU_TSIZE2_ID: u32 = 53;
+pub const SU_SSIZE3_ID: u32 = 54;
+pub const SU_TSIZE3_ID: u32 = 55;
+pub const SU_SSIZE4_ID: u32 = 56;
+pub const SU_TSIZE4_ID: u32 = 57;
+pub const SU_SSIZE5_ID: u32 = 58;
+pub const SU_TSIZE5_ID: u32 = 59;
+pub const SU_SSIZE6_ID: u32 = 60;
+pub const SU_TSIZE6_ID: u32 = 61;
+pub const SU_SSIZE7_ID: u32 = 62;
+pub const SU_TSIZE7_ID: u32 = 63;
+pub const GX_ZMODE_ID: u32 = 64;
+pub const GX_ZMODE_REG_ID_SIZE: u32 = 8;
+pub const GX_ZMODE_REG_ID_SHIFT: u32 = 24;
+pub const GX_ZMODE_REG_ID_MASK: u32 = 4278190080;
+pub const GX_CMODE0_ID: u32 = 65;
+pub const GX_CMODE0_REG_ID_SIZE: u32 = 8;
+pub const GX_CMODE0_REG_ID_SHIFT: u32 = 24;
+pub const GX_CMODE0_REG_ID_MASK: u32 = 4278190080;
+pub const GX_CMODE1_ID: u32 = 66;
+pub const GX_CMODE1_REG_ID_SIZE: u32 = 8;
+pub const GX_CMODE1_REG_ID_SHIFT: u32 = 24;
+pub const GX_CMODE1_REG_ID_MASK: u32 = 4278190080;
+pub const PE_CONTROL_ID: u32 = 67;
+pub const PE_CONTROL_REG_ID_SIZE: u32 = 8;
+pub const PE_CONTROL_REG_ID_SHIFT: u32 = 24;
+pub const PE_CONTROL_REG_ID_MASK: u32 = 4278190080;
+pub const PE_COPY_CMD_GAMMA_SIZE: u32 = 2;
+pub const PE_COPY_CMD_GAMMA_SHIFT: u32 = 7;
+pub const PE_COPY_CMD_GAMMA_MASK: u32 = 384;
+pub const GEN_MODE_REG_ID_SIZE: u32 = 8;
+pub const GEN_MODE_REG_ID_SHIFT: u32 = 24;
+pub const GEN_MODE_REG_ID_MASK: u32 = 4278190080;
+pub const GX_VAT_REG_A_UNK_SIZE: u32 = 1;
+pub const GX_VAT_REG_A_UNK_SHIFT: u32 = 30;
+pub const GX_VAT_REG_A_UNK_MASK: u32 = 1073741824;
+pub const GX_VAT_REG_B_UNK_SIZE: u32 = 1;
+pub const GX_VAT_REG_B_UNK_SHIFT: u32 = 31;
+pub const GX_VAT_REG_B_UNK_MASK: u32 = 2147483648;
+pub const GX_OPCODE_INDEX_SIZE: u32 = 3;
+pub const GX_OPCODE_INDEX_SHIFT: u32 = 0;
+pub const GX_OPCODE_INDEX_MASK: u32 = 7;
+pub const GX_OPCODE_CMD_SHIFT: u32 = 3;
+pub const CP_STREAM_REG_INDEX_SIZE: u32 = 4;
+pub const CP_STREAM_REG_INDEX_SHIFT: u32 = 0;
+pub const CP_STREAM_REG_INDEX_MASK: u32 = 15;
+pub const CP_STREAM_REG_ADDR_SIZE: u32 = 4;
+pub const CP_STREAM_REG_ADDR_SHIFT: u32 = 4;
+pub const CP_STREAM_REG_ADDR_MASK: u32 = 240;
+pub const PE_REFRESH_REG_ID_SIZE: u32 = 8;
+pub const PE_REFRESH_REG_ID_SHIFT: u32 = 24;
+pub const PE_REFRESH_REG_ID_MASK: u32 = 4278190080;
+pub const PE_REFRESH_INTERVAL_SHIFT: u32 = 0;
+pub const PE_REFRESH_ENABLE_SHIFT: u32 = 9;
+pub const PE_REFRESH_TOTAL_SIZE: u32 = 32;
+pub const TX_REFRESH_REG_ID_SIZE: u32 = 8;
+pub const TX_REFRESH_REG_ID_SHIFT: u32 = 24;
+pub const TX_REFRESH_REG_ID_MASK: u32 = 4278190080;
+pub const TX_REFRESH_INTERVAL_SHIFT: u32 = 0;
+pub const TX_REFRESH_ENABLE_SHIFT: u32 = 10;
+pub const TX_REFRESH_TOTAL_SIZE: u32 = 32;
 pub const ALL_THREAD_MASK: u32 = 16777215;
 pub const NAN: f64 = f64::NAN;
 pub const HUGE_VALF: f64 = f64::INFINITY;
@@ -415,6 +564,44 @@ pub const SCREEN_ROWS: u32 = 37;
 pub const SCREEN_COLUMNS: u32 = 53;
 pub const RANGE_NOMIN: u32 = 1;
 pub const RANGE_NOMAX: u32 = 2;
+pub const ALIGNMENT: u32 = 32;
+pub const MINOBJSIZE: u32 = 64;
+pub const CARD_ATTR_PUBLIC: u32 = 4;
+pub const CARD_ATTR_NO_COPY: u32 = 8;
+pub const CARD_ATTR_NO_MOVE: u32 = 16;
+pub const CARD_ATTR_GLOBAL: u32 = 32;
+pub const CARD_ATTR_COMPANY: u32 = 64;
+pub const CARD_FAT_AVAIL: u32 = 0;
+pub const CARD_FAT_CHECKSUM: u32 = 0;
+pub const CARD_FAT_CHECKSUMINV: u32 = 1;
+pub const CARD_FAT_CHECKCODE: u32 = 2;
+pub const CARD_FAT_FREEBLOCKS: u32 = 3;
+pub const CARD_FAT_LASTSLOT: u32 = 4;
+pub const CARD_WORKAREA_SIZE: u32 = 40960;
+pub const CARD_SEG_SIZE: u32 = 512;
+pub const CARD_PAGE_SIZE: u32 = 128;
+pub const CARD_NUM_SYSTEM_BLOCK: u32 = 5;
+pub const CARD_SYSTEM_BLOCK_SIZE: u32 = 8192;
+pub const CARD_MAX_MOUNT_STEP: u32 = 7;
+pub const CARD_STAT_SPEED_END: u32 = 0;
+pub const CARD_STAT_SPEED_FAST: u32 = 1;
+pub const CARD_STAT_SPEED_MIDDLE: u32 = 2;
+pub const CARD_STAT_SPEED_SLOW: u32 = 3;
+pub const CARD_STAT_SPEED_MASK: u32 = 3;
+pub const CARD_READ_SIZE: u32 = 512;
+pub const CARD_COMMENT_SIZE: u32 = 64;
+pub const CARD_ICON_WIDTH: u32 = 32;
+pub const CARD_ICON_HEIGHT: u32 = 32;
+pub const CARD_BANNER_WIDTH: u32 = 96;
+pub const CARD_BANNER_HEIGHT: u32 = 32;
+pub const CARD_STAT_ICON_NONE: u32 = 0;
+pub const CARD_STAT_ICON_C8: u32 = 1;
+pub const CARD_STAT_ICON_RGB5A3: u32 = 2;
+pub const CARD_STAT_ICON_MASK: u32 = 3;
+pub const CARD_STAT_BANNER_NONE: u32 = 0;
+pub const CARD_STAT_BANNER_C8: u32 = 1;
+pub const CARD_STAT_BANNER_RGB5A3: u32 = 2;
+pub const CARD_STAT_BANNER_MASK: u32 = 3;
 pub type va_list = __builtin_va_list;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -6895,6 +7082,105 @@ impl Default for OrdTblNode {
         }
     }
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct GX {
+    pub vNum: u16_,
+    pub unk2: u16_,
+    pub unk4: u32_,
+    pub unk8: u32_,
+    pub unkC: u32_,
+    pub unk10: u32_,
+    pub filler14: [u8_; 8usize],
+    pub vatA: [u32_; 8usize],
+    pub vatB: [u32_; 8usize],
+    pub filler5C: [u8_; 32usize],
+    pub lpSize: u32_,
+    pub unk80: u32_,
+    pub unk84: u32_,
+    pub filler88: [u8_; 32usize],
+    pub unkA8: [u32_; 2usize],
+    pub unkB0: [u32_; 2usize],
+    pub suTs0: [u32_; 8usize],
+    pub suTs1: [u32_; 8usize],
+    pub suScis0: u32_,
+    pub suScis1: u32_,
+    pub tref: [u32_; 8usize],
+    pub iref: u32_,
+    pub bpMask: u32_,
+    pub filler128: [u8_; 8usize],
+    pub tevc: [u32_; 16usize],
+    pub teva: [u32_; 16usize],
+    pub tevKsel: [u32_; 8usize],
+    pub cmode0: u32_,
+    pub cmode1: u32_,
+    pub zmode: u32_,
+    pub peCtrl: u32_,
+    pub filler1E0: [u8_; 28usize],
+    pub cpTex: u32_,
+    pub filler200: [u8_; 4usize],
+    pub genMode: u32_,
+    pub TexRegions: [GXTexRegion; 8usize],
+    pub TexRegionsCI: [GXTexRegion; 4usize],
+    pub nextTexRgn: u32_,
+    pub nextTexRgnCI: u32_,
+    pub TlutRegions: [GXTlutRegion; 20usize],
+    pub filler410: [u8_; 16usize],
+    pub unk420: u32_,
+    pub unk424: f32_,
+    pub unk428: f32_,
+    pub unk42C: f32_,
+    pub unk430: f32_,
+    pub unk434: f32_,
+    pub unk438: f32_,
+    pub unk43C: f32_,
+    pub unk440: f32_,
+    pub unk444: f32_,
+    pub unk448: f32_,
+    pub unk44C: f32_,
+    pub unk450: f32_,
+    pub unk454: u8_,
+    pub unk458: f32_,
+    pub filler45C: [u8_; 64usize],
+    pub texmapId: [u32_; 16usize],
+    pub tcsManEnab: u32_,
+    pub filler4E0: [u8_; 12usize],
+    pub inDispList: u8_,
+    pub dlSaveContext: u8_,
+    pub dirtyVAT: u8_,
+    pub dirtyState: u32_,
+}
+impl Default for GX {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __GXFifoObj {
+    pub base: *mut ::core::ffi::c_void,
+    pub end: *mut ::core::ffi::c_void,
+    pub size: u32_,
+    pub hiWaterMark: u32_,
+    pub loWaterMark: u32_,
+    pub readPtr: *mut ::core::ffi::c_void,
+    pub writePtr: *mut ::core::ffi::c_void,
+    pub unk1C: s32,
+    pub filler20: [u8_; 4usize],
+}
+impl Default for __GXFifoObj {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const invalidModelName: &[u8; 14] = b"Invalid Model\0";
 pub const TEVMATCACHE_CHAN_CONFIG_NULL: _bindgen_ty_50 = 0;
 pub const TEVMATCACHE_CHAN_CONFIG_UNLIT: _bindgen_ty_50 = 1;
@@ -9884,6 +10170,188 @@ impl Default for WindowDesc {
     }
 }
 pub const lbl_802F0980: u32_ = 32;
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct OSSram {
+    pub checkSum: u16_,
+    pub checkSumInv: u16_,
+    pub ead0: u32_,
+    pub ead1: u32_,
+    pub counterBias: u32_,
+    pub displayOffsetH: s8,
+    pub ntd: u8_,
+    pub language: u8_,
+    pub flags: u8_,
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct OSSramEx {
+    pub flashID: [[u8_; 12usize]; 2usize],
+    pub wirelessKeyboardID: u32_,
+    pub wirelessPadID: [u16_; 4usize],
+    pub dvdErrorCode: u8_,
+    pub _padding0: u8_,
+    pub flashIDCheckSum: [u8_; 2usize],
+    pub gbs: u16_,
+    pub _padding1: [u8_; 2usize],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct HeapCell {
+    pub prev: *mut HeapCell,
+    pub next: *mut HeapCell,
+    pub size: u32_,
+}
+impl Default for HeapCell {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Heap {
+    pub size: s32,
+    pub free: *mut HeapCell,
+    pub allocated: *mut HeapCell,
+}
+impl Default for Heap {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CARDID {
+    pub serial: [u8_; 32usize],
+    pub deviceID: u16_,
+    pub size: u16_,
+    pub encode: u16_,
+    pub padding: [u8_; 470usize],
+    pub checkSum: u16_,
+    pub checkSumInv: u16_,
+}
+impl Default for CARDID {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CARDDirCheck {
+    pub padding0: [u8_; 56usize],
+    pub padding1: u16_,
+    pub checkCode: s16,
+    pub checkSum: u16_,
+    pub checkSumInv: u16_,
+}
+impl Default for CARDDirCheck {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+pub type EXICallback =
+    ::core::option::Option<unsafe extern "C" fn(chan: s32, context: *mut OSContext)>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct DecodeParameters {
+    pub inputAddr: *mut u8_,
+    pub inputLength: u32_,
+    pub aramAddr: u32_,
+    pub outputAddr: *mut u8_,
+}
+impl Default for DecodeParameters {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct bb2struct {
+    pub _00: u32_,
+    pub _04: u32_,
+    pub _08: s32,
+    pub FSTMaxLength: u32_,
+    pub FSTLocationInRam: *mut ::core::ffi::c_void,
+}
+impl Default for bb2struct {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct DiskInfo {
+    pub diskId: DVDDiskID,
+    pub filler20: [u8_; 24usize],
+    pub FSTLocationInRam: *mut ::core::ffi::c_void,
+    pub FSTMaxLength: u32_,
+}
+impl Default for DiskInfo {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct DVDQueue_sub {
+    pub unk0: *mut DVDQueue_sub,
+    pub unk4: *mut DVDQueue_sub,
+}
+impl Default for DVDQueue_sub {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct __GXLightObj {
+    pub filler0: [u8_; 12usize],
+    pub color: u32_,
+    pub unk10: f32_,
+    pub unk14: f32_,
+    pub unk18: f32_,
+    pub k0: f32_,
+    pub k1: f32_,
+    pub k2: f32_,
+    pub posX: f32_,
+    pub posY: f32_,
+    pub posZ: f32_,
+    pub dirX: f32_,
+    pub dirY: f32_,
+    pub dirZ: f32_,
+}
 pub type __builtin_va_list = [[u32; 3usize]; 1usize];
 extern "C" {
     pub static mut string_No_Define: [::core::ffi::c_char; 10usize];
@@ -12437,6 +12905,20 @@ extern "C" {
     pub fn ord_tbl_init_buffer(addr: *mut ::core::ffi::c_void, size: u32_);
     pub fn ord_tbl_insert_node(tblEntry: *mut OrdTblNode, newNode: *mut OrdTblNode);
     pub fn ord_tbl_alloc_node(size: u32_) -> *mut ::core::ffi::c_void;
+    pub static mut __cpReg: *mut u16_;
+    pub static mut __piReg: *mut u32_;
+    pub static mut gx: *mut GX;
+    pub fn __GXSaveCPUFifoAux(arg1: *mut __GXFifoObj);
+    pub fn __GXSendFlushPrim();
+    pub fn __GXSetSUTexSize();
+    pub fn __GXUpdateBPMask();
+    pub fn __GXSetVCD();
+    pub fn __GXSetVAT();
+    pub fn __GXSetMatrixIndex(arg1: ::core::ffi::c_int);
+    pub fn __GXSetRange(arg1: f32_, arg2: f32_);
+    pub fn __GXFifoInit();
+    pub fn __GXPEInit();
+    pub fn __GXFlushTextureState();
     pub static mut s_animMtxPtrs: *mut *mut Mtx;
     pub static mut s_transformMatrices: *mut Mtx;
     pub static mut s_ambientRed: f32;
@@ -15260,4 +15742,252 @@ extern "C" {
     pub fn window_show_items(window: *mut WindowDesc, arg1: u32_);
     pub fn dont_inline_func_8002DD5C();
     pub fn window_printf_1(fmt: *const ::core::ffi::c_char, ...) -> ::core::ffi::c_int;
+    pub fn __OSLockSram() -> *mut OSSram;
+    pub fn __OSLockSramEx() -> *mut OSSramEx;
+    pub fn __OSUnlockSram(commit: BOOL) -> BOOL;
+    pub fn __OSUnlockSramEx(commit: BOOL) -> BOOL;
+    pub fn __OSGetDIConfig() -> u32_;
+    pub fn __OSUnlockAllMutex(thread: *mut OSThread);
+    pub static mut RunQueueBits: u32_;
+    pub static mut RunQueueHint: BOOL;
+    pub static mut Reschedule: s32;
+    pub static mut RunQueue: [OSThreadQueue; 32usize];
+    pub static mut IdleThread: OSThread;
+    pub static mut DefaultThread: OSThread;
+    pub static mut IdleContext: OSContext;
+    pub static mut _stack_addr: [u8_; 0usize];
+    pub static mut _stack_end: [u8_; 0usize];
+    pub fn OSInitMutexQueue(queue: *mut OSMutexQueue);
+    pub fn __OSThreadInit();
+    pub fn OSDisableScheduler() -> s32;
+    pub fn OSEnableScheduler() -> s32;
+    pub fn SetRun(thread: *mut OSThread);
+    pub fn UnsetRun(thread: *mut OSThread);
+    pub fn __OSGetEffectivePriority(thread: *mut OSThread) -> OSPriority;
+    pub fn SetEffectivePriority(thread: *mut OSThread, priority: OSPriority) -> *mut OSThread;
+    pub fn UpdatePriority(thread: *mut OSThread);
+    pub fn __OSSwitchThread(nextThread: *mut OSThread);
+    pub fn SelectThread(yield_: BOOL) -> *mut OSThread;
+    pub fn __OSReschedule();
+    pub fn OSCancelThread(thread: *mut OSThread);
+    pub static mut OSErrorTable: [OSErrorHandler; 16usize];
+    pub fn __OSUnhandledException(error: u8_, context: *mut OSContext, dsisr: u32_, dar: u32_);
+    pub static mut ArenaEnd: *mut ::core::ffi::c_void;
+    pub static mut ArenaStart: *mut ::core::ffi::c_void;
+    pub static mut NumHeaps: ::core::ffi::c_int;
+    pub static mut HeapArray: *mut Heap;
+    pub fn DLAddFront(neighbor: *mut HeapCell, cell: *mut HeapCell) -> *mut ::core::ffi::c_void;
+    pub fn DLExtract(list: *mut HeapCell, cell: *mut HeapCell) -> *mut HeapCell;
+    pub fn DLInsert(
+        list: *mut HeapCell,
+        cell: *mut HeapCell,
+        unused: *mut ::core::ffi::c_void,
+    ) -> *mut HeapCell;
+    pub static mut string__nOSDumpHeap__d___n: [::core::ffi::c_char; 18usize];
+    pub static mut string_________Inactive_n: [::core::ffi::c_char; 18usize];
+    pub static mut string_addr_tsize_t_tend_tprev_tnext_n: [::core::ffi::c_char; 26usize];
+    pub static mut string_________Allocated_n: [::core::ffi::c_char; 19usize];
+    pub static mut string__x_t_d_t_x_t_x_t_x_n: [::core::ffi::c_char; 16usize];
+    pub static mut string_________Free_n: [::core::ffi::c_char; 14usize];
+    pub static mut __OSArenaHi: *mut ::core::ffi::c_void;
+    pub static mut __OSArenaLo: *mut ::core::ffi::c_void;
+    pub static mut DSPInitCode: [u8_; 128usize];
+    pub fn __OSInitAudioSystem();
+    pub fn __OSStopAudioSystem();
+    pub static mut __CARDBlock: [CARDControl; 2usize];
+    pub static mut __CARDDiskNone: DVDDiskID;
+    pub static mut __CARDDiskID: *const DVDDiskID;
+    pub fn __CARDDefaultApiCallback(chan: s32, result: s32);
+    pub fn __CARDSyncCallback(chan: s32, result: s32);
+    pub fn __CARDExtHandler(chan: s32, context: *mut OSContext);
+    pub fn __CARDExiHandler(chan: s32, context: *mut OSContext);
+    pub fn __CARDTxHandler(chan: s32, context: *mut OSContext);
+    pub fn __CARDUnlockedHandler(chan: s32, context: *mut OSContext);
+    pub fn __CARDReadNintendoID(chan: s32, id: *mut u32_) -> ::core::ffi::c_int;
+    pub fn __CARDEnableInterrupt(chan: s32, enable: BOOL) -> s32;
+    pub fn __CARDReadStatus(chan: s32, status: *mut u8_) -> s32;
+    pub fn __CARDClearStatus(chan: s32) -> s32;
+    pub fn __CARDStart(chan: s32, txCallback: CARDCallback, exiCallback: CARDCallback) -> s32;
+    pub fn __CARDReadSegment(chan: s32, callback: CARDCallback) -> s32;
+    pub fn __CARDWritePage(chan: s32, callback: CARDCallback) -> s32;
+    pub fn __CARDEraseSector(chan: s32, addr: u32_, callback: CARDCallback) -> s32;
+    pub fn __CARDSetDiskID(id: *const DVDDiskID);
+    pub fn __CARDGetControlBlock(chan: s32, pcard: *mut *mut CARDControl) -> s32;
+    pub fn __CARDPutControlBlock(card: *mut CARDControl, result: s32) -> s32;
+    pub fn __CARDSync(chan: s32) -> s32;
+    pub fn __CARDGetDirBlock(arg1: *mut CARDControl) -> *mut CARDDir;
+    pub fn __CARDUpdateDir(chan: s32, callback: CARDCallback) -> s32;
+    pub fn __CARDCompareFileName(ent: *mut CARDDir, fileName: *const ::core::ffi::c_char) -> BOOL;
+    pub fn __CARDAccess(ent: *mut CARDDir) -> s32;
+    pub fn __CARDIsPublic(ent: *mut CARDDir) -> s32;
+    pub fn __CARDGetFileNo(
+        card: *mut CARDControl,
+        fileName: *const ::core::ffi::c_char,
+        pfileNo: *mut s32,
+    ) -> s32;
+    pub fn __CARDIsOpened(card: *mut CARDControl, fileNo: s32) -> BOOL;
+    pub fn __CARDRead(
+        chan: s32,
+        addr: u32_,
+        length: s32,
+        dst: *mut ::core::ffi::c_void,
+        callback: CARDCallback,
+    ) -> s32;
+    pub fn __CARDWrite(
+        chan: s32,
+        addr: u32_,
+        length: s32,
+        dst: *mut ::core::ffi::c_void,
+        callback: CARDCallback,
+    ) -> s32;
+    pub fn __CARDSeek(
+        fileInfo: *mut CARDFileInfo,
+        length: s32,
+        offset: s32,
+        pcard: *mut *mut CARDControl,
+    ) -> s32;
+    pub fn __CARDCheckSum(
+        ptr: *mut ::core::ffi::c_void,
+        length: ::core::ffi::c_int,
+        checkSum: *mut u16_,
+        checkSumInv: *mut u16_,
+    );
+    pub fn __CARDVerify(card: *mut CARDControl) -> s32;
+    pub fn __CARDFormatRegionAsync(chan: s32, callback: CARDCallback) -> s32;
+    pub fn __CARDUnlock(chan: s32, flashID: *mut u8_) -> s32;
+    pub fn __CARDGetFatBlock(card: *mut CARDControl) -> *mut ::core::ffi::c_void;
+    pub fn __CARDAllocBlock(chan: s32, cBlock: u32_, callback: CARDCallback) -> s32;
+    pub fn __CARDFreeBlock(chan: s32, nBlock: u16_, callback: CARDCallback) -> s32;
+    pub fn __CARDUpdateFatBlock(chan: s32, fat: *mut u16_, callback: CARDCallback) -> s32;
+    pub fn __CARDMountCallback(chan: s32, result: s32);
+    pub fn BlockReadCallback(chan: s32, result: s32);
+    pub fn BlockWriteCallback(chan: s32, result: s32);
+    pub fn WriteCallback(chan: s32, result: s32);
+    pub fn EraseCallback(chan: s32, result: s32);
+    pub fn EXISetExiCallback(channel: s32, callback: EXICallback) -> EXICallback;
+    pub fn EXILock(channel: s32, device: u32_, callback: EXICallback) -> BOOL;
+    pub fn EXIUnlock(channel: s32) -> BOOL;
+    pub fn EXISelect(channel: s32, device: u32_, frequency: u32_) -> BOOL;
+    pub fn EXIDeselect(channel: s32) -> BOOL;
+    pub fn EXIImm(
+        channel: s32,
+        buffer: *mut ::core::ffi::c_void,
+        length: s32,
+        type_: u32_,
+        callback: EXICallback,
+    ) -> BOOL;
+    pub fn EXIImmEx(
+        channel: s32,
+        buffer: *mut ::core::ffi::c_void,
+        length: s32,
+        type_: u32_,
+    ) -> BOOL;
+    pub fn EXIDma(
+        channel: s32,
+        buffer: *mut ::core::ffi::c_void,
+        length: s32,
+        type_: u32_,
+        callback: EXICallback,
+    ) -> BOOL;
+    pub fn EXISync(channel: s32) -> BOOL;
+    pub fn EXIProbe(channel: s32) -> BOOL;
+    pub fn EXIProbeEx(channel: s32) -> s32;
+    pub fn EXIAttach(channel: s32, callback: EXICallback) -> BOOL;
+    pub fn EXIDetach(channel: s32) -> BOOL;
+    pub fn EXIGetState(channel: s32) -> u32_;
+    pub fn EXIGetID(channel: s32, device: u32_, id: *mut u32_) -> s32;
+    pub fn InitCallback(task: *mut ::core::ffi::c_void);
+    pub fn DoneCallback(task: *mut ::core::ffi::c_void);
+    pub static mut CardData: [u8_; 352usize];
+    pub fn GetInitVal() -> u32_;
+    pub fn exnor_1st(data: u32_, rshift: u32_) -> u32_;
+    pub fn exnor(data: u32_, lshift: u32_) -> u32_;
+    pub fn bitrev(data: u32_) -> u32_;
+    pub fn ReadArrayUnlock(
+        chan: s32,
+        data: u32_,
+        rbuf: *mut ::core::ffi::c_void,
+        rlen: s32,
+        mode: s32,
+    ) -> s32;
+    pub fn DummyLen() -> s32;
+    pub fn FormatCallback(chan: s32, result: s32);
+    pub fn ReadCallback(chan: s32, result: s32);
+    pub fn CreateCallbackFat(chan: s32, result: s32);
+    pub fn OnReset(f: BOOL) -> BOOL;
+    pub fn Retry(chan: s32) -> s32;
+    pub static mut ResetFunctionInfo: OSResetFunctionInfo;
+    pub fn TimeoutHandler(alarm: *mut OSAlarm, context: *mut OSContext);
+    pub fn SetupTimeoutAlarm(card: *mut CARDControl);
+    pub fn UnlockedCallback(chan: s32, result: s32);
+    pub fn CARDGetSectorSize(chan: s32, size: *mut u32_) -> s32;
+    pub fn VerifyID(card: *mut CARDControl) -> s32;
+    pub fn VerifyDir(card: *mut CARDControl, outCurrent: *mut ::core::ffi::c_int) -> s32;
+    pub fn VerifyFAT(card: *mut CARDControl, outCurrent: *mut ::core::ffi::c_int) -> s32;
+    pub fn CARDCheckExAsync(chan: s32, xferBytes: *mut s32, callback: CARDCallback) -> s32;
+    pub fn UpdateIconOffsets(ent: *mut CARDDir, stat: *mut CARDStat);
+    pub fn DeleteCallback(chan: s32, result: s32);
+    pub static mut SectorSizeTable: [u32_; 8usize];
+    pub static mut LatencyTable: [u32_; 8usize];
+    pub fn DoUnmount(chan: s32, result: s32);
+    pub fn DoMount(chan: s32) -> s32;
+    pub fn DVDReadAbsAsyncForBS(
+        arg1: *mut ::core::ffi::c_void,
+        arg2: *mut bb2struct,
+        arg3: ::core::ffi::c_int,
+        arg4: ::core::ffi::c_int,
+        arg5: ::core::option::Option<unsafe extern "C" fn()>,
+    );
+    pub fn DVDReset();
+    pub fn DVDReadDiskID(
+        arg1: *mut ::core::ffi::c_void,
+        arg2: *mut DVDDiskID,
+        arg3: ::core::option::Option<unsafe extern "C" fn()>,
+    );
+    pub static mut status: u32_;
+    pub static mut bb2: *mut bb2struct;
+    pub static mut idTmp: *mut DVDDiskID;
+    pub static mut bb2Buf: [u8_; 64usize];
+    pub static mut block: [u8_; 48usize];
+    pub fn cb(param_1: s32, param_2: *mut ::core::ffi::c_void);
+    pub fn __fstLoad();
+    pub static mut WaitingQueue: [DVDQueue_sub; 4usize];
+    pub fn __DVDClearWaitingQueue();
+    pub fn __DVDPushWaitingQueue(a: ::core::ffi::c_int, b: *mut DVDQueue_sub)
+        -> ::core::ffi::c_int;
+    pub fn __DVDPopWaitingQueue() -> *mut DVDQueue_sub;
+    pub fn __DVDCheckWaitingQueue() -> BOOL;
+    pub fn __DVDDequeueWaitingQueue(a: *mut DVDQueue_sub) -> BOOL;
+    pub fn force_lbl_802F6868() -> f32;
+    pub fn WriteMTXPS4x3(src: *mut [f32_; 4usize], dest: *mut f32_);
+    pub fn WriteMTXPS3x3from3x4(src: *mut [f32_; 4usize], dest: *mut f32_);
+    pub fn WriteMTXPS4x2(src: *mut [f32_; 4usize], dest: *mut f32_);
+    pub static mut gxData: GX;
+    pub fn __force__gxData() -> *mut ::core::ffi::c_void;
+    pub static mut FifoObj: GXFifoObj;
+    pub static mut __memReg: *mut ::core::ffi::c_void;
+    pub static mut __peReg: *mut ::core::ffi::c_void;
+    pub fn EnableWriteGatherPipe();
+    pub fn __GXDefaultTexRegionCallback(t_obj: *mut GXTexObj, id: GXTexMapID) -> *mut GXTexRegion;
+    pub fn __GXDefaultTlutRegionCallback(idx: u32_) -> *mut GXTlutRegion;
+    pub fn GXClearGPMetric();
+    pub fn GXInitXfRasMetric();
+    pub fn __GXSetGenMode();
+    pub static mut DisplayListFifo: __GXFifoObj;
+    pub static mut __savedGXdata: GX;
+    pub static mut OldCPUFifo: *mut ::core::ffi::c_void;
+    pub static mut lbl_801E9198: [u32_; 10usize];
+    pub static mut __GXCurrentThread: *mut OSThread;
+    pub static mut CPGPLinked: u8_;
+    pub static mut GXOverflowSuspendInProgress: u32_;
+    pub static mut BreakPointCB: ::core::option::Option<unsafe extern "C" fn()>;
+    pub static mut __GXOverflowCount: u32_;
+    pub static mut GPFifo: *mut GXFifoObj;
+    pub static mut CPUFifo: *mut GXFifoObj;
+    pub fn __GXFifoReadEnable();
+    pub fn __GXFifoReadDisable();
+    pub fn __GXFifoLink(arg0: u8_);
+    pub fn __GXWriteFifoIntEnable(arg0: u8_, arg1: u8_);
+    pub fn __GXWriteFifoIntReset(arg0: u8_, arg1: u8_);
+    pub fn GXCPInterruptHandler(unused: __OSInterrupt, ctx: *mut OSContext);
 }
