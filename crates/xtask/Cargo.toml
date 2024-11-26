@@ -4,4 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+gamecube-tools = { git = "https://github.com/ComplexPlane/gamecube-tools" }
 anyhow = "1.0.93"
+dirs = "5.0.1"

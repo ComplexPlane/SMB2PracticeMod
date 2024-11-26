@@ -4,7 +4,6 @@ use std::{path::PathBuf, process::Command};
 
 use anyhow::anyhow;
 use anyhow::bail;
-use anyhow::Context;
 
 // We don't read from the CARGO environment variable because we want to use the one in PATH. It
 // allows selecting a different toolchain with +nightly
@@ -30,6 +29,22 @@ const CARGO_BASE_DEBUG: &[&str] = &["-Z", "build-std=core,alloc"];
 
 const RUSTFLAGS_RELEASE: &str = "-Zlocation-detail=none -Zfmt-debug=none";
 const RUSTFLAGS_DEBUG: &str = "";
+
+const LINKER_FLAGS: &[&str] = &[
+    "-r",
+    "-e",
+    "_prolog",
+    "-u",
+    "_prolog",
+    "-u",
+    "_epilog",
+    "-u",
+    "_unresolved",
+    "--gc-sections",
+    "-nostdlib",
+    "-m",
+    "elf32ppc",
+];
 
 enum Profile {
     Debug,
@@ -66,7 +81,7 @@ fn get_rust_host() -> anyhow::Result<String> {
     bail!("Failed to parse host");
 }
 
-fn get_project_root() -> anyhow::Result<String> {
+fn get_project_root() -> anyhow::Result<PathBuf> {
     let output = Command::new(CARGO_PATH)
         .args(["locate-project", "--workspace"])
         .output()?;
@@ -87,6 +102,31 @@ fn build_archive(cargo_base: &[&str], rustflags: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
+fn create_elf(project_root: &Path) -> anyhow::Result<()> {
+    let mut linker = dirs::home_dir().ok_or(anyhow!("Could not locate home directory"))?;
+    let rust_host = get_rust_host()?;
+    linker.push(format!(
+        ".rustup/toolchains/stable-{rust_host}/lib/rustlib/{rust_host}/bin/gcc-ld/ld.lld"
+    ));
+
+    let mut archive = project_root.to_path_buf();
+    archive.push("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
+
+    let mut linker_script = project_root.to_path_buf();
+    linker_script.push("ogc.ld");
+
+    let mut output_elf = project_root.to_path_buf();
+    output_elf.push("target/SMB2PracticeMod.elf");
+
+    let mut args = LINKER_FLAGS.to_vec();
+    args.push(archive.to_str().unwrap());
+    args.extend(["-T", linker_script.to_str().unwrap()]);
+    args.extend(["-o", output_elf.to_str().unwrap()]);
+
+    spawn(linker, &args, "")?;
+    Ok(())
+}
+
 fn main() -> anyhow::Result<()> {
     let mut args = std::env::args();
     let (_, profile) = (args.next(), args.next());
@@ -101,8 +141,8 @@ fn main() -> anyhow::Result<()> {
         Profile::Debug => build_archive(CARGO_BASE_DEBUG, RUSTFLAGS_DEBUG)?,
     }
 
-    let host = get_rust_host()?;
     let project_root = get_project_root()?;
+    create_elf(&project_root)?;
 
     Ok(())
 }
