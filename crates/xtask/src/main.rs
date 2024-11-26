@@ -10,15 +10,7 @@ use gamecube_tools::elf2rel::RelVersion;
 // allows selecting a different toolchain with +nightly
 const CARGO_PATH: &str = "cargo";
 
-const CARGO_COMMON: &[&str] = &[
-    "+nightly",
-    "build",
-    "-p",
-    "smb2_practice_mod",
-    "--target",
-    "powerpc-unknown-eabi.json",
-    "--release",
-];
+const CARGO_COMMON: &[&str] = &["+nightly", "build", "-p", "smb2_practice_mod", "--release"];
 
 const CARGO_BASE_RELEASE: &[&str] = &[
     "-Z",
@@ -50,6 +42,52 @@ const LINKER_FLAGS: &[&str] = &[
 enum Profile {
     Debug,
     Release,
+}
+
+struct BuildPaths {
+    linker: PathBuf,
+    target_config: PathBuf,
+    archive: PathBuf,
+    linker_script: PathBuf,
+    elf: PathBuf,
+    symbol_map: PathBuf,
+    rel: PathBuf,
+    banner: PathBuf,
+    icon: PathBuf,
+    gci: PathBuf,
+}
+
+fn get_build_paths() -> anyhow::Result<BuildPaths> {
+    let home_dir = dirs::home_dir().ok_or(anyhow!("Failed to determine home directory"))?;
+    let project_root = get_project_root()?;
+    let rust_host = get_rust_host()?;
+
+    let linker = home_dir.join(format!(
+        ".rustup/toolchains/stable-{rust_host}/lib/rustlib/{rust_host}/bin/gcc-ld/ld.lld"
+    ));
+
+    let target_config = project_root.join("powerpc-unknown-eabi.json");
+    let archive = project_root.join("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
+    let linker_script = project_root.join("ogc.ld");
+    let elf = project_root.join("target/SMB2PracticeMod.elf");
+    let symbol_map = project_root.join("crates/smb2_practice_mod/src/mkb2.us.lst");
+    let rel = project_root.join("target/SMB2PracticeMod.rel");
+    let banner = project_root.join("images/banner_us.raw");
+    let icon = project_root.join("images/icon_us.raw");
+    let gci = project_root.join("target/SMB2PracticeMod.gci");
+
+    Ok(BuildPaths {
+        linker,
+        target_config,
+        archive,
+        linker_script,
+        elf,
+        symbol_map,
+        rel,
+        banner,
+        icon,
+        gci,
+    })
 }
 
 fn spawn<P: AsRef<Path>>(bin: P, args: &[&str], stdin: &str) -> anyhow::Result<()> {
@@ -96,56 +134,44 @@ fn get_project_root() -> anyhow::Result<PathBuf> {
     Ok(project_path.to_str().unwrap().into())
 }
 
-fn build_archive(cargo_base: &[&str], rustflags: &str) -> anyhow::Result<()> {
+fn build_archive(
+    cargo_base: &[&str],
+    rustflags: &str,
+    build_paths: &BuildPaths,
+) -> anyhow::Result<()> {
     let mut args = CARGO_COMMON.to_vec();
+    args.extend(["--target", build_paths.target_config.to_str().unwrap()]);
     args.extend_from_slice(cargo_base);
     spawn(CARGO_PATH, &args, rustflags)?;
     Ok(())
 }
 
-fn create_elf(project_root: &Path) -> anyhow::Result<()> {
-    let mut linker = dirs::home_dir().ok_or(anyhow!("Could not locate home directory"))?;
-    let rust_host = get_rust_host()?;
-    linker.push(format!(
-        ".rustup/toolchains/stable-{rust_host}/lib/rustlib/{rust_host}/bin/gcc-ld/ld.lld"
-    ));
-
-    let archive = project_root.join("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
-    let linker_script = project_root.join("ogc.ld");
-    let output_elf = project_root.join("target/SMB2PracticeMod.elf");
-
+fn create_elf(build_paths: &BuildPaths) -> anyhow::Result<()> {
     let mut args = LINKER_FLAGS.to_vec();
-    args.push(archive.to_str().unwrap());
-    args.extend(["-T", linker_script.to_str().unwrap()]);
-    args.extend(["-o", output_elf.to_str().unwrap()]);
+    args.push(build_paths.archive.to_str().unwrap());
+    args.extend(["-T", build_paths.linker_script.to_str().unwrap()]);
+    args.extend(["-o", build_paths.elf.to_str().unwrap()]);
 
-    spawn(linker, &args, "")?;
+    spawn(&build_paths.linker, &args, "")?;
     Ok(())
 }
 
-fn create_rel(project_root: &Path) -> anyhow::Result<()> {
-    let input_elf = project_root.join("target/SMB2PracticeMod.elf");
-    let elf_buf = std::fs::read(&input_elf).context("Failed to read ELF")?;
+fn create_rel(build_paths: &BuildPaths) -> anyhow::Result<()> {
+    let elf_buf = std::fs::read(&build_paths.elf).context("Failed to read ELF")?;
 
-    let input_symbol_map = project_root.join("crates/smb2_practice_mod/src/mkb2.us.lst");
-    let symbol_map_buf = std::fs::read(&input_symbol_map).context("Failed to read symbol map")?;
+    let symbol_map_buf =
+        std::fs::read(&build_paths.symbol_map).context("Failed to read symbol map")?;
 
     let rel_buf = gamecube_tools::elf2rel::elf2rel(&elf_buf, &symbol_map_buf, 101, RelVersion::V2)?;
-    let output_rel = project_root.join("target/SMB2PracticeMod.rel");
-    std::fs::write(&output_rel, &rel_buf).context("Failed to write REL")?;
+    std::fs::write(&build_paths.rel, &rel_buf).context("Failed to write REL")?;
 
     Ok(())
 }
 
-fn create_gci(project_root: &Path) -> anyhow::Result<()> {
-    let input_rel = project_root.join("target/SMB2PracticeMod.rel");
-    let rel_buf = std::fs::read(&input_rel).context("Failed to read REL")?;
-
-    let input_banner = project_root.join("images/banner_us.raw");
-    let banner_buf = std::fs::read(&input_banner).context("Failed to read banner")?;
-
-    let input_icon = project_root.join("images/icon_us.raw");
-    let icon_buf = std::fs::read(&input_icon).context("Failed to read icon")?;
+fn create_gci(build_paths: &BuildPaths) -> anyhow::Result<()> {
+    let rel_buf = std::fs::read(&build_paths.rel).context("Failed to read REL")?;
+    let banner_buf = std::fs::read(&build_paths.banner).context("Failed to read banner")?;
+    let icon_buf = std::fs::read(&build_paths.icon).context("Failed to read icon")?;
 
     let gci_buf = gamecube_tools::gcipack::gcipack(
         &rel_buf,
@@ -156,9 +182,8 @@ fn create_gci(project_root: &Path) -> anyhow::Result<()> {
         &icon_buf,
         "GM2E8P",
     )?;
-    let output_gci = project_root.join("target/SMB2PracticeMod.gci");
 
-    std::fs::write(output_gci, &gci_buf).context("Failed to write GCI")?;
+    std::fs::write(&build_paths.gci, &gci_buf).context("Failed to write GCI")?;
 
     Ok(())
 }
@@ -172,15 +197,16 @@ fn main() -> anyhow::Result<()> {
         Some(p) => bail!("Invalid profile: {p}"),
     };
 
+    let build_paths = get_build_paths()?;
+
     match profile {
-        Profile::Release => build_archive(CARGO_BASE_RELEASE, RUSTFLAGS_RELEASE)?,
-        Profile::Debug => build_archive(CARGO_BASE_DEBUG, RUSTFLAGS_DEBUG)?,
+        Profile::Release => build_archive(CARGO_BASE_RELEASE, RUSTFLAGS_RELEASE, &build_paths)?,
+        Profile::Debug => build_archive(CARGO_BASE_DEBUG, RUSTFLAGS_DEBUG, &build_paths)?,
     }
 
-    let project_root = get_project_root()?;
-    create_elf(&project_root)?;
-    create_rel(&project_root)?;
-    create_gci(&project_root)?;
+    create_elf(&build_paths)?;
+    create_rel(&build_paths)?;
+    create_gci(&build_paths)?;
 
     Ok(())
 }
