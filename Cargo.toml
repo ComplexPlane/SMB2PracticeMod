@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/smb2_practice_mod"]
+members = ["crates/smb2_practice_mod", "crates/xtask"]
 
 [profile.dev]
 panic = "abort"
