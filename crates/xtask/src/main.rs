@@ -2,8 +2,9 @@ use std::io::Write;
 use std::path::Path;
 use std::{path::PathBuf, process::Command};
 
-use anyhow::anyhow;
 use anyhow::bail;
+use anyhow::{anyhow, Context};
+use gamecube_tools::elf2rel::RelVersion;
 
 // We don't read from the CARGO environment variable because we want to use the one in PATH. It
 // allows selecting a different toolchain with +nightly
@@ -109,14 +110,9 @@ fn create_elf(project_root: &Path) -> anyhow::Result<()> {
         ".rustup/toolchains/stable-{rust_host}/lib/rustlib/{rust_host}/bin/gcc-ld/ld.lld"
     ));
 
-    let mut archive = project_root.to_path_buf();
-    archive.push("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
-
-    let mut linker_script = project_root.to_path_buf();
-    linker_script.push("ogc.ld");
-
-    let mut output_elf = project_root.to_path_buf();
-    output_elf.push("target/SMB2PracticeMod.elf");
+    let archive = project_root.join("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
+    let linker_script = project_root.join("ogc.ld");
+    let output_elf = project_root.join("target/SMB2PracticeMod.elf");
 
     let mut args = LINKER_FLAGS.to_vec();
     args.push(archive.to_str().unwrap());
@@ -124,6 +120,46 @@ fn create_elf(project_root: &Path) -> anyhow::Result<()> {
     args.extend(["-o", output_elf.to_str().unwrap()]);
 
     spawn(linker, &args, "")?;
+    Ok(())
+}
+
+fn create_rel(project_root: &Path) -> anyhow::Result<()> {
+    let input_elf = project_root.join("target/SMB2PracticeMod.elf");
+    let elf_buf = std::fs::read(&input_elf).context("Failed to read ELF")?;
+
+    let input_symbol_map = project_root.join("crates/smb2_practice_mod/src/mkb2.us.lst");
+    let symbol_map_buf = std::fs::read(&input_symbol_map).context("Failed to read symbol map")?;
+
+    let rel_buf = gamecube_tools::elf2rel::elf2rel(&elf_buf, &symbol_map_buf, 101, RelVersion::V2)?;
+    let output_rel = project_root.join("target/SMB2PracticeMod.rel");
+    std::fs::write(&output_rel, &rel_buf).context("Failed to write REL")?;
+
+    Ok(())
+}
+
+fn create_gci(project_root: &Path) -> anyhow::Result<()> {
+    let input_rel = project_root.join("target/SMB2PracticeMod.rel");
+    let rel_buf = std::fs::read(&input_rel).context("Failed to read REL")?;
+
+    let input_banner = project_root.join("images/banner_us.raw");
+    let banner_buf = std::fs::read(&input_banner).context("Failed to read banner")?;
+
+    let input_icon = project_root.join("images/icon_us.raw");
+    let icon_buf = std::fs::read(&input_icon).context("Failed to read icon")?;
+
+    let gci_buf = gamecube_tools::gcipack::gcipack(
+        &rel_buf,
+        "rel",
+        "Super Monkey Ball 2",
+        "SMB2 Practice Mod",
+        &banner_buf,
+        &icon_buf,
+        "GM2E8P",
+    )?;
+    let output_gci = project_root.join("target/SMB2PracticeMod.gci");
+
+    std::fs::write(output_gci, &gci_buf).context("Failed to write GCI")?;
+
     Ok(())
 }
 
@@ -143,6 +179,8 @@ fn main() -> anyhow::Result<()> {
 
     let project_root = get_project_root()?;
     create_elf(&project_root)?;
+    create_rel(&project_root)?;
+    create_gci(&project_root)?;
 
     Ok(())
 }
