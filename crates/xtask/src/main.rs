@@ -90,21 +90,6 @@ fn get_build_paths() -> anyhow::Result<BuildPaths> {
     })
 }
 
-fn spawn<P: AsRef<Path>>(bin: P, args: &[&str], stdin: &str) -> anyhow::Result<()> {
-    let mut cmd = Command::new(bin.as_ref())
-        .args(args)
-        .stdin(std::process::Stdio::piped())
-        .spawn()?;
-    if let Some(mut stdin_handle) = cmd.stdin.take() {
-        stdin_handle.write_all(stdin.as_bytes())?;
-    }
-    let status = cmd.wait()?;
-    if !status.success() {
-        bail!("Build failed");
-    }
-    Ok(())
-}
-
 fn get_rust_host() -> anyhow::Result<String> {
     let output = Command::new(CARGO_PATH)
         .args(["--version", "--verbose"])
@@ -139,20 +124,29 @@ fn build_archive(
     rustflags: &str,
     build_paths: &BuildPaths,
 ) -> anyhow::Result<()> {
-    let mut args = CARGO_COMMON.to_vec();
-    args.extend(["--target", build_paths.target_config.to_str().unwrap()]);
-    args.extend_from_slice(cargo_base);
-    spawn(CARGO_PATH, &args, rustflags)?;
+    let mut cmd = Command::new(CARGO_PATH)
+        .args(CARGO_COMMON)
+        .args(cargo_base)
+        .args(["--target", build_paths.target_config.to_str().unwrap()])
+        .env("RUSTFLAGS", rustflags)
+        .spawn()?;
+    if !cmd.wait()?.success() {
+        bail!("Failed to build archive");
+    }
     Ok(())
 }
 
 fn create_elf(build_paths: &BuildPaths) -> anyhow::Result<()> {
-    let mut args = LINKER_FLAGS.to_vec();
-    args.push(build_paths.archive.to_str().unwrap());
-    args.extend(["-T", build_paths.linker_script.to_str().unwrap()]);
-    args.extend(["-o", build_paths.elf.to_str().unwrap()]);
+    let mut cmd = Command::new(&build_paths.linker)
+        .args(LINKER_FLAGS)
+        .arg(&build_paths.archive)
+        .args(["-T", build_paths.linker_script.to_str().unwrap()])
+        .args(["-o", build_paths.elf.to_str().unwrap()])
+        .spawn()?;
+    if !cmd.wait()?.success() {
+        bail!("Linker failed");
+    }
 
-    spawn(&build_paths.linker, &args, "")?;
     Ok(())
 }
 
