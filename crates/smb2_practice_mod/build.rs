@@ -18,6 +18,7 @@ fn generate_git_hash() {
     }
 
     println!("cargo:rustc-env=GIT_HASH={}", git_hash);
+    println!("cargo:rerun-if-changed=nonexistent_file");
 }
 
 fn generate_bindings() {
