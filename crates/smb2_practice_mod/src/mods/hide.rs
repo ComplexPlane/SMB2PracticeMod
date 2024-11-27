@@ -1,6 +1,8 @@
+use mkb::mkb;
+
 use crate::{
     app::{self, AppContext},
-    hook, mkb,
+    hook,
     systems::pref::{BoolPref, Pref},
     utils::patch,
 };

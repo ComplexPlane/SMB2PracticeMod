@@ -355,6 +355,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mkb"
+version = "0.1.0"
+dependencies = [
+ "bindgen",
+ "num_enum",
+]
+
+[[package]]
 name = "nom"
 version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -527,8 +535,8 @@ name = "smb2_practice_mod"
 version = "1.1.0"
 dependencies = [
  "arrayvec",
- "bindgen",
  "critical-section",
+ "mkb",
  "num_enum",
  "once_cell",
  "paste",

@@ -1,10 +1,10 @@
 use crate::{app::AppContext, hook};
 use core::ffi::c_int;
 
+use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    mkb,
     systems::pref::{BoolPref, Pref, U8Pref},
     utils::{math::fabs, patch},
 };

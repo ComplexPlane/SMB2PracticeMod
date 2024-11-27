@@ -1,3 +1,5 @@
+use mkb::mkb;
+
 extern crate alloc;
 
 use core::ffi::c_char;
@@ -6,13 +8,12 @@ use core::ffi::c_void;
 use core::ptr::null_mut;
 
 use crate::cstr;
-use crate::mkb;
-use crate::mkb_suppl::to_card_result;
-use crate::mkb_suppl::CARDResult;
-use crate::mkb_suppl::CARD_READ_SIZE;
-use crate::mkb_suppl::CARD_WORKAREA_SIZE;
 use crate::utils::math;
 use crate::utils::modlink::ModLink;
+use ::mkb::mkb_suppl::to_card_result;
+use ::mkb::mkb_suppl::CARDResult;
+use ::mkb::mkb_suppl::CARD_READ_SIZE;
+use ::mkb::mkb_suppl::CARD_WORKAREA_SIZE;
 use alloc::vec;
 use alloc::vec::Vec;
 use arrayvec::ArrayString;

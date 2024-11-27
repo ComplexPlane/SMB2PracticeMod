@@ -1,4 +1,6 @@
-use crate::{app::AppContext, mkb, systems::pref::BoolPref};
+use mkb::mkb;
+
+use crate::{app::AppContext, systems::pref::BoolPref};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum MarathonState {

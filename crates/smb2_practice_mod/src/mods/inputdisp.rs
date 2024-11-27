@@ -1,12 +1,13 @@
 use core::ffi::CStr;
 
+use ::mkb::mkb_suppl::{GXPosition3f32, GXTexCoord2f32};
+use mkb::mkb;
+use mkb::Vec2d;
 use num_enum::TryFromPrimitive;
 
+use crate::fmt;
 use crate::{
     app::AppContext,
-    fmt,
-    mkb::{self, Vec2d},
-    mkb_suppl::{GXPosition3f32, GXTexCoord2f32},
     systems::{
         draw,
         pad::{self, Pad, Prio, StickState},

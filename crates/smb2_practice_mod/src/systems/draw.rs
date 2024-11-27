@@ -1,3 +1,5 @@
+use mkb::mkb;
+
 use core::ffi::c_char;
 use core::ffi::c_void;
 use core::ptr::addr_of;
@@ -6,12 +8,11 @@ use arrayvec::ArrayString;
 
 use crate::app::AppContext;
 use crate::asm;
-use crate::mkb;
-use crate::mkb_suppl::GXPosition3f32;
-use crate::mkb_suppl::GXTexCoord2f32;
-use crate::mkb_suppl::GX_FALSE;
-use crate::mkb_suppl::GX_TRUE;
 use crate::patch;
+use ::mkb::mkb_suppl::GXPosition3f32;
+use ::mkb::mkb_suppl::GXTexCoord2f32;
+use ::mkb::mkb_suppl::GX_FALSE;
+use ::mkb::mkb_suppl::GX_TRUE;
 
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 pub const NOTIFY_DURATION_SHORT: u32 = 40;

@@ -1,6 +1,6 @@
-use crate::mkb;
 use crate::utils::version::SemVer;
 use core::ffi::c_void;
+use mkb::mkb;
 
 const MAGIC: u32 = 0xFEEDC0DE;
 const MODLINK_ADDR: usize = 0x800a9cb4;

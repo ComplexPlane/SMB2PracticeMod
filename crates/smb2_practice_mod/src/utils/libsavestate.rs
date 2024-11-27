@@ -1,7 +1,8 @@
 use core::ffi::c_void;
+use mkb::mkb;
 
 use super::memstore::{self, MemStore};
-use crate::{app::AppContext, hook, mkb, mods::timer::Timer};
+use crate::{app::AppContext, hook, mods::timer::Timer};
 
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx, cx| {
     let libsavestate = &cx.lib_save_state.borrow();

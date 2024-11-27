@@ -1,9 +1,10 @@
 use core::ffi::c_int;
+use mkb::mkb;
+use mkb::{byte, Vec};
 
 use crate::{
     app::AppContext,
     hook,
-    mkb::{self, byte, Vec},
     systems::{
         menu_impl::MenuImpl,
         pad::{Pad, Prio},

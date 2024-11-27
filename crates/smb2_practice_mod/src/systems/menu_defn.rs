@@ -1,3 +1,5 @@
+use mkb::mkb;
+
 use arrayvec::ArrayString;
 
 use crate::mods::cmseg::{CmSeg, Seg};
@@ -8,7 +10,7 @@ use crate::mods::validate::Validate;
 use crate::mods::{ballcolor, freecam};
 use crate::systems::pref::{BoolPref, U8Pref};
 use crate::utils::version;
-use crate::{cstr_buf, fmt_buf, mkb};
+use crate::{cstr_buf, fmt_buf};
 
 use super::binds::Binds;
 use super::draw::{self, Draw};

@@ -12,11 +12,9 @@ once_cell = { version = "1.20.2", default-features = false, features = [
 ] }
 paste = "1.0.15"
 zerocopy = { version = "0.8.6", features = ["derive"] }
+mkb = { path = "../mkb" }
 
 [lib]
 crate-type = ["staticlib"]
 test = false
 bench = false
-
-[build-dependencies]
-bindgen = "0.70.1"

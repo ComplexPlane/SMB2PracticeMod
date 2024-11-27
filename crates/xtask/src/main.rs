@@ -1,4 +1,3 @@
-use std::io::Write;
 use std::path::Path;
 use std::{path::PathBuf, process::Command};
 
@@ -70,7 +69,7 @@ fn get_build_paths() -> anyhow::Result<BuildPaths> {
     let archive = project_root.join("target/powerpc-unknown-eabi/release/libsmb2_practice_mod.a");
     let linker_script = project_root.join("ogc.ld");
     let elf = project_root.join("target/SMB2PracticeMod.elf");
-    let symbol_map = project_root.join("crates/smb2_practice_mod/src/mkb2.us.lst");
+    let symbol_map = project_root.join("crates/mkb/src/mkb2.us.lst");
     let rel = project_root.join("target/SMB2PracticeMod.rel");
     let banner = project_root.join("images/banner_us.raw");
     let icon = project_root.join("images/icon_us.raw");

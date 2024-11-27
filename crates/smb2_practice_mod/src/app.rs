@@ -1,7 +1,9 @@
 use core::cell::RefCell;
 
+use mkb::mkb;
+
 use crate::{
-    hook, mkb,
+    hook,
     mods::{
         ballcolor::BallColor, banans::Banans, camera::Camera, cmseg::CmSeg, dpad::Dpad,
         fallout::Fallout, freecam::Freecam, gotostory::GoToStory, hide::Hide, ilbattle::IlBattle,

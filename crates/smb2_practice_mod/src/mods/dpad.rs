@@ -1,8 +1,9 @@
 use crate::{
     app::AppContext,
-    hook, mkb,
+    hook,
     systems::pref::{BoolPref, Pref},
 };
+use mkb::mkb;
 
 hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx| {
     let dpad = &mut cx.dpad.borrow_mut();

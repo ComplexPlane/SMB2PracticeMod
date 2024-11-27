@@ -1,8 +1,9 @@
+use mkb::mkb;
+
 extern crate alloc;
 
 use core::{alloc::GlobalAlloc, cell::UnsafeCell, ptr::null_mut};
 
-use crate::mkb;
 use crate::utils::math;
 use crate::utils::modlink::ModLink;
 use crate::utils::relutil;

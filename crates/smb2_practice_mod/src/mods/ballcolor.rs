@@ -1,9 +1,10 @@
 use num_enum::TryFromPrimitive;
 
+use mkb::mkb;
+
 use crate::{
     app::AppContext,
     hook,
-    mkb::{self},
     systems::{
         draw,
         pref::{Pref, U8Pref},

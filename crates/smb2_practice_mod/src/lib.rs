@@ -7,12 +7,6 @@ extern crate alloc;
 
 mod app;
 mod asm;
-#[allow(dead_code)]
-#[allow(non_upper_case_globals)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-mod mkb;
-mod mkb_suppl;
 mod mods;
 mod systems;
 mod utils;

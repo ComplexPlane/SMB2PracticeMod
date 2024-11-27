@@ -1,8 +1,8 @@
 use core::ffi::c_void;
 use core::mem::{self, transmute};
 
-use crate::mkb;
 use crate::utils::ppc;
+use mkb::mkb;
 
 pub unsafe fn clear_dc_ic_cache(ptr: *mut c_void, size: usize) {
     mkb::DCFlushRange(ptr as *mut _, size as u32);

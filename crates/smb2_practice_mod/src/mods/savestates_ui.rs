@@ -1,6 +1,8 @@
+use mkb::mkb;
+
 use crate::{
     app::AppContext,
-    fmt, hook, mkb,
+    fmt, hook,
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},

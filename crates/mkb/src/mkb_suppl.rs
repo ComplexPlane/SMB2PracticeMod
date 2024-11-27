@@ -13,6 +13,7 @@ pub const GX_FALSE: u8 = 0;
 #[repr(i32)]
 pub enum CARDResult {
     Ready = 0,
+
     Busy = -1,
     WrongDevice = -2,
     NoCard = -3,

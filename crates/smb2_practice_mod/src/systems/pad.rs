@@ -1,4 +1,6 @@
-use crate::{app::AppContext, hook, mkb, utils::misc::for_c_arr_idx};
+use mkb::mkb;
+
+use crate::{app::AppContext, hook, utils::misc::for_c_arr_idx};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {

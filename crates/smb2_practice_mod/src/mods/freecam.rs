@@ -1,17 +1,18 @@
 use core::cell::RefCell;
 
 use critical_section::Mutex;
+use mkb::mkb;
 use once_cell::sync::Lazy;
 
 use crate::app::{self, AppContext};
-use crate::mkb::{S16Vec, Vec};
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
-use crate::{fmt, hook, mkb};
+use crate::{fmt, hook};
+use mkb::{S16Vec, Vec};
 
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;

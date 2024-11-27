@@ -1,8 +1,10 @@
 use core::ffi::CStr;
 
+use mkb::mkb;
+
 use crate::{
     app::AppContext,
-    asm, mkb,
+    asm,
     systems::{
         draw,
         pad::{Pad, Prio},

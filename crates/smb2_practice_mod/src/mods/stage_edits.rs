@@ -1,6 +1,8 @@
+use mkb::mkb;
+
 use num_enum::TryFromPrimitive;
 
-use crate::{app::AppContext, hook, mkb, systems::pref::U8Pref};
+use crate::{app::AppContext, hook, systems::pref::U8Pref};
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
     cx.stage_edits.borrow_mut().on_load_stagedef(stage_id, cx);

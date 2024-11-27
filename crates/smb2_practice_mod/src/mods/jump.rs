@@ -1,8 +1,9 @@
 use num_enum::TryFromPrimitive;
 
+use mkb::mkb;
+
 use crate::{
     app::AppContext,
-    mkb,
     systems::{
         pad::{Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},

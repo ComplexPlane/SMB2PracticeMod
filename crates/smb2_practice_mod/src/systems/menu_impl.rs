@@ -1,10 +1,12 @@
+use mkb::mkb;
+
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::app::AppContext;
 use crate::systems::draw::{self, NotifyDuration};
+use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
-use crate::{mkb, utils::tinymap::TinyMap};
 
 use super::binds::{self};
 use super::menu_defn::{self, AfterPush, MenuContext, Widget, ROOT_MENU};
