@@ -237,7 +237,7 @@ dependencies = [
 [[package]]
 name = "gamecube-tools"
 version = "0.1.0"
-source = "git+https://github.com/ComplexPlane/gamecube-tools#9c233b9dba43cbc3ebb4354a4092a77069a0f58c"
+source = "git+https://github.com/ComplexPlane/gamecube-tools#3ff81fce80f497a4e8d31fdcf136f33a6cc2c82c"
 dependencies = [
  "anyhow",
  "clap",
@@ -303,9 +303,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.165"
+version = "0.2.166"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcb4d3d38eab6c5239a362fa8bae48c03baf980a6e7079f063942d563ef3533e"
+checksum = "c2ccc108bbc0b1331bd061864e7cd823c0cab660bbe6970e66e2c0614decde36"
 
 [[package]]
 name = "libloading"
@@ -517,9 +517,9 @@ checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
 
 [[package]]
 name = "ruzstd"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99c3938e133aac070997ddc684d4b393777d293ba170f2988c8fd5ea2ad4ce21"
+checksum = "fad02996bfc73da3e301efe90b1837be9ed8f4a462b6ed410aa35d00381de89f"
 dependencies = [
  "twox-hash",
 ]
@@ -810,18 +810,18 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a13a42ed30c63171d820889b2981318736915150575b8d2d6dbee7edd68336ca"
+checksum = "cce3b5629d87654b53a49002acc2ce64aa5aa7255f5c718374a37ac7fd98c218"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "593e7c96176495043fcb9e87cf7659f4d18679b5bab6b92bdef359c76a7795dd"
+checksum = "74a82c26c3986af2623ec9eb890ff4aa19c006e30a1133dc9bd1830ec1612e20"
 dependencies = [
  "proc-macro2",
  "quote",
