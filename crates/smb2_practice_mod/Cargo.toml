@@ -1,0 +1,20 @@
+[package]
+name = "smb2_practice_mod"
+version = "1.1.0"
+edition = "2021"
+
+[dependencies]
+arrayvec = { version = "0.7.6", default-features = false }
+critical-section = "1.1.3"
+num_enum = { version = "0.7.3", default-features = false }
+once_cell = { version = "1.20.2", default-features = false, features = [
+    "critical-section",
+] }
+paste = "1.0.15"
+zerocopy = { version = "0.8.6", features = ["derive"] }
+mkb = { path = "../mkb" }
+
+[lib]
+crate-type = ["staticlib"]
+test = false
+bench = false
