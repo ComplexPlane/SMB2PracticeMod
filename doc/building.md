@@ -1,8 +1,14 @@
 # Building from Source
 
-You will need a Unix environment, such as macOS, Linux, or Windows+WSL2.
+Building is supported on macOS, Windows, and Linux/WSL.
 
 ## Install Dependencies
+
+You will need:
+
+1) Git
+2) System-native C++ toolchain (needed for linking Rust binaries)
+3) LLVM (needed for generating Rust -> C bindings for SMB2)
 
 ### macOS
 
@@ -12,39 +18,30 @@ Install Xcode command line tools:
 xcode-select --install
 ```
 
-[Install Homebrew](https://brew.sh/), then install some dependencies:
+Follow the [`bindgen` instructions for installing LLVM](https://rust-lang.github.io/rust-bindgen/requirements.html).
 
-```sh
-brew install cmake boost python3
-exec zsh
-```
+### Windows
+
+Install [Git for Windows](https://git-scm.com/downloads/win).
+
+Follow the [`bindgen` instructions for installing LLVM](https://rust-lang.github.io/rust-bindgen/requirements.html). On Windows on ARM, you may need to use the installer directly instead of `winget`.
+
+Set the `LIBCLANG_PATH` [environment variable](https://www.alphr.com/environment-variables-windows-10/) to `C:\Program Files\LLVM\lib` (or to wherever you installed LLVM).
 
 ### Ubuntu 24.04
 
-Install some dependency packages:
+Install GCC and LLVM:
 
 ```sh
 sudo apt update
-sudo apt install build-essential pkg-config cmake libboost-dev libboost-program-options-dev
+sudo apt install build-essential libclang-dev
 ```
-
-## Install devkitPro
-
-devkitPro is a gcc-based compiler suite for GameCube and other consoles. We currently only use it for linking.
-
-Install devkitPro by following the [devkitPro Getting Started](https://devkitpro.org/wiki/Getting_Started) page.
-
-Once `dkp-pacman` is installed, install the GameCube devkitPPC compiler suite:
-
-```sh
-sudo dkp-pacman -S gamecube-dev
-```
-
-Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc` (Ubuntu) or `~/.zshrc` (macOS). Restart your shell with `exec bash` / `exec zsh`.
 
 ## Install Rust
 
 [Install the base Rust toolchain](https://www.rust-lang.org/tools/install).
+
+On Windows, follow the installer's instructions for installing Visual Studio correctly.
 
 Next, install Rust Nightly and Rust sources:
 
@@ -64,6 +61,5 @@ cd SMB2PracticeMod
 
 Run one of:
 
-- `make`: Standard build that produces `SMB2PracticeMod.gci`.
-- `make debug`: Build that includes file/line/column panic debug information. This is very helpful for debugging crashes, but isn't the default as it significantly increases the binary size.
-- `make fix`: Auto-fix problems in the code like unused imports.
+- `cargo xtask`: Standard build that produces `target/SMB2PracticeMod.gci`.
+- `cargo xtask debug`: Build that includes file/line/column panic debug information. This is very helpful for debugging crashes, but isn't the default as it significantly increases the binary size.
