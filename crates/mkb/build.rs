@@ -31,8 +31,4 @@ fn generate_bindings() {
 
 fn main() {
     generate_bindings();
-    // For some reason, automatic change detection doesn't seem to be working. We don't include
-    // mkb.rs because it will "change" on each build.rs run, even if it's identical
-    println!("cargo:rerun-if-changed=src/mkb2.us.lst");
-    println!("cargo:rerun-if-changed=src/mkb2_ghidra.h");
 }
