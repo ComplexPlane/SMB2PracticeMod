@@ -42,7 +42,7 @@ impl PartialOrd for PracmodVersion {
 static PRACMOD_VERSION: PracmodVersion = PracmodVersion {
     semver: SemVer {
         major: 1,
-        minor: 1,
+        minor: 2,
         patch: 0,
     },
     release_cand: 1,
