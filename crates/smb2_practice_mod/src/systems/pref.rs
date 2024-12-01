@@ -100,7 +100,7 @@ pref_defn!(
     1 => Savestates: bool = true,
     2 => InputDisp: bool,
     3 => InputDispCenterLocation: bool,
-    4 => TimerShowRTA: bool = true,
+    4 => TimerShowRTA: bool,
     5 => CmChara: u8,
     6 => InputDispColor: u8,
     7 => InputDispNotchIndicators: bool = true,
