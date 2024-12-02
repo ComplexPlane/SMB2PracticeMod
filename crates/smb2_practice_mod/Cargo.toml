@@ -18,3 +18,6 @@ mkb = { path = "../mkb" }
 crate-type = ["staticlib"]
 test = false
 bench = false
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage_nightly)'] }
