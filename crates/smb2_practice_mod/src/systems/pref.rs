@@ -1,7 +1,13 @@
 extern crate alloc;
+use core::cell::Cell;
+
 use ::mkb::mkb_suppl::CARDResult;
 
-use crate::{app::AppContext, cstr, fmt, systems::draw::NotifyDuration};
+use crate::{
+    app::{with_global_cx, AppContext},
+    cstr, fmt,
+    systems::draw::NotifyDuration,
+};
 use alloc::vec;
 use alloc::vec::Vec;
 use num_enum::TryFromPrimitive;
@@ -201,8 +207,19 @@ struct DefaultU8 {
 
 #[derive(Clone, Default)]
 struct PrefState {
-    bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
-    u8s: [u8; U8_PREF_COUNT],
+    bools: [Cell<u8>; get_bit_array_len(BOOL_PREF_COUNT)],
+    u8s: [Cell<u8>; U8_PREF_COUNT],
+}
+
+impl PrefState {
+    fn copy_from(&self, other: &PrefState) {
+        for (curr, other) in self.bools.iter().zip(other.bools.iter()) {
+            curr.set(other.get());
+        }
+        for (curr, other) in self.u8s.iter().zip(other.u8s.iter()) {
+            curr.set(other.get());
+        }
+    }
 }
 
 #[repr(C, packed)]
@@ -250,28 +267,99 @@ where
 
 pub struct Pref {
     cardio: CardIo,
+    pref_buf: Option<Vec<u8>>,
+    import_error: Option<&'static str>,
+}
+
+// Globally accessible pref store
+#[derive(Default)]
+pub struct PrefDb {
     curr_state: PrefState,
     prev_state: PrefState,
     default_state: PrefState,
-    pref_buf: Option<Vec<u8>>,
-    import_error: Option<&'static str>,
-    save_queued: bool,
+    save_queued: Cell<bool>,
+}
+
+impl PrefDb {
+    pub fn get_bool(&self, bool_pref: BoolPref) -> bool {
+        Self::get_bool_pref(bool_pref, &self.curr_state)
+    }
+
+    pub fn get_u8(&self, u8_pref: U8Pref) -> u8 {
+        Self::get_u8_pref(u8_pref, &self.curr_state)
+    }
+
+    pub fn set_bool(&self, bool_pref: BoolPref, val: bool) {
+        Self::set_bool_pref(bool_pref, &self.curr_state, val);
+    }
+
+    pub fn set_u8(&self, u8_pref: U8Pref, val: u8) {
+        Self::set_u8_pref(u8_pref, &self.curr_state, val);
+    }
+
+    pub fn did_change_bool(&self, bool_pref: BoolPref) -> bool {
+        let curr = Self::get_bool_pref(bool_pref, &self.curr_state);
+        let prev = Self::get_bool_pref(bool_pref, &self.prev_state);
+        curr != prev
+    }
+
+    pub fn did_change_u8(&self, u8_pref: U8Pref) -> bool {
+        let curr = Self::get_u8_pref(u8_pref, &self.curr_state);
+        let prev = Self::get_u8_pref(u8_pref, &self.prev_state);
+        curr != prev
+    }
+
+    pub fn get_default_bool(&self, bool_pref: BoolPref) -> bool {
+        Self::get_bool_pref(bool_pref, &self.default_state)
+    }
+
+    pub fn get_default_u8(&self, u8_pref: U8Pref) -> u8 {
+        Self::get_u8_pref(u8_pref, &self.default_state)
+    }
+
+    pub fn reset_all_defaults(&self) {
+        self.curr_state.copy_from(&self.default_state);
+    }
+
+    pub fn save(&self) {
+        self.save_queued.set(true);
+    }
+
+    fn get_bool_pref(bool_pref: BoolPref, state: &PrefState) -> bool {
+        let val = state.bools[bool_pref as usize / 8].get() & (1 << (bool_pref as usize % 8));
+        val > 0
+    }
+
+    fn get_u8_pref(u8_pref: U8Pref, state: &PrefState) -> u8 {
+        state.u8s[u8_pref as usize].get()
+    }
+
+    fn set_bool_pref(bool_pref: BoolPref, state: &PrefState, val: bool) {
+        let current = &state.bools[bool_pref as usize / 8];
+        if val {
+            current.set(current.get() | 1 << (bool_pref as usize % 8));
+        } else {
+            current.set(current.get() & !(1 << (bool_pref as usize % 8)));
+        }
+    }
+
+    fn set_u8_pref(u8_pref: U8Pref, state: &PrefState, val: u8) {
+        state.u8s[u8_pref as usize].set(val);
+    }
 }
 
 impl Default for Pref {
     fn default() -> Self {
         let mut pref = Self {
             cardio: CardIo::new(),
-            curr_state: PrefState::default(),
-            prev_state: PrefState::default(),
-            default_state: PrefState::default(),
             pref_buf: Some(vec![0; PREF_BUF_SIZE]),
             import_error: None,
-            save_queued: false,
         };
 
-        pref.load_default_prefs();
-        pref.prev_state = pref.default_state.clone();
+        Self::load_default_prefs();
+        with_global_cx(|cx| {
+            cx.pref.prev_state.copy_from(&cx.pref.default_state);
+        });
         match pref.cardio.read_file(PREF_FILENAME) {
             Ok(mut buf) => {
                 pref.import_from_card_buf(&mut buf);
@@ -305,13 +393,15 @@ impl Pref {
                 value: 0,
             };
 
-            if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
-                entry.value = self.get_bool(bool_pref) as u16;
-            } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
-                entry.value = self.get_u8(u8_pref) as u16;
-            } else {
-                panic!("Failed to determine preference type");
-            }
+            with_global_cx(|cx| {
+                if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
+                    entry.value = cx.pref.get_bool(bool_pref) as u16;
+                } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
+                    entry.value = cx.pref.get_u8(u8_pref) as u16;
+                } else {
+                    panic!("Failed to determine preference type");
+                }
+            });
 
             buf = append_to_byte_slice(buf, &entry);
         }
@@ -329,97 +419,39 @@ impl Pref {
             return; // Preferences file format too new for this mod
         }
 
-        for _ in 0..header.num_prefs {
-            let entry;
-            (entry, buf) = read_from_byte_slice::<FilePrefEntry>(buf);
-            if let Ok(pref_id) = PrefId::try_from(entry.id) {
-                if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
-                    Self::set_bool_pref(bool_pref, &mut self.curr_state, entry.value > 0);
-                } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
-                    Self::set_u8_pref(
-                        u8_pref,
-                        &mut self.curr_state,
-                        entry.value.try_into().unwrap_or(0),
-                    );
+        with_global_cx(|cx| {
+            for _ in 0..header.num_prefs {
+                let entry;
+                (entry, buf) = read_from_byte_slice::<FilePrefEntry>(buf);
+                if let Ok(pref_id) = PrefId::try_from(entry.id) {
+                    if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
+                        PrefDb::set_bool_pref(bool_pref, &cx.pref.curr_state, entry.value > 0);
+                    } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
+                        PrefDb::set_u8_pref(
+                            u8_pref,
+                            &cx.pref.curr_state,
+                            entry.value.try_into().unwrap_or(0),
+                        );
+                    } else {
+                        // Unknown preference type somehow, ignore
+                    }
                 } else {
-                    // Unknown preference type somehow, ignore
+                    // Unknown pref ID, ignore
                 }
-            } else {
-                // Unknown pref ID, ignore
             }
-        }
+        });
     }
 
-    fn load_default_prefs(&mut self) {
-        self.default_state = PrefState::default(); // Zero
-        for default_bool in DEFAULT_BOOLS {
-            Self::set_bool_pref(default_bool.id, &mut self.default_state, default_bool.value);
-        }
-        for default_u8 in DEFAULT_U8S {
-            Self::set_u8_pref(default_u8.id, &mut self.default_state, default_u8.value);
-        }
-        self.curr_state = self.default_state.clone();
-    }
-
-    fn get_bool_pref(bool_pref: BoolPref, state: &PrefState) -> bool {
-        let val = state.bools[bool_pref as usize / 8] & (1 << (bool_pref as usize % 8));
-        val > 0
-    }
-
-    fn get_u8_pref(u8_pref: U8Pref, state: &PrefState) -> u8 {
-        state.u8s[u8_pref as usize]
-    }
-
-    fn set_bool_pref(bool_pref: BoolPref, state: &mut PrefState, val: bool) {
-        if val {
-            state.bools[bool_pref as usize / 8] |= 1 << (bool_pref as usize % 8);
-        } else {
-            state.bools[bool_pref as usize / 8] &= !(1 << (bool_pref as usize % 8));
-        }
-    }
-
-    fn set_u8_pref(u8_pref: U8Pref, state: &mut PrefState, val: u8) {
-        state.u8s[u8_pref as usize] = val;
-    }
-
-    pub fn get_bool(&self, bool_pref: BoolPref) -> bool {
-        Self::get_bool_pref(bool_pref, &self.curr_state)
-    }
-
-    pub fn get_u8(&self, u8_pref: U8Pref) -> u8 {
-        Self::get_u8_pref(u8_pref, &self.curr_state)
-    }
-
-    pub fn set_bool(&mut self, bool_pref: BoolPref, val: bool) {
-        Self::set_bool_pref(bool_pref, &mut self.curr_state, val);
-    }
-
-    pub fn set_u8(&mut self, u8_pref: U8Pref, val: u8) {
-        Self::set_u8_pref(u8_pref, &mut self.curr_state, val);
-    }
-
-    pub fn did_change_bool(&self, bool_pref: BoolPref) -> bool {
-        let curr = Self::get_bool_pref(bool_pref, &self.curr_state);
-        let prev = Self::get_bool_pref(bool_pref, &self.prev_state);
-        curr != prev
-    }
-
-    pub fn did_change_u8(&self, u8_pref: U8Pref) -> bool {
-        let curr = Self::get_u8_pref(u8_pref, &self.curr_state);
-        let prev = Self::get_u8_pref(u8_pref, &self.prev_state);
-        curr != prev
-    }
-
-    pub fn get_default_bool(&self, bool_pref: BoolPref) -> bool {
-        Self::get_bool_pref(bool_pref, &self.default_state)
-    }
-
-    pub fn get_default_u8(&self, u8_pref: U8Pref) -> u8 {
-        Self::get_u8_pref(u8_pref, &self.default_state)
-    }
-
-    pub fn reset_all_defaults(&mut self) {
-        self.curr_state = self.default_state.clone();
+    fn load_default_prefs() {
+        with_global_cx(|cx| {
+            for default_bool in DEFAULT_BOOLS {
+                PrefDb::set_bool_pref(default_bool.id, &cx.pref.default_state, default_bool.value);
+            }
+            for default_u8 in DEFAULT_U8S {
+                PrefDb::set_u8_pref(default_u8.id, &cx.pref.default_state, default_u8.value);
+            }
+            cx.pref.curr_state.copy_from(&cx.pref.default_state);
+        });
     }
 
     pub fn tick(&mut self, cx: &AppContext) {
@@ -427,7 +459,9 @@ impl Pref {
 
         self.cardio.tick();
         // Runs after all prefs have been set on a frame
-        self.prev_state = self.curr_state.clone();
+        with_global_cx(|cx| {
+            cx.pref.prev_state.copy_from(&cx.pref.curr_state);
+        });
 
         if let Some(err) = self.import_error {
             draw.notify(draw::RED, NotifyDuration::Long, err);
@@ -453,16 +487,14 @@ impl Pref {
         }
 
         // Start a write if a save is pending and a write is not pending
-        if self.save_queued {
-            if let Some(mut buf) = self.pref_buf.take() {
-                self.export_to_card_buf(&mut buf);
-                self.cardio.begin_write_file(PREF_FILENAME, buf);
-                self.save_queued = false;
+        with_global_cx(|cx| {
+            if cx.pref.save_queued.get() {
+                if let Some(mut buf) = self.pref_buf.take() {
+                    self.export_to_card_buf(&mut buf);
+                    self.cardio.begin_write_file(PREF_FILENAME, buf);
+                    cx.pref.save_queued.set(false);
+                }
             }
-        }
-    }
-
-    pub fn save(&mut self) {
-        self.save_queued = true;
+        });
     }
 }
