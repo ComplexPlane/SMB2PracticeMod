@@ -13,14 +13,18 @@ mod utils;
 
 use crate::utils::patch;
 
+#[cfg(target_arch = "powerpc")]
+use core::panic::PanicInfo;
 use core::{
     ffi::{c_char, c_void},
-    panic::PanicInfo,
     ptr::addr_of,
 };
 
 use critical_section::RawRestoreState;
 
+// Disable unless we're buliding with our custom target explicitly, so rust-analyzer doesn't trip up
+// on conflicting panic handler implementations with std
+#[cfg(target_arch = "powerpc")]
 #[panic_handler]
 fn on_panic(panic_info: &PanicInfo) -> ! {
     match panic_info.location() {

@@ -85,6 +85,6 @@ impl From<mkb::GXColor> for u32 {
         ((color.a as u32) << 24)
             | ((color.r as u32) << 16)
             | ((color.g as u32) << 8)
-            | ((color.b as u32) << 0)
+            | (color.b as u32)
     }
 }
