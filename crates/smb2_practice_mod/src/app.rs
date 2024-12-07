@@ -1,6 +1,8 @@
 use core::cell::RefCell;
 
+use critical_section::{CriticalSection, Mutex};
 use mkb::mkb;
+use once_cell::sync::Lazy;
 
 use crate::{
     hook,
@@ -36,46 +38,46 @@ where
     critical_section::with(|cs| f(GLOBAL_CONTEXT.borrow(cs)))
 }
 
-pub static APP_CONTEXT: once_cell::sync::Lazy<critical_section::Mutex<AppContext>> =
-    once_cell::sync::Lazy::new(|| critical_section::Mutex::new(AppContext::new()));
+static APP_CONTEXT: Lazy<Mutex<RefCell<AppContext>>> =
+    Lazy::new(|| Mutex::new(RefCell::new(AppContext::new())));
 
 #[derive(Default)]
-pub struct AppContext {
-    pub process_inputs_hook: RefCell<ProcessInputsHook>,
-    pub draw_debug_text_hook: RefCell<DrawDebugTextHook>,
-    pub oslink_hook: RefCell<OSLinkHook>,
-    pub game_ready_init_hook: RefCell<GameReadyInitHook>,
-    pub game_play_tick_hook: RefCell<GamePlayTickHook>,
+struct AppContext {
+    process_inputs_hook: ProcessInputsHook,
+    draw_debug_text_hook: DrawDebugTextHook,
+    oslink_hook: OSLinkHook,
+    game_ready_init_hook: GameReadyInitHook,
+    game_play_tick_hook: GamePlayTickHook,
 
-    pub pad: RefCell<Pad>,
-    pub binds: RefCell<Binds>,
-    pub menu_impl: RefCell<MenuImpl>,
-    pub unlock: RefCell<Unlock>,
-    pub iw: RefCell<Iw>,
-    pub lib_save_state: RefCell<LibSaveState>,
-    pub save_states_ui: RefCell<SaveStatesUi>,
-    pub fallout: RefCell<Fallout>,
-    pub jump: RefCell<Jump>,
-    pub physics: RefCell<Physics>,
-    pub input_display: RefCell<InputDisplay>,
-    pub go_to_story: RefCell<GoToStory>,
-    pub cm_seg: RefCell<CmSeg>,
-    pub banans: RefCell<Banans>,
-    pub marathon: RefCell<Marathon>,
-    pub ball_color: RefCell<BallColor>,
-    pub freecam: RefCell<Freecam>,
-    pub timer: RefCell<Timer>,
-    pub dpad: RefCell<Dpad>,
-    pub il_battle: RefCell<IlBattle>,
-    pub il_mark: RefCell<IlMark>,
-    pub camera: RefCell<Camera>,
-    pub stage_edits: RefCell<StageEdits>,
-    pub hide: RefCell<Hide>,
-    pub sfx: RefCell<Sfx>,
-    pub scratch: RefCell<Scratch>,
-    pub validate: RefCell<Validate>,
-    pub draw: RefCell<Draw>,
-    pub pref: RefCell<Pref>,
+    pad: Pad,
+    binds: Binds,
+    menu_impl: MenuImpl,
+    unlock: Unlock,
+    iw: Iw,
+    lib_save_state: LibSaveState,
+    save_states_ui: SaveStatesUi,
+    fallout: Fallout,
+    jump: Jump,
+    physics: Physics,
+    input_display: InputDisplay,
+    go_to_story: GoToStory,
+    cm_seg: CmSeg,
+    banans: Banans,
+    marathon: Marathon,
+    ball_color: BallColor,
+    freecam: Freecam,
+    timer: Timer,
+    dpad: Dpad,
+    il_battle: IlBattle,
+    il_mark: IlMark,
+    camera: Camera,
+    stage_edits: StageEdits,
+    hide: Hide,
+    sfx: Sfx,
+    scratch: Scratch,
+    validate: Validate,
+    draw: Draw,
+    pref: Pref,
 }
 
 impl AppContext {
@@ -84,86 +86,98 @@ impl AppContext {
         Self::default()
     }
 
-    fn init(&self) {
-        self.process_inputs_hook.borrow_mut().hook();
-        self.draw_debug_text_hook.borrow_mut().hook();
-        self.oslink_hook.borrow_mut().hook();
+    fn init(&mut self) {
+        self.process_inputs_hook.hook();
+        self.draw_debug_text_hook.hook();
+        self.oslink_hook.hook();
 
-        self.pad.borrow_mut().on_main_loop_load(self);
-        self.lib_save_state.borrow_mut().on_main_loop_load(self);
-        self.save_states_ui.borrow_mut().on_main_loop_load(self);
-        self.fallout.borrow_mut().on_main_loop_load(self);
-        self.cm_seg.borrow_mut().on_main_loop_load(self);
-        self.ball_color.borrow_mut().on_main_loop_load(self);
-        self.freecam.borrow_mut().on_main_loop_load(self);
-        self.dpad.borrow_mut().on_main_loop_load(self);
-        self.stage_edits.borrow_mut().on_main_loop_load(self);
-        self.hide.borrow_mut().on_main_loop_load(self);
-        self.sfx.borrow_mut().on_main_loop_load(self);
-        self.validate.borrow_mut().on_main_loop_load(self);
+        self.pad.on_main_loop_load();
+        self.lib_save_state.on_main_loop_load();
+        self.save_states_ui.on_main_loop_load();
+        self.fallout.on_main_loop_load();
+        self.cm_seg.on_main_loop_load();
+        self.ball_color.on_main_loop_load();
+        self.freecam.on_main_loop_load();
+        self.dpad.on_main_loop_load();
+        self.stage_edits.on_main_loop_load();
+        self.hide.on_main_loop_load();
+        with_global_cx(|gcx| {
+            self.sfx.on_main_loop_load(gcx);
+        });
+        self.validate.on_main_loop_load();
     }
 }
 
 // Tick functions hook
-hook!(ProcessInputsHook => (), mkb::process_inputs, |cx| {
-    cx.process_inputs_hook.borrow().call();
+hook!(ProcessInputsHook => (), mkb::process_inputs, || {
+    critical_section::with(|cs| {
+        let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
 
-    cx.pad.borrow_mut().tick(cx);
-    cx.binds.borrow_mut().tick(cx);
-    cx.unlock.borrow_mut().tick(cx);
-    cx.iw.borrow_mut().tick(cx);
-    cx.save_states_ui.borrow_mut().tick(cx);
-    cx.menu_impl.borrow_mut().tick(cx);
-    cx.fallout.borrow_mut().tick(cx);
-    cx.jump.borrow_mut().tick(cx);
-    cx.physics.borrow_mut().tick(cx);
-    cx.input_display.borrow_mut().tick(cx);
-    cx.go_to_story.borrow_mut().tick(cx);
-    cx.cm_seg.borrow_mut().tick(cx);
-    cx.banans.borrow_mut().tick(cx);
-    cx.marathon.borrow_mut().tick(cx);
-    cx.ball_color.borrow_mut().tick(cx);
-    cx.freecam.borrow_mut().tick(cx);
-    cx.il_battle.borrow_mut().tick(cx);
-    cx.il_mark.borrow_mut().tick(cx);
-    cx.camera.borrow_mut().tick(cx);
-    cx.stage_edits.borrow_mut().tick(cx);
-    cx.validate.borrow_mut().tick(cx);
-    cx.scratch.borrow_mut().tick(cx);
-    cx.pref.borrow_mut().tick(cx);
+        cx.process_inputs_hook.call();
+
+        with_global_cx(|gcx| {
+            cx.pad.tick();
+            cx.binds.tick(&mut cx.pad);
+            cx.unlock.tick(cx);
+            cx.iw.tick(cx);
+            cx.save_states_ui.tick(cx);
+            cx.menu_impl.tick(cx);
+            cx.fallout.tick(cx);
+            cx.jump.tick(cx);
+            cx.physics.tick(cx);
+            cx.input_display.tick(cx);
+            cx.go_to_story.tick(cx);
+            cx.cm_seg.tick(cx);
+            cx.banans.tick(cx);
+            cx.marathon.tick(cx);
+            cx.ball_color.tick(gcx);
+            cx.freecam.tick(cx);
+            cx.il_battle.tick(cx);
+            cx.il_mark.tick(cx);
+            cx.camera.tick(cx);
+            cx.stage_edits.tick(cx);
+            cx.validate.tick(cx);
+            cx.scratch.tick(cx);
+            cx.pref.tick(cx);
+        })
+    });
 });
 
 // Draw functions hook
-hook!(DrawDebugTextHook => (), mkb::draw_debugtext, |cx| {
-    cx.draw_debug_text_hook.borrow().call();
+hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
+    critical_section::with(|cs| {
+        let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
 
-    // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
-    // elements. The original screenshot call is nopped.
-    unsafe {
-        if mkb::g_pause_status == 1 {
-            mkb::take_pausemenu_screenshot(
-                &raw mut mkb::fullscreen_texture_buf as *mut _,
-                0,
-                0,
-                (*mkb::current_render_mode).fbWidth as i16,
-                (*mkb::current_render_mode).efbHeight as i16,
-                mkb::GX_TF_RGB5A3,
-            );
-        }
-    };
+        cx.draw_debug_text_hook.call();
 
-    cx.draw.borrow().predraw();
+        // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
+        // elements. The original screenshot call is nopped.
+        unsafe {
+            if mkb::g_pause_status == 1 {
+                mkb::take_pausemenu_screenshot(
+                    &raw mut mkb::fullscreen_texture_buf as *mut _,
+                    0,
+                    0,
+                    (*mkb::current_render_mode).fbWidth as i16,
+                    (*mkb::current_render_mode).efbHeight as i16,
+                    mkb::GX_TF_RGB5A3,
+                );
+            }
+        };
 
-    cx.timer.borrow_mut().draw(cx);
-    cx.iw.borrow_mut().draw(cx);
-    cx.il_battle.borrow_mut().draw(cx);
-    cx.cm_seg.borrow_mut().draw(cx);
-    cx.input_display.borrow_mut().draw(cx);
-    cx.menu_impl.borrow_mut().draw(cx);
-    cx.draw.borrow_mut().draw(cx);
-    cx.il_mark.borrow_mut().draw(cx);
-    cx.physics.borrow_mut().draw(cx);
-    cx.scratch.borrow_mut().draw(cx);
+        cx.draw.predraw();
+
+        cx.timer.draw(cx);
+        cx.iw.draw(cx);
+        cx.il_battle.draw(cx);
+        cx.cm_seg.draw(cx);
+        cx.input_display.draw(cx);
+        cx.menu_impl.draw(cx);
+        cx.draw.draw(cx);
+        cx.il_mark.draw(cx);
+        cx.physics.draw(cx);
+        cx.scratch.draw(cx);
+    });
 });
 
 // MainGameLoad calls
@@ -171,42 +185,53 @@ hook!(OSLinkHook,
         rel_buffer: *mut mkb::OSModuleHeader,
         bss_buffer: *mut core::ffi::c_void => u8,
         mkb::OSLink,
-        |rel_buffer, bss_buffer, cx| {
-    let ret = cx.oslink_hook.borrow().call(rel_buffer, bss_buffer);
+        |rel_buffer, bss_buffer| {
 
-    let module_id = ModuleId::try_from(unsafe{*rel_buffer}.info.id);
-    if let Ok(ModuleId::MainGame) = module_id {
-        cx.game_ready_init_hook.borrow_mut().hook();
-        cx.game_play_tick_hook.borrow_mut().hook();
-    }
+    critical_section::with(|cs| {
+        let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
 
-    ret
+        let ret = cx.oslink_hook.call(rel_buffer, bss_buffer);
+
+        let module_id = ModuleId::try_from(unsafe{*rel_buffer}.info.id);
+        if let Ok(ModuleId::MainGame) = module_id {
+            cx.game_ready_init_hook.hook();
+            cx.game_play_tick_hook.hook();
+        }
+
+        ret
+    })
 });
 
-hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, |cx| {
-    cx.stage_edits.borrow_mut().on_game_ready_init(cx);
-    cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
-    cx.game_ready_init_hook.borrow().call();
+hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, || {
+    critical_section::with(|cs| {
+        let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
+
+        cx.stage_edits.on_game_ready_init(cx);
+        with_global_cx(|gcx| {
+            BallColor::switch_monkey(gcx);
+        });
+        cx.game_ready_init_hook.call();
+    });
 });
 
-hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, |cx| {
-    cx.game_play_tick_hook.borrow().call();
+hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, || {
+    critical_section::with(|cs| {
+        let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
 
-    let validate = &mut cx.validate.borrow_mut();
-    let pref = &mut cx.pref.borrow_mut();
-    let lib_save_state = &mut cx.lib_save_state.borrow_mut();
-    let menu_impl = &mut cx.menu_impl.borrow_mut();
-    let physics = &mut cx.physics.borrow_mut();
-    let pad = &mut cx.pad.borrow_mut();
+        cx.game_play_tick_hook.call();
 
-    validate.validate_run(pref, lib_save_state, menu_impl, physics, pad);
-    cx.il_mark.borrow_mut().validate_attempt(validate);
-    cx.il_battle.borrow_mut().validate_attempt(validate);
+        with_global_cx(|gcx| {
+            cx.validate.validate_run(gcx, &cx.lib_save_state, &cx.menu_impl, &cx.physics, &cx.pad);
+        });
+
+        cx.il_mark.validate_attempt(&cx.validate);
+        cx.il_battle.validate_attempt(&cx.validate);
+    });
 });
 
 pub fn init() {
     critical_section::with(|cs| {
-        APP_CONTEXT.borrow(cs).init();
+        APP_CONTEXT.borrow_ref_mut(cs).init();
     });
 }
 
@@ -215,16 +240,18 @@ pub fn tick() {
         // Replace overwritten function call
         mkb::perf_init_timer(4);
 
-        critical_section::with(|cs| {
-            let cx = APP_CONTEXT.borrow(cs);
-            let pref = cx.pref.borrow_mut();
-            if pref.get_bool(BoolPref::DebugMode) {
+        with_global_cx(|cx| {
+            if cx.pref.get_bool(BoolPref::DebugMode) {
                 mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
             } else {
                 mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);
             }
+        });
 
-            cx.pad.borrow_mut().on_frame_start();
+        critical_section::with(|cs| {
+            let cx = &mut APP_CONTEXT.borrow_ref_mut(cs);
+
+            cx.pad.on_frame_start();
         });
     }
 }
