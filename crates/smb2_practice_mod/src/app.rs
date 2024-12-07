@@ -18,28 +18,13 @@ use crate::{
         draw::Draw,
         menu_impl::MenuImpl,
         pad::Pad,
-        pref::{BoolPref, Pref, PrefDb},
+        pref::{BoolPref, Pref},
     },
     utils::{libsavestate::LibSaveState, relutil::ModuleId},
 };
 
-#[derive(Default)]
-pub struct GlobalContext {
-    pub pref: PrefDb,
-}
-
-pub static GLOBAL_CONTEXT: once_cell::sync::Lazy<critical_section::Mutex<GlobalContext>> =
-    once_cell::sync::Lazy::new(|| critical_section::Mutex::new(GlobalContext::default()));
-
-pub fn with_global_cx<F, R>(f: F) -> R
-where
-    F: FnOnce(&GlobalContext) -> R,
-{
-    critical_section::with(|cs| f(GLOBAL_CONTEXT.borrow(cs)))
-}
-
-static APP_CONTEXT: Lazy<Mutex<RefCell<AppContext>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(AppContext::new())));
+pub static APP_CONTEXT: once_cell::sync::Lazy<critical_section::Mutex<AppContext>> =
+    once_cell::sync::Lazy::new(|| critical_section::Mutex::new(AppContext::new()));
 
 #[derive(Default)]
 struct AppContext {
