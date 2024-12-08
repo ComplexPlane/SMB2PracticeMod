@@ -33,7 +33,11 @@ macro_rules! hook {
                         &self.instrs,
                         &mut chained_func_addr,
                     );
-                    self.chained_func.set(Some(core::mem::transmute(chained_func_addr)));
+                    let chained_func = core::mem::transmute::<
+                        *const core::ffi::c_void,
+                        extern "C" fn($($arg,)*) -> $ret
+                    >(chained_func_addr);
+                    self.chained_func.set(Some(chained_func));
                 }
             }
 

@@ -1,3 +1,5 @@
+use core::cmp::Ordering;
+
 use mkb::mkb;
 
 use arrayvec::{ArrayString, ArrayVec};
@@ -79,15 +81,12 @@ pub struct MenuImpl {
 impl Default for MenuImpl {
     fn default() -> Self {
         let mut menu_stack = ArrayVec::<Menu, 5>::new();
-        match ROOT_MENU {
-            Widget::Menu { label, widgets } => {
-                menu_stack.push(Menu {
-                    label,
-                    widgets,
-                    ptr: &ROOT_MENU as *const _ as usize,
-                });
-            }
-            _ => {}
+        if let Widget::Menu { label, widgets } = ROOT_MENU {
+            menu_stack.push(Menu {
+                label,
+                widgets,
+                ptr: &ROOT_MENU as *const _ as usize,
+            });
         }
         Self {
             visible: false,
@@ -145,11 +144,11 @@ impl MenuImpl {
             .button_repeat(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High);
 
         // slow down scroll
-        if self.edit_tick > 0 {
-            self.edit_tick -= 1;
-        } else if self.edit_tick < 0 {
-            self.edit_tick += 1;
-        }
+        self.edit_tick = match self.edit_tick.cmp(&0) {
+            Ordering::Less => self.edit_tick + 1,
+            Ordering::Equal => self.edit_tick - 1,
+            Ordering::Greater => self.edit_tick,
+        };
         if self.intedit_tick > 0 {
             self.intedit_tick -= 1;
         }
@@ -212,17 +211,15 @@ impl MenuImpl {
             Widget::IntEdit { pref, min, max, .. } => {
                 let mut next = cx.pref.get_u8(*pref) as i32;
 
-                if cx
+                let a_change = cx
                     .pad
                     .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick > 0
-                {
-                    self.edit_tick = 0;
-                } else if cx
+                    && self.edit_tick > 0;
+                let y_change = cx
                     .pad
                     .button_released(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick < 0
-                {
+                    && self.edit_tick < 0;
+                if a_change || y_change {
                     self.edit_tick = 0;
                 }
 
@@ -654,8 +651,7 @@ impl MenuImpl {
                 as f32
                 * 0x8000 as f32
                 / (period_frames as f32 / 2.0);
-            let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
-            lerp
+            (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0
         }
     }
 }
@@ -768,12 +764,7 @@ fn draw_help_layout() {
         draw::GRAY,
     );
     // draw b: back
-    draw::debug_text(
-        (START + 3 * BLOCK_WIDTH) as u32,
-        Y_HEIGHT,
-        draw::LIGHT_RED,
-        "B",
-    );
+    draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B");
     draw::debug_text(4 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
     draw::debug_text(
         4 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,

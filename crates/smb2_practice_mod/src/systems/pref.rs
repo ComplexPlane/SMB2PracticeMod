@@ -231,7 +231,7 @@ const fn get_bit_array_len(flags: usize) -> usize {
     n
 }
 
-fn append_to_byte_slice<'a, 'b, T>(dest: &'a mut [u8], source: &'b T) -> &'a mut [u8]
+fn append_to_byte_slice<'a, T>(dest: &'a mut [u8], source: &T) -> &'a mut [u8]
 where
     T: IntoBytes + Immutable,
 {
@@ -273,8 +273,8 @@ impl Default for Pref {
         pref.load_default_prefs();
         pref.prev_state = pref.default_state.clone();
         match pref.cardio.read_file(PREF_FILENAME) {
-            Ok(mut buf) => {
-                pref.import_from_card_buf(&mut buf);
+            Ok(buf) => {
+                pref.import_from_card_buf(&buf);
             }
             Err(card_result) => {
                 if card_result != CARDResult::NoFile {
@@ -433,7 +433,7 @@ impl Pref {
         }
 
         // Check if a pending card write has completed
-        if matches!(self.pref_buf, None) {
+        if self.pref_buf.is_none() {
             if let Some((buf, card_result)) = self.cardio.get_write_result() {
                 self.pref_buf = Some(buf);
                 if !matches!(card_result, CARDResult::Ready) {

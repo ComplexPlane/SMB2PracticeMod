@@ -82,7 +82,7 @@ impl Iw {
             let story_save = &mut mkb::storymode_save_files[mkb::selected_story_file_idx as usize];
             if self.iw_files & (1 << mkb::selected_story_file_idx) != 0 {
                 let world = story_save.current_world as i32 + dir;
-                if world < 0 || world > 9 {
+                if !(0..=9).contains(&world) {
                     story_save.is_valid = 0;
                     self.iw_files &= !(1 << mkb::selected_story_file_idx);
                 } else {
@@ -190,7 +190,7 @@ impl Iw {
             if !pref.get_bool(BoolPref::IwTimer)
                 || mkb::main_mode != mkb::MD_GAME
                 || mkb::main_game_mode != mkb::STORY_MODE
-                || !(asm::currently_playing_iw != 0)
+                || asm::currently_playing_iw == 0
                 || freecam.should_hide_hud(pref)
             {
                 return;

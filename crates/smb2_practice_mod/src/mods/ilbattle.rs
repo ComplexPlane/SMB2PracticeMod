@@ -88,7 +88,7 @@ impl IlBattle {
         self.buzzer_message_count = (self.buzzer_message_count + 1) % 30;
         draw::debug_text(
             X - 12 * CWIDTH,
-            start_y + 1 * CHEIGHT,
+            start_y + CHEIGHT,
             draw::RED,
             "EPIC BUZZER BEATER B)",
         );

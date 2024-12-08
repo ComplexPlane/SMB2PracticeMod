@@ -171,7 +171,7 @@ impl CardIo {
     // Writes asynchronously.
     // Takes ownership of the write buffer and gives it back when the write is complete
     pub fn begin_write_file(&mut self, file_name: &str, buf: Vec<u8>) {
-        assert!(matches!(self.write_request, None));
+        assert!(self.write_request.is_none());
         self.write_request = Some(WriteRequest {
             file_name: ArrayString::from(file_name).unwrap(),
             buf,

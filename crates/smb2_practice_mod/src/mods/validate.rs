@@ -167,7 +167,7 @@ impl Validate {
             }
 
             let half_width = start.z - end.z;
-            if 1.192093e-07 < half_width {
+            if 1.19209e-07 < half_width {
                 end.x -= (start.x - end.x) * (end.z / half_width);
                 end.y -= (start.y - end.y) * (end.z / half_width);
             }

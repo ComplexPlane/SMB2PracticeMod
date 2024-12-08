@@ -32,10 +32,12 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
 // Re-entrant hook, cannot use app state
 hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode| {
     with_mutex(&GLOBALS, |cx| {
-        let enabled = !cx.savestates_enabled.get()
-            || !(unsafe {mkb::main_mode} == mkb::MD_GAME
-            && unsafe {mkb::main_game_mode} == mkb::PRACTICE_MODE &&
-            mode == mkb::MINIMAP_SHRINK);
+        let enabled = !(
+            cx.savestates_enabled.get() &&
+            unsafe {mkb::main_mode} == mkb::MD_GAME &&
+            unsafe {mkb::main_game_mode} == mkb::PRACTICE_MODE &&
+            mode == mkb::MINIMAP_SHRINK
+        );
         if enabled {
             cx.set_minimap_mode_hook.call(mode);
         }

@@ -176,7 +176,7 @@ impl SaveState {
                 return Err(LoadError::SubMode);
             }
 
-            if matches!(self.memstore, None) {
+            if self.memstore.is_none() {
                 return Err(LoadError::Empty);
             }
 
@@ -195,9 +195,9 @@ impl SaveState {
             // paused
             self.handle_pause_menu_load();
 
-            let mut memstore = self.memstore.as_mut().unwrap();
+            let memstore = self.memstore.as_mut().unwrap();
             memstore.reset();
-            Self::pass_over_regions(&mut MemStore::Load(&mut memstore), timer);
+            Self::pass_over_regions(&mut MemStore::Load(memstore), timer);
 
             Self::destruct_non_gameplay_sprites();
             Self::destruct_distracting_effects();
@@ -255,7 +255,7 @@ impl SaveState {
                     continue;
                 }
 
-                if let Some(f) = mkb::sprites[i as usize].disp_func {
+                if let Some(f) = mkb::sprites[i].disp_func {
                     if f as usize == 0x8032a4bc {
                         *mkb::sprite_pool_info.status_list.add(i) = 0;
                         break;
@@ -279,6 +279,7 @@ impl SaveState {
             }
 
             let sprite = &mkb::sprites[i];
+            #[allow(clippy::fn_address_comparisons)]
             let post_goal_sprite_tick = if let Some(tick_func) = sprite.tick_func {
                 tick_func == mkb::sprite_fallout_tick
                     || tick_func == mkb::sprite_bonus_finish_or_perfect_tick
@@ -293,6 +294,7 @@ impl SaveState {
                 false
             };
 
+            #[allow(clippy::fn_address_comparisons)]
             let post_goal_sprite_disp = if let Some(disp_func) = sprite.disp_func {
                 disp_func == mkb::sprite_goal_disp
                     || disp_func == mkb::sprite_clear_score_disp
@@ -329,7 +331,7 @@ impl SaveState {
     }
 
     pub fn is_empty(&self) -> bool {
-        matches!(self.memstore, None)
+        self.memstore.is_none()
     }
 
     pub fn clear(&mut self) {

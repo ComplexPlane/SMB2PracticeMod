@@ -117,7 +117,7 @@ impl StageEdits {
                 if (*mkb::stagedef).goal_count < 1 {
                     return;
                 }
-                self.rev_goal_idx %= (*mkb::stagedef).goal_count as u32;
+                self.rev_goal_idx %= (*mkb::stagedef).goal_count;
 
                 let start = (*mkb::stagedef).start;
                 let goal = (*mkb::stagedef).goal_list.add(self.rev_goal_idx as usize);

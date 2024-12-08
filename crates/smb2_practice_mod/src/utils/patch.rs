@@ -16,7 +16,7 @@ impl<T> BranchStorage<T> for &Cell<T> {
     }
 
     unsafe fn get_ptr(&self) -> *const c_void {
-        transmute(*self)
+        self.as_ptr() as *const _
     }
 }
 
@@ -60,9 +60,8 @@ unsafe fn write_branch_main(
 }
 
 pub unsafe fn write_word(ptr: *mut usize, data: usize) -> usize {
-    let p = ptr as *mut usize;
-    let orig_word = *p;
-    *p = data;
+    let orig_word = *ptr;
+    *ptr = data;
     clear_dc_ic_cache(ptr as *mut _, mem::size_of::<usize>());
 
     orig_word
@@ -93,7 +92,7 @@ pub unsafe fn hook_function(
         write_branch(func, dest as *mut _);
 
         // Use the old hooked func as the trampoline dest
-        *tramp_dest = transmute(old_dest);
+        *tramp_dest = old_dest as *const c_void;
     } else {
         // Func has not been hooked yet
         // Original instruction
@@ -101,11 +100,14 @@ pub unsafe fn hook_function(
         clear_dc_ic_cache(tramp_instrs.as_ptr() as *mut _, size_of::<usize>());
 
         // Branch to original func past hook
-        write_branch(&tramp_instrs[1], transmute(func.add(1) as *const _));
+        write_branch(
+            &tramp_instrs[1],
+            transmute::<*const usize, *const c_void>(func.add(1) as *const _),
+        );
 
         // The function pointer to run as the original function is the addr of the trampoline
         // instructions array
-        *tramp_dest = transmute(tramp_instrs.as_ptr());
+        *tramp_dest = transmute::<*const Cell<usize>, *const c_void>(tramp_instrs.as_ptr());
 
         // Write actual hook
         write_branch(func, dest as *mut _);
