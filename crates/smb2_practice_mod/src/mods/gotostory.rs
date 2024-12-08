@@ -38,7 +38,7 @@ impl GoToStory {
         }
     }
 
-    pub fn tick(&mut self, _cx: &AppContext) {
+    pub fn tick(&mut self) {
         unsafe {
             match self.state {
                 State::LoadMenuReq => {

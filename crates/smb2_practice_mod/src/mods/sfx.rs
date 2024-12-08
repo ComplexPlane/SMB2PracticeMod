@@ -1,23 +1,35 @@
+use critical_section::Mutex;
 use mkb::mkb;
 
-use core::ffi::c_long;
+use core::{cell::Cell, ffi::c_long};
 
-use crate::{app::AppContext, hook, systems::pref::BoolPref};
+use crate::{
+    app::with_app,
+    hook,
+    systems::pref::{BoolPref, Pref},
+    utils::misc::with_mutex,
+};
 
 hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb::BgmTrack, param_3: u32 => c_long,
-    mkb::SoftStreamStart, |_looping_state, _g_bgm_id, _param_3, _cx| {
+    mkb::SoftStreamStart, |_looping_state, _g_bgm_id, _param_3| {
         0
     }
 );
 
-hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx, cx| {
-    let sfx = cx.sfx.borrow();
-    if !(cx.pref.borrow().get_bool(BoolPref::MuteTimerDing) && sfx_idx == 0x0003d806) {
-        sfx.sound_req_id_hook.call(sfx_idx);
-    }
+// This hook is reentrant (called from jump mod) so cannot use app state
+hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
+    with_mutex(&GLOBALS, |cx| {
+        if !(cx.mute_timer_ding.get() && sfx_idx == 0x0003d806) {
+            cx.sound_req_id_hook.call(sfx_idx);
+        }
+    });
 });
 
-hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sprite, cx| {
+hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sprite| {
+    let il_mark_enabled = with_app(|cx| {
+        cx.il_mark.is_ilmark_enabled(&cx.pref)
+    });
+
     unsafe {
         let t = (*sprite).para1 - (*sprite).g_counter as c_long;
         mkb::textdraw_reset();
@@ -47,7 +59,7 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
                 y_add = 0.0;
             } else {
                 let mut x_fudge = 0.0;
-                if cx.il_mark.borrow().is_ilmark_enabled(&cx.pref.borrow()) {
+                if il_mark_enabled {
                     x_fudge = (t - 45) as f32 / 15.0 * 5.0;
                 }
                 x_add = if i == 0 { -x_fudge } else { x_fudge };
@@ -62,21 +74,48 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
     }
 });
 
-#[derive(Default)]
-pub struct Sfx {
+struct Globals {
     soft_stream_start_hook: SoftStreamStartHook,
     sound_req_id_hook: SoundReqIdHook,
     sprite_go_disp_hook: SpriteGoDispHook,
+    mute_timer_ding: Cell<bool>,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    soft_stream_start_hook: SoftStreamStartHook::new(),
+    sound_req_id_hook: SoundReqIdHook::new(),
+    sprite_go_disp_hook: SpriteGoDispHook::new(),
+    mute_timer_ding: Cell::new(false),
+});
+
+pub struct Sfx {
+    initialized: bool,
+}
+
+impl Default for Sfx {
+    fn default() -> Self {
+        Self { initialized: false }
+    }
 }
 
 impl Sfx {
-    pub fn on_main_loop_load(&mut self, cx: &AppContext) {
-        // Only hook if the preference is initially set, so we don't affect background music until game
-        // is rebooted
-        if cx.pref.borrow().get_bool(BoolPref::MuteBgm) {
-            self.soft_stream_start_hook.hook();
-        }
-        self.sound_req_id_hook.hook();
-        self.sprite_go_disp_hook.hook();
+    // TODO call this from app.rs
+    pub fn tick(&mut self, pref: &Pref) {
+        with_mutex(&GLOBALS, |cx| {
+            if !self.initialized {
+                if pref.get_bool(BoolPref::MuteBgm) {
+                    // Only hook if the preference is initially set, so we don't affect background music until game
+                    // is rebooted
+                    cx.soft_stream_start_hook.hook();
+                }
+                cx.sound_req_id_hook.hook();
+                cx.sprite_go_disp_hook.hook();
+
+                self.initialized = true;
+            }
+
+            cx.mute_timer_ding
+                .set(pref.get_bool(BoolPref::MuteTimerDing));
+        });
     }
 }

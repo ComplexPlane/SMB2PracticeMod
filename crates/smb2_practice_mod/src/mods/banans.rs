@@ -1,11 +1,14 @@
-use crate::{app::AppContext, systems::pref::BoolPref, utils::patch};
+use crate::{
+    app::AppContext,
+    systems::pref::{BoolPref, Pref},
+    utils::patch,
+};
 
 #[derive(Default)]
 pub struct Banans {}
 
 impl Banans {
-    pub fn tick(&self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
+    pub fn tick(&self, pref: &Pref) {
         if pref.did_change_bool(BoolPref::BananaCounter9999) {
             if pref.get_bool(BoolPref::BananaCounter9999) {
                 unsafe {

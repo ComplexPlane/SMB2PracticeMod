@@ -27,10 +27,10 @@ pub enum InputDispColorType {
 }
 
 struct Context<'a> {
-    pad: &'a mut Pad,
-    pref: &'a mut Pref,
-    freecam: &'a mut Freecam,
-    ball_color: &'a mut BallColor,
+    pad: &'a Pad,
+    pref: &'a Pref,
+    freecam: &'a Freecam,
+    ball_color: &'a BallColor,
 }
 
 #[derive(Default)]
@@ -151,8 +151,7 @@ impl InputDisplay {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
+    pub fn tick(&mut self, pref: &Pref) {
         self.rainbow = (self.rainbow + 3) % 1080;
         self.set_sprite_visible(
             !pref.get_bool(BoolPref::InputDisp)
@@ -220,7 +219,7 @@ impl InputDisplay {
         draw::BLACK,  // Black
     ];
 
-    fn get_color(&self, cx: &mut Context) -> mkb::GXColor {
+    fn get_color(&self, cx: &Context) -> mkb::GXColor {
         let color_pref = cx.pref.get_u8(U8Pref::InputDispColorType);
         match InputDispColorType::try_from(color_pref).unwrap() {
             InputDispColorType::Default => {
@@ -241,13 +240,7 @@ impl InputDisplay {
         }
     }
 
-    fn draw_stick(
-        &self,
-        raw_stick_inputs: &StickState,
-        center: &Vec2d,
-        scale: f32,
-        cx: &mut Context,
-    ) {
+    fn draw_stick(&self, raw_stick_inputs: &StickState, center: &Vec2d, scale: f32, cx: &Context) {
         let chosen_color = self.get_color(cx);
 
         self.draw_ring(
@@ -293,7 +286,7 @@ impl InputDisplay {
         );
     }
 
-    fn draw_buttons(&self, center: &Vec2d, scale: f32, cx: &mut Context) {
+    fn draw_buttons(&self, center: &Vec2d, scale: f32, cx: &Context) {
         // We floor floats for now because no-std doesn't include a float rounding func
         if cx
             .pad
@@ -390,7 +383,7 @@ impl InputDisplay {
         stick_inputs: &StickState,
         center: &Vec2d,
         scale: f32,
-        cx: &mut Context,
+        cx: &Context,
     ) {
         if !cx.pref.get_bool(BoolPref::InputDispNotchIndicators) {
             return;
@@ -420,7 +413,7 @@ impl InputDisplay {
         &self,
         raw_stick_inputs: &StickState,
         stick_inputs: &StickState,
-        cx: &mut Context,
+        cx: &Context,
     ) {
         if !cx.pref.get_bool(BoolPref::InputDispRawStickInputs) {
             return;
@@ -461,12 +454,12 @@ impl InputDisplay {
         );
     }
 
-    pub fn draw(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pad: &mut cx.pad.borrow_mut(),
-            pref: &mut cx.pref.borrow_mut(),
-            freecam: &mut cx.freecam.borrow_mut(),
-            ball_color: &mut cx.ball_color.borrow_mut(),
+    pub fn draw(&mut self, pref: &Pref, pad: &Pad, freecam: &Freecam, ball_color: &BallColor) {
+        let cx = &Context {
+            pref,
+            pad,
+            freecam,
+            ball_color,
         };
 
         let in_replay = unsafe {

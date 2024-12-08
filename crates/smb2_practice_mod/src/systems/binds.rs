@@ -1,14 +1,14 @@
 use mkb::mkb;
 
-use crate::app::AppContext;
 use arrayvec::ArrayString;
 
 use super::pad::{Pad, Prio};
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Default)]
 pub enum EncodingType {
     SinglePress,
     ChordPress,
+    #[default]
     Invalid,
 }
 
@@ -68,6 +68,7 @@ const INPUT_DEFNS: &[InputDefn] = &[
     },
 ];
 
+#[derive(Default)]
 pub struct Binds {
     pressed: [bool; INPUT_DEFNS.len()],
     prev_pressed: [u8; 2],
@@ -76,22 +77,10 @@ pub struct Binds {
     num_prev_held: u8,
 }
 
-impl Default for Binds {
-    fn default() -> Self {
-        Self {
-            pressed: [false; INPUT_DEFNS.len()],
-            prev_pressed: [Self::INVALID; 2],
-            encoding: 0,
-            encoding_type: EncodingType::Invalid,
-            num_prev_held: 0,
-        }
-    }
-}
-
 impl Binds {
     pub const INVALID: u8 = 255;
 
-    fn get_button_values(&mut self, pad: &mut Pad) {
+    fn get_button_values(&mut self, pad: &Pad) {
         for (i, input_defn) in INPUT_DEFNS.iter().enumerate() {
             self.pressed[i] = pad.button_down(input_defn.input, Prio::High);
         }
@@ -121,8 +110,8 @@ impl Binds {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        self.get_button_values(&mut cx.pad.borrow_mut());
+    pub fn tick(&mut self, pad: &Pad) {
+        self.get_button_values(pad);
 
         let mut pressed_count = 0;
         let mut current_pressed = [Self::INVALID; 2];
@@ -185,7 +174,7 @@ impl Binds {
         }
     }
 
-    pub fn bind_pressed(&self, bind_id: u8, priority: Prio, pad: &mut Pad) -> bool {
+    pub fn bind_pressed(&self, bind_id: u8, priority: Prio, pad: &Pad) -> bool {
         if bind_id == Self::INVALID {
             return false;
         }

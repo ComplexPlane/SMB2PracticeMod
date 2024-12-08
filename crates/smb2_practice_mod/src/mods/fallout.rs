@@ -1,8 +1,14 @@
-use crate::{app::AppContext, hook};
+use crate::{
+    app::{with_app, AppContext},
+    hook,
+    utils::misc::with_mutex,
+};
 use core::ffi::c_int;
 
+use critical_section::Mutex;
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
+use once_cell::sync::Lazy;
 
 use crate::{
     systems::pref::{BoolPref, Pref, U8Pref},
@@ -28,33 +34,45 @@ enum TimerType {
     CountUpwards,
 }
 
-hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball, cx| {
-    let orig_result = cx.fallout.borrow().did_ball_fallout_hook.call(ball);
-    cx.fallout.borrow_mut().on_did_ball_fallout(ball, orig_result, &mut cx.pref.borrow_mut())
+struct Globals {
+    did_ball_fallout_hook: DidBallFalloutHook,
+    load_stagedef_hook: LoadStagedefHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    did_ball_fallout_hook: DidBallFalloutHook::new(),
+    load_stagedef_hook: LoadStagedefHook::new(),
 });
 
-// Chained hook. The possibility of the hook's instructions moving during initialization prevents
-// per-module hooks for now
-hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
-    let mut fallout = cx.fallout.borrow_mut();
-    // Set the current default values before loading the stagedef
-    unsafe {
-        patch::write_word(0x80297548 as *mut usize, fallout.timeover_condition);
-        patch::write_word(0x80297534 as *mut usize, fallout.timer_increment);
-        fallout.load_stagedef_hook.call(stage_id);
-        // Stardust's custom code sets the timers after loading the stagedef, this will run
-        // afterwards and collect those timer defaults
-        // For non-Stardust packs, this will simply collect the default values again (and not affect
-        // anything)
-        fallout.timeover_condition = *(0x80297548 as *const usize);
-        fallout.timer_increment = *(0x80297534 as *const usize);
-    }
+hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball| {
+    let ret = with_mutex(&GLOBALS, |cx| {
+        cx.did_ball_fallout_hook.call(ball)
+    });
+    with_app(|cx| {
+        cx.fallout.on_did_ball_fallout(ball, ret, &cx.pref)
+    })
+});
+
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
+    with_mutex(&GLOBALS, |cx| {
+        cx.load_stagedef_hook.call(stage_id);
+    });
+    with_app(|cx| {
+        // Set the current default values before loading the stagedef
+        unsafe {
+            patch::write_word(0x80297548 as *mut usize, cx.fallout.timeover_condition);
+            patch::write_word(0x80297534 as *mut usize, cx.fallout.timer_increment);
+            // Stardust's custom code sets the timers after loading the stagedef, this will run
+            // afterwards and collect those timer defaults
+            // For non-Stardust packs, this will simply collect the default values again (and not affect
+            // anything)
+            cx.fallout.timeover_condition = *(0x80297548 as *const usize);
+            cx.fallout.timer_increment = *(0x80297534 as *const usize);
+        }
+    });
 });
 
 pub struct Fallout {
-    did_ball_fallout_hook: DidBallFalloutHook,
-    load_stagedef_hook: LoadStagedefHook,
-
     timeover_condition: usize, // Timeover at 0.00
     timer_increment: usize,    // Add -1 to timer each frame
     toggled_freecam: bool,
@@ -62,10 +80,11 @@ pub struct Fallout {
 
 impl Default for Fallout {
     fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.did_ball_fallout_hook.hook();
+            cx.load_stagedef_hook.hook();
+        });
         Self {
-            did_ball_fallout_hook: DidBallFalloutHook::default(),
-            load_stagedef_hook: LoadStagedefHook::default(),
-
             timeover_condition: 0x2c000000,
             timer_increment: 0x3803ffff,
             toggled_freecam: false,
@@ -74,12 +93,7 @@ impl Default for Fallout {
 }
 
 impl Fallout {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.did_ball_fallout_hook.hook();
-        self.load_stagedef_hook.hook();
-    }
-
-    pub fn freeze_timer(&mut self, pref: &mut Pref, freecam: &mut Freecam) {
+    pub fn freeze_timer(&mut self, pref: &Pref, freecam: &Freecam) {
         let mut timer_type = TimerType::try_from(pref.get_u8(U8Pref::TimerType)).unwrap();
         if freecam.should_freeze_timer(pref) {
             timer_type = TimerType::FreezeInstantly;
@@ -142,7 +156,7 @@ impl Fallout {
         &self,
         ball: *mut mkb::Ball,
         orig_result: c_int,
-        pref: &mut Pref,
+        pref: &Pref,
     ) -> c_int {
         unsafe {
             let below_fallout = (*ball).pos.y < (*(*mkb::stagedef).fallout).y;
@@ -179,7 +193,7 @@ impl Fallout {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        self.freeze_timer(&mut cx.pref.borrow_mut(), &mut cx.freecam.borrow_mut());
+    pub fn tick(&mut self, pref: &Pref, freecam: &Freecam) {
+        self.freeze_timer(pref, freecam);
     }
 }

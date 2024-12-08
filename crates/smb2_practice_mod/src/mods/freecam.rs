@@ -4,12 +4,12 @@ use critical_section::Mutex;
 use mkb::mkb;
 use once_cell::sync::Lazy;
 
-use crate::app::{self, AppContext};
+use crate::app::{self, with_app, AppContext};
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
-use crate::utils::misc::for_c_arr;
+use crate::utils::misc::{for_c_arr, with_mutex};
 use crate::utils::patch;
 use crate::{fmt, hook};
 use mkb::{S16Vec, Vec};
@@ -17,23 +17,28 @@ use mkb::{S16Vec, Vec};
 pub const TURBO_SPEED_MIN: u8 = 2;
 pub const TURBO_SPEED_MAX: u8 = 200;
 
-hook!(EventCameraTickHook => (), mkb::event_camera_tick, |cx| {
-    cx.freecam.borrow_mut().on_event_camera_tick(&mut cx.pref.borrow_mut());
+hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
+    with_app(|cx| {
+        cx.freecam.on_event_camera_tick(&mut cx.pref);
+    });
 
-    critical_section::with(|cs| {
-        EVENT_CAMERA_TICK_HOOK.borrow(cs).borrow().call();
+    with_mutex(&GLOBALS, |cx| {
+        cx.event_camera_tick_hook.call();
     });
 });
 
-// Unfortunately we must move the hook out of Freecam to avoid double borrows
-static EVENT_CAMERA_TICK_HOOK: Lazy<Mutex<RefCell<EventCameraTickHook>>> =
-    Lazy::new(|| Mutex::new(RefCell::new(EventCameraTickHook::default())));
+#[derive(Default)]
+struct Globals {
+    event_camera_tick_hook: EventCameraTickHook,
+}
+
+static GLOBALS: Lazy<Mutex<Globals>> = Lazy::new(|| Mutex::new(Globals::default()));
 
 struct Context<'a> {
     pref: &'a mut Pref,
-    pad: &'a mut Pad,
+    pad: &'a Pad,
     draw: &'a mut Draw,
-    binds: &'a mut Binds,
+    binds: &'a Binds,
 }
 
 pub struct Freecam {
@@ -49,6 +54,7 @@ impl Default for Freecam {
         unsafe {
             patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
         }
+        with_mutex(&GLOBALS, |cx| cx.event_camera_tick_hook.hook());
         Self {
             eye: Default::default(),
             rot: Default::default(),
@@ -59,12 +65,6 @@ impl Default for Freecam {
 }
 
 impl Freecam {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        critical_section::with(|cs| {
-            EVENT_CAMERA_TICK_HOOK.borrow(cs).borrow_mut().hook();
-        })
-    }
-
     fn in_correct_mode() -> bool {
         unsafe {
             let correct_main_mode = matches!(
@@ -90,7 +90,7 @@ impl Freecam {
         pref.get_bool(BoolPref::Freecam) && Self::in_correct_mode()
     }
 
-    pub fn should_freeze_timer(&self, pref: &mut Pref) -> bool {
+    pub fn should_freeze_timer(&self, pref: &Pref) -> bool {
         self.enabled(pref) && pref.get_bool(BoolPref::FreecamFreezeTimer)
     }
 
@@ -174,15 +174,10 @@ impl Freecam {
     }
 
     unsafe extern "C" fn call_camera_func_hook(camera: *mut mkb::Camera, ball: *mut mkb::Ball) {
-        // TODO let write_branch_bl do some of this accessing globals work
-        critical_section::with(|cs| {
-            let cx = app::APP_CONTEXT.borrow(cs);
-            let pref = &mut cx.pref.borrow_mut();
-            let pad = &mut cx.pad.borrow_mut();
+        with_app(|cx| {
             cx.freecam
-                .borrow_mut()
-                .on_camera_func(camera, ball, pref, pad);
-        })
+                .on_camera_func(camera, ball, &mut cx.pref, &mut cx.pad);
+        });
     }
 
     pub fn on_camera_func(
@@ -212,12 +207,12 @@ impl Freecam {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
+    pub fn tick(&mut self, pref: &mut Pref, pad: &Pad, draw: &mut Draw, binds: &Binds) {
         let cx = Context {
-            pref: &mut cx.pref.borrow_mut(),
-            pad: &mut cx.pad.borrow_mut(),
-            draw: &mut cx.draw.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
+            pref,
+            pad,
+            draw,
+            binds,
         };
 
         self.enabled_prev_tick = self.enabled_this_tick;

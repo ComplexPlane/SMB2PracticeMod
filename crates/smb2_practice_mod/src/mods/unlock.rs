@@ -43,7 +43,7 @@ impl Unlock {
         }
     }
 
-    fn should_unlock(pref: &mut Pref) -> bool {
+    fn should_unlock(pref: &Pref) -> bool {
         unsafe {
             let game_matches =
                 mkb::DVD_GAME_NAME == [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
@@ -59,8 +59,8 @@ impl Unlock {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        if self.first_frame && Self::should_unlock(&mut cx.pref.borrow_mut()) {
+    pub fn tick(&mut self, pref: &Pref) {
+        if self.first_frame && Self::should_unlock(pref) {
             self.should_unlock = true;
         }
         self.first_frame = false;

@@ -3,15 +3,16 @@ use core::ffi::CStr;
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
     asm,
     systems::{
         draw,
         pad::{Pad, Prio},
-        pref::BoolPref,
+        pref::{BoolPref, Pref},
     },
     utils::{patch, timerdisp},
 };
+
+use super::freecam::Freecam;
 
 const ANIM_STRS: &[&CStr] = &[c"/", c"-", c"\\", c" |"];
 
@@ -43,49 +44,32 @@ impl Default for Iw {
     }
 }
 
-struct Context<'a> {
-    pad: &'a mut Pad,
-}
-
 impl Iw {
-    fn handle_iw_selection(&mut self, cx: &mut Context) {
+    fn handle_iw_selection(&mut self, pad: &Pad) {
         unsafe {
             if mkb::scen_info.mode != 5 {
                 return;
             }
 
-            if cx
-                .pad
-                .analog_down(mkb::PAI_LSTICK_LEFT as mkb::PadAnalogInput, Prio::Low)
-                || cx
-                    .pad
-                    .analog_down(mkb::PAI_LSTICK_RIGHT as mkb::PadAnalogInput, Prio::Low)
+            if pad.analog_down(mkb::PAI_LSTICK_LEFT as mkb::PadAnalogInput, Prio::Low)
+                || pad.analog_down(mkb::PAI_LSTICK_RIGHT as mkb::PadAnalogInput, Prio::Low)
             {
                 return;
             }
 
-            if cx
-                .pad
-                .button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, Prio::Low)
-                || cx
-                    .pad
-                    .button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, Prio::Low)
+            if pad.button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, Prio::Low)
+                || pad.button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, Prio::Low)
             {
                 return;
             }
 
-            let lstick_up = cx
-                .pad
-                .analog_pressed(mkb::PAI_LSTICK_UP as mkb::PadAnalogInput, Prio::Low);
-            let lstick_down = cx
-                .pad
-                .analog_pressed(mkb::PAI_LSTICK_DOWN as mkb::PadAnalogInput, Prio::Low);
-            let dpad_up = cx
-                .pad
-                .button_pressed(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low);
-            let dpad_down = cx
-                .pad
-                .button_pressed(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low);
+            let lstick_up =
+                pad.analog_pressed(mkb::PAI_LSTICK_UP as mkb::PadAnalogInput, Prio::Low);
+            let lstick_down =
+                pad.analog_pressed(mkb::PAI_LSTICK_DOWN as mkb::PadAnalogInput, Prio::Low);
+            let dpad_up = pad.button_pressed(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low);
+            let dpad_down =
+                pad.button_pressed(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low);
 
             let dir = if lstick_up || dpad_up {
                 1
@@ -161,11 +145,7 @@ impl Iw {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pad: &mut cx.pad.borrow_mut(),
-        };
-
+    pub fn tick(&mut self, pad: &Pad) {
         unsafe {
             asm::currently_playing_iw = 0;
         }
@@ -186,7 +166,7 @@ impl Iw {
                 msg.to_bytes_with_nul().len(),
             );
 
-            self.handle_iw_selection(cx);
+            self.handle_iw_selection(pad);
             self.set_save_file_info();
 
             let file_idx = if mkb::scen_info.mode == 5 {
@@ -205,9 +185,7 @@ impl Iw {
         }
     }
 
-    pub fn draw(&self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
-        let freecam = &mut cx.freecam.borrow_mut();
+    pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
         unsafe {
             if !pref.get_bool(BoolPref::IwTimer)
                 || mkb::main_mode != mkb::MD_GAME

@@ -9,7 +9,7 @@ use zerocopy::{FromBytes, Immutable, IntoBytes, KnownLayout, Unaligned};
 
 use super::{
     cardio::CardIo,
-    draw::{self},
+    draw::{self, Draw},
 };
 
 macro_rules! pref_defn {
@@ -422,9 +422,7 @@ impl Pref {
         self.curr_state = self.default_state.clone();
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let draw = &mut cx.draw.borrow_mut();
-
+    pub fn tick(&mut self, draw: &mut Draw) {
         self.cardio.tick();
         // Runs after all prefs have been set on a frame
         self.prev_state = self.curr_state.clone();

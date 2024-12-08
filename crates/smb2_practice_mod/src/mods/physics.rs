@@ -13,8 +13,8 @@ use crate::{
 use super::freecam::Freecam;
 
 struct Context<'a> {
-    pref: &'a mut Pref,
-    freecam: &'a mut Freecam,
+    pref: &'a Pref,
+    freecam: &'a Freecam,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, TryFromPrimitive)]
@@ -52,7 +52,7 @@ impl Physics {
         preset != PhysicsPreset::Default
     }
 
-    fn change_physics(&mut self, cx: &mut Context) {
+    fn change_physics(&mut self, cx: &Context) {
         unsafe {
             // restore physics momentarily
             mkb::ball_friction = self.orig_friction;
@@ -98,19 +98,13 @@ impl Physics {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pref: &mut cx.pref.borrow_mut(),
-            freecam: &mut cx.freecam.borrow_mut(),
-        };
+    pub fn tick(&mut self, pref: &Pref, freecam: &Freecam) {
+        let cx = &Context { pref, freecam };
         self.change_physics(cx);
     }
 
-    pub fn draw(&self, cx: &AppContext) {
-        let cx = &mut Context {
-            pref: &mut cx.pref.borrow_mut(),
-            freecam: &mut cx.freecam.borrow_mut(),
-        };
+    pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
+        let cx = &Context { pref, freecam };
         unsafe {
             if mkb::sub_mode != mkb::SMD_GAME_READY_INIT
                 && mkb::sub_mode != mkb::SMD_GAME_READY_MAIN

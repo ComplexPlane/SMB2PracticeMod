@@ -297,16 +297,13 @@ impl Jump {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let mut pref = cx.pref.borrow_mut();
-        let pad = cx.pad.borrow_mut();
-
+    pub fn tick(&mut self, pref: &mut Pref, pad: &Pad) {
         let enabled = pref.get_bool(BoolPref::JumpMod);
         if pref.did_change_bool(BoolPref::JumpMod) {
             if enabled {
-                self.enable(&mut pref);
+                self.enable(pref);
             } else {
-                self.disable(&mut pref);
+                self.disable(pref);
             }
         }
         if enabled {
@@ -319,10 +316,6 @@ impl Jump {
                 pref.save();
             }
 
-            // Jumping calls soundreqid which reads pref, so drop mutable borrow to pref
-            drop(pref);
-            let pref = cx.pref.borrow();
-
             // Don't run logic while paused
             let paused_now = unsafe { *(0x805BC474 as *const u32) & 8 };
             if paused_now != 0 {
@@ -333,9 +326,9 @@ impl Jump {
             let new_jump_profile = pref.get_u8(U8Pref::JumpProfile) == 0;
 
             if new_jump_profile {
-                self.jumping(&pref, &pad);
+                self.jumping(pref, pad);
             } else {
-                self.classic_jumping(&pad);
+                self.classic_jumping(pad);
             }
         }
     }

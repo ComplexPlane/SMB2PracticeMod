@@ -1,10 +1,14 @@
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
-    systems::{draw, pref::BoolPref},
+    systems::{
+        draw,
+        pref::{BoolPref, Pref},
+    },
     utils::{memstore::MemStore, timerdisp},
 };
+
+use super::{freecam::Freecam, validate::Validate};
 
 pub struct Timer {
     retrace_count: u32,
@@ -25,11 +29,7 @@ impl Default for Timer {
 }
 
 impl Timer {
-    pub fn draw(&mut self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
-        let freecam = &mut cx.freecam.borrow_mut();
-        let validate = &cx.validate.borrow();
-
+    pub fn draw(&mut self, pref: &Pref, freecam: &Freecam, validate: &Validate) {
         unsafe {
             if mkb::main_mode != mkb::MD_GAME {
                 return;
