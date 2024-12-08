@@ -16,7 +16,7 @@ hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb::BgmTrack, param_3:
     }
 );
 
-// This hook is reentrant (called from jump mod) so cannot use app state
+// Re-entrant hook, cannot use app state
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
     with_mutex(&GLOBALS, |cx| {
         if !(cx.mute_timer_ding.get() && sfx_idx == 0x0003d806) {

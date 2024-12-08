@@ -29,7 +29,7 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
     savestates_enabled: Cell::new(false),
 });
 
-// Reentrant hook, cannot use app state
+// Re-entrant hook, cannot use app state
 hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode| {
     with_mutex(&GLOBALS, |cx| {
         let enabled = !cx.savestates_enabled.get()

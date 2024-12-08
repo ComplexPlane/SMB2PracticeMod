@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{hook, mods::timer::Timer};
 
-// Reentrant hook, cannot use app state
+// Re-entrant hook, cannot use app state
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
     with_mutex(&GLOBALS, |cx| {
         if !cx.state_loaded_this_frame.get() {
