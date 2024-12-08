@@ -67,7 +67,7 @@ pub struct AppContext {
     pub il_mark: IlMark,
     pub camera: Camera,
     pub stage_edits: StageEdits,
-    pub hide: Hide,
+    pub _hide: Hide,
     pub sfx: Sfx,
     pub scratch: Scratch,
     pub validate: Validate,
@@ -99,7 +99,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.binds.tick(&cx.pad);
         cx.unlock.tick(&cx.pref);
         cx.iw.tick(&cx.pad);
-        cx.save_states_ui.tick(&cx.pref, &cx.pad, &mut cx.draw, &cx.binds, &mut cx.lib_save_state, &mut cx.timer);
+        cx.save_states_ui.tick(&cx.pref, &cx.pad, &mut cx.draw, &cx.binds, &mut cx.timer);
         let mut menu_context = MenuContext {
             pad: &mut cx.pad,
             pref: &mut cx.pref,
@@ -126,6 +126,7 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.camera.tick(&cx.pref);
         cx.stage_edits.tick();
         cx.validate.tick();
+        cx.sfx.tick(&cx.pref);
         cx.scratch.tick();
         cx.pref.tick(&mut cx.draw);
     });

@@ -12,7 +12,7 @@ use crate::{
         pref::{BoolPref, Pref, U8Pref},
     },
     utils::{
-        libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
+        libsavestate::{LoadError, SaveError, SaveState},
         misc::with_mutex,
     },
 };
@@ -47,7 +47,6 @@ struct Context<'a> {
     pad: &'a Pad,
     draw: &'a mut Draw,
     binds: &'a Binds,
-    lib_save_state: &'a mut LibSaveState,
     timer: &'a mut Timer,
 }
 
@@ -84,7 +83,6 @@ impl SaveStatesUi {
         pad: &Pad,
         draw: &mut Draw,
         binds: &Binds,
-        lib_save_state: &mut LibSaveState,
         timer: &mut Timer,
     ) {
         let cx = &mut Context {
@@ -92,7 +90,6 @@ impl SaveStatesUi {
             pad,
             draw,
             binds,
-            lib_save_state,
             timer,
         };
 
@@ -108,7 +105,7 @@ impl SaveStatesUi {
 
         // Must tick savestates every frame
         for state in &mut self.states {
-            state.tick(cx.lib_save_state, cx.timer);
+            state.tick(cx.timer);
         }
 
         if !self.is_either_trigger_held(cx.pad) {
@@ -245,7 +242,7 @@ impl SaveStatesUi {
             || (self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None)
         {
             let state = &mut self.states[self.active_state_slot as usize];
-            match state.load(cx.lib_save_state, cx.timer) {
+            match state.load(cx.timer) {
                 Ok(()) => {}
                 Err(LoadError::MainMode) => {
                     // Unreachable

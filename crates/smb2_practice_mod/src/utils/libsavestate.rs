@@ -80,12 +80,12 @@ pub struct SaveState {
 }
 
 impl SaveState {
-    pub fn tick(&mut self, libsavestate: &mut LibSaveState, timer: &mut Timer) {
+    pub fn tick(&mut self, timer: &mut Timer) {
         with_mutex(&GLOBALS, |cx| {
             cx.state_loaded_this_frame.set(false);
         });
         if self.reload_state {
-            let _ = self.load(libsavestate, timer); // Ignore result, spooky!
+            let _ = self.load(timer); // Ignore result, spooky!
         }
     }
 
@@ -154,11 +154,7 @@ impl SaveState {
         }
     }
 
-    pub fn load(
-        &mut self,
-        libsavestate: &mut LibSaveState,
-        timer: &mut Timer,
-    ) -> Result<(), LoadError> {
+    pub fn load(&mut self, timer: &mut Timer) -> Result<(), LoadError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {

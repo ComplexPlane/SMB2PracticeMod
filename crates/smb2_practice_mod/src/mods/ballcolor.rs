@@ -64,7 +64,6 @@ pub struct BallColor {
     rainbow: u32,
     default_color: mkb::GXColor,
     current_color: mkb::GXColor,
-    load_stagedef_hook: LoadStagedefHook,
 }
 
 impl Default for BallColor {
@@ -76,7 +75,6 @@ impl Default for BallColor {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
             current_color: Default::default(),
-            load_stagedef_hook: Default::default(),
         }
     }
 }

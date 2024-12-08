@@ -1,9 +1,8 @@
-
 use critical_section::Mutex;
 use mkb::mkb;
 use once_cell::sync::Lazy;
 
-use crate::app::{with_app};
+use crate::app::with_app;
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};

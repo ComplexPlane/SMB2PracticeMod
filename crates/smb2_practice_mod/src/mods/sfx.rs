@@ -99,7 +99,6 @@ impl Default for Sfx {
 }
 
 impl Sfx {
-    // TODO call this from app.rs
     pub fn tick(&mut self, pref: &Pref) {
         with_mutex(&GLOBALS, |cx| {
             if !self.initialized {

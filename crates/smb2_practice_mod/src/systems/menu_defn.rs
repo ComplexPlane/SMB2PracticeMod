@@ -26,8 +26,6 @@ pub struct MenuContext<'a> {
     pub go_to_story: &'a mut GoToStory,
     pub stage_edits: &'a mut StageEdits,
     pub unlock: &'a mut Unlock,
-    // TODO?
-    // physics: &'a mut Physics,
 }
 
 pub enum AfterPush {

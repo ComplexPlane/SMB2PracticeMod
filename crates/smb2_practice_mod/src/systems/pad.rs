@@ -2,7 +2,7 @@ use critical_section::Mutex;
 use mkb::mkb;
 
 use crate::{
-    app::{with_app, AppContext},
+    app::with_app,
     hook,
     utils::misc::{for_c_arr_idx, with_mutex},
 };
@@ -79,9 +79,7 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
     pad_read_hook: PadReadHook::new(),
 });
 
-#[derive(Default)]
 pub struct Pad {
-    pad_read_hook: PadReadHook,
     analog_state: AnalogState,
     curr_priority: Prio,
     priority_request: Prio,
@@ -95,11 +93,28 @@ pub struct Pad {
     dir_down_time: [u8; 8],
 }
 
-impl Pad {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.pad_read_hook.hook();
-    }
+impl Default for Pad {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.pad_read_hook.hook();
+        });
+        Self {
+            analog_state: Default::default(),
+            curr_priority: Default::default(),
+            priority_request: Default::default(),
 
+            merged_analog_inputs: Default::default(),
+            merged_digital_inputs: Default::default(),
+            pad_status_groups: Default::default(),
+            original_inputs: Default::default(),
+            analog_inputs: Default::default(),
+
+            dir_down_time: Default::default(),
+        }
+    }
+}
+
+impl Pad {
     pub fn get_merged_stick(&self) -> StickState {
         StickState {
             x: self.analog_state.stick_x,

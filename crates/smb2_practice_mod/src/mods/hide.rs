@@ -3,7 +3,7 @@ use mkb::mkb;
 use once_cell::sync::Lazy;
 
 use crate::{
-    app::{with_app},
+    app::with_app,
     hook,
     systems::pref::{BoolPref, Pref},
     utils::{misc::with_mutex, patch},
