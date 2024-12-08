@@ -1,5 +1,5 @@
 use crate::{
-    app::{with_app, AppContext},
+    app::with_app,
     hook,
     systems::pref::{BoolPref, Pref},
     utils::misc::with_mutex,

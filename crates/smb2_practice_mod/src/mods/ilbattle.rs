@@ -3,7 +3,6 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app::AppContext,
     cstr_buf, fmt,
     systems::{
         binds::Binds,

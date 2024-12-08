@@ -2,10 +2,9 @@ use critical_section::Mutex;
 use num_enum::TryFromPrimitive;
 
 use mkb::mkb;
-use once_cell::sync::Lazy;
 
 use crate::{
-    app::{with_app, AppContext},
+    app::with_app,
     hook,
     systems::{
         draw,

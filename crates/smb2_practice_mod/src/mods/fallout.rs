@@ -1,5 +1,5 @@
 use crate::{
-    app::{with_app, AppContext},
+    app::with_app,
     hook,
     utils::misc::with_mutex,
 };
@@ -8,7 +8,6 @@ use core::ffi::c_int;
 use critical_section::Mutex;
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
-use once_cell::sync::Lazy;
 
 use crate::{
     systems::pref::{BoolPref, Pref, U8Pref},

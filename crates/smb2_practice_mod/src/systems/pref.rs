@@ -1,7 +1,7 @@
 extern crate alloc;
 use ::mkb::mkb_suppl::CARDResult;
 
-use crate::{app::AppContext, cstr, fmt, systems::draw::NotifyDuration};
+use crate::{cstr, fmt, systems::draw::NotifyDuration};
 use alloc::vec;
 use alloc::vec::Vec;
 use num_enum::TryFromPrimitive;

@@ -4,7 +4,6 @@ use arrayvec::ArrayString;
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
     cstr_buf,
     systems::{
         draw,

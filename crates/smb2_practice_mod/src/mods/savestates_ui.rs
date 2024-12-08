@@ -4,7 +4,6 @@ use critical_section::Mutex;
 use mkb::mkb;
 
 use crate::{
-    app::{with_app, AppContext},
     fmt, hook,
     systems::{
         binds::Binds,

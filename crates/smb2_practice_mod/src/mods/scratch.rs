@@ -1,4 +1,3 @@
-use crate::app::AppContext;
 
 #[derive(Default)]
 pub struct Scratch {}

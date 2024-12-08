@@ -1,7 +1,6 @@
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
-use crate::app::AppContext;
 use crate::patch;
 use crate::systems::pref::Pref;
 use crate::systems::pref::{self, U8Pref};

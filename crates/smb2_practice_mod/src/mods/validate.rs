@@ -6,7 +6,6 @@ use mkb::{byte, Vec};
 use crate::app::with_app;
 use crate::utils::misc::with_mutex;
 use crate::{
-    app::AppContext,
     hook,
     systems::{
         menu_impl::MenuImpl,

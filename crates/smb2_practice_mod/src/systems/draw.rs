@@ -6,7 +6,6 @@ use core::ptr::addr_of;
 
 use arrayvec::ArrayString;
 
-use crate::app::AppContext;
 use crate::asm;
 use crate::patch;
 use ::mkb::mkb_suppl::GXPosition3f32;

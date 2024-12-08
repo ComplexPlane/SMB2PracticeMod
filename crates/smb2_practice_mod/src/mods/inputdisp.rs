@@ -6,14 +6,11 @@ use mkb::Vec2d;
 use num_enum::TryFromPrimitive;
 
 use crate::fmt;
-use crate::{
-    app::AppContext,
-    systems::{
+use crate::systems::{
         draw,
         pad::{self, Pad, Prio, StickState},
         pref::{BoolPref, Pref, U8Pref},
-    },
-};
+    };
 
 use super::{ballcolor::BallColor, freecam::Freecam};
 

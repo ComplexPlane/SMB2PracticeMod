@@ -4,7 +4,7 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app::{with_app, AppContext},
+    app::with_app,
     hook,
     systems::pref::{Pref, U8Pref},
     utils::misc::with_mutex,

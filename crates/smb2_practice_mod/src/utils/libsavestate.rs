@@ -1,13 +1,12 @@
 use core::{cell::Cell, ffi::c_void};
 use critical_section::Mutex;
 use mkb::mkb;
-use once_cell::sync::Lazy;
 
 use super::{
     memstore::{self, MemStore},
     misc::with_mutex,
 };
-use crate::{app::with_app, hook, mods::timer::Timer};
+use crate::{hook, mods::timer::Timer};
 
 // Reentrant hook, cannot use app state
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
