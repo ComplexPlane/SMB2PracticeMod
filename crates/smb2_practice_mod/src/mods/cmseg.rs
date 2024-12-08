@@ -120,7 +120,7 @@ impl CmSeg {
             let course = mkb::cm_courses[course_idx];
             let mut i = 0;
             loop {
-                let entry = course.add(i as usize);
+                let entry = course.add(i);
                 if (*entry).opcode == mkb::COURSE_CMD_INFO as mkb::CourseCommandOpcode
                     && (*entry).type_ == 0
                 {
@@ -150,10 +150,10 @@ impl CmSeg {
             self.overwritten_opcode = (*overwritten_entry).opcode;
             (*overwritten_entry).opcode = mkb::COURSE_CMD_END as mkb::CourseCommandOpcode;
 
-            let first_stage_id = (*course.add(start_entry_idx as usize)).value as u16;
+            let first_stage_id = (*course.add(start_entry_idx)).value as u16;
             mkb::mode_info.cm_course_stage_num = start_course_stage_num;
             mkb::mode_info.cm_stage_id = first_stage_id as i16;
-            mkb::current_cm_entry = course.add((start_entry_idx + 1) as usize);
+            mkb::current_cm_entry = course.add(start_entry_idx + 1);
             mkb::g_another_stage_id = first_stage_id;
 
             // Make up "previous" stage for "current" stage

@@ -179,10 +179,7 @@ impl Jump {
                 && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH
                 && a_down;
 
-            if start_jump {
-                self.jumping = JumpState::GroundedJump;
-                self.ticks_since_ground += LATE_BUFFER_LENGTH; // cannot coyote jump anymore
-            } else if (buffered_early || coyote_late) && valid_location {
+            if start_jump || ((buffered_early || coyote_late) && valid_location) {
                 self.jumping = JumpState::GroundedJump;
                 self.ticks_since_ground += LATE_BUFFER_LENGTH; // cannot coyote jump anymore
             } else if aerial_jumped {
@@ -320,7 +317,7 @@ impl Jump {
             if paused_now != 0 {
                 return;
             }
-            Self::toggle_minimap(&pad);
+            Self::toggle_minimap(pad);
 
             let new_jump_profile = pref.get_u8(U8Pref::JumpProfile) == 0;
 

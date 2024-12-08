@@ -51,9 +51,6 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
                 phi_f30_2 = if i == 0 { -320.0 } else { 320.0 };
                 x_add = phi_f30_2 * mkb::math_sin(((0xF - t) * 0x444) as i16);
                 y_add = 0.0;
-            } else if t < 30 {
-                x_add = 0.0;
-                y_add = 0.0;
             } else if t < 45 {
                 x_add = 0.0;
                 y_add = 0.0;
@@ -88,14 +85,9 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
     mute_timer_ding: Cell::new(false),
 });
 
+#[derive(Default)]
 pub struct Sfx {
     initialized: bool,
-}
-
-impl Default for Sfx {
-    fn default() -> Self {
-        Self { initialized: false }
-    }
 }
 
 impl Sfx {

@@ -29,7 +29,7 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
         cx.load_stagedef_hook.call(stage_id);
     });
     with_app(|cx| {
-        cx.ball_color.switch_monkey(&mut cx.pref);
+        cx.ball_color.switch_monkey(&cx.pref);
     });
 });
 
@@ -37,7 +37,7 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
 #[repr(u8)]
 pub enum BallColorType {
     Preset = 0,
-    RGB = 1,
+    Rgb = 1,
     Rainbow = 2,
     Random = 3,
 }
@@ -150,7 +150,7 @@ impl BallColor {
                         .add(color_id as usize)
                         .read();
                 }
-                BallColorType::RGB => {
+                BallColorType::Rgb => {
                     mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
                         Self::convert_to_ball_color_id(0);
                     let red = pref.get_u8(U8Pref::BallRed);

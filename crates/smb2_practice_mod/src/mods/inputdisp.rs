@@ -1,3 +1,4 @@
+use core::f32;
 use core::ffi::CStr;
 
 use ::mkb::mkb_suppl::{GXPosition3f32, GXTexCoord2f32};
@@ -7,10 +8,10 @@ use num_enum::TryFromPrimitive;
 
 use crate::fmt;
 use crate::systems::{
-        draw,
-        pad::{self, Pad, Prio, StickState},
-        pref::{BoolPref, Pref, U8Pref},
-    };
+    draw,
+    pad::{self, Pad, Prio, StickState},
+    pref::{BoolPref, Pref, U8Pref},
+};
 
 use super::{ballcolor::BallColor, freecam::Freecam};
 
@@ -18,7 +19,7 @@ use super::{ballcolor::BallColor, freecam::Freecam};
 #[repr(u8)]
 pub enum InputDispColorType {
     Default = 0,
-    RGB = 1,
+    Rgb = 1,
     Rainbow = 2,
     MatchBall = 3,
 }
@@ -128,7 +129,7 @@ impl InputDisplay {
                     continue;
                 }
 
-                let sprite = &mut mkb::sprites[i as usize];
+                let sprite = &mut mkb::sprites[i];
                 let tick_func = sprite.tick_func;
                 let disp_func = sprite.disp_func;
                 if (sprite.bmp == 0x503
@@ -158,7 +159,7 @@ impl InputDisplay {
     }
 
     fn get_notch_pos(&self, stick_inputs: &StickState, out_pos: &mut Vec2d) -> bool {
-        const DIAG: f32 = 0.7071067811865476; // sin(pi/4) or sqrt(2)/2
+        const DIAG: f32 = f32::consts::FRAC_1_SQRT_2;
         let mut notch_found = false;
 
         if stick_inputs.x == 0 && stick_inputs.y == pad::MAX_STICK {
@@ -222,7 +223,7 @@ impl InputDisplay {
             InputDispColorType::Default => {
                 Self::COLOR_MAP[cx.pref.get_u8(U8Pref::InputDispColor) as usize]
             }
-            InputDispColorType::RGB => mkb::GXColor {
+            InputDispColorType::Rgb => mkb::GXColor {
                 r: cx.pref.get_u8(U8Pref::InputDispRed),
                 g: cx.pref.get_u8(U8Pref::InputDispGreen),
                 b: cx.pref.get_u8(U8Pref::InputDispBlue),
