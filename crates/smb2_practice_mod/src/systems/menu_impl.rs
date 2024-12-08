@@ -211,17 +211,15 @@ impl MenuImpl {
             Widget::IntEdit { pref, min, max, .. } => {
                 let mut next = cx.pref.get_u8(*pref) as i32;
 
-                if cx
+                let a_change = cx
                     .pad
                     .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick > 0
-                {
-                    self.edit_tick = 0;
-                } else if cx
+                    && self.edit_tick > 0;
+                let y_change = cx
                     .pad
                     .button_released(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick < 0
-                {
+                    && self.edit_tick < 0;
+                if a_change || y_change {
                     self.edit_tick = 0;
                 }
 
@@ -653,8 +651,7 @@ impl MenuImpl {
                 as f32
                 * 0x8000 as f32
                 / (period_frames as f32 / 2.0);
-            let lerp = (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0;
-            lerp
+            (mkb::math_sin(angle as i16) as f32 + 1.0) / 2.0
         }
     }
 }
@@ -767,12 +764,7 @@ fn draw_help_layout() {
         draw::GRAY,
     );
     // draw b: back
-    draw::debug_text(
-        (START + 3 * BLOCK_WIDTH) as u32,
-        Y_HEIGHT,
-        draw::LIGHT_RED,
-        "B",
-    );
+    draw::debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, draw::LIGHT_RED, "B");
     draw::debug_text(4 * BLOCK_WIDTH - BUTTON_OFFSET, Y_HEIGHT, draw::WHITE, ":");
     draw::debug_text(
         4 * BLOCK_WIDTH + HALF_SPACE - BUTTON_OFFSET,

@@ -58,7 +58,7 @@ pub enum MemStore<'a> {
     Load(&'a mut Load),
 }
 
-impl<'a> MemStore<'a> {
+impl MemStore<'_> {
     pub fn scan_region(&mut self, ptr: *mut c_void, size: usize) {
         match self {
             MemStore::Prealloc(buf) => {

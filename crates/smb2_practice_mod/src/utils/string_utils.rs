@@ -1,6 +1,8 @@
 #[macro_export]
 macro_rules! fmt_buf {
     ($buf:expr, $fmt:literal $(, $arg:expr)* $(,)?) => {
+        // I'm not sure it's possible to expand arg in a safe context
+        #[allow(clippy::macro_metavars_in_unsafe)]
         unsafe {
             let fmt: &core::ffi::CStr = $fmt;
             let ptr = $buf.as_mut_ptr();

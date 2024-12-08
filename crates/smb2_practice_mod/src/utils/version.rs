@@ -13,29 +13,35 @@ pub struct SemVer {
     pub patch: u16,
 }
 
-#[derive(PartialEq, Eq, Ord)]
+#[derive(PartialEq, Eq)]
 struct PracmodVersion {
     semver: SemVer,
     release_cand: u16,
 }
 
-impl PartialOrd for PracmodVersion {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+impl Ord for PracmodVersion {
+    fn cmp(&self, other: &Self) -> Ordering {
         // RC of 0 means real release, always considered to be newer than a RC version
         let semver_cmp = self.semver.cmp(&other.semver);
         if semver_cmp != Ordering::Equal {
-            Some(semver_cmp)
+            semver_cmp
         } else if self.release_cand == 0 && other.release_cand == 0 {
-            Some(Ordering::Equal)
+            Ordering::Equal
         } else if self.release_cand == 0 && other.release_cand > 0 {
-            Some(Ordering::Greater)
+            Ordering::Greater
         } else if self.release_cand > 0 && other.release_cand == 0 {
-            Some(Ordering::Less)
+            Ordering::Less
         } else if self.release_cand > other.release_cand {
-            Some(Ordering::Greater)
+            Ordering::Greater
         } else {
-            Some(Ordering::Less)
+            Ordering::Less
         }
+    }
+}
+
+impl PartialOrd for PracmodVersion {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
