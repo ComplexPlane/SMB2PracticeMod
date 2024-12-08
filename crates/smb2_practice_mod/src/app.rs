@@ -31,7 +31,6 @@ pub fn with_app<T>(f: impl FnOnce(&mut AppContext) -> T) -> T {
     critical_section::with(|cs| f(&mut APP_CONTEXT.borrow_ref_mut(cs)))
 }
 
-#[derive(Default)]
 struct Globals {
     process_inputs_hook: ProcessInputsHook,
     draw_debug_text_hook: DrawDebugTextHook,
@@ -40,7 +39,13 @@ struct Globals {
     game_play_tick_hook: GamePlayTickHook,
 }
 
-static GLOBALS: Lazy<Mutex<Globals>> = Lazy::new(|| Mutex::new(Globals::default()));
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    process_inputs_hook: ProcessInputsHook::new(),
+    draw_debug_text_hook: DrawDebugTextHook::new(),
+    oslink_hook: OSLinkHook::new(),
+    game_ready_init_hook: GameReadyInitHook::new(),
+    game_play_tick_hook: GamePlayTickHook::new(),
+});
 
 #[derive(Default)]
 pub struct AppContext {

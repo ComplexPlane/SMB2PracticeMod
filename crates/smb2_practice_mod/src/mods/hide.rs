@@ -1,6 +1,5 @@
 use critical_section::Mutex;
 use mkb::mkb;
-use once_cell::sync::Lazy;
 
 use crate::{
     app::with_app,
@@ -10,7 +9,6 @@ use crate::{
 };
 
 // BG
-#[derive(Default)]
 struct Globals {
     draw_bg_hook: DrawBgHook,
     clear_hook: ClearHook,
@@ -23,7 +21,17 @@ struct Globals {
     draw_effects_hook: DrawEffectsHook,
 }
 
-static GLOBALS: Lazy<Mutex<Globals>> = Lazy::new(|| Mutex::new(Globals::default()));
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    draw_bg_hook: DrawBgHook::new(),
+    clear_hook: ClearHook::new(),
+    draw_sprite_hook: DrawSpriteHook::new(),
+    draw_minimap_hook: DrawMinimapHook::new(),
+    draw_stage_hook: DrawStageHook::new(),
+    draw_ball_hook: DrawBallHook::new(),
+    draw_items_hook: DrawItemsHook::new(),
+    draw_stobjs_hook: DrawStobjsHook::new(),
+    draw_effects_hook: DrawEffectsHook::new(),
+});
 
 hook!(DrawBgHook => (), mkb::g_draw_bg, || {
     let should_hide = with_app(|cx| {
