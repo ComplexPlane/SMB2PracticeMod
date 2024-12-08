@@ -43,13 +43,6 @@ sudo apt install build-essential libclang-dev
 
 On Windows, follow the installer's instructions for installing Visual Studio correctly.
 
-Next, install Rust Nightly and Rust sources:
-
-```sh
-rustup toolchain install nightly
-rustup component add rust-src --toolchain nightly
-```
-
 ## Clone Source
 
 ```sh
@@ -63,3 +56,5 @@ Run one of:
 
 - `cargo xtask`: Standard build that produces `target/SMB2PracticeMod.gci`.
 - `cargo xtask debug`: Build that includes file/line/column panic debug information. This is very helpful for debugging crashes, but isn't the default as it significantly increases the binary size.
+
+If you get an error when the nightly toolchain is installing, you may need to remove some conflicting nightly toolchains and try again. Use `rustup toolchain list` to list the toolchains, and `rustup toolchain uninstall <toolchain>` to remove them.
