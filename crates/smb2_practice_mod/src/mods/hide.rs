@@ -1,121 +1,176 @@
+use critical_section::Mutex;
 use mkb::mkb;
 
 use crate::{
-    app::{self, AppContext},
+    app::with_app,
     hook,
     systems::pref::{BoolPref, Pref},
-    utils::patch,
+    utils::{misc::with_mutex, patch},
 };
 
 // BG
-hook!(DrawBgHook => (), mkb::g_draw_bg, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !should_hide_bg(pref) {
-        hide.draw_bg_hook.call();
-    }
+struct Globals {
+    draw_bg_hook: DrawBgHook,
+    clear_hook: ClearHook,
+    draw_sprite_hook: DrawSpriteHook,
+    draw_minimap_hook: DrawMinimapHook,
+    draw_stage_hook: DrawStageHook,
+    draw_ball_hook: DrawBallHook,
+    draw_items_hook: DrawItemsHook,
+    draw_stobjs_hook: DrawStobjsHook,
+    draw_effects_hook: DrawEffectsHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    draw_bg_hook: DrawBgHook::new(),
+    clear_hook: ClearHook::new(),
+    draw_sprite_hook: DrawSpriteHook::new(),
+    draw_minimap_hook: DrawMinimapHook::new(),
+    draw_stage_hook: DrawStageHook::new(),
+    draw_ball_hook: DrawBallHook::new(),
+    draw_items_hook: DrawItemsHook::new(),
+    draw_stobjs_hook: DrawStobjsHook::new(),
+    draw_effects_hook: DrawEffectsHook::new(),
 });
 
-hook!(ClearHook => (), mkb::g_set_clear_color, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if should_hide_bg(pref) {
-        unsafe {
-            let backup_color = mkb::g_some_theme_color;
-            let backup_override_r = mkb::g_override_clear_r;
-            let backup_override_g = mkb::g_override_clear_g;
-            let backup_override_b = mkb::g_override_clear_b;
+hook!(DrawBgHook => (), mkb::g_draw_bg, || {
+    let should_hide = with_app(|cx| {
+        should_hide_bg(&cx.pref)
+    });
 
-            mkb::g_some_theme_color = mkb::GXColor {r: 0, g: 0, b: 0, a: 0xff};
-            mkb::g_override_clear_r = 0;
-            mkb::g_override_clear_g = 0;
-            mkb::g_override_clear_b = 0;
-
-            hide.clear_hook.call();
-
-            mkb::g_some_theme_color = backup_color;
-            mkb::g_override_clear_r = backup_override_r;
-            mkb::g_override_clear_g = backup_override_g;
-            mkb::g_override_clear_b = backup_override_b;
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_bg_hook.call();
         }
-    } else {
-        hide.clear_hook.call();
-    }
+    });
+});
+
+hook!(ClearHook => (), mkb::g_set_clear_color, || {
+    let should_hide = with_app(|cx| {
+        should_hide_bg(&cx.pref)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if should_hide {
+            unsafe {
+                let backup_color = mkb::g_some_theme_color;
+                let backup_override_r = mkb::g_override_clear_r;
+                let backup_override_g = mkb::g_override_clear_g;
+                let backup_override_b = mkb::g_override_clear_b;
+
+                mkb::g_some_theme_color = mkb::GXColor {r: 0, g: 0, b: 0, a: 0xff};
+                mkb::g_override_clear_r = 0;
+                mkb::g_override_clear_g = 0;
+                mkb::g_override_clear_b = 0;
+
+                cx.clear_hook.call();
+
+                mkb::g_some_theme_color = backup_color;
+                mkb::g_override_clear_r = backup_override_r;
+                mkb::g_override_clear_g = backup_override_g;
+                mkb::g_override_clear_b = backup_override_b;
+            }
+        } else {
+            cx.clear_hook.call();
+        }
+    });
 });
 
 // HUD
-hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite, cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    let freecam = &mut cx.freecam.borrow_mut();
-    unsafe {
-        // Hide every sprite except the pause menu
-        let hide_hud = pref.get_bool(BoolPref::HideHud);
-        let freecam_hide = freecam.should_hide_hud(pref);
-        let correct_mode = mkb::main_mode == mkb::MD_GAME;
-        let disp_func = (*sprite).disp_func;
-        let is_pausemenu_sprite = disp_func == Some(mkb::sprite_pausemenu_disp);
-        if !((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite) {
-            hide.draw_sprite_hook.call(sprite);
+hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite| {
+    let (hide_hud, freecam_hide) = with_app(|cx| {
+        (cx.pref.get_bool(BoolPref::HideHud), cx.freecam.should_hide_hud(&cx.pref))
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        unsafe {
+            let correct_mode = mkb::main_mode == mkb::MD_GAME;
+            let disp_func = (*sprite).disp_func;
+            let is_pausemenu_sprite = disp_func == Some(mkb::sprite_pausemenu_disp);
+            if !((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite) {
+                cx.draw_sprite_hook.call(sprite);
+            }
         }
-    }
+    });
 });
 
-hook!(DrawMinimapHook => (), mkb::g_draw_minimap, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    let freecam = &mut cx.freecam.borrow_mut();
+hook!(DrawMinimapHook => (), mkb::g_draw_minimap, || {
+    let (hide_hud, freecam_hide) = with_app(|cx| {
+        let pref = &cx.pref;
+        let freecam = &cx.freecam;
+        (pref.get_bool(BoolPref::HideHud), freecam.should_hide_hud(pref))
+    });
 
-    let hide_hud = pref.get_bool(BoolPref::HideHud);
-    let freecam_hide = freecam.should_hide_hud(pref);
-    if !(hide_hud || freecam_hide) {
-        hide.draw_minimap_hook.call();
-    }
+    with_mutex(&GLOBALS, |cx| {
+        if !(hide_hud || freecam_hide) {
+            cx.draw_minimap_hook.call();
+        }
+    });
 });
 
 // Stage
-hook!(DrawStageHook => (), mkb::g_draw_stage, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !pref.get_bool(BoolPref::HideStage) {
-        hide.draw_stage_hook.call();
-    }
+hook!(DrawStageHook => (), mkb::g_draw_stage, || {
+    let should_hide = with_app(|cx| {
+        cx.pref.get_bool(BoolPref::HideStage)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_stage_hook.call();
+        }
+    });
 });
 
 // Ball
-hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !pref.get_bool(BoolPref::HideBall) {
-        hide.draw_ball_hook.call();
-    }
+hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, || {
+    let should_hide = with_app(|cx| {
+        cx.pref.get_bool(BoolPref::HideBall)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_ball_hook.call();
+        }
+    });
 });
 
 // Items
-hook!(DrawItemsHook => (), mkb::draw_items, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !pref.get_bool(BoolPref::HideItems) {
-        hide.draw_items_hook.call();
-    }
+hook!(DrawItemsHook => (), mkb::draw_items, || {
+    let should_hide = with_app(|cx| {
+        cx.pref.get_bool(BoolPref::HideItems)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_items_hook.call();
+        }
+    });
 });
 
 // Stage objects
-hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !pref.get_bool(BoolPref::HideStobjs) {
-        hide.draw_stobjs_hook.call();
-    }
+hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, || {
+    let should_hide = with_app(|cx| {
+        cx.pref.get_bool(BoolPref::HideStobjs)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_stobjs_hook.call();
+        }
+    });
 });
 
 // Effects
-hook!(DrawEffectsHook => (), mkb::g_draw_effects, |cx| {
-    let hide = &cx.hide.borrow();
-    let pref = &cx.pref.borrow();
-    if !pref.get_bool(BoolPref::HideEffects) {
-        hide.draw_effects_hook.call();
-    }
+hook!(DrawEffectsHook => (), mkb::g_draw_effects, || {
+    let should_hide = with_app(|cx| {
+        cx.pref.get_bool(BoolPref::HideEffects)
+    });
+
+    with_mutex(&GLOBALS, |cx| {
+        if !should_hide {
+            cx.draw_effects_hook.call();
+        }
+    });
 });
 
 fn should_hide_bg(pref: &Pref) -> bool {
@@ -124,54 +179,44 @@ fn should_hide_bg(pref: &Pref) -> bool {
 
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`
 unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    critical_section::with(|cs| {
-        let cx = app::APP_CONTEXT.borrow(cs);
-        if should_hide_bg(&cx.pref.borrow()) {
-            mkb::avdisp_set_fog_color(0, 0, 0);
-        } else {
-            mkb::avdisp_set_fog_color(r, g, b);
-        }
-    });
+    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+
+    if should_hide {
+        mkb::avdisp_set_fog_color(0, 0, 0);
+    } else {
+        mkb::avdisp_set_fog_color(r, g, b);
+    }
 }
 
 unsafe extern "C" fn nl2ngc_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    critical_section::with(|cs| {
-        let cx = app::APP_CONTEXT.borrow(cs);
-        if should_hide_bg(&cx.pref.borrow()) {
-            mkb::nl2ngc_set_fog_color(0, 0, 0);
-        } else {
-            mkb::nl2ngc_set_fog_color(r, g, b);
-        }
-    });
+    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+
+    if should_hide {
+        mkb::nl2ngc_set_fog_color(0, 0, 0);
+    } else {
+        mkb::nl2ngc_set_fog_color(r, g, b);
+    }
 }
 
-#[derive(Default)]
-pub struct Hide {
-    pub draw_bg_hook: DrawBgHook,
-    pub clear_hook: ClearHook,
-    pub draw_sprite_hook: DrawSpriteHook,
-    pub draw_minimap_hook: DrawMinimapHook,
-    pub draw_stage_hook: DrawStageHook,
-    pub draw_ball_hook: DrawBallHook,
-    pub draw_items_hook: DrawItemsHook,
-    pub draw_stobjs_hook: DrawStobjsHook,
-    pub draw_effects_hook: DrawEffectsHook,
-}
+pub struct Hide {}
 
-impl Hide {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        unsafe {
-            patch::write_branch_bl(0x80352e58 as *mut _, avdisp_set_fog_color_hook as *mut _);
-            patch::write_branch_bl(0x80352eac as *mut _, nl2ngc_set_fog_color_hook as *mut _);
-        }
-        self.draw_bg_hook.hook();
-        self.clear_hook.hook();
-        self.draw_sprite_hook.hook();
-        self.draw_minimap_hook.hook();
-        self.draw_stage_hook.hook();
-        self.draw_ball_hook.hook();
-        self.draw_items_hook.hook();
-        self.draw_stobjs_hook.hook();
-        self.draw_effects_hook.hook();
+impl Default for Hide {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            unsafe {
+                patch::write_branch_bl(0x80352e58 as *mut _, avdisp_set_fog_color_hook as *mut _);
+                patch::write_branch_bl(0x80352eac as *mut _, nl2ngc_set_fog_color_hook as *mut _);
+            }
+            cx.draw_bg_hook.hook();
+            cx.clear_hook.hook();
+            cx.draw_sprite_hook.hook();
+            cx.draw_minimap_hook.hook();
+            cx.draw_stage_hook.hook();
+            cx.draw_ball_hook.hook();
+            cx.draw_items_hook.hook();
+            cx.draw_stobjs_hook.hook();
+            cx.draw_effects_hook.hook();
+        });
+        Self {}
     }
 }

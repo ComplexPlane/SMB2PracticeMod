@@ -1,6 +1,6 @@
 use mkb::mkb;
 
-use crate::{app::AppContext, systems::pref::BoolPref};
+use crate::systems::pref::{BoolPref, Pref};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum MarathonState {
@@ -111,8 +111,7 @@ impl Marathon {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
+    pub fn tick(&mut self, pref: &Pref) {
         if pref.get_bool(BoolPref::Marathon) {
             match self.state {
                 MarathonState::WaitForGoal => self.wait_for_goal(),

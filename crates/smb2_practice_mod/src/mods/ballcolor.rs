@@ -1,22 +1,36 @@
+use critical_section::Mutex;
 use num_enum::TryFromPrimitive;
 
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
+    app::with_app,
     hook,
     systems::{
         draw,
         pref::{Pref, U8Pref},
     },
+    utils::misc::with_mutex,
 };
+
+struct Globals {
+    load_stagedef_hook: LoadStagedefHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    load_stagedef_hook: LoadStagedefHook::new(),
+});
 
 pub const COLOR_MIN: u8 = 0;
 pub const COLOR_MAX: u8 = 0xff;
 
-hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
-    cx.ball_color.borrow().load_stagedef_hook.call(stage_id);
-    cx.ball_color.borrow_mut().switch_monkey(&mut cx.pref.borrow_mut());
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
+    with_mutex(&GLOBALS, |cx| {
+        cx.load_stagedef_hook.call(stage_id);
+    });
+    with_app(|cx| {
+        cx.ball_color.switch_monkey(&mut cx.pref);
+    });
 });
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
@@ -50,25 +64,22 @@ pub struct BallColor {
     rainbow: u32,
     default_color: mkb::GXColor,
     current_color: mkb::GXColor,
-    load_stagedef_hook: LoadStagedefHook,
 }
 
 impl Default for BallColor {
     fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.load_stagedef_hook.hook();
+        });
         Self {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
-            current_color: mkb::GXColor::default(),
-            load_stagedef_hook: LoadStagedefHook::default(),
+            current_color: Default::default(),
         }
     }
 }
 
 impl BallColor {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.load_stagedef_hook.hook();
-    }
-
     pub fn get_current_color(&self) -> mkb::GXColor {
         self.current_color
     }
@@ -112,9 +123,8 @@ impl BallColor {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
+    pub fn tick(&mut self, pref: &Pref) {
         unsafe {
-            let pref = &mut cx.pref.borrow_mut();
             let ball_type = BallColorType::try_from(pref.get_u8(U8Pref::BallColorType)).unwrap();
 
             if mkb::main_mode != mkb::MD_GAME

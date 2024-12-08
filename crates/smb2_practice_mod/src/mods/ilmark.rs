@@ -4,16 +4,15 @@ use arrayvec::ArrayString;
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
     cstr_buf,
     systems::{
         draw,
         pref::{BoolPref, Pref},
     },
-    utils::version,
+    utils::{libsavestate::LibSaveState, version},
 };
 
-use super::validate::Validate;
+use super::{freecam::Freecam, validate::Validate};
 
 pub struct IlMark {
     valid_run: bool,
@@ -42,7 +41,7 @@ impl IlMark {
         self.valid_run = true;
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
+    pub fn tick(&mut self, lib_save_state: &LibSaveState) {
         unsafe {
             if mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN
                 && mkb::sub_mode != mkb::SMD_GAME_GOAL_INIT
@@ -55,7 +54,7 @@ impl IlMark {
                 self.valid_run = false;
             }
 
-            if cx.lib_save_state.borrow().state_loaded_this_frame {
+            if lib_save_state.loaded_this_frame() {
                 self.valid_run = false;
             }
         }
@@ -91,9 +90,7 @@ impl IlMark {
         }
     }
 
-    pub fn draw(&self, cx: &AppContext) {
-        let pref = &cx.pref.borrow();
-        let freecam = &cx.freecam.borrow();
+    pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
         if !self.is_ilmark_enabled(pref) || freecam.should_hide_hud(pref) {
             return;
         }

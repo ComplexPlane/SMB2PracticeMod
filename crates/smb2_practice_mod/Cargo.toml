@@ -18,3 +18,7 @@ mkb = { path = "../mkb" }
 crate-type = ["staticlib"]
 test = false
 bench = false
+
+[lints.rust]
+# Currently needed to suppress weird zerocopy warning on nightly
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage_nightly)'] }

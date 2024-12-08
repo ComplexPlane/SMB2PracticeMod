@@ -1,6 +1,11 @@
+use critical_section::Mutex;
 use mkb::mkb;
 
-use crate::{app::AppContext, hook, utils::misc::for_c_arr_idx};
+use crate::{
+    app::with_app,
+    hook,
+    utils::misc::{for_c_arr_idx, with_mutex},
+};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {
@@ -52,19 +57,29 @@ pub const MAX_TRIGGER: i32 = 128;
 const DIR_REPEAT_PERIOD: u32 = 3;
 const DIR_REPEAT_WAIT: u32 = 14;
 
-hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx| {
-    let ret = cx.pad.borrow_mut().pad_read_hook.call(statuses);
+hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
+    let ret = with_mutex(&GLOBALS, |cx| {
+        cx.pad_read_hook.call(statuses)
+    });
 
-    let status_array = unsafe { core::slice::from_raw_parts(statuses, 4)};
-    let status_array: &[mkb::PADStatus; 4] = status_array.try_into().unwrap();
-    cx.pad.borrow_mut().on_padread(status_array);
+    with_app(|cx| {
+        let status_array = unsafe { core::slice::from_raw_parts(statuses, 4)};
+        let status_array: &[mkb::PADStatus; 4] = status_array.try_into().unwrap();
+        cx.pad.on_padread(status_array);
+    });
 
     ret
 });
 
-#[derive(Default)]
-pub struct Pad {
+struct Globals {
     pad_read_hook: PadReadHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    pad_read_hook: PadReadHook::new(),
+});
+
+pub struct Pad {
     analog_state: AnalogState,
     curr_priority: Prio,
     priority_request: Prio,
@@ -78,11 +93,28 @@ pub struct Pad {
     dir_down_time: [u8; 8],
 }
 
-impl Pad {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.pad_read_hook.hook();
-    }
+impl Default for Pad {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.pad_read_hook.hook();
+        });
+        Self {
+            analog_state: Default::default(),
+            curr_priority: Default::default(),
+            priority_request: Default::default(),
 
+            merged_analog_inputs: Default::default(),
+            merged_digital_inputs: Default::default(),
+            pad_status_groups: Default::default(),
+            original_inputs: Default::default(),
+            analog_inputs: Default::default(),
+
+            dir_down_time: Default::default(),
+        }
+    }
+}
+
+impl Pad {
     pub fn get_merged_stick(&self) -> StickState {
         StickState {
             x: self.analog_state.stick_x,
@@ -284,7 +316,7 @@ impl Pad {
         }
     }
 
-    pub fn tick(&mut self, _cx: &AppContext) {
+    pub fn tick(&mut self) {
         unsafe {
             self.merged_analog_inputs = mkb::merged_analog_inputs;
             self.merged_digital_inputs = mkb::merged_digital_inputs;

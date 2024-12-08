@@ -1,40 +1,62 @@
+use core::cell::Cell;
 use core::ffi::c_void;
 use core::mem::{self, transmute};
 
 use crate::utils::ppc;
 use mkb::mkb;
 
-pub unsafe fn clear_dc_ic_cache(ptr: *mut c_void, size: usize) {
-    mkb::DCFlushRange(ptr as *mut _, size as u32);
-    mkb::ICInvalidateRange(ptr as *mut _, size as u32);
+pub trait BranchStorage<T> {
+    unsafe fn set(&self, v: T);
+    unsafe fn get_ptr(&self) -> *const c_void;
 }
 
-pub unsafe fn write_branch(ptr: *mut usize, destination: *const c_void) -> usize {
+impl<T> BranchStorage<T> for &Cell<T> {
+    unsafe fn set(&self, v: T) {
+        (*self).set(v);
+    }
+
+    unsafe fn get_ptr(&self) -> *const c_void {
+        transmute(*self)
+    }
+}
+
+impl<T> BranchStorage<T> for *mut T {
+    unsafe fn set(&self, v: T) {
+        **self = v;
+    }
+
+    unsafe fn get_ptr(&self) -> *const c_void {
+        self.cast()
+    }
+}
+
+pub unsafe fn clear_dc_ic_cache(ptr: *const c_void, size: usize) {
+    mkb::DCFlushRange(ptr.cast_mut(), size as u32);
+    mkb::ICInvalidateRange(ptr.cast_mut(), size as u32);
+}
+
+pub unsafe fn write_branch(ptr: impl BranchStorage<usize>, destination: *const c_void) {
     let branch: usize = 0x48000000; // b
-    write_branch_main(ptr, destination, branch)
+    write_branch_main(ptr, destination, branch);
 }
 
-pub unsafe fn write_branch_bl(ptr: *mut usize, destination: *const c_void) -> usize {
+pub unsafe fn write_branch_bl(ptr: impl BranchStorage<usize>, destination: *const c_void) {
     let branch: usize = 0x48000001; // bl
-    write_branch_main(ptr, destination, branch)
+    write_branch_main(ptr, destination, branch);
 }
 
 unsafe fn write_branch_main(
-    ptr: *mut usize,
+    ptr: impl BranchStorage<usize>,
     destination: *const c_void,
-    mut branch: usize,
-) -> usize {
-    let delta = destination as usize - ptr as usize;
+    branch: usize,
+) {
+    let delta = destination as usize - ptr.get_ptr() as usize;
 
-    branch |= delta & 0x03FFFFFC;
+    let branch = branch | delta & 0x03FFFFFC;
 
-    let p = ptr as *mut usize;
-    let orig_word = *p;
-    *p = branch;
+    ptr.set(branch);
 
-    clear_dc_ic_cache(ptr as *mut _, size_of::<usize>());
-
-    orig_word
+    clear_dc_ic_cache(ptr.get_ptr(), size_of::<usize>());
 }
 
 pub unsafe fn write_word(ptr: *mut usize, data: usize) -> usize {
@@ -53,7 +75,7 @@ pub unsafe fn write_nop(ptr: *mut usize) -> usize {
 pub unsafe fn hook_function(
     func: *mut usize,
     dest: *mut usize,
-    tramp_instrs: &mut [usize; 2],
+    tramp_instrs: &[Cell<usize>; 2],
     tramp_dest: &mut *const c_void,
 ) {
     if (*func & ppc::B_OPCODE_MASK) == ppc::B_OPCODE {
@@ -75,14 +97,11 @@ pub unsafe fn hook_function(
     } else {
         // Func has not been hooked yet
         // Original instruction
-        tramp_instrs[0] = *func;
+        tramp_instrs[0].set(*func);
         clear_dc_ic_cache(tramp_instrs.as_ptr() as *mut _, size_of::<usize>());
 
         // Branch to original func past hook
-        write_branch(
-            &mut tramp_instrs[1] as *mut usize,
-            transmute(func.add(1) as *const _),
-        );
+        write_branch(&tramp_instrs[1], transmute(func.add(1) as *const _));
 
         // The function pointer to run as the original function is the addr of the trampoline
         // instructions array

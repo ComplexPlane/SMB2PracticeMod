@@ -1,21 +1,36 @@
 use core::{ffi::c_long, ptr::null_mut};
 
+use critical_section::Mutex;
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app::AppContext,
+    app::with_app,
     hook,
     systems::{
         draw,
         pref::{BoolPref, Pref, U8Pref},
     },
-    utils::timerdisp,
+    utils::{misc::with_mutex, timerdisp},
 };
 
-hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, |cx| {
-    cx.cm_seg.borrow().reset_cm_course_hook.call();
-    cx.cm_seg.borrow_mut().on_reset_cm_course();
+use super::freecam::Freecam;
+
+struct Globals {
+    reset_cm_course_hook: ResetCmCourseHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    reset_cm_course_hook: ResetCmCourseHook::new(),
+});
+
+hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, || {
+    with_mutex(&GLOBALS, |cx| {
+        cx.reset_cm_course_hook.call();
+    });
+    with_app(|cx| {
+        cx.cm_seg.on_reset_cm_course();
+    });
 });
 
 #[derive(Copy, Clone, PartialEq, Default)]
@@ -58,7 +73,6 @@ enum Chara {
 }
 
 pub struct CmSeg {
-    reset_cm_course_hook: ResetCmCourseHook,
     state: State,
     seg_request: Seg,
     start_time: u32,
@@ -72,8 +86,10 @@ pub struct CmSeg {
 
 impl Default for CmSeg {
     fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.reset_cm_course_hook.hook();
+        });
         Self {
-            reset_cm_course_hook: Default::default(),
             state: Default::default(),
             seg_request: Default::default(),
             start_time: 0,
@@ -95,10 +111,6 @@ const APE_CHARAS: [mkb::ApeCharacter; 4] = [
 ];
 
 impl CmSeg {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.reset_cm_course_hook.hook();
-    }
-
     fn gen_course(&mut self, course_idx: usize, start_course_stage_num: u16, stage_count: u16) {
         let mut start_entry_idx = None;
         let mut end_entry_idx = None;
@@ -371,9 +383,8 @@ impl CmSeg {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
+    pub fn tick(&mut self, pref: &Pref) {
         unsafe {
-            let pref = &cx.pref.borrow();
             match self.state {
                 State::LoadMenu => self.state_load_menu(),
                 State::EnterCm => self.state_enter_cm(),
@@ -384,9 +395,7 @@ impl CmSeg {
         }
     }
 
-    pub fn draw(&self, cx: &AppContext) {
-        let pref = &mut cx.pref.borrow_mut();
-        let freecam = &mut cx.freecam.borrow_mut();
+    pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
         if !pref.get_bool(BoolPref::CmTimer) || freecam.should_hide_hud(pref) {
             return;
         }

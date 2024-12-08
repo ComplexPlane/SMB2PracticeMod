@@ -1,7 +1,9 @@
+use core::cell::Cell;
+
+use critical_section::Mutex;
 use mkb::mkb;
 
 use crate::{
-    app::AppContext,
     fmt, hook,
     systems::{
         binds::Binds,
@@ -9,76 +11,101 @@ use crate::{
         pad::{Dir, Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
     },
-    utils::libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
+    utils::{
+        libsavestate::{LoadError, SaveError, SaveState},
+        misc::with_mutex,
+    },
 };
 
 use super::timer::Timer;
 
-hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode, cx| {
-    let pref = &mut cx.pref.borrow_mut();
-    unsafe {
-        if !savestates_enabled(pref)
-            || !(mkb::main_mode == mkb::MD_GAME
-            && mkb::main_game_mode == mkb::PRACTICE_MODE &&
-            mode == mkb::MINIMAP_SHRINK)
-        {
-            cx.save_states_ui.borrow().set_minimap_mode_hook.call(mode);
+struct Globals {
+    set_minimap_mode_hook: SetMinimapModeHook,
+    savestates_enabled: Cell<bool>,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    set_minimap_mode_hook: SetMinimapModeHook::new(),
+    savestates_enabled: Cell::new(false),
+});
+
+// Re-entrant hook, cannot use app state
+hook!(SetMinimapModeHook, mode: mkb::MinimapMode => (), mkb::set_minimap_mode, |mode| {
+    with_mutex(&GLOBALS, |cx| {
+        let enabled = !cx.savestates_enabled.get()
+            || !(unsafe {mkb::main_mode} == mkb::MD_GAME
+            && unsafe {mkb::main_game_mode} == mkb::PRACTICE_MODE &&
+            mode == mkb::MINIMAP_SHRINK);
+        if enabled {
+            cx.set_minimap_mode_hook.call(mode);
         }
-    }
+    });
 });
 
 struct Context<'a> {
-    pad: &'a mut Pad,
+    pref: &'a Pref,
+    pad: &'a Pad,
     draw: &'a mut Draw,
-    binds: &'a mut Binds,
-    libsavestate: &'a mut LibSaveState,
+    binds: &'a Binds,
     timer: &'a mut Timer,
 }
 
-#[derive(Default)]
 pub struct SaveStatesUi {
-    set_minimap_mode_hook: SetMinimapModeHook,
     states: [SaveState; 8],
     active_state_slot: i32,
     created_state_last_frame: bool,
     frame_advance_mode: bool,
 }
 
-impl SaveStatesUi {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.set_minimap_mode_hook.hook();
+impl Default for SaveStatesUi {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.set_minimap_mode_hook.hook();
+        });
+        Self {
+            states: Default::default(),
+            active_state_slot: 0,
+            created_state_last_frame: false,
+            frame_advance_mode: false,
+        }
     }
+}
 
+impl SaveStatesUi {
     fn is_either_trigger_held(&self, pad: &Pad) -> bool {
         pad.analog_down(mkb::PAI_LTRIG as mkb::PadAnalogInput, Prio::Low)
             || pad.analog_down(mkb::PAI_RTRIG as mkb::PadAnalogInput, Prio::Low)
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        // We must tightly scope our Pref usage to avoid a double borrow. libsavestate calls
-        // mkb::set_minimap_mode(), we hook it, and it uses pref
-        let disable_overwrite;
-        let clear_bind;
-        {
-            let pref = &mut cx.pref.borrow_mut();
-            if !savestates_enabled(pref) {
-                return;
-            }
-            disable_overwrite = pref.get_bool(BoolPref::SavestateDisableOverwrite);
-            clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
-        }
-
-        let cx = Context {
-            pad: &mut cx.pad.borrow_mut(),
-            draw: &mut cx.draw.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
-            libsavestate: &mut cx.lib_save_state.borrow_mut(),
-            timer: &mut cx.timer.borrow_mut(),
+    pub fn tick(
+        &mut self,
+        pref: &Pref,
+        pad: &Pad,
+        draw: &mut Draw,
+        binds: &Binds,
+        timer: &mut Timer,
+    ) {
+        let cx = &mut Context {
+            pref,
+            pad,
+            draw,
+            binds,
+            timer,
         };
+
+        with_mutex(&GLOBALS, |g| {
+            g.savestates_enabled.set(savestates_enabled(cx.pref));
+        });
+
+        if !savestates_enabled(cx.pref) {
+            return;
+        }
+        let disable_overwrite = pref.get_bool(BoolPref::SavestateDisableOverwrite);
+        let clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
 
         // Must tick savestates every frame
         for state in &mut self.states {
-            state.tick(cx.libsavestate, cx.timer);
+            state.tick(cx.timer);
         }
 
         if !self.is_either_trigger_held(cx.pad) {
@@ -215,7 +242,7 @@ impl SaveStatesUi {
             || (self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None)
         {
             let state = &mut self.states[self.active_state_slot as usize];
-            match state.load(cx.libsavestate, cx.timer) {
+            match state.load(cx.timer) {
                 Ok(()) => {}
                 Err(LoadError::MainMode) => {
                     // Unreachable

@@ -1,11 +1,22 @@
+use critical_section::Mutex;
 use mkb::mkb;
 
 use num_enum::TryFromPrimitive;
 
-use crate::{app::AppContext, hook, systems::pref::U8Pref};
+use crate::{
+    app::with_app,
+    hook,
+    systems::pref::{Pref, U8Pref},
+    utils::misc::with_mutex,
+};
 
-hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id, cx| {
-    cx.stage_edits.borrow_mut().on_load_stagedef(stage_id, cx);
+hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
+    with_mutex(&GLOBALS, |cx| {
+        cx.load_stagedef_hook.call(stage_id);
+    });
+    with_app(|cx| {
+        cx.stage_edits.on_load_stagedef(&cx.pref);
+    });
 });
 
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive, Default)]
@@ -18,19 +29,34 @@ pub enum ActiveMode {
     Reverse = 3,
 }
 
-#[derive(Default)]
 pub struct StageEdits {
     current_mode: ActiveMode,
     rev_goal_idx: u32,
     new_goal: bool,
+}
+
+struct Globals {
     load_stagedef_hook: LoadStagedefHook,
 }
 
-impl StageEdits {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.load_stagedef_hook.hook();
-    }
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    load_stagedef_hook: LoadStagedefHook::new(),
+});
 
+impl Default for StageEdits {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.load_stagedef_hook.hook();
+        });
+        Self {
+            current_mode: Default::default(),
+            rev_goal_idx: 0,
+            new_goal: false,
+        }
+    }
+}
+
+impl StageEdits {
     pub fn select_new_goal(&mut self) {
         self.new_goal = true;
     }
@@ -120,10 +146,7 @@ impl StageEdits {
         }
     }
 
-    fn on_load_stagedef(&mut self, stage_id: u32, cx: &AppContext) {
-        self.load_stagedef_hook.call(stage_id);
-
-        let pref = &cx.pref.borrow();
+    fn on_load_stagedef(&mut self, pref: &Pref) {
         let next_mode = ActiveMode::try_from(pref.get_u8(U8Pref::StageEditVariant)).unwrap();
         self.current_mode = next_mode;
         unsafe {
@@ -131,8 +154,7 @@ impl StageEdits {
         }
     }
 
-    pub fn on_game_ready_init(&mut self, cx: &AppContext) {
-        let pref = &cx.pref.borrow();
+    pub fn on_game_ready_init(&mut self, pref: &Pref) {
         let next_mode = ActiveMode::try_from(pref.get_u8(U8Pref::StageEditVariant)).unwrap();
         if self.current_mode != next_mode {
             unsafe {
@@ -150,7 +172,7 @@ impl StageEdits {
         self.new_goal = false;
     }
 
-    pub fn tick(&mut self, _cx: &AppContext) {
+    pub fn tick(&mut self) {
         unsafe {
             match self.current_mode {
                 ActiveMode::None => {}

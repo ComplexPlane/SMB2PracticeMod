@@ -1,36 +1,52 @@
 use crate::{
-    app::AppContext,
+    app::with_app,
     hook,
     systems::pref::{BoolPref, Pref},
+    utils::misc::with_mutex,
 };
+use critical_section::Mutex;
 use mkb::mkb;
 
-hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses, cx| {
-    let dpad = &mut cx.dpad.borrow_mut();
-    let pref = &mut cx.pref.borrow_mut();
-
-    let ret = dpad.pad_read_hook.call(statuses);
-    dpad.on_pad_read(statuses, pref);
+hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
+    let ret = with_mutex(&GLOBALS, |cx| {
+        cx.pad_read_hook.call(statuses)
+    });
+    with_app(|cx| {
+        cx.dpad.on_pad_read(statuses, &cx.pref);
+    });
     ret
 });
 
-hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |x, y, cx| {
-    cx.dpad.borrow().create_speed_sprites_hook.call(x + 5.0, y);
+hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |x, y| {
+    with_mutex(&GLOBALS, |cx| {
+        cx.create_speed_sprites_hook.call(x + 5.0, y);
+    });
 });
 
-#[derive(Default)]
-pub struct Dpad {
+struct Globals {
     pad_read_hook: PadReadHook,
     create_speed_sprites_hook: CreateSpeedSpritesHook,
 }
 
-impl Dpad {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.pad_read_hook.hook();
-        self.create_speed_sprites_hook.hook();
-    }
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    pad_read_hook: PadReadHook::new(),
+    create_speed_sprites_hook: CreateSpeedSpritesHook::new(),
+});
 
-    pub fn on_pad_read(&self, statuses: *mut mkb::PADStatus, pref: &mut Pref) {
+pub struct Dpad {}
+
+impl Default for Dpad {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.pad_read_hook.hook();
+            cx.create_speed_sprites_hook.hook();
+        });
+        Self {}
+    }
+}
+
+impl Dpad {
+    pub fn on_pad_read(&self, statuses: *mut mkb::PADStatus, pref: &Pref) {
         unsafe {
             if !pref.get_bool(BoolPref::DpadControls) {
                 return;

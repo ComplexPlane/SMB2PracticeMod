@@ -3,7 +3,6 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    app::AppContext,
     cstr_buf, fmt,
     systems::{
         binds::Binds,
@@ -16,10 +15,10 @@ use crate::{
 use super::{freecam::Freecam, validate::Validate};
 
 struct Context<'a> {
-    pref: &'a mut Pref,
-    freecam: &'a mut Freecam,
-    binds: &'a mut Binds,
-    pad: &'a mut Pad,
+    pref: &'a Pref,
+    freecam: &'a Freecam,
+    binds: &'a Binds,
+    pad: &'a Pad,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
@@ -135,7 +134,7 @@ impl IlBattle {
         }
     }
 
-    fn battle_display(&mut self, text_color: mkb::GXColor, cx: &mut Context) {
+    fn battle_display(&mut self, text_color: mkb::GXColor, cx: &Context) {
         let battle_hours = self.battle_frames / HOUR_FRAMES;
         let battle_minutes = self.battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
         let battle_seconds = self.battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
@@ -314,7 +313,7 @@ impl IlBattle {
         }
     }
 
-    fn clear_display(&mut self, cx: &mut Context) {
+    fn clear_display(&mut self, cx: &Context) {
         let battle_len = cx.pref.get_u8(U8Pref::IlBattleLength);
         let battle_len = IlBattleLength::try_from(battle_len).unwrap();
 
@@ -332,12 +331,12 @@ impl IlBattle {
         self.battle_length = Self::convert_battle_length(battle_len);
     }
 
-    fn new_battle(&mut self, cx: &mut Context) {
+    fn new_battle(&mut self, cx: &Context) {
         self.clear_display(cx);
         self.state = IlBattleState::WaitForFirstRetry;
     }
 
-    fn track_first_retry(&mut self, cx: &mut Context) {
+    fn track_first_retry(&mut self, cx: &Context) {
         unsafe {
             let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
             if !paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
@@ -348,7 +347,7 @@ impl IlBattle {
         }
     }
 
-    fn run_battle_timer(&mut self, cx: &mut Context) {
+    fn run_battle_timer(&mut self, cx: &Context) {
         unsafe {
             if mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT && !self.accepted_retry {
                 // track attempt counts
@@ -470,12 +469,12 @@ impl IlBattle {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pref: &mut cx.pref.borrow_mut(),
-            freecam: &mut cx.freecam.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
-            pad: &mut cx.pad.borrow_mut(),
+    pub fn tick(&mut self, pref: &Pref, freecam: &Freecam, binds: &Binds, pad: &Pad) {
+        let cx = &Context {
+            pref,
+            freecam,
+            binds,
+            pad,
         };
 
         unsafe {
@@ -546,12 +545,12 @@ impl IlBattle {
         }
     }
 
-    pub fn draw(&mut self, cx: &AppContext) {
-        let cx = &mut Context {
-            pref: &mut cx.pref.borrow_mut(),
-            freecam: &mut cx.freecam.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
-            pad: &mut cx.pad.borrow_mut(),
+    pub fn draw(&mut self, pref: &Pref, freecam: &Freecam, binds: &Binds, pad: &Pad) {
+        let cx = &Context {
+            pref,
+            freecam,
+            binds,
+            pad,
         };
 
         unsafe {

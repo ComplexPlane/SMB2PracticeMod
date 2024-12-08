@@ -2,7 +2,6 @@ use mkb::mkb;
 
 use arrayvec::{ArrayString, ArrayVec};
 
-use crate::app::AppContext;
 use crate::systems::draw::{self, NotifyDuration};
 use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
@@ -292,18 +291,7 @@ impl MenuImpl {
         }
     }
 
-    pub fn tick(&mut self, cx: &AppContext) {
-        let cx = &mut MenuContext {
-            pad: &mut cx.pad.borrow_mut(),
-            pref: &mut cx.pref.borrow_mut(),
-            draw: &mut cx.draw.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
-            cm_seg: &mut cx.cm_seg.borrow_mut(),
-            go_to_story: &mut cx.go_to_story.borrow_mut(),
-            stage_edits: &mut cx.stage_edits.borrow_mut(),
-            unlock: &mut cx.unlock.borrow_mut(),
-        };
-
+    pub fn tick(&mut self, cx: &mut MenuContext) {
         if self.binding == BindingState::Active {
             self.handle_widget_bind(cx);
             return;
@@ -630,18 +618,7 @@ impl MenuImpl {
         );
     }
 
-    pub fn draw(&self, cx: &AppContext) {
-        let cx = &mut MenuContext {
-            pad: &mut cx.pad.borrow_mut(),
-            pref: &mut cx.pref.borrow_mut(),
-            draw: &mut cx.draw.borrow_mut(),
-            binds: &mut cx.binds.borrow_mut(),
-            cm_seg: &mut cx.cm_seg.borrow_mut(),
-            go_to_story: &mut cx.go_to_story.borrow_mut(),
-            stage_edits: &mut cx.stage_edits.borrow_mut(),
-            unlock: &mut cx.unlock.borrow_mut(),
-        };
-
+    pub fn draw(&self, cx: &mut MenuContext) {
         if !self.visible {
             return;
         }

@@ -1,25 +1,46 @@
-use core::ffi::c_void;
+use core::{cell::Cell, ffi::c_void};
+use critical_section::Mutex;
 use mkb::mkb;
 
-use super::memstore::{self, MemStore};
-use crate::{app::AppContext, hook, mods::timer::Timer};
+use super::{
+    memstore::{self, MemStore},
+    misc::with_mutex,
+};
+use crate::{hook, mods::timer::Timer};
 
-hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx, cx| {
-    let libsavestate = &cx.lib_save_state.borrow();
-    if !libsavestate.state_loaded_this_frame {
-        cx.lib_save_state.borrow().sound_req_id_hook.call(sfx_idx);
-    }
+// Re-entrant hook, cannot use app state
+hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
+    with_mutex(&GLOBALS, |cx| {
+        if !cx.state_loaded_this_frame.get() {
+            cx.sound_req_id_hook.call(sfx_idx);
+        }
+    });
 });
 
-#[derive(Default)]
-pub struct LibSaveState {
+struct Globals {
     sound_req_id_hook: SoundReqIdHook,
-    pub state_loaded_this_frame: bool,
+    state_loaded_this_frame: Cell<bool>,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    sound_req_id_hook: SoundReqIdHook::new(),
+    state_loaded_this_frame: Cell::new(false),
+});
+
+pub struct LibSaveState {}
+
+impl Default for LibSaveState {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.sound_req_id_hook.hook();
+        });
+        Self {}
+    }
 }
 
 impl LibSaveState {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.sound_req_id_hook.hook();
+    pub fn loaded_this_frame(&self) -> bool {
+        with_mutex(&GLOBALS, |cx| cx.state_loaded_this_frame.get())
     }
 }
 
@@ -59,10 +80,12 @@ pub struct SaveState {
 }
 
 impl SaveState {
-    pub fn tick(&mut self, libsavestate: &mut LibSaveState, timer: &mut Timer) {
-        libsavestate.state_loaded_this_frame = false;
+    pub fn tick(&mut self, timer: &mut Timer) {
+        with_mutex(&GLOBALS, |cx| {
+            cx.state_loaded_this_frame.set(false);
+        });
         if self.reload_state {
-            let _ = self.load(libsavestate, timer); // Ignore result, spooky!
+            let _ = self.load(timer); // Ignore result, spooky!
         }
     }
 
@@ -131,11 +154,7 @@ impl SaveState {
         }
     }
 
-    pub fn load(
-        &mut self,
-        libsavestate: &mut LibSaveState,
-        timer: &mut Timer,
-    ) -> Result<(), LoadError> {
+    pub fn load(&mut self, timer: &mut Timer) -> Result<(), LoadError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -188,7 +207,9 @@ impl SaveState {
                 mkb::set_minimap_mode(mkb::MINIMAP_EXPAND);
             }
 
-            libsavestate.state_loaded_this_frame = true;
+            with_mutex(&GLOBALS, |cx| {
+                cx.state_loaded_this_frame.set(true);
+            });
         }
 
         Ok(())

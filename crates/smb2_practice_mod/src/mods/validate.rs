@@ -1,9 +1,11 @@
 use core::ffi::c_int;
+use critical_section::Mutex;
 use mkb::mkb;
 use mkb::{byte, Vec};
 
+use crate::app::with_app;
+use crate::utils::misc::with_mutex;
 use crate::{
-    app::AppContext,
     hook,
     systems::{
         menu_impl::MenuImpl,
@@ -16,28 +18,52 @@ use crate::{
 use super::physics::Physics;
 
 hook!(DidBallEnterGoalHook, ball: *mut mkb::Ball, out_stage_goal_idx: *mut c_int,
-      out_itemgroup_id: *mut c_int, out_goal_flags: *mut byte => u8, mkb::did_ball_enter_goal,
-      |ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags, cx| {
+        out_itemgroup_id: *mut c_int, out_goal_flags: *mut byte => u8, mkb::did_ball_enter_goal,
+        |ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags| {
 
-    let validate = &mut cx.validate.borrow_mut();
-    let result = validate.did_ball_enter_goal_hook.call(ball, out_stage_goal_idx,
-        out_itemgroup_id, out_goal_flags);
-    if result != 0 {
-        // Determine framesave percentage
-        validate.find_framesave(ball);
-        validate.entered_goal = result != 0;
-    }
-    result
+    let result = with_mutex(&GLOBALS, |cx| {
+        cx.did_ball_enter_goal_hook.call(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags)
+    });
+
+    with_app(|cx| {
+        if result != 0 {
+            // Determine framesave percentage
+            cx.validate.find_framesave(ball);
+            cx.validate.entered_goal = result != 0;
+        }
+        result
+    })
 });
 
-#[derive(Default)]
+struct Globals {
+    did_ball_enter_goal_hook: DidBallEnterGoalHook,
+}
+
+static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
+    did_ball_enter_goal_hook: DidBallEnterGoalHook::new(),
+});
+
 pub struct Validate {
     framesave: u32,
     entered_goal: bool,
     used_mods: bool,
     has_paused: bool,
     loaded_savestate: bool,
-    did_ball_enter_goal_hook: DidBallEnterGoalHook,
+}
+
+impl Default for Validate {
+    fn default() -> Self {
+        with_mutex(&GLOBALS, |cx| {
+            cx.did_ball_enter_goal_hook.hook();
+        });
+        Self {
+            framesave: 0,
+            entered_goal: false,
+            used_mods: false,
+            has_paused: false,
+            loaded_savestate: false,
+        }
+    }
 }
 
 const INVALID_BOOL_PREFS: &[BoolPref] = &[
@@ -55,10 +81,6 @@ const INVALID_U8_PREFS: &[U8Pref] = &[
 ];
 
 impl Validate {
-    pub fn on_main_loop_load(&mut self, _cx: &AppContext) {
-        self.did_ball_enter_goal_hook.hook();
-    }
-
     pub fn disable_invalidating_settings(pref: &mut Pref) {
         // Set all bool prefs to default
         for &invalid_pref in INVALID_BOOL_PREFS {
@@ -89,7 +111,7 @@ impl Validate {
             }
 
             // Track savestates
-            if lib_save_state.state_loaded_this_frame {
+            if lib_save_state.loaded_this_frame() {
                 self.loaded_savestate = true;
             }
 
@@ -228,7 +250,7 @@ impl Validate {
         }
     }
 
-    pub fn tick(&mut self, _cx: &AppContext) {
+    pub fn tick(&mut self) {
         unsafe {
             if mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT {
                 self.entered_goal = false;
