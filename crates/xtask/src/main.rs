@@ -7,9 +7,10 @@ use gamecube_tools::elf2rel::RelVersion;
 
 // We don't read from the CARGO environment variable because we want to use the one in PATH. It
 // allows selecting a different toolchain with +nightly
+// TODO is this still relevant?
 const CARGO_PATH: &str = "cargo";
 
-const CARGO_COMMON: &[&str] = &["+nightly", "build", "-p", "smb2_practice_mod", "--release"];
+const CARGO_COMMON: &[&str] = &["build", "-p", "smb2_practice_mod", "--release"];
 
 const CARGO_BASE_RELEASE: &[&str] = &[
     "-Z",
