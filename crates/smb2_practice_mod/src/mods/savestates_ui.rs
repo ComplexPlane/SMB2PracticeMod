@@ -228,69 +228,64 @@ impl SaveStatesUi {
 
     fn load_slot(&mut self, cx: &mut Context) {
         let state = &mut self.states[self.active_state_slot];
-        match state.load(cx.lib_save_state, cx.timer) {
-            Ok(()) => {}
-            Err(LoadError::MainMode) => {
-                // Unreachable
-                panic!("Unreachable state in savestate load");
+        if let Err(code) = state.load(cx.lib_save_state, cx.timer) {
+            match code {
+                LoadError::MainMode => {
+                    // Unreachable
+                    panic!("Unreachable state in savestate load");
+                }
+                LoadError::SubMode => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        "Cannot Load Savestate Here",
+                    );
+                }
+                LoadError::TimeOver => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        "Cannot Load Savestate After Time Over",
+                    );
+                }
+                LoadError::Empty => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        &fmt!(32, c"Slot %d Empty", self.active_state_slot + 1),
+                    );
+                }
+                LoadError::WrongStage => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        &fmt!(32, c"Slot %d Wrong Stage", self.active_state_slot + 1),
+                    );
+                }
+                LoadError::WrongMonkey => {
+                    // Thank you StevenCW for finding this marvelous bug
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        &fmt!(32, c"Slot %d Wrong Monkey", self.active_state_slot + 1),
+                    );
+                }
+                LoadError::ViewStage => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        &fmt!(32, c"Cannot Load Savestate in View Stage"),
+                    );
+                }
+                LoadError::PausedAndNonGameplaySubmode => {
+                    cx.draw.notify(
+                        draw::RED,
+                        NotifyDuration::Short,
+                        &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
+                    );
+                }
             }
-            Err(LoadError::SubMode) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    "Cannot Load Savestate Here",
-                );
-                return;
-            }
-            Err(LoadError::TimeOver) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    "Cannot Load Savestate After Time Over",
-                );
-                return;
-            }
-            Err(LoadError::Empty) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    &fmt!(32, c"Slot %d Empty", self.active_state_slot + 1),
-                );
-                return;
-            }
-            Err(LoadError::WrongStage) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    &fmt!(32, c"Slot %d Wrong Stage", self.active_state_slot + 1),
-                );
-                return;
-            }
-            Err(LoadError::WrongMonkey) => {
-                // Thank you StevenCW for finding this marvelous bug
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    &fmt!(32, c"Slot %d Wrong Monkey", self.active_state_slot + 1),
-                );
-                return;
-            }
-            Err(LoadError::ViewStage) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    &fmt!(32, c"Cannot Load Savestate in View Stage"),
-                );
-                return;
-            }
-            Err(LoadError::PausedAndNonGameplaySubmode) => {
-                cx.draw.notify(
-                    draw::RED,
-                    NotifyDuration::Short,
-                    &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
-                );
-                return;
-            }
+            return;
         }
 
         if !self.created_state_last_frame {
