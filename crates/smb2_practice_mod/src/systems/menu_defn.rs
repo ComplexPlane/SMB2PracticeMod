@@ -491,7 +491,7 @@ static IW_MARK_HELP_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Text {
-        label: "  Note that some visual-only mods, may also be",
+        label: "  Note that some visual-only mods may also be",
     },
     Widget::Text {
         label: "  disallowed for for IL leaderboard submissions.",
@@ -834,7 +834,7 @@ static HIDE_WIDGETS: &[Widget] = &[
 static SAVESTATE_SUBWIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Save To",
-        choices: &["Selected Slot", "Next Empty", "Next Empty, Then Oldest"],
+        choices: &["Selected Slot", "Next Empty Slot", "Empty, Then Oldest"],
         pref: U8Pref::SavestateSaveTo,
     },
     Widget::InputSelect {

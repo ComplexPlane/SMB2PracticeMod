@@ -1,7 +1,6 @@
 // TODO:
 // Don't spam notifications while holding a button
-// Add menu bind for clearing all savestates (and resets selected slot to 1)
-// Fix too long menu text
+// Fix default bind for clear all being "A"???
 
 use core::cell::Cell;
 
