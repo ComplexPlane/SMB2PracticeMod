@@ -183,6 +183,7 @@ pref_defn!(
     82 => JumpProfile: u8,
     83 => CustomPhysicsDisp: bool = true,
     84 => SavestateSaveTo: u8,
+    85 => SavestateClearAllBind: u8,
 );
 
 const PREF_BUF_SIZE: usize =

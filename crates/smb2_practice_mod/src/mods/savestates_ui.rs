@@ -1,6 +1,7 @@
 // TODO:
 // Don't spam notifications while holding a button
 // Add menu bind for clearing all savestates (and resets selected slot to 1)
+// Fix too long menu text
 
 use core::cell::Cell;
 
@@ -229,6 +230,15 @@ impl SaveStatesUi {
         );
     }
 
+    fn clear_all_slots(&mut self, cx: &mut Context) {
+        for state in &mut self.states {
+            state.clear(cx.lib_save_state);
+        }
+        self.active_state_slot = 0;
+        cx.draw
+            .notify(draw::BLUE, NotifyDuration::Short, "All Slots Cleared");
+    }
+
     fn load_slot(&mut self, cx: &mut Context) {
         let state = &mut self.states[self.active_state_slot];
         if let Err(code) = state.load(cx.lib_save_state, cx.timer) {
@@ -326,6 +336,7 @@ impl SaveStatesUi {
             return;
         }
         let clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
+        let clear_all_bind = pref.get_u8(U8Pref::SavestateClearAllBind);
 
         // Must tick savestates every frame
         for state in &mut self.states {
@@ -359,6 +370,8 @@ impl SaveStatesUi {
             self.save_slot(cx);
         } else if cx.binds.bind_pressed(clear_bind, Prio::Low, cx.pad) {
             self.clear_slot(cx);
+        } else if cx.binds.bind_pressed(clear_all_bind, Prio::Low, cx.pad) {
+            self.clear_all_slots(cx);
         } else if cx
             .pad
             .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)

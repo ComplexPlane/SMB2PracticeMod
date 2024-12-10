@@ -843,6 +843,12 @@ static SAVESTATE_SUBWIDGETS: &[Widget] = &[
         required_chord: false,
         can_unbind: true,
     },
+    Widget::InputSelect {
+        label: "Clear All Bind",
+        pref: U8Pref::SavestateClearAllBind,
+        required_chord: false,
+        can_unbind: true,
+    },
 ];
 
 static SAVESTATE_WIDGETS: &[Widget] = &[
