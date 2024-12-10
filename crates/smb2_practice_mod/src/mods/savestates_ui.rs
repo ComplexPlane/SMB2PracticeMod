@@ -1,6 +1,4 @@
 // TODO:
-// Maybe try to see why size jumped up by 8kb?
-// Make sure stuff works with frame advance
 // Don't spam notifications while holding a button
 // Add menu bind for clearing all savestates (and resets selected slot to 1)
 
@@ -106,6 +104,11 @@ impl SaveStatesUi {
     }
 
     fn pick_save_slot(&self, cx: &mut Context) -> Option<usize> {
+        // Always write to current slot during frame advance
+        if self.frame_advance_mode {
+            return Some(self.active_state_slot);
+        }
+
         let save_to = SaveTo::try_from(cx.pref.get_u8(U8Pref::SavestateSaveTo)).unwrap();
         match save_to {
             SaveTo::Selected => Some(self.active_state_slot),
