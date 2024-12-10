@@ -161,7 +161,7 @@ pref_defn!(
     62 => PhysicsPreset: u8,
     // 63 belonged to physics friction which was only used in beta playtesting
     // 64 belonged to physics restitution which was only used in beta playtesting
-    65 => SavestateDisableOverwrite: bool,
+    // 65 belonged to SavestateDisableOverwrite
     66 => MenuBind: u8 = 64,
     67 => IlBattleReadyBind: u8 = 104,
     68 => FreecamToggleBind: u8 = 255,
@@ -182,6 +182,7 @@ pref_defn!(
     81 => MonkeyType: u8,
     82 => JumpProfile: u8,
     83 => CustomPhysicsDisp: bool = true,
+    84 => SavestateSaveTo: u8,
 );
 
 const PREF_BUF_SIZE: usize =

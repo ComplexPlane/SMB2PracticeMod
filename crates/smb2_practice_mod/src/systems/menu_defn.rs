@@ -832,15 +832,16 @@ static HIDE_WIDGETS: &[Widget] = &[
 ];
 
 static SAVESTATE_SUBWIDGETS: &[Widget] = &[
+    Widget::Choose {
+        label: "Save To",
+        choices: &["Selected Slot", "Next Empty", "Next Empty, Then Oldest"],
+        pref: U8Pref::SavestateSaveTo,
+    },
     Widget::InputSelect {
         label: "Clear Savestate Bind",
         pref: U8Pref::SavestateClearBind,
         required_chord: false,
         can_unbind: true,
-    },
-    Widget::Checkbox {
-        label: "Prevent Overriding",
-        pref: BoolPref::SavestateDisableOverwrite,
     },
 ];
 
