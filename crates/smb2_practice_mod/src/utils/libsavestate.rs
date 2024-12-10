@@ -28,7 +28,7 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
 });
 
 pub struct LibSaveState {
-    timestamp: u64,
+    timestamp: u32,
 }
 
 impl Default for LibSaveState {
@@ -77,7 +77,7 @@ pub struct SaveState {
     // None means empty savestate
     memstore: Option<memstore::Load>,
     // Timestamp of most recent action (load, save, clear, etc.)
-    timestamp: u64,
+    timestamp: u32,
     reload_state: bool,
 
     // TODO store in MemStore?
@@ -357,7 +357,7 @@ impl SaveState {
         self.timestamp = lib_save_state.timestamp;
     }
 
-    pub fn timestamp(&self) -> u64 {
+    pub fn timestamp(&self) -> u32 {
         self.timestamp
     }
 
