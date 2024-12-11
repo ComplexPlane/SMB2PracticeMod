@@ -1,6 +1,5 @@
 // TODO:
 // Don't spam notifications while holding a button
-// Fix default bind for clear all being "A"???
 
 use core::cell::Cell;
 
@@ -66,11 +65,19 @@ enum SaveTo {
     NextEmptyThenOldest,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum LoadReason {
+    Explicit,
+    Implicit,
+    NoLoad,
+}
+
 pub struct SaveStatesUi {
     states: [SaveState; 8],
     active_state_slot: usize,
     created_state_last_frame: bool,
     frame_advance_mode: bool,
+    last_cstick_dir: Dir,
 }
 
 impl Default for SaveStatesUi {
@@ -83,6 +90,7 @@ impl Default for SaveStatesUi {
             active_state_slot: 0,
             created_state_last_frame: false,
             frame_advance_mode: false,
+            last_cstick_dir: Dir::None,
         }
     }
 }
@@ -238,74 +246,76 @@ impl SaveStatesUi {
             .notify(draw::BLUE, NotifyDuration::Short, "All Slots Cleared");
     }
 
-    fn load_slot(&mut self, cx: &mut Context) {
-        let state = &mut self.states[self.active_state_slot];
-        if let Err(code) = state.load(cx.lib_save_state, cx.timer) {
-            match code {
-                LoadError::MainMode => {
-                    // Unreachable
-                    panic!("Unreachable state in savestate load");
-                }
-                LoadError::SubMode => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        "Cannot Load Savestate Here",
-                    );
-                }
-                LoadError::TimeOver => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        "Cannot Load Savestate After Time Over",
-                    );
-                }
-                LoadError::Empty => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        &fmt!(32, c"Slot %d Empty", self.active_state_slot + 1),
-                    );
-                }
-                LoadError::WrongStage => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        &fmt!(32, c"Slot %d Wrong Stage", self.active_state_slot + 1),
-                    );
-                }
-                LoadError::WrongMonkey => {
-                    // Thank you StevenCW for finding this marvelous bug
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        &fmt!(32, c"Slot %d Wrong Monkey", self.active_state_slot + 1),
-                    );
-                }
-                LoadError::ViewStage => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        &fmt!(32, c"Cannot Load Savestate in View Stage"),
-                    );
-                }
-                LoadError::PausedAndNonGameplaySubmode => {
-                    cx.draw.notify(
-                        draw::RED,
-                        NotifyDuration::Short,
-                        &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
-                    );
-                }
+    fn load_slot(&mut self, load_reason: LoadReason, cx: &mut Context) {
+        let mut notify = |color, duration, message| {
+            if load_reason == LoadReason::Explicit {
+                cx.draw.notify(color, duration, message);
             }
-            return;
-        }
+        };
 
-        if !self.created_state_last_frame {
-            cx.draw.notify(
-                draw::BLUE,
-                NotifyDuration::Short,
-                &fmt!(32, c"Slot %d Loaded", self.active_state_slot + 1),
-            );
+        let state = &mut self.states[self.active_state_slot];
+        match state.load(cx.lib_save_state, cx.timer) {
+            Ok(()) => {
+                notify(
+                    draw::BLUE,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Slot %d Loaded", self.active_state_slot + 1),
+                );
+            }
+            Err(LoadError::MainMode) => {
+                // Unreachable
+                panic!("Unreachable state in savestate load");
+            }
+            Err(LoadError::SubMode) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    "Cannot Load Savestate Here",
+                );
+            }
+            Err(LoadError::TimeOver) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    "Cannot Load Savestate After Time Over",
+                );
+            }
+            Err(LoadError::Empty) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Slot %d Empty", self.active_state_slot + 1),
+                );
+            }
+            Err(LoadError::WrongStage) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Slot %d Wrong Stage", self.active_state_slot + 1),
+                );
+            }
+            Err(LoadError::WrongMonkey) => {
+                // Thank you StevenCW for finding this marvelous bug
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Slot %d Wrong Monkey", self.active_state_slot + 1),
+                );
+            }
+            Err(LoadError::ViewStage) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Cannot Load Savestate in View Stage"),
+                );
+            }
+            Err(LoadError::PausedAndNonGameplaySubmode) => {
+                notify(
+                    draw::RED,
+                    NotifyDuration::Short,
+                    &fmt!(32, c"Cannot Load Savestate, Please Unpause"),
+                );
+            }
         }
     }
 
@@ -353,7 +363,7 @@ impl SaveStatesUi {
 
         // Change the savestate slot with C stick
         let cstick_dir = cx.pad.get_cstick_dir(Prio::Low);
-        if cstick_dir != Dir::None {
+        if cstick_dir != self.last_cstick_dir && cstick_dir != Dir::None {
             self.active_state_slot = cstick_dir as usize;
             cx.draw.notify(
                 draw::WHITE,
@@ -361,6 +371,8 @@ impl SaveStatesUi {
                 &fmt!(32, c"Slot %d Selected", self.active_state_slot + 1),
             );
         }
+
+        let load_reason = self.get_load_reason(cstick_dir, cx);
 
         if cx
             .pad
@@ -371,19 +383,45 @@ impl SaveStatesUi {
             self.clear_slot(cx);
         } else if cx.binds.bind_pressed(clear_all_bind, Prio::Low, cx.pad) {
             self.clear_all_slots(cx);
-        } else if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
-            || (cx
-                .pad
-                .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
-                && self.created_state_last_frame)
-            || self.frame_advance_mode
-            || (self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None)
-        {
-            self.load_slot(cx);
+        } else if load_reason != LoadReason::NoLoad {
+            self.load_slot(load_reason, cx);
         } else {
             self.created_state_last_frame = false;
+        }
+
+        self.last_cstick_dir = cstick_dir;
+    }
+
+    fn get_load_reason(&self, cstick_dir: Dir, cx: &mut Context) -> LoadReason {
+        if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+        {
+            if cx
+                .pad
+                .button_pressed(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
+            {
+                LoadReason::Explicit
+            } else {
+                LoadReason::Implicit
+            }
+        } else if cx
+            .pad
+            .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
+            && self.created_state_last_frame
+        {
+            // The save slot handler should show a "saved" message
+            LoadReason::Implicit
+        } else if self.frame_advance_mode {
+            LoadReason::Implicit
+        } else if self.is_either_trigger_held(cx.pad) && cstick_dir != Dir::None {
+            if cstick_dir != self.last_cstick_dir {
+                LoadReason::Explicit
+            } else {
+                LoadReason::Implicit
+            }
+        } else {
+            LoadReason::NoLoad
         }
     }
 }
