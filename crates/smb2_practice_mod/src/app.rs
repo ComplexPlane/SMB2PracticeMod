@@ -104,7 +104,8 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.binds.tick(&cx.pad);
         cx.unlock.tick(&cx.pref);
         cx.iw.tick(&cx.pad);
-        cx.save_states_ui.tick(&cx.pref, &cx.pad, &mut cx.draw, &cx.binds, &mut cx.timer);
+        cx.lib_save_state.tick();
+        cx.save_states_ui.tick(&cx.lib_save_state, &cx.pref, &cx.pad, &mut cx.draw, &cx.binds, &mut cx.timer);
         let mut menu_context = MenuContext {
             pad: &mut cx.pad,
             pref: &mut cx.pref,

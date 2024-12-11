@@ -27,18 +27,24 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
     state_loaded_this_frame: Cell::new(false),
 });
 
-pub struct LibSaveState {}
+pub struct LibSaveState {
+    timestamp: u32,
+}
 
 impl Default for LibSaveState {
     fn default() -> Self {
         with_mutex(&GLOBALS, |cx| {
             cx.sound_req_id_hook.hook();
         });
-        Self {}
+        Self { timestamp: 0 }
     }
 }
 
 impl LibSaveState {
+    pub fn tick(&mut self) {
+        self.timestamp += 1;
+    }
+
     pub fn loaded_this_frame(&self) -> bool {
         with_mutex(&GLOBALS, |cx| cx.state_loaded_this_frame.get())
     }
@@ -70,6 +76,8 @@ pub enum LoadError {
 pub struct SaveState {
     // None means empty savestate
     memstore: Option<memstore::Load>,
+    // Timestamp of most recent action (load, save, clear, etc.)
+    timestamp: u32,
     reload_state: bool,
 
     // TODO store in MemStore?
@@ -80,16 +88,20 @@ pub struct SaveState {
 }
 
 impl SaveState {
-    pub fn tick(&mut self, timer: &mut Timer) {
+    pub fn tick(&mut self, lib_save_state: &LibSaveState, timer: &mut Timer) {
         with_mutex(&GLOBALS, |cx| {
             cx.state_loaded_this_frame.set(false);
         });
         if self.reload_state {
-            let _ = self.load(timer); // Ignore result, spooky!
+            let _ = self.load(lib_save_state, timer); // Ignore result, spooky!
         }
     }
 
-    pub fn save(&mut self, timer: &mut Timer) -> Result<(), SaveError> {
+    pub fn save(
+        &mut self,
+        lib_save_state: &LibSaveState,
+        timer: &mut Timer,
+    ) -> Result<(), SaveError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -130,6 +142,7 @@ impl SaveState {
             self.handle_pause_menu_save();
 
             self.memstore = Some(memstore::Load::from(save));
+            self.timestamp = lib_save_state.timestamp;
         }
 
         Ok(())
@@ -154,7 +167,11 @@ impl SaveState {
         }
     }
 
-    pub fn load(&mut self, timer: &mut Timer) -> Result<(), LoadError> {
+    pub fn load(
+        &mut self,
+        lib_save_state: &LibSaveState,
+        timer: &mut Timer,
+    ) -> Result<(), LoadError> {
         unsafe {
             // Must be in main game
             if mkb::main_mode != mkb::MD_GAME {
@@ -210,6 +227,7 @@ impl SaveState {
             with_mutex(&GLOBALS, |cx| {
                 cx.state_loaded_this_frame.set(true);
             });
+            self.timestamp = lib_save_state.timestamp;
         }
 
         Ok(())
@@ -334,8 +352,13 @@ impl SaveState {
         self.memstore.is_none()
     }
 
-    pub fn clear(&mut self) {
-        self.memstore = None
+    pub fn clear(&mut self, lib_save_state: &LibSaveState) {
+        self.memstore = None;
+        self.timestamp = lib_save_state.timestamp;
+    }
+
+    pub fn timestamp(&self) -> u32 {
+        self.timestamp
     }
 
     unsafe fn pass_over_regions(memstore: &mut MemStore, timer: &mut Timer) {
