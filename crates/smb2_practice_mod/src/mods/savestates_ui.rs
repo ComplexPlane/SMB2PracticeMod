@@ -1,6 +1,3 @@
-// TODO:
-// Don't spam notifications while holding a button
-
 use core::cell::Cell;
 
 use critical_section::Mutex;
