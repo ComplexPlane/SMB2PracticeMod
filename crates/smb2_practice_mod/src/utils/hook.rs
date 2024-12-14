@@ -35,7 +35,9 @@ macro_rules! hook {
 
             // We sometimes want to replace the hooked function entirely and never call the original
             #[allow(dead_code)]
-            pub fn call(&self $(, $argname: $arg)*) -> $ret {
+            pub fn call(self $(, $argname: $arg)*) -> $ret {
+                // We take self as a compile-time reminder that hooks must be cloned and moved out
+                // of Mutex scope before being called
                 unsafe {
                     $crate::patch::hook_function_part2(
                         &self.instrs,

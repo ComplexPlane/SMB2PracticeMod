@@ -1,6 +1,5 @@
 use core::{ffi::c_long, ptr::null_mut};
 
-use critical_section::Mutex;
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
@@ -11,23 +10,13 @@ use crate::{
         draw,
         pref::{BoolPref, Pref, U8Pref},
     },
-    utils::{misc::with_mutex, timerdisp},
+    utils::timerdisp,
 };
 
 use super::freecam::Freecam;
 
-struct Globals {
-    reset_cm_course_hook: ResetCmCourseHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    reset_cm_course_hook: ResetCmCourseHook::new(),
-});
-
 hook!(ResetCmCourseHook => (), mkb::g_reset_cm_course, || {
-    with_mutex(&GLOBALS, |cx| {
-        cx.reset_cm_course_hook.call();
-    });
+    with_app(|cx| cx.cm_seg.reset_cm_course_hook.clone()).call();
     with_app(|cx| {
         cx.cm_seg.on_reset_cm_course();
     });
@@ -82,13 +71,14 @@ pub struct CmSeg {
     overwritten_opcode: mkb::CourseCommandOpcode,
     overwritten_starting_monkeys: i8,
     pbs: [u32; 14],
+
+    reset_cm_course_hook: ResetCmCourseHook,
 }
 
 impl Default for CmSeg {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.reset_cm_course_hook.hook();
-        });
+        let reset_cm_course_hook = ResetCmCourseHook::new();
+        reset_cm_course_hook.hook();
         Self {
             state: Default::default(),
             seg_request: Default::default(),
@@ -99,6 +89,8 @@ impl Default for CmSeg {
             overwritten_opcode: 0,
             overwritten_starting_monkeys: 0,
             pbs: [u32::MAX; 14],
+
+            reset_cm_course_hook,
         }
     }
 }

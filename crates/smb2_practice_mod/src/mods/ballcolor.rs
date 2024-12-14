@@ -1,4 +1,3 @@
-use critical_section::Mutex;
 use num_enum::TryFromPrimitive;
 
 use mkb::mkb;
@@ -10,24 +9,13 @@ use crate::{
         draw,
         pref::{Pref, U8Pref},
     },
-    utils::misc::with_mutex,
 };
-
-struct Globals {
-    load_stagedef_hook: LoadStagedefHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    load_stagedef_hook: LoadStagedefHook::new(),
-});
 
 pub const COLOR_MIN: u8 = 0;
 pub const COLOR_MAX: u8 = 0xff;
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
-    with_mutex(&GLOBALS, |cx| {
-        cx.load_stagedef_hook.call(stage_id);
-    });
+    with_app(|cx| cx.ball_color.load_stagedef_hook.clone()).call(stage_id);
     with_app(|cx| {
         cx.ball_color.switch_monkey(&cx.pref);
     });
@@ -64,17 +52,19 @@ pub struct BallColor {
     rainbow: u32,
     default_color: mkb::GXColor,
     current_color: mkb::GXColor,
+
+    load_stagedef_hook: LoadStagedefHook,
 }
 
 impl Default for BallColor {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.load_stagedef_hook.hook();
-        });
+        let load_stagedef_hook = LoadStagedefHook::new();
+        load_stagedef_hook.hook();
         Self {
             rainbow: 0,
             default_color: unsafe { *(0x80472a34 as *const mkb::GXColor) },
             current_color: Default::default(),
+            load_stagedef_hook,
         }
     }
 }
