@@ -108,21 +108,6 @@ pub unsafe fn hook_function_part1(func: *mut usize, dest: *const usize) -> HookI
             first_instr,
             jumpback_addr: func.add(1) as *const c_void,
         }
-
-        // Func has not been hooked yet
-        // Original instruction
-        // tramp_instrs[0].set(*func);
-        // clear_dc_ic_cache(tramp_instrs.as_ptr() as *mut _, size_of::<usize>());
-
-        // // Branch to original func past hook
-        // write_branch(
-        //     &tramp_instrs[1],
-        //     transmute::<*const usize, *const c_void>(func.add(1) as *const _),
-        // );
-
-        // // The function pointer to run as the original function is the addr of the trampoline
-        // // instructions array
-        // *tramp_dest = transmute::<*const Cell<usize>, *const c_void>(tramp_instrs.as_ptr());
     }
 }
 
