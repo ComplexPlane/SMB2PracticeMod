@@ -1,11 +1,6 @@
-use critical_section::Mutex;
 use mkb::mkb;
 
-use crate::{
-    app::with_app,
-    hook,
-    utils::misc::{for_c_arr_idx, with_mutex},
-};
+use crate::{app::with_app, hook, utils::misc::for_c_arr_idx};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {
@@ -58,9 +53,9 @@ const DIR_REPEAT_PERIOD: u32 = 3;
 const DIR_REPEAT_WAIT: u32 = 14;
 
 hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
-    let ret = with_mutex(&GLOBALS, |cx| {
-        cx.pad_read_hook.call(statuses)
-    });
+    let ret = with_app(|cx| {
+        cx.pad.pad_read_hook.clone()
+    }).call(statuses);
 
     with_app(|cx| {
         let status_array = unsafe { core::slice::from_raw_parts(statuses, 4)};
@@ -69,14 +64,6 @@ hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses
     });
 
     ret
-});
-
-struct Globals {
-    pad_read_hook: PadReadHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    pad_read_hook: PadReadHook::new(),
 });
 
 pub struct Pad {
@@ -91,13 +78,14 @@ pub struct Pad {
     analog_inputs: [mkb::AnalogInputGroup; 4],
 
     dir_down_time: [u8; 8],
+
+    pad_read_hook: PadReadHook,
 }
 
 impl Default for Pad {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.pad_read_hook.hook();
-        });
+        let pad_read_hook = PadReadHook::new();
+        pad_read_hook.hook();
         Self {
             analog_state: Default::default(),
             curr_priority: Default::default(),
@@ -110,6 +98,7 @@ impl Default for Pad {
             analog_inputs: Default::default(),
 
             dir_down_time: Default::default(),
+            pad_read_hook,
         }
     }
 }

@@ -1,13 +1,11 @@
-use critical_section::Mutex;
 use mkb::mkb;
-use once_cell::sync::Lazy;
 
 use crate::app::with_app;
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
-use crate::utils::misc::{for_c_arr, with_mutex};
+use crate::utils::misc::for_c_arr;
 use crate::utils::patch;
 use crate::{fmt, hook};
 use mkb::{S16Vec, Vec};
@@ -18,19 +16,9 @@ pub const TURBO_SPEED_MAX: u8 = 200;
 hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
     with_app(|cx| {
         cx.freecam.on_event_camera_tick(&mut cx.pref);
-    });
-
-    with_mutex(&GLOBALS, |cx| {
-        cx.event_camera_tick_hook.call();
-    });
+        cx.freecam.event_camera_tick_hook.clone()
+    }).call();
 });
-
-#[derive(Default)]
-struct Globals {
-    event_camera_tick_hook: EventCameraTickHook,
-}
-
-static GLOBALS: Lazy<Mutex<Globals>> = Lazy::new(|| Mutex::new(Globals::default()));
 
 struct Context<'a> {
     pref: &'a mut Pref,
@@ -45,6 +33,8 @@ pub struct Freecam {
 
     enabled_this_tick: bool,
     enabled_prev_tick: bool,
+
+    event_camera_tick_hook: EventCameraTickHook,
 }
 
 impl Default for Freecam {
@@ -52,12 +42,14 @@ impl Default for Freecam {
         unsafe {
             patch::write_branch_bl(0x8028353c as *mut _, Self::call_camera_func_hook as *mut _);
         }
-        with_mutex(&GLOBALS, |cx| cx.event_camera_tick_hook.hook());
+        let event_camera_tick_hook = EventCameraTickHook::new();
+        event_camera_tick_hook.hook();
         Self {
             eye: Default::default(),
             rot: Default::default(),
             enabled_this_tick: false,
             enabled_prev_tick: false,
+            event_camera_tick_hook,
         }
     }
 }

@@ -1,4 +1,3 @@
-use critical_section::Mutex;
 use mkb::mkb;
 
 use num_enum::TryFromPrimitive;
@@ -7,13 +6,10 @@ use crate::{
     app::with_app,
     hook,
     systems::pref::{Pref, U8Pref},
-    utils::misc::with_mutex,
 };
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
-    with_mutex(&GLOBALS, |cx| {
-        cx.load_stagedef_hook.call(stage_id);
-    });
+    with_app(|cx| cx.stage_edits.load_stagedef_hook.clone()).call(stage_id);
     with_app(|cx| {
         cx.stage_edits.on_load_stagedef(&cx.pref);
     });
@@ -33,25 +29,18 @@ pub struct StageEdits {
     current_mode: ActiveMode,
     rev_goal_idx: u32,
     new_goal: bool,
-}
-
-struct Globals {
     load_stagedef_hook: LoadStagedefHook,
 }
 
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    load_stagedef_hook: LoadStagedefHook::new(),
-});
-
 impl Default for StageEdits {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.load_stagedef_hook.hook();
-        });
+        let load_stagedef_hook = LoadStagedefHook::new();
+        load_stagedef_hook.hook();
         Self {
             current_mode: Default::default(),
             rev_goal_idx: 0,
             new_goal: false,
+            load_stagedef_hook,
         }
     }
 }

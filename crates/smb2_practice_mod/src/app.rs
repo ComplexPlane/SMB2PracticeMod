@@ -21,7 +21,7 @@ use crate::{
         pad::Pad,
         pref::{BoolPref, Pref},
     },
-    utils::{libsavestate::LibSaveState, misc::with_mutex, relutil::ModuleId},
+    utils::{libsavestate::LibSaveState, relutil::ModuleId},
 };
 
 static APP_CONTEXT: Lazy<Mutex<RefCell<AppContext>>> =
@@ -30,22 +30,6 @@ static APP_CONTEXT: Lazy<Mutex<RefCell<AppContext>>> =
 pub fn with_app<T>(f: impl FnOnce(&mut AppContext) -> T) -> T {
     critical_section::with(|cs| f(&mut APP_CONTEXT.borrow_ref_mut(cs)))
 }
-
-struct Globals {
-    process_inputs_hook: ProcessInputsHook,
-    draw_debug_text_hook: DrawDebugTextHook,
-    oslink_hook: OSLinkHook,
-    game_ready_init_hook: GameReadyInitHook,
-    game_play_tick_hook: GamePlayTickHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    process_inputs_hook: ProcessInputsHook::new(),
-    draw_debug_text_hook: DrawDebugTextHook::new(),
-    oslink_hook: OSLinkHook::new(),
-    game_ready_init_hook: GameReadyInitHook::new(),
-    game_play_tick_hook: GamePlayTickHook::new(),
-});
 
 #[derive(Default)]
 pub struct AppContext {
@@ -72,32 +56,35 @@ pub struct AppContext {
     pub il_mark: IlMark,
     pub camera: Camera,
     pub stage_edits: StageEdits,
-    pub _hide: Hide,
+    pub hide: Hide,
     pub sfx: Sfx,
     pub scratch: Scratch,
     pub validate: Validate,
     pub draw: Draw,
     pub pref: Pref,
+
+    process_inputs_hook: ProcessInputsHook,
+    draw_debug_text_hook: DrawDebugTextHook,
+    oslink_hook: OSLinkHook,
+    game_ready_init_hook: GameReadyInitHook,
+    game_play_tick_hook: GamePlayTickHook,
 }
 
 impl AppContext {
     fn new() -> Self {
         crate::systems::heap::HEAP.init();
-        with_mutex(&GLOBALS, |cx| {
-            cx.process_inputs_hook.hook();
-            cx.draw_debug_text_hook.hook();
-            cx.oslink_hook.hook();
-        });
 
-        Self::default()
+        let app_context = Self::default();
+        app_context.process_inputs_hook.hook();
+        app_context.draw_debug_text_hook.hook();
+        app_context.oslink_hook.hook();
+        app_context
     }
 }
 
 // Tick functions hook
 hook!(ProcessInputsHook => (), mkb::process_inputs, || {
-    with_mutex(&GLOBALS, |cx| {
-        cx.process_inputs_hook.call();
-    });
+    with_app(|cx| cx.process_inputs_hook.clone()).call();
 
     with_app(|cx| {
         cx.pad.tick();
@@ -140,28 +127,25 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
 
 // Draw functions hook
 hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
-    with_mutex(&GLOBALS, |cx| {
-        cx.draw_debug_text_hook.call();
-    });
-
-    // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
-    // elements. The original screenshot call is nopped.
-    unsafe {
-        if mkb::g_pause_status == 1 {
-            mkb::take_pausemenu_screenshot(
-                &raw mut mkb::fullscreen_texture_buf as *mut _,
-                0,
-                0,
-                (*mkb::current_render_mode).fbWidth as i16,
-                (*mkb::current_render_mode).efbHeight as i16,
-                mkb::GX_TF_RGB5A3,
-            );
-        }
-    };
+    with_app(|cx| cx.draw_debug_text_hook.clone()).call();
 
     with_app(|cx| {
-        cx.draw.predraw();
+        // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
+        // elements. The original screenshot call is nopped.
+        unsafe {
+            if mkb::g_pause_status == 1 {
+                mkb::take_pausemenu_screenshot(
+                    &raw mut mkb::fullscreen_texture_buf as *mut _,
+                    0,
+                    0,
+                    (*mkb::current_render_mode).fbWidth as i16,
+                    (*mkb::current_render_mode).efbHeight as i16,
+                    mkb::GX_TF_RGB5A3,
+                );
+            }
+        };
 
+        cx.draw.predraw();
         cx.timer.draw(&cx.pref, &cx.freecam, &cx.validate);
         cx.iw.draw(&cx.pref, &cx.freecam);
         cx.il_battle.draw(&cx.pref, &cx.freecam, &cx.binds, &cx.pad);
@@ -192,32 +176,30 @@ hook!(OSLinkHook,
         mkb::OSLink,
         |rel_buffer, bss_buffer| {
 
-    with_mutex(&GLOBALS, |cx| {
-        let ret = cx.oslink_hook.call(rel_buffer, bss_buffer);
+    let ret = with_app(|cx| cx.oslink_hook.clone()).call(rel_buffer, bss_buffer);
+
+    with_app(|cx| {
         let module_id = ModuleId::try_from(unsafe{*rel_buffer}.info.id);
         if let Ok(ModuleId::MainGame) = module_id {
             cx.game_ready_init_hook.hook();
             cx.game_play_tick_hook.hook();
         }
-        ret
-    })
+    });
+
+    ret
 });
 
 hook!(GameReadyInitHook => (), mkb::smd_game_ready_init, || {
     with_app(|cx| {
         cx.stage_edits.on_game_ready_init(&cx.pref);
         cx.ball_color.switch_monkey(&cx.pref);
-    });
 
-    with_mutex(&GLOBALS, |cx| {
-        cx.game_ready_init_hook.call();
-    });
+        cx.game_ready_init_hook.clone()
+    }).call();
 });
 
 hook!(GamePlayTickHook => (), mkb::smd_game_play_tick, || {
-    with_mutex(&GLOBALS, |cx| {
-        cx.game_play_tick_hook.call();
-    });
+    with_app(|cx| cx.game_play_tick_hook.clone()).call();
 
     with_app(|cx| {
         cx.validate.validate_run(&cx.pref, &cx.lib_save_state, &cx.menu_impl, &cx.physics, &cx.pad);

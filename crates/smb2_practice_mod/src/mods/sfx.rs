@@ -18,11 +18,12 @@ hook!(SoftStreamStartHook, looping_state: u32, g_bgm_id: mkb::BgmTrack, param_3:
 
 // Re-entrant hook, cannot use app state
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
-    with_mutex(&GLOBALS, |cx| {
-        if !(cx.mute_timer_ding.get() && sfx_idx == 0x0003d806) {
-            cx.sound_req_id_hook.call(sfx_idx);
-        }
+    let (mute_timer_ding, hook) = with_mutex(&GLOBALS, |cx| {
+        (cx.mute_timer_ding.get(), cx.sound_req_id_hook.clone())
     });
+    if !(mute_timer_ding && sfx_idx == 0x0003d806) {
+        hook.call(sfx_idx);
+    }
 });
 
 hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sprite| {
@@ -72,22 +73,20 @@ hook!(SpriteGoDispHook, sprite: *mut mkb::Sprite => (), mkb::sprite_go_disp, |sp
 });
 
 struct Globals {
-    soft_stream_start_hook: SoftStreamStartHook,
     sound_req_id_hook: SoundReqIdHook,
-    sprite_go_disp_hook: SpriteGoDispHook,
     mute_timer_ding: Cell<bool>,
 }
 
 static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    soft_stream_start_hook: SoftStreamStartHook::new(),
     sound_req_id_hook: SoundReqIdHook::new(),
-    sprite_go_disp_hook: SpriteGoDispHook::new(),
     mute_timer_ding: Cell::new(false),
 });
 
 #[derive(Default)]
 pub struct Sfx {
     initialized: bool,
+    soft_stream_start_hook: SoftStreamStartHook,
+    sprite_go_disp_hook: SpriteGoDispHook,
 }
 
 impl Sfx {
@@ -97,10 +96,10 @@ impl Sfx {
                 if pref.get_bool(BoolPref::MuteBgm) {
                     // Only hook if the preference is initially set, so we don't affect background music until game
                     // is rebooted
-                    cx.soft_stream_start_hook.hook();
+                    self.soft_stream_start_hook.hook();
                 }
                 cx.sound_req_id_hook.hook();
-                cx.sprite_go_disp_hook.hook();
+                self.sprite_go_disp_hook.hook();
 
                 self.initialized = true;
             }

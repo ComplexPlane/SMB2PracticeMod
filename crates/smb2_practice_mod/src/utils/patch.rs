@@ -71,12 +71,12 @@ pub unsafe fn write_nop(ptr: *mut usize) -> usize {
     write_word(ptr, 0x60000000)
 }
 
-pub unsafe fn hook_function(
-    func: *mut usize,
-    dest: *mut usize,
-    tramp_instrs: &[Cell<usize>; 2],
-    tramp_dest: &mut *const c_void,
-) {
+pub struct HookInfo {
+    pub first_instr: usize,
+    pub jumpback_addr: *const c_void,
+}
+
+pub unsafe fn hook_function_part1(func: *mut usize, dest: *const usize) -> HookInfo {
     if (*func & ppc::B_OPCODE_MASK) == ppc::B_OPCODE {
         // Func has been hooked already, chain the hooks
 
@@ -89,27 +89,35 @@ pub unsafe fn hook_function(
         let old_dest = func as usize + old_dest_offset;
 
         // Hook to our new func instead
-        write_branch(func, dest as *mut _);
+        write_branch(func, dest as *const _);
 
-        // Use the old hooked func as the trampoline dest
-        *tramp_dest = old_dest as *const c_void;
+        let mut first_instr = 0;
+        write_nop(&raw mut first_instr);
+
+        HookInfo {
+            first_instr,
+            jumpback_addr: old_dest as *const c_void,
+        }
     } else {
-        // Func has not been hooked yet
-        // Original instruction
-        tramp_instrs[0].set(*func);
-        clear_dc_ic_cache(tramp_instrs.as_ptr() as *mut _, size_of::<usize>());
-
-        // Branch to original func past hook
-        write_branch(
-            &tramp_instrs[1],
-            transmute::<*const usize, *const c_void>(func.add(1) as *const _),
-        );
-
-        // The function pointer to run as the original function is the addr of the trampoline
-        // instructions array
-        *tramp_dest = transmute::<*const Cell<usize>, *const c_void>(tramp_instrs.as_ptr());
+        let first_instr = *func;
 
         // Write actual hook
-        write_branch(func, dest as *mut _);
+        write_branch(func, dest as *const _);
+
+        HookInfo {
+            first_instr,
+            jumpback_addr: func.add(1) as *const c_void,
+        }
     }
+}
+
+pub unsafe fn hook_function_part2(instrs: &[Cell<usize>; 2], jumpback_addr: *const usize) {
+    // Update branch instruction to reflect hook's new position in memory
+    write_branch(
+        &instrs[1],
+        transmute::<*const usize, *const c_void>(jumpback_addr),
+    );
+    // Flush/Invalidate caches for both instructions, as this function is meant to be called after
+    // cloning a hook
+    clear_dc_ic_cache(instrs.as_ptr() as *const _, size_of::<[Cell<usize>; 2]>());
 }

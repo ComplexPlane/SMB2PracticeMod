@@ -1,10 +1,8 @@
 use core::ffi::c_int;
-use critical_section::Mutex;
 use mkb::mkb;
 use mkb::{byte, Vec};
 
 use crate::app::with_app;
-use crate::utils::misc::with_mutex;
 use crate::{
     hook,
     systems::{
@@ -21,9 +19,9 @@ hook!(DidBallEnterGoalHook, ball: *mut mkb::Ball, out_stage_goal_idx: *mut c_int
         out_itemgroup_id: *mut c_int, out_goal_flags: *mut byte => u8, mkb::did_ball_enter_goal,
         |ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags| {
 
-    let result = with_mutex(&GLOBALS, |cx| {
-        cx.did_ball_enter_goal_hook.call(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags)
-    });
+    let result = with_app(|cx| {
+        cx.validate.did_ball_enter_goal_hook.clone()
+    }).call(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
 
     with_app(|cx| {
         if result != 0 {
@@ -31,16 +29,8 @@ hook!(DidBallEnterGoalHook, ball: *mut mkb::Ball, out_stage_goal_idx: *mut c_int
             cx.validate.find_framesave(ball);
             cx.validate.entered_goal = result != 0;
         }
-        result
-    })
-});
-
-struct Globals {
-    did_ball_enter_goal_hook: DidBallEnterGoalHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    did_ball_enter_goal_hook: DidBallEnterGoalHook::new(),
+    });
+    result
 });
 
 pub struct Validate {
@@ -49,19 +39,20 @@ pub struct Validate {
     used_mods: bool,
     has_paused: bool,
     loaded_savestate: bool,
+    did_ball_enter_goal_hook: DidBallEnterGoalHook,
 }
 
 impl Default for Validate {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.did_ball_enter_goal_hook.hook();
-        });
+        let did_ball_enter_goal_hook = DidBallEnterGoalHook::new();
+        did_ball_enter_goal_hook.hook();
         Self {
             framesave: 0,
             entered_goal: false,
             used_mods: false,
             has_paused: false,
             loaded_savestate: false,
+            did_ball_enter_goal_hook,
         }
     }
 }

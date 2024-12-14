@@ -1,11 +1,6 @@
-use crate::{
-    app::with_app,
-    hook,
-    utils::misc::with_mutex,
-};
+use crate::{app::with_app, hook};
 use core::ffi::c_int;
 
-use critical_section::Mutex;
 use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
@@ -33,29 +28,15 @@ enum TimerType {
     CountUpwards,
 }
 
-struct Globals {
-    did_ball_fallout_hook: DidBallFalloutHook,
-    load_stagedef_hook: LoadStagedefHook,
-}
-
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    did_ball_fallout_hook: DidBallFalloutHook::new(),
-    load_stagedef_hook: LoadStagedefHook::new(),
-});
-
 hook!(DidBallFalloutHook, ball: *mut mkb::Ball => c_int, mkb::did_ball_fallout, |ball| {
-    let ret = with_mutex(&GLOBALS, |cx| {
-        cx.did_ball_fallout_hook.call(ball)
-    });
+    let ret = with_app(|cx| cx.fallout.did_ball_fallout_hook.clone()).call(ball);
     with_app(|cx| {
         cx.fallout.on_did_ball_fallout(ball, ret, &cx.pref)
     })
 });
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
-    with_mutex(&GLOBALS, |cx| {
-        cx.load_stagedef_hook.call(stage_id);
-    });
+    with_app(|cx| cx.fallout.load_stagedef_hook.clone()).call(stage_id);
     with_app(|cx| {
         // Set the current default values before loading the stagedef
         unsafe {
@@ -75,18 +56,25 @@ pub struct Fallout {
     timeover_condition: usize, // Timeover at 0.00
     timer_increment: usize,    // Add -1 to timer each frame
     toggled_freecam: bool,
+
+    did_ball_fallout_hook: DidBallFalloutHook,
+    load_stagedef_hook: LoadStagedefHook,
 }
 
 impl Default for Fallout {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.did_ball_fallout_hook.hook();
-            cx.load_stagedef_hook.hook();
-        });
+        let did_ball_fallout_hook = DidBallFalloutHook::new();
+        did_ball_fallout_hook.hook();
+        let load_stagedef_hook = LoadStagedefHook::new();
+        load_stagedef_hook.hook();
+
         Self {
             timeover_condition: 0x2c000000,
             timer_increment: 0x3803ffff,
             toggled_freecam: false,
+
+            did_ball_fallout_hook,
+            load_stagedef_hook,
         }
     }
 }

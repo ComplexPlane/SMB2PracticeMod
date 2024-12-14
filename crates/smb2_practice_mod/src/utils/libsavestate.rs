@@ -10,11 +10,13 @@ use crate::{hook, mods::timer::Timer};
 
 // Re-entrant hook, cannot use app state
 hook!(SoundReqIdHook, sfx_idx: u32 => (), mkb::call_SoundReqID_arg_0, |sfx_idx| {
-    with_mutex(&GLOBALS, |cx| {
-        if !cx.state_loaded_this_frame.get() {
-            cx.sound_req_id_hook.call(sfx_idx);
-        }
-    });
+    let (loaded_this_frame, hook) = with_mutex(&GLOBALS, |cx| (
+        cx.state_loaded_this_frame.get(),
+        cx.sound_req_id_hook.clone()
+    ));
+    if !loaded_this_frame {
+        hook.call(sfx_idx);
+    }
 });
 
 struct Globals {

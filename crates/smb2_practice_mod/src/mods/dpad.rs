@@ -2,15 +2,11 @@ use crate::{
     app::with_app,
     hook,
     systems::pref::{BoolPref, Pref},
-    utils::misc::with_mutex,
 };
-use critical_section::Mutex;
 use mkb::mkb;
 
 hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses| {
-    let ret = with_mutex(&GLOBALS, |cx| {
-        cx.pad_read_hook.call(statuses)
-    });
+    let ret = with_app(|cx| cx.dpad.pad_read_hook.clone()).call(statuses);
     with_app(|cx| {
         cx.dpad.on_pad_read(statuses, &cx.pref);
     });
@@ -18,30 +14,24 @@ hook!(PadReadHook, statuses: *mut mkb::PADStatus => u32, mkb::PADRead, |statuses
 });
 
 hook!(CreateSpeedSpritesHook, x: f32, y: f32 => (), mkb::create_speed_sprites, |x, y| {
-    with_mutex(&GLOBALS, |cx| {
-        cx.create_speed_sprites_hook.call(x + 5.0, y);
-    });
+    with_app(|cx| cx.dpad.create_speed_sprites_hook.clone()).call(x + 5.0, y);
 });
 
-struct Globals {
+pub struct Dpad {
     pad_read_hook: PadReadHook,
     create_speed_sprites_hook: CreateSpeedSpritesHook,
 }
 
-static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
-    pad_read_hook: PadReadHook::new(),
-    create_speed_sprites_hook: CreateSpeedSpritesHook::new(),
-});
-
-pub struct Dpad {}
-
 impl Default for Dpad {
     fn default() -> Self {
-        with_mutex(&GLOBALS, |cx| {
-            cx.pad_read_hook.hook();
-            cx.create_speed_sprites_hook.hook();
-        });
-        Self {}
+        let pad_read_hook = PadReadHook::new();
+        pad_read_hook.hook();
+        let create_speed_sprites_hook = CreateSpeedSpritesHook::new();
+        create_speed_sprites_hook.hook();
+        Self {
+            pad_read_hook,
+            create_speed_sprites_hook,
+        }
     }
 }
 
