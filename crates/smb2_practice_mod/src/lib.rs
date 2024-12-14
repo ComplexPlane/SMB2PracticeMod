@@ -22,6 +22,8 @@ use core::{
 
 use critical_section::RawRestoreState;
 
+use mkb::mkb;
+
 // Disable unless we're buliding with our custom target explicitly, so rust-analyzer doesn't trip up
 // on conflicting panic handler implementations with std
 #[cfg(target_arch = "powerpc")]
@@ -99,12 +101,18 @@ unsafe fn perform_assembly_patches() {
     );
 }
 
-// We're never running multiple "threads" or hooking interrupts, so establishing a critical section
-// is a no-op
+// We disable interrupts while basically any of our code runs, even though we never hook anything
+// called in interrupt context as far as I know. It still seems to help prevent random crashes
+// somehow.
+// I guess another possibility is for an interrupt to trigger at a point in our code with high
+// stack usage, using enough additional stack to cause a stack overflow.
 struct MyCriticalSection;
 critical_section::set_impl!(MyCriticalSection);
 unsafe impl critical_section::Impl for MyCriticalSection {
-    unsafe fn acquire() -> RawRestoreState {}
-
-    unsafe fn release(_token: RawRestoreState) {}
+    unsafe fn acquire() -> RawRestoreState {
+        mkb::OSDisableInterrupts() as u32
+    }
+    unsafe fn release(token: RawRestoreState) {
+        mkb::OSRestoreInterrupts(token as i32);
+    }
 }

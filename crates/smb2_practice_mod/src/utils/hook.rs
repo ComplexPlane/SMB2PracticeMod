@@ -1,9 +1,9 @@
 #[macro_export]
 macro_rules! hook {
     ($name:ident $(, $argname:ident: $arg:ty)* => $ret:ty, $their_func:expr, $our_func:expr) => {
+        #[derive(Clone)]
         pub struct $name {
             instrs: [core::cell::Cell<usize>; 2],
-            their_func: unsafe extern "C" fn($($arg,)*) -> $ret,
             jumpback_addr: core::cell::Cell<usize>,
         }
 
@@ -17,15 +17,15 @@ macro_rules! hook {
             const fn new() -> Self {
                 Self {
                     instrs: [core::cell::Cell::new(0), core::cell::Cell::new(0)],
-                    their_func: $their_func,
                     jumpback_addr: core::cell::Cell::new(0),
                 }
             }
 
             pub fn hook(&self) {
+                let their_func = $their_func;
                 unsafe {
                     let hook_info = $crate::patch::hook_function_part1(
-                        self.their_func as *mut usize,
+                        their_func as *mut usize,
                         Self::c_hook as *const usize,
                     );
                     self.instrs[0].set(hook_info.first_instr);
