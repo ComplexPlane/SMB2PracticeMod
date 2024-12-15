@@ -171,7 +171,7 @@ impl CardIo {
             // HACK: re-enable interrupts during file reading. We could also make reading async like
             // writing, but then if SMB2WorkshopMod did the same we'd have to coordinate
             // non-overlapping reads on startup.
-            let interrupts = mkb::OSDisableInterrupts();
+            let interrupts = mkb::OSEnableInterrupts();
             let result = self.read_file_internal(file_name);
             mkb::OSRestoreInterrupts(interrupts);
             result

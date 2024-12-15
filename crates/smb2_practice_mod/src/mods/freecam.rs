@@ -30,6 +30,7 @@ struct Globals {
     event_camera_tick_hook: EventCameraTickHook,
 }
 
+// Removing Lazy and const initializing adds 5KB to the binary. WTF.
 static GLOBALS: Lazy<Mutex<Globals>> = Lazy::new(|| Mutex::new(Globals::default()));
 
 struct Context<'a> {
