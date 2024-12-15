@@ -127,20 +127,6 @@ impl BallColor {
         unsafe {
             let ball_type = BallColorType::try_from(pref.get_u8(U8Pref::BallColorType)).unwrap();
 
-            if mkb::main_mode != mkb::MD_GAME
-                || (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT
-                    || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN
-                    || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN)
-            {
-                *(0x80472a34 as *mut mkb::GXColor) = self.default_color;
-                return;
-            }
-
-            let ape = mkb::balls[mkb::curr_player_idx as usize].ape;
-            if ape.is_null() {
-                return;
-            }
-
             match ball_type {
                 BallColorType::Preset => {
                     *(0x80472a34 as *mut mkb::GXColor) = self.default_color;
@@ -195,17 +181,29 @@ impl BallColor {
                 }
             }
 
-            let clothing_type = ClothingType::try_from(pref.get_u8(U8Pref::ApeColorType)).unwrap();
+            if mkb::main_mode != mkb::MD_GAME
+                || (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT
+                    || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN
+                    || mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN)
+            {
+                *(0x80472a34 as *mut mkb::GXColor) = self.default_color;
+            }
 
-            match clothing_type {
-                ClothingType::Preset => {
-                    (*ape).color_index =
-                        Self::convert_to_ape_color_id(pref.get_u8(U8Pref::ApeColor)) as i32;
-                }
-                ClothingType::Random => {
-                    if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
+            let ape = mkb::balls[mkb::curr_player_idx as usize].ape;
+            if !ape.is_null() {
+                let clothing_type =
+                    ClothingType::try_from(pref.get_u8(U8Pref::ApeColorType)).unwrap();
+
+                match clothing_type {
+                    ClothingType::Preset => {
                         (*ape).color_index =
-                            Self::convert_to_ape_color_id((mkb::rand() % 9) as u8) as i32;
+                            Self::convert_to_ape_color_id(pref.get_u8(U8Pref::ApeColor)) as i32;
+                    }
+                    ClothingType::Random => {
+                        if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
+                            (*ape).color_index =
+                                Self::convert_to_ape_color_id((mkb::rand() % 9) as u8) as i32;
+                        }
                     }
                 }
             }
