@@ -28,7 +28,21 @@ static APP_CONTEXT: Lazy<Mutex<RefCell<AppContext>>> =
     Lazy::new(|| Mutex::new(RefCell::new(AppContext::new())));
 
 pub fn with_app<T>(f: impl FnOnce(&mut AppContext) -> T) -> T {
-    critical_section::with(|cs| f(&mut APP_CONTEXT.borrow_ref_mut(cs)))
+    // Disabling interrupts while our code apparently prevents the random crashes I've been seeing.
+    // Although I'm pretty sure we don't hook any functions which may be called in interrupt
+    // context, maybe we do. I guess another possibility is that an interrupt is triggered during a
+    // function of ours with high stack usage, pushing it over the edge and causing a stack
+    // overflow.
+    //
+    // It would be better to disable interrupts inside critical_section::Mutex, that's basically
+    // what it's designed for. However, my PR which does so (#58) increases the binary size by 10KB
+    // and I really don't understand why.
+    let interrupts = unsafe { mkb::OSDisableInterrupts() };
+    let ret = critical_section::with(|cs| f(&mut APP_CONTEXT.borrow_ref_mut(cs)));
+    unsafe {
+        mkb::OSRestoreInterrupts(interrupts);
+    }
+    ret
 }
 
 struct Globals {
