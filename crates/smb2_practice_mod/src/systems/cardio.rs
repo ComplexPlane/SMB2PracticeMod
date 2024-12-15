@@ -90,81 +90,91 @@ impl CardIo {
         }
     }
 
+    unsafe fn read_file_internal(&mut self, file_name: &str) -> Result<Vec<u8>, CARDResult> {
+        let _fake_gamecode = FakeGamecode::new();
+        let mut res;
+
+        // Probe card
+        loop {
+            res = to_card_result(mkb::CARDProbeEx(0, null_mut(), null_mut()));
+            if res != CARDResult::Busy {
+                break;
+            }
+        }
+        if res != CARDResult::Ready {
+            return Err(res);
+        }
+
+        // Mount card
+        mkb::CARDMountAsync(
+            0,
+            self.card_work_area.as_mut_ptr() as *mut c_void,
+            null_mut(),
+            null_mut(),
+        );
+        loop {
+            res = to_card_result(mkb::CARDGetResultCode(0));
+            if res != CARDResult::Busy {
+                break;
+            }
+        }
+        if res != CARDResult::Ready {
+            return Err(res);
+        }
+        // Open file
+        res = to_card_result(mkb::CARDOpen(
+            0,
+            cstr!(16, file_name),
+            &mut self.card_file_info,
+        ));
+        if res != CARDResult::Ready {
+            mkb::CARDUnmount(0);
+            return Err(res);
+        }
+
+        // Get file size
+        let mut stat = mkb::CARDStat::default();
+        res = to_card_result(mkb::CARDGetStatus(0, self.card_file_info.fileNo, &mut stat));
+        if res != CARDResult::Ready {
+            mkb::CARDUnmount(0);
+            return Err(res);
+        }
+
+        let buf_size = math::round_up_pow2(stat.length as usize, CARD_READ_SIZE as usize);
+        let mut buf = vec![0u8; buf_size];
+
+        mkb::CARDReadAsync(
+            &mut self.card_file_info as *mut _,
+            buf.as_mut_ptr() as *mut _,
+            buf_size as c_long,
+            0,
+            null_mut(),
+        );
+        loop {
+            res = to_card_result(mkb::CARDGetResultCode(0));
+            if res != CARDResult::Busy {
+                break;
+            }
+        }
+        if res != CARDResult::Ready {
+            mkb::CARDUnmount(0);
+            return Err(res);
+        }
+
+        mkb::CARDUnmount(0);
+        Ok(buf)
+    }
+
     // Synchronous at the moment. Also, do not call while write_file() is running!
     pub fn read_file(&mut self, file_name: &str) -> Result<Vec<u8>, CARDResult> {
         unsafe {
-            let _fake_gamecode = FakeGamecode::new();
-            let mut res;
-
-            // Probe card
-            loop {
-                res = to_card_result(mkb::CARDProbeEx(0, null_mut(), null_mut()));
-                if res != CARDResult::Busy {
-                    break;
-                }
-            }
-            if res != CARDResult::Ready {
-                return Err(res);
-            }
-
-            // Mount card
-            mkb::CARDMountAsync(
-                0,
-                self.card_work_area.as_mut_ptr() as *mut c_void,
-                null_mut(),
-                null_mut(),
-            );
-            loop {
-                res = to_card_result(mkb::CARDGetResultCode(0));
-                if res != CARDResult::Busy {
-                    break;
-                }
-            }
-            if res != CARDResult::Ready {
-                return Err(res);
-            }
-            // Open file
-            res = to_card_result(mkb::CARDOpen(
-                0,
-                cstr!(16, file_name),
-                &mut self.card_file_info,
-            ));
-            if res != CARDResult::Ready {
-                mkb::CARDUnmount(0);
-                return Err(res);
-            }
-
-            // Get file size
-            let mut stat = mkb::CARDStat::default();
-            res = to_card_result(mkb::CARDGetStatus(0, self.card_file_info.fileNo, &mut stat));
-            if res != CARDResult::Ready {
-                mkb::CARDUnmount(0);
-                return Err(res);
-            }
-
-            let buf_size = math::round_up_pow2(stat.length as usize, CARD_READ_SIZE as usize);
-            let mut buf = vec![0u8; buf_size];
-
-            mkb::CARDReadAsync(
-                &mut self.card_file_info as *mut _,
-                buf.as_mut_ptr() as *mut _,
-                buf_size as c_long,
-                0,
-                null_mut(),
-            );
-            loop {
-                res = to_card_result(mkb::CARDGetResultCode(0));
-                if res != CARDResult::Busy {
-                    break;
-                }
-            }
-            if res != CARDResult::Ready {
-                mkb::CARDUnmount(0);
-                return Err(res);
-            }
-
-            mkb::CARDUnmount(0);
-            Ok(buf)
+            // HACK: re-enable interrupts during file reading. We could also make reading async like
+            // writing, but then if SMB2WorkshopMod did the same we'd have to coordinate
+            // non-overlapping reads on startup.
+            let interrupts = mkb::OSDisableInterrupts();
+            let result = self.read_file_internal(file_name);
+            mkb::OSRestoreInterrupts(interrupts);
+            result
         }
     }
 
