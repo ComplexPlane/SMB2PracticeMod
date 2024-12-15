@@ -134,12 +134,13 @@ hook!(ProcessInputsHook => (), mkb::process_inputs, || {
         cx.fallout.tick(&cx.pref, &cx.freecam);
         cx.jump.tick(&mut cx.pref, &cx.pad);
         cx.physics.tick(&cx.pref, &cx.freecam);
+        // Run ball color before input display so input display's "match ball color" works
+        cx.ball_color.tick(&cx.pref);
         cx.input_display.tick(&cx.pref);
         cx.go_to_story.tick();
         cx.cm_seg.tick(&cx.pref);
         cx.banans.tick(&cx.pref);
         cx.marathon.tick(&cx.pref);
-        cx.ball_color.tick(&cx.pref);
         cx.freecam.tick(&mut cx.pref, &cx.pad, &mut cx.draw, &cx.binds);
         cx.il_battle.tick(&cx.pref, &cx.freecam, &cx.binds, &cx.pad);
         cx.il_mark.tick(&cx.lib_save_state);
