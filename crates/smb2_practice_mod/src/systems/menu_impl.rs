@@ -267,6 +267,7 @@ impl MenuImpl {
                         let value = cx.binds.get_current_encoding();
                         cx.pref.set_u8(*pref, value);
                         cx.pref.save();
+                        cx.pad.reset_dir_repeat();
                         self.binding = BindingState::Inactive;
                     }
                 } else if a_pressed {
