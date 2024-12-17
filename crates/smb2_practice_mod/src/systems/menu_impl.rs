@@ -5,12 +5,14 @@ use mkb::mkb;
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
+use crate::utils::math::{fabs, fmaxf, fminf, fmodf};
 use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
 
 use super::binds::{self};
-use super::menu_defn::{self, AfterPush, MenuContext, Widget, ROOT_MENU};
+use super::draw::DEBUG_CHAR_WIDTH;
+use super::menu_defn::{self, AfterPush, MenuContext, TextLine, Widget, ROOT_MENU};
 use super::pad::{Dir, Prio};
 use super::pref::U8Pref;
 
@@ -66,6 +68,95 @@ fn get_menu_widget_sel_map<const N: usize>() -> TinyMap<usize, u32, N> {
         insert_menu_widgets(widgets, &mut builder);
     }
     builder.build()
+}
+
+#[derive(Clone, Copy)]
+struct Hsl {
+    h: f32, // hue 0-360
+    s: f32, // saturation 0-1
+    l: f32, // lightness 0-1
+}
+
+fn rgb_to_hsl(color: mkb::GXColor) -> Hsl {
+    let r = color.r as f32 / 255.0;
+    let g = color.g as f32 / 255.0;
+    let b = color.b as f32 / 255.0;
+
+    let c_max = fmaxf(r, fmaxf(g, b));
+    let c_min = fminf(r, fminf(g, b));
+    let delta = c_max - c_min;
+
+    let mut h = if delta == 0.0 {
+        0.0
+    } else if c_max == r {
+        60.0 * fmodf((g - b) / delta, 6.0)
+    } else if c_max == g {
+        60.0 * ((b - r) / delta + 2.0)
+    } else {
+        60.0 * ((r - g) / delta + 4.0)
+    };
+
+    if h < 0.0 {
+        h += 360.0;
+    }
+
+    let l = (c_max + c_min) / 2.0;
+    let s = if delta == 0.0 {
+        0.0
+    } else {
+        delta / (1.0 - fabs(2.0 * l - 1.0))
+    };
+
+    Hsl { h, s, l }
+}
+
+fn hsl_to_rgb(hsl: Hsl) -> mkb::GXColor {
+    let c = (1.0 - fabs(2.0 * hsl.l - 1.0)) * hsl.s;
+    let x = c * (1.0 - fabs(fmodf(hsl.h / 60.0, 2.0) - 1.0));
+    let m = hsl.l - c / 2.0;
+
+    let (r, g, b) = if hsl.h < 60.0 {
+        (c, x, 0.0)
+    } else if hsl.h < 120.0 {
+        (x, c, 0.0)
+    } else if hsl.h < 180.0 {
+        (0.0, c, x)
+    } else if hsl.h < 240.0 {
+        (0.0, x, c)
+    } else if hsl.h < 300.0 {
+        (x, 0.0, c)
+    } else {
+        (c, 0.0, x)
+    };
+
+    mkb::GXColor {
+        r: ((r + m) * 255.0) as u8,
+        g: ((g + m) * 255.0) as u8,
+        b: ((b + m) * 255.0) as u8,
+        a: 255,
+    }
+}
+
+fn lerp_hsl(t: f32, c1: mkb::GXColor, c2: mkb::GXColor) -> mkb::GXColor {
+    let c1_hsl = rgb_to_hsl(c1);
+    let c2_hsl = rgb_to_hsl(c2);
+
+    // Use shortest path on hue interpolation to avoid rotating wrong direction
+    let mut h = c2_hsl.h - c1_hsl.h;
+    if h > 180.0 {
+        h -= 360.0;
+    } else if h < -180.0 {
+        h += 360.0;
+    }
+    let h = fmodf(c1_hsl.h + t * h, 360.0);
+
+    let result_hsl = Hsl {
+        h,
+        s: (1.0 - t) * c1_hsl.s + t * c2_hsl.s,
+        l: (1.0 - t) * c1_hsl.l + t * c2_hsl.l,
+    };
+
+    hsl_to_rgb(result_hsl)
 }
 
 pub struct MenuImpl {
@@ -391,8 +482,30 @@ impl MenuImpl {
                 draw::debug_text(MARGIN + PAD, *y, draw::WHITE, &buf);
                 *y += LINE_HEIGHT;
             }
-            Widget::ColoredText { label, color } => {
-                draw::debug_text(MARGIN + PAD, *y, *color, label);
+            Widget::ColoredText {
+                label,
+                color_left,
+                color_right,
+                offset_x,
+                line,
+            } => {
+                *y -= match line {
+                    TextLine::Overlap => LINE_HEIGHT,
+                    TextLine::NewLine => 0,
+                };
+
+                for i in 0..label.len() {
+                    let t = if label.len() > 1 {
+                        i as f32 / (label.len() - 1) as f32
+                    } else {
+                        0.0
+                    };
+                    let lerped_color = lerp_hsl(t, *color_left, *color_right);
+                    let x = MARGIN + PAD + (*offset_x as u32 + i as u32) * DEBUG_CHAR_WIDTH;
+                    let ch = &label[i..i + 1]; // Plz only use ASCII
+                    draw::debug_text(x, *y, lerped_color, ch);
+                }
+
                 *y += LINE_HEIGHT;
             }
             Widget::Checkbox { label, pref } => {

@@ -33,6 +33,11 @@ pub enum AfterPush {
     GoBack,
 }
 
+pub enum TextLine {
+    NewLine,
+    Overlap,
+}
+
 pub enum Widget {
     Text {
         label: &'static str,
@@ -42,7 +47,10 @@ pub enum Widget {
     },
     ColoredText {
         label: &'static str,
-        color: mkb::GXColor,
+        color_left: mkb::GXColor,
+        color_right: mkb::GXColor,
+        offset_x: u8,
+        line: TextLine,
     },
     Header {
         label: &'static str,
@@ -353,13 +361,34 @@ static ABOUT_WIDGETS: &[Widget] = &[
         label: "SMB2 Practice Mod",
     },
     Widget::Text {
-        label: "  Made with   by ComplexPlane",
+        label: "  Made with   by",
+    },
+    Widget::ColoredText {
+        label: "ComplexPlane",
+        color_left: mkb::GXColor {
+            r: 0x00,
+            g: 0xde,
+            b: 0x38,
+            a: 0xff,
+        },
+        color_right: mkb::GXColor {
+            r: 0x0a,
+            g: 0xf2,
+            b: 0xef,
+            a: 0xff,
+        },
+        offset_x: 17,
+        line: TextLine::Overlap,
     },
     Widget::Custom {
         draw: |_| draw::heart(),
     },
+    Widget::Separator {},
     Widget::Text {
-        label: "  With contributions from rehtrop & Nambo",
+        label: "  With contributions from rehtrop, Nambo,",
+    },
+    Widget::Text {
+        label: "  and eddy",
     },
     Widget::Separator {},
     Widget::Header { label: "Updates" },
@@ -373,12 +402,16 @@ static ABOUT_WIDGETS: &[Widget] = &[
     Widget::Text {
         label: GIT_HASH_STR,
     },
+    Widget::Separator {},
     Widget::Text {
         label: "  For the latest version of SMB2 Practice Mod:",
     },
     Widget::ColoredText {
         label: " github.com/ComplexPlane/SMB2PracticeMod/releases",
-        color: draw::BLUE,
+        color_left: draw::BLUE,
+        color_right: draw::BLUE,
+        offset_x: 0,
+        line: TextLine::NewLine,
     },
     Widget::Separator {},
     Widget::Header {
@@ -389,7 +422,10 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::ColoredText {
         label: "  github.com/ComplexPlane/SMB2PracticeMod/wiki",
-        color: draw::BLUE,
+        color_left: draw::BLUE,
+        color_right: draw::BLUE,
+        offset_x: 0,
+        line: TextLine::NewLine,
     },
 ];
 
