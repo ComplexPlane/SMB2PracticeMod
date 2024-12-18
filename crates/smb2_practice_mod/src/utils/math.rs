@@ -14,23 +14,22 @@ pub fn fabs(n: f32) -> f32 {
     }
 }
 
-pub fn fmodf(f1: f32, f2: f32) -> f32 {
-    let int_result = ((f1 / f2) as i32) as f32;
-    f1 - (f2 * int_result)
-}
-
-pub fn fmaxf(f1: f32, f2: f32) -> f32 {
-    if f1 > f2 {
-        f1
-    } else {
-        f2
+pub fn cbrt_approx(x: f32) -> f32 {
+    if x == 0.0 {
+        return 0.0;
     }
-}
 
-pub fn fminf(f1: f32, f2: f32) -> f32 {
-    if f1 < f2 {
-        f1
+    let y = x.abs();
+    let mut guess = y;
+
+    // Newton's method iterations
+    for _ in 0..4 {
+        guess = (2.0 * guess + y / (guess * guess)) / 3.0;
+    }
+
+    if x < 0.0 {
+        -guess
     } else {
-        f2
+        guess
     }
 }
