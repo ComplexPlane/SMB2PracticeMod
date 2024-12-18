@@ -385,7 +385,24 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Text {
-        label: "  With contributions from rehtrop,      ,",
+        label: "  With contributions from        ,      ,",
+    },
+    Widget::ColoredText {
+        label: "rehtrop",
+        color_left: mkb::GXColor {
+            r: 0x69,
+            g: 0xe3,
+            b: 0xff,
+            a: 0xff,
+        },
+        color_right: mkb::GXColor {
+            r: 0xdd,
+            g: 0x9b,
+            b: 0xdc,
+            a: 0xff,
+        },
+        offset_x: 26,
+        line: TextLine::Overlap,
     },
     Widget::ColoredText {
         label: "Nambo",
