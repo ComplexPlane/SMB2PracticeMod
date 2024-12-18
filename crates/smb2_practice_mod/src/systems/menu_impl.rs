@@ -770,7 +770,7 @@ impl MenuImpl {
     }
 }
 
-fn is_widget_selectable(widget: &'static Widget) -> bool {
+fn is_widget_selectable(widget: &Widget) -> bool {
     matches!(
         widget,
         Widget::Checkbox { .. }

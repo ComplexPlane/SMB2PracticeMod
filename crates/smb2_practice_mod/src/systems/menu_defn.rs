@@ -387,6 +387,23 @@ static ABOUT_WIDGETS: &[Widget] = &[
     Widget::Text {
         label: "  With contributions from rehtrop, Nambo,",
     },
+    Widget::ColoredText {
+        label: "Nambo",
+        color_left: mkb::GXColor {
+            r: 0xf7,
+            g: 0x82,
+            b: 0xff,
+            a: 0xff,
+        },
+        color_right: mkb::GXColor {
+            r: 0x69,
+            g: 0x00,
+            b: 0x5b,
+            a: 0xff,
+        },
+        offset_x: 35,
+        line: TextLine::Overlap,
+    },
     Widget::Text {
         label: "  and eddy",
     },
