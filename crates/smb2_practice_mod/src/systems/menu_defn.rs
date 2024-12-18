@@ -421,8 +421,23 @@ static ABOUT_WIDGETS: &[Widget] = &[
         offset_x: 35,
         line: TextLine::Overlap,
     },
-    Widget::Text {
-        label: "  and eddy",
+    Widget::Text { label: "  and" },
+    Widget::ColoredText {
+        label: "eddy",
+        color_left: mkb::GXColor {
+            r: 0x00,
+            g: 0xd0,
+            b: 0xff,
+            a: 0xff,
+        },
+        color_right: mkb::GXColor {
+            r: 0x00,
+            g: 0xa4,
+            b: 0xe5,
+            a: 0xff,
+        },
+        offset_x: 6,
+        line: TextLine::Overlap,
     },
     Widget::Separator {},
     Widget::Header { label: "Updates" },
