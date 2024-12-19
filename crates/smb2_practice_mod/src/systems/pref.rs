@@ -201,10 +201,21 @@ struct DefaultU8 {
     value: u8,
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 struct PrefState {
     bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
     u8s: [u8; U8_PREF_COUNT],
+}
+
+impl Default for PrefState {
+    // We need to implement this manually because Default is not implemented for arrays bigger than
+    // 32 elements
+    fn default() -> Self {
+        Self {
+            bools: [0; get_bit_array_len(BOOL_PREF_COUNT)],
+            u8s: [0; U8_PREF_COUNT],
+        }
+    }
 }
 
 #[repr(C, packed)]
