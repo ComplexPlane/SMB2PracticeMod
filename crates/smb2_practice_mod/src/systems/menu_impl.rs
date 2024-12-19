@@ -1,5 +1,3 @@
-use core::cmp::Ordering;
-
 use mkb::mkb;
 
 use arrayvec::{ArrayString, ArrayVec};
@@ -131,12 +129,19 @@ fn lerp_oklab(t: f32, c1: mkb::GXColor, c2: mkb::GXColor) -> mkb::GXColor {
     oklab_to_rgb(result_lab)
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum EditDir {
+    Increase,
+    Decrease,
+    Neutral,
+}
+
 pub struct MenuImpl {
     visible: bool,
     cursor_frame: u32,
     menu_stack: ArrayVec<Menu, 5>,
-    intedit_tick: i32,
-    edit_tick: i32,
+    edit_inc: f32,
+    last_intedit_dir: EditDir,
     binding: BindingState,
     menu_pos_map: TinyMap<usize, u32, 64>,
 }
@@ -155,8 +160,8 @@ impl Default for MenuImpl {
             visible: false,
             cursor_frame: 0,
             menu_stack,
-            intedit_tick: 0,
-            edit_tick: 0,
+            edit_inc: 1.0,
+            last_intedit_dir: EditDir::Neutral,
             binding: BindingState::default(),
             menu_pos_map: get_menu_widget_sel_map(),
         }
@@ -177,6 +182,8 @@ impl MenuImpl {
             self.menu_stack.pop();
         }
         self.cursor_frame = 0;
+        self.edit_inc = 1.0;
+        self.last_intedit_dir = EditDir::Neutral;
 
         cx.pad.reset_dir_repeat();
     }
@@ -190,21 +197,13 @@ impl MenuImpl {
             None => return,
         };
 
+        let a_down = cx.pad.button_down(Button::A, Prio::High);
+        let y_down = cx.pad.button_down(Button::Y, Prio::High);
         let a_pressed = cx.pad.button_pressed(Button::A, Prio::High);
         let x_pressed = cx.pad.button_pressed(Button::X, Prio::High);
         let y_pressed = cx.pad.button_pressed(Button::Y, Prio::High);
         let a_repeat = cx.pad.button_repeat(Button::A, Prio::High);
         let y_repeat = cx.pad.button_repeat(Button::Y, Prio::High);
-
-        // slow down scroll
-        self.edit_tick = match self.edit_tick.cmp(&0) {
-            Ordering::Less => self.edit_tick + 1,
-            Ordering::Equal => self.edit_tick - 1,
-            Ordering::Greater => self.edit_tick,
-        };
-        if self.intedit_tick > 0 {
-            self.intedit_tick -= 1;
-        }
 
         match selected_widget {
             Widget::Checkbox { pref, .. } => {
@@ -264,20 +263,26 @@ impl MenuImpl {
             Widget::IntEdit { pref, min, max, .. } => {
                 let mut next = cx.pref.get_u8(*pref) as i32;
 
-                let a_change = cx.pad.button_released(Button::A, Prio::High) && self.edit_tick > 0;
-                let y_change = cx.pad.button_released(Button::Y, Prio::High) && self.edit_tick < 0;
-                if a_change || y_change {
-                    self.edit_tick = 0;
+                let edit_dir = if a_down && y_down || !a_down && !y_down {
+                    EditDir::Neutral
+                } else if a_down {
+                    EditDir::Increase
+                } else {
+                    EditDir::Decrease
+                };
+                if edit_dir != self.last_intedit_dir {
+                    self.edit_inc = 1.0;
+                    self.last_intedit_dir = edit_dir;
                 }
 
                 if x_pressed {
                     next = cx.pref.get_default_u8(*pref) as i32;
-                } else if a_repeat && !cx.pad.button_down(Button::Y, Prio::High) {
-                    self.edit_tick += 5;
-                    next += self.edit_tick / 5;
-                } else if y_repeat && !cx.pad.button_down(Button::A, Prio::High) {
-                    self.edit_tick -= 5;
-                    next += self.edit_tick / 5;
+                } else if edit_dir == EditDir::Increase && a_repeat {
+                    self.edit_inc *= 1.10;
+                    next += self.edit_inc as i32;
+                } else if edit_dir == EditDir::Decrease && y_repeat {
+                    self.edit_inc *= 1.10;
+                    next -= self.edit_inc as i32;
                 }
                 next = next.clamp(*min as i32, *max as i32);
                 if next != cx.pref.get_u8(*pref) as i32 {
