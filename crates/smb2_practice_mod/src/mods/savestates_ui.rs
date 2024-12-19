@@ -9,7 +9,7 @@ use crate::{
     systems::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
-        pad::{Dir, Pad, Prio},
+        pad::{Analog, Button, Dir, Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
     },
     utils::{
@@ -94,8 +94,7 @@ impl Default for SaveStatesUi {
 
 impl SaveStatesUi {
     fn is_either_trigger_held(&self, pad: &Pad) -> bool {
-        pad.analog_down(mkb::PAI_LTRIG as mkb::PadAnalogInput, Prio::Low)
-            || pad.analog_down(mkb::PAI_RTRIG as mkb::PadAnalogInput, Prio::Low)
+        pad.analog_down(Analog::LTrigger, Prio::Low) || pad.analog_down(Analog::RTrigger, Prio::Low)
     }
 
     fn find_next_empty(&self) -> Option<usize> {
@@ -371,10 +370,7 @@ impl SaveStatesUi {
 
         let load_reason = self.get_load_reason(cstick_dir, cx);
 
-        if cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_pressed(Button::X, Prio::Low) {
             self.save_slot(cx);
         } else if cx.binds.bind_pressed(clear_bind, Prio::Low, cx.pad) {
             self.clear_slot(cx);
@@ -390,23 +386,13 @@ impl SaveStatesUi {
     }
 
     fn get_load_reason(&self, cstick_dir: Dir, cx: &mut Context) -> LoadReason {
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
-        {
-            if cx
-                .pad
-                .button_pressed(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
-            {
+        if cx.pad.button_down(Button::Y, Prio::Low) {
+            if cx.pad.button_pressed(Button::Y, Prio::Low) {
                 LoadReason::Explicit
             } else {
                 LoadReason::Implicit
             }
-        } else if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
-            && self.created_state_last_frame
-        {
+        } else if cx.pad.button_down(Button::X, Prio::Low) && self.created_state_last_frame {
             // The save slot handler should show a "saved" message
             LoadReason::Implicit
         } else if self.frame_advance_mode {

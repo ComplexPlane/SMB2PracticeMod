@@ -6,7 +6,7 @@ use crate::{
     asm,
     systems::{
         draw,
-        pad::{Pad, Prio},
+        pad::{Analog, Button, Pad, Prio},
         pref::{BoolPref, Pref},
     },
     utils::{patch, timerdisp},
@@ -51,25 +51,22 @@ impl Iw {
                 return;
             }
 
-            if pad.analog_down(mkb::PAI_LSTICK_LEFT as mkb::PadAnalogInput, Prio::Low)
-                || pad.analog_down(mkb::PAI_LSTICK_RIGHT as mkb::PadAnalogInput, Prio::Low)
+            if pad.analog_down(Analog::LStickLeft, Prio::Low)
+                || pad.analog_down(Analog::LStickRight, Prio::Low)
             {
                 return;
             }
 
-            if pad.button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, Prio::Low)
+            if pad.button_down(Button::DpadLeft, Prio::Low)
+                || pad.button_down(Button::DpadRight, Prio::Low)
             {
                 return;
             }
 
-            let lstick_up =
-                pad.analog_pressed(mkb::PAI_LSTICK_UP as mkb::PadAnalogInput, Prio::Low);
-            let lstick_down =
-                pad.analog_pressed(mkb::PAI_LSTICK_DOWN as mkb::PadAnalogInput, Prio::Low);
-            let dpad_up = pad.button_pressed(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low);
-            let dpad_down =
-                pad.button_pressed(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low);
+            let lstick_up = pad.analog_pressed(Analog::LStickUp, Prio::Low);
+            let lstick_down = pad.analog_pressed(Analog::LStickDown, Prio::Low);
+            let dpad_up = pad.button_pressed(Button::DpadUp, Prio::Low);
+            let dpad_down = pad.button_pressed(Button::DpadDown, Prio::Low);
 
             let dir = if lstick_up || dpad_up {
                 1

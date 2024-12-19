@@ -8,6 +8,38 @@ use crate::{
 };
 
 #[derive(Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum Button {
+    A = mkb::PAD_BUTTON_A,
+    B = mkb::PAD_BUTTON_B,
+    X = mkb::PAD_BUTTON_X,
+    Y = mkb::PAD_BUTTON_Y,
+    L = mkb::PAD_TRIGGER_L,
+    R = mkb::PAD_TRIGGER_R,
+    Z = mkb::PAD_TRIGGER_Z,
+    Start = mkb::PAD_BUTTON_START,
+    DpadLeft = mkb::PAD_BUTTON_LEFT,
+    DpadRight = mkb::PAD_BUTTON_RIGHT,
+    DpadUp = mkb::PAD_BUTTON_UP,
+    DpadDown = mkb::PAD_BUTTON_DOWN,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum Analog {
+    LStickLeft = mkb::PAI_LSTICK_LEFT,
+    LStickRight = mkb::PAI_LSTICK_RIGHT,
+    LStickUp = mkb::PAI_LSTICK_UP,
+    LStickDown = mkb::PAI_LSTICK_DOWN,
+    CStickLeft = mkb::PAI_CSTICK_LEFT,
+    CStickRight = mkb::PAI_CSTICK_RIGHT,
+    CStickUp = mkb::PAI_CSTICK_UP,
+    CStickDown = mkb::PAI_CSTICK_DOWN,
+    LTrigger = mkb::PAI_LTRIG,
+    RTrigger = mkb::PAI_RTRIG,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Dir {
     Up,
     UpRight,
@@ -147,45 +179,46 @@ impl Pad {
         self.original_inputs = *statuses;
     }
 
-    pub fn button_down(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && (self.merged_digital_inputs.raw & digital_input != 0)
+    pub fn button_down(&self, digital_input: Button, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && (self.merged_digital_inputs.raw & digital_input as mkb::PadDigitalInput != 0)
     }
 
-    pub fn button_pressed(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_digital_inputs.pressed & digital_input != 0
+    pub fn button_pressed(&self, digital_input: Button, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && self.merged_digital_inputs.pressed & digital_input as mkb::PadDigitalInput != 0
     }
 
-    pub fn button_released(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_digital_inputs.released & digital_input != 0
+    pub fn button_released(&self, digital_input: Button, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && self.merged_digital_inputs.released & digital_input as mkb::PadDigitalInput != 0
     }
 
-    pub fn button_repeat(&self, digital_input: mkb::PadDigitalInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_digital_inputs.repeated & digital_input != 0
+    pub fn button_repeat(&self, digital_input: Button, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && self.merged_digital_inputs.repeated & digital_input as mkb::PadDigitalInput != 0
     }
 
-    pub fn analog_down(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_analog_inputs.raw & analog_input != 0
+    pub fn analog_down(&self, analog_input: Analog, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && self.merged_analog_inputs.raw & analog_input as mkb::PadAnalogInput != 0
     }
 
-    pub fn analog_pressed(&self, analog_input: mkb::PadAnalogInput, priority: Prio) -> bool {
-        (priority >= self.curr_priority) && self.merged_analog_inputs.pressed & analog_input != 0
+    pub fn analog_pressed(&self, analog_input: Analog, priority: Prio) -> bool {
+        (priority >= self.curr_priority)
+            && self.merged_analog_inputs.pressed & analog_input as mkb::PadAnalogInput != 0
     }
 
-    pub fn button_chord_pressed(
-        &self,
-        btn1: mkb::PadDigitalInput,
-        btn2: mkb::PadDigitalInput,
-        priority: Prio,
-    ) -> bool {
+    pub fn button_chord_pressed(&self, btn1: Button, btn2: Button, priority: Prio) -> bool {
         (self.button_down(btn1, priority) && self.button_pressed(btn2, priority))
             || (self.button_pressed(btn1, priority) && self.button_down(btn2, priority))
     }
 
     pub fn get_cstick_dir(&self, priority: Prio) -> Dir {
-        let left = self.analog_down(mkb::PAI_CSTICK_LEFT as mkb::PadAnalogInput, priority);
-        let right = self.analog_down(mkb::PAI_CSTICK_RIGHT as mkb::PadAnalogInput, priority);
-        let up = self.analog_down(mkb::PAI_CSTICK_UP as mkb::PadAnalogInput, priority);
-        let down = self.analog_down(mkb::PAI_CSTICK_DOWN as mkb::PadAnalogInput, priority);
+        let left = self.analog_down(Analog::CStickLeft, priority);
+        let right = self.analog_down(Analog::CStickRight, priority);
+        let up = self.analog_down(Analog::CStickUp, priority);
+        let down = self.analog_down(Analog::CStickDown, priority);
 
         if up && left {
             return Dir::UpLeft;
@@ -217,20 +250,20 @@ impl Pad {
     pub fn dir_down(&self, dir: Dir, priority: Prio) -> bool {
         match dir {
             Dir::Up => {
-                self.button_down(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, priority)
-                    || self.analog_down(mkb::PAI_LSTICK_UP as mkb::PadAnalogInput, priority)
+                self.button_down(Button::DpadUp, priority)
+                    || self.analog_down(Analog::LStickUp, priority)
             }
             Dir::Left => {
-                self.button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, priority)
-                    || self.analog_down(mkb::PAI_LSTICK_LEFT as mkb::PadAnalogInput, priority)
+                self.button_down(Button::DpadLeft, priority)
+                    || self.analog_down(Analog::LStickLeft, priority)
             }
             Dir::Right => {
-                self.button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, priority)
-                    || self.analog_down(mkb::PAI_LSTICK_RIGHT as mkb::PadAnalogInput, priority)
+                self.button_down(Button::DpadRight, priority)
+                    || self.analog_down(Analog::LStickRight, priority)
             }
             Dir::Down => {
-                self.button_down(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, priority)
-                    || self.analog_down(mkb::PAI_LSTICK_DOWN as mkb::PadAnalogInput, priority)
+                self.button_down(Button::DpadDown, priority)
+                    || self.analog_down(Analog::LStickDown, priority)
             }
             _ => false,
         }
@@ -239,20 +272,20 @@ impl Pad {
     pub fn dir_pressed(&self, dir: Dir, priority: Prio) -> bool {
         match dir {
             Dir::Up => {
-                self.button_pressed(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, priority)
-                    || self.analog_pressed(mkb::PAI_LSTICK_UP as mkb::PadAnalogInput, priority)
+                self.button_pressed(Button::DpadUp, priority)
+                    || self.analog_pressed(Analog::LStickUp, priority)
             }
             Dir::Left => {
-                self.button_pressed(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, priority)
-                    || self.analog_pressed(mkb::PAI_LSTICK_LEFT as mkb::PadAnalogInput, priority)
+                self.button_pressed(Button::DpadLeft, priority)
+                    || self.analog_pressed(Analog::LStickLeft, priority)
             }
             Dir::Right => {
-                self.button_pressed(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, priority)
-                    || self.analog_pressed(mkb::PAI_LSTICK_RIGHT as mkb::PadAnalogInput, priority)
+                self.button_pressed(Button::DpadRight, priority)
+                    || self.analog_pressed(Analog::LStickRight, priority)
             }
             Dir::Down => {
-                self.button_pressed(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, priority)
-                    || self.analog_pressed(mkb::PAI_LSTICK_DOWN as mkb::PadAnalogInput, priority)
+                self.button_pressed(Button::DpadDown, priority)
+                    || self.analog_pressed(Analog::LStickDown, priority)
             }
             _ => false,
         }

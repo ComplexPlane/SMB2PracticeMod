@@ -4,7 +4,7 @@ use mkb::mkb;
 
 use crate::{
     systems::{
-        pad::{Pad, Prio},
+        pad::{Button, Pad, Prio},
         pref::{BoolPref, Pref, U8Pref},
     },
     utils::{math::fabs, patch},
@@ -117,7 +117,7 @@ impl Jump {
         unsafe {
             if (mkb::sub_mode == mkb::SMD_GAME_READY_MAIN
                 || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN)
-                && pad.button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
+                && pad.button_pressed(Button::B, Prio::Low)
             {
                 mkb::toggle_minimap_zoom();
             }
@@ -135,11 +135,9 @@ impl Jump {
 
             // Setup vars
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
-            let a_pressed =
-                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_released =
-                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_pressed = pad.button_pressed(Button::A, Prio::Low);
+            let a_down = pad.button_down(Button::A, Prio::Low);
+            let a_released = pad.button_released(Button::A, Prio::Low);
             let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
             let normal_vec = mkb::balls[mkb::curr_player_idx as usize].g_last_collision_normal;
 
@@ -242,11 +240,9 @@ impl Jump {
 
             // Setup vars
             let ball = &mut mkb::balls[mkb::curr_player_idx as usize];
-            let a_pressed =
-                pad.button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_down = pad.button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
-            let a_released =
-                pad.button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low);
+            let a_pressed = pad.button_pressed(Button::A, Prio::Low);
+            let a_down = pad.button_down(Button::A, Prio::Low);
+            let a_released = pad.button_released(Button::A, Prio::Low);
             let ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND) != 0;
 
             if a_pressed {

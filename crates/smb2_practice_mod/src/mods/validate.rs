@@ -4,6 +4,7 @@ use mkb::mkb;
 use mkb::{byte, Vec};
 
 use crate::app::with_app;
+use crate::systems::pad::Button;
 use crate::utils::misc::with_mutex;
 use crate::{
     hook,
@@ -116,11 +117,10 @@ impl Validate {
             }
 
             // Using dpad controls is disallowed
-            let dpad_down = pad
-                .button_down(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput, Prio::Low)
-                || pad.button_down(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low);
+            let dpad_down = pad.button_down(Button::DpadDown, Prio::Low)
+                || pad.button_down(Button::DpadLeft, Prio::Low)
+                || pad.button_down(Button::DpadRight, Prio::Low)
+                || pad.button_down(Button::DpadUp, Prio::Low);
             if pref.get_bool(BoolPref::DpadControls) && dpad_down {
                 self.used_mods = true;
             }

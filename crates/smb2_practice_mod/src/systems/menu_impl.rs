@@ -13,7 +13,7 @@ use crate::{cstr, cstr_buf, fmt};
 use super::binds::{self};
 use super::draw::DEBUG_CHAR_WIDTH;
 use super::menu_defn::{self, AfterPush, MenuContext, TextLine, Widget, ROOT_MENU};
-use super::pad::{Dir, Prio};
+use super::pad::{Button, Dir, Prio};
 use super::pref::U8Pref;
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
@@ -190,21 +190,11 @@ impl MenuImpl {
             None => return,
         };
 
-        let a_pressed = cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High);
-        let x_pressed = cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::High);
-        let y_pressed = cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High);
-        let a_repeat = cx
-            .pad
-            .button_repeat(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High);
-        let y_repeat = cx
-            .pad
-            .button_repeat(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High);
+        let a_pressed = cx.pad.button_pressed(Button::A, Prio::High);
+        let x_pressed = cx.pad.button_pressed(Button::X, Prio::High);
+        let y_pressed = cx.pad.button_pressed(Button::Y, Prio::High);
+        let a_repeat = cx.pad.button_repeat(Button::A, Prio::High);
+        let y_repeat = cx.pad.button_repeat(Button::Y, Prio::High);
 
         // slow down scroll
         self.edit_tick = match self.edit_tick.cmp(&0) {
@@ -274,32 +264,18 @@ impl MenuImpl {
             Widget::IntEdit { pref, min, max, .. } => {
                 let mut next = cx.pref.get_u8(*pref) as i32;
 
-                let a_change = cx
-                    .pad
-                    .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick > 0;
-                let y_change = cx
-                    .pad
-                    .button_released(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
-                    && self.edit_tick < 0;
+                let a_change = cx.pad.button_released(Button::A, Prio::High) && self.edit_tick > 0;
+                let y_change = cx.pad.button_released(Button::Y, Prio::High) && self.edit_tick < 0;
                 if a_change || y_change {
                     self.edit_tick = 0;
                 }
 
                 if x_pressed {
                     next = cx.pref.get_default_u8(*pref) as i32;
-                } else if a_repeat
-                    && !cx
-                        .pad
-                        .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::High)
-                {
+                } else if a_repeat && !cx.pad.button_down(Button::Y, Prio::High) {
                     self.edit_tick += 5;
                     next += self.edit_tick / 5;
-                } else if y_repeat
-                    && !cx
-                        .pad
-                        .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
-                {
+                } else if y_repeat && !cx.pad.button_down(Button::A, Prio::High) {
                     self.edit_tick -= 5;
                     next += self.edit_tick / 5;
                 }
@@ -316,9 +292,7 @@ impl MenuImpl {
                 ..
             } => {
                 if self.binding == BindingState::Requested
-                    && cx
-                        .pad
-                        .button_released(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::High)
+                    && cx.pad.button_released(Button::A, Prio::High)
                 {
                     self.binding = BindingState::Active;
                 } else if self.binding == BindingState::Active {
@@ -363,10 +337,7 @@ impl MenuImpl {
             .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), Prio::High, cx.pad);
         if toggle {
             self.visible ^= toggle;
-        } else if cx
-            .pad
-            .button_pressed(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::High)
-        {
+        } else if cx.pad.button_pressed(Button::B, Prio::High) {
             self.pop_menu(cx);
         }
         let just_opened = self.visible && toggle;
@@ -382,11 +353,10 @@ impl MenuImpl {
             // Default binding is L+R, but this lets you know the current binding in case you forget
             // what you changed it to
             let input = cx.pref.get_u8(U8Pref::MenuBind);
-            if cx.pad.button_chord_pressed(
-                mkb::PAD_TRIGGER_L as mkb::PadDigitalInput,
-                mkb::PAD_TRIGGER_R as mkb::PadDigitalInput,
-                Prio::High,
-            ) && input != L_R_BIND
+            if cx
+                .pad
+                .button_chord_pressed(Button::L, Button::R, Prio::High)
+                && input != L_R_BIND
             {
                 let mut buf = ArrayString::<32>::new();
                 cx.binds.get_bind_str(input, &mut buf);

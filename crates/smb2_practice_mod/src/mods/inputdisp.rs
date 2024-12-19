@@ -286,10 +286,7 @@ impl InputDisplay {
 
     fn draw_buttons(&self, center: &Vec2d, scale: f32, cx: &Context) {
         // We floor floats for now because no-std doesn't include a float rounding func
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_START as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::Start, Prio::Low) {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 45.0 * scale) as u32,
@@ -297,10 +294,7 @@ impl InputDisplay {
                 "Start",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_A as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::A, Prio::Low) {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 25.0 * scale) as u32,
@@ -308,10 +302,7 @@ impl InputDisplay {
                 "A",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_B as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::B, Prio::Low) {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y - 25.0 * scale) as u32,
@@ -319,10 +310,7 @@ impl InputDisplay {
                 "B",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::X, Prio::Low) {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y - 05.0 * scale) as u32,
@@ -330,10 +318,7 @@ impl InputDisplay {
                 "X",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::Y, Prio::Low) {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y - 05.0 * scale) as u32,
@@ -341,10 +326,7 @@ impl InputDisplay {
                 "Y",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_TRIGGER_L as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::L, Prio::Low) {
             draw::debug_text(
                 (center.x + 65.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,
@@ -352,10 +334,7 @@ impl InputDisplay {
                 "L",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_TRIGGER_R as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::R, Prio::Low) {
             draw::debug_text(
                 (center.x + 90.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,
@@ -363,10 +342,7 @@ impl InputDisplay {
                 "R",
             );
         }
-        if cx
-            .pad
-            .button_down(mkb::PAD_TRIGGER_Z as mkb::PadDigitalInput, Prio::Low)
-        {
+        if cx.pad.button_down(pad::Button::Z, Prio::Low) {
             draw::debug_text(
                 (center.x + 115.0 * scale) as u32,
                 (center.y + 15.0 * scale) as u32,

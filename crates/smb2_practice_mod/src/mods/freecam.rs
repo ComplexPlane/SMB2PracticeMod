@@ -5,7 +5,7 @@ use once_cell::sync::Lazy;
 use crate::app::with_app;
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
-use crate::systems::pad::{self, Pad, Prio};
+use crate::systems::pad::{self, Button, Pad, Prio};
 use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
 use crate::utils::misc::{for_c_arr, with_mutex};
 use crate::utils::patch;
@@ -120,8 +120,8 @@ impl Freecam {
             let substick_y = substick.y as f32 / pad::MAX_STICK as f32;
             let trigger_left = trigger.l as f32 / pad::MAX_TRIGGER as f32;
             let trigger_right = trigger.r as f32 / pad::MAX_TRIGGER as f32;
-            let fast = pad.button_down(mkb::PAD_BUTTON_Y as mkb::PadDigitalInput, Prio::Low);
-            let slow = pad.button_down(mkb::PAD_BUTTON_X as mkb::PadDigitalInput, Prio::Low);
+            let fast = pad.button_down(Button::Y, Prio::Low);
+            let slow = pad.button_down(Button::X, Prio::Low);
 
             let speed_mult = if fast {
                 pref.get_u8(pref::U8Pref::FreecamSpeedMult) as f32
@@ -234,17 +234,11 @@ impl Freecam {
             // Adjust turbo speed multiplier
             let mut speed_mult = cx.pref.get_u8(U8Pref::FreecamSpeedMult);
             let mut input_made = false;
-            if cx
-                .pad
-                .button_repeat(mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput, Prio::Low)
-            {
+            if cx.pad.button_repeat(Button::DpadDown, Prio::Low) {
                 speed_mult -= 1;
                 input_made = true;
             }
-            if cx
-                .pad
-                .button_repeat(mkb::PAD_BUTTON_UP as mkb::PadDigitalInput, Prio::Low)
-            {
+            if cx.pad.button_repeat(Button::DpadUp, Prio::Low) {
                 speed_mult += 1;
                 input_made = true;
             }

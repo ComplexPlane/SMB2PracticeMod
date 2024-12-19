@@ -1,8 +1,7 @@
-use mkb::mkb;
 
 use arrayvec::ArrayString;
 
-use super::pad::{Pad, Prio};
+use super::pad::{Button, Pad, Prio};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 pub enum EncodingType {
@@ -13,57 +12,57 @@ pub enum EncodingType {
 }
 
 struct InputDefn {
-    input: mkb::PadDigitalInput,
+    input: Button,
     display_string: &'static str,
 }
 
 const INPUT_DEFNS: &[InputDefn] = &[
     InputDefn {
-        input: mkb::PAD_BUTTON_A as mkb::PadDigitalInput,
+        input: Button::A,
         display_string: "A",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_B as mkb::PadDigitalInput,
+        input: Button::B,
         display_string: "B",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_X as mkb::PadDigitalInput,
+        input: Button::X,
         display_string: "X",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_Y as mkb::PadDigitalInput,
+        input: Button::Y,
         display_string: "Y",
     },
     InputDefn {
-        input: mkb::PAD_TRIGGER_L as mkb::PadDigitalInput,
+        input: Button::L,
         display_string: "L",
     },
     InputDefn {
-        input: mkb::PAD_TRIGGER_R as mkb::PadDigitalInput,
+        input: Button::R,
         display_string: "R",
     },
     InputDefn {
-        input: mkb::PAD_TRIGGER_Z as mkb::PadDigitalInput,
+        input: Button::Z,
         display_string: "Z",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_UP as mkb::PadDigitalInput,
+        input: Button::DpadUp,
         display_string: "Dpad-Up",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_DOWN as mkb::PadDigitalInput,
+        input: Button::DpadDown,
         display_string: "Dpad-Down",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_LEFT as mkb::PadDigitalInput,
+        input: Button::DpadLeft,
         display_string: "Dpad-Left",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_RIGHT as mkb::PadDigitalInput,
+        input: Button::DpadRight,
         display_string: "Dpad-Right",
     },
     InputDefn {
-        input: mkb::PAD_BUTTON_START as mkb::PadDigitalInput,
+        input: Button::Start,
         display_string: "Start",
     },
 ];
