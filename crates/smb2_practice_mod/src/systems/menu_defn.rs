@@ -363,6 +363,9 @@ static ABOUT_WIDGETS: &[Widget] = &[
     Widget::Text {
         label: "  Made with   by",
     },
+    Widget::Custom {
+        draw: |_| draw::heart(),
+    },
     Widget::ColoredText {
         label: "ComplexPlane",
         color_left: mkb::GXColor {
@@ -379,9 +382,6 @@ static ABOUT_WIDGETS: &[Widget] = &[
         },
         offset_x: 17,
         line: TextLine::Overlap,
-    },
-    Widget::Custom {
-        draw: |_| draw::heart(),
     },
     Widget::Separator {},
     Widget::Text {

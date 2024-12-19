@@ -103,23 +103,6 @@ pub const GRAY: mkb::GXColor = mkb::GXColor {
     a: 0xFF,
 };
 
-// Too lazy to make index buffer or display list or whatnot
-static HEART_VERTS: &[mkb::Vec2d] = &[
-    mkb::Vec2d { x: 65.0, y: 118.14 },
-    mkb::Vec2d { x: 113.0, y: 74.0 },
-    mkb::Vec2d { x: 120.0, y: 63.0 },
-    mkb::Vec2d { x: 122.0, y: 52.0 },
-    mkb::Vec2d { x: 123.0, y: 40.0 },
-    mkb::Vec2d { x: 116.0, y: 22.5 },
-    mkb::Vec2d {
-        x: 103.25,
-        y: 13.88,
-    },
-    mkb::Vec2d { x: 88.63, y: 12.63 },
-    mkb::Vec2d { x: 77.88, y: 16.25 },
-    mkb::Vec2d { x: 65.25, y: 29.25 },
-];
-
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
 pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
     unsafe {
@@ -146,50 +129,23 @@ pub fn rect(x1: f32, y1: f32, x2: f32, y2: f32, color: mkb::GXColor) {
 
 pub fn heart() {
     unsafe {
-        // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
-        mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
-        mkb::GXSetTevColor(
-            mkb::GX_TEVREG0,
+        mkb::textdraw_reset();
+        mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
+        mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
+        mkb::textdraw_set_scale(0.99, 0.72);
+        mkb::textdraw_set_pos(189.0, 110.0);
+        mkb::textdraw_set_mul_color(
             mkb::GXColor {
-                r: 0xFF,
-                g: 0x07,
-                b: 0x07,
-                a: 0xFF,
-            },
+                r: 255,
+                g: 66,
+                b: 118,
+                a: 0xff,
+            }
+            .into(),
         );
-        const Z: f32 = -1.0 / 128.0;
-        const CENTER_X: f32 = 65.0;
-        const CENTER_Y: f32 = 62.0;
-        const SCALE: f32 = 0.13;
-        const OFFSET_X: f32 = 178.0;
-        const OFFSET_Y: f32 = 100.0;
-        const PERIOD: u32 = 120;
 
-        let t = (mkb::frame_counter % PERIOD) as f32 / PERIOD as f32 - 0.5;
-        let scale = mkb::math_sin((t * 0xFFFF as f32) as i16) * 0.02 + SCALE;
-
-        mkb::GXBegin(
-            mkb::GX_TRIANGLEFAN,
-            mkb::GX_VTXFMT7,
-            (HEART_VERTS.len() * 2 - 1) as u16,
-        );
-        for i in (0..HEART_VERTS.len()).rev() {
-            let mut x = HEART_VERTS[i % HEART_VERTS.len()].x;
-            let mut y = HEART_VERTS[i % HEART_VERTS.len()].y;
-            x = (x - CENTER_X) * scale + OFFSET_X;
-            y = (y - CENTER_Y) * scale + OFFSET_Y;
-            GXPosition3f32(x, y, Z);
-            GXTexCoord2f32(0.0, 0.0);
-        }
-        for i in 1..HEART_VERTS.len() {
-            let mut x = -(HEART_VERTS[i % HEART_VERTS.len()].x - CENTER_X) + CENTER_X;
-            let mut y = HEART_VERTS[i % HEART_VERTS.len()].y;
-            x = (x - CENTER_X) * scale + OFFSET_X;
-            y = (y - CENTER_Y) * scale + OFFSET_Y;
-            GXPosition3f32(x, y, Z);
-            GXTexCoord2f32(0.0, 0.0);
-        }
+        let text: [u8; 4] = [0x84, 214, 0x00, 0x00];
+        mkb::textdraw_print(text.as_ptr() as *mut c_char);
     }
 }
 
