@@ -13,7 +13,6 @@ use ::mkb::mkb_suppl::GXTexCoord2f32;
 use ::mkb::mkb_suppl::GX_FALSE;
 use ::mkb::mkb_suppl::GX_TRUE;
 
-
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 pub const NOTIFY_DURATION_SHORT: u32 = 40;
 pub const NOTIFY_DURATION_LONG: u32 = 120;
