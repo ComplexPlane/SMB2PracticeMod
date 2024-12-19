@@ -7,18 +7,12 @@ use core::ptr::addr_of;
 use arrayvec::ArrayString;
 
 use crate::asm;
-use crate::cstr;
-use crate::cstr_buf;
-use crate::fmt;
 use crate::patch;
 use ::mkb::mkb_suppl::GXPosition3f32;
 use ::mkb::mkb_suppl::GXTexCoord2f32;
 use ::mkb::mkb_suppl::GX_FALSE;
 use ::mkb::mkb_suppl::GX_TRUE;
 
-use super::menu_defn::MenuContext;
-use super::pref;
-use super::pref::U8Pref;
 
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 pub const NOTIFY_DURATION_SHORT: u32 = 40;
