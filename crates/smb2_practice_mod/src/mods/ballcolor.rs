@@ -60,6 +60,58 @@ pub enum MonkeyType {
     Random = 5,
 }
 
+// These appear to be different in some romhacks, so just hardcode them to vanilla colors
+static PRESET_COLORS: &[mkb::GXColor] = &[
+    mkb::GXColor {
+        r: 0xFF,
+        g: 0x00,
+        b: 0x00,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0x00,
+        g: 0x4C,
+        b: 0xFF,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0xFF,
+        g: 0xE5,
+        b: 0x00,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0x00,
+        g: 0xCC,
+        b: 0x00,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0x00,
+        g: 0xCC,
+        b: 0xCC,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0xFF,
+        g: 0x00,
+        b: 0xCC,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0x19,
+        g: 0x33,
+        b: 0x33,
+        a: 0xFF,
+    },
+    mkb::GXColor {
+        r: 0xFF,
+        g: 0xFF,
+        b: 0xE5,
+        a: 0xFF,
+    },
+];
+
 pub struct BallColor {
     rainbow: u32,
     default_color: mkb::GXColor,
@@ -135,15 +187,14 @@ impl BallColor {
             match ball_type {
                 BallColorType::Preset => {
                     if valid_mode {
-                        *(0x80472a34 as *mut mkb::GXColor) = self.default_color;
+                        mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
+                            Self::convert_to_ball_color_id(0);
                     }
-                    let color_id = Self::convert_to_ball_color_id(pref.get_u8(U8Pref::BallColor));
+                    self.current_color = PRESET_COLORS
+                        [Self::convert_to_ball_color_id(pref.get_u8(U8Pref::BallColor)) as usize];
                     if valid_mode {
-                        mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index = color_id;
+                        *(0x80472a34 as *mut mkb::GXColor) = self.current_color;
                     }
-                    self.current_color = (0x80472a28 as *const mkb::GXColor)
-                        .add(color_id as usize)
-                        .read();
                 }
                 BallColorType::Rgb => {
                     if valid_mode {
