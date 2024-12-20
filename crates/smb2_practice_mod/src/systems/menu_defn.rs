@@ -132,9 +132,10 @@ static INPUT_HEX: &[Widget] = &[
 ];
 
 static INPUTDISP_SUBWIDGETS: &[Widget] = &[
-    Widget::Checkbox {
-        label: "Use Center Location",
-        pref: BoolPref::InputDispCenterLocation,
+    Widget::Choose {
+        label: "Location",
+        choices: &["Right", "Center"],
+        pref: U8Pref::InputDispLocation,
     },
     Widget::Checkbox {
         label: "Notch Indicators",

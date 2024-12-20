@@ -99,7 +99,7 @@ macro_rules! swallow {
 pref_defn!(
     1 => Savestates: bool = true,
     2 => InputDisp: bool,
-    3 => InputDispCenterLocation: bool,
+    3 => InputDispLocation: u8 = 1,
     4 => TimerShowRTA: bool,
     5 => CmChara: u8,
     6 => InputDispColor: u8,

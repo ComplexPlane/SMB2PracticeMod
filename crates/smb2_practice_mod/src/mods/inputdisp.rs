@@ -24,6 +24,13 @@ pub enum InputDispColorType {
     MatchBall = 3,
 }
 
+#[derive(TryFromPrimitive, PartialEq, Eq)]
+#[repr(u8)]
+enum Location {
+    Right,
+    Center,
+}
+
 struct Context<'a> {
     pad: &'a Pad,
     pref: &'a Pref,
@@ -151,44 +158,36 @@ impl InputDisplay {
 
     pub fn tick(&mut self, pref: &Pref) {
         self.rainbow = (self.rainbow + 3) % 1080;
+        let location = Location::try_from(pref.get_u8(U8Pref::InputDispLocation)).unwrap();
         self.set_sprite_visible(
             !pref.get_bool(BoolPref::InputDisp)
-                || (pref.get_bool(BoolPref::InputDispCenterLocation)
+                || (location == Location::Center
                     && !pref.get_bool(BoolPref::InputDispRawStickInputs)),
         );
     }
 
-    fn get_notch_pos(&self, stick_inputs: &StickState, out_pos: &mut Vec2d) -> bool {
+    fn get_notch_pos(&self, stick_inputs: &StickState) -> Option<Vec2d> {
         const DIAG: f32 = f32::consts::FRAC_1_SQRT_2;
-        let mut notch_found = false;
 
         if stick_inputs.x == 0 && stick_inputs.y == pad::MAX_STICK {
-            *out_pos = Vec2d { x: 0.0, y: 1.0 };
-            notch_found = true;
+            Some(Vec2d { x: 0.0, y: 1.0 })
         } else if stick_inputs.x == 0 && stick_inputs.y == -pad::MAX_STICK {
-            *out_pos = Vec2d { x: 0.0, y: -1.0 };
-            notch_found = true;
+            Some(Vec2d { x: 0.0, y: -1.0 })
         } else if stick_inputs.x == pad::MAX_STICK && stick_inputs.y == 0 {
-            *out_pos = Vec2d { x: 1.0, y: 0.0 };
-            notch_found = true;
+            Some(Vec2d { x: 1.0, y: 0.0 })
         } else if stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == 0 {
-            *out_pos = Vec2d { x: -1.0, y: 0.0 };
-            notch_found = true;
+            Some(Vec2d { x: -1.0, y: 0.0 })
         } else if stick_inputs.x == pad::MAX_STICK && stick_inputs.y == pad::MAX_STICK {
-            *out_pos = Vec2d { x: DIAG, y: DIAG };
-            notch_found = true;
+            Some(Vec2d { x: DIAG, y: DIAG })
         } else if stick_inputs.x == pad::MAX_STICK && stick_inputs.y == -pad::MAX_STICK {
-            *out_pos = Vec2d { x: DIAG, y: -DIAG };
-            notch_found = true;
+            Some(Vec2d { x: DIAG, y: -DIAG })
         } else if stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == pad::MAX_STICK {
-            *out_pos = Vec2d { x: -DIAG, y: DIAG };
-            notch_found = true;
+            Some(Vec2d { x: -DIAG, y: DIAG })
         } else if stick_inputs.x == -pad::MAX_STICK && stick_inputs.y == -pad::MAX_STICK {
-            *out_pos = Vec2d { x: -DIAG, y: -DIAG };
-            notch_found = true;
+            Some(Vec2d { x: -DIAG, y: -DIAG })
+        } else {
+            None
         }
-
-        notch_found
     }
 
     const COLOR_MAP: &[mkb::GXColor] = &[
@@ -363,8 +362,7 @@ impl InputDisplay {
             return;
         }
 
-        let mut notch_norm = Vec2d { x: 0.0, y: 0.0 };
-        if self.get_notch_pos(stick_inputs, &mut notch_norm) {
+        if let Some(notch_norm) = self.get_notch_pos(stick_inputs) {
             let notch_pos = Vec2d {
                 x: notch_norm.x * 60.0 * scale + center.x,
                 y: -notch_norm.y * 60.0 * scale + center.y,
@@ -394,10 +392,9 @@ impl InputDisplay {
         }
 
         let center = Vec2d {
-            x: if cx.pref.get_bool(BoolPref::InputDispCenterLocation) {
-                540.0
-            } else {
-                390.0
+            x: match Location::try_from(cx.pref.get_u8(U8Pref::InputDispLocation)).unwrap() {
+                Location::Right => 540.0,
+                Location::Center => 390.0,
             },
             y: 28.0,
         };
@@ -452,10 +449,9 @@ impl InputDisplay {
             return;
         }
 
-        let center = if cx.pref.get_bool(BoolPref::InputDispCenterLocation) {
-            Vec2d { x: 430.0, y: 60.0 }
-        } else {
-            Vec2d { x: 534.0, y: 60.0 }
+        let center = match Location::try_from(cx.pref.get_u8(U8Pref::InputDispLocation)).unwrap() {
+            Location::Center => Vec2d { x: 430.0, y: 60.0 },
+            Location::Right => Vec2d { x: 534.0, y: 60.0 },
         };
         let scale = 0.6;
 
