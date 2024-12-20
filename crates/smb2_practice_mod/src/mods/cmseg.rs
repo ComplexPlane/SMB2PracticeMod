@@ -212,7 +212,7 @@ impl CmSeg {
 
     unsafe fn state_seg_active(&mut self, pref: &Pref) {
         if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
-            let ch = Chara::try_from(pref.get_u8(U8Pref::CmChara)).unwrap();
+            let ch = Chara::try_from(pref.get(U8Pref::CmChara)).unwrap();
             mkb::active_monkey_id[0] = match ch {
                 Chara::Random => APE_CHARAS[mkb::rand() as usize % 4],
                 _ => APE_CHARAS[ch as usize],
@@ -396,7 +396,7 @@ impl CmSeg {
     }
 
     pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
-        if !pref.get_bool(BoolPref::CmTimer) || freecam.should_hide_hud(pref) {
+        if !pref.get(BoolPref::CmTimer) || freecam.should_hide_hud(pref) {
             return;
         }
 

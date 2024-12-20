@@ -112,7 +112,7 @@ impl Marathon {
     }
 
     pub fn tick(&mut self, pref: &Pref) {
-        if pref.get_bool(BoolPref::Marathon) {
+        if pref.get(BoolPref::Marathon) {
             match self.state {
                 MarathonState::WaitForGoal => self.wait_for_goal(),
                 MarathonState::StoringVel => self.store_saved_vel(),

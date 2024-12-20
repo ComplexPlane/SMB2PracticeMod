@@ -251,7 +251,7 @@ pub fn tick() {
         mkb::perf_init_timer(4);
 
         with_app(|cx| {
-            if cx.pref.get_bool(BoolPref::DebugMode) {
+            if cx.pref.get(BoolPref::DebugMode) {
                 mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
             } else {
                 mkb::dip_switches &= !(mkb::DIP_DEBUG | mkb::DIP_DISP);

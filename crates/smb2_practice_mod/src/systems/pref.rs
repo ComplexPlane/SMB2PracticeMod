@@ -191,6 +191,31 @@ const PREF_BUF_SIZE: usize =
 const PREF_FILENAME: &str = "apmp";
 const PREF_MAGIC: [u8; 4] = [b'A', b'P', b'M', b'P'];
 
+pub trait PrefType<T>: Copy {
+    fn get(self, state: &PrefState) -> T;
+    fn set(self, v: T, pref: &mut Pref);
+}
+
+impl PrefType<bool> for BoolPref {
+    fn get(self, state: &PrefState) -> bool {
+        Pref::get_bool_pref(self, state)
+    }
+
+    fn set(self, v: bool, pref: &mut Pref) {
+        Pref::set_bool_pref(self, &mut pref.curr_state, v);
+    }
+}
+
+impl PrefType<u8> for U8Pref {
+    fn get(self, state: &PrefState) -> u8 {
+        Pref::get_u8_pref(self, state)
+    }
+
+    fn set(self, v: u8, pref: &mut Pref) {
+        Pref::set_u8_pref(self, &mut pref.curr_state, v);
+    }
+}
+
 struct DefaultBool {
     id: BoolPref,
     value: bool,
@@ -202,7 +227,7 @@ struct DefaultU8 {
 }
 
 #[derive(Clone)]
-struct PrefState {
+pub struct PrefState {
     bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
     u8s: [u8; U8_PREF_COUNT],
 }
@@ -319,9 +344,9 @@ impl Pref {
             };
 
             if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
-                entry.value = self.get_bool(bool_pref) as u16;
+                entry.value = self.get(bool_pref) as u16;
             } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
-                entry.value = self.get_u8(u8_pref) as u16;
+                entry.value = self.get(u8_pref) as u16;
             } else {
                 panic!("Failed to determine preference type");
             }
@@ -395,40 +420,22 @@ impl Pref {
         state.u8s[u8_pref as usize] = val;
     }
 
-    pub fn get_bool(&self, bool_pref: BoolPref) -> bool {
-        Self::get_bool_pref(bool_pref, &self.curr_state)
+    pub fn get<T>(&self, pref: impl PrefType<T>) -> T {
+        pref.get(&self.curr_state)
     }
 
-    pub fn get_u8(&self, u8_pref: U8Pref) -> u8 {
-        Self::get_u8_pref(u8_pref, &self.curr_state)
+    pub fn set<T>(&mut self, pref: impl PrefType<T>, val: T) {
+        pref.set(val, self)
     }
 
-    pub fn set_bool(&mut self, bool_pref: BoolPref, val: bool) {
-        Self::set_bool_pref(bool_pref, &mut self.curr_state, val);
-    }
-
-    pub fn set_u8(&mut self, u8_pref: U8Pref, val: u8) {
-        Self::set_u8_pref(u8_pref, &mut self.curr_state, val);
-    }
-
-    pub fn did_change_bool(&self, bool_pref: BoolPref) -> bool {
-        let curr = Self::get_bool_pref(bool_pref, &self.curr_state);
-        let prev = Self::get_bool_pref(bool_pref, &self.prev_state);
+    pub fn did_change<T: PartialEq>(&self, pref: impl PrefType<T>) -> bool {
+        let curr = pref.get(&self.curr_state);
+        let prev = pref.get(&self.prev_state);
         curr != prev
     }
 
-    pub fn did_change_u8(&self, u8_pref: U8Pref) -> bool {
-        let curr = Self::get_u8_pref(u8_pref, &self.curr_state);
-        let prev = Self::get_u8_pref(u8_pref, &self.prev_state);
-        curr != prev
-    }
-
-    pub fn get_default_bool(&self, bool_pref: BoolPref) -> bool {
-        Self::get_bool_pref(bool_pref, &self.default_state)
-    }
-
-    pub fn get_default_u8(&self, u8_pref: U8Pref) -> u8 {
-        Self::get_u8_pref(u8_pref, &self.default_state)
+    pub fn get_default<T>(&self, pref: impl PrefType<T>) -> T {
+        pref.get(&self.default_state)
     }
 
     pub fn reset_all_defaults(&mut self) {

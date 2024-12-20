@@ -67,22 +67,22 @@ impl IlMark {
             }
 
             if mkb::main_game_mode == mkb::PRACTICE_MODE {
-                if !pref.get_bool(BoolPref::IlMarkPractice) {
+                if !pref.get(BoolPref::IlMarkPractice) {
                     return false;
                 }
             } else if mkb::main_game_mode == mkb::STORY_MODE {
-                if !pref.get_bool(BoolPref::IlMarkStory) {
+                if !pref.get(BoolPref::IlMarkStory) {
                     return false;
                 }
             } else if mkb::main_game_mode == mkb::CHALLENGE_MODE {
-                if !pref.get_bool(BoolPref::IlMarkChallenge) {
+                if !pref.get(BoolPref::IlMarkChallenge) {
                     return false;
                 }
             } else {
                 return false;
             }
 
-            if self.is_romhack && !pref.get_bool(BoolPref::IlMarkRomhacks) {
+            if self.is_romhack && !pref.get(BoolPref::IlMarkRomhacks) {
                 return false;
             }
 

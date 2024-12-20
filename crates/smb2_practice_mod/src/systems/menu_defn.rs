@@ -152,11 +152,11 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: INPUT_PRESET,
-        show_if: |cx| cx.pref.get_u8(U8Pref::InputDispColorType) == 0,
+        show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 0,
     },
     Widget::HideableGroup {
         widgets: INPUT_HEX,
-        show_if: |cx| cx.pref.get_u8(U8Pref::InputDispColorType) == 1,
+        show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 1,
     },
 ];
 
@@ -167,7 +167,7 @@ static INPUTDISP_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: INPUTDISP_SUBWIDGETS,
-        show_if: |cx| cx.pref.get_bool(BoolPref::InputDisp),
+        show_if: |cx| cx.pref.get(BoolPref::InputDisp),
     },
 ];
 
@@ -221,11 +221,11 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: PRESET_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::BallColorType) == 0,
+        show_if: |cx| cx.pref.get(U8Pref::BallColorType) == 0,
     },
     Widget::HideableGroup {
         widgets: HEX_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::BallColorType) == 1,
+        show_if: |cx| cx.pref.get(U8Pref::BallColorType) == 1,
     },
     Widget::Separator {},
     Widget::Header {
@@ -238,7 +238,7 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: PRESET_APE_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::ApeColorType) == 0,
+        show_if: |cx| cx.pref.get(U8Pref::ApeColorType) == 0,
     },
     Widget::Separator {},
     Widget::Header { label: "Monkey" },
@@ -284,7 +284,7 @@ static IL_BATTLE_SUBWIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: IL_BATTLE_SCORE_WIDGETS,
-        show_if: |cx| cx.pref.get_bool(BoolPref::IlBattleShowScore),
+        show_if: |cx| cx.pref.get(BoolPref::IlBattleShowScore),
     },
     Widget::Separator {},
     Widget::Header {
@@ -314,7 +314,7 @@ static IL_BATTLE_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: IL_BATTLE_SUBWIDGETS,
-        show_if: |cx| cx.pref.get_bool(BoolPref::IlBattleDisplay),
+        show_if: |cx| cx.pref.get(BoolPref::IlBattleDisplay),
     },
 ];
 
@@ -947,7 +947,7 @@ static SAVESTATE_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: SAVESTATE_SUBWIDGETS,
-        show_if: |cx| cx.pref.get_bool(BoolPref::Savestates),
+        show_if: |cx| cx.pref.get(BoolPref::Savestates),
     },
     Widget::Separator {},
     Widget::Header { label: "Help" },
@@ -1102,41 +1102,41 @@ static PHYSICS_WIDGETS: &[Widget] = &[
         widgets: &[Widget::Text {
             label: "  Weight: 1.00 -> 0.95",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 1,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 1,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Friction: 0.010 -> 0.000",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 2,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 2,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Weight: 1.00 -> 1.05",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 3,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 3,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Restitution: 0.50 -> 1.20",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 4,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 4,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Restitution: 0.50 -> 0.01",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 5,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 5,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Friction: 0.010 -> 0.020",
         }],
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 6,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 6,
     },
     Widget::HideableGroup {
         widgets: JUMP_PHYSICS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::PhysicsPreset) == 7,
+        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 7,
     },
     Widget::Checkbox {
         label: "Display Physics Text",
@@ -1160,7 +1160,7 @@ static STAGE_EDIT_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: REVERSE_GOAL_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::StageEditVariant) == 3,
+        show_if: |cx| cx.pref.get(U8Pref::StageEditVariant) == 3,
     },
     Widget::Text {
         label: "  Stage Edits are activated on retry",
@@ -1216,11 +1216,11 @@ static JUMP_PROFILES_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: JUMP_STANDARD_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::JumpProfile) == 0,
+        show_if: |cx| cx.pref.get(U8Pref::JumpProfile) == 0,
     },
     Widget::HideableGroup {
         widgets: JUMP_CLASSIC_WIDGETS,
-        show_if: |cx| cx.pref.get_u8(U8Pref::JumpProfile) == 1,
+        show_if: |cx| cx.pref.get(U8Pref::JumpProfile) == 1,
     },
 ];
 
@@ -1234,7 +1234,7 @@ static JUMP_WIDGETS: &[Widget] = &[
     },
     Widget::HideableGroup {
         widgets: JUMP_PROFILES_WIDGETS,
-        show_if: |cx| cx.pref.get_bool(BoolPref::JumpMod),
+        show_if: |cx| cx.pref.get(BoolPref::JumpMod),
     },
     Widget::Header { label: "Help" },
     Widget::Menu {

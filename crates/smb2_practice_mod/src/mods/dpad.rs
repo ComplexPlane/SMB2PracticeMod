@@ -48,7 +48,7 @@ impl Default for Dpad {
 impl Dpad {
     pub fn on_pad_read(&self, statuses: *mut mkb::PADStatus, pref: &Pref) {
         unsafe {
-            if !pref.get_bool(BoolPref::DpadControls) {
+            if !pref.get(BoolPref::DpadControls) {
                 return;
             }
 

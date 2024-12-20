@@ -158,11 +158,10 @@ impl InputDisplay {
 
     pub fn tick(&mut self, pref: &Pref) {
         self.rainbow = (self.rainbow + 3) % 1080;
-        let location = Location::try_from(pref.get_u8(U8Pref::InputDispLocation)).unwrap();
+        let location = Location::try_from(pref.get(U8Pref::InputDispLocation)).unwrap();
         self.set_sprite_visible(
-            !pref.get_bool(BoolPref::InputDisp)
-                || (location == Location::Center
-                    && !pref.get_bool(BoolPref::InputDispRawStickInputs)),
+            !pref.get(BoolPref::InputDisp)
+                || (location == Location::Center && !pref.get(BoolPref::InputDispRawStickInputs)),
         );
     }
 
@@ -217,15 +216,15 @@ impl InputDisplay {
     ];
 
     fn get_color(&self, cx: &Context) -> mkb::GXColor {
-        let color_pref = cx.pref.get_u8(U8Pref::InputDispColorType);
+        let color_pref = cx.pref.get(U8Pref::InputDispColorType);
         match InputDispColorType::try_from(color_pref).unwrap() {
             InputDispColorType::Default => {
-                Self::COLOR_MAP[cx.pref.get_u8(U8Pref::InputDispColor) as usize]
+                Self::COLOR_MAP[cx.pref.get(U8Pref::InputDispColor) as usize]
             }
             InputDispColorType::Rgb => mkb::GXColor {
-                r: cx.pref.get_u8(U8Pref::InputDispRed),
-                g: cx.pref.get_u8(U8Pref::InputDispGreen),
-                b: cx.pref.get_u8(U8Pref::InputDispBlue),
+                r: cx.pref.get(U8Pref::InputDispRed),
+                g: cx.pref.get(U8Pref::InputDispGreen),
+                b: cx.pref.get(U8Pref::InputDispBlue),
                 a: 0xff,
             },
             InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow),
@@ -358,7 +357,7 @@ impl InputDisplay {
         scale: f32,
         cx: &Context,
     ) {
-        if !cx.pref.get_bool(BoolPref::InputDispNotchIndicators) {
+        if !cx.pref.get(BoolPref::InputDispNotchIndicators) {
             return;
         }
 
@@ -387,12 +386,12 @@ impl InputDisplay {
         stick_inputs: &StickState,
         cx: &Context,
     ) {
-        if !cx.pref.get_bool(BoolPref::InputDispRawStickInputs) {
+        if !cx.pref.get(BoolPref::InputDispRawStickInputs) {
             return;
         }
 
         let center = Vec2d {
-            x: match Location::try_from(cx.pref.get_u8(U8Pref::InputDispLocation)).unwrap() {
+            x: match Location::try_from(cx.pref.get(U8Pref::InputDispLocation)).unwrap() {
                 Location::Right => 540.0,
                 Location::Center => 390.0,
             },
@@ -442,14 +441,11 @@ impl InputDisplay {
                 || mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN
         };
 
-        if !cx.pref.get_bool(BoolPref::InputDisp)
-            || cx.freecam.should_hide_hud(cx.pref)
-            || in_replay
-        {
+        if !cx.pref.get(BoolPref::InputDisp) || cx.freecam.should_hide_hud(cx.pref) || in_replay {
             return;
         }
 
-        let center = match Location::try_from(cx.pref.get_u8(U8Pref::InputDispLocation)).unwrap() {
+        let center = match Location::try_from(cx.pref.get(U8Pref::InputDispLocation)).unwrap() {
             Location::Center => Vec2d { x: 430.0, y: 60.0 },
             Location::Right => Vec2d { x: 534.0, y: 60.0 },
         };

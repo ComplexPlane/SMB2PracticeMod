@@ -181,10 +181,10 @@ impl IlBattle {
             );
         }
 
-        if cx.pref.get_bool(BoolPref::IlBattleShowTime) {
+        if cx.pref.get(BoolPref::IlBattleShowTime) {
             current_y += CHEIGHT;
             draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
-            if cx.pref.get_bool(BoolPref::IlBattleTieCount) && self.best_frames_ties > 0 {
+            if cx.pref.get(BoolPref::IlBattleTieCount) && self.best_frames_ties > 0 {
                 draw::debug_text(
                     X - 6,
                     current_y,
@@ -207,10 +207,10 @@ impl IlBattle {
             }
         }
 
-        if cx.pref.get_bool(BoolPref::IlBattleShowScore) {
+        if cx.pref.get(BoolPref::IlBattleShowScore) {
             current_y += CHEIGHT;
             draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
-            if cx.pref.get_bool(BoolPref::IlBattleTieCount) && self.best_score_ties > 0 {
+            if cx.pref.get(BoolPref::IlBattleTieCount) && self.best_score_ties > 0 {
                 draw::debug_text(
                     X - 6,
                     current_y,
@@ -227,7 +227,7 @@ impl IlBattle {
             }
 
             // breakdown
-            let breakdown_value = cx.pref.get_u8(U8Pref::IlBattleBreakdown);
+            let breakdown_value = cx.pref.get(U8Pref::IlBattleBreakdown);
             if breakdown_value == 1 {
                 // minimal
                 current_y += CHEIGHT;
@@ -265,7 +265,7 @@ impl IlBattle {
             }
         }
 
-        if cx.pref.get_bool(BoolPref::IlBattleAttemptCount) {
+        if cx.pref.get(BoolPref::IlBattleAttemptCount) {
             current_y += CHEIGHT;
             draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
             draw::debug_text(
@@ -276,9 +276,9 @@ impl IlBattle {
             );
         }
 
-        if cx.pref.get_bool(BoolPref::IlBattleBuzzerOld)
-            && ((self.time_buzzer && cx.pref.get_bool(BoolPref::IlBattleShowTime))
-                || (self.score_buzzer && cx.pref.get_bool(BoolPref::IlBattleShowScore)))
+        if cx.pref.get(BoolPref::IlBattleBuzzerOld)
+            && ((self.time_buzzer && cx.pref.get(BoolPref::IlBattleShowTime))
+                || (self.score_buzzer && cx.pref.get(BoolPref::IlBattleShowScore)))
         {
             self.old_buzzer_display(current_y + CHEIGHT);
         }
@@ -314,7 +314,7 @@ impl IlBattle {
     }
 
     fn clear_display(&mut self, cx: &Context) {
-        let battle_len = cx.pref.get_u8(U8Pref::IlBattleLength);
+        let battle_len = cx.pref.get(U8Pref::IlBattleLength);
         let battle_len = IlBattleLength::try_from(battle_len).unwrap();
 
         self.battle_frames = 0;
@@ -355,7 +355,7 @@ impl IlBattle {
                 self.accepted_retry = true;
             }
 
-            let battle_length = cx.pref.get_u8(U8Pref::IlBattleLength);
+            let battle_length = cx.pref.get(U8Pref::IlBattleLength);
             let battle_length = IlBattleLength::try_from(battle_length).unwrap();
             if matches!(battle_length, IlBattleLength::Endless) {
                 // timer is endless
@@ -478,7 +478,7 @@ impl IlBattle {
         };
 
         unsafe {
-            if !cx.pref.get_bool(BoolPref::IlBattleDisplay) {
+            if !cx.pref.get(BoolPref::IlBattleDisplay) {
                 self.clear_display(cx);
                 self.state = IlBattleState::NotReady;
             }
@@ -534,11 +534,9 @@ impl IlBattle {
 
             // Resets battles when Dpad Down is pressed
             if mkb::main_mode == mkb::MD_GAME
-                && cx.binds.bind_pressed(
-                    cx.pref.get_u8(U8Pref::IlBattleReadyBind),
-                    Prio::Low,
-                    cx.pad,
-                )
+                && cx
+                    .binds
+                    .bind_pressed(cx.pref.get(U8Pref::IlBattleReadyBind), Prio::Low, cx.pad)
             {
                 self.new_battle(cx);
             }
@@ -562,7 +560,7 @@ impl IlBattle {
             }
         }
 
-        if !cx.pref.get_bool(BoolPref::IlBattleDisplay) || cx.freecam.should_hide_hud(cx.pref) {
+        if !cx.pref.get(BoolPref::IlBattleDisplay) || cx.freecam.should_hide_hud(cx.pref) {
             return;
         }
 
@@ -571,7 +569,7 @@ impl IlBattle {
                 if unsafe { mkb::main_mode } != mkb::MD_GAME {
                     return;
                 }
-                let input = cx.pref.get_u8(U8Pref::IlBattleReadyBind);
+                let input = cx.pref.get(U8Pref::IlBattleReadyBind);
                 let mut buf = ArrayString::<32>::new();
                 cx.binds.get_bind_str(input, &mut buf);
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
@@ -599,7 +597,7 @@ impl IlBattle {
                 }
             }
             IlBattleState::BuzzerBeaterPostgoal => {
-                if cx.pref.get_bool(BoolPref::IlBattleShowScore) {
+                if cx.pref.get(BoolPref::IlBattleShowScore) {
                     self.battle_display(draw::LIGHT_GREEN, cx);
                 } else {
                     self.battle_display(draw::LIGHT_PURPLE, cx);

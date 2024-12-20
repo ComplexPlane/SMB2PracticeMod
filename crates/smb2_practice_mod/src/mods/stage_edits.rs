@@ -147,7 +147,7 @@ impl StageEdits {
     }
 
     fn on_load_stagedef(&mut self, pref: &Pref) {
-        let next_mode = ActiveMode::try_from(pref.get_u8(U8Pref::StageEditVariant)).unwrap();
+        let next_mode = ActiveMode::try_from(pref.get(U8Pref::StageEditVariant)).unwrap();
         self.current_mode = next_mode;
         unsafe {
             self.set_mode(self.current_mode);
@@ -155,7 +155,7 @@ impl StageEdits {
     }
 
     pub fn on_game_ready_init(&mut self, pref: &Pref) {
-        let next_mode = ActiveMode::try_from(pref.get_u8(U8Pref::StageEditVariant)).unwrap();
+        let next_mode = ActiveMode::try_from(pref.get(U8Pref::StageEditVariant)).unwrap();
         if self.current_mode != next_mode {
             unsafe {
                 self.undo_mode(self.current_mode);

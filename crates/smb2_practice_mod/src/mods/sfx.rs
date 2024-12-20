@@ -94,7 +94,7 @@ impl Sfx {
     pub fn tick(&mut self, pref: &Pref) {
         with_mutex(&GLOBALS, |cx| {
             if !self.initialized {
-                if pref.get_bool(BoolPref::MuteBgm) {
+                if pref.get(BoolPref::MuteBgm) {
                     // Only hook if the preference is initially set, so we don't affect background music until game
                     // is rebooted
                     cx.soft_stream_start_hook.hook();
@@ -105,8 +105,7 @@ impl Sfx {
                 self.initialized = true;
             }
 
-            cx.mute_timer_ding
-                .set(pref.get_bool(BoolPref::MuteTimerDing));
+            cx.mute_timer_ding.set(pref.get(BoolPref::MuteTimerDing));
         });
     }
 }

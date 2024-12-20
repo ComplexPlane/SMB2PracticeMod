@@ -86,15 +86,15 @@ impl Freecam {
     }
 
     fn enabled(&self, pref: &Pref) -> bool {
-        pref.get_bool(BoolPref::Freecam) && Self::in_correct_mode()
+        pref.get(BoolPref::Freecam) && Self::in_correct_mode()
     }
 
     pub fn should_freeze_timer(&self, pref: &Pref) -> bool {
-        self.enabled(pref) && pref.get_bool(BoolPref::FreecamFreezeTimer)
+        self.enabled(pref) && pref.get(BoolPref::FreecamFreezeTimer)
     }
 
     pub fn should_hide_hud(&self, pref: &Pref) -> bool {
-        self.enabled(pref) && pref.get_bool(BoolPref::FreecamHideHud)
+        self.enabled(pref) && pref.get(BoolPref::FreecamHideHud)
     }
 
     fn update_cam(
@@ -124,7 +124,7 @@ impl Freecam {
             let slow = pad.button_down(Button::X, Prio::Low);
 
             let speed_mult = if fast {
-                pref.get_u8(pref::U8Pref::FreecamSpeedMult) as f32
+                pref.get(pref::U8Pref::FreecamSpeedMult) as f32
             } else if slow {
                 0.15
             } else {
@@ -132,8 +132,8 @@ impl Freecam {
             };
 
             // New rotation
-            let invert_yaw = pref.get_bool(pref::BoolPref::FreecamInvertYaw);
-            let invert_pitch = pref.get_bool(pref::BoolPref::FreecamInvertPitch);
+            let invert_yaw = pref.get(pref::BoolPref::FreecamInvertYaw);
+            let invert_pitch = pref.get(pref::BoolPref::FreecamInvertPitch);
             self.rot.x -= (substick_y * 300.0 * if invert_pitch { -1.0 } else { 1.0 }) as i16;
             self.rot.y += (substick_x * 490.0 * if invert_yaw { -1.0 } else { 1.0 }) as i16;
             self.rot.z = 0;
@@ -219,11 +219,11 @@ impl Freecam {
         // Optionally toggle freecam
         if cx
             .binds
-            .bind_pressed(cx.pref.get_u8(U8Pref::FreecamToggleBind), Prio::Low, cx.pad)
+            .bind_pressed(cx.pref.get(U8Pref::FreecamToggleBind), Prio::Low, cx.pad)
             && Self::in_correct_mode()
         {
             cx.pref
-                .set_bool(BoolPref::Freecam, !cx.pref.get_bool(BoolPref::Freecam));
+                .set(BoolPref::Freecam, !cx.pref.get(BoolPref::Freecam));
             cx.pref.save();
         }
 
@@ -232,7 +232,7 @@ impl Freecam {
             self.enabled_this_tick = true;
 
             // Adjust turbo speed multiplier
-            let mut speed_mult = cx.pref.get_u8(U8Pref::FreecamSpeedMult);
+            let mut speed_mult = cx.pref.get(U8Pref::FreecamSpeedMult);
             let mut input_made = false;
             if cx.pad.button_repeat(Button::DpadDown, Prio::Low) {
                 speed_mult -= 1;
@@ -249,7 +249,7 @@ impl Freecam {
                     NotifyDuration::Short,
                     &fmt!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
                 );
-                cx.pref.set_u8(pref::U8Pref::FreecamSpeedMult, speed_mult);
+                cx.pref.set(pref::U8Pref::FreecamSpeedMult, speed_mult);
                 cx.pref.save();
             }
         }

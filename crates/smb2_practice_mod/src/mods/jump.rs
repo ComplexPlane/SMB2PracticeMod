@@ -60,7 +60,7 @@ impl Jump {
         // Patch out Minimap Toggle
         // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
         unsafe {
-            if mkb::main_mode == mkb::MD_GAME && pref.get_bool(BoolPref::JumpMod) {
+            if mkb::main_mode == mkb::MD_GAME && pref.get(BoolPref::JumpMod) {
                 let patch1_loc = 0x808f4d18 as *mut u32;
                 let patch2_loc = 0x808f5168 as *mut u32;
 
@@ -87,8 +87,8 @@ impl Jump {
 
     fn enable(&mut self, pref: &mut Pref) {
         self.patch_minimap(pref);
-        if pref.get_bool(BoolPref::JumpChangePhysics) {
-            pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+        if pref.get(BoolPref::JumpChangePhysics) {
+            pref.set(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
             pref.save();
         }
         self.reset();
@@ -96,8 +96,8 @@ impl Jump {
 
     fn disable(&mut self, pref: &mut Pref) {
         self.restore_minimap();
-        if pref.get_bool(BoolPref::JumpChangePhysics) {
-            pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+        if pref.get(BoolPref::JumpChangePhysics) {
+            pref.set(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
             pref.save();
         }
     }
@@ -149,12 +149,12 @@ impl Jump {
             }
 
             let valid_location =
-                normal_vec.y < WALLJUMP_NORMAL || pref.get_bool(BoolPref::JumpAllowWalljumps);
+                normal_vec.y < WALLJUMP_NORMAL || pref.get(BoolPref::JumpAllowWalljumps);
             // Track Ground Touched
             if ground_touched && valid_location {
                 self.ticks_since_ground = 0;
 
-                let count = MaxJumpCount::try_from(pref.get_u8(U8Pref::JumpCount)).unwrap();
+                let count = MaxJumpCount::try_from(pref.get(U8Pref::JumpCount)).unwrap();
                 if count == MaxJumpCount::Two {
                     self.aerial_jumps = 1;
                 } else {
@@ -170,7 +170,7 @@ impl Jump {
                 ground_touched && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
             let coyote_late = self.ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
             // check extra jump count
-            let max_jump = MaxJumpCount::try_from(pref.get_u8(U8Pref::JumpCount)).unwrap();
+            let max_jump = MaxJumpCount::try_from(pref.get(U8Pref::JumpCount)).unwrap();
             let aerial_jumped =
                 (self.aerial_jumps > 0 || max_jump == MaxJumpCount::Infinite) && a_pressed;
             let start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT
@@ -290,8 +290,8 @@ impl Jump {
     }
 
     pub fn tick(&mut self, pref: &mut Pref, pad: &Pad) {
-        let enabled = pref.get_bool(BoolPref::JumpMod);
-        if pref.did_change_bool(BoolPref::JumpMod) {
+        let enabled = pref.get(BoolPref::JumpMod);
+        if pref.did_change(BoolPref::JumpMod) {
             if enabled {
                 self.enable(pref);
             } else {
@@ -299,11 +299,11 @@ impl Jump {
             }
         }
         if enabled {
-            if pref.did_change_bool(BoolPref::JumpChangePhysics) {
-                if pref.get_bool(BoolPref::JumpChangePhysics) {
-                    pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+            if pref.did_change(BoolPref::JumpChangePhysics) {
+                if pref.get(BoolPref::JumpChangePhysics) {
+                    pref.set(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
                 } else {
-                    pref.set_u8(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+                    pref.set(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
                 }
                 pref.save();
             }
@@ -315,7 +315,7 @@ impl Jump {
             }
             Self::toggle_minimap(pad);
 
-            let new_jump_profile = pref.get_u8(U8Pref::JumpProfile) == 0;
+            let new_jump_profile = pref.get(U8Pref::JumpProfile) == 0;
 
             if new_jump_profile {
                 self.jumping(pref, pad);

@@ -79,7 +79,7 @@ hook!(ClearHook => (), mkb::g_set_clear_color, || {
 // HUD
 hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite| {
     let (hide_hud, freecam_hide) = with_app(|cx| {
-        (cx.pref.get_bool(BoolPref::HideHud), cx.freecam.should_hide_hud(&cx.pref))
+        (cx.pref.get(BoolPref::HideHud), cx.freecam.should_hide_hud(&cx.pref))
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -98,7 +98,7 @@ hook!(DrawMinimapHook => (), mkb::g_draw_minimap, || {
     let (hide_hud, freecam_hide) = with_app(|cx| {
         let pref = &cx.pref;
         let freecam = &cx.freecam;
-        (pref.get_bool(BoolPref::HideHud), freecam.should_hide_hud(pref))
+        (pref.get(BoolPref::HideHud), freecam.should_hide_hud(pref))
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -111,7 +111,7 @@ hook!(DrawMinimapHook => (), mkb::g_draw_minimap, || {
 // Stage
 hook!(DrawStageHook => (), mkb::g_draw_stage, || {
     let should_hide = with_app(|cx| {
-        cx.pref.get_bool(BoolPref::HideStage)
+        cx.pref.get(BoolPref::HideStage)
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -124,7 +124,7 @@ hook!(DrawStageHook => (), mkb::g_draw_stage, || {
 // Ball
 hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, || {
     let should_hide = with_app(|cx| {
-        cx.pref.get_bool(BoolPref::HideBall)
+        cx.pref.get(BoolPref::HideBall)
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -137,7 +137,7 @@ hook!(DrawBallHook => (), mkb::g_draw_ball_and_ape, || {
 // Items
 hook!(DrawItemsHook => (), mkb::draw_items, || {
     let should_hide = with_app(|cx| {
-        cx.pref.get_bool(BoolPref::HideItems)
+        cx.pref.get(BoolPref::HideItems)
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -150,7 +150,7 @@ hook!(DrawItemsHook => (), mkb::draw_items, || {
 // Stage objects
 hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, || {
     let should_hide = with_app(|cx| {
-        cx.pref.get_bool(BoolPref::HideStobjs)
+        cx.pref.get(BoolPref::HideStobjs)
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -163,7 +163,7 @@ hook!(DrawStobjsHook => (), mkb::g_draw_stobjs, || {
 // Effects
 hook!(DrawEffectsHook => (), mkb::g_draw_effects, || {
     let should_hide = with_app(|cx| {
-        cx.pref.get_bool(BoolPref::HideEffects)
+        cx.pref.get(BoolPref::HideEffects)
     });
 
     with_mutex(&GLOBALS, |cx| {
@@ -174,7 +174,7 @@ hook!(DrawEffectsHook => (), mkb::g_draw_effects, || {
 });
 
 fn should_hide_bg(pref: &Pref) -> bool {
-    pref.get_bool(BoolPref::HideBg) && unsafe { mkb::main_mode != mkb::MD_ADV }
+    pref.get(BoolPref::HideBg) && unsafe { mkb::main_mode != mkb::MD_ADV }
 }
 
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`

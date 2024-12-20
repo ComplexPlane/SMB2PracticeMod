@@ -69,12 +69,12 @@ impl Timer {
 
             let mut row = 1;
 
-            if pref.get_bool(BoolPref::TimerShowRTA) && !freecam.should_hide_hud(pref) {
+            if pref.get(BoolPref::TimerShowRTA) && !freecam.should_hide_hud(pref) {
                 timerdisp::draw_timer(self.rta_timer, "RTA:", row, draw::WHITE, true);
                 row += 1;
             }
 
-            if pref.get_bool(BoolPref::TimerShowPause) && !freecam.should_hide_hud(pref) {
+            if pref.get(BoolPref::TimerShowPause) && !freecam.should_hide_hud(pref) {
                 timerdisp::draw_timer(self.pause_timer, "PAU:", row, draw::WHITE, true);
                 row += 1;
             }
@@ -89,7 +89,7 @@ impl Timer {
 
             let framesave = validate.get_framesave();
 
-            if pref.get_bool(BoolPref::TimerShowSubtick) && !freecam.should_hide_hud(pref) {
+            if pref.get(BoolPref::TimerShowSubtick) && !freecam.should_hide_hud(pref) {
                 timerdisp::draw_subtick_timer(
                     mkb::mode_info.stage_time_frames_remaining as i32,
                     "SUB:",
@@ -101,7 +101,7 @@ impl Timer {
                 row += 1;
             }
 
-            if pref.get_bool(BoolPref::TimerShowFramesave) && !freecam.should_hide_hud(pref) {
+            if pref.get(BoolPref::TimerShowFramesave) && !freecam.should_hide_hud(pref) {
                 timerdisp::draw_percentage(framesave as i32, "FSV:", row, draw::WHITE);
             }
         }

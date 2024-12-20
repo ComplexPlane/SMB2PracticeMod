@@ -1,8 +1,4 @@
-use crate::{
-    app::with_app,
-    hook,
-    utils::misc::with_mutex,
-};
+use crate::{app::with_app, hook, utils::misc::with_mutex};
 use core::ffi::c_int;
 
 use critical_section::Mutex;
@@ -93,7 +89,7 @@ impl Default for Fallout {
 
 impl Fallout {
     pub fn freeze_timer(&mut self, pref: &Pref, freecam: &Freecam) {
-        let mut timer_type = TimerType::try_from(pref.get_u8(U8Pref::TimerType)).unwrap();
+        let mut timer_type = TimerType::try_from(pref.get(U8Pref::TimerType)).unwrap();
         if freecam.should_freeze_timer(pref) {
             timer_type = TimerType::FreezeInstantly;
             self.toggled_freecam = true;
@@ -102,7 +98,7 @@ impl Fallout {
         unsafe {
             match timer_type {
                 TimerType::Default => {
-                    if pref.did_change_u8(U8Pref::TimerType) || self.toggled_freecam {
+                    if pref.did_change(U8Pref::TimerType) || self.toggled_freecam {
                         // time over at 0 frames
                         patch::write_word(0x80297548 as *mut usize, self.timeover_condition);
                         // add -1 to timer each frame
@@ -159,9 +155,9 @@ impl Fallout {
     ) -> c_int {
         unsafe {
             let below_fallout = (*ball).pos.y < (*(*mkb::stagedef).fallout).y;
-            let volumes_disabled = pref.get_bool(BoolPref::DisableFalloutVolumes);
+            let volumes_disabled = pref.get(BoolPref::DisableFalloutVolumes);
             let plane_type =
-                FalloutPlaneType::try_from(pref.get_u8(U8Pref::FalloutPlaneType)).unwrap();
+                FalloutPlaneType::try_from(pref.get(U8Pref::FalloutPlaneType)).unwrap();
 
             match plane_type {
                 FalloutPlaneType::Normal => {

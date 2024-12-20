@@ -85,12 +85,12 @@ impl Validate {
     pub fn disable_invalidating_settings(pref: &mut Pref) {
         // Set all bool prefs to default
         for &invalid_pref in INVALID_BOOL_PREFS {
-            pref.set_bool(invalid_pref, pref.get_default_bool(invalid_pref));
+            pref.set(invalid_pref, pref.get_default(invalid_pref));
         }
 
         // Set all u8 prefs to default
         for &invalid_pref in INVALID_U8_PREFS {
-            pref.set_u8(invalid_pref, pref.get_default_u8(invalid_pref));
+            pref.set(invalid_pref, pref.get_default(invalid_pref));
         }
 
         pref.save();
@@ -121,7 +121,7 @@ impl Validate {
                 || pad.button_down(Button::DpadLeft, Prio::Low)
                 || pad.button_down(Button::DpadRight, Prio::Low)
                 || pad.button_down(Button::DpadUp, Prio::Low);
-            if pref.get_bool(BoolPref::DpadControls) && dpad_down {
+            if pref.get(BoolPref::DpadControls) && dpad_down {
                 self.used_mods = true;
             }
 
@@ -137,13 +137,13 @@ impl Validate {
 
             // Invalid bool/u8 prefs are enabled
             for &invalid_pref in INVALID_BOOL_PREFS {
-                if pref.get_bool(invalid_pref) != pref.get_default_bool(invalid_pref) {
+                if pref.get(invalid_pref) != pref.get_default(invalid_pref) {
                     self.used_mods = true;
                 }
             }
 
             for &invalid_pref in INVALID_U8_PREFS {
-                if pref.get_u8(invalid_pref) != pref.get_default_u8(invalid_pref) {
+                if pref.get(invalid_pref) != pref.get_default(invalid_pref) {
                     self.used_mods = true;
                 }
             }

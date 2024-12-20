@@ -48,10 +48,10 @@ impl Unlock {
                 mkb::DVD_GAME_NAME == [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
             let company_matches = mkb::DVD_COMPANY == [b'8' as i8, b'P' as i8];
             if game_matches && company_matches {
-                if pref.get_bool(BoolPref::UnlockVanilla) {
+                if pref.get(BoolPref::UnlockVanilla) {
                     return true;
                 }
-            } else if pref.get_bool(BoolPref::UnlockRomhacks) {
+            } else if pref.get(BoolPref::UnlockRomhacks) {
                 return true;
             }
             false

@@ -113,7 +113,7 @@ impl SaveStatesUi {
             return Some(self.active_state_slot);
         }
 
-        let save_to = SaveTo::try_from(cx.pref.get_u8(U8Pref::SavestateSaveTo)).unwrap();
+        let save_to = SaveTo::try_from(cx.pref.get(U8Pref::SavestateSaveTo)).unwrap();
         match save_to {
             SaveTo::Selected => Some(self.active_state_slot),
             SaveTo::NextEmpty => self.find_next_empty(),
@@ -340,8 +340,8 @@ impl SaveStatesUi {
         if !savestates_enabled(cx.pref) {
             return;
         }
-        let clear_bind = pref.get_u8(U8Pref::SavestateClearBind);
-        let clear_all_bind = pref.get_u8(U8Pref::SavestateClearAllBind);
+        let clear_bind = pref.get(U8Pref::SavestateClearBind);
+        let clear_all_bind = pref.get(U8Pref::SavestateClearAllBind);
 
         // Must tick savestates every frame
         for state in &mut self.states {
@@ -410,5 +410,5 @@ impl SaveStatesUi {
 }
 
 pub fn savestates_enabled(pref: &Pref) -> bool {
-    pref.get_bool(BoolPref::Savestates) && !pref.get_bool(BoolPref::Freecam)
+    pref.get(BoolPref::Savestates) && !pref.get(BoolPref::Freecam)
 }

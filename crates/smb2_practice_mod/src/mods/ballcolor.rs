@@ -154,7 +154,7 @@ impl BallColor {
 
     pub fn switch_monkey(&self, pref: &Pref) {
         unsafe {
-            match MonkeyType::try_from(pref.get_u8(U8Pref::MonkeyType)).unwrap() {
+            match MonkeyType::try_from(pref.get(U8Pref::MonkeyType)).unwrap() {
                 MonkeyType::Default => (),
                 MonkeyType::Aiai => {
                     mkb::active_monkey_id[mkb::curr_player_idx as usize] = 0;
@@ -177,7 +177,7 @@ impl BallColor {
 
     pub fn tick(&mut self, pref: &Pref) {
         unsafe {
-            let ball_type = BallColorType::try_from(pref.get_u8(U8Pref::BallColorType)).unwrap();
+            let ball_type = BallColorType::try_from(pref.get(U8Pref::BallColorType)).unwrap();
 
             let valid_mode = mkb::main_mode == mkb::MD_GAME
                 && (mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT
@@ -191,7 +191,7 @@ impl BallColor {
                             Self::convert_to_ball_color_id(0);
                     }
                     self.current_color = PRESET_COLORS
-                        [Self::convert_to_ball_color_id(pref.get_u8(U8Pref::BallColor)) as usize];
+                        [Self::convert_to_ball_color_id(pref.get(U8Pref::BallColor)) as usize];
                     if valid_mode {
                         *(0x80472a34 as *mut mkb::GXColor) = self.current_color;
                     }
@@ -201,9 +201,9 @@ impl BallColor {
                         mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
                             Self::convert_to_ball_color_id(0);
                     }
-                    let red = pref.get_u8(U8Pref::BallRed);
-                    let green = pref.get_u8(U8Pref::BallGreen);
-                    let blue = pref.get_u8(U8Pref::BallBlue);
+                    let red = pref.get(U8Pref::BallRed);
+                    let green = pref.get(U8Pref::BallGreen);
+                    let blue = pref.get(U8Pref::BallBlue);
                     self.current_color = mkb::GXColor {
                         r: red,
                         g: green,
@@ -259,13 +259,12 @@ impl BallColor {
 
             let ape = mkb::balls[mkb::curr_player_idx as usize].ape;
             if !ape.is_null() {
-                let clothing_type =
-                    ClothingType::try_from(pref.get_u8(U8Pref::ApeColorType)).unwrap();
+                let clothing_type = ClothingType::try_from(pref.get(U8Pref::ApeColorType)).unwrap();
 
                 match clothing_type {
                     ClothingType::Preset => {
                         (*ape).color_index =
-                            Self::convert_to_ape_color_id(pref.get_u8(U8Pref::ApeColor)) as i32;
+                            Self::convert_to_ape_color_id(pref.get(U8Pref::ApeColor)) as i32;
                     }
                     ClothingType::Random => {
                         if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {

@@ -184,7 +184,7 @@ impl Iw {
 
     pub fn draw(&self, pref: &Pref, freecam: &Freecam) {
         unsafe {
-            if !pref.get_bool(BoolPref::IwTimer)
+            if !pref.get(BoolPref::IwTimer)
                 || mkb::main_mode != mkb::MD_GAME
                 || mkb::main_game_mode != mkb::STORY_MODE
                 || asm::currently_playing_iw == 0

@@ -208,11 +208,11 @@ impl MenuImpl {
         match selected_widget {
             Widget::Checkbox { pref, .. } => {
                 if a_pressed || y_pressed {
-                    cx.pref.set_bool(*pref, !cx.pref.get_bool(*pref));
+                    cx.pref.set(*pref, !cx.pref.get(*pref));
                     cx.pref.save();
                 }
                 if x_pressed {
-                    cx.pref.set_bool(*pref, cx.pref.get_default_bool(*pref));
+                    cx.pref.set(*pref, cx.pref.get_default(*pref));
                     cx.pref.save();
                 }
             }
@@ -236,18 +236,18 @@ impl MenuImpl {
             }
             Widget::Choose { pref, choices, .. } => {
                 if a_pressed {
-                    let new_value = (cx.pref.get_u8(*pref) as u32 + 1) % choices.len() as u32;
-                    cx.pref.set_u8(*pref, new_value as u8);
+                    let new_value = (cx.pref.get(*pref) as u32 + 1) % choices.len() as u32;
+                    cx.pref.set(*pref, new_value as u8);
                     cx.pref.save();
                 }
                 if y_pressed {
-                    let new_value = (cx.pref.get_u8(*pref) as u32 + choices.len() as u32 - 1)
+                    let new_value = (cx.pref.get(*pref) as u32 + choices.len() as u32 - 1)
                         % choices.len() as u32;
-                    cx.pref.set_u8(*pref, new_value as u8);
+                    cx.pref.set(*pref, new_value as u8);
                     cx.pref.save();
                 }
                 if x_pressed {
-                    cx.pref.set_u8(*pref, cx.pref.get_default_u8(*pref));
+                    cx.pref.set(*pref, cx.pref.get_default(*pref));
                     cx.pref.save();
                 }
             }
@@ -261,7 +261,7 @@ impl MenuImpl {
                 }
             }
             Widget::IntEdit { pref, min, max, .. } => {
-                let mut next = cx.pref.get_u8(*pref) as i32;
+                let mut next = cx.pref.get(*pref) as i32;
 
                 let edit_dir = if a_down && y_down || !a_down && !y_down {
                     EditDir::Neutral
@@ -277,7 +277,7 @@ impl MenuImpl {
                 }
 
                 if x_pressed {
-                    next = cx.pref.get_default_u8(*pref) as i32;
+                    next = cx.pref.get_default(*pref) as i32;
                 } else if edit_dir == EditDir::Increase && a_repeat {
                     self.edit_inc += 0.18;
                     next += self.edit_inc as i32;
@@ -286,8 +286,8 @@ impl MenuImpl {
                     next -= self.edit_inc as i32;
                 }
                 next = next.clamp(*min as i32, *max as i32);
-                if next != cx.pref.get_u8(*pref) as i32 {
-                    cx.pref.set_u8(*pref, next as u8);
+                if next != cx.pref.get(*pref) as i32 {
+                    cx.pref.set(*pref, next as u8);
                     cx.pref.save();
                 }
             }
@@ -308,7 +308,7 @@ impl MenuImpl {
                         && !(encoding_type == binds::EncodingType::SinglePress && *required_chord)
                     {
                         let value = cx.binds.get_current_encoding();
-                        cx.pref.set_u8(*pref, value);
+                        cx.pref.set(*pref, value);
                         cx.pref.save();
                         cx.pad.reset_dir_repeat();
                         self.binding = BindingState::Inactive;
@@ -319,12 +319,12 @@ impl MenuImpl {
                 } else if y_pressed {
                     // unbind
                     if *can_unbind {
-                        cx.pref.set_u8(*pref, 255);
+                        cx.pref.set(*pref, 255);
                         cx.pref.save();
                     }
                 } else if x_pressed {
                     // reset default bind
-                    cx.pref.set_u8(*pref, cx.pref.get_default_u8(*pref));
+                    cx.pref.set(*pref, cx.pref.get_default(*pref));
                     cx.pref.save();
                 }
             }
@@ -340,7 +340,7 @@ impl MenuImpl {
 
         let toggle = cx
             .binds
-            .bind_pressed(cx.pref.get_u8(U8Pref::MenuBind), Prio::High, cx.pad);
+            .bind_pressed(cx.pref.get(U8Pref::MenuBind), Prio::High, cx.pad);
         if toggle {
             self.visible ^= toggle;
         } else if cx.pad.button_pressed(Button::B, Prio::High) {
@@ -358,7 +358,7 @@ impl MenuImpl {
         if !self.visible {
             // Default binding is L+R, but this lets you know the current binding in case you forget
             // what you changed it to
-            let input = cx.pref.get_u8(U8Pref::MenuBind);
+            let input = cx.pref.get(U8Pref::MenuBind);
             if cx
                 .pad
                 .button_chord_pressed(Button::L, Button::R, Prio::High)
@@ -470,7 +470,7 @@ impl MenuImpl {
                     MARGIN + PAD + PREF_OFFSET,
                     *y,
                     color,
-                    if cx.pref.get_bool(*pref) { "On" } else { "Off" },
+                    if cx.pref.get(*pref) { "On" } else { "Off" },
                 );
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
@@ -534,7 +534,7 @@ impl MenuImpl {
                     UNFOCUSED_COLOR
                 };
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
-                let current_choice = cx.pref.get_u8(*pref) as usize;
+                let current_choice = cx.pref.get(*pref) as usize;
 
                 draw::debug_text(
                     MARGIN + PAD + PREF_OFFSET,
@@ -578,7 +578,7 @@ impl MenuImpl {
                     MARGIN + PAD + PREF_OFFSET,
                     *y,
                     color,
-                    &fmt!(8, c"%d", cx.pref.get_u8(*pref) as u32),
+                    &fmt!(8, c"%d", cx.pref.get(*pref) as u32),
                 );
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
@@ -606,7 +606,7 @@ impl MenuImpl {
                         UNFOCUSED_COLOR
                     };
 
-                let input = cx.pref.get_u8(*pref);
+                let input = cx.pref.get(*pref);
                 let mut buf = ArrayString::<32>::new();
                 cx.binds.get_bind_str(input, &mut buf);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, bind_color, &buf);

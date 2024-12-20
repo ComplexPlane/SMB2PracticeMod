@@ -3,9 +3,9 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::systems::{
-        draw,
-        pref::{BoolPref, Pref, U8Pref},
-    };
+    draw,
+    pref::{BoolPref, Pref, U8Pref},
+};
 
 use super::freecam::Freecam;
 
@@ -45,7 +45,7 @@ impl Default for Physics {
 
 impl Physics {
     pub fn using_custom_physics(&self, pref: &Pref) -> bool {
-        let preset: PhysicsPreset = pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
+        let preset: PhysicsPreset = pref.get(U8Pref::PhysicsPreset).try_into().unwrap();
         preset != PhysicsPreset::Default
     }
 
@@ -57,7 +57,7 @@ impl Physics {
             mkb::balls[mkb::curr_player_idx as usize].restitution = self.orig_restitution;
 
             // update physics depending on preset
-            let preset = cx.pref.get_u8(U8Pref::PhysicsPreset).try_into().unwrap();
+            let preset = cx.pref.get(U8Pref::PhysicsPreset).try_into().unwrap();
             match preset {
                 PhysicsPreset::Default => {}
                 PhysicsPreset::LightBall => {
@@ -112,7 +112,7 @@ impl Physics {
             }
 
             if self.using_custom_physics(cx.pref)
-                && cx.pref.get_bool(BoolPref::CustomPhysicsDisp)
+                && cx.pref.get(BoolPref::CustomPhysicsDisp)
                 && !cx.freecam.should_hide_hud(cx.pref)
             {
                 mkb::textdraw_reset();

@@ -19,11 +19,11 @@ pub struct Camera {}
 
 impl Camera {
     unsafe fn tick_unsafe(&self, pref: &Pref) {
-        let value = pref.get_u8(U8Pref::Camera).try_into().unwrap();
+        let value = pref.get(U8Pref::Camera).try_into().unwrap();
 
         match value {
             CameraType::Default => {
-                if pref.did_change_u8(pref::U8Pref::Camera) {
+                if pref.did_change(pref::U8Pref::Camera) {
                     // restore cam to smb2 once (so toggle still works)
                     if mkb::cameras[0].mode == 0x1 {
                         mkb::cameras[0].mode = 0x4c;
