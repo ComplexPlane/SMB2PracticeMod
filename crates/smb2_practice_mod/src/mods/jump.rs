@@ -5,7 +5,7 @@ use mkb::mkb;
 use crate::{
     systems::{
         pad::{Button, Pad, Prio},
-        pref::{BoolPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, Pref, U8Pref},
     },
     utils::{math::fabs, patch},
 };
@@ -154,7 +154,7 @@ impl Jump {
             if ground_touched && valid_location {
                 self.ticks_since_ground = 0;
 
-                let count = MaxJumpCount::try_from(pref.get(U8Pref::JumpCount)).unwrap();
+                let count = MaxJumpCount::from_pref(U8Pref::JumpCount, pref);
                 if count == MaxJumpCount::Two {
                     self.aerial_jumps = 1;
                 } else {
@@ -170,7 +170,7 @@ impl Jump {
                 ground_touched && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
             let coyote_late = self.ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
             // check extra jump count
-            let max_jump = MaxJumpCount::try_from(pref.get(U8Pref::JumpCount)).unwrap();
+            let max_jump = MaxJumpCount::from_pref(U8Pref::JumpCount, pref);
             let aerial_jumped =
                 (self.aerial_jumps > 0 || max_jump == MaxJumpCount::Infinite) && a_pressed;
             let start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT

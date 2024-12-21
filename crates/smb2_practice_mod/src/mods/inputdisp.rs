@@ -7,6 +7,7 @@ use mkb::Vec2d;
 use num_enum::TryFromPrimitive;
 
 use crate::fmt;
+use crate::systems::pref::FromPref;
 use crate::systems::{
     draw,
     pad::{self, Pad, Prio, StickState},
@@ -158,7 +159,7 @@ impl InputDisplay {
 
     pub fn tick(&mut self, pref: &Pref) {
         self.rainbow = (self.rainbow + 3) % 1080;
-        let location = Location::try_from(pref.get(U8Pref::InputDispLocation)).unwrap();
+        let location = Location::from_pref(U8Pref::InputDispLocation, pref);
         self.set_sprite_visible(
             !pref.get(BoolPref::InputDisp)
                 || (location == Location::Center && !pref.get(BoolPref::InputDispRawStickInputs)),
@@ -216,8 +217,7 @@ impl InputDisplay {
     ];
 
     fn get_color(&self, cx: &Context) -> mkb::GXColor {
-        let color_pref = cx.pref.get(U8Pref::InputDispColorType);
-        match InputDispColorType::try_from(color_pref).unwrap() {
+        match InputDispColorType::from_pref(U8Pref::InputDispColorType, cx.pref) {
             InputDispColorType::Default => {
                 Self::COLOR_MAP[cx.pref.get(U8Pref::InputDispColor) as usize]
             }
@@ -391,7 +391,7 @@ impl InputDisplay {
         }
 
         let center = Vec2d {
-            x: match Location::try_from(cx.pref.get(U8Pref::InputDispLocation)).unwrap() {
+            x: match Location::from_pref(U8Pref::InputDispLocation, cx.pref) {
                 Location::Right => 540.0,
                 Location::Center => 390.0,
             },
@@ -445,7 +445,7 @@ impl InputDisplay {
             return;
         }
 
-        let center = match Location::try_from(cx.pref.get(U8Pref::InputDispLocation)).unwrap() {
+        let center = match Location::from_pref(U8Pref::InputDispLocation, cx.pref) {
             Location::Center => Vec2d { x: 430.0, y: 60.0 },
             Location::Right => Vec2d { x: 534.0, y: 60.0 },
         };

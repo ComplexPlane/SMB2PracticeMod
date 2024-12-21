@@ -8,7 +8,7 @@ use crate::{
     hook,
     systems::{
         draw,
-        pref::{Pref, U8Pref},
+        pref::{FromPref, Pref, U8Pref},
     },
     utils::misc::with_mutex,
 };
@@ -154,7 +154,7 @@ impl BallColor {
 
     pub fn switch_monkey(&self, pref: &Pref) {
         unsafe {
-            match MonkeyType::try_from(pref.get(U8Pref::MonkeyType)).unwrap() {
+            match MonkeyType::from_pref(U8Pref::MonkeyType, pref) {
                 MonkeyType::Default => (),
                 MonkeyType::Aiai => {
                     mkb::active_monkey_id[mkb::curr_player_idx as usize] = 0;
@@ -177,7 +177,7 @@ impl BallColor {
 
     pub fn tick(&mut self, pref: &Pref) {
         unsafe {
-            let ball_type = BallColorType::try_from(pref.get(U8Pref::BallColorType)).unwrap();
+            let ball_type = BallColorType::from_pref(U8Pref::BallColorType, pref);
 
             let valid_mode = mkb::main_mode == mkb::MD_GAME
                 && (mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT
@@ -259,7 +259,7 @@ impl BallColor {
 
             let ape = mkb::balls[mkb::curr_player_idx as usize].ape;
             if !ape.is_null() {
-                let clothing_type = ClothingType::try_from(pref.get(U8Pref::ApeColorType)).unwrap();
+                let clothing_type = ClothingType::from_pref(U8Pref::ApeColorType, pref);
 
                 match clothing_type {
                     ClothingType::Preset => {

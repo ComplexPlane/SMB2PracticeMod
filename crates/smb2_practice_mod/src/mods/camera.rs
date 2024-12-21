@@ -2,8 +2,8 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::patch;
-use crate::systems::pref::Pref;
 use crate::systems::pref::{self, U8Pref};
+use crate::systems::pref::{FromPref, Pref};
 use crate::utils::ppc;
 
 #[derive(TryFromPrimitive)]
@@ -19,7 +19,7 @@ pub struct Camera {}
 
 impl Camera {
     unsafe fn tick_unsafe(&self, pref: &Pref) {
-        let value = pref.get(U8Pref::Camera).try_into().unwrap();
+        let value = CameraType::from_pref(U8Pref::Camera, pref);
 
         match value {
             CameraType::Default => {

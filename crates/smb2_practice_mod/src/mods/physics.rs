@@ -4,7 +4,7 @@ use num_enum::TryFromPrimitive;
 
 use crate::systems::{
     draw,
-    pref::{BoolPref, Pref, U8Pref},
+    pref::{BoolPref, FromPref, Pref, U8Pref},
 };
 
 use super::freecam::Freecam;
@@ -45,7 +45,7 @@ impl Default for Physics {
 
 impl Physics {
     pub fn using_custom_physics(&self, pref: &Pref) -> bool {
-        let preset: PhysicsPreset = pref.get(U8Pref::PhysicsPreset).try_into().unwrap();
+        let preset: PhysicsPreset = PhysicsPreset::from_pref(U8Pref::PhysicsPreset, pref);
         preset != PhysicsPreset::Default
     }
 
@@ -57,7 +57,7 @@ impl Physics {
             mkb::balls[mkb::curr_player_idx as usize].restitution = self.orig_restitution;
 
             // update physics depending on preset
-            let preset = cx.pref.get(U8Pref::PhysicsPreset).try_into().unwrap();
+            let preset: PhysicsPreset = PhysicsPreset::from_pref(U8Pref::PhysicsPreset, cx.pref);
             match preset {
                 PhysicsPreset::Default => {}
                 PhysicsPreset::LightBall => {

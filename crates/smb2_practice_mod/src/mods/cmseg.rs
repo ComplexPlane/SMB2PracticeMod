@@ -9,7 +9,7 @@ use crate::{
     hook,
     systems::{
         draw,
-        pref::{BoolPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, Pref, U8Pref},
     },
     utils::{misc::with_mutex, timerdisp},
 };
@@ -212,7 +212,7 @@ impl CmSeg {
 
     unsafe fn state_seg_active(&mut self, pref: &Pref) {
         if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
-            let ch = Chara::try_from(pref.get(U8Pref::CmChara)).unwrap();
+            let ch = Chara::from_pref(U8Pref::CmChara, pref);
             mkb::active_monkey_id[0] = match ch {
                 Chara::Random => APE_CHARAS[mkb::rand() as usize % 4],
                 _ => APE_CHARAS[ch as usize],
