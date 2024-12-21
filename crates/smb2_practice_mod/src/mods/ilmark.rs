@@ -4,7 +4,7 @@ use arrayvec::ArrayString;
 use mkb::mkb;
 
 use crate::{
-    cstr_buf,
+    cstr, cstr_buf, fmt,
     systems::{
         draw,
         pref::{BoolPref, Pref},
@@ -95,6 +95,18 @@ impl IlMark {
             return;
         }
 
+        let mut version_str = ArrayString::<32>::new();
+        version::get_version_str(&mut version_str);
+        let hash = env!("GIT_HASH");
+        // Include "-d" at end of hash if worktree is dirty
+        let hash_clipped = if hash.len() > 8 { &hash[0..10] } else { hash };
+        let mark = fmt!(
+            32,
+            c"%s %s",
+            cstr_buf!(version_str),
+            cstr!(16, hash_clipped)
+        );
+
         unsafe {
             let in_show_submode = mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT
                 || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN
@@ -133,9 +145,7 @@ impl IlMark {
             };
             mkb::textdraw_set_mul_color(color.into());
 
-            let mut version_str = ArrayString::<32>::new();
-            version::get_version_str(&mut version_str);
-            mkb::textdraw_print(cstr_buf!(version_str));
+            mkb::textdraw_print(cstr_buf!(mark));
         }
     }
 }
