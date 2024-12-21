@@ -235,14 +235,18 @@ impl MenuImpl {
                 }
             }
             Widget::Choose { pref, choices, .. } => {
+                let curr_value = cx.pref.get(*pref);
+                let curr_value = match choices.get(curr_value as usize) {
+                    Some(_) => curr_value,
+                    None => cx.pref.get_default(*pref),
+                };
                 if a_pressed {
-                    let new_value = (cx.pref.get(*pref) as u32 + 1) % choices.len() as u32;
+                    let new_value = (curr_value as usize + 1) % choices.len();
                     cx.pref.set(*pref, new_value as u8);
                     cx.pref.save();
                 }
                 if y_pressed {
-                    let new_value = (cx.pref.get(*pref) as u32 + choices.len() as u32 - 1)
-                        % choices.len() as u32;
+                    let new_value = (curr_value as usize + choices.len() - 1) % choices.len();
                     cx.pref.set(*pref, new_value as u8);
                     cx.pref.save();
                 }
@@ -534,19 +538,18 @@ impl MenuImpl {
                     UNFOCUSED_COLOR
                 };
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
-                let current_choice = cx.pref.get(*pref) as usize;
+                let current_idx = cx.pref.get(*pref) as usize;
+                let default_idx = cx.pref.get_default(*pref) as usize;
+                let (idx, choice) = match choices.get(current_idx) {
+                    Some(c) => (current_idx, *c),
+                    None => (default_idx, choices[default_idx]),
+                };
 
                 draw::debug_text(
                     MARGIN + PAD + PREF_OFFSET,
                     *y,
                     color,
-                    &fmt!(
-                        32,
-                        c"(%d/%d) %s",
-                        current_choice + 1,
-                        choices.len(),
-                        cstr!(32, choices[current_choice]),
-                    ),
+                    &fmt!(32, c"(%d/%d) %s", idx + 1, choices.len(), cstr!(32, choice)),
                 );
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
