@@ -8,7 +8,7 @@ use crate::{
         binds::Binds,
         draw,
         pad::{Pad, Prio},
-        pref::{BoolPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, Pref, U8Pref},
     },
 };
 
@@ -314,8 +314,7 @@ impl IlBattle {
     }
 
     fn clear_display(&mut self, cx: &Context) {
-        let battle_len = cx.pref.get(U8Pref::IlBattleLength);
-        let battle_len = IlBattleLength::try_from(battle_len).unwrap();
+        let battle_len = IlBattleLength::from_pref(U8Pref::IlBattleLength, cx.pref);
 
         self.battle_frames = 0;
         self.best_frames = 0;
@@ -355,8 +354,7 @@ impl IlBattle {
                 self.accepted_retry = true;
             }
 
-            let battle_length = cx.pref.get(U8Pref::IlBattleLength);
-            let battle_length = IlBattleLength::try_from(battle_length).unwrap();
+            let battle_length = IlBattleLength::from_pref(U8Pref::IlBattleLength, cx.pref);
             if matches!(battle_length, IlBattleLength::Endless) {
                 // timer is endless
                 self.battle_frames += 1;

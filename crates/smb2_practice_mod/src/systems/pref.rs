@@ -484,3 +484,18 @@ impl Pref {
         self.save_queued = true;
     }
 }
+
+pub trait FromPref {
+    fn from_pref(pref_id: U8Pref, pref: &Pref) -> Self;
+}
+
+impl<T, E> FromPref for T
+where
+    T: TryFrom<u8, Error = E>,
+    E: core::fmt::Debug,
+{
+    fn from_pref(pref_id: U8Pref, pref: &Pref) -> T {
+        let default = T::try_from(pref.get_default(pref_id)).unwrap();
+        T::try_from(pref.get(pref_id)).unwrap_or(default)
+    }
+}

@@ -10,7 +10,7 @@ use crate::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
         pad::{Analog, Button, Dir, Pad, Prio},
-        pref::{BoolPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, Pref, U8Pref},
     },
     utils::{
         libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
@@ -113,7 +113,7 @@ impl SaveStatesUi {
             return Some(self.active_state_slot);
         }
 
-        let save_to = SaveTo::try_from(cx.pref.get(U8Pref::SavestateSaveTo)).unwrap();
+        let save_to = SaveTo::from_pref(U8Pref::SavestateSaveTo, cx.pref);
         match save_to {
             SaveTo::Selected => Some(self.active_state_slot),
             SaveTo::NextEmpty => self.find_next_empty(),
