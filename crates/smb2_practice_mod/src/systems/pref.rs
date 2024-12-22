@@ -191,6 +191,10 @@ pref_defn!(
     90 => InputDispGradientStart: i16,
     91 => InputDispGradientEnd: i16 = 100,
     92 => RgbFormat: i16,
+    93 => ShowDeathCounter: bool,
+    94 => CountFirstStageDeaths: bool,
+    95 => FullgameTimerShowWhen: i16,
+    96 => SegmentTimerShowWhen: i16,
 );
 
 const PREF_BUF_SIZE: usize =

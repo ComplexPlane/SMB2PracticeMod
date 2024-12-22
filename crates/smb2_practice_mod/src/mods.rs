@@ -18,6 +18,7 @@ pub mod savestates_ui;
 pub mod scratch;
 pub mod sfx;
 pub mod stage_edits;
+pub mod story_timer;
 pub mod timer;
 pub mod unlock;
 pub mod validate;

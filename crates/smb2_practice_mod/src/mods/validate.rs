@@ -271,4 +271,8 @@ impl Validate {
     pub fn get_framesave(&self) -> u32 {
         self.framesave
     }
+
+    pub fn get_entered_goal(&self) -> bool {
+        self.entered_goal
+    }
 }
