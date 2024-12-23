@@ -35,6 +35,11 @@ const L_R_BIND: u8 = 64; // bind id for an L+R bind
 static FOCUSED_COLOR: mkb::GXColor = draw::LIGHT_GREEN;
 static UNFOCUSED_COLOR: mkb::GXColor = draw::LIGHT_PURPLE;
 
+// Do not ask why we need this...
+const fn real_y(y: f32) -> f32 {
+    y * 1.072 - 3.0
+}
+
 #[derive(Clone, Copy)]
 struct Oklab {
     l: f32,
@@ -620,6 +625,23 @@ impl MenuImpl {
             }
             Widget::Custom { draw: custom_draw } => {
                 custom_draw(cx);
+            }
+            Widget::RgbPreview {
+                r_pref,
+                g_pref,
+                b_pref,
+            } => {
+                let color = mkb::GXColor {
+                    r: cx.pref.get(*r_pref),
+                    g: cx.pref.get(*g_pref),
+                    b: cx.pref.get(*b_pref),
+                    a: 0xff,
+                };
+                let x1 = 400.0;
+                let y1 = real_y(*y as f32) + 4.0;
+                let y2 = real_y(*y as f32) + 58.0;
+                let x2 = (y2 - y1) + x1;
+                draw::rect(x1, y1, x2, y2, color);
             }
         }
     }

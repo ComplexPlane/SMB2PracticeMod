@@ -97,6 +97,11 @@ pub enum Widget {
     Custom {
         draw: fn(&mut MenuContext),
     },
+    RgbPreview {
+        r_pref: U8Pref,
+        g_pref: U8Pref,
+        b_pref: U8Pref,
+    },
     Separator {},
 }
 
@@ -111,6 +116,11 @@ static INPUT_PRESET: &[Widget] = &[Widget::Choose {
 }];
 
 static INPUT_HEX: &[Widget] = &[
+    Widget::RgbPreview {
+        r_pref: U8Pref::InputDispRed,
+        g_pref: U8Pref::InputDispGreen,
+        b_pref: U8Pref::InputDispBlue,
+    },
     Widget::IntEdit {
         label: "Red Value",
         pref: U8Pref::InputDispRed,
@@ -188,6 +198,11 @@ static PRESET_APE_WIDGETS: &[Widget] = &[Widget::Choose {
 }];
 
 static HEX_WIDGETS: &[Widget] = &[
+    Widget::RgbPreview {
+        r_pref: U8Pref::BallRed,
+        g_pref: U8Pref::BallGreen,
+        b_pref: U8Pref::BallBlue,
+    },
     Widget::IntEdit {
         label: "Red Value",
         pref: U8Pref::BallRed,
