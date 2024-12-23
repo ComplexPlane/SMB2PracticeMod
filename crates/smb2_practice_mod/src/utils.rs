@@ -5,7 +5,6 @@ pub mod math;
 pub mod memstore;
 pub mod misc;
 pub mod modlink;
-pub mod oklab;
 pub mod patch;
 pub mod ppc;
 pub mod relutil;

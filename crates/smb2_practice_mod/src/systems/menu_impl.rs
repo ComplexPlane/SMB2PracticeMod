@@ -3,7 +3,7 @@ use mkb::mkb;
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
-use crate::utils::oklab;
+use crate::utils::math::cbrt_approx;
 use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
@@ -453,7 +453,7 @@ impl MenuImpl {
                         0.0
                     };
 
-                    let lerped_color = oklab::lerp_oklab(t, *color_left, *color_right);
+                    let lerped_color = lerp_oklab(t, *color_left, *color_right);
                     let x = MARGIN + PAD + (*offset_x as u32 + i as u32) * DEBUG_CHAR_WIDTH;
                     let ch = &label[i..i + 1]; // Plz only use ASCII
                     draw::debug_text(x, *y, lerped_color, ch);
