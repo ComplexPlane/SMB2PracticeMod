@@ -441,6 +441,27 @@ static ABOUT_WIDGETS: &[Widget] = &[
         line: TextLine::Overlap,
     },
     Widget::Separator {},
+    Widget::ColoredText {
+        label: "Written in Rust",
+        color_left: mkb::GXColor {
+            r: 0xff,
+            g: 0x49,
+            b: 0x1d,
+            a: 0xff,
+        },
+        color_right: mkb::GXColor {
+            r: 0xef,
+            g: 0xa7,
+            b: 0x2c,
+            a: 0xff,
+        },
+        offset_x: 2,
+        line: TextLine::NewLine,
+    },
+    Widget::Custom {
+        draw: |_| draw::tm(),
+    },
+    Widget::Separator {},
     Widget::Header { label: "Updates" },
     Widget::TextFunc {
         label_func: |buf, _cx| {

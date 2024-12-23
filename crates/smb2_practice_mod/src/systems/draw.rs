@@ -149,6 +149,28 @@ pub fn heart() {
     }
 }
 
+pub fn tm() {
+    unsafe {
+        mkb::textdraw_reset();
+        mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
+        mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
+        mkb::textdraw_set_scale(0.5, 0.5);
+        mkb::textdraw_set_pos(250.0, 187.0);
+        mkb::textdraw_set_mul_color(
+            mkb::GXColor {
+                r: 0xef,
+                g: 0xa7,
+                b: 0x2c,
+                a: 0xff,
+            }
+            .into(),
+        );
+
+        let text = c"TM";
+        mkb::textdraw_print(text.as_ptr() as *mut c_char);
+    }
+}
+
 pub fn num_to_rainbow(num: u32) -> mkb::GXColor {
     const LOW_COLOR: u8 = 0x41;
     const HIGH_COLOR: u8 = 0xf5;
