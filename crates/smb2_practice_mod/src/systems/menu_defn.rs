@@ -459,7 +459,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
         line: TextLine::NewLine,
     },
     Widget::Custom {
-        draw: |cx| draw::tm(cx.pref),
+        draw: |_| draw::tm(),
     },
     Widget::Separator {},
     Widget::Header { label: "Updates" },
@@ -497,18 +497,6 @@ static ABOUT_WIDGETS: &[Widget] = &[
         color_right: draw::BLUE,
         offset_x: 0,
         line: TextLine::NewLine,
-    },
-    Widget::IntEdit {
-        label: "X",
-        pref: U8Pref::X,
-        min: 0,
-        max: 255,
-    },
-    Widget::IntEdit {
-        label: "Y",
-        pref: U8Pref::Y,
-        min: 0,
-        max: 255,
     },
 ];
 

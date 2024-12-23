@@ -184,8 +184,6 @@ pref_defn!(
     83 => CustomPhysicsDisp: bool = true,
     84 => SavestateSaveTo: u8,
     85 => SavestateClearAllBind: u8 = 255,
-    1000 => X: u8,
-    1001 => Y: u8,
 );
 
 const PREF_BUF_SIZE: usize =

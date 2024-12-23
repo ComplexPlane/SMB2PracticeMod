@@ -13,9 +13,6 @@ use ::mkb::mkb_suppl::GXTexCoord2f32;
 use ::mkb::mkb_suppl::GX_FALSE;
 use ::mkb::mkb_suppl::GX_TRUE;
 
-use super::pref::Pref;
-use super::pref::U8Pref;
-
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 pub const NOTIFY_DURATION_SHORT: u32 = 40;
 pub const NOTIFY_DURATION_LONG: u32 = 120;
@@ -152,15 +149,13 @@ pub fn heart() {
     }
 }
 
-pub fn tm(pref: &Pref) {
+pub fn tm() {
     unsafe {
         mkb::textdraw_reset();
         mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
         mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
         mkb::textdraw_set_scale(0.5, 0.5);
-        let x = pref.get(U8Pref::X);
-        let y = pref.get(U8Pref::Y);
-        mkb::textdraw_set_pos(x as f32, y as f32);
+        mkb::textdraw_set_pos(250.0, 187.0);
         mkb::textdraw_set_mul_color(
             mkb::GXColor {
                 r: 0xef,
