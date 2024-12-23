@@ -650,7 +650,7 @@ impl MenuImpl {
         let mut y = MARGIN + PAD + 2 * LINE_HEIGHT;
         let mut selectable_idx = 0;
 
-        let lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, self.sin_lerp(40));
+        let lerped_color = lerp_oklab(self.sin_lerp(40), FOCUSED_COLOR, UNFOCUSED_COLOR);
 
         for widget in menu.widgets {
             self.draw_widget(
@@ -812,20 +812,6 @@ fn get_selectable_widget_count(widgets: &'static [Widget], cx: &mut MenuContext)
         }
     }
     selectable_count
-}
-
-fn lerp_colors(color1: mkb::GXColor, color2: mkb::GXColor, t: f32) -> mkb::GXColor {
-    let r = (1.0 - t) * color1.r as f32 + t * color2.r as f32;
-    let g = (1.0 - t) * color1.g as f32 + t * color2.g as f32;
-    let b = (1.0 - t) * color1.b as f32 + t * color2.b as f32;
-    let a = (1.0 - t) * color1.a as f32 + t * color2.a as f32;
-
-    mkb::GXColor {
-        r: r.clamp(0.0, 255.0) as u8,
-        g: g.clamp(0.0, 255.0) as u8,
-        b: b.clamp(0.0, 255.0) as u8,
-        a: a.clamp(0.0, 255.0) as u8,
-    }
 }
 
 fn draw_selectable_highlight(y: f32) {
