@@ -442,7 +442,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::ColoredText {
-        label: "Written in Rust T",
+        label: "Written in Rust",
         color_left: mkb::GXColor {
             r: 0xff,
             g: 0x49,
@@ -457,6 +457,9 @@ static ABOUT_WIDGETS: &[Widget] = &[
         },
         offset_x: 2,
         line: TextLine::NewLine,
+    },
+    Widget::Custom {
+        draw: |cx| draw::tm(cx.pref),
     },
     Widget::Separator {},
     Widget::Header { label: "Updates" },
@@ -494,6 +497,18 @@ static ABOUT_WIDGETS: &[Widget] = &[
         color_right: draw::BLUE,
         offset_x: 0,
         line: TextLine::NewLine,
+    },
+    Widget::IntEdit {
+        label: "X",
+        pref: U8Pref::X,
+        min: 0,
+        max: 255,
+    },
+    Widget::IntEdit {
+        label: "Y",
+        pref: U8Pref::Y,
+        min: 0,
+        max: 255,
     },
 ];
 

@@ -13,6 +13,9 @@ use ::mkb::mkb_suppl::GXTexCoord2f32;
 use ::mkb::mkb_suppl::GX_FALSE;
 use ::mkb::mkb_suppl::GX_TRUE;
 
+use super::pref::Pref;
+use super::pref::U8Pref;
+
 pub const DEBUG_CHAR_WIDTH: u32 = 0xc;
 pub const NOTIFY_DURATION_SHORT: u32 = 40;
 pub const NOTIFY_DURATION_LONG: u32 = 120;
@@ -145,6 +148,30 @@ pub fn heart() {
         );
 
         let text: [u8; 4] = [0x84, 214, 0x00, 0x00];
+        mkb::textdraw_print(text.as_ptr() as *mut c_char);
+    }
+}
+
+pub fn tm(pref: &Pref) {
+    unsafe {
+        mkb::textdraw_reset();
+        mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
+        mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
+        mkb::textdraw_set_scale(0.5, 0.5);
+        let x = pref.get(U8Pref::X);
+        let y = pref.get(U8Pref::Y);
+        mkb::textdraw_set_pos(x as f32, y as f32);
+        mkb::textdraw_set_mul_color(
+            mkb::GXColor {
+                r: 0xef,
+                g: 0xa7,
+                b: 0x2c,
+                a: 0xff,
+            }
+            .into(),
+        );
+
+        let text = c"TM";
         mkb::textdraw_print(text.as_ptr() as *mut c_char);
     }
 }
