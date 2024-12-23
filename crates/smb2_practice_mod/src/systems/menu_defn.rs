@@ -459,9 +459,9 @@ static ABOUT_WIDGETS: &[Widget] = &[
     Widget::ColoredText {
         label: "Written in Rust",
         color_left: mkb::GXColor {
-            r: 0xff,
-            g: 0x49,
-            b: 0x1d,
+            r: 0xf9,
+            g: 0x6f,
+            b: 0x58,
             a: 0xff,
         },
         color_right: mkb::GXColor {
