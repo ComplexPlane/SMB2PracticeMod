@@ -124,3 +124,35 @@ impl From<mkb::GXColor> for u32 {
             | (color.b as u32)
     }
 }
+
+impl core::ops::Add for mkb::Vec2d {
+    type Output = mkb::Vec2d;
+
+    fn add(self, rhs: mkb::Vec2d) -> Self::Output {
+        mkb::Vec2d {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl core::ops::Sub for mkb::Vec2d {
+    type Output = mkb::Vec2d;
+
+    fn sub(self, rhs: mkb::Vec2d) -> Self::Output {
+        mkb::Vec2d {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
+pub trait Dot {
+    fn dot(self, rhs: Self) -> f32;
+}
+
+impl Dot for mkb::Vec2d {
+    fn dot(self, rhs: Self) -> f32 {
+        self.x * rhs.x + self.y * rhs.y
+    }
+}
