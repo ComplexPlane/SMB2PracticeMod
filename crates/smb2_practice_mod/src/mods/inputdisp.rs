@@ -81,11 +81,7 @@ impl InputDisplay {
         gradient: &Gradient,
     ) -> mkb::GXColor {
         let delta = pt - origin;
-        let sin_cos = math::sin_cos(gradient.rotation);
-        let normal = Vec2d {
-            x: sin_cos.sin,
-            y: sin_cos.cos,
-        };
+        let normal = math::sin_cos(gradient.rotation);
         let dot = delta.dot(normal);
         let t = dot / radius * 0.5 + 0.5;
 
@@ -114,18 +110,18 @@ impl InputDisplay {
 
         for i in 0..shape.pts {
             let angle = 0xFFFF * i / shape.pts;
-            let sin_cos = math::sin_cos(angle as i16);
-            let curr_inner_x = sin_cos.sin * shape.inner_radius + shape.center.x;
-            let curr_inner_y = sin_cos.cos * shape.inner_radius + shape.center.y;
-            let curr_outer_x = sin_cos.sin * shape.outer_radius + shape.center.x;
-            let curr_outer_y = sin_cos.cos * shape.outer_radius + shape.center.y;
+            let normal = math::sin_cos(angle as i16);
+            let curr_inner_x = normal.x * shape.inner_radius + shape.center.x;
+            let curr_inner_y = normal.y * shape.inner_radius + shape.center.y;
+            let curr_outer_x = normal.x * shape.outer_radius + shape.center.x;
+            let curr_outer_y = normal.y * shape.outer_radius + shape.center.y;
 
             let next_angle = 0xFFFF * ((i + 1) % shape.pts) / shape.pts;
-            let next_sin_cos = math::sin_cos(next_angle as i16);
-            let next_inner_x = next_sin_cos.sin * shape.inner_radius + shape.center.x;
-            let next_inner_y = next_sin_cos.cos * shape.inner_radius + shape.center.y;
-            let next_outer_x = next_sin_cos.sin * shape.outer_radius + shape.center.x;
-            let next_outer_y = next_sin_cos.cos * shape.outer_radius + shape.center.y;
+            let next_normal = math::sin_cos(next_angle as i16);
+            let next_inner_x = next_normal.x * shape.inner_radius + shape.center.x;
+            let next_inner_y = next_normal.y * shape.inner_radius + shape.center.y;
+            let next_outer_x = next_normal.x * shape.outer_radius + shape.center.x;
+            let next_outer_y = next_normal.y * shape.outer_radius + shape.center.y;
 
             write_vertex(next_inner_x, next_inner_y);
             write_vertex(next_outer_x, next_outer_y);

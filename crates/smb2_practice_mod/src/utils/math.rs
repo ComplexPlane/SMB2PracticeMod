@@ -1,4 +1,4 @@
-use mkb::mkb;
+use ::mkb::mkb::{self, Vec2d};
 
 pub fn round_up_pow2(n: usize, align: usize) -> usize {
     (n + (align - 1)) & !(align - 1)
@@ -36,19 +36,13 @@ pub fn cbrt_approx(x: f32) -> f32 {
     }
 }
 
-#[derive(Clone, Copy)]
-pub struct SinCos {
-    pub sin: f32,
-    pub cos: f32,
-}
-
-pub fn sin_cos(angle: i16) -> SinCos {
+pub fn sin_cos(angle: i16) -> Vec2d {
     let mut sin_cos = [0f32; 2];
     unsafe {
         mkb::math_sin_cos_v(angle, sin_cos.as_mut_ptr());
     }
-    SinCos {
-        sin: sin_cos[0],
-        cos: sin_cos[1],
+    Vec2d {
+        x: sin_cos[0],
+        y: sin_cos[1],
     }
 }
