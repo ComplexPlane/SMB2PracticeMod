@@ -475,5 +475,9 @@ impl InputDisplay {
 
         self.draw_notch_indicators(&stick, &center, scale, cx);
         self.draw_raw_stick_inputs(&raw_stick, &stick, cx);
+
+        draw::with_vertex_color_pipeline(|| {
+            self.draw_vertex_colors();
+        });
     }
 }
