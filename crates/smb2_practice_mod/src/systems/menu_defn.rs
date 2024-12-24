@@ -115,29 +115,96 @@ static INPUT_PRESET: &[Widget] = &[Widget::Choose {
     pref: U8Pref::InputDispColor,
 }];
 
-static INPUT_HEX: &[Widget] = &[
+static INPUT_RGB_SOLID: &[Widget] = &[
     Widget::RgbPreview {
         r_pref: U8Pref::InputDispRed,
         g_pref: U8Pref::InputDispGreen,
         b_pref: U8Pref::InputDispBlue,
     },
     Widget::IntEdit {
-        label: "Red Value",
+        label: "Color Red",
         pref: U8Pref::InputDispRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
-        label: "Green Value",
+        label: "Color Green",
         pref: U8Pref::InputDispGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
-        label: "Blue Value",
+        label: "Color Blue",
         pref: U8Pref::InputDispBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+    },
+];
+
+static INPUT_RGB_GRADIENT: &[Widget] = &[
+    Widget::RgbPreview {
+        r_pref: U8Pref::InputDispRed,
+        g_pref: U8Pref::InputDispGreen,
+        b_pref: U8Pref::InputDispBlue,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Red",
+        pref: U8Pref::InputDispRed,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Green",
+        pref: U8Pref::InputDispGreen,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Blue",
+        pref: U8Pref::InputDispBlue,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::RgbPreview {
+        r_pref: U8Pref::InputDispGradientColor2Red,
+        g_pref: U8Pref::InputDispGradientColor2Green,
+        b_pref: U8Pref::InputDispGradientColor2Blue,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Red",
+        pref: U8Pref::InputDispGradientColor2Red,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Green",
+        pref: U8Pref::InputDispGradientColor2Green,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Blue",
+        pref: U8Pref::InputDispGradientColor2Blue,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+    },
+    Widget::IntEdit {
+        label: "Gradient Rotation",
+        pref: U8Pref::InputDispGradientRotation,
+        min: 0,
+        max: 100,
+    },
+    Widget::IntEdit {
+        label: "Gradient Start",
+        pref: U8Pref::InputDispGradientStart,
+        min: 0,
+        max: 100,
+    },
+    Widget::IntEdit {
+        label: "Gradient End",
+        pref: U8Pref::InputDispGradientEnd,
+        min: 0,
+        max: 100,
     },
 ];
 
@@ -155,9 +222,17 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
         label: "Raw Stick Inputs",
         pref: BoolPref::InputDispRawStickInputs,
     },
+    Widget::Separator {},
+    Widget::Header { label: "Color" },
     Widget::Choose {
         label: "Color Type",
-        choices: &["Preset", "RGB Selector", "Rainbow", "Match Ball"],
+        choices: &[
+            "Preset",
+            "RGB Solid",
+            "RGB Gradient",
+            "Rainbow",
+            "Match Ball",
+        ],
         pref: U8Pref::InputDispColorType,
     },
     Widget::HideableGroup {
@@ -165,12 +240,19 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
         show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 0,
     },
     Widget::HideableGroup {
-        widgets: INPUT_HEX,
+        widgets: INPUT_RGB_SOLID,
         show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 1,
+    },
+    Widget::HideableGroup {
+        widgets: INPUT_RGB_GRADIENT,
+        show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 2,
     },
 ];
 
 static INPUTDISP_WIDGETS: &[Widget] = &[
+    Widget::Header {
+        label: "Input Display",
+    },
     Widget::Checkbox {
         label: "Show Input Display",
         pref: BoolPref::InputDisp,
@@ -204,19 +286,19 @@ static HEX_WIDGETS: &[Widget] = &[
         b_pref: U8Pref::BallBlue,
     },
     Widget::IntEdit {
-        label: "Red Value",
+        label: "Color Red",
         pref: U8Pref::BallRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
-        label: "Green Value",
+        label: "Color Green",
         pref: U8Pref::BallGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
-        label: "Blue Value",
+        label: "Color Blue",
         pref: U8Pref::BallBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
@@ -231,7 +313,7 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     },
     Widget::Choose {
         label: "Ball Color Type",
-        choices: &["Preset", "RGB Selector", "Rainbow", "Random"],
+        choices: &["Preset", "RGB", "Rainbow", "Random"],
         pref: U8Pref::BallColorType,
     },
     Widget::HideableGroup {

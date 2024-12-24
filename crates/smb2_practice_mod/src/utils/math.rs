@@ -46,3 +46,15 @@ pub fn sin_cos(angle: i16) -> Vec2d {
         y: sin_cos[1],
     }
 }
+
+pub fn map_range(
+    value: i32,
+    from_range: core::ops::Range<i32>,
+    to_range: core::ops::Range<i32>,
+) -> i32 {
+    let from_span = (from_range.end - from_range.start) as f32;
+    let to_span = (to_range.end - to_range.start) as f32;
+    let value_scaled = (value - from_range.start) as f32;
+
+    (to_range.start as f32 + (value_scaled * to_span) / from_span) as i32
+}
