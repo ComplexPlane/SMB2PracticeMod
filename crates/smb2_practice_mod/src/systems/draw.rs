@@ -236,6 +236,141 @@ pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
     }
 }
 
+unsafe fn setup_vertex_color_pipeline() {
+    // Set vtx descriptor attrs, cached
+    mkb::g_something_with_GX_vtx_desc((1 << mkb::GX_VA_POS) | (1 << mkb::GX_VA_CLR0));
+    mkb::GXSetVtxAttrFmt(
+        mkb::GX_VTXFMT5,
+        mkb::GX_VA_POS,
+        mkb_suppl::GX_POS_XYZ,
+        mkb_suppl::GX_F32,
+        0,
+    );
+    mkb::GXSetVtxAttrFmt(
+        mkb::GX_VTXFMT5,
+        mkb::GX_VA_CLR0,
+        mkb::GX_CLR_RGBA,
+        mkb::GX_RGBA8,
+        0,
+    );
+    mkb::GXSetTevDirect(mkb::GX_TEVSTAGE0);
+    mkb::GXSetNumTevStages_cached(1);
+    mkb::GXSetNumChans_cached(1);
+    mkb::GXSetNumTexGens_cached(0);
+    mkb::GXSetTevOp(mkb::GX_TEVSTAGE0, mkb::GX_PASSCLR);
+    mkb::opti_GXSetChanCtrl(
+        mkb::GX_COLOR0A0,
+        0,
+        mkb::GX_SRC_REG,
+        mkb::GX_SRC_VTX,
+        0,
+        mkb::GX_DF_NONE,
+        mkb::GX_AF_NONE,
+    );
+
+    mkb::g_GXSetTevOrder_wrapper(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEXCOORD_NULL,
+        mkb::GX_TEXMAP_NULL,
+        mkb::GX_COLOR0A0,
+    );
+    mkb::GXSetTevColorIn_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_CC_ZERO,
+        mkb::GX_CC_ZERO,
+        mkb::GX_CC_ZERO,
+        mkb::GX_CC_RASC,
+    );
+    mkb::GXSetTevColorOp_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEV_ADD,
+        mkb::GX_TB_ZERO,
+        mkb::GX_CS_SCALE_1,
+        1,
+        mkb::GX_TEVPREV,
+    );
+    mkb::GXSetTevAlphaIn_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_CA_ZERO,
+        mkb::GX_CA_ZERO,
+        mkb::GX_CA_ZERO,
+        mkb::GX_CA_RASA,
+    );
+    mkb::GXSetTevAlphaOp_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEV_ADD,
+        mkb::GX_TB_ZERO,
+        mkb::GX_CS_SCALE_1,
+        1,
+        mkb::GX_TEVPREV,
+    );
+}
+
+unsafe fn restore_ui_pipeline() {
+    mkb::g_something_with_GX_vtx_desc(0x2200);
+    mkb::GXSetNumChans_cached(0);
+    mkb::GXSetNumTexGens_cached(1);
+    mkb::GXSetNumTevStages_cached(1);
+    mkb::GXSetNumIndStages_cached(0);
+    mkb::g_GXSetTevIndirect_zero_if_different(mkb::GX_TEVSTAGE0);
+    mkb::GXSetTexCoordGen2_cached(
+        mkb::GX_TEXCOORD0,
+        mkb::GX_TG_MTX2x4,
+        mkb::GX_TG_TEX0,
+        0x3c,
+        0,
+        0x7d,
+    );
+    mkb::g_GXSetTevOrder_wrapper(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEXCOORD0,
+        mkb::GX_TEXCOORD0,
+        mkb::GX_COLOR_NULL,
+    );
+    mkb::GXSetTevSwapMode_cached(mkb::GX_TEVSTAGE0, mkb::GX_TEV_SWAP0, mkb::GX_TEV_SWAP0);
+    mkb::GXSetTevColorIn_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_CC_ZERO,
+        mkb::GX_CC_C0,
+        mkb::GX_CC_TEXC,
+        mkb::GX_CC_C1,
+    );
+    mkb::GXSetTevColorOp_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEV_ADD,
+        mkb::GX_TB_ZERO,
+        mkb::GX_CS_SCALE_1,
+        1,
+        mkb::GX_TEVPREV,
+    );
+    mkb::GXSetTevAlphaIn_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_CA_ZERO,
+        mkb::GX_CA_A0,
+        mkb::GX_CA_TEXA,
+        mkb::GX_CA_A1,
+    );
+    mkb::GXSetTevAlphaOp_cached(
+        mkb::GX_TEVSTAGE0,
+        mkb::GX_TEV_ADD,
+        mkb::GX_TB_ZERO,
+        mkb::GX_CS_SCALE_1,
+        1,
+        mkb::GX_TEVPREV,
+    );
+}
+
+pub fn with_vertex_color_pipeline<T>(f: impl FnOnce() -> T) -> T {
+    unsafe {
+        setup_vertex_color_pipeline();
+    }
+    let ret = f();
+    unsafe {
+        restore_ui_pipeline();
+    }
+    ret
+}
+
 pub enum NotifyDuration {
     Short,
     Long,
@@ -311,78 +446,5 @@ impl Draw {
         self.notify_frame_counter = 0;
         self.notify_color = color;
         self.notify_duration = duration;
-    }
-
-    pub fn setup_vertex_color_pipeline(&self) {
-        unsafe {
-            mkb::GXClearVtxDesc();
-            mkb::GXSetVtxDesc(mkb::GX_VA_POS, mkb::GX_DIRECT);
-            mkb::GXSetVtxDesc(mkb::GX_VA_CLR0, mkb::GX_DIRECT);
-            mkb::GXSetVtxAttrFmt(
-                mkb::GX_VTXFMT5,
-                mkb::GX_VA_POS,
-                mkb_suppl::GX_POS_XYZ,
-                mkb_suppl::GX_F32,
-                0,
-            );
-            mkb::GXSetVtxAttrFmt(
-                mkb::GX_VTXFMT5,
-                mkb::GX_VA_CLR0,
-                mkb::GX_CLR_RGBA,
-                mkb::GX_RGBA8,
-                0,
-            );
-            mkb::GXSetTevDirect(mkb::GX_TEVSTAGE0);
-            mkb::GXSetNumTevStages_cached(1);
-            mkb::GXSetNumChans_cached(1);
-            mkb::GXSetNumTexGens_cached(0);
-            mkb::GXSetTevOp(mkb::GX_TEVSTAGE0, mkb::GX_PASSCLR);
-            mkb::opti_GXSetChanCtrl(
-                mkb::GX_COLOR0A0,
-                0,
-                mkb::GX_SRC_REG,
-                mkb::GX_SRC_VTX,
-                0,
-                mkb::GX_DF_NONE,
-                mkb::GX_AF_NONE,
-            );
-
-            mkb::g_GXSetTevOrder_wrapper(
-                mkb::GX_TEVSTAGE0,
-                mkb::GX_TEXCOORD_NULL,
-                mkb::GX_TEXMAP_NULL,
-                mkb::GX_COLOR0A0,
-            );
-            mkb::GXSetTevColorIn_cached(
-                mkb::GX_TEVSTAGE0,
-                mkb::GX_CC_ZERO,
-                mkb::GX_CC_ZERO,
-                mkb::GX_CC_ZERO,
-                mkb::GX_CC_RASC,
-            );
-            mkb::GXSetTevColorOp_cached(
-                mkb::GX_TEVSTAGE0,
-                mkb::GX_TEV_ADD,
-                mkb::GX_TB_ZERO,
-                mkb::GX_CS_SCALE_1,
-                1,
-                mkb::GX_TEVPREV,
-            );
-            mkb::GXSetTevAlphaIn_cached(
-                mkb::GX_TEVSTAGE0,
-                mkb::GX_CA_ZERO,
-                mkb::GX_CA_ZERO,
-                mkb::GX_CA_ZERO,
-                mkb::GX_CA_RASA,
-            );
-            mkb::GXSetTevAlphaOp_cached(
-                mkb::GX_TEVSTAGE0,
-                mkb::GX_TEV_ADD,
-                mkb::GX_TB_ZERO,
-                mkb::GX_CS_SCALE_1,
-                1,
-                mkb::GX_TEVPREV,
-            );
-        }
     }
 }
