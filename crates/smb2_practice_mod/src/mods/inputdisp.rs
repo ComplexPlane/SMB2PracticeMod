@@ -1,5 +1,5 @@
-use core::f32;
 use core::ffi::CStr;
+use core::{f32, i16};
 
 use ::mkb::mkb_suppl::{Dot, GXColor4u8};
 use ::mkb::mkb_suppl::{GXPosition3f32, GXTexCoord2f32};
@@ -22,9 +22,10 @@ use super::{ballcolor::BallColor, freecam::Freecam};
 #[repr(i16)]
 pub enum InputDispColorType {
     Default = 0,
-    Rgb = 1,
-    Rainbow = 2,
-    MatchBall = 3,
+    RgbSolid = 1,
+    RgbGradient = 2,
+    Rainbow = 3,
+    MatchBall = 4,
 }
 
 #[derive(TryFromPrimitive, PartialEq, Eq)]
@@ -90,6 +91,7 @@ impl InputDisplay {
         color
     }
 
+    // Requires the vertex color GX pipeline to be configured
     fn draw_ring(&self, shape: &RingShape, gradient: &Gradient) {
         let z = -1.0f32 / 128.0f32;
 
@@ -254,13 +256,42 @@ impl InputDisplay {
             InputDispColorType::Default => {
                 Self::COLOR_MAP[cx.pref.get(I16Pref::InputDispColor) as usize].into()
             }
-            InputDispColorType::Rgb => mkb::GXColor {
+            InputDispColorType::RgbSolid => mkb::GXColor {
                 r: cx.pref.get(I16Pref::InputDispRed) as u8,
                 g: cx.pref.get(I16Pref::InputDispGreen) as u8,
                 b: cx.pref.get(I16Pref::InputDispBlue) as u8,
                 a: 0xff,
             }
             .into(),
+            InputDispColorType::RgbGradient => {
+                let color1 = mkb::GXColor {
+                    r: cx.pref.get(I16Pref::InputDispRed) as u8,
+                    g: cx.pref.get(I16Pref::InputDispGreen) as u8,
+                    b: cx.pref.get(I16Pref::InputDispBlue) as u8,
+                    a: 0xff,
+                };
+                let color2 = mkb::GXColor {
+                    r: cx.pref.get(I16Pref::InputDispGradientColor2Red) as u8,
+                    g: cx.pref.get(I16Pref::InputDispGradientColor2Green) as u8,
+                    b: cx.pref.get(I16Pref::InputDispGradientColor2Blue) as u8,
+                    a: 0xff,
+                };
+                let rotation = cx.pref.get(I16Pref::InputDispGradientRotation);
+                let rotation = math::map_range(
+                    rotation as i32,
+                    0..100,
+                    (i16::MIN as i32)..(i16::MAX as i32),
+                ) as i16;
+                let start = cx.pref.get(I16Pref::InputDispGradientStart) as f32 / 100.0;
+                let end = cx.pref.get(I16Pref::InputDispGradientEnd) as f32 / 100.0;
+                Gradient {
+                    color1,
+                    color2,
+                    rotation,
+                    start,
+                    end,
+                }
+            }
             InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow).into(),
             InputDispColorType::MatchBall => {
                 let mut color = cx.ball_color.get_current_color();
