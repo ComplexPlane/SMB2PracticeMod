@@ -1,3 +1,4 @@
+use ::mkb::mkb_suppl;
 use mkb::mkb;
 
 use core::ffi::c_char;
@@ -310,5 +311,78 @@ impl Draw {
         self.notify_frame_counter = 0;
         self.notify_color = color;
         self.notify_duration = duration;
+    }
+
+    pub fn setup_vertex_color_pipeline(&self) {
+        unsafe {
+            mkb::GXClearVtxDesc();
+            mkb::GXSetVtxDesc(mkb::GX_VA_POS, mkb::GX_DIRECT);
+            mkb::GXSetVtxDesc(mkb::GX_VA_CLR0, mkb::GX_DIRECT);
+            mkb::GXSetVtxAttrFmt(
+                mkb::GX_VTXFMT5,
+                mkb::GX_VA_POS,
+                mkb_suppl::GX_POS_XYZ,
+                mkb_suppl::GX_F32,
+                0,
+            );
+            mkb::GXSetVtxAttrFmt(
+                mkb::GX_VTXFMT5,
+                mkb::GX_VA_CLR0,
+                mkb::GX_CLR_RGBA,
+                mkb::GX_RGBA8,
+                0,
+            );
+            mkb::GXSetTevDirect(mkb::GX_TEVSTAGE0);
+            mkb::GXSetNumTevStages_cached(1);
+            mkb::GXSetNumChans_cached(1);
+            mkb::GXSetNumTexGens_cached(0);
+            mkb::GXSetTevOp(mkb::GX_TEVSTAGE0, mkb::GX_PASSCLR);
+            mkb::opti_GXSetChanCtrl(
+                mkb::GX_COLOR0A0,
+                0,
+                mkb::GX_SRC_REG,
+                mkb::GX_SRC_VTX,
+                0,
+                mkb::GX_DF_NONE,
+                mkb::GX_AF_NONE,
+            );
+
+            mkb::g_GXSetTevOrder_wrapper(
+                mkb::GX_TEVSTAGE0,
+                mkb::GX_TEXCOORD_NULL,
+                mkb::GX_TEXMAP_NULL,
+                mkb::GX_COLOR0A0,
+            );
+            mkb::GXSetTevColorIn_cached(
+                mkb::GX_TEVSTAGE0,
+                mkb::GX_CC_ZERO,
+                mkb::GX_CC_ZERO,
+                mkb::GX_CC_ZERO,
+                mkb::GX_CC_RASC,
+            );
+            mkb::GXSetTevColorOp_cached(
+                mkb::GX_TEVSTAGE0,
+                mkb::GX_TEV_ADD,
+                mkb::GX_TB_ZERO,
+                mkb::GX_CS_SCALE_1,
+                1,
+                mkb::GX_TEVPREV,
+            );
+            mkb::GXSetTevAlphaIn_cached(
+                mkb::GX_TEVSTAGE0,
+                mkb::GX_CA_ZERO,
+                mkb::GX_CA_ZERO,
+                mkb::GX_CA_ZERO,
+                mkb::GX_CA_RASA,
+            );
+            mkb::GXSetTevAlphaOp_cached(
+                mkb::GX_TEVSTAGE0,
+                mkb::GX_TEV_ADD,
+                mkb::GX_TB_ZERO,
+                mkb::GX_CS_SCALE_1,
+                1,
+                mkb::GX_TEVPREV,
+            );
+        }
     }
 }

@@ -197,6 +197,10 @@ hook!(DrawDebugTextHook => (), mkb::draw_debugtext, || {
         cx.il_mark.draw(&cx.pref, &cx.freecam);
         cx.physics.draw(&cx.pref, &cx.freecam);
         cx.scratch.draw();
+
+        // Draw vertex color stuff last, so we can freely screw up GX state (vertex descriptors, TEV, etc.)
+        cx.draw.setup_vertex_color_pipeline();
+        cx.input_display.draw_vertex_colors();
     });
 });
 
