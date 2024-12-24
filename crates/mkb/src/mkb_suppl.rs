@@ -8,6 +8,30 @@ use crate::mkb;
 pub const GX_TRUE: u8 = 1;
 pub const GX_FALSE: u8 = 0;
 
+// GXCompCnt
+pub const GX_POS_XY: u32 = 0;
+pub const GX_POS_XYZ: u32 = 1;
+pub const GX_NRM_XYZ: u32 = 0;
+pub const GX_NRM_NBT: u32 = 1;
+pub const GX_NRM_NBT3: u32 = 2;
+pub const GX_CLR_RGB: u32 = 0;
+pub const GX_CLR_RGBA: u32 = 1;
+pub const GX_TEX_S: u32 = 0;
+pub const GX_TEX_ST: u32 = 1;
+
+// GXCompType
+pub const GX_U8: u32 = 0;
+pub const GX_S8: u32 = 1;
+pub const GX_U16: u32 = 2;
+pub const GX_S16: u32 = 3;
+pub const GX_F32: u32 = 4;
+pub const GX_RGB565: u32 = 0;
+pub const GX_RGB8: u32 = 1;
+pub const GX_RGBX8: u32 = 2;
+pub const GX_RGBA4: u32 = 3;
+pub const GX_RGBA6: u32 = 4;
+pub const GX_RGBA8: u32 = 5;
+
 // Originally #define'd
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive)]
 #[repr(i32)]
@@ -75,6 +99,16 @@ pub fn GXTexCoord2f32(s: f32, t: f32) {
     unsafe {
         write_volatile(&raw mut mkb::GXWGFifo.v_f32, s);
         write_volatile(&raw mut mkb::GXWGFifo.v_f32, t);
+    }
+}
+
+#[allow(non_snake_case)]
+pub fn GXColor4u8(r: u8, g: u8, b: u8, a: u8) {
+    unsafe {
+        write_volatile(&raw mut mkb::GXWGFifo.v_u8, r);
+        write_volatile(&raw mut mkb::GXWGFifo.v_u8, g);
+        write_volatile(&raw mut mkb::GXWGFifo.v_u8, b);
+        write_volatile(&raw mut mkb::GXWGFifo.v_u8, a);
     }
 }
 
