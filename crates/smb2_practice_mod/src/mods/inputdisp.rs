@@ -48,18 +48,23 @@ pub struct InputDisplay {
 impl InputDisplay {
     fn draw_gradient(&self) {
         unsafe {
+            // Store old vtx desc
+            let mut old_vtx_desc =
+                [mkb::GXVtxDescList::default(); mkb_suppl::GX_MAX_VTXDESCLIST_SZ];
+            mkb::GXGetVtxDescv(old_vtx_desc.as_mut_ptr());
+
             mkb::GXClearVtxDesc();
             mkb::GXSetVtxDesc(mkb::GX_VA_POS, mkb::GX_DIRECT);
             mkb::GXSetVtxDesc(mkb::GX_VA_CLR0, mkb::GX_DIRECT);
             mkb::GXSetVtxAttrFmt(
-                mkb::GX_VTXFMT4,
+                mkb::GX_VTXFMT5,
                 mkb::GX_VA_POS,
                 mkb_suppl::GX_POS_XYZ,
                 mkb_suppl::GX_F32,
                 0,
             );
             mkb::GXSetVtxAttrFmt(
-                mkb::GX_VTXFMT4,
+                mkb::GX_VTXFMT5,
                 mkb::GX_VA_CLR0,
                 mkb::GX_CLR_RGBA,
                 mkb::GX_RGBA8,
@@ -118,7 +123,7 @@ impl InputDisplay {
             );
 
             let z = -1.0f32 / 128.0f32;
-            mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT4, 4);
+            mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT5, 4);
             GXPosition3f32(100.0, 100.0, z);
             GXColor4u8(0xff, 0, 0, 0xff);
             GXPosition3f32(200.0, 100.0, z);
@@ -127,6 +132,9 @@ impl InputDisplay {
             GXColor4u8(0, 0, 0xff, 0xff);
             GXPosition3f32(100.0, 200.0, z);
             GXColor4u8(0xff, 0xff, 0xff, 0xff);
+
+            // Restore old vtx desc
+            mkb::GXSetVtxDescv(old_vtx_desc.as_mut_ptr());
         }
     }
 
