@@ -32,6 +32,8 @@ pub const GX_RGBA4: u32 = 3;
 pub const GX_RGBA6: u32 = 4;
 pub const GX_RGBA8: u32 = 5;
 
+pub const GX_MAX_VTXDESCLIST_SZ: usize = 27;
+
 // Originally #define'd
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive)]
 #[repr(i32)]
