@@ -86,8 +86,9 @@ impl InputDisplay {
         let dot = delta.dot(normal);
         let t = dot / radius * 0.5 + 0.5;
 
-        let adjusted_t = gradient.start + t * (gradient.end - gradient.start);
-        let color = color::lerp_oklab(adjusted_t, gradient.color1, gradient.color2);
+        let t = gradient.start + t * (gradient.end - gradient.start);
+        let t = t.clamp(0.0, 1.0);
+        let color = color::lerp_oklab(t, gradient.color1, gradient.color2);
         color
     }
 

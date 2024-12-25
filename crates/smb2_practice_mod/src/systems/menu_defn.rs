@@ -197,14 +197,14 @@ static INPUT_RGB_GRADIENT: &[Widget] = &[
     Widget::IntEdit {
         label: "Gradient Start",
         pref: I16Pref::InputDispGradientStart,
-        min: 0,
-        max: 100,
+        min: -200,
+        max: 200,
     },
     Widget::IntEdit {
         label: "Gradient End",
         pref: I16Pref::InputDispGradientEnd,
-        min: 0,
-        max: 100,
+        min: -100,
+        max: 300,
     },
 ];
 
