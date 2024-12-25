@@ -1,4 +1,3 @@
-
 use arrayvec::ArrayString;
 
 use super::pad::{Button, Pad, Prio};

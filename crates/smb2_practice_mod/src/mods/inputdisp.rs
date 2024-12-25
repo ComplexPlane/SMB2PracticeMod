@@ -11,13 +11,13 @@ use crate::systems::pref::FromPref;
 use crate::systems::{
     draw,
     pad::{self, Pad, Prio, StickState},
-    pref::{BoolPref, Pref, U8Pref},
+    pref::{BoolPref, I16Pref, Pref},
 };
 
 use super::{ballcolor::BallColor, freecam::Freecam};
 
 #[derive(Copy, Clone, PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum InputDispColorType {
     Default = 0,
     Rgb = 1,
@@ -26,7 +26,7 @@ pub enum InputDispColorType {
 }
 
 #[derive(TryFromPrimitive, PartialEq, Eq)]
-#[repr(u8)]
+#[repr(i16)]
 enum Location {
     Right,
     Center,
@@ -159,7 +159,7 @@ impl InputDisplay {
 
     pub fn tick(&mut self, pref: &Pref) {
         self.rainbow = (self.rainbow + 3) % 1080;
-        let location = Location::from_pref(U8Pref::InputDispLocation, pref);
+        let location = Location::from_pref(I16Pref::InputDispLocation, pref);
         self.set_sprite_visible(
             !pref.get(BoolPref::InputDisp)
                 || (location == Location::Center && !pref.get(BoolPref::InputDispRawStickInputs)),
@@ -217,14 +217,14 @@ impl InputDisplay {
     ];
 
     fn get_color(&self, cx: &Context) -> mkb::GXColor {
-        match InputDispColorType::from_pref(U8Pref::InputDispColorType, cx.pref) {
+        match InputDispColorType::from_pref(I16Pref::InputDispColorType, cx.pref) {
             InputDispColorType::Default => {
-                Self::COLOR_MAP[cx.pref.get(U8Pref::InputDispColor) as usize]
+                Self::COLOR_MAP[cx.pref.get(I16Pref::InputDispColor) as usize]
             }
             InputDispColorType::Rgb => mkb::GXColor {
-                r: cx.pref.get(U8Pref::InputDispRed),
-                g: cx.pref.get(U8Pref::InputDispGreen),
-                b: cx.pref.get(U8Pref::InputDispBlue),
+                r: cx.pref.get(I16Pref::InputDispRed) as u8,
+                g: cx.pref.get(I16Pref::InputDispGreen) as u8,
+                b: cx.pref.get(I16Pref::InputDispBlue) as u8,
                 a: 0xff,
             },
             InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow),
@@ -391,7 +391,7 @@ impl InputDisplay {
         }
 
         let center = Vec2d {
-            x: match Location::from_pref(U8Pref::InputDispLocation, cx.pref) {
+            x: match Location::from_pref(I16Pref::InputDispLocation, cx.pref) {
                 Location::Right => 540.0,
                 Location::Center => 390.0,
             },
@@ -445,7 +445,7 @@ impl InputDisplay {
             return;
         }
 
-        let center = match Location::from_pref(U8Pref::InputDispLocation, cx.pref) {
+        let center = match Location::from_pref(I16Pref::InputDispLocation, cx.pref) {
             Location::Center => Vec2d { x: 430.0, y: 60.0 },
             Location::Right => Vec2d { x: 534.0, y: 60.0 },
         };

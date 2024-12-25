@@ -12,7 +12,7 @@ use super::binds::{self};
 use super::draw::DEBUG_CHAR_WIDTH;
 use super::menu_defn::{self, AfterPush, MenuContext, TextLine, Widget, ROOT_MENU};
 use super::pad::{Button, Dir, Prio};
-use super::pref::U8Pref;
+use super::pref::I16Pref;
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 enum BindingState {
@@ -247,12 +247,12 @@ impl MenuImpl {
                 };
                 if a_pressed {
                     let new_value = (curr_value as usize + 1) % choices.len();
-                    cx.pref.set(*pref, new_value as u8);
+                    cx.pref.set(*pref, new_value as i16);
                     cx.pref.save();
                 }
                 if y_pressed {
                     let new_value = (curr_value as usize + choices.len() - 1) % choices.len();
-                    cx.pref.set(*pref, new_value as u8);
+                    cx.pref.set(*pref, new_value as i16);
                     cx.pref.save();
                 }
                 if x_pressed {
@@ -295,8 +295,12 @@ impl MenuImpl {
                     next -= self.edit_inc as i32;
                 }
                 next = next.clamp(*min as i32, *max as i32);
+                if next == *min as i32 || next == *max as i32 {
+                    // Prevent overflow
+                    self.edit_inc = 1.0;
+                }
                 if next != cx.pref.get(*pref) as i32 {
-                    cx.pref.set(*pref, next as u8);
+                    cx.pref.set(*pref, next as i16);
                     cx.pref.save();
                 }
             }
@@ -317,7 +321,7 @@ impl MenuImpl {
                         && !(encoding_type == binds::EncodingType::SinglePress && *required_chord)
                     {
                         let value = cx.binds.get_current_encoding();
-                        cx.pref.set(*pref, value);
+                        cx.pref.set(*pref, value as i16);
                         cx.pref.save();
                         cx.pad.reset_dir_repeat();
                         self.binding = BindingState::Inactive;
@@ -347,9 +351,9 @@ impl MenuImpl {
             return;
         }
 
-        let toggle = cx
-            .binds
-            .bind_pressed(cx.pref.get(U8Pref::MenuBind), Prio::High, cx.pad);
+        let toggle =
+            cx.binds
+                .bind_pressed(cx.pref.get(I16Pref::MenuBind) as u8, Prio::High, cx.pad);
         if toggle {
             self.visible ^= toggle;
         } else if cx.pad.button_pressed(Button::B, Prio::High) {
@@ -367,7 +371,7 @@ impl MenuImpl {
         if !self.visible {
             // Default binding is L+R, but this lets you know the current binding in case you forget
             // what you changed it to
-            let input = cx.pref.get(U8Pref::MenuBind);
+            let input = cx.pref.get(I16Pref::MenuBind) as u8;
             if cx
                 .pad
                 .button_chord_pressed(Button::L, Button::R, Prio::High)
@@ -615,7 +619,7 @@ impl MenuImpl {
                         UNFOCUSED_COLOR
                     };
 
-                let input = cx.pref.get(*pref);
+                let input = cx.pref.get(*pref) as u8;
                 let mut buf = ArrayString::<32>::new();
                 cx.binds.get_bind_str(input, &mut buf);
                 draw::debug_text(MARGIN + PAD + PREF_OFFSET, *y, bind_color, &buf);
@@ -632,9 +636,9 @@ impl MenuImpl {
                 b_pref,
             } => {
                 let color = mkb::GXColor {
-                    r: cx.pref.get(*r_pref),
-                    g: cx.pref.get(*g_pref),
-                    b: cx.pref.get(*b_pref),
+                    r: cx.pref.get(*r_pref) as u8,
+                    g: cx.pref.get(*g_pref) as u8,
+                    b: cx.pref.get(*b_pref) as u8,
                     a: 0xff,
                 };
                 let x1 = 400.0;

@@ -6,14 +6,14 @@ use crate::app::with_app;
 use crate::systems::binds::Binds;
 use crate::systems::draw::{self, Draw, NotifyDuration};
 use crate::systems::pad::{self, Button, Pad, Prio};
-use crate::systems::pref::{self, BoolPref, Pref, U8Pref};
+use crate::systems::pref::{self, BoolPref, I16Pref, Pref};
 use crate::utils::misc::{for_c_arr, with_mutex};
 use crate::utils::patch;
 use crate::{fmt, hook};
 use mkb::{S16Vec, Vec};
 
-pub const TURBO_SPEED_MIN: u8 = 2;
-pub const TURBO_SPEED_MAX: u8 = 200;
+pub const TURBO_SPEED_MIN: i16 = 2;
+pub const TURBO_SPEED_MAX: i16 = 200;
 
 hook!(EventCameraTickHook => (), mkb::event_camera_tick, || {
     with_app(|cx| {
@@ -124,7 +124,7 @@ impl Freecam {
             let slow = pad.button_down(Button::X, Prio::Low);
 
             let speed_mult = if fast {
-                pref.get(pref::U8Pref::FreecamSpeedMult) as f32
+                pref.get(pref::I16Pref::FreecamSpeedMult) as f32
             } else if slow {
                 0.15
             } else {
@@ -217,10 +217,11 @@ impl Freecam {
         self.enabled_prev_tick = self.enabled_this_tick;
 
         // Optionally toggle freecam
-        if cx
-            .binds
-            .bind_pressed(cx.pref.get(U8Pref::FreecamToggleBind), Prio::Low, cx.pad)
-            && Self::in_correct_mode()
+        if cx.binds.bind_pressed(
+            cx.pref.get(I16Pref::FreecamToggleBind) as u8,
+            Prio::Low,
+            cx.pad,
+        ) && Self::in_correct_mode()
         {
             cx.pref
                 .set(BoolPref::Freecam, !cx.pref.get(BoolPref::Freecam));
@@ -232,7 +233,7 @@ impl Freecam {
             self.enabled_this_tick = true;
 
             // Adjust turbo speed multiplier
-            let mut speed_mult = cx.pref.get(U8Pref::FreecamSpeedMult);
+            let mut speed_mult = cx.pref.get(I16Pref::FreecamSpeedMult);
             let mut input_made = false;
             if cx.pad.button_repeat(Button::DpadDown, Prio::Low) {
                 speed_mult -= 1;
@@ -249,7 +250,7 @@ impl Freecam {
                     NotifyDuration::Short,
                     &fmt!(64, c"Freecam Turbo Speed Factor: %dX", speed_mult as u32),
                 );
-                cx.pref.set(pref::U8Pref::FreecamSpeedMult, speed_mult);
+                cx.pref.set(pref::I16Pref::FreecamSpeedMult, speed_mult);
                 cx.pref.save();
             }
         }

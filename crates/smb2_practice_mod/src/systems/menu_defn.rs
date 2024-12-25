@@ -8,7 +8,7 @@ use crate::mods::stage_edits::StageEdits;
 use crate::mods::unlock::Unlock;
 use crate::mods::validate::Validate;
 use crate::mods::{ballcolor, freecam};
-use crate::systems::pref::{BoolPref, U8Pref};
+use crate::systems::pref::{BoolPref, I16Pref};
 use crate::utils::version;
 use crate::{cstr_buf, fmt_buf};
 
@@ -71,7 +71,7 @@ pub enum Widget {
     Choose {
         label: &'static str,
         choices: &'static [&'static str],
-        pref: U8Pref,
+        pref: I16Pref,
     },
     Button {
         label: &'static str,
@@ -80,13 +80,13 @@ pub enum Widget {
     },
     IntEdit {
         label: &'static str,
-        pref: U8Pref,
-        min: u8,
-        max: u8,
+        pref: I16Pref,
+        min: i16,
+        max: i16,
     },
     InputSelect {
         label: &'static str,
-        pref: U8Pref,
+        pref: I16Pref,
         required_chord: bool,
         can_unbind: bool,
     },
@@ -98,9 +98,9 @@ pub enum Widget {
         draw: fn(&mut MenuContext),
     },
     RgbPreview {
-        r_pref: U8Pref,
-        g_pref: U8Pref,
-        b_pref: U8Pref,
+        r_pref: I16Pref,
+        g_pref: I16Pref,
+        b_pref: I16Pref,
     },
     Separator {},
 }
@@ -112,30 +112,30 @@ static INPUT_PRESET: &[Widget] = &[Widget::Choose {
     choices: &[
         "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
     ],
-    pref: U8Pref::InputDispColor,
+    pref: I16Pref::InputDispColor,
 }];
 
 static INPUT_HEX: &[Widget] = &[
     Widget::RgbPreview {
-        r_pref: U8Pref::InputDispRed,
-        g_pref: U8Pref::InputDispGreen,
-        b_pref: U8Pref::InputDispBlue,
+        r_pref: I16Pref::InputDispRed,
+        g_pref: I16Pref::InputDispGreen,
+        b_pref: I16Pref::InputDispBlue,
     },
     Widget::IntEdit {
         label: "Red Value",
-        pref: U8Pref::InputDispRed,
+        pref: I16Pref::InputDispRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
         label: "Green Value",
-        pref: U8Pref::InputDispGreen,
+        pref: I16Pref::InputDispGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
         label: "Blue Value",
-        pref: U8Pref::InputDispBlue,
+        pref: I16Pref::InputDispBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
@@ -145,7 +145,7 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Location",
         choices: &["Right", "Center"],
-        pref: U8Pref::InputDispLocation,
+        pref: I16Pref::InputDispLocation,
     },
     Widget::Checkbox {
         label: "Notch Indicators",
@@ -158,15 +158,15 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Color Type",
         choices: &["Preset", "RGB Selector", "Rainbow", "Match Ball"],
-        pref: U8Pref::InputDispColorType,
+        pref: I16Pref::InputDispColorType,
     },
     Widget::HideableGroup {
         widgets: INPUT_PRESET,
-        show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 0,
+        show_if: |cx| cx.pref.get(I16Pref::InputDispColorType) == 0,
     },
     Widget::HideableGroup {
         widgets: INPUT_HEX,
-        show_if: |cx| cx.pref.get(U8Pref::InputDispColorType) == 1,
+        show_if: |cx| cx.pref.get(I16Pref::InputDispColorType) == 1,
     },
 ];
 
@@ -188,36 +188,36 @@ static BALL_COLORS: &[&str] = &[
 static PRESET_WIDGETS: &[Widget] = &[Widget::Choose {
     label: "Preset Color",
     choices: BALL_COLORS,
-    pref: U8Pref::BallColor,
+    pref: I16Pref::BallColor,
 }];
 
 static PRESET_APE_WIDGETS: &[Widget] = &[Widget::Choose {
     label: "Preset Color",
     choices: BALL_COLORS,
-    pref: U8Pref::ApeColor,
+    pref: I16Pref::ApeColor,
 }];
 
 static HEX_WIDGETS: &[Widget] = &[
     Widget::RgbPreview {
-        r_pref: U8Pref::BallRed,
-        g_pref: U8Pref::BallGreen,
-        b_pref: U8Pref::BallBlue,
+        r_pref: I16Pref::BallRed,
+        g_pref: I16Pref::BallGreen,
+        b_pref: I16Pref::BallBlue,
     },
     Widget::IntEdit {
         label: "Red Value",
-        pref: U8Pref::BallRed,
+        pref: I16Pref::BallRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
         label: "Green Value",
-        pref: U8Pref::BallGreen,
+        pref: I16Pref::BallGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
     Widget::IntEdit {
         label: "Blue Value",
-        pref: U8Pref::BallBlue,
+        pref: I16Pref::BallBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
     },
@@ -232,15 +232,15 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Ball Color Type",
         choices: &["Preset", "RGB Selector", "Rainbow", "Random"],
-        pref: U8Pref::BallColorType,
+        pref: I16Pref::BallColorType,
     },
     Widget::HideableGroup {
         widgets: PRESET_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::BallColorType) == 0,
+        show_if: |cx| cx.pref.get(I16Pref::BallColorType) == 0,
     },
     Widget::HideableGroup {
         widgets: HEX_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::BallColorType) == 1,
+        show_if: |cx| cx.pref.get(I16Pref::BallColorType) == 1,
     },
     Widget::Separator {},
     Widget::Header {
@@ -249,36 +249,36 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Clothing Color Type",
         choices: &["Preset", "Random"],
-        pref: U8Pref::ApeColorType,
+        pref: I16Pref::ApeColorType,
     },
     Widget::HideableGroup {
         widgets: PRESET_APE_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::ApeColorType) == 0,
+        show_if: |cx| cx.pref.get(I16Pref::ApeColorType) == 0,
     },
     Widget::Separator {},
     Widget::Header { label: "Monkey" },
     Widget::Choose {
         label: "Monkey Type",
         choices: MONKEY_TYPES,
-        pref: U8Pref::MonkeyType,
+        pref: I16Pref::MonkeyType,
     },
 ];
 
 static IL_BATTLE_SCORE_WIDGETS: &[Widget] = &[Widget::Choose {
     label: "Score Breakdown",
     choices: &["Off", "Minimal", "Full"],
-    pref: U8Pref::IlBattleBreakdown,
+    pref: I16Pref::IlBattleBreakdown,
 }];
 
 static IL_BATTLE_SUBWIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Battle Length",
         choices: &["5 min", "7 min", "10 min", "Endless"],
-        pref: U8Pref::IlBattleLength,
+        pref: I16Pref::IlBattleLength,
     },
     Widget::InputSelect {
         label: "Ready Bind",
-        pref: U8Pref::IlBattleReadyBind,
+        pref: I16Pref::IlBattleReadyBind,
         required_chord: false,
         can_unbind: true,
     },
@@ -763,7 +763,7 @@ static CM_SEG_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Character",
         choices: CHARA_CHOICES,
-        pref: U8Pref::CmChara,
+        pref: I16Pref::CmChara,
     },
     Widget::Separator {},
     Widget::Text {
@@ -881,7 +881,7 @@ static FREECAM_WIDGETS: &[Widget] = &[
     },
     Widget::InputSelect {
         label: "Toggle Bind",
-        pref: U8Pref::FreecamToggleBind,
+        pref: I16Pref::FreecamToggleBind,
         required_chord: false,
         can_unbind: true,
     },
@@ -899,7 +899,7 @@ static FREECAM_WIDGETS: &[Widget] = &[
     },
     Widget::IntEdit {
         label: "Turbo Speed Factor",
-        pref: U8Pref::FreecamSpeedMult,
+        pref: I16Pref::FreecamSpeedMult,
         min: freecam::TURBO_SPEED_MIN,
         max: freecam::TURBO_SPEED_MAX,
     },
@@ -957,17 +957,17 @@ static SAVESTATE_SUBWIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Save To",
         choices: &["Selected Slot", "Next Empty Slot", "Empty, Then Oldest"],
-        pref: U8Pref::SavestateSaveTo,
+        pref: I16Pref::SavestateSaveTo,
     },
     Widget::InputSelect {
         label: "Clear Savestate Bind",
-        pref: U8Pref::SavestateClearBind,
+        pref: I16Pref::SavestateClearBind,
         required_chord: false,
         can_unbind: true,
     },
     Widget::InputSelect {
         label: "Clear All Bind",
-        pref: U8Pref::SavestateClearAllBind,
+        pref: I16Pref::SavestateClearAllBind,
         required_chord: false,
         can_unbind: true,
     },
@@ -1132,47 +1132,47 @@ static PHYSICS_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Physics Presets",
         choices: PHYSICS_PRESETS,
-        pref: U8Pref::PhysicsPreset,
+        pref: I16Pref::PhysicsPreset,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Weight: 1.00 -> 0.95",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 1,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 1,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Friction: 0.010 -> 0.000",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 2,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 2,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Weight: 1.00 -> 1.05",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 3,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 3,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Restitution: 0.50 -> 1.20",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 4,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 4,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Restitution: 0.50 -> 0.01",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 5,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 5,
     },
     Widget::HideableGroup {
         widgets: &[Widget::Text {
             label: "  Friction: 0.010 -> 0.020",
         }],
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 6,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 6,
     },
     Widget::HideableGroup {
         widgets: JUMP_PHYSICS,
-        show_if: |cx| cx.pref.get(U8Pref::PhysicsPreset) == 7,
+        show_if: |cx| cx.pref.get(I16Pref::PhysicsPreset) == 7,
     },
     Widget::Checkbox {
         label: "Display Physics Text",
@@ -1192,11 +1192,11 @@ static STAGE_EDIT_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Stage Edit Mode",
         choices: STAGE_EDIT_VARIANTS,
-        pref: U8Pref::StageEditVariant,
+        pref: I16Pref::StageEditVariant,
     },
     Widget::HideableGroup {
         widgets: REVERSE_GOAL_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::StageEditVariant) == 3,
+        show_if: |cx| cx.pref.get(I16Pref::StageEditVariant) == 3,
     },
     Widget::Text {
         label: "  Stage Edits are activated on retry",
@@ -1238,7 +1238,7 @@ static JUMP_STANDARD_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Jump Count",
         choices: JUMP_COUNTS,
-        pref: U8Pref::JumpCount,
+        pref: I16Pref::JumpCount,
     },
 ];
 
@@ -1248,15 +1248,15 @@ static JUMP_PROFILES_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Jump Profile",
         choices: JUMP_PROFILES,
-        pref: U8Pref::JumpProfile,
+        pref: I16Pref::JumpProfile,
     },
     Widget::HideableGroup {
         widgets: JUMP_STANDARD_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::JumpProfile) == 0,
+        show_if: |cx| cx.pref.get(I16Pref::JumpProfile) == 0,
     },
     Widget::HideableGroup {
         widgets: JUMP_CLASSIC_WIDGETS,
-        show_if: |cx| cx.pref.get(U8Pref::JumpProfile) == 1,
+        show_if: |cx| cx.pref.get(I16Pref::JumpProfile) == 1,
     },
 ];
 
@@ -1289,7 +1289,7 @@ static VARIANT_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Camera Type",
         choices: CAMERA_OPTIONS,
-        pref: U8Pref::Camera,
+        pref: I16Pref::Camera,
     },
     Widget::Checkbox {
         label: "D-Pad Controls",
@@ -1304,12 +1304,12 @@ static VARIANT_WIDGETS: &[Widget] = &[
     Widget::Choose {
         label: "Timer Type",
         choices: TIMER_TYPES,
-        pref: U8Pref::TimerType,
+        pref: I16Pref::TimerType,
     },
     Widget::Choose {
         label: "Fallout Plane Type",
         choices: FALLOUT_PLANE_TYPE,
-        pref: U8Pref::FalloutPlaneType,
+        pref: I16Pref::FalloutPlaneType,
     },
     Widget::Checkbox {
         label: "Disable Fallout Volume",
@@ -1355,7 +1355,7 @@ static RESET_PREFS_WIDGETS: &[Widget] = &[
 static PRACMOD_SETTINGS_WIDGETS: &[Widget] = &[
     Widget::InputSelect {
         label: "Menu Bind",
-        pref: U8Pref::MenuBind,
+        pref: I16Pref::MenuBind,
         required_chord: true,
         can_unbind: false,
     },

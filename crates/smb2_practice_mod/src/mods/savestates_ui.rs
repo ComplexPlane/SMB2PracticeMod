@@ -10,7 +10,7 @@ use crate::{
         binds::Binds,
         draw::{self, Draw, NotifyDuration},
         pad::{Analog, Button, Dir, Pad, Prio},
-        pref::{BoolPref, FromPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, I16Pref, Pref},
     },
     utils::{
         libsavestate::{LibSaveState, LoadError, SaveError, SaveState},
@@ -55,7 +55,7 @@ struct Context<'a> {
 }
 
 #[derive(TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum SaveTo {
     Selected,
     NextEmpty,
@@ -113,7 +113,7 @@ impl SaveStatesUi {
             return Some(self.active_state_slot);
         }
 
-        let save_to = SaveTo::from_pref(U8Pref::SavestateSaveTo, cx.pref);
+        let save_to = SaveTo::from_pref(I16Pref::SavestateSaveTo, cx.pref);
         match save_to {
             SaveTo::Selected => Some(self.active_state_slot),
             SaveTo::NextEmpty => self.find_next_empty(),
@@ -340,8 +340,8 @@ impl SaveStatesUi {
         if !savestates_enabled(cx.pref) {
             return;
         }
-        let clear_bind = pref.get(U8Pref::SavestateClearBind);
-        let clear_all_bind = pref.get(U8Pref::SavestateClearAllBind);
+        let clear_bind = pref.get(I16Pref::SavestateClearBind);
+        let clear_all_bind = pref.get(I16Pref::SavestateClearAllBind);
 
         // Must tick savestates every frame
         for state in &mut self.states {
@@ -372,9 +372,12 @@ impl SaveStatesUi {
 
         if cx.pad.button_pressed(Button::X, Prio::Low) {
             self.save_slot(cx);
-        } else if cx.binds.bind_pressed(clear_bind, Prio::Low, cx.pad) {
+        } else if cx.binds.bind_pressed(clear_bind as u8, Prio::Low, cx.pad) {
             self.clear_slot(cx);
-        } else if cx.binds.bind_pressed(clear_all_bind, Prio::Low, cx.pad) {
+        } else if cx
+            .binds
+            .bind_pressed(clear_all_bind as u8, Prio::Low, cx.pad)
+        {
             self.clear_all_slots(cx);
         } else if load_reason != LoadReason::NoLoad {
             self.load_slot(load_reason, cx);

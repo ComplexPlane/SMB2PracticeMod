@@ -2,12 +2,12 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::patch;
-use crate::systems::pref::{self, U8Pref};
+use crate::systems::pref::{self, I16Pref};
 use crate::systems::pref::{FromPref, Pref};
 use crate::utils::ppc;
 
 #[derive(TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum CameraType {
     Default = 0,
     ForceSMB2 = 1,
@@ -19,11 +19,11 @@ pub struct Camera {}
 
 impl Camera {
     unsafe fn tick_unsafe(&self, pref: &Pref) {
-        let value = CameraType::from_pref(U8Pref::Camera, pref);
+        let value = CameraType::from_pref(I16Pref::Camera, pref);
 
         match value {
             CameraType::Default => {
-                if pref.did_change(pref::U8Pref::Camera) {
+                if pref.did_change(pref::I16Pref::Camera) {
                     // restore cam to smb2 once (so toggle still works)
                     if mkb::cameras[0].mode == 0x1 {
                         mkb::cameras[0].mode = 0x4c;

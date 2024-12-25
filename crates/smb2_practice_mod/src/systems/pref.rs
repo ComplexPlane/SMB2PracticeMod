@@ -15,15 +15,15 @@ use super::{
 macro_rules! pref_defn {
     ($( // Line
         $id:literal => $pref_name:ident:
-            $(u8 $(= $u8_default:literal)?)?
+            $(i16 $(= $i16_default:literal)?)?
             $(bool $(= $bool_default:literal)?)?
     ),+ $(,)?) => {
         const BOOL_PREF_COUNT: usize = [$(
             $(swallow!((), ($($bool_default)?)),)?
         )+].len();
 
-        const U8_PREF_COUNT: usize = [$(
-            $(swallow!((), ($($u8_default)?)),)?
+        const I16_PREF_COUNT: usize = [$(
+            $(swallow!((), ($($i16_default)?)),)?
         )+].len();
 
         const ALL_PREF_IDS: &[PrefId] = &[
@@ -36,9 +36,9 @@ macro_rules! pref_defn {
             )+
         ];
 
-        const DEFAULT_U8S: &[DefaultU8] = &[
+        const DEFAULT_I16S: &[DefaultI16] = &[
             $( // Line
-                $($(DefaultU8 { id: U8Pref::$pref_name, value: $u8_default},)?)?
+                $($(DefaultI16 { id: I16Pref::$pref_name, value: $i16_default},)?)?
             )+
         ];
 
@@ -52,11 +52,11 @@ macro_rules! pref_defn {
 
         #[derive(Clone, Copy)]
         #[repr(u16)]
-        pub enum U8Pref {
+        pub enum I16Pref {
             $( // Line
-                // Making a doc attr is a way to use u8_default to select the right repetition, while
+                // Making a doc attr is a way to use i16_default to select the right repetition, while
                 // producing a valid syntax element
-                $(#[doc = core::concat!("default=", core::stringify!($($u8_default)?))] $pref_name,)?
+                $(#[doc = core::concat!("default=", core::stringify!($($i16_default)?))] $pref_name,)?
             )+
         }
 
@@ -78,10 +78,10 @@ macro_rules! pref_defn {
                 }
             }
 
-            fn pref_id_to_u8_pref(id: PrefId) -> Option<U8Pref> {
+            fn pref_id_to_i16_pref(id: PrefId) -> Option<I16Pref> {
                 match id {
                     $( // Line
-                        $(PrefId::$pref_name => swallow!((Some(U8Pref::$pref_name)), ($($u8_default)?)),)?
+                        $(PrefId::$pref_name => swallow!((Some(I16Pref::$pref_name)), ($($i16_default)?)),)?
                     )*
                     _ => None,
                 }
@@ -99,10 +99,10 @@ macro_rules! swallow {
 pref_defn!(
     1 => Savestates: bool = true,
     2 => InputDisp: bool,
-    3 => InputDispLocation: u8 = 1,
+    3 => InputDispLocation: i16 = 1,
     4 => TimerShowRTA: bool,
-    5 => CmChara: u8,
-    6 => InputDispColor: u8,
+    5 => CmChara: i16,
+    6 => InputDispColor: i16,
     7 => InputDispNotchIndicators: bool = true,
     8 => IwTimer: bool = true,
     9 => CmTimer: bool = true,
@@ -115,12 +115,12 @@ pref_defn!(
     16 => MuteTimerDing: bool,
     17 => InputDispRawStickInputs: bool,
     18 => Freecam: bool,
-    19 => BallColor: u8,
-    20 => ApeColor: u8,
+    19 => BallColor: i16,
+    20 => ApeColor: i16,
     21 => Marathon: bool,
     // Do not reuse 22, it belonged to old Moon Gravity BoolPref
     23 => IlBattleDisplay: bool,
-    24 => IlBattleLength: u8,
+    24 => IlBattleLength: i16,
     // Do not reuse 25, it belonged to old IL Battle Score Breakdown BoolPref
     26 => IlMarkPractice: bool = true,
     27 => IlMarkStory: bool,
@@ -131,7 +131,7 @@ pref_defn!(
     32 => FreecamInvertYaw: bool,
     33 => FreecamInvertPitch: bool,
     34 => FreecamToggleWithZ: bool,
-    35 => FreecamSpeedMult: u8 = 3,
+    35 => FreecamSpeedMult: i16 = 3,
     36 => FreecamFreezeTimer: bool = true,
     37 => FreecamHideHud: bool = true,
     38 => HideHud: bool,
@@ -141,31 +141,31 @@ pref_defn!(
     42 => HideStobjs: bool,
     43 => HideEffects: bool,
     44 => IlMarkRomhacks: bool = true,
-    45 => Camera: u8,
-    46 => BallRed: u8,
-    47 => BallGreen: u8,
-    48 => BallBlue: u8,
-    49 => BallColorType: u8,
-    50 => ApeColorType: u8,
-    51 => InputDispColorType: u8,
-    52 => InputDispRed: u8,
-    53 => InputDispGreen: u8,
-    54 => InputDispBlue: u8,
-    55 => TimerType: u8,
+    45 => Camera: i16,
+    46 => BallRed: i16,
+    47 => BallGreen: i16,
+    48 => BallBlue: i16,
+    49 => BallColorType: i16,
+    50 => ApeColorType: i16,
+    51 => InputDispColorType: i16,
+    52 => InputDispRed: i16,
+    53 => InputDispGreen: i16,
+    54 => InputDispBlue: i16,
+    55 => TimerType: i16,
     56 => DisableFalloutVolumes: bool,
-    57 => FalloutPlaneType: u8,
+    57 => FalloutPlaneType: i16,
     58 => IlBattleShowTime: bool = true,
     59 => IlBattleShowScore: bool = true,
     60 => IlBattleBuzzerOld: bool,
-    61 => IlBattleBreakdown: u8,
-    62 => PhysicsPreset: u8,
+    61 => IlBattleBreakdown: i16,
+    62 => PhysicsPreset: i16,
     // 63 belonged to physics friction which was only used in beta playtesting
     // 64 belonged to physics restitution which was only used in beta playtesting
     // 65 belonged to SavestateDisableOverwrite
-    66 => MenuBind: u8 = 64,
-    67 => IlBattleReadyBind: u8 = 104,
-    68 => FreecamToggleBind: u8 = 255,
-    69 => SavestateClearBind: u8 = 255,
+    66 => MenuBind: i16 = 64,
+    67 => IlBattleReadyBind: i16 = 104,
+    68 => FreecamToggleBind: i16 = 255,
+    69 => SavestateClearBind: i16 = 255,
     70 => IlBattleTieCount: bool,
     71 => IlBattleAttemptCount: bool,
     72 => TimerShowSubtick: bool,
@@ -174,16 +174,16 @@ pref_defn!(
     // Many people playtested that beta, so it may be best to not reuse until
     // a future update
     75 => TimerShowPause: bool,
-    76 => StageEditVariant: u8,
+    76 => StageEditVariant: i16,
     77 => JumpChangePhysics: bool = true,
     78 => JumpAllowWalljumps: bool = true,
-    79 => JumpCount: u8 = 1,
+    79 => JumpCount: i16 = 1,
     // 80 belonged to physics weight which was only used in beta playtesting
-    81 => MonkeyType: u8,
-    82 => JumpProfile: u8,
+    81 => MonkeyType: i16,
+    82 => JumpProfile: i16,
     83 => CustomPhysicsDisp: bool = true,
-    84 => SavestateSaveTo: u8,
-    85 => SavestateClearAllBind: u8 = 255,
+    84 => SavestateSaveTo: i16,
+    85 => SavestateClearAllBind: i16 = 255,
 );
 
 const PREF_BUF_SIZE: usize =
@@ -206,13 +206,13 @@ impl PrefType<bool> for BoolPref {
     }
 }
 
-impl PrefType<u8> for U8Pref {
-    fn get(self, state: &PrefState) -> u8 {
-        Pref::get_u8_pref(self, state)
+impl PrefType<i16> for I16Pref {
+    fn get(self, state: &PrefState) -> i16 {
+        Pref::get_i16_pref(self, state)
     }
 
-    fn set(self, v: u8, pref: &mut Pref) {
-        Pref::set_u8_pref(self, &mut pref.curr_state, v);
+    fn set(self, v: i16, pref: &mut Pref) {
+        Pref::set_i16_pref(self, &mut pref.curr_state, v);
     }
 }
 
@@ -221,15 +221,15 @@ struct DefaultBool {
     value: bool,
 }
 
-struct DefaultU8 {
-    id: U8Pref,
-    value: u8,
+struct DefaultI16 {
+    id: I16Pref,
+    value: i16,
 }
 
 #[derive(Clone)]
 pub struct PrefState {
     bools: [u8; get_bit_array_len(BOOL_PREF_COUNT)],
-    u8s: [u8; U8_PREF_COUNT],
+    i16s: [i16; I16_PREF_COUNT],
 }
 
 impl Default for PrefState {
@@ -238,7 +238,7 @@ impl Default for PrefState {
     fn default() -> Self {
         Self {
             bools: [0; get_bit_array_len(BOOL_PREF_COUNT)],
-            u8s: [0; U8_PREF_COUNT],
+            i16s: [0; I16_PREF_COUNT],
         }
     }
 }
@@ -345,8 +345,8 @@ impl Pref {
 
             if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
                 entry.value = self.get(bool_pref) as u16;
-            } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
-                entry.value = self.get(u8_pref) as u16;
+            } else if let Some(i16_pref) = Self::pref_id_to_i16_pref(pref_id) {
+                entry.value = self.get(i16_pref) as u16;
             } else {
                 panic!("Failed to determine preference type");
             }
@@ -373,12 +373,8 @@ impl Pref {
             if let Ok(pref_id) = PrefId::try_from(entry.id) {
                 if let Some(bool_pref) = Self::pref_id_to_bool_pref(pref_id) {
                     Self::set_bool_pref(bool_pref, &mut self.curr_state, entry.value > 0);
-                } else if let Some(u8_pref) = Self::pref_id_to_u8_pref(pref_id) {
-                    Self::set_u8_pref(
-                        u8_pref,
-                        &mut self.curr_state,
-                        entry.value.try_into().unwrap_or(0),
-                    );
+                } else if let Some(i16_pref) = Self::pref_id_to_i16_pref(pref_id) {
+                    Self::set_i16_pref(i16_pref, &mut self.curr_state, entry.value as i16);
                 } else {
                     // Unknown preference type somehow, ignore
                 }
@@ -393,8 +389,8 @@ impl Pref {
         for default_bool in DEFAULT_BOOLS {
             Self::set_bool_pref(default_bool.id, &mut self.default_state, default_bool.value);
         }
-        for default_u8 in DEFAULT_U8S {
-            Self::set_u8_pref(default_u8.id, &mut self.default_state, default_u8.value);
+        for default_i16 in DEFAULT_I16S {
+            Self::set_i16_pref(default_i16.id, &mut self.default_state, default_i16.value);
         }
         self.curr_state = self.default_state.clone();
     }
@@ -404,8 +400,8 @@ impl Pref {
         val > 0
     }
 
-    fn get_u8_pref(u8_pref: U8Pref, state: &PrefState) -> u8 {
-        state.u8s[u8_pref as usize]
+    fn get_i16_pref(i16_pref: I16Pref, state: &PrefState) -> i16 {
+        state.i16s[i16_pref as usize]
     }
 
     fn set_bool_pref(bool_pref: BoolPref, state: &mut PrefState, val: bool) {
@@ -416,8 +412,8 @@ impl Pref {
         }
     }
 
-    fn set_u8_pref(u8_pref: U8Pref, state: &mut PrefState, val: u8) {
-        state.u8s[u8_pref as usize] = val;
+    fn set_i16_pref(i16_pref: I16Pref, state: &mut PrefState, val: i16) {
+        state.i16s[i16_pref as usize] = val;
     }
 
     pub fn get<T>(&self, pref: impl PrefType<T>) -> T {
@@ -486,15 +482,15 @@ impl Pref {
 }
 
 pub trait FromPref {
-    fn from_pref(pref_id: U8Pref, pref: &Pref) -> Self;
+    fn from_pref(pref_id: I16Pref, pref: &Pref) -> Self;
 }
 
 impl<T, E> FromPref for T
 where
-    T: TryFrom<u8, Error = E>,
+    T: TryFrom<i16, Error = E>,
     E: core::fmt::Debug,
 {
-    fn from_pref(pref_id: U8Pref, pref: &Pref) -> T {
+    fn from_pref(pref_id: I16Pref, pref: &Pref) -> T {
         let default = T::try_from(pref.get_default(pref_id)).unwrap();
         T::try_from(pref.get(pref_id)).unwrap_or(default)
     }
