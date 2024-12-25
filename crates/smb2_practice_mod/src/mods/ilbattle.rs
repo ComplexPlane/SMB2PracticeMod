@@ -8,7 +8,7 @@ use crate::{
         binds::Binds,
         draw,
         pad::{Pad, Prio},
-        pref::{BoolPref, FromPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, I16Pref, Pref},
     },
 };
 
@@ -33,7 +33,7 @@ enum IlBattleState {
 }
 
 #[derive(Clone, Copy, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum IlBattleLength {
     FiveMinutes = 0,
     SevenMinutes = 1,
@@ -227,7 +227,7 @@ impl IlBattle {
             }
 
             // breakdown
-            let breakdown_value = cx.pref.get(U8Pref::IlBattleBreakdown);
+            let breakdown_value = cx.pref.get(I16Pref::IlBattleBreakdown);
             if breakdown_value == 1 {
                 // minimal
                 current_y += CHEIGHT;
@@ -314,7 +314,7 @@ impl IlBattle {
     }
 
     fn clear_display(&mut self, cx: &Context) {
-        let battle_len = IlBattleLength::from_pref(U8Pref::IlBattleLength, cx.pref);
+        let battle_len = IlBattleLength::from_pref(I16Pref::IlBattleLength, cx.pref);
 
         self.battle_frames = 0;
         self.best_frames = 0;
@@ -354,7 +354,7 @@ impl IlBattle {
                 self.accepted_retry = true;
             }
 
-            let battle_length = IlBattleLength::from_pref(U8Pref::IlBattleLength, cx.pref);
+            let battle_length = IlBattleLength::from_pref(I16Pref::IlBattleLength, cx.pref);
             if matches!(battle_length, IlBattleLength::Endless) {
                 // timer is endless
                 self.battle_frames += 1;
@@ -532,9 +532,11 @@ impl IlBattle {
 
             // Resets battles when Dpad Down is pressed
             if mkb::main_mode == mkb::MD_GAME
-                && cx
-                    .binds
-                    .bind_pressed(cx.pref.get(U8Pref::IlBattleReadyBind), Prio::Low, cx.pad)
+                && cx.binds.bind_pressed(
+                    cx.pref.get(I16Pref::IlBattleReadyBind) as u8,
+                    Prio::Low,
+                    cx.pad,
+                )
             {
                 self.new_battle(cx);
             }
@@ -567,9 +569,9 @@ impl IlBattle {
                 if unsafe { mkb::main_mode } != mkb::MD_GAME {
                     return;
                 }
-                let input = cx.pref.get(U8Pref::IlBattleReadyBind);
+                let input = cx.pref.get(I16Pref::IlBattleReadyBind);
                 let mut buf = ArrayString::<32>::new();
-                cx.binds.get_bind_str(input, &mut buf);
+                cx.binds.get_bind_str(input as u8, &mut buf);
                 draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
                 draw::debug_text(
                     X - 12 * CWIDTH,

@@ -6,7 +6,7 @@ use num_enum::TryFromPrimitive;
 use crate::{
     app::with_app,
     hook,
-    systems::pref::{FromPref, Pref, U8Pref},
+    systems::pref::{FromPref, I16Pref, Pref},
     utils::misc::with_mutex,
 };
 
@@ -20,7 +20,7 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
 });
 
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive, Default)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum ActiveMode {
     #[default]
     None = 0,
@@ -147,7 +147,7 @@ impl StageEdits {
     }
 
     fn on_load_stagedef(&mut self, pref: &Pref) {
-        let next_mode = ActiveMode::from_pref(U8Pref::StageEditVariant, pref);
+        let next_mode = ActiveMode::from_pref(I16Pref::StageEditVariant, pref);
         self.current_mode = next_mode;
         unsafe {
             self.set_mode(self.current_mode);
@@ -155,7 +155,7 @@ impl StageEdits {
     }
 
     pub fn on_game_ready_init(&mut self, pref: &Pref) {
-        let next_mode = ActiveMode::from_pref(U8Pref::StageEditVariant, pref);
+        let next_mode = ActiveMode::from_pref(I16Pref::StageEditVariant, pref);
         if self.current_mode != next_mode {
             unsafe {
                 self.undo_mode(self.current_mode);

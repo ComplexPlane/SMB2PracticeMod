@@ -6,14 +6,14 @@ use mkb::mkb;
 use num_enum::TryFromPrimitive;
 
 use crate::{
-    systems::pref::{BoolPref, Pref, U8Pref},
+    systems::pref::{BoolPref, I16Pref, Pref},
     utils::{math::fabs, patch},
 };
 
 use super::freecam::Freecam;
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum FalloutPlaneType {
     Normal,
     Disabled,
@@ -21,7 +21,7 @@ enum FalloutPlaneType {
 }
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum TimerType {
     Default,
     FreezeInstantly,
@@ -89,7 +89,7 @@ impl Default for Fallout {
 
 impl Fallout {
     pub fn freeze_timer(&mut self, pref: &Pref, freecam: &Freecam) {
-        let mut timer_type = TimerType::from_pref(U8Pref::TimerType, pref);
+        let mut timer_type = TimerType::from_pref(I16Pref::TimerType, pref);
         if freecam.should_freeze_timer(pref) {
             timer_type = TimerType::FreezeInstantly;
             self.toggled_freecam = true;
@@ -98,7 +98,7 @@ impl Fallout {
         unsafe {
             match timer_type {
                 TimerType::Default => {
-                    if pref.did_change(U8Pref::TimerType) || self.toggled_freecam {
+                    if pref.did_change(I16Pref::TimerType) || self.toggled_freecam {
                         // time over at 0 frames
                         patch::write_word(0x80297548 as *mut usize, self.timeover_condition);
                         // add -1 to timer each frame
@@ -156,7 +156,7 @@ impl Fallout {
         unsafe {
             let below_fallout = (*ball).pos.y < (*(*mkb::stagedef).fallout).y;
             let volumes_disabled = pref.get(BoolPref::DisableFalloutVolumes);
-            let plane_type = FalloutPlaneType::from_pref(U8Pref::FalloutPlaneType, pref);
+            let plane_type = FalloutPlaneType::from_pref(I16Pref::FalloutPlaneType, pref);
 
             match plane_type {
                 FalloutPlaneType::Normal => {

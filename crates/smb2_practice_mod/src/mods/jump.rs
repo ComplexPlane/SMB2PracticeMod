@@ -5,7 +5,7 @@ use mkb::mkb;
 use crate::{
     systems::{
         pad::{Button, Pad, Prio},
-        pref::{BoolPref, FromPref, Pref, U8Pref},
+        pref::{BoolPref, FromPref, I16Pref, Pref},
     },
     utils::{math::fabs, patch},
 };
@@ -13,7 +13,7 @@ use crate::{
 use super::physics::PhysicsPreset;
 
 #[derive(Clone, Copy, PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 enum MaxJumpCount {
     One = 0,
     Two = 1,
@@ -88,7 +88,7 @@ impl Jump {
     fn enable(&mut self, pref: &mut Pref) {
         self.patch_minimap(pref);
         if pref.get(BoolPref::JumpChangePhysics) {
-            pref.set(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+            pref.set(I16Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as i16);
             pref.save();
         }
         self.reset();
@@ -97,7 +97,7 @@ impl Jump {
     fn disable(&mut self, pref: &mut Pref) {
         self.restore_minimap();
         if pref.get(BoolPref::JumpChangePhysics) {
-            pref.set(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+            pref.set(I16Pref::PhysicsPreset, PhysicsPreset::Default as i16);
             pref.save();
         }
     }
@@ -154,7 +154,7 @@ impl Jump {
             if ground_touched && valid_location {
                 self.ticks_since_ground = 0;
 
-                let count = MaxJumpCount::from_pref(U8Pref::JumpCount, pref);
+                let count = MaxJumpCount::from_pref(I16Pref::JumpCount, pref);
                 if count == MaxJumpCount::Two {
                     self.aerial_jumps = 1;
                 } else {
@@ -170,7 +170,7 @@ impl Jump {
                 ground_touched && self.ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
             let coyote_late = self.ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
             // check extra jump count
-            let max_jump = MaxJumpCount::from_pref(U8Pref::JumpCount, pref);
+            let max_jump = MaxJumpCount::from_pref(I16Pref::JumpCount, pref);
             let aerial_jumped =
                 (self.aerial_jumps > 0 || max_jump == MaxJumpCount::Infinite) && a_pressed;
             let start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT
@@ -301,9 +301,9 @@ impl Jump {
         if enabled {
             if pref.did_change(BoolPref::JumpChangePhysics) {
                 if pref.get(BoolPref::JumpChangePhysics) {
-                    pref.set(U8Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as u8);
+                    pref.set(I16Pref::PhysicsPreset, PhysicsPreset::JumpPhysics as i16);
                 } else {
-                    pref.set(U8Pref::PhysicsPreset, PhysicsPreset::Default as u8);
+                    pref.set(I16Pref::PhysicsPreset, PhysicsPreset::Default as i16);
                 }
                 pref.save();
             }
@@ -315,7 +315,7 @@ impl Jump {
             }
             Self::toggle_minimap(pad);
 
-            let new_jump_profile = pref.get(U8Pref::JumpProfile) == 0;
+            let new_jump_profile = pref.get(I16Pref::JumpProfile) == 0;
 
             if new_jump_profile {
                 self.jumping(pref, pad);

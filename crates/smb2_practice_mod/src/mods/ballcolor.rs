@@ -8,7 +8,7 @@ use crate::{
     hook,
     systems::{
         draw,
-        pref::{FromPref, Pref, U8Pref},
+        pref::{FromPref, I16Pref, Pref},
     },
     utils::misc::with_mutex,
 };
@@ -21,8 +21,8 @@ static GLOBALS: Mutex<Globals> = Mutex::new(Globals {
     load_stagedef_hook: LoadStagedefHook::new(),
 });
 
-pub const COLOR_MIN: u8 = 0;
-pub const COLOR_MAX: u8 = 0xff;
+pub const COLOR_MIN: i16 = 0;
+pub const COLOR_MAX: i16 = 0xff;
 
 hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
     with_mutex(&GLOBALS, |cx| {
@@ -34,7 +34,7 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
 });
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum BallColorType {
     Preset = 0,
     Rgb = 1,
@@ -43,14 +43,14 @@ pub enum BallColorType {
 }
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum ClothingType {
     Preset = 0,
     Random = 1,
 }
 
 #[derive(PartialEq, Eq, TryFromPrimitive)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum MonkeyType {
     Default = 0,
     Aiai = 1,
@@ -136,7 +136,7 @@ impl BallColor {
         self.current_color
     }
 
-    fn convert_to_ball_color_id(color_choice: u8) -> u8 {
+    fn convert_to_ball_color_id(color_choice: i16) -> i16 {
         if color_choice == 0 {
             3
         } else {
@@ -144,7 +144,7 @@ impl BallColor {
         }
     }
 
-    fn convert_to_ape_color_id(color_choice: u8) -> u8 {
+    fn convert_to_ape_color_id(color_choice: i16) -> i16 {
         if color_choice == 0 {
             0
         } else {
@@ -154,7 +154,7 @@ impl BallColor {
 
     pub fn switch_monkey(&self, pref: &Pref) {
         unsafe {
-            match MonkeyType::from_pref(U8Pref::MonkeyType, pref) {
+            match MonkeyType::from_pref(I16Pref::MonkeyType, pref) {
                 MonkeyType::Default => (),
                 MonkeyType::Aiai => {
                     mkb::active_monkey_id[mkb::curr_player_idx as usize] = 0;
@@ -177,7 +177,7 @@ impl BallColor {
 
     pub fn tick(&mut self, pref: &Pref) {
         unsafe {
-            let ball_type = BallColorType::from_pref(U8Pref::BallColorType, pref);
+            let ball_type = BallColorType::from_pref(I16Pref::BallColorType, pref);
 
             let valid_mode = mkb::main_mode == mkb::MD_GAME
                 && (mkb::sub_mode != mkb::SMD_GAME_SCENARIO_INIT
@@ -188,10 +188,10 @@ impl BallColor {
                 BallColorType::Preset => {
                     if valid_mode {
                         mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
-                            Self::convert_to_ball_color_id(0);
+                            Self::convert_to_ball_color_id(0) as u8;
                     }
                     self.current_color = PRESET_COLORS
-                        [Self::convert_to_ball_color_id(pref.get(U8Pref::BallColor)) as usize];
+                        [Self::convert_to_ball_color_id(pref.get(I16Pref::BallColor)) as usize];
                     if valid_mode {
                         *(0x80472a34 as *mut mkb::GXColor) = self.current_color;
                     }
@@ -199,15 +199,15 @@ impl BallColor {
                 BallColorType::Rgb => {
                     if valid_mode {
                         mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
-                            Self::convert_to_ball_color_id(0);
+                            Self::convert_to_ball_color_id(0) as u8;
                     }
-                    let red = pref.get(U8Pref::BallRed);
-                    let green = pref.get(U8Pref::BallGreen);
-                    let blue = pref.get(U8Pref::BallBlue);
+                    let red = pref.get(I16Pref::BallRed);
+                    let green = pref.get(I16Pref::BallGreen);
+                    let blue = pref.get(I16Pref::BallBlue);
                     self.current_color = mkb::GXColor {
-                        r: red,
-                        g: green,
-                        b: blue,
+                        r: red as u8,
+                        g: green as u8,
+                        b: blue as u8,
                         a: 0,
                     };
                     if valid_mode {
@@ -217,7 +217,7 @@ impl BallColor {
                 BallColorType::Rainbow => {
                     if valid_mode {
                         mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
-                            Self::convert_to_ball_color_id(0);
+                            Self::convert_to_ball_color_id(0) as u8;
                     }
 
                     let paused_now = *(0x805BC474 as *const u32) & 8 != 0;
@@ -232,7 +232,7 @@ impl BallColor {
                 BallColorType::Random => {
                     if valid_mode {
                         mkb::balls[mkb::curr_player_idx as usize].g_ball_color_index =
-                            Self::convert_to_ball_color_id(0);
+                            Self::convert_to_ball_color_id(0) as u8;
                     }
 
                     if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
@@ -259,17 +259,17 @@ impl BallColor {
 
             let ape = mkb::balls[mkb::curr_player_idx as usize].ape;
             if !ape.is_null() {
-                let clothing_type = ClothingType::from_pref(U8Pref::ApeColorType, pref);
+                let clothing_type = ClothingType::from_pref(I16Pref::ApeColorType, pref);
 
                 match clothing_type {
                     ClothingType::Preset => {
                         (*ape).color_index =
-                            Self::convert_to_ape_color_id(pref.get(U8Pref::ApeColor)) as i32;
+                            Self::convert_to_ape_color_id(pref.get(I16Pref::ApeColor)) as i32;
                     }
                     ClothingType::Random => {
                         if mkb::sub_mode == mkb::SMD_GAME_READY_INIT {
                             (*ape).color_index =
-                                Self::convert_to_ape_color_id((mkb::rand() % 9) as u8) as i32;
+                                Self::convert_to_ape_color_id((mkb::rand() % 9) as i16) as i32;
                         }
                     }
                 }

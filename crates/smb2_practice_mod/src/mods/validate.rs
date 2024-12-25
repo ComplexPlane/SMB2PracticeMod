@@ -11,7 +11,7 @@ use crate::{
     systems::{
         menu_impl::MenuImpl,
         pad::{Pad, Prio},
-        pref::{BoolPref, Pref, U8Pref},
+        pref::{BoolPref, I16Pref, Pref},
     },
     utils::libsavestate::LibSaveState,
 };
@@ -74,11 +74,11 @@ const INVALID_BOOL_PREFS: &[BoolPref] = &[
     BoolPref::DebugMode,
 ];
 
-const INVALID_U8_PREFS: &[U8Pref] = &[
-    U8Pref::PhysicsPreset,
-    U8Pref::TimerType,
-    U8Pref::FalloutPlaneType,
-    U8Pref::StageEditVariant,
+const INVALID_U8_PREFS: &[I16Pref] = &[
+    I16Pref::PhysicsPreset,
+    I16Pref::TimerType,
+    I16Pref::FalloutPlaneType,
+    I16Pref::StageEditVariant,
 ];
 
 impl Validate {
