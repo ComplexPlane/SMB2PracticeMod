@@ -21,7 +21,7 @@ use super::{ballcolor::BallColor, freecam::Freecam};
 #[derive(Copy, Clone, PartialEq, Eq, TryFromPrimitive)]
 #[repr(i16)]
 pub enum InputDispColorType {
-    Default = 0,
+    Preset = 0,
     RgbSolid = 1,
     RgbGradient = 2,
     Rainbow = 3,
@@ -254,7 +254,7 @@ impl InputDisplay {
 
     fn get_gradient(&self, cx: &Context) -> Gradient {
         match InputDispColorType::from_pref(I16Pref::InputDispColorType, cx.pref) {
-            InputDispColorType::Default => {
+            InputDispColorType::Preset => {
                 Self::COLOR_MAP[cx.pref.get(I16Pref::InputDispColor) as usize].into()
             }
             InputDispColorType::RgbSolid => mkb::GXColor {
