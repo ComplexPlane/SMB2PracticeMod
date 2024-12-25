@@ -16,26 +16,6 @@ pub fn fabs(n: f32) -> f32 {
     }
 }
 
-pub fn cbrt_approx(x: f32) -> f32 {
-    if x == 0.0 {
-        return 0.0;
-    }
-
-    let y = x.abs();
-    let mut guess = y;
-
-    // Newton's method iterations
-    for _ in 0..4 {
-        guess = (2.0 * guess + y / (guess * guess)) / 3.0;
-    }
-
-    if x < 0.0 {
-        -guess
-    } else {
-        guess
-    }
-}
-
 pub fn sin_cos(angle: i16) -> Vec2d {
     let mut sin_cos = [0f32; 2];
     unsafe {

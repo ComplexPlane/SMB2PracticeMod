@@ -1,7 +1,5 @@
 use mkb::mkb;
 
-use super::math;
-
 #[derive(Clone, Copy)]
 struct Oklab {
     l: f32,
@@ -18,9 +16,9 @@ fn rgb_to_oklab(color: mkb::GXColor) -> Oklab {
     let m = 0.1073969566f32 * b + 0.2119034982f32 * r + 0.6806995451 * g;
     let s = 0.6299787005f32 * b + 0.0883024619f32 * r + 0.2817188376 * g;
 
-    let l_ = math::cbrt_approx(l);
-    let m_ = math::cbrt_approx(m);
-    let s_ = math::cbrt_approx(s);
+    let l_ = unsafe { mkb::pow(l as f64, 1.0 / 3.0) } as f32;
+    let m_ = unsafe { mkb::pow(m as f64, 1.0 / 3.0) } as f32;
+    let s_ = unsafe { mkb::pow(s as f64, 1.0 / 3.0) } as f32;
 
     Oklab {
         l: -0.0040720468f32 * s_ + 0.2104542553f32 * l_ + 0.7936177850 * m_,
@@ -43,9 +41,10 @@ fn oklab_to_rgb(color: Oklab) -> mkb::GXColor {
     let b = 1.7076147010f32 * s - 0.0041960863f32 * l - 0.7034186147 * m;
 
     mkb::GXColor {
-        r: (r.clamp(0.0, 1.0) * 255.0) as u8,
-        g: (g.clamp(0.0, 1.0) * 255.0) as u8,
-        b: (b.clamp(0.0, 1.0) * 255.0) as u8,
+        // Approximate round to nearest integer (I know it's not perfect)
+        r: (r.clamp(0.0, 1.0) * 255.0 + 0.5) as u8,
+        g: (g.clamp(0.0, 1.0) * 255.0 + 0.5) as u8,
+        b: (b.clamp(0.0, 1.0) * 255.0 + 0.5) as u8,
         a: 255,
     }
 }
