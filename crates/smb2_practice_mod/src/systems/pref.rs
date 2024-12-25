@@ -190,6 +190,7 @@ pref_defn!(
     89 => InputDispGradientRotation: i16,
     90 => InputDispGradientStart: i16,
     91 => InputDispGradientEnd: i16 = 100,
+    92 => RgbFormat: i16,
 );
 
 const PREF_BUF_SIZE: usize =

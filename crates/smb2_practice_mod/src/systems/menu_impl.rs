@@ -515,7 +515,12 @@ impl MenuImpl {
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
             }
-            Widget::IntEdit { label, pref, .. } => {
+            Widget::IntEdit {
+                label,
+                pref,
+                formatter,
+                ..
+            } => {
                 if selected_idx == *selectable_idx {
                     draw_selectable_highlight(*y as f32);
                 }
@@ -524,12 +529,16 @@ impl MenuImpl {
                 } else {
                     UNFOCUSED_COLOR
                 };
+
+                let mut formatted_value = ArrayString::<32>::new();
+                formatter(cx.pref.get(*pref), &mut formatted_value, cx);
+
                 draw::debug_text(MARGIN + PAD + LABEL_OFFSET, *y, color, label);
                 draw::debug_text(
                     MARGIN + PAD + PREF_OFFSET,
                     *y,
                     color,
-                    &fmt!(8, c"%d", cx.pref.get(*pref) as u32),
+                    formatted_value.as_str(),
                 );
                 *y += LINE_HEIGHT;
                 *selectable_idx += 1;
