@@ -3,7 +3,7 @@ use mkb::mkb;
 use arrayvec::{ArrayString, ArrayVec};
 
 use crate::systems::draw::{self, NotifyDuration};
-use crate::utils::color;
+use crate::utils::math;
 use crate::utils::tinymap::TinyMap;
 use crate::utils::tinymap::TinyMapBuilder;
 use crate::{cstr, cstr_buf, fmt};
@@ -400,7 +400,7 @@ impl MenuImpl {
                         0.0
                     };
 
-                    let lerped_color = color::lerp_oklab(t, *color_left, *color_right);
+                    let lerped_color = math::lerp_colors(t, *color_left, *color_right);
                     let x = MARGIN + PAD + (*offset_x as u32 + i as u32) * DEBUG_CHAR_WIDTH;
                     let ch = &label[i..i + 1]; // Plz only use ASCII
                     draw::debug_text(x, *y, lerped_color, ch);
@@ -601,7 +601,7 @@ impl MenuImpl {
         let mut y = MARGIN + PAD + 2 * LINE_HEIGHT;
         let mut selectable_idx = 0;
 
-        let lerped_color = color::lerp_oklab(self.sin_lerp(40), FOCUSED_COLOR, UNFOCUSED_COLOR);
+        let lerped_color = math::lerp_colors(self.sin_lerp(40), FOCUSED_COLOR, UNFOCUSED_COLOR);
 
         for widget in menu.widgets {
             self.draw_widget(

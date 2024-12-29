@@ -38,3 +38,12 @@ pub fn map_range(
 
     (to_range.start as f32 + (value_scaled * to_span) / from_span) as i32
 }
+
+pub fn lerp_colors(t: f32, c1: mkb::GXColor, c2: mkb::GXColor) -> mkb::GXColor {
+    mkb::GXColor {
+        r: ((1.0 - t) * c1.r as f32 + t * c2.r as f32) as u8,
+        g: ((1.0 - t) * c1.g as f32 + t * c2.g as f32) as u8,
+        b: ((1.0 - t) * c1.b as f32 + t * c2.b as f32) as u8,
+        a: 255,
+    }
+}

@@ -1,4 +1,3 @@
-pub mod color;
 pub mod hook;
 pub mod libsavestate;
 pub mod log;

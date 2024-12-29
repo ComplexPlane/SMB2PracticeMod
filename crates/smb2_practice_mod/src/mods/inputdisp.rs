@@ -14,7 +14,7 @@ use crate::systems::{
     pad::{self, Pad, Prio, StickState},
     pref::{BoolPref, I16Pref, Pref},
 };
-use crate::utils::{color, math};
+use crate::utils::math;
 
 use super::{ballcolor::BallColor, freecam::Freecam};
 
@@ -88,7 +88,7 @@ impl InputDisplay {
 
         let t = gradient.start + t * (gradient.end - gradient.start);
         let t = t.clamp(0.0, 1.0);
-        let color = color::lerp_oklab(t, gradient.color1, gradient.color2);
+        let color = math::lerp_colors(t, gradient.color1, gradient.color2);
         color
     }
 
