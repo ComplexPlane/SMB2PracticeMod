@@ -184,6 +184,13 @@ pref_defn!(
     83 => CustomPhysicsDisp: bool = true,
     84 => SavestateSaveTo: i16,
     85 => SavestateClearAllBind: i16 = 255,
+    86 => InputDispGradientColor2Red: i16,
+    87 => InputDispGradientColor2Green: i16,
+    88 => InputDispGradientColor2Blue: i16,
+    89 => InputDispGradientRotation: i16,
+    90 => InputDispGradientStart: i16,
+    91 => InputDispGradientEnd: i16 = 100,
+    92 => RgbFormat: i16,
 );
 
 const PREF_BUF_SIZE: usize =

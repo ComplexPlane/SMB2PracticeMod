@@ -1,6 +1,7 @@
-use core::f32;
 use core::ffi::CStr;
+use core::{f32, i16};
 
+use ::mkb::mkb_suppl::{Dot, GXColor4u8};
 use ::mkb::mkb_suppl::{GXPosition3f32, GXTexCoord2f32};
 use mkb::mkb;
 use mkb::Vec2d;
@@ -13,16 +14,18 @@ use crate::systems::{
     pad::{self, Pad, Prio, StickState},
     pref::{BoolPref, I16Pref, Pref},
 };
+use crate::utils::math;
 
 use super::{ballcolor::BallColor, freecam::Freecam};
 
 #[derive(Copy, Clone, PartialEq, Eq, TryFromPrimitive)]
 #[repr(i16)]
 pub enum InputDispColorType {
-    Default = 0,
-    Rgb = 1,
-    Rainbow = 2,
-    MatchBall = 3,
+    Preset = 0,
+    RgbSolid = 1,
+    RgbGradient = 2,
+    Rainbow = 3,
+    MatchBall = 4,
 }
 
 #[derive(TryFromPrimitive, PartialEq, Eq)]
@@ -39,61 +42,94 @@ struct Context<'a> {
     ball_color: &'a BallColor,
 }
 
+struct RingShape {
+    pts: u32,
+    center: Vec2d,
+    inner_radius: f32,
+    outer_radius: f32,
+}
+
+struct Gradient {
+    color1: mkb::GXColor,
+    color2: mkb::GXColor,
+    rotation: i16,
+    start: f32,
+    end: f32,
+}
+
+impl From<mkb::GXColor> for Gradient {
+    fn from(color: mkb::GXColor) -> Self {
+        Self {
+            color1: color,
+            color2: color,
+            rotation: 0,
+            start: 0.0,
+            end: 1.0,
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct InputDisplay {
     rainbow: u32,
 }
 
 impl InputDisplay {
-    fn draw_ring(
-        &self,
-        pts: u32,
-        center: Vec2d,
-        inner_radius: f32,
-        outer_radius: f32,
-        color: mkb::GXColor,
-    ) {
-        // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-        let texobj = 0x807ad0e0 as *mut mkb::GXTexObj;
-        unsafe {
-            mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
-            mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
-        }
+    fn get_gradient_color(
+        pt: Vec2d,
+        origin: Vec2d,
+        radius: f32,
+        gradient: &Gradient,
+    ) -> mkb::GXColor {
+        let delta = pt - origin;
+        let normal = math::sin_cos(gradient.rotation);
+        let dot = delta.dot(normal);
+        let t = dot / radius * 0.5 + 0.5;
+
+        let t = gradient.start + t * (gradient.end - gradient.start);
+        let t = t.clamp(0.0, 1.0);
+        let color = math::lerp_colors(t, gradient.color1, gradient.color2);
+        color
+    }
+
+    // Requires the vertex color GX pipeline to be configured
+    fn draw_ring(&self, shape: &RingShape, gradient: &Gradient) {
         let z = -1.0f32 / 128.0f32;
 
         unsafe {
-            mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT0, (pts * 4) as u16);
+            mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT5, (shape.pts * 4) as u16);
         }
 
-        for i in 0..pts {
-            let angle = 0xFFFF * i / pts;
-            let mut sin_cos = [0f32; 2];
-            unsafe {
-                mkb::math_sin_cos_v(angle as i16, sin_cos.as_mut_ptr());
-            }
-            let curr_inner_x = sin_cos[0] * inner_radius + center.x;
-            let curr_inner_y = sin_cos[1] * inner_radius + center.y;
-            let curr_outer_x = sin_cos[0] * outer_radius + center.x;
-            let curr_outer_y = sin_cos[1] * outer_radius + center.y;
+        let write_vertex = |x, y| {
+            GXPosition3f32(x, y, z);
+            let color = Self::get_gradient_color(
+                Vec2d { x, y },
+                shape.center,
+                shape.outer_radius,
+                gradient,
+            );
+            GXColor4u8(color.r, color.g, color.b, color.a);
+        };
 
-            let next_angle = 0xFFFF * ((i + 1) % pts) / pts;
-            let mut next_sin_cos = [0f32; 2];
-            unsafe {
-                mkb::math_sin_cos_v(next_angle as i16, next_sin_cos.as_mut_ptr());
-            }
-            let next_inner_x = next_sin_cos[0] * inner_radius + center.x;
-            let next_inner_y = next_sin_cos[1] * inner_radius + center.y;
-            let next_outer_x = next_sin_cos[0] * outer_radius + center.x;
-            let next_outer_y = next_sin_cos[1] * outer_radius + center.y;
+        for i in 0..shape.pts {
+            let angle = 0xFFFF * i / shape.pts;
+            let normal = math::sin_cos(angle as i16);
+            let curr_inner_x = normal.x * shape.inner_radius + shape.center.x;
+            let curr_inner_y = normal.y * shape.inner_radius + shape.center.y;
+            let curr_outer_x = normal.x * shape.outer_radius + shape.center.x;
+            let curr_outer_y = normal.y * shape.outer_radius + shape.center.y;
 
-            GXPosition3f32(next_inner_x, next_inner_y, z);
-            GXTexCoord2f32(0.0, 0.0);
-            GXPosition3f32(next_outer_x, next_outer_y, z);
-            GXTexCoord2f32(0.0, 0.0);
-            GXPosition3f32(curr_outer_x, curr_outer_y, z);
-            GXTexCoord2f32(0.0, 0.0);
-            GXPosition3f32(curr_inner_x, curr_inner_y, z);
-            GXTexCoord2f32(0.0, 0.0);
+            let next_angle = 0xFFFF * ((i + 1) % shape.pts) / shape.pts;
+            let next_normal = math::sin_cos(next_angle as i16);
+            let next_inner_x = next_normal.x * shape.inner_radius + shape.center.x;
+            let next_inner_y = next_normal.y * shape.inner_radius + shape.center.y;
+            let next_outer_x = next_normal.x * shape.outer_radius + shape.center.x;
+            let next_outer_y = next_normal.y * shape.outer_radius + shape.center.y;
+
+            write_vertex(next_inner_x, next_inner_y);
+            write_vertex(next_outer_x, next_outer_y);
+            write_vertex(curr_outer_x, curr_outer_y);
+            write_vertex(curr_inner_x, curr_inner_y);
         }
     }
 
@@ -216,41 +252,80 @@ impl InputDisplay {
         draw::BLACK,  // Black
     ];
 
-    fn get_color(&self, cx: &Context) -> mkb::GXColor {
+    fn get_gradient(&self, cx: &Context) -> Gradient {
         match InputDispColorType::from_pref(I16Pref::InputDispColorType, cx.pref) {
-            InputDispColorType::Default => {
-                Self::COLOR_MAP[cx.pref.get(I16Pref::InputDispColor) as usize]
+            InputDispColorType::Preset => {
+                Self::COLOR_MAP[cx.pref.get(I16Pref::InputDispColor) as usize].into()
             }
-            InputDispColorType::Rgb => mkb::GXColor {
+            InputDispColorType::RgbSolid => mkb::GXColor {
                 r: cx.pref.get(I16Pref::InputDispRed) as u8,
                 g: cx.pref.get(I16Pref::InputDispGreen) as u8,
                 b: cx.pref.get(I16Pref::InputDispBlue) as u8,
                 a: 0xff,
-            },
-            InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow),
+            }
+            .into(),
+            InputDispColorType::RgbGradient => {
+                let color1 = mkb::GXColor {
+                    r: cx.pref.get(I16Pref::InputDispRed) as u8,
+                    g: cx.pref.get(I16Pref::InputDispGreen) as u8,
+                    b: cx.pref.get(I16Pref::InputDispBlue) as u8,
+                    a: 0xff,
+                };
+                let color2 = mkb::GXColor {
+                    r: cx.pref.get(I16Pref::InputDispGradientColor2Red) as u8,
+                    g: cx.pref.get(I16Pref::InputDispGradientColor2Green) as u8,
+                    b: cx.pref.get(I16Pref::InputDispGradientColor2Blue) as u8,
+                    a: 0xff,
+                };
+                let rotation = cx.pref.get(I16Pref::InputDispGradientRotation);
+                let rotation = math::map_range(
+                    rotation as i32,
+                    0..100,
+                    (i16::MIN as i32)..(i16::MAX as i32),
+                ) as i16;
+                let start = cx.pref.get(I16Pref::InputDispGradientStart) as f32 / 100.0;
+                let end = cx.pref.get(I16Pref::InputDispGradientEnd) as f32 / 100.0;
+                Gradient {
+                    color1,
+                    color2,
+                    rotation,
+                    start,
+                    end,
+                }
+            }
+            InputDispColorType::Rainbow => draw::num_to_rainbow(self.rainbow).into(),
             InputDispColorType::MatchBall => {
                 let mut color = cx.ball_color.get_current_color();
                 color.a = 0xff;
-                color
+                color.into()
             }
         }
     }
 
     fn draw_stick(&self, raw_stick_inputs: &StickState, center: &Vec2d, scale: f32, cx: &Context) {
-        let chosen_color = self.get_color(cx);
+        let gradient = self.get_gradient(cx);
 
-        self.draw_ring(
-            8,
-            *center,
-            54.0 * scale,
-            60.0 * scale,
-            mkb::GXColor {
-                r: 0x00,
-                g: 0x00,
-                b: 0x00,
-                a: 0xFF,
-            },
-        );
+        // Draw black border
+        draw::with_vertex_color_pipeline(|| {
+            let border_shape = RingShape {
+                pts: 8,
+                center: *center,
+                inner_radius: 54.0 * scale,
+                outer_radius: 60.0 * scale,
+            };
+            self.draw_ring(
+                &border_shape,
+                &mkb::GXColor {
+                    r: 0x00,
+                    g: 0x00,
+                    b: 0x00,
+                    a: 0xFF,
+                }
+                .into(),
+            );
+        });
+
+        // Draw transparent black background
         self.draw_circle(
             8,
             *center,
@@ -262,13 +337,23 @@ impl InputDisplay {
                 a: 0x7F,
             },
         );
-        self.draw_ring(8, *center, 50.0 * scale, 58.0 * scale, chosen_color);
 
+        // Draw colored ring
+        draw::with_vertex_color_pipeline(|| {
+            let ring_shape = RingShape {
+                pts: 8,
+                center: *center,
+                inner_radius: 50.0 * scale,
+                outer_radius: 58.0 * scale,
+            };
+            self.draw_ring(&ring_shape, &gradient);
+        });
+
+        // Draw stick position dot
         let scaled_input = Vec2d {
             x: center.x + (raw_stick_inputs.x as f32) / 2.7 * scale,
             y: center.y - (raw_stick_inputs.y as f32) / 2.7 * scale,
         };
-
         self.draw_circle(
             16,
             scaled_input,

@@ -1,6 +1,7 @@
 use mkb::mkb;
 
 use arrayvec::ArrayString;
+use num_enum::TryFromPrimitive;
 
 use crate::mods::cmseg::{CmSeg, Seg};
 use crate::mods::gotostory::GoToStory;
@@ -15,7 +16,7 @@ use crate::{cstr_buf, fmt_buf};
 use super::binds::Binds;
 use super::draw::{self, Draw};
 use super::pad::Pad;
-use super::pref::Pref;
+use super::pref::{FromPref, Pref};
 
 pub struct MenuContext<'a> {
     pub pad: &'a mut Pad,
@@ -36,6 +37,32 @@ pub enum AfterPush {
 pub enum TextLine {
     NewLine,
     Overlap,
+}
+
+#[derive(TryFromPrimitive)]
+#[repr(i16)]
+enum RgbFormat {
+    Decimal,
+    Hex,
+}
+
+fn int_edit_normal_formatter(value: i16, out_buf: &mut ArrayString<32>, _cx: &mut MenuContext) {
+    fmt_buf!(out_buf, c"%d", value as i32);
+}
+
+fn int_edit_percent_formatter(value: i16, out_buf: &mut ArrayString<32>, _cx: &mut MenuContext) {
+    fmt_buf!(out_buf, c"%d%%", value as i32);
+}
+
+fn int_edit_rgb_formatter(value: i16, out_buf: &mut ArrayString<32>, cx: &mut MenuContext) {
+    match RgbFormat::from_pref(I16Pref::RgbFormat, cx.pref) {
+        RgbFormat::Decimal => {
+            fmt_buf!(out_buf, c"%d", value as i32);
+        }
+        RgbFormat::Hex => {
+            fmt_buf!(out_buf, c"0x%02X", value as i32);
+        }
+    }
 }
 
 pub enum Widget {
@@ -83,6 +110,7 @@ pub enum Widget {
         pref: I16Pref,
         min: i16,
         max: i16,
+        formatter: fn(value: i16, out_buf: &mut ArrayString<32>, cx: &mut MenuContext),
     },
     InputSelect {
         label: &'static str,
@@ -115,29 +143,108 @@ static INPUT_PRESET: &[Widget] = &[Widget::Choose {
     pref: I16Pref::InputDispColor,
 }];
 
-static INPUT_HEX: &[Widget] = &[
+static INPUT_RGB_SOLID: &[Widget] = &[
     Widget::RgbPreview {
         r_pref: I16Pref::InputDispRed,
         g_pref: I16Pref::InputDispGreen,
         b_pref: I16Pref::InputDispBlue,
     },
     Widget::IntEdit {
-        label: "Red Value",
+        label: "Color Red",
         pref: I16Pref::InputDispRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
     },
     Widget::IntEdit {
-        label: "Green Value",
+        label: "Color Green",
         pref: I16Pref::InputDispGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
     },
     Widget::IntEdit {
-        label: "Blue Value",
+        label: "Color Blue",
         pref: I16Pref::InputDispBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+];
+
+static INPUT_RGB_GRADIENT: &[Widget] = &[
+    Widget::RgbPreview {
+        r_pref: I16Pref::InputDispRed,
+        g_pref: I16Pref::InputDispGreen,
+        b_pref: I16Pref::InputDispBlue,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Red",
+        pref: I16Pref::InputDispRed,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Green",
+        pref: I16Pref::InputDispGreen,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 1 Blue",
+        pref: I16Pref::InputDispBlue,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::RgbPreview {
+        r_pref: I16Pref::InputDispGradientColor2Red,
+        g_pref: I16Pref::InputDispGradientColor2Green,
+        b_pref: I16Pref::InputDispGradientColor2Blue,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Red",
+        pref: I16Pref::InputDispGradientColor2Red,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Green",
+        pref: I16Pref::InputDispGradientColor2Green,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Color 2 Blue",
+        pref: I16Pref::InputDispGradientColor2Blue,
+        min: ballcolor::COLOR_MIN,
+        max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Rotation",
+        pref: I16Pref::InputDispGradientRotation,
+        min: 0,
+        max: 100,
+        formatter: int_edit_percent_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient Start",
+        pref: I16Pref::InputDispGradientStart,
+        min: -200,
+        max: 200,
+        formatter: int_edit_percent_formatter,
+    },
+    Widget::IntEdit {
+        label: "Gradient End",
+        pref: I16Pref::InputDispGradientEnd,
+        min: -100,
+        max: 300,
+        formatter: int_edit_percent_formatter,
     },
 ];
 
@@ -155,9 +262,17 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
         label: "Raw Stick Inputs",
         pref: BoolPref::InputDispRawStickInputs,
     },
+    Widget::Separator {},
+    Widget::Header { label: "Color" },
     Widget::Choose {
         label: "Color Type",
-        choices: &["Preset", "RGB Selector", "Rainbow", "Match Ball"],
+        choices: &[
+            "Preset",
+            "RGB Solid",
+            "RGB Gradient",
+            "Rainbow",
+            "Match Ball",
+        ],
         pref: I16Pref::InputDispColorType,
     },
     Widget::HideableGroup {
@@ -165,12 +280,19 @@ static INPUTDISP_SUBWIDGETS: &[Widget] = &[
         show_if: |cx| cx.pref.get(I16Pref::InputDispColorType) == 0,
     },
     Widget::HideableGroup {
-        widgets: INPUT_HEX,
+        widgets: INPUT_RGB_SOLID,
         show_if: |cx| cx.pref.get(I16Pref::InputDispColorType) == 1,
+    },
+    Widget::HideableGroup {
+        widgets: INPUT_RGB_GRADIENT,
+        show_if: |cx| cx.pref.get(I16Pref::InputDispColorType) == 2,
     },
 ];
 
 static INPUTDISP_WIDGETS: &[Widget] = &[
+    Widget::Header {
+        label: "Input Display",
+    },
     Widget::Checkbox {
         label: "Show Input Display",
         pref: BoolPref::InputDisp,
@@ -204,22 +326,25 @@ static HEX_WIDGETS: &[Widget] = &[
         b_pref: I16Pref::BallBlue,
     },
     Widget::IntEdit {
-        label: "Red Value",
+        label: "Color Red",
         pref: I16Pref::BallRed,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
     },
     Widget::IntEdit {
-        label: "Green Value",
+        label: "Color Green",
         pref: I16Pref::BallGreen,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
     },
     Widget::IntEdit {
-        label: "Blue Value",
+        label: "Color Blue",
         pref: I16Pref::BallBlue,
         min: ballcolor::COLOR_MIN,
         max: ballcolor::COLOR_MAX,
+        formatter: int_edit_rgb_formatter,
     },
 ];
 
@@ -231,7 +356,7 @@ static BALL_COLOR_WIDGETS: &[Widget] = &[
     },
     Widget::Choose {
         label: "Ball Color Type",
-        choices: &["Preset", "RGB Selector", "Rainbow", "Random"],
+        choices: &["Preset", "RGB", "Rainbow", "Random"],
         pref: I16Pref::BallColorType,
     },
     Widget::HideableGroup {
@@ -902,6 +1027,7 @@ static FREECAM_WIDGETS: &[Widget] = &[
         pref: I16Pref::FreecamSpeedMult,
         min: freecam::TURBO_SPEED_MIN,
         max: freecam::TURBO_SPEED_MAX,
+        formatter: int_edit_normal_formatter,
     },
     Widget::Checkbox {
         label: "Freeze Timer",
@@ -1362,6 +1488,13 @@ static PRACMOD_SETTINGS_WIDGETS: &[Widget] = &[
     Widget::Text {
         label: "  Menu Bind Requires 2 Buttons",
     },
+    Widget::Separator {},
+    Widget::Choose {
+        label: "RGB Format",
+        choices: &["Decimal", "Hex"],
+        pref: I16Pref::RgbFormat,
+    },
+    Widget::Separator {},
     Widget::Menu {
         label: "Restore Defaults",
         widgets: RESET_PREFS_WIDGETS,
