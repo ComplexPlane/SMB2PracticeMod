@@ -615,18 +615,31 @@ impl MenuImpl {
         }
     }
 
-    fn draw_breadcrumbs(&self) {
+    fn draw_breadcrumbs_from<F>(&self, start: u32, draw_fn: F) -> u32
+    where
+        F: Fn(u32, u32, mkb::GXColor, &str),
+    {
         const ARROW_STR: &str = " \u{001c} ";
+        let grey = mkb::GXColor {
+            r: 0xE0,
+            g: 0xE0,
+            b: 0xE0,
+            a: 0xFF,
+        };
 
         let mut x = MARGIN + PAD;
-        for (i, menu) in self.menu_stack.iter().enumerate() {
-            let grey = mkb::GXColor {
-                r: 0xE0,
-                g: 0xE0,
-                b: 0xE0,
-                a: 0xFF,
-            };
-            draw::debug_text(
+        if start > 0 {
+            for _ in 0..3 {
+                draw::debug_text(x, MARGIN + PAD, grey, ".");
+                x += 6;
+            }
+
+            draw_fn(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
+            x += ARROW_STR.len() as u32 * draw::DEBUG_CHAR_WIDTH;
+        }
+
+        for (i, menu) in self.menu_stack.iter().enumerate().skip(start as usize) {
+            draw_fn(
                 x,
                 MARGIN + PAD,
                 if i == self.menu_stack.len() - 1 {
@@ -637,9 +650,22 @@ impl MenuImpl {
                 menu.label,
             );
             x += menu.label.len() as u32 * draw::DEBUG_CHAR_WIDTH;
+
             if i != self.menu_stack.len() - 1 {
-                draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
+                draw_fn(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
                 x += ARROW_STR.len() as u32 * draw::DEBUG_CHAR_WIDTH;
+            }
+        }
+        x
+    }
+
+    fn draw_breadcrumbs(&self) {
+        for i in 0..self.menu_stack.len() {
+            // Calculate breadcrumb width to see if it would overflow
+            let final_x = self.draw_breadcrumbs_from(i as u32, |_x, _y, _color, _text| {});
+            if final_x <= SCREEN_WIDTH - MARGIN - PAD {
+                self.draw_breadcrumbs_from(i as u32, draw::debug_text);
+                break;
             }
         }
 
