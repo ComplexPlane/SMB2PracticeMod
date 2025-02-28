@@ -21,8 +21,13 @@ pub struct IlMark {
 
 impl Default for IlMark {
     fn default() -> Self {
-        const VANILLA_GAME_NAME: [c_char; 4] = [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
-        const VANILLA_GAME_COMPANY: [c_char; 2] = [b'8' as i8, b'P' as i8];
+        const VANILLA_GAME_NAME: [c_char; 4] = [
+            b'G' as c_char,
+            b'M' as c_char,
+            b'2' as c_char,
+            b'E' as c_char,
+        ];
+        const VANILLA_GAME_COMPANY: [c_char; 2] = [b'8' as c_char, b'P' as c_char];
         let is_romhack = unsafe {
             mkb::DVD_GAME_NAME != VANILLA_GAME_NAME || mkb::DVD_COMPANY != VANILLA_GAME_COMPANY
         };

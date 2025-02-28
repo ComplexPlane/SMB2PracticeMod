@@ -26,8 +26,13 @@ struct FakeGamecode {
 impl FakeGamecode {
     fn new() -> Self {
         unsafe {
-            mkb::DVD_GAME_NAME = [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
-            mkb::DVD_COMPANY = [b'8' as i8, b'P' as i8];
+            mkb::DVD_GAME_NAME = [
+                b'G' as c_char,
+                b'M' as c_char,
+                b'2' as c_char,
+                b'E' as c_char,
+            ];
+            mkb::DVD_COMPANY = [b'8' as c_char, b'P' as c_char];
 
             Self {
                 orig_game_name: mkb::DVD_GAME_NAME,

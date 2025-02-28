@@ -29,7 +29,7 @@ macro_rules! cstr_buf {
     ($arraystring:expr) => {{
         let mut buf = $arraystring;
         buf.push('\0');
-        buf.as_mut_ptr() as *mut i8
+        buf.as_mut_ptr() as *mut ::core::ffi::c_char
     }};
 }
 
