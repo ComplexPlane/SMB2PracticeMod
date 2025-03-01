@@ -22,7 +22,7 @@ use core::{
 
 use critical_section::RawRestoreState;
 
-// Disable unless we're buliding with our custom target explicitly, so rust-analyzer doesn't trip up
+// Disable unless we're building with our custom target explicitly, so rust-analyzer doesn't trip up
 // on conflicting panic handler implementations with std
 #[cfg(target_arch = "powerpc")]
 #[panic_handler]
