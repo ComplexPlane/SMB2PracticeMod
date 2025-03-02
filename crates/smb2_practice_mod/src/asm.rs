@@ -1,6 +1,6 @@
 use core::arch::global_asm;
 
-extern "C" {
+unsafe extern "C" {
     pub static custom_titlescreen_text_color: u8;
     pub static full_debug_text_color: u8;
     pub static mut debug_text_color: u32;

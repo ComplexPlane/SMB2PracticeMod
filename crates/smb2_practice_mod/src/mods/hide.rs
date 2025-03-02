@@ -180,22 +180,26 @@ fn should_hide_bg(pref: &Pref) -> bool {
 
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`
 unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+    unsafe {
+        let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
 
-    if should_hide {
-        mkb::avdisp_set_fog_color(0, 0, 0);
-    } else {
-        mkb::avdisp_set_fog_color(r, g, b);
+        if should_hide {
+            mkb::avdisp_set_fog_color(0, 0, 0);
+        } else {
+            mkb::avdisp_set_fog_color(r, g, b);
+        }
     }
 }
 
 unsafe extern "C" fn nl2ngc_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+    unsafe {
+        let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
 
-    if should_hide {
-        mkb::nl2ngc_set_fog_color(0, 0, 0);
-    } else {
-        mkb::nl2ngc_set_fog_color(r, g, b);
+        if should_hide {
+            mkb::nl2ngc_set_fog_color(0, 0, 0);
+        } else {
+            mkb::nl2ngc_set_fog_color(r, g, b);
+        }
     }
 }
 

@@ -149,21 +149,23 @@ impl SaveState {
     }
 
     unsafe fn handle_pause_menu_save(&mut self) {
-        self.pause_menu_sprite_status = 0;
+        unsafe {
+            self.pause_menu_sprite_status = 0;
 
-        // Look for an active sprite that has the same dest func pointer as the pause menu sprite
-        for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
-                continue;
-            }
+            // Look for an active sprite that has the same dest func pointer as the pause menu sprite
+            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+                    continue;
+                }
 
-            let sprite = &raw mut mkb::sprites[i];
-            let disp_func = (*sprite).disp_func;
-            #[allow(unpredictable_function_pointer_comparisons)]
-            if disp_func == Some(mkb::sprite_pausemenu_disp) {
-                self.pause_menu_sprite_status = *mkb::sprite_pool_info.status_list.add(i);
-                self.pause_menu_sprite = *sprite;
-                break;
+                let sprite = &raw mut mkb::sprites[i];
+                let disp_func = (*sprite).disp_func;
+                #[allow(unpredictable_function_pointer_comparisons)]
+                if disp_func == Some(mkb::sprite_pausemenu_disp) {
+                    self.pause_menu_sprite_status = *mkb::sprite_pool_info.status_list.add(i);
+                    self.pause_menu_sprite = *sprite;
+                    break;
+                }
             }
         }
     }
@@ -235,116 +237,124 @@ impl SaveState {
     }
 
     unsafe fn handle_load_state_from_nonplay_submode(&mut self) -> Result<(), LoadError> {
-        if !(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
-            || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
-            || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT
-            || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN
-            || mkb::sub_mode == mkb::SMD_GAME_READY_INIT
-            || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)
-        {
-            return Ok(());
+        unsafe {
+            if !(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
+                || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
+                || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT
+                || mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_MAIN
+                || mkb::sub_mode == mkb::SMD_GAME_READY_INIT
+                || mkb::sub_mode == mkb::SMD_GAME_READY_MAIN)
+            {
+                return Ok(());
+            }
+
+            // Loading a state while paused in a non-gameplay mode causes issues for some reason
+            let paused_now = *(0x805BC474 as *const u32) & 8 != 0; // TODO actually give this a name
+            if paused_now {
+                return Err(LoadError::PausedAndNonGameplaySubmode);
+            }
+
+            mkb::event_init(mkb::EVENT_VIBRATION); // Post-goal replay can disable rumble
+            mkb::smd_game_play_init();
+            mkb::sub_mode_request = mkb::SMD_GAME_PLAY_MAIN;
+
+            // Loading a state for one frame after being in a replay fails to load the state properly, but
+            // also loading after a frame has elapsed seems to fix it. There's probably some extra data I
+            // need to save, but for now this works.
+            self.reload_state = true;
+
+            Ok(())
         }
-
-        // Loading a state while paused in a non-gameplay mode causes issues for some reason
-        let paused_now = unsafe { *(0x805BC474 as *const u32) & 8 != 0 }; // TODO actually give this a name
-        if paused_now {
-            return Err(LoadError::PausedAndNonGameplaySubmode);
-        }
-
-        mkb::event_init(mkb::EVENT_VIBRATION); // Post-goal replay can disable rumble
-        mkb::smd_game_play_init();
-        mkb::sub_mode_request = mkb::SMD_GAME_PLAY_MAIN;
-
-        // Loading a state for one frame after being in a replay fails to load the state properly, but
-        // also loading after a frame has elapsed seems to fix it. There's probably some extra data I
-        // need to save, but for now this works.
-        self.reload_state = true;
-
-        Ok(())
     }
 
     unsafe fn handle_pause_menu_load(&mut self) {
-        let paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED != 0;
-        let paused_in_state = self.pause_menu_sprite_status != 0;
+        unsafe {
+            let paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED != 0;
+            let paused_in_state = self.pause_menu_sprite_status != 0;
 
-        if paused_now && !paused_in_state {
-            // Destroy the pause menu sprite that currently exists
+            if paused_now && !paused_in_state {
+                // Destroy the pause menu sprite that currently exists
+                for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+                    if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+                        continue;
+                    }
+
+                    if let Some(f) = mkb::sprites[i].disp_func {
+                        if f as usize == 0x8032a4bc {
+                            *mkb::sprite_pool_info.status_list.add(i) = 0;
+                            break;
+                        }
+                    }
+                }
+            } else if !paused_now && paused_in_state {
+                // Allocate a new pause menu sprite
+                let i = mkb::pool_alloc(
+                    &raw mut mkb::sprite_pool_info,
+                    self.pause_menu_sprite_status,
+                ) as usize;
+                mkb::sprites[i] = self.pause_menu_sprite;
+            }
+        }
+    }
+
+    unsafe fn destruct_non_gameplay_sprites() {
+        unsafe {
             for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
                 if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                     continue;
                 }
 
-                if let Some(f) = mkb::sprites[i].disp_func {
-                    if f as usize == 0x8032a4bc {
-                        *mkb::sprite_pool_info.status_list.add(i) = 0;
-                        break;
-                    }
+                let sprite = &mkb::sprites[i];
+                #[allow(unpredictable_function_pointer_comparisons)]
+                let post_goal_sprite_tick = if let Some(tick_func) = sprite.tick_func {
+                    tick_func == mkb::sprite_fallout_tick
+                        || tick_func == mkb::sprite_bonus_finish_or_perfect_tick
+                        || tick_func == mkb::sprite_ready_tick
+                        || tick_func == mkb::sprite_go_tick
+                        || tick_func == mkb::sprite_player_num_tick
+                        || tick_func == mkb::sprite_replay_tick
+                        || tick_func == mkb::sprite_loadin_stage_name_tick
+                        || tick_func == mkb::sprite_bonus_stage_tick
+                        || tick_func == mkb::sprite_final_stage_tick
+                } else {
+                    false
+                };
+
+                #[allow(unpredictable_function_pointer_comparisons)]
+                let post_goal_sprite_disp = if let Some(disp_func) = sprite.disp_func {
+                    disp_func == mkb::sprite_goal_disp
+                        || disp_func == mkb::sprite_clear_score_disp
+                        || disp_func == mkb::sprite_warp_bonus_disp
+                        || disp_func == mkb::sprite_time_bonus_disp
+                        || disp_func == mkb::sprite_stage_score_disp
+                } else {
+                    false
+                };
+
+                let post_goal_sprite = post_goal_sprite_disp || post_goal_sprite_tick;
+                if post_goal_sprite {
+                    *mkb::sprite_pool_info.status_list.add(i) = 0;
                 }
-            }
-        } else if !paused_now && paused_in_state {
-            // Allocate a new pause menu sprite
-            let i = mkb::pool_alloc(
-                &raw mut mkb::sprite_pool_info,
-                self.pause_menu_sprite_status,
-            ) as usize;
-            mkb::sprites[i] = self.pause_menu_sprite;
-        }
-    }
-
-    unsafe fn destruct_non_gameplay_sprites() {
-        for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
-                continue;
-            }
-
-            let sprite = &mkb::sprites[i];
-            #[allow(unpredictable_function_pointer_comparisons)]
-            let post_goal_sprite_tick = if let Some(tick_func) = sprite.tick_func {
-                tick_func == mkb::sprite_fallout_tick
-                    || tick_func == mkb::sprite_bonus_finish_or_perfect_tick
-                    || tick_func == mkb::sprite_ready_tick
-                    || tick_func == mkb::sprite_go_tick
-                    || tick_func == mkb::sprite_player_num_tick
-                    || tick_func == mkb::sprite_replay_tick
-                    || tick_func == mkb::sprite_loadin_stage_name_tick
-                    || tick_func == mkb::sprite_bonus_stage_tick
-                    || tick_func == mkb::sprite_final_stage_tick
-            } else {
-                false
-            };
-
-            #[allow(unpredictable_function_pointer_comparisons)]
-            let post_goal_sprite_disp = if let Some(disp_func) = sprite.disp_func {
-                disp_func == mkb::sprite_goal_disp
-                    || disp_func == mkb::sprite_clear_score_disp
-                    || disp_func == mkb::sprite_warp_bonus_disp
-                    || disp_func == mkb::sprite_time_bonus_disp
-                    || disp_func == mkb::sprite_stage_score_disp
-            } else {
-                false
-            };
-
-            let post_goal_sprite = post_goal_sprite_disp || post_goal_sprite_tick;
-            if post_goal_sprite {
-                *mkb::sprite_pool_info.status_list.add(i) = 0;
             }
         }
     }
 
     unsafe fn destruct_distracting_effects() {
-        // Destruct current spark effects so we don't see big sparks
-        // generated when changing position by a large amount.
-        // Also destruct banana grabbing effects
-        for i in 0..(mkb::effect_pool_info.upper_bound as usize) {
-            if *mkb::effect_pool_info.status_list.add(i) == 0 {
-                continue;
-            }
+        unsafe {
+            // Destruct current spark effects so we don't see big sparks
+            // generated when changing position by a large amount.
+            // Also destruct banana grabbing effects
+            for i in 0..(mkb::effect_pool_info.upper_bound as usize) {
+                if *mkb::effect_pool_info.status_list.add(i) == 0 {
+                    continue;
+                }
 
-            if matches!(
-                mkb::effects[i].type_ as u32,
-                mkb::EFFECT_COLI_PARTICLE | mkb::EFFECT_HOLDING_BANANA | mkb::EFFECT_GET_BANANA
-            ) {
-                *mkb::effect_pool_info.status_list.add(i) = 0;
+                if matches!(
+                    mkb::effects[i].type_ as u32,
+                    mkb::EFFECT_COLI_PARTICLE | mkb::EFFECT_HOLDING_BANANA | mkb::EFFECT_GET_BANANA
+                ) {
+                    *mkb::effect_pool_info.status_list.add(i) = 0;
+                }
             }
         }
     }
@@ -363,92 +373,95 @@ impl SaveState {
     }
 
     unsafe fn pass_over_regions(memstore: &mut MemStore, timer: &mut Timer) {
-        memstore.scan_obj(&raw mut mkb::balls[0]);
-        memstore.scan_obj(&raw mut mkb::sub_mode);
-        memstore.scan_obj(&raw mut mkb::mode_info.stage_time_frames_remaining);
-        memstore.scan_region(0x8054E03C as *mut c_void, 0xe0); // Camera region
-        memstore.scan_region(0x805BD830 as *mut c_void, 0x1c); // Some physics region
-        memstore.scan_obj(&raw mut mkb::mode_info.ball_mode);
-        memstore.scan_obj(&raw mut mkb::g_camera_standstill_counters);
+        unsafe {
+            memstore.scan_obj(&raw mut mkb::balls[0]);
+            memstore.scan_obj(&raw mut mkb::sub_mode);
+            memstore.scan_obj(&raw mut mkb::mode_info.stage_time_frames_remaining);
+            memstore.scan_region(0x8054E03C as *mut c_void, 0xe0); // Camera region
+            memstore.scan_region(0x805BD830 as *mut c_void, 0x1c); // Some physics region
+            memstore.scan_obj(&raw mut mkb::mode_info.ball_mode);
+            memstore.scan_obj(&raw mut mkb::g_camera_standstill_counters);
 
-        // Ape state (goal is to only save stuff that affects physics)
-        let ape = mkb::balls[0].ape;
-        memstore.scan_obj(ape);
-        // The full size of this buffer is ~10kb, but hopefully this is all we need
-        memstore.scan_region((*(*ape).g_some_ape_state).g_buf5 as *mut _, 0x100);
+            // Ape state (goal is to only save stuff that affects physics)
+            let ape = mkb::balls[0].ape;
+            memstore.scan_obj(ape);
+            // The full size of this buffer is ~10kb, but hopefully this is all we need
+            memstore.scan_region((*(*ape).g_some_ape_state).g_buf5 as *mut _, 0x100);
 
-        // Itemgroups
-        memstore.scan_region(
-            mkb::itemgroups as *mut _,
-            size_of::<mkb::Itemgroup>() * (*mkb::stagedef).coli_header_count as usize,
-        );
+            // Itemgroups
+            memstore.scan_region(
+                mkb::itemgroups as *mut _,
+                size_of::<mkb::Itemgroup>() * (*mkb::stagedef).coli_header_count as usize,
+            );
 
-        // Bananas
-        memstore.scan_region(
-            &raw mut mkb::items as *mut _,
-            size_of::<mkb::Item>() * (*mkb::stagedef).banana_count as usize,
-        );
+            // Bananas
+            memstore.scan_region(
+                &raw mut mkb::items as *mut _,
+                size_of::<mkb::Item>() * (*mkb::stagedef).banana_count as usize,
+            );
 
-        // Goal tape, party ball, and button stage objects
-        for i in 0..(mkb::stobj_pool_info.upper_bound as usize) {
-            if *mkb::stobj_pool_info.status_list.add(i) == 0 {
-                continue;
-            }
-
-            match mkb::stobjs[i].type_ as u32 {
-                mkb::STOBJ_GOALTAPE
-                | mkb::STOBJ_GOALBAG
-                | mkb::STOBJ_GOALBAG_EXMASTER
-                | mkb::STOBJ_BUTTON
-                | mkb::STOBJ_JAMABAR => {
-                    memstore.scan_obj(&raw mut mkb::stobjs[i]);
+            // Goal tape, party ball, and button stage objects
+            for i in 0..(mkb::stobj_pool_info.upper_bound as usize) {
+                if *mkb::stobj_pool_info.status_list.add(i) == 0 {
+                    continue;
                 }
-                _ => {}
+
+                match mkb::stobjs[i].type_ as u32 {
+                    mkb::STOBJ_GOALTAPE
+                    | mkb::STOBJ_GOALBAG
+                    | mkb::STOBJ_GOALBAG_EXMASTER
+                    | mkb::STOBJ_BUTTON
+                    | mkb::STOBJ_JAMABAR => {
+                        memstore.scan_obj(&raw mut mkb::stobjs[i]);
+                    }
+                    _ => {}
+                }
             }
+
+            // Seesaws
+            for i in 0..((*mkb::stagedef).coli_header_count as usize) {
+                if (*(*mkb::stagedef).coli_header_list.add(i)).anim_loop_type_and_seesaw
+                    == mkb::ANIM_SEESAW as mkb::StagedefAnimType
+                {
+                    memstore
+                        .scan_region((*(*mkb::itemgroups.add(i)).seesaw_info).state as *mut _, 12);
+                }
+            }
+
+            // Goal tape and party ball-specific extra data
+            memstore.scan_region(
+                &raw mut mkb::goaltapes as *mut _,
+                size_of::<mkb::GoalTape>() * (*mkb::stagedef).goal_count as usize,
+            );
+            memstore.scan_region(
+                &raw mut mkb::goalbags as *mut _,
+                size_of::<mkb::GoalBag>() * (*mkb::stagedef).goal_count as usize,
+            );
+
+            // Pause menu
+            memstore.scan_region(0x8054DCA8 as *mut _, 56); // Pause menu state
+            memstore.scan_region(0x805BC474 as *mut _, 4); // Pause menu bitfield
+
+            #[allow(unpredictable_function_pointer_comparisons)]
+            for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
+                if *mkb::sprite_pool_info.status_list.add(i) == 0 {
+                    continue;
+                }
+                let sprite = &raw mut mkb::sprites[i];
+
+                let tick_func = (*sprite).tick_func;
+                if tick_func == Some(mkb::sprite_timer_ball_tick) {
+                    // Timer ball sprite (it'll probably always be in the same place in the sprite array)
+                    memstore.scan_obj(sprite);
+                } else if tick_func == Some(mkb::sprite_score_tick) {
+                    // Score sprite's lerped score value
+                    memstore.scan_obj(&raw mut (*sprite).fpara1);
+                }
+            }
+
+            // RTA timer
+            timer.save_state(memstore);
         }
-
-        // Seesaws
-        for i in 0..((*mkb::stagedef).coli_header_count as usize) {
-            if (*(*mkb::stagedef).coli_header_list.add(i)).anim_loop_type_and_seesaw
-                == mkb::ANIM_SEESAW as mkb::StagedefAnimType
-            {
-                memstore.scan_region((*(*mkb::itemgroups.add(i)).seesaw_info).state as *mut _, 12);
-            }
-        }
-
-        // Goal tape and party ball-specific extra data
-        memstore.scan_region(
-            &raw mut mkb::goaltapes as *mut _,
-            size_of::<mkb::GoalTape>() * (*mkb::stagedef).goal_count as usize,
-        );
-        memstore.scan_region(
-            &raw mut mkb::goalbags as *mut _,
-            size_of::<mkb::GoalBag>() * (*mkb::stagedef).goal_count as usize,
-        );
-
-        // Pause menu
-        memstore.scan_region(0x8054DCA8 as *mut _, 56); // Pause menu state
-        memstore.scan_region(0x805BC474 as *mut _, 4); // Pause menu bitfield
-
-        #[allow(unpredictable_function_pointer_comparisons)]
-        for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
-            if *mkb::sprite_pool_info.status_list.add(i) == 0 {
-                continue;
-            }
-            let sprite = &raw mut mkb::sprites[i];
-
-            let tick_func = (*sprite).tick_func;
-            if tick_func == Some(mkb::sprite_timer_ball_tick) {
-                // Timer ball sprite (it'll probably always be in the same place in the sprite array)
-                memstore.scan_obj(sprite);
-            } else if tick_func == Some(mkb::sprite_score_tick) {
-                // Score sprite's lerped score value
-                memstore.scan_obj(&raw mut (*sprite).fpara1);
-            }
-        }
-
-        // RTA timer
-        timer.save_state(memstore);
     }
 }
 
