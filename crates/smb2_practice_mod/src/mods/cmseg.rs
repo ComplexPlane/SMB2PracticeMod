@@ -226,6 +226,7 @@ impl CmSeg {
                 }
                 let sprite = &raw mut mkb::sprites[i];
                 let tick_func = (*sprite).tick_func;
+                #[allow(unpredictable_function_pointer_comparisons)]
                 if tick_func == Some(mkb::sprite_final_stage_tick) {
                     *mkb::sprite_pool_info.status_list.add(i) = 0;
                     break;

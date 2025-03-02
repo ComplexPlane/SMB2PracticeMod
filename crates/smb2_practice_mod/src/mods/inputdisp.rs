@@ -176,6 +176,7 @@ impl InputDisplay {
                 let sprite = &mut mkb::sprites[i];
                 let tick_func = sprite.tick_func;
                 let disp_func = sprite.disp_func;
+                #[allow(unpredictable_function_pointer_comparisons)]
                 if (sprite.bmp == 0x503
                     || tick_func == Some(mkb::sprite_monkey_counter_tick)
                     || disp_func == Some(mkb::sprite_monkey_counter_icon_disp)

@@ -159,6 +159,7 @@ impl SaveState {
 
             let sprite = &raw mut mkb::sprites[i];
             let disp_func = (*sprite).disp_func;
+            #[allow(unpredictable_function_pointer_comparisons)]
             if disp_func == Some(mkb::sprite_pausemenu_disp) {
                 self.pause_menu_sprite_status = *mkb::sprite_pool_info.status_list.add(i);
                 self.pause_menu_sprite = *sprite;
@@ -297,7 +298,7 @@ impl SaveState {
             }
 
             let sprite = &mkb::sprites[i];
-            #[allow(clippy::fn_address_comparisons)]
+            #[allow(unpredictable_function_pointer_comparisons)]
             let post_goal_sprite_tick = if let Some(tick_func) = sprite.tick_func {
                 tick_func == mkb::sprite_fallout_tick
                     || tick_func == mkb::sprite_bonus_finish_or_perfect_tick
@@ -312,7 +313,7 @@ impl SaveState {
                 false
             };
 
-            #[allow(clippy::fn_address_comparisons)]
+            #[allow(unpredictable_function_pointer_comparisons)]
             let post_goal_sprite_disp = if let Some(disp_func) = sprite.disp_func {
                 disp_func == mkb::sprite_goal_disp
                     || disp_func == mkb::sprite_clear_score_disp
@@ -429,6 +430,7 @@ impl SaveState {
         memstore.scan_region(0x8054DCA8 as *mut _, 56); // Pause menu state
         memstore.scan_region(0x805BC474 as *mut _, 4); // Pause menu bitfield
 
+        #[allow(unpredictable_function_pointer_comparisons)]
         for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
             if *mkb::sprite_pool_info.status_list.add(i) == 0 {
                 continue;

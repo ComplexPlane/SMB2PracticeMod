@@ -86,6 +86,7 @@ hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite|
         unsafe {
             let correct_mode = mkb::main_mode == mkb::MD_GAME;
             let disp_func = (*sprite).disp_func;
+            #[allow(unpredictable_function_pointer_comparisons)]
             let is_pausemenu_sprite = disp_func == Some(mkb::sprite_pausemenu_disp);
             if !((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite) {
                 cx.draw_sprite_hook.call(sprite);
