@@ -61,7 +61,7 @@ impl StageEdits {
         self.new_goal = true;
     }
 
-    unsafe fn undo_mode(&self, mode: ActiveMode) {
+    fn undo_mode(&self, mode: ActiveMode) {
         unsafe {
             match mode {
                 ActiveMode::None => {}
@@ -105,7 +105,7 @@ impl StageEdits {
         }
     }
 
-    unsafe fn set_mode(&mut self, mode: ActiveMode) {
+    fn set_mode(&mut self, mode: ActiveMode) {
         unsafe {
             match mode {
                 ActiveMode::None => {}
@@ -153,25 +153,19 @@ impl StageEdits {
     fn on_load_stagedef(&mut self, pref: &Pref) {
         let next_mode = ActiveMode::from_pref(I16Pref::StageEditVariant, pref);
         self.current_mode = next_mode;
-        unsafe {
-            self.set_mode(self.current_mode);
-        }
+        self.set_mode(self.current_mode);
     }
 
     pub fn on_game_ready_init(&mut self, pref: &Pref) {
         let next_mode = ActiveMode::from_pref(I16Pref::StageEditVariant, pref);
         if self.current_mode != next_mode {
-            unsafe {
-                self.undo_mode(self.current_mode);
-                self.current_mode = next_mode;
-                self.set_mode(self.current_mode);
-            }
+            self.undo_mode(self.current_mode);
+            self.current_mode = next_mode;
+            self.set_mode(self.current_mode);
         } else if self.current_mode == ActiveMode::Reverse && self.new_goal {
-            unsafe {
-                self.undo_mode(ActiveMode::Reverse);
-                self.rev_goal_idx += 1;
-                self.set_mode(ActiveMode::Reverse);
-            }
+            self.undo_mode(ActiveMode::Reverse);
+            self.rev_goal_idx += 1;
+            self.set_mode(ActiveMode::Reverse);
         }
         self.new_goal = false;
     }

@@ -8,10 +8,7 @@ use crate::utils::math;
 use crate::utils::modlink::ModLink;
 use crate::utils::relutil;
 
-unsafe fn extract_chunk(
-    list: *mut mkb::ChunkInfo,
-    chunk: *mut mkb::ChunkInfo,
-) -> *mut mkb::ChunkInfo {
+fn extract_chunk(list: *mut mkb::ChunkInfo, chunk: *mut mkb::ChunkInfo) -> *mut mkb::ChunkInfo {
     unsafe {
         if !(*chunk).next.is_null() {
             (*(*chunk).next).prev = (*chunk).prev;
@@ -26,7 +23,7 @@ unsafe fn extract_chunk(
     }
 }
 
-unsafe fn add_chunk_to_front(
+fn add_chunk_to_front(
     list: *mut mkb::ChunkInfo,
     chunk: *mut mkb::ChunkInfo,
 ) -> *mut mkb::ChunkInfo {
@@ -47,7 +44,7 @@ pub struct Heap {
     heap_info: UnsafeCell<*mut mkb::HeapInfo>,
 }
 
-unsafe fn make_heap_info() -> mkb::HeapInfo {
+fn make_heap_info() -> mkb::HeapInfo {
     unsafe {
         let start = math::round_up_pow2(*((0x8000452C) as *const usize), 32);
         let end_ptr = relutil::compute_mainloop_reldata_boundary(start);

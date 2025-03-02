@@ -53,7 +53,7 @@ struct RelHeader {
     fix_size: u32,
 }
 
-pub unsafe fn compute_mainloop_reldata_boundary(start: usize) -> usize {
+pub fn compute_mainloop_reldata_boundary(start: usize) -> usize {
     unsafe {
         let module = *(0x800030C8 as *mut *mut RelHeader);
         for imp_idx in 0..(((*module).imp_size as usize) / size_of::<Imp>()) {

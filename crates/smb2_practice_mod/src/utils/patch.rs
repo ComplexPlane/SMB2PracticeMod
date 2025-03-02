@@ -32,7 +32,7 @@ impl<T> BranchStorage<T> for *mut T {
     }
 }
 
-pub unsafe fn clear_dc_ic_cache(ptr: *const c_void, size: usize) {
+pub fn clear_dc_ic_cache(ptr: *const c_void, size: usize) {
     unsafe {
         mkb::DCFlushRange(ptr.cast_mut(), size as u32);
         mkb::ICInvalidateRange(ptr.cast_mut(), size as u32);

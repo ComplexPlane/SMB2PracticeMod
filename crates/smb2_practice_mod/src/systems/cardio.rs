@@ -95,7 +95,7 @@ impl CardIo {
         }
     }
 
-    unsafe fn read_file_internal(&mut self, file_name: &str) -> Result<Vec<u8>, CARDResult> {
+    fn read_file_internal(&mut self, file_name: &str) -> Result<Vec<u8>, CARDResult> {
         unsafe {
             let _fake_gamecode = FakeGamecode::new();
             let mut res;

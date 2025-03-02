@@ -148,7 +148,7 @@ impl SaveState {
         Ok(())
     }
 
-    unsafe fn handle_pause_menu_save(&mut self) {
+    fn handle_pause_menu_save(&mut self) {
         unsafe {
             self.pause_menu_sprite_status = 0;
 
@@ -236,7 +236,7 @@ impl SaveState {
         Ok(())
     }
 
-    unsafe fn handle_load_state_from_nonplay_submode(&mut self) -> Result<(), LoadError> {
+    fn handle_load_state_from_nonplay_submode(&mut self) -> Result<(), LoadError> {
         unsafe {
             if !(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT
                 || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN
@@ -267,7 +267,7 @@ impl SaveState {
         }
     }
 
-    unsafe fn handle_pause_menu_load(&mut self) {
+    fn handle_pause_menu_load(&mut self) {
         unsafe {
             let paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED != 0;
             let paused_in_state = self.pause_menu_sprite_status != 0;
@@ -297,7 +297,7 @@ impl SaveState {
         }
     }
 
-    unsafe fn destruct_non_gameplay_sprites() {
+    fn destruct_non_gameplay_sprites() {
         unsafe {
             for i in 0..(mkb::sprite_pool_info.upper_bound as usize) {
                 if *mkb::sprite_pool_info.status_list.add(i) == 0 {
@@ -339,7 +339,7 @@ impl SaveState {
         }
     }
 
-    unsafe fn destruct_distracting_effects() {
+    fn destruct_distracting_effects() {
         unsafe {
             // Destruct current spark effects so we don't see big sparks
             // generated when changing position by a large amount.
@@ -372,7 +372,7 @@ impl SaveState {
         self.timestamp
     }
 
-    unsafe fn pass_over_regions(memstore: &mut MemStore, timer: &mut Timer) {
+    fn pass_over_regions(memstore: &mut MemStore, timer: &mut Timer) {
         unsafe {
             memstore.scan_obj(&raw mut mkb::balls[0]);
             memstore.scan_obj(&raw mut mkb::sub_mode);

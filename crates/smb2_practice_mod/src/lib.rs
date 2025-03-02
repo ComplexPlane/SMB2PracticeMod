@@ -52,9 +52,7 @@ fn on_panic(panic_info: &PanicInfo) -> ! {
 
 #[unsafe(no_mangle)]
 unsafe extern "C" fn _prolog() {
-    unsafe {
-        init();
-    }
+    init();
 }
 
 #[unsafe(no_mangle)]
@@ -63,10 +61,8 @@ extern "C" fn _epilog() {}
 #[unsafe(no_mangle)]
 extern "C" fn _unresolved() {}
 
-unsafe fn init() {
-    unsafe {
-        perform_assembly_patches();
-    }
+fn init() {
+    perform_assembly_patches();
     app::init();
 
     log!(c"SMB2 Practice Mod loaded");
@@ -76,7 +72,7 @@ unsafe extern "C" fn tick() {
     app::tick();
 }
 
-unsafe fn perform_assembly_patches() {
+fn perform_assembly_patches() {
     unsafe {
         patch::write_branch_bl(0x80270718 as *mut usize, tick as *mut c_void);
 

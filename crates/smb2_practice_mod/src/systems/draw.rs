@@ -236,7 +236,7 @@ pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
     }
 }
 
-unsafe fn setup_vertex_color_pipeline() {
+fn setup_vertex_color_pipeline() {
     unsafe {
         // Set vtx descriptor attrs, cached
         mkb::g_something_with_GX_vtx_desc((1 << mkb::GX_VA_POS) | (1 << mkb::GX_VA_CLR0));
@@ -308,7 +308,7 @@ unsafe fn setup_vertex_color_pipeline() {
     }
 }
 
-unsafe fn restore_ui_pipeline() {
+fn restore_ui_pipeline() {
     unsafe {
         mkb::g_something_with_GX_vtx_desc(0x2200);
         mkb::GXSetNumChans_cached(0);
@@ -365,13 +365,9 @@ unsafe fn restore_ui_pipeline() {
 }
 
 pub fn with_vertex_color_pipeline<T>(f: impl FnOnce() -> T) -> T {
-    unsafe {
-        setup_vertex_color_pipeline();
-    }
+    setup_vertex_color_pipeline();
     let ret = f();
-    unsafe {
-        restore_ui_pipeline();
-    }
+    restore_ui_pipeline();
     ret
 }
 

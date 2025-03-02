@@ -168,7 +168,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn state_load_menu(&mut self) {
+    fn state_load_menu(&mut self) {
         unsafe {
             mkb::g_some_other_flags &= !mkb::OF_GAME_PAUSED;
             mkb::main_mode_request = mkb::MD_SEL;
@@ -186,7 +186,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn state_enter_cm(&mut self) {
+    fn state_enter_cm(&mut self) {
         unsafe {
             mkb::num_players = 1;
             self.overwritten_starting_monkeys = mkb::number_of_starting_monkeys;
@@ -200,7 +200,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn restore_overwritten_state(&mut self) {
+    fn restore_overwritten_state(&mut self) {
         unsafe {
             let overwritten_entry =
                 mkb::cm_courses[self.overwritten_course_idx].add(self.overwritten_entry_idx);
@@ -209,7 +209,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn check_exit_seg(&mut self) {
+    fn check_exit_seg(&mut self) {
         unsafe {
             if mkb::main_mode != mkb::MD_GAME {
                 self.restore_overwritten_state();
@@ -218,7 +218,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn state_seg_active(&mut self, pref: &Pref) {
+    fn state_seg_active(&mut self, pref: &Pref) {
         unsafe {
             if mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT {
                 let ch = Chara::from_pref(I16Pref::CmChara, pref);
@@ -256,7 +256,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn state_seg_complete(&mut self) {
+    fn state_seg_complete(&mut self) {
         unsafe {
             if mkb::mode_info.cm_stage_id == -1
                 && mkb::mode_info.ball_mode & mkb::BALLMODE_ON_BONUS_STAGE != 0
@@ -289,7 +289,7 @@ impl CmSeg {
         }
     }
 
-    unsafe fn init_seg(&mut self) {
+    fn init_seg(&mut self) {
         unsafe {
             let course_idx;
             let start_course_stage_num;
@@ -385,9 +385,7 @@ impl CmSeg {
     pub fn request_cm_seg(&mut self, seg: Seg) {
         self.seg_request = seg;
         if self.state == State::SegActive || self.state == State::SegComplete {
-            unsafe {
-                self.restore_overwritten_state();
-            }
+            self.restore_overwritten_state();
         }
         unsafe {
             if mkb::main_mode == mkb::MD_SEL {
@@ -399,14 +397,12 @@ impl CmSeg {
     }
 
     pub fn tick(&mut self, pref: &Pref) {
-        unsafe {
-            match self.state {
-                State::LoadMenu => self.state_load_menu(),
-                State::EnterCm => self.state_enter_cm(),
-                State::SegActive => self.state_seg_active(pref),
-                State::SegComplete => self.state_seg_complete(),
-                State::Default => {}
-            }
+        match self.state {
+            State::LoadMenu => self.state_load_menu(),
+            State::EnterCm => self.state_enter_cm(),
+            State::SegActive => self.state_seg_active(pref),
+            State::SegComplete => self.state_seg_complete(),
+            State::Default => {}
         }
     }
 
@@ -429,9 +425,7 @@ impl CmSeg {
 
     pub fn on_reset_cm_course(&mut self) {
         if self.state == State::SegActive {
-            unsafe {
-                self.init_seg();
-            }
+            self.init_seg();
         }
     }
 }
