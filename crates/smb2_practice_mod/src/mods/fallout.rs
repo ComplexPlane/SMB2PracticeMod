@@ -58,9 +58,9 @@ hook!(LoadStagedefHook, stage_id: u32 => (), mkb::load_stagedef, |stage_id| {
             patch::write_word(0x80297548 as *mut usize, cx.fallout.timeover_condition);
             patch::write_word(0x80297534 as *mut usize, cx.fallout.timer_increment);
             // Stardust's custom code sets the timers after loading the stagedef, this will run
-            // afterwards and collect those timer defaults
             // For non-Stardust packs, this will simply collect the default values again (and not affect
             // anything)
+            cx.fallout.timeover_condition = *(0x80297548 as *const usize);
             cx.fallout.timeover_condition = *(0x80297548 as *const usize);
             cx.fallout.timer_increment = *(0x80297534 as *const usize);
         }

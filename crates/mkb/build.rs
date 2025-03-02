@@ -18,6 +18,9 @@ fn generate_bindings() {
         .layout_tests(false)
         // Clean up some redundant noise in the output.
         .merge_extern_blocks(true)
+        // As of Edition 2024, unsafe operations inside unsafe functions must be wrapped in unsafe blocks.
+        // Future bindgen ought to do this by default.
+        .wrap_unsafe_ops(true)
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.

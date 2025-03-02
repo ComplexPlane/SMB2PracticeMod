@@ -1,3 +1,5 @@
+use core::ffi::c_char;
+
 use mkb::mkb;
 
 use crate::systems::pref::{BoolPref, Pref};
@@ -44,9 +46,14 @@ impl Unlock {
 
     fn should_unlock(pref: &Pref) -> bool {
         unsafe {
-            let game_matches =
-                mkb::DVD_GAME_NAME == [b'G' as i8, b'M' as i8, b'2' as i8, b'E' as i8];
-            let company_matches = mkb::DVD_COMPANY == [b'8' as i8, b'P' as i8];
+            let game_matches = mkb::DVD_GAME_NAME
+                == [
+                    b'G' as c_char,
+                    b'M' as c_char,
+                    b'2' as c_char,
+                    b'E' as c_char,
+                ];
+            let company_matches = mkb::DVD_COMPANY == [b'8' as c_char, b'P' as c_char];
             if game_matches && company_matches {
                 if pref.get(BoolPref::UnlockVanilla) {
                     return true;

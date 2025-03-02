@@ -86,6 +86,7 @@ hook!(DrawSpriteHook, sprite: *mut mkb::Sprite => (), mkb::draw_sprite, |sprite|
         unsafe {
             let correct_mode = mkb::main_mode == mkb::MD_GAME;
             let disp_func = (*sprite).disp_func;
+            #[allow(unpredictable_function_pointer_comparisons)]
             let is_pausemenu_sprite = disp_func == Some(mkb::sprite_pausemenu_disp);
             if !((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite) {
                 cx.draw_sprite_hook.call(sprite);
@@ -179,22 +180,26 @@ fn should_hide_bg(pref: &Pref) -> bool {
 
 // At some point we should make a `hook_call!` macro for bl hooks that works like `hook!`
 unsafe extern "C" fn avdisp_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+    unsafe {
+        let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
 
-    if should_hide {
-        mkb::avdisp_set_fog_color(0, 0, 0);
-    } else {
-        mkb::avdisp_set_fog_color(r, g, b);
+        if should_hide {
+            mkb::avdisp_set_fog_color(0, 0, 0);
+        } else {
+            mkb::avdisp_set_fog_color(r, g, b);
+        }
     }
 }
 
 unsafe extern "C" fn nl2ngc_set_fog_color_hook(r: u8, g: u8, b: u8) {
-    let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
+    unsafe {
+        let should_hide = with_app(|cx| should_hide_bg(&cx.pref));
 
-    if should_hide {
-        mkb::nl2ngc_set_fog_color(0, 0, 0);
-    } else {
-        mkb::nl2ngc_set_fog_color(r, g, b);
+        if should_hide {
+            mkb::nl2ngc_set_fog_color(0, 0, 0);
+        } else {
+            mkb::nl2ngc_set_fog_color(r, g, b);
+        }
     }
 }
 
