@@ -28,12 +28,9 @@ impl Default for Iw {
         unsafe {
             patch::write_branch(
                 0x80274804 as *mut _,
-                &raw const asm::stage_select_menu_hook as *const _,
+                asm::stage_select_menu_hook as *const _,
             );
-            patch::write_branch(
-                0x8032a86c as *mut _,
-                &raw const asm::pause_menu_text_hook as *const _,
-            );
+            patch::write_branch(0x8032a86c as *mut _, asm::pause_menu_text_hook as *const _);
         }
         Self {
             anim_counter: 0,
@@ -132,7 +129,7 @@ impl Iw {
             {
                 // We're not actually in the IW, zero the timer
                 self.iw_time = 0;
-            } else if asm::currently_playing_iw != 0 && !asm::is_iw_complete() {
+            } else if asm::CURRENTLY_PLAYING_IW != 0 && !asm::is_iw_complete() {
                 // We're in story mode playing an IW and it isn't finished, so increment the IW timer
                 self.iw_time += retrace_count - self.prev_retrace_count;
             }
@@ -144,7 +141,7 @@ impl Iw {
 
     pub fn tick(&mut self, pad: &Pad) {
         unsafe {
-            asm::currently_playing_iw = 0;
+            asm::CURRENTLY_PLAYING_IW = 0;
         }
         unsafe {
             if mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE {
@@ -173,7 +170,7 @@ impl Iw {
             };
 
             // Maybe not the best way to detect if we're playing an IW but it works
-            asm::currently_playing_iw = if self.iw_files & (1 << file_idx) != 0 {
+            asm::CURRENTLY_PLAYING_IW = if self.iw_files & (1 << file_idx) != 0 {
                 1
             } else {
                 0
@@ -187,7 +184,7 @@ impl Iw {
             if !pref.get(BoolPref::IwTimer)
                 || mkb::main_mode != mkb::MD_GAME
                 || mkb::main_game_mode != mkb::STORY_MODE
-                || asm::currently_playing_iw == 0
+                || asm::CURRENTLY_PLAYING_IW == 0
                 || freecam.should_hide_hud(pref)
             {
                 return;

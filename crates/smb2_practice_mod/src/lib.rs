@@ -15,10 +15,7 @@ use crate::utils::patch;
 
 #[cfg(target_arch = "powerpc")]
 use core::panic::PanicInfo;
-use core::{
-    ffi::{c_char, c_void},
-    ptr::addr_of,
-};
+use core::ffi::{c_char, c_void};
 
 use critical_section::RawRestoreState;
 
@@ -96,7 +93,7 @@ fn perform_assembly_patches() {
         );
         patch::write_branch(
             0x8032ad0c as *mut usize,
-            addr_of!(asm::custom_titlescreen_text_color) as *mut c_void,
+            asm::custom_titlescreen_text_color as *const c_void,
         );
     }
 }

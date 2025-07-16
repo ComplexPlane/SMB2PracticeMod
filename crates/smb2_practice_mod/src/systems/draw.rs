@@ -2,8 +2,6 @@ use ::mkb::mkb_suppl;
 use mkb::mkb;
 
 use core::ffi::c_char;
-use core::ffi::c_void;
-use core::ptr::addr_of;
 
 use arrayvec::ArrayString;
 
@@ -222,7 +220,7 @@ pub fn num_to_rainbow(num: u32) -> mkb::GXColor {
 
 pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
     unsafe {
-        asm::debug_text_color = ((color.r as u32) << 24)
+        asm::DEBUG_TEXT_COLOR = ((color.r as u32) << 24)
             | ((color.g as u32) << 16)
             | ((color.b as u32) << 8)
             | (color.a as u32);
@@ -232,7 +230,7 @@ pub fn debug_text(x: u32, y: u32, color: mkb::GXColor, buf: &str) {
                 mkb::draw_debugtext_char_en(x + i as u32 * DEBUG_CHAR_WIDTH, y, c as c_char, 0);
             }
         }
-        asm::debug_text_color = 0;
+        asm::DEBUG_TEXT_COLOR = 0;
     }
 }
 
@@ -388,7 +386,7 @@ impl Default for Draw {
         unsafe {
             patch::write_branch(
                 0x802aeca4 as *mut usize,
-                addr_of!(asm::full_debug_text_color) as *mut c_void,
+                asm::full_debug_text_color as *mut _,
             );
         }
         Self {

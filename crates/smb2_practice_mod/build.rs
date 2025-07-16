@@ -17,7 +17,7 @@ fn generate_git_hash() {
         git_hash.push_str("-dirty");
     }
 
-    println!("cargo:rustc-env=GIT_HASH={}", git_hash);
+    println!("cargo:rustc-env=GIT_HASH={git_hash}");
     // Rerun on every build so Git info is always accurate.
     // This does cost some warm rebuild time
     println!("cargo:rerun-if-changed=nonexistent_file");

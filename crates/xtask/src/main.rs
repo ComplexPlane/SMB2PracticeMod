@@ -2,7 +2,7 @@ use std::path::Path;
 use std::{path::PathBuf, process::Command};
 
 use anyhow::bail;
-use anyhow::{anyhow, Context};
+use anyhow::{Context, anyhow};
 use gamecube_tools::elf2rel::RelVersion;
 
 // We don't read from the CARGO environment variable because we want to use the one in PATH. It
@@ -58,7 +58,7 @@ struct BuildPaths {
 }
 
 fn get_build_paths() -> anyhow::Result<BuildPaths> {
-    let home_dir = dirs::home_dir().ok_or(anyhow!("Failed to determine home directory"))?;
+    let home_dir = std::env::home_dir().ok_or(anyhow!("Failed to determine home directory"))?;
     let project_root = get_project_root()?;
     let rust_host = get_rust_host()?;
 

@@ -6,4 +6,3 @@ edition = "2024"
 [dependencies]
 gamecube-tools = { git = "https://github.com/ComplexPlane/gamecube-tools" }
 anyhow = "1.0.93"
-dirs = "5.0.1"
