@@ -526,7 +526,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Text {
-        label: "  With contributions from        ,      ,",
+        label: "  With contributions from:        ,      ,",
     },
     Widget::ColoredText {
         label: "rehtrop",
@@ -542,7 +542,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
             b: 0xdc,
             a: 0xff,
         },
-        offset_x: 26,
+        offset_x: 27,
         line: TextLine::Overlap,
     },
     Widget::ColoredText {
@@ -559,10 +559,9 @@ static ABOUT_WIDGETS: &[Widget] = &[
             b: 0xff,
             a: 0xff,
         },
-        offset_x: 35,
+        offset_x: 36,
         line: TextLine::Overlap,
     },
-    Widget::Text { label: "  and" },
     Widget::ColoredText {
         label: "eddy",
         color_left: mkb::GXColor {
@@ -577,7 +576,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
             b: 0xe5,
             a: 0xff,
         },
-        offset_x: 6,
+        offset_x: 43,
         line: TextLine::Overlap,
     },
     Widget::Separator {},
@@ -615,10 +614,10 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Text {
-        label: "  For the latest version of SMB2 Practice Mod:",
+        label: "  Download the latest version at:",
     },
     Widget::ColoredText {
-        label: " github.com/ComplexPlane/SMB2PracticeMod/releases",
+        label: "  github.com/ComplexPlane/SMB2PracticeMod",
         color_left: draw::BLUE,
         color_right: draw::BLUE,
         offset_x: 0,
@@ -627,9 +626,6 @@ static ABOUT_WIDGETS: &[Widget] = &[
     Widget::Separator {},
     Widget::Header {
         label: "Documentation",
-    },
-    Widget::Text {
-        label: "  For full documentation of SMB2 Practice Mod:",
     },
     Widget::ColoredText {
         label: "  github.com/ComplexPlane/SMB2PracticeMod/wiki",

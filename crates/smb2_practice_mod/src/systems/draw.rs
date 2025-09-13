@@ -131,7 +131,7 @@ pub fn heart() {
         mkb::textdraw_reset();
         mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
         mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
-        mkb::textdraw_set_scale(0.99, 0.72);
+        mkb::textdraw_set_scale(0.75, 0.60);
         mkb::textdraw_set_pos(189.0, 110.0);
         mkb::textdraw_set_mul_color(
             mkb::GXColor {
@@ -154,7 +154,7 @@ pub fn tm() {
         mkb::textdraw_set_font(mkb::FONT_ASC_16x16);
         mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
         mkb::textdraw_set_scale(0.5, 0.5);
-        mkb::textdraw_set_pos(250.0, 187.0);
+        mkb::textdraw_set_pos(250.0, 167.0);
         mkb::textdraw_set_mul_color(
             mkb::GXColor {
                 r: 0xef,
