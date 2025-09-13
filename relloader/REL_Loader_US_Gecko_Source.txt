@@ -1,3 +1,5 @@
+# SM2PracticeMod REL Loader. By Zephiles and ComplexPlane.
+
 # 80006D0C - Address to hook for this code
 
 # HOW TO BUILD ME:

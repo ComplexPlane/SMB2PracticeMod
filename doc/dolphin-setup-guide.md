@@ -17,10 +17,8 @@ Using the latest stable release of [Dolphin Emulator](https://dolphin-emu.org/do
 
 * In Dolphin, under _Config -> General_, make sure cheats are enabled
 * Copy the contents of `REL_Loader_US_Gecko.txt` to your clipboard (found in the `.zip` release you downloaded)
-  * Don't copy the first line that starts with `$`
 * Right-click your Super Monkey Ball 2 game in the games list and go to _Properties -> Gecko Codes_
 * At the bottom click _Add New Code_, paste the Gecko code into the _Code_ box, then click _Save_
-  * Make sure the first line that starts with `$` isn't included
 * In the Gecko Codes window, make sure the checkbox next to the Gecko code you just added is checked
 
 ## Launch the game
