@@ -6,9 +6,9 @@ Using the latest stable release of [Dolphin Emulator](https://dolphin-emu.org/do
 
 ## Set up the GCI
 
-* Download the `.zip` file containing the release (_not_ the source code) from the [releases page](https://github.com/ComplexPlane/SMB2PracticeMod/releases)
+* From the [releases](https://github.com/ComplexPlane/SMB2PracticeMod/releases) page, download the `.zip` file containing the release (_not_ the source code).
 * Open up Dolphin and go to _Config -> Gamecube_. Under _Device Settings_ for _Slot B_ choose _GCI Folder_
-* Copy `SMB2PracticeMod.gci` into the following folder, which you may need to create yourself if it doesn't exist:
+* Inside the `Dolphin Emulator` folder from the release, locate the `SMB2PracticeMod.gci` file. Copy it into the following folder, which you may need to create yourself if it doesn't exist:
   * **Windows:** `AppData\Roaming\Dolphin Emulator\GC\USA\Card B\`
   * **macOS:** `~/Library/Application Support/Dolphin/GC/USA/Card B/`
   * **Linux:** `~/.local/share/dolphin-emu/GC/USA/Card B/`
@@ -16,7 +16,7 @@ Using the latest stable release of [Dolphin Emulator](https://dolphin-emu.org/do
 ## Set up the Gecko code
 
 * In Dolphin, under _Config -> General_, make sure cheats are enabled
-* Copy the contents of `REL_Loader_US_Gecko.txt` to your clipboard (found in the `.zip` release you downloaded)
+* Copy the contents of `Dolphin Emulator/REL_Loader_US_Gecko.txt` from the release to your clipboard
 * Right-click your Super Monkey Ball 2 game in the games list and go to _Properties -> Gecko Codes_
 * At the bottom click _Add New Code_, paste the Gecko code into the _Code_ box, then click _Save_
 * In the Gecko Codes window, make sure the checkbox next to the Gecko code you just added is checked
@@ -25,7 +25,7 @@ Using the latest stable release of [Dolphin Emulator](https://dolphin-emu.org/do
 
 You should be able to launch the game like usual by double-clicking it in the games list. If you see "SMB2 Practice Mod"
 on the titlescreen, you're good to go, otherwise the mod did not load correctly. You can use either Card A or Card B for
-your save data, it doesn't matter.
+your game save data, it doesn't matter.
 
 ## Troubleshooting
 

@@ -606,17 +606,6 @@ static ABOUT_WIDGETS: &[Widget] = &[
         offset_x: 0,
         line: TextLine::NewLine,
     },
-    Widget::Separator {},
-    Widget::Header {
-        label: "Documentation",
-    },
-    Widget::ColoredText {
-        label: "  github.com/ComplexPlane/SMB2PracticeMod/wiki",
-        color_left: draw::BLUE,
-        color_right: draw::BLUE,
-        offset_x: 0,
-        line: TextLine::NewLine,
-    },
 ];
 
 static SAVESTATES_HELP_WIDGETS: &[Widget] = &[

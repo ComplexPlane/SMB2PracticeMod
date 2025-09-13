@@ -12,17 +12,30 @@ You will need a homebrewed Wii with **up-to-date** Nintendont installed.
    
 ## Install the Practice Mod
 
-* Download the `.zip` file containing the release (_not_ the source code). Releases are
-   found [here](https://github.com/ComplexPlane/SMB2PracticeMod/releases). Open up the `.zip` file (you don't necessarily need
-   to extract it).
-* Plug in your SD card, flash drive, hard drive, etc. which has your homebrew files on it. If you intend to play a ISO
-   file, the practice mod must go on the same SD card/flash drive/etc. as the ISO file.
-* On your homebrew SD card, if you have any game data on a virtual memory card in Slot B for Super Monkey Ball 2,
+* From the [releases](https://github.com/ComplexPlane/SMB2PracticeMod/releases) page, download the `.zip` file containing the release (_not_ the source code).
+* Plug your homebrew flash drive into your computer (or SD card, hard drive, etc.). Note that if you intend to play ISO files (romhacks etc.), the practice mod must go on the same flash drive as them.
+* On your homebrew flash drive, if you have any game data on a virtual memory card in Slot B for Super Monkey Ball 2,
    you're going to want to back it up as the practice mod will replace it. It will be the file `saves/GM2E_B.raw`. If
    you don't have this file or don't know what I'm talking about, you're probably fine.
-* Drag the `codes` and `saves` folders from the `.zip` release you downloaded to your SD card. If asked to replace
-   files, choose Yes.
-* If you plan to play a romhack, make sure you have a `<game_id>.gct` file in the `codes` folder with a `<game_id>` that matches the game ID of your romhack. The `codes` folder includes files for some popular romhacks (like `GM2EGD` for Gaiden), but if your romhack isn't included, make a copy of one of the `.gct` files (they're all identical) and name it appropriately. You can find the game ID of your romhack by opening the ISO file in a hex editor such as [hxd](https://mh-nexus.de/en/hxd/) - it's the first 6 characters of the file.
+* Copy everything inside the `Wii Console` folder (but not the `Wii Console` folder itself) onto your flash drive. If asked to replace files, choose Yes.
+
+## Playing Custom Level Packs / Romhacks
+
+To use SMB2 Practice Mod with custom level packs, you need a corresponding `<game_id>.gct` file in the `Wii Console/codes` folder for the pack. The following are included by default:
+
+| Romhack                         | File Name                    |
+| ------------------------------- | ---------------------------- |
+| Deluxe in SMB2                  | GM2EDX.gct                   |
+| Gaiden                          | GM2EGD.gct                   |
+| Invasion                        | GM2EII.gct                   |
+| Kaizo Monkey Ball               | GM2EKZ.gct                   |
+| Launch!                         | GM2ELD.gct                   |
+| Monkeyed Ball 2: Witty Subtitle | GM2E8P.gct (same as vanilla) |
+| SMB651                          | GM2E8P.gct (same as vanilla) |
+| Stardust                        | GM2ESD.gct                   |
+| Touch & Roll Remake             | GM2ETR.gct                   |
+
+If your pack isn't in this list, simply copy one of the pre-existing .gct files and rename it to the new pack's ID. If the pack's ID is `GM2EKZ`, you'll want to name the copied file `GM2EKZ.gct`. You can check a pack's ID in Dolphin Emulator or Nintendont (or you can ask in the [workshop server](https://discord.gg/CEYjvDj)!)
 
 ## Boot the Game
 
