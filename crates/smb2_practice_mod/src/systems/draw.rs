@@ -132,7 +132,7 @@ pub fn heart() {
         mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
         mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT as mkb::SpriteAlignment);
         mkb::textdraw_set_scale(0.75, 0.60);
-        mkb::textdraw_set_pos(189.0, 110.0);
+        mkb::textdraw_set_pos(187.0, 108.0);
         mkb::textdraw_set_mul_color(
             mkb::GXColor {
                 r: 255,
