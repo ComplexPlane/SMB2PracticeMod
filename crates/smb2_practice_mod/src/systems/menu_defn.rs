@@ -526,7 +526,7 @@ static ABOUT_WIDGETS: &[Widget] = &[
     },
     Widget::Separator {},
     Widget::Text {
-        label: "  With contributions from:        ,      ,",
+        label: "  With contributions from:        ,      ",
     },
     Widget::ColoredText {
         label: "rehtrop",
@@ -560,23 +560,6 @@ static ABOUT_WIDGETS: &[Widget] = &[
             a: 0xff,
         },
         offset_x: 36,
-        line: TextLine::Overlap,
-    },
-    Widget::ColoredText {
-        label: "eddy",
-        color_left: mkb::GXColor {
-            r: 0x00,
-            g: 0xd0,
-            b: 0xff,
-            a: 0xff,
-        },
-        color_right: mkb::GXColor {
-            r: 0x00,
-            g: 0xa4,
-            b: 0xe5,
-            a: 0xff,
-        },
-        offset_x: 43,
         line: TextLine::Overlap,
     },
     Widget::Separator {},
