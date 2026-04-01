@@ -2,10 +2,16 @@
 #include "systems/heap.h"
 
 struct Store {
-    u32 size;
     u32 pos;
-    void *buf;
+    u32 size;
 };
+
+#define MAX_SLOTS 8
+
+static void *s_buf;
+static u32 s_size;
+static u32 s_pos;
+static Store s_slots[MAX_SLOTS];
 
 void StoreComputeSize(Store *store, void *ptr, u32 size) {
     store->size += size;
@@ -31,14 +37,26 @@ void PassOverRegions(StoreFunc f, Store *store) {
     f(store, reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     f(store, reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     f(store, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
-    f(store, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
+    f(store, mkb::g_camra_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 }
 
-struct GameState {
-    Store store;
+void libsavest_init(void *buf, u32 size) {
+    s_buf = buf;
+    s_size = buf_size;
+}
+
+enum SavestSlot {
+    SS_Slot0,
+    SS_Slot1,
+    SS_Slot2,
+    SS_Slot3,
+    SS_Slot4,
+    SS_Slot5,
+    SS_Slot6,
+    SS_Slot7,
 };
 
-void GameState_Save(GameState *state) {
+LSS_SaveError libsavest_save(LSS_Slot slot) {
     Store store;
     PassOverRegions(StoreComputeSize, &store);
     store.buf = heap::alloc(state->store.size);
@@ -49,7 +67,7 @@ void GameState_Save(GameState *state) {
     PassOverRegions(StoreSave, &store);
     store.pos = 0; // Ready to load
     if (state->store.buf != nullptr) {
-        heap::free(state-.store.buf);
+        heap::free(state->store.buf);
     }
     state->store = store;
 }
