@@ -2,15 +2,13 @@
 #include "systems/heap.h"
 
 struct Store {
+    void* buf;
     u32 pos;
     u32 size;
 };
 
 #define MAX_SLOTS 8
 
-static void *s_buf;
-static u32 s_size;
-static u32 s_pos;
 static Store s_slots[MAX_SLOTS];
 
 void StoreComputeSize(Store *store, void *ptr, u32 size) {
@@ -37,12 +35,7 @@ void PassOverRegions(StoreFunc f, Store *store) {
     f(store, reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     f(store, reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
     f(store, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
-    f(store, mkb::g_camra_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
-}
-
-void libsavest_init(void *buf, u32 size) {
-    s_buf = buf;
-    s_size = buf_size;
+    f(store, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 }
 
 enum SavestSlot {
