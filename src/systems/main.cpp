@@ -1,5 +1,6 @@
 #include "mkb/mkb.h"
 
+#include "mkb/mkb2_ghidra.h"
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
@@ -43,10 +44,15 @@
 
 namespace main {
 
-static patch::Tramp<decltype(&mkb::draw_debugtext)> s_draw_debug_text_tramp;
-static patch::Tramp<decltype(&mkb::process_inputs)> s_process_inputs_tramp;
-static patch::Tramp<decltype(&mkb::PADRead)> s_PADRead_tramp;
-static patch::Tramp<decltype(&mkb::OSLink)> s_OSLink_tramp;
+static void draw_debug_text();
+static void process_inputs();
+static u32 pad_read(mkb::PADStatus* statuses);
+static bool os_link(mkb::OSModuleHeader* rel_buffer, void* bss_buffer);
+
+TRAMP(s_draw_debug_text_tramp, mkb::draw_debugtext, draw_debug_text);
+TRAMP(s_process_inputs_tramp, mkb::process_inputs, process_inputs);
+TRAMP(s_pad_read_tramp, mkb::PADRead, pad_read);
+TRAMP(s_os_link_tramp, mkb::OSLink, os_link);
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -69,6 +75,91 @@ static void perform_assembly_patches() {
     mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
     patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
                         reinterpret_cast<void*>(main::custom_titlescreen_text_color));
+}
+
+static void process_inputs() {
+    s_process_inputs_tramp.chain();
+
+    // These run after all controller inputs have been processed on the current frame,
+    // to ensure lowest input delay
+    pad::tick();
+    binds::tick();
+    cardio::tick();
+    unlock::tick();
+    fallout::tick();
+    physics::tick();
+    iw::tick();
+    storytimer::tick();
+    deathcounter::tick();
+    savest_ui::tick();
+    menu_impl::tick();
+    jump::tick();
+    inputdisp::tick();
+    gotostory::tick();
+    cmseg::tick();
+    banans::tick();
+    marathon::tick();
+    ballcolor::tick();
+    freecam::tick();
+    ilbattle::tick();
+    ilmark::tick();
+    camera::tick();
+    stage_edits::tick();
+    scratch::tick();
+}
+
+static void draw_debug_text() {
+    // Drawing hook for UI elements.
+    // Gets run at the start of smb2's function which draws debug text windows,
+    // which is called at the end of smb2's function which draws the UI in general.
+
+    s_draw_debug_text_tramp.chain();
+
+    // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
+    // elements. The original screenshot call is nopped.
+    if (mkb::g_pause_status == 1) {
+        mkb::take_pausemenu_screenshot(&mkb::fullscreen_texture_buf, 0, 0,
+                                       mkb::current_render_mode->fbWidth,
+                                       mkb::current_render_mode->efbHeight, mkb::GX_TF_RGB5A3);
+    }
+
+    draw::predraw();
+    timer::disp();
+    iw::disp();
+    storytimer::disp();
+    deathcounter::disp();
+    Tetris::get_instance().disp();
+    ilbattle::disp();
+    cmseg::disp();
+    inputdisp::disp();
+    menu_impl::disp();
+    draw::disp();
+    ilmark::disp();
+    scratch::disp();
+}
+
+static u32 pad_read(mkb::PADStatus* statuses) {
+    u32 ret = s_pad_read_tramp.chain(statuses);
+
+    // Dpad can modify effective stick input, shown by input display
+    dpad::on_PADRead(statuses);
+    inputdisp::on_PADRead(statuses);
+
+    return ret;
+}
+
+static bool os_link(mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+    bool ret = s_os_link_tramp.chain(rel_buffer, bss_buffer);
+
+    // Main game init functions
+    if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
+        stage_edits::main_game_init();
+    }
+    // Sel_ngc init functions
+    // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {
+    // }
+
+    return ret;
 }
 
 void init() {
@@ -101,92 +192,11 @@ void init() {
     stage_edits::init();
     scratch::init();
 
-    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
-        u32 ret = s_PADRead_tramp.dest(statuses);
-
-        // Dpad can modify effective stick input, shown by input display
-        dpad::on_PADRead(statuses);
-        inputdisp::on_PADRead(statuses);
-
-        return ret;
-    });
-
-    patch::hook_function(s_process_inputs_tramp, mkb::process_inputs, []() {
-        s_process_inputs_tramp.dest();
-
-        // These run after all controller inputs have been processed on the current frame,
-        // to ensure lowest input delay
-        pad::tick();
-        binds::tick();
-        cardio::tick();
-        unlock::tick();
-        fallout::tick();
-        physics::tick();
-        iw::tick();
-        storytimer::tick();
-        deathcounter::tick();
-        savest_ui::tick();
-        menu_impl::tick();
-        jump::tick();
-        inputdisp::tick();
-        gotostory::tick();
-        cmseg::tick();
-        banans::tick();
-        marathon::tick();
-        ballcolor::tick();
-        freecam::tick();
-        ilbattle::tick();
-        ilmark::tick();
-        camera::tick();
-        stage_edits::tick();
-        scratch::tick();
-    });
-
-    patch::hook_function(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
-        // Drawing hook for UI elements.
-        // Gets run at the start of smb2's function which draws debug text windows,
-        // which is called at the end of smb2's function which draws the UI in general.
-
-        s_draw_debug_text_tramp.dest();
-
-        // When the game is paused, screenshot the game's draw buffer before we draw our custom UI
-        // elements. The original screenshot call is nopped.
-        if (mkb::g_pause_status == 1) {
-            mkb::take_pausemenu_screenshot(&mkb::fullscreen_texture_buf, 0, 0,
-                                           mkb::current_render_mode->fbWidth,
-                                           mkb::current_render_mode->efbHeight, mkb::GX_TF_RGB5A3);
-        }
-
-        draw::predraw();
-        timer::disp();
-        iw::disp();
-        storytimer::disp();
-        deathcounter::disp();
-        Tetris::get_instance().disp();
-        ilbattle::disp();
-        cmseg::disp();
-        inputdisp::disp();
-        menu_impl::disp();
-        draw::disp();
-        ilmark::disp();
-        scratch::disp();
-    });
-
+    HOOK_TRAMP(s_pad_read_tramp);
+    HOOK_TRAMP(s_process_inputs_tramp);
+    HOOK_TRAMP(s_draw_debug_text_tramp);
     // Hook for mkb::load_additional_rel
-    patch::hook_function(
-        s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
-            bool ret = s_OSLink_tramp.dest(rel_buffer, bss_buffer);
-
-            // Main game init functions
-            if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
-                stage_edits::main_game_init();
-            }
-            // Sel_ngc init functions
-            // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {
-            // }
-
-            return ret;
-        });
+    HOOK_TRAMP(s_os_link_tramp);
 }
 
 /*

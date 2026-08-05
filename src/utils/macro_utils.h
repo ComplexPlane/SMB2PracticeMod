@@ -1,6 +1,7 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
 
 #define LEN(array) (sizeof(array) / sizeof((array)[0]))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -10,9 +11,7 @@
 #define ABS(x) ((x) < 0 ? (-x) : (x))
 #define STREQ(x, y) (mkb::strcmp(const_cast<char*>(x), const_cast<char*>(y)) == 0)
 
-/*
- * Vector macros which may have existed in the original source in some form.
- */
+// Vector macros which may have existed in the original source in some form
 #define VEC_ADD(v1, v2) (Vec{(v1).x + (v2).x, (v1).y + (v2).y, (v1).z + (v2).z})
 #define VEC_SUB(v1, v2) (Vec{(v1).x - (v2).x, (v1).y - (v2).y, (v1).z - (v2).z})
 #define VEC_SUB2D(v1, v2) (Vec{(v1).x - (v2).x, 0, (v1).z - (v2).z})
