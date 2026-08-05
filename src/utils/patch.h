@@ -27,5 +27,5 @@ u32 patch_write_branch_main(void* ptr, void* destination, u32 branch);
 u32 patch_write_word(void* ptr, u32 data);
 u32 patch_write_nop(void* ptr);
 
-void patch_hook_function_replace(void* function, void* dest);
+void patch_mook_function_replace(void* function, void* dest);
 void patch_hook_function_tramp(void* func, void* dest, u32* tramp_instrs, void** tramp_dest);
