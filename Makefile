@@ -70,11 +70,14 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -Wno-address-of-packed-member -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
-CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
-ASFLAGS     = -mregnames # Don't require % in front of register names
+COMMON_FLAGS := -nostdlib -ffreestanding -ffunction-sections -fdata-sections \
+			  -g -Os -Wall -Wno-address-of-packed-member \
+			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
+CFLAGS		:= $(COMMON_FLAGS) -std=c23
+CXXFLAGS	:= $(COMMON_FLAGS) -std=gnu++20 -fno-exceptions -fno-rtti -Wno-write-strings
+ASFLAGS     := -mregnames # Don't require % in front of register names
 
-LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
+LDFLAGS		:= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
