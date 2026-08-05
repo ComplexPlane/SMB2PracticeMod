@@ -10,9 +10,10 @@ def main():
     src_dir = repo_dir / "src"
     include_dir = repo_dir / "src"
     for src_path in src_dir.glob("**/*.c*"):
+        compiler = "/usr/bin/cc" if src_path.suffix == ".c" else "/usr/bin/c++"
         cxx_version = "c23" if src_path.suffix == ".c" else "gnu++20"
         command = (
-            "/usr/bin/c++ "
+            f"{compiler} "
             f"-I {include_dir} "
             f"-m32 -std={cxx_version} "
             f"-c {src_path} -o {src_path.with_suffix('.o')}"
