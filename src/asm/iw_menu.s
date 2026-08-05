@@ -1,10 +1,10 @@
-.global stage_select_menu_hook
-.global pause_menu_text_hook
-.global is_iw_complete
+.global asm_stage_select_menu_hook
+.global asm_pause_menu_text_hook
+.global asm_is_iw_complete
 
 .text
 
-stage_select_menu_hook: // Hook at 0x80274804
+asm_stage_select_menu_hook: // Hook at 0x80274804
 stwu r1, -0x38 (r1)
 stw r31, 0x34 (r1)
 stw r30, 0x30 (r1)
@@ -29,7 +29,7 @@ mr r23, r4
 mr r22, r3
 mr r21, r0
 
-bl is_iw_complete
+bl asm_is_iw_complete
 cmpwi r3, 1
 bne iw_not_complete
 // Jump to "Exit game" handler
@@ -73,7 +73,7 @@ blr
 
 // ------------------------------------------------------------------------------------------
 
-pause_menu_text_hook: // Hook at 0x8032a86c
+asm_pause_menu_text_hook: // Hook at 0x8032a86c
 stwu r1, -0x38 (r1)
 stw r31, 0x34 (r1)
 stw r30, 0x30 (r1)
@@ -98,7 +98,7 @@ mr r23, r4
 mr r22, r3
 mr r21, r0
 
-bl is_iw_complete
+bl asm_is_iw_complete
 cmpwi r3, 1
 bne dont_modify_text
 
@@ -150,7 +150,7 @@ bctr
 
 // ------------------------------------------------------------------------------------------
 
-is_iw_complete:
+asm_is_iw_complete:
 
 // Check that we're not in Practice Mode
 lis r3, 0x805d
@@ -160,8 +160,8 @@ cmpwi r4, 1
 beq No
 
 // Check if we're doing an IW
-lis r3, currently_playing_iw@h
-ori r3, r3, currently_playing_iw@l
+lis r3, asm_currently_playing_iw@h
+ori r3, r3, asm_currently_playing_iw@l
 lwz r4, 0x0 (r3)
 cmpwi r4, 0
 beq No

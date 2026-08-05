@@ -9,8 +9,12 @@ namespace mkb {
 // Originally #define'd
 constexpr GXBool GX_TRUE = 1;
 constexpr GXBool GX_FALSE = 0;
-inline u32 OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
-inline u32 OSRoundDown32B(u32 x) { return x & ~31; }
+inline u32 OSRoundUp32B(u32 x) {
+    return (x + 31) & ~31;
+}
+inline u32 OSRoundDown32B(u32 x) {
+    return x & ~31;
+}
 
 // Originally #define'd
 enum {
@@ -69,9 +73,8 @@ using mkb::Vec2d;
 // Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore
 // assertions Prefer to use MOD_ASSERT and friends instead
 
-#    define ASSERT(exp) \
-        (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-#    define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
+#define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
+#define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
 
 #else
 
@@ -89,12 +92,17 @@ typedef mkb_Vec Vec;
 typedef mkb_Vec2d Vec2d;
 typedef mkb_S16Vec S16Vec;
 typedef mkb_S32Vec S32Vec;
+typedef mkb_GXColor GXColor;
 
 // Originally #define'd
 constexpr mkb_GXBool mkb_GX_TRUE = 1;
 constexpr mkb_GXBool mkb_GX_FALSE = 0;
-inline u32 mkb_OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
-inline u32 mkb_OSRoundDown32B(u32 x) { return x & ~31; }
+inline u32 mkb_OSRoundUp32B(u32 x) {
+    return (x + 31) & ~31;
+}
+inline u32 mkb_OSRoundDown32B(u32 x) {
+    return x & ~31;
+}
 
 // Originally #define'd
 enum {
@@ -136,8 +144,7 @@ constexpr u32 mkb_CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 // Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore
 // assertions Prefer to use MOD_ASSERT and friends instead
 
-#    define ASSERT(exp) \
-        (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-#    define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
+#define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
+#define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
 
 #endif
