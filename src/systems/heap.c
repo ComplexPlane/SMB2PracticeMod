@@ -1,8 +1,8 @@
 #include "heap.h"
 
 #include <inttypes.h>
+#include "systems/modlink.h"
 #include "utils/base.h"
-// #include "systems/modlink.h"
 #include "utils/relutil.h"
 
 static mkb_HeapInfo s_local_heap_info;  // Use our own HeapInfo if Workshop Mod isn't loaded

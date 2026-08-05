@@ -73,7 +73,7 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 COMMON_FLAGS := -nostdlib -ffreestanding -ffunction-sections -fdata-sections \
 			  -g -Os -Wall -Wno-address-of-packed-member \
 			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
-CFLAGS		:= $(COMMON_FLAGS) -std=c23
+CFLAGS		:= $(COMMON_FLAGS) -std=c23 -Werror -Wshadow -Wimplicit-fallthrough
 CXXFLAGS	:= $(COMMON_FLAGS) -std=gnu++20 -fno-exceptions -fno-rtti -Wno-write-strings
 ASFLAGS     := -mregnames # Don't require % in front of register names
 

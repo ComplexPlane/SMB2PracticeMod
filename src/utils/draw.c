@@ -62,7 +62,7 @@ static void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_lis
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
-    mkb_vsprintf(buf, format, args);
+    mkb_vsprintf(buf, (char *)format, args);
     debug_text_buf(x, y, color, buf);
 }
 
@@ -174,7 +174,7 @@ void draw_disp() {
 void draw_notify(GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
-    mkb_vsprintf(s_notify_msg_buf, format, args);
+    mkb_vsprintf(s_notify_msg_buf, (char *)format, args);
     va_end(args);
 
     s_notify_frame_counter = 0;

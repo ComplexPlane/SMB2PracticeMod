@@ -15,7 +15,7 @@ def main():
         command = (
             f"{compiler} "
             f"-I {include_dir} "
-            f"-m32 -std={cxx_version} "
+            f"-m32 -std={cxx_version} -Werror -Wshadow -Wimplicit-fallthrough"
             f"-c {src_path} -o {src_path.with_suffix('.o')}"
         )
         cmds.append(
