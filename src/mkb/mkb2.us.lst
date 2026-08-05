@@ -4583,7 +4583,7 @@
 802B8E08:ball_physics_g_something_w_postgoal_slowdown
 802B8FBC:ball_physics_g_something_w_postgoal_blast_up
 802B90B0:FUN_801e2e78
-802B9334:ball_mode_play_replay
+802B9334:g_ball_mode_play_replay
 802B9648:FUN_801e3410
 802B9848:FUN_801e3610
 802B984C:FUN_801e3614
@@ -8918,7 +8918,6 @@
 8054DBC8:storymode_score
 8054DBCC:storymode_bananas
 8054DBD0:g_some_storymode_func_ptr
-8054DBDA:curr_storymode_save_file_idx
 8054DBF0:g_ord_tbl_stuff
 8054DBF0:ord_tbl_data
 8054DBF8:is_more_than_24_mib

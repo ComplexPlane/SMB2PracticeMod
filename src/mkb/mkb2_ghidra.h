@@ -11,10 +11,12 @@
 namespace mkb {
 #endif
 
-typedef unsigned char   undefined;
+typedef unsigned char   MKB(undefined);
 
 #ifndef __cplusplus
-typedef unsigned char    bool;
+#if __STDC_VERSION__ < 23
+#include <stdbool.h>
+#endif
 #endif
 typedef unsigned char    byte;
 typedef unsigned int    dword;
@@ -382,7 +384,7 @@ static_assert(sizeof(MKB(MenuScreen)) == 0x10);
 
 struct MKB(MenuEntry) {
     MKB(MenuScreenID)  next_screen_id;
-    undefined padding_0x1[0x3];
+    MKB(undefined) padding_0x1[0x3];
     char * name_en;
     char * name_de;
     char * name_fr;
@@ -2510,7 +2512,7 @@ typedef undefined4 MKB(GXAttnFn);
 
 struct MKB(OptiGXChanSettings) { /* Opti = For optimization */
     MKB(GXBool) enable;
-    undefined padding_0x1[0x3];
+    MKB(undefined) padding_0x1[0x3];
     MKB(GXColorSrc)  amb_src;
     MKB(GXColorSrc)  mat_src;
     MKB(u32) light_mask;
@@ -3111,7 +3113,7 @@ typedef struct MKB(Event) MKB(Event), *MKB(PEvent);
 
 struct MKB(Event) { /* A subset of continuously running game functionality that can be turned on or off independent of other Events */
     MKB(Status)  status;
-    undefined padding_0x1[0x3];
+    MKB(undefined) padding_0x1[0x3];
     char * name; /* The name of the event */
     void (* init_func)(void); /* Normally, called once when status is STAT_INIT, then status is set to STAT_NORMAL */
     void (* tick_func)(void); /* Normally, called every frame if status is STAT_NORMAL */
@@ -3592,7 +3594,7 @@ struct MKB(_IO_FILE) {
     MKB(size_t) __pad5;
     int _mode;
     char _unused2[15];
-    undefined padding_0x73[0x1];
+    MKB(undefined) padding_0x73[0x1];
 } __attribute__((__packed__));
 static_assert(sizeof(MKB(_IO_FILE)) == 0x74);
 
@@ -8940,7 +8942,7 @@ extern "C" {
     void MKB(g_competition_mode_respawn_start)(struct MKB(Ball) * ball);
     void MKB(ball_physics_g_something_w_postgoal_slowdown)(struct MKB(Ball) * param_1);
     void MKB(ball_physics_g_something_w_postgoal_blast_up)(struct MKB(Ball) * param_1);
-    void MKB(ball_mode_play_replay)(struct MKB(Ball) * ball);
+    void MKB(g_ball_mode_play_replay)(struct MKB(Ball) * ball);
     void MKB(g_handle_competition_mode_respawn)(struct MKB(Ball) * ball);
     void MKB(ball_physics_g_something_w_poastgoal_slowdown_blast_up)(struct MKB(Ball) * param_1);
     void MKB(ball_physics_g_something_w_postgoal_blast_up2)(struct MKB(Ball) * ball);
