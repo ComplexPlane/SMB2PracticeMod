@@ -1,6 +1,5 @@
 #include "pref.h"
 
-#include <optional>
 #include "heap.h"
 #include "mkb/mkb.h"
 
@@ -181,174 +180,178 @@ static const PrefId s_pref_ids[] = {
     PrefId::ShowDeathCounter,
 };
 
-static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
+[[nodiscard]]
+static bool pref_id_to_bool_pref(PrefId id, BoolPref* out) {
     switch (id) {
         case PrefId::Savestates:
-            return BoolPref::Savestates;
+            *out = BoolPref::Savestates;
         case PrefId::InputDisp:
-            return BoolPref::InputDisp;
+            *out = BoolPref::InputDisp;
         case PrefId::InputDispCenterLocation:
-            return BoolPref::InputDispCenterLocation;
+            *out = BoolPref::InputDispCenterLocation;
         case PrefId::TimerShowRTA:
-            return BoolPref::TimerShowRTA;
+            *out = BoolPref::TimerShowRTA;
         case PrefId::InputDispNotchIndicators:
-            return BoolPref::InputDispNotchIndicators;
+            *out = BoolPref::InputDispNotchIndicators;
         case PrefId::IwTimer:
-            return BoolPref::IwTimer;
+            *out = BoolPref::IwTimer;
         case PrefId::CmTimer:
-            return BoolPref::CmTimer;
+            *out = BoolPref::CmTimer;
         case PrefId::JumpMod:
-            return BoolPref::JumpMod;
+            *out = BoolPref::JumpMod;
         case PrefId::BananaCounter9999:
-            return BoolPref::BananaCounter9999;
+            *out = BoolPref::BananaCounter9999;
         case PrefId::DpadControls:
-            return BoolPref::DpadControls;
+            *out = BoolPref::DpadControls;
         case PrefId::DebugMode:
-            return BoolPref::DebugMode;
+            *out = BoolPref::DebugMode;
         case PrefId::MuteBgm:
-            return BoolPref::MuteBgm;
+            *out = BoolPref::MuteBgm;
         case PrefId::MuteTimerDing:
-            return BoolPref::MuteTimerDing;
+            *out = BoolPref::MuteTimerDing;
         case PrefId::InputDispRawStickInputs:
-            return BoolPref::InputDispRawStickInputs;
+            *out = BoolPref::InputDispRawStickInputs;
         case PrefId::Freecam:
-            return BoolPref::Freecam;
+            *out = BoolPref::Freecam;
         case PrefId::Marathon:
-            return BoolPref::Marathon;
+            *out = BoolPref::Marathon;
         case PrefId::Moon:
-            return BoolPref::Moon;
+            *out = BoolPref::Moon;
         case PrefId::IlBattleDisplay:
-            return BoolPref::IlBattleDisplay;
+            *out = BoolPref::IlBattleDisplay;
         case PrefId::IlMarkPractice:
-            return BoolPref::IlMarkPractice;
+            *out = BoolPref::IlMarkPractice;
         case PrefId::IlMarkStory:
-            return BoolPref::IlMarkStory;
+            *out = BoolPref::IlMarkStory;
         case PrefId::IlMarkChallenge:
-            return BoolPref::IlMarkChallenge;
+            *out = BoolPref::IlMarkChallenge;
         case PrefId::HideBg:
-            return BoolPref::HideBg;
+            *out = BoolPref::HideBg;
         case PrefId::UnlockVanilla:
-            return BoolPref::UnlockVanilla;
+            *out = BoolPref::UnlockVanilla;
         case PrefId::UnlockRomhacks:
-            return BoolPref::UnlockRomhacks;
+            *out = BoolPref::UnlockRomhacks;
         case PrefId::FreecamInvertYaw:
-            return BoolPref::FreecamInvertYaw;
+            *out = BoolPref::FreecamInvertYaw;
         case PrefId::FreecamInvertPitch:
-            return BoolPref::FreecamInvertPitch;
+            *out = BoolPref::FreecamInvertPitch;
         case PrefId::FreecamToggleWithZ:
-            return BoolPref::FreecamToggleWithZ;
+            *out = BoolPref::FreecamToggleWithZ;
         case PrefId::FreecamFreezeTimer:
-            return BoolPref::FreecamFreezeTimer;
+            *out = BoolPref::FreecamFreezeTimer;
         case PrefId::FreecamHideHud:
-            return BoolPref::FreecamHideHud;
+            *out = BoolPref::FreecamHideHud;
         case PrefId::HideHud:
-            return BoolPref::HideHud;
+            *out = BoolPref::HideHud;
         case PrefId::HideStage:
-            return BoolPref::HideStage;
+            *out = BoolPref::HideStage;
         case PrefId::HideBall:
-            return BoolPref::HideBall;
+            *out = BoolPref::HideBall;
         case PrefId::HideItems:
-            return BoolPref::HideItems;
+            *out = BoolPref::HideItems;
         case PrefId::HideStobjs:
-            return BoolPref::HideStobjs;
+            *out = BoolPref::HideStobjs;
         case PrefId::HideEffects:
-            return BoolPref::HideEffects;
+            *out = BoolPref::HideEffects;
         case PrefId::IlMarkRomhacks:
-            return BoolPref::IlMarkRomhacks;
+            *out = BoolPref::IlMarkRomhacks;
         case PrefId::DisableFalloutVolumes:
-            return BoolPref::DisableFalloutVolumes;
+            *out = BoolPref::DisableFalloutVolumes;
         case PrefId::IlBattleShowTime:
-            return BoolPref::IlBattleShowTime;
+            *out = BoolPref::IlBattleShowTime;
         case PrefId::IlBattleShowScore:
-            return BoolPref::IlBattleShowScore;
+            *out = BoolPref::IlBattleShowScore;
         case PrefId::IlBattleBuzzerOld:
-            return BoolPref::IlBattleBuzzerOld;
+            *out = BoolPref::IlBattleBuzzerOld;
         case PrefId::UseCustomPhysics:
-            return BoolPref::UseCustomPhysics;
+            *out = BoolPref::UseCustomPhysics;
         case PrefId::SavestateDisableOverwrite:
-            return BoolPref::SavestateDisableOverwrite;
+            *out = BoolPref::SavestateDisableOverwrite;
         case PrefId::IlBattleTieCount:
-            return BoolPref::IlBattleTieCount;
+            *out = BoolPref::IlBattleTieCount;
         case PrefId::IlBattleAttemptCount:
-            return BoolPref::IlBattleAttemptCount;
+            *out = BoolPref::IlBattleAttemptCount;
         case PrefId::TimerShowSubtick:
-            return BoolPref::TimerShowSubtick;
+            *out = BoolPref::TimerShowSubtick;
         case PrefId::TimerShowFramesave:
-            return BoolPref::TimerShowFramesave;
+            *out = BoolPref::TimerShowFramesave;
         case PrefId::TimerShowUnrounded:
-            return BoolPref::TimerShowUnrounded;
+            *out = BoolPref::TimerShowUnrounded;
         case PrefId::TimerShowPause:
-            return BoolPref::TimerShowPause;
+            *out = BoolPref::TimerShowPause;
         case PrefId::StoryTimerWarning:
-            return BoolPref::StoryTimerWarning;
+            *out = BoolPref::StoryTimerWarning;
         case PrefId::ShowDeathCounter:
-            return BoolPref::ShowDeathCounter;
+            *out = BoolPref::ShowDeathCounter;
         default:
-            return {};
+            return false;
     }
+    return true;
 }
 
-static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
+[[nodiscard]]
+static bool pref_id_to_u8_pref(PrefId id, U8Pref* out) {
     switch (id) {
         case PrefId::CmChara:
-            return U8Pref::CmChara;
+            *out = U8Pref::CmChara;
         case PrefId::InputDispColor:
-            return U8Pref::InputDispColor;
+            *out = U8Pref::InputDispColor;
         case PrefId::BallColor:
-            return U8Pref::BallColor;
+            *out = U8Pref::BallColor;
         case PrefId::ApeColor:
-            return U8Pref::ApeColor;
+            *out = U8Pref::ApeColor;
         case PrefId::IlBattleLength:
-            return U8Pref::IlBattleLength;
+            *out = U8Pref::IlBattleLength;
         case PrefId::FreecamSpeedMult:
-            return U8Pref::FreecamSpeedMult;
+            *out = U8Pref::FreecamSpeedMult;
         case PrefId::Camera:
-            return U8Pref::Camera;
+            *out = U8Pref::Camera;
         case PrefId::BallRed:
-            return U8Pref::BallRed;
+            *out = U8Pref::BallRed;
         case PrefId::BallGreen:
-            return U8Pref::BallGreen;
+            *out = U8Pref::BallGreen;
         case PrefId::BallBlue:
-            return U8Pref::BallBlue;
+            *out = U8Pref::BallBlue;
         case PrefId::BallColorType:
-            return U8Pref::BallColorType;
+            *out = U8Pref::BallColorType;
         case PrefId::MenuBind:
-            return U8Pref::MenuBind;
+            *out = U8Pref::MenuBind;
         case PrefId::TimerType:
-            return U8Pref::TimerType;
+            *out = U8Pref::TimerType;
         case PrefId::Friction:
-            return U8Pref::Friction;
+            *out = U8Pref::Friction;
         case PrefId::Restitution:
-            return U8Pref::Restitution;
+            *out = U8Pref::Restitution;
         case PrefId::ApeColorType:
-            return U8Pref::ApeColorType;
+            *out = U8Pref::ApeColorType;
         case PrefId::IlBattleBreakdown:
-            return U8Pref::IlBattleBreakdown;
+            *out = U8Pref::IlBattleBreakdown;
         case PrefId::InputDispColorType:
-            return U8Pref::InputDispColorType;
+            *out = U8Pref::InputDispColorType;
         case PrefId::InputDispRed:
-            return U8Pref::InputDispRed;
+            *out = U8Pref::InputDispRed;
         case PrefId::InputDispGreen:
-            return U8Pref::InputDispGreen;
+            *out = U8Pref::InputDispGreen;
         case PrefId::InputDispBlue:
-            return U8Pref::InputDispBlue;
+            *out = U8Pref::InputDispBlue;
         case PrefId::IlBattleReadyBind:
-            return U8Pref::IlBattleReadyBind;
+            *out = U8Pref::IlBattleReadyBind;
         case PrefId::FreecamToggleBind:
-            return U8Pref::FreecamToggleBind;
+            *out = U8Pref::FreecamToggleBind;
         case PrefId::SavestateClearBind:
-            return U8Pref::SavestateClearBind;
+            *out = U8Pref::SavestateClearBind;
         case PrefId::FalloutPlaneType:
-            return U8Pref::FalloutPlaneType;
+            *out = U8Pref::FalloutPlaneType;
         case PrefId::StageEditVariant:
-            return U8Pref::StageEditVariant;
+            *out = U8Pref::StageEditVariant;
         case PrefId::FullgameTimerOptions:
-            return U8Pref::FullgameTimerOptions;
+            *out = U8Pref::FullgameTimerOptions;
         case PrefId::SegmentTimerOptions:
-            return U8Pref::SegmentTimerOptions;
+            *out = U8Pref::SegmentTimerOptions;
         default:
-            return {};
+            return false;
     }
+    return true;
 }
 
 // Boolean preferences that should default to true
@@ -386,8 +389,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[9];  
-    u8 u8_prefs[28];   
+    u8 bool_prefs[9];
+    u8 u8_prefs[28];
 };
 
 static PrefState s_pref_state, s_default_pref_state;
@@ -469,16 +472,16 @@ static void card_buf_to_pref_struct(void* card_buf) {
         u16 pref_data = entry_list[i].data;
 
         // If it's a boolean preference, copy it from the memcard file
-        std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
-        if (bool_pref.has_value()) {
-            set_bool_pref(bool_pref.value(), pref_data, s_pref_state);
+        BoolPref bool_pref = {};
+        if (pref_id_to_bool_pref(id, &bool_pref)) {
+            set_bool_pref(bool_pref, pref_data, s_pref_state);
             continue;
         }
 
         // For u8 preferences, copy them to struct fields directly
-        std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
-        if (u8_pref.has_value()) {
-            set_u8_pref(u8_pref.value(), static_cast<u8>(pref_data), s_pref_state);
+        U8Pref u8_pref = {};
+        if (pref_id_to_u8_pref(id, &u8_pref)) {
+            set_u8_pref(u8_pref, static_cast<u8>(pref_data), s_pref_state);
             continue;
         }
 
@@ -505,16 +508,15 @@ static void pref_struct_to_card_buf() {
         entry_list[i].id = static_cast<u16>(id);
 
         // Write out boolean preference if this is a boolean
-        std::optional<BoolPref> bool_pref = pref_id_to_bool_pref(id);
-        if (bool_pref.has_value()) {
-            entry_list[i].data = get_bool_pref(bool_pref.value(), s_pref_state);
+        BoolPref bool_pref = {};
+        if (pref_id_to_bool_pref(id, &bool_pref)) {
+            entry_list[i].data = get_bool_pref(bool_pref, s_pref_state);
             continue;
         }
 
-        // Write out u8 preference if this is a u8
-        std::optional<U8Pref> u8_pref = pref_id_to_u8_pref(id);
-        if (u8_pref.has_value()) {
-            entry_list[i].data = get_u8_pref(u8_pref.value(), s_pref_state);
+        U8Pref u8_pref = {};
+        if (pref_id_to_u8_pref(id, &u8_pref)) {
+            entry_list[i].data = get_u8_pref(u8_pref, s_pref_state);
             continue;
         }
 
