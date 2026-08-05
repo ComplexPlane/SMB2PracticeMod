@@ -2,7 +2,7 @@
 
 // Mod user preferences, backed by memory card save file
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
 namespace pref {
 

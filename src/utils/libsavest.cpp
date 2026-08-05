@@ -2,12 +2,9 @@
 
 #include "libsavest.h"
 
-#include "mkb/mkb.h"
 #include "mods/timer.h"
-#include "systems/heap.h"
-#include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
+#include "utils/base.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
@@ -56,7 +53,7 @@ void SaveState::pass_over_regions() {
                       sizeof(mkb::mode_info.stage_time_frames_remaining));
     m_store.do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
-    m_store.do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
+    m_store.do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)

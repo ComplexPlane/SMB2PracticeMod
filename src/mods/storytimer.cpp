@@ -1,6 +1,6 @@
 #include "storytimer.h"
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
 #include "mods/freecam.h"
 #include "systems/assembly.h"
@@ -187,7 +187,7 @@ void tick() {
     // serves to reset the timer) to do: in the future, have the timer not reset unless the file's
     // data is reset (either manually or by using the IW move up/down feature)
 
-    if (mkb::g_storymode_mode == 5) {
+    if (mkb::scen_info.mode == 5) {
         // zero the timer on the file select screen and set the number of completed stages to 0
         s_spin_in_timer_correction = 0;
         s_spin_in_timer = 0;
@@ -471,8 +471,8 @@ void disp() {
     if (pref::get(pref::BoolPref::StoryTimerWarning) == true &&
         TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
         TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
-        mkb::g_storymode_mode == 21) {
-        // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
+        mkb::scen_info.mode == 21) {
+        // mkb::scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
 

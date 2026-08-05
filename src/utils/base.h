@@ -1,8 +1,8 @@
 #pragma once
 
-namespace mkb {
+#include "mkb/mkb2_ghidra.h"
 
-#include "mkb2_ghidra.h"
+namespace mkb {
 
 // Originally #define'd
 constexpr GXBool GX_TRUE = 1;
@@ -53,15 +53,15 @@ using mkb::f32;
 using mkb::f64;
 using mkb::Quat;
 using mkb::s16;
+using mkb::S16Vec;
 using mkb::s32;
+using mkb::S32Vec;
 using mkb::s8;
 using mkb::u16;
 using mkb::u32;
 using mkb::u8;
-using mkb::Vec2d;
-using mkb::S32Vec;
 using mkb::Vec;
-using mkb::S16Vec;
+using mkb::Vec2d;
 
 // Necessary to use macros here so file information is accurate
 // Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore

@@ -6,7 +6,7 @@ Non shit RNG
 
 #include "tetris.h"
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
 #include "systems/pad.h"
 #include "utils/draw.h"
@@ -491,7 +491,7 @@ static void sprite_go_disp_hook(mkb::Sprite* sprite) {
         mkb::textdraw_set_pos(
             (sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
             (sprite->pos.y + y_add) - y_offset);
-        mkb::textdraw_putchar((i == 0) ? 0x47 : 0x4F);
+        mkb::textdraw_put_char((i == 0) ? 0x47 : 0x4F);
     }
 }
 

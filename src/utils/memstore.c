@@ -1,4 +1,4 @@
-#include "mkb/mkb.h"
+#include "utils/base.h"
 #include "systems/heap.h"
 
 struct Store {
@@ -34,7 +34,7 @@ void PassOverRegions(StoreFunc f, Store *store) {
             sizeof(mkb::mode_info.stage_time_frames_remaining));
     f(store, reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
     f(store, reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
-    f(store, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
+    f(store, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     f(store, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 }
 
