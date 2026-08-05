@@ -1,28 +1,30 @@
 #include "utils/patch.h"
 
-void patch_clear_dc_ic_cache(void* ptr, u32 size) {
+void patch_clear_dc_ic_cache(void *ptr, u32 size) {
     mkb_DCFlushRange(ptr, size);
     mkb_ICInvalidateRange(ptr, size);
 }
 
-u32 patch_write_branch(void* ptr, void* destination) {
+u32 patch_write_branch(void *ptr, void *destination) {
     u32 branch = 0x48000000;  // b
     return patch_write_branch_main(ptr, destination, branch);
 }
 
-u32 patch_write_branch_bl(void* ptr, void* destination) {
+u32 patch_write_branch_bl(void *ptr, void *destination) {
     u32 branch = 0x48000001;  // b/
     return patch_write_branch_main(ptr, destination, branch);
 }
 
-u32 patch_write_blr(void* ptr) { return patch_write_word(ptr, 0x4e800020); }
+u32 patch_write_blr(void *ptr) {
+    return patch_write_word(ptr, 0x4e800020);
+}
 
-u32 patch_write_branch_main(void* ptr, void* destination, u32 branch) {
+u32 patch_write_branch_main(void *ptr, void *destination, u32 branch) {
     u32 delta = (u32)(destination) - (u32)(ptr);
 
     branch |= (delta & 0x03FFFFFC);
 
-    u32* p = (u32*)(ptr);
+    u32 *p = (u32 *)(ptr);
     u32 orig_word = *p;
     *p = branch;
 
@@ -31,8 +33,8 @@ u32 patch_write_branch_main(void* ptr, void* destination, u32 branch) {
     return orig_word;
 }
 
-u32 patch_write_word(void* ptr, u32 data) {
-    u32* p = (u32*)(ptr);
+u32 patch_write_word(void *ptr, u32 data) {
+    u32 *p = (u32 *)(ptr);
     u32 orig_word = *p;
     *p = data;
     patch_clear_dc_ic_cache(ptr, sizeof(u32));
@@ -40,17 +42,19 @@ u32 patch_write_word(void* ptr, u32 data) {
     return orig_word;
 }
 
-u32 patch_write_nop(void* ptr) { return patch_write_word(ptr, 0x60000000); }
+u32 patch_write_nop(void *ptr) {
+    return patch_write_word(ptr, 0x60000000);
+}
 
-void patch_hook_function_replace(void* func, void* dest) {
+void patch_hook_function_replace(void *func, void *dest) {
     // Branch directly to the destination function from the original function,
     // leaving no option to call the original function
-    u32* instructions = (u32*)(func);
+    u32 *instructions = (u32 *)(func);
     patch_write_branch(&instructions[0], dest);
 }
 
-void patch_hook_function_tramp(void* func, void* dest, u32* tramp_instrs, void** tramp_dest) {
-    u32* func_instrs = (u32*)(func);
+void patch_hook_function_tramp(void *func, void *dest, u32 *tramp_instrs, void **tramp_dest) {
+    u32 *func_instrs = (u32 *)(func);
 
     constexpr u32 B_OPCODE_MASK = 0xFC000000;
     constexpr u32 B_OPCODE = 0x48000000;
@@ -71,7 +75,7 @@ void patch_hook_function_tramp(void* func, void* dest, u32* tramp_instrs, void**
         patch_write_branch(&func_instrs[0], dest);
 
         // Use the old hooked func as the trampoline dest
-        *tramp_dest = (void*)(old_dest);
+        *tramp_dest = (void *)(old_dest);
 
     } else {
         // Func has not been hooked yet

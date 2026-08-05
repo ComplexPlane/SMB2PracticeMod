@@ -6,9 +6,9 @@
 #include "utils/relutil.h"
 
 static mkb_HeapInfo s_local_heap_info;  // Use our own HeapInfo if Workshop Mod isn't loaded
-static mkb_HeapInfo* s_heap_info;       // Pointer to either our HeapInfo or Workshop Mod's
+static mkb_HeapInfo *s_heap_info;       // Pointer to either our HeapInfo or Workshop Mod's
 
-static mkb_ChunkInfo* extract_chunk(mkb_ChunkInfo* list, mkb_ChunkInfo* chunk) {
+static mkb_ChunkInfo *extract_chunk(mkb_ChunkInfo *list, mkb_ChunkInfo *chunk) {
     if (chunk->next) {
         chunk->next->prev = chunk->prev;
     }
@@ -21,7 +21,7 @@ static mkb_ChunkInfo* extract_chunk(mkb_ChunkInfo* list, mkb_ChunkInfo* chunk) {
     }
 }
 
-static mkb_ChunkInfo* add_chunk_to_front(mkb_ChunkInfo* list, mkb_ChunkInfo* chunk) {
+static mkb_ChunkInfo *add_chunk_to_front(mkb_ChunkInfo *list, mkb_ChunkInfo *chunk) {
     chunk->next = list;
     chunk->prev = nullptr;
 
@@ -32,7 +32,7 @@ static mkb_ChunkInfo* add_chunk_to_front(mkb_ChunkInfo* list, mkb_ChunkInfo* chu
     return chunk;
 }
 
-static mkb_ChunkInfo* find_chunk_in_list(mkb_ChunkInfo* list, mkb_ChunkInfo* chunk) {
+static mkb_ChunkInfo *find_chunk_in_list(mkb_ChunkInfo *list, mkb_ChunkInfo *chunk) {
     for (; list; list = list->next) {
         if (list == chunk) {
             return list;
@@ -42,27 +42,27 @@ static mkb_ChunkInfo* find_chunk_in_list(mkb_ChunkInfo* list, mkb_ChunkInfo* chu
 }
 
 static void make_heap() {
-    u32 start = mkb_OSRoundUp32B(*(u32*)(0x8000452C));
-    void* end_ptr = rel_compute_mainloop_reldata_boundary((void*)start);  // TODO precompute?
+    u32 start = mkb_OSRoundUp32B(*(u32 *)(0x8000452C));
+    void *end_ptr = rel_compute_mainloop_reldata_boundary((void *)start);  // TODO precompute?
     u32 end = mkb_OSRoundDown32B((u32)(end_ptr));
     u32 size = end - start;
 
-    mkb_memset((void*)(start), 0, size);
+    mkb_memset((void *)(start), 0, size);
 
     s_heap_info->capacity = size;
-    s_heap_info->first_free = (mkb_ChunkInfo*)(start);
+    s_heap_info->first_free = (mkb_ChunkInfo *)(start);
     s_heap_info->first_free->next = nullptr;
     s_heap_info->first_free->prev = nullptr;
     s_heap_info->first_free->size = size;
     s_heap_info->first_used = nullptr;
 }
 
-void* heap_alloc(u32 size) {
+void *heap_alloc(u32 size) {
     // Enlarge size to the smallest possible chunk size
     u32 new_size = size + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo));
     new_size = mkb_OSRoundUp32B(new_size);
 
-    mkb_ChunkInfo* temp_chunk = nullptr;
+    mkb_ChunkInfo *temp_chunk = nullptr;
 
     // Find a memory area large enough
     for (temp_chunk = s_heap_info->first_free; temp_chunk; temp_chunk = temp_chunk->next) {
@@ -89,7 +89,7 @@ void* heap_alloc(u32 size) {
         temp_chunk->size = (s32)(new_size);
 
         // Create a new chunk
-        mkb_ChunkInfo* new_chunk = (mkb_ChunkInfo*)((u32)(temp_chunk) + new_size);
+        mkb_ChunkInfo *new_chunk = (mkb_ChunkInfo *)((u32)(temp_chunk) + new_size);
 
         new_chunk->size = leftover_size;
 
@@ -111,19 +111,19 @@ void* heap_alloc(u32 size) {
     s_heap_info->first_used = add_chunk_to_front(s_heap_info->first_used, temp_chunk);
 
     // Add the header size to the chunk
-    void* allocated_memory = (void*)((u32)(temp_chunk) + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo)));
+    void *allocated_memory = (void *)((u32)(temp_chunk) + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo)));
 
     mkb_memset(allocated_memory, 0, size);
     return allocated_memory;
 }
 
-bool heap_free(void* ptr) {
+bool heap_free(void *ptr) {
     u32 ptr_raw = (u32)(ptr);
 
     u32 header_size = mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo));
 
     // Remove the header size from ptr, as the value stored in the list does not include it
-    mkb_ChunkInfo* temp_chunk = (mkb_ChunkInfo*)(ptr_raw - header_size);
+    mkb_ChunkInfo *temp_chunk = (mkb_ChunkInfo *)(ptr_raw - header_size);
 
     // Make sure ptr is actually allocated
     if (!find_chunk_in_list(s_heap_info->first_used, temp_chunk)) {
@@ -140,19 +140,21 @@ bool heap_free(void* ptr) {
 
 u32 heap_get_free_space() {
     u32 space = 0;
-    for (mkb_ChunkInfo* chunk = s_heap_info->first_free; chunk; chunk = chunk->next) {
+    for (mkb_ChunkInfo *chunk = s_heap_info->first_free; chunk; chunk = chunk->next) {
         space += chunk->size - 32;  // Don't count the ChunkInfo
     }
     return space;
 }
 
-u32 heap_get_total_space() { return s_heap_info->capacity; }
+u32 heap_get_total_space() {
+    return s_heap_info->capacity;
+}
 
 void heap_check_integrity() {
     bool valid = true;
 
-    mkb_ChunkInfo* current_chunk = nullptr;
-    mkb_ChunkInfo* prev_chunk = nullptr;
+    mkb_ChunkInfo *current_chunk = nullptr;
+    mkb_ChunkInfo *prev_chunk = nullptr;
     for (current_chunk = s_heap_info->first_used; current_chunk;
          current_chunk = current_chunk->next) {
         // Check pointer sanity

@@ -15,7 +15,7 @@ void version_init() {
     }
 }
 
-s32 semver_compare(SemVer* v1, SemVer* v2) {
+s32 semver_compare(SemVer *v1, SemVer *v2) {
     if (v1->major < v2->major) return -1;
     if (v1->major > v2->major) return 1;
     if (v1->minor < v2->minor) return -1;
@@ -26,7 +26,7 @@ s32 semver_compare(SemVer* v1, SemVer* v2) {
     return 0;
 }
 
-s32 pracmod_version_compare(PracmodVersion* v1, PracmodVersion* v2) {
+s32 pracmod_version_compare(PracmodVersion *v1, PracmodVersion *v2) {
     s32 semver_result = semver_compare(&v1->semver, &v2->semver);
     if (semver_result != 0) return semver_result;
 
@@ -41,4 +41,6 @@ s32 pracmod_version_compare(PracmodVersion* v1, PracmodVersion* v2) {
     return 0;
 }
 
-const char* version_get_str() { return s_version_str; }
+const char *version_get_str() {
+    return s_version_str;
+}
