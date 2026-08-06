@@ -226,3 +226,10 @@ void pref_set_defaults() {
         pref_set(DEFAULT_PREFS[i].pref, DEFAULT_PREFS[i].value);
     }
 }
+
+u8 pref_get_default(Pref pref) {
+    for (u32 i = 0; i < LEN(DEFAULT_PREFS); i++) {
+        if (DEFAULT_PREFS[i].pref == pref) return DEFAULT_PREFS[i].value;
+    }
+    return 0;
+}

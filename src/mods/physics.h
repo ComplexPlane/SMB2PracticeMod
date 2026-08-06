@@ -2,9 +2,6 @@
 
 #include "utils/base.h"
 
-namespace physics {
-void init();
-void tick();
-void disp();
-
-}  // namespace physics
+void physics_init();
+void physics_tick();
+void physics_disp();

@@ -12,7 +12,7 @@ void asm_start_main_loop_assembly();
 // Functions accessed by assembly overwrites
 // main.cpp
 // TODO rename?
-void tick();
+void main_tick(void);
 
 // Full color to draw debug text in, if not zero
 // Normally, the debug text drawing function uses a single byte for the color in the form RRGGBBAA

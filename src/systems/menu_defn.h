@@ -31,7 +31,7 @@ struct TextWidget {
 typedef struct ColoredTextWidget ColoredTextWidget;
 struct ColoredTextWidget {
     const char *label;
-    mkb::GXColor color;
+    GXColor color;
 };
 
 // Just a different color TextWidget
@@ -120,7 +120,10 @@ struct InputSelectWidget {
     bool can_unbind;
 };
 
-enum class HideableType : u8 { U8Hideable, BoolHideable };
+typedef enum HideableType : u8 {
+    HideableType_U8Hideable,
+    HideableType_BoolHideable,
+} HideableType;
 
 typedef struct HideableGroupWidget HideableGroupWidget;
 struct HideableGroupWidget {
@@ -157,4 +160,4 @@ struct Widget {
 
 extern MenuWidget menu_root;
 
-void menu_init();
+void menu_init(void);

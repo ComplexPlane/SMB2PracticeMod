@@ -2,11 +2,7 @@
 
 #include "utils/base.h"
 
-namespace stage_edits {
-
-void main_game_init();
-void init();
-void tick();
-void select_new_goal();
-
-}  // namespace stage_edits
+void stage_edits_main_game_init();
+void stage_edits_init();
+void stage_edits_tick();
+void stage_edits_select_new_goal();

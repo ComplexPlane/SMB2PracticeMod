@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-constexpr u32 SS_SLOT_COUNT = 8;
+enum { SS_SLOT_COUNT = 8 };
 
 typedef enum SS_SaveResult SS_SaveResult;
 enum SS_SaveResult {

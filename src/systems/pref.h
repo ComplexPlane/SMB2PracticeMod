@@ -99,3 +99,4 @@ void pref_save();
 u8 pref_get(Pref pref);
 void pref_set(Pref pref, u8 value);
 void pref_set_defaults();
+u8 pref_get_default(Pref pref);

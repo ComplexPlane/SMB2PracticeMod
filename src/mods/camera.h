@@ -1,8 +1,4 @@
 #pragma once
 
-namespace camera {
-
-void init();
-void tick();
-
-}  // namespace camera
+void camera_init();
+void camera_tick();

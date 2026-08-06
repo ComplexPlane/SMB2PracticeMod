@@ -296,7 +296,7 @@ SS_SaveResult savest_save(u32 slot) {
     return SS_SaveResult_Ok;
 }
 
-SS_LoadResult load(u32 slot) {
+SS_LoadResult savest_load(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState *state = &s_states[slot];

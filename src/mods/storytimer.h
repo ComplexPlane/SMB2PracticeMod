@@ -1,8 +1,4 @@
 #pragma once
 
-namespace storytimer {
-
-void tick();
-void disp();
-
-}  // namespace storytimer
+void storytimer_tick();
+void storytimer_disp();

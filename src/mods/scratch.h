@@ -2,9 +2,6 @@
 
 #include "utils/base.h"
 
-namespace scratch {
-void init();
-void tick();
-void disp();
-
-}  // namespace scratch
+void scratch_init();
+void scratch_tick();
+void scratch_disp();

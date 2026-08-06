@@ -1,8 +1,4 @@
 #pragma once
 
-namespace deathcounter {
-
-void tick();
-void disp();
-
-}  // namespace deathcounter
+void deathcounter_tick();
+void deathcounter_disp();

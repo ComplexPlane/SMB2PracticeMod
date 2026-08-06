@@ -99,17 +99,17 @@ static mkb_CARDResult read_file_internal(const char *file_name, void **out_buf) 
     return mkb_CARD_RESULT_READY;
 }
 
-mkb_CARDResult read_file(const char *file_name, void **out_buf) {
+mkb_CARDResult cardio_read_file(const char *file_name, void **out_buf) {
     set_fake_gamecode();
     mkb_CARDResult res = read_file_internal(file_name, out_buf);
     restore_original_gamecode();
     return res;
 }
 
-void write_file(const char *file_name,
-                const void *buf,
-                u32 buf_size,
-                void (*callback)(mkb_CARDResult)) {
+void cardio_write_file(const char *file_name,
+                       const void *buf,
+                       u32 buf_size,
+                       void (*callback)(mkb_CARDResult)) {
     s_next_write = (WriteRequest){
         .file_name = file_name,
         .buf = buf,
@@ -118,7 +118,7 @@ void write_file(const char *file_name,
     };
 }
 
-void init() {
+void cardio_init() {
     mkb_memcpy(s_orig_gamecode, mkb_DVD_GAME_NAME, sizeof(s_orig_gamecode));
 }
 
@@ -129,7 +129,7 @@ static void finish_write(mkb_CARDResult res) {
     restore_original_gamecode();
 }
 
-void tick() {
+void cardio_tick() {
     mkb_CARDResult res;
 
     switch (s_state) {

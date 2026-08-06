@@ -2,14 +2,10 @@
 
 #include "utils/base.h"
 
-namespace ballcolor {
+constexpr u32 ballcolor_NUM_COLORS = 9;
+constexpr u8 ballcolor_COLOR_MIN = 0;
+constexpr u8 ballcolor_COLOR_MAX = ballcolor_NUM_COLORS - 1;
 
-static constexpr u32 NUM_COLORS = 9;
-static constexpr int COLOR_MIN = 0;
-static constexpr int COLOR_MAX = 0xff;
-
-mkb::GXColor get_current_color();
-void init();
-void tick();
-
-}  // namespace ballcolor
+mkb_GXColor ballcolor_get_current_color();
+void ballcolor_init();
+void ballcolor_tick();

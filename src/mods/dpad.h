@@ -6,8 +6,4 @@
 
 #include "utils/base.h"
 
-namespace dpad {
-
-void on_PADRead(mkb::PADStatus* statuses);
-
-}  // namespace dpad
+void dpad_on_PADRead(mkb_PADStatus *statuses);

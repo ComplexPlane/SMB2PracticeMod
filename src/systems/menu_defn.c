@@ -1,4 +1,5 @@
 #include "menu_defn.h"
+#include <stddef.h>
 
 #include "mods/ballcolor.h"
 #include "mods/cmseg.h"
@@ -80,6 +81,13 @@ static Widget s_input_hex[] = {
     },
 };
 
+static bool inputdisp_uses_preset_color(void) {
+    return pref_get(Pref_InputDispColorType) == 0;
+}
+static bool inputdisp_uses_rgb_color(void) {
+    return pref_get(Pref_InputDispColorType) == 1;
+}
+
 static Widget s_inputdisp_subwidgets[] = {
     {
         .type = WidgetType_Checkbox,
@@ -121,7 +129,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
-                .show_if = []() { return pref_get(Pref_InputDispColorType) == 0; },
+                .show_if = inputdisp_uses_preset_color,
             },
     },
     {
@@ -130,10 +138,14 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
-                .show_if = []() { return pref_get(Pref_InputDispColorType) == 1; },
+                .show_if = inputdisp_uses_rgb_color,
             },
     },
 };
+
+static bool inputdisp_is_enabled(void) {
+    return pref_get(Pref_InputDisp);
+}
 
 static Widget s_inputdisp_widgets[] = {
     {
@@ -150,7 +162,7 @@ static Widget s_inputdisp_widgets[] = {
             {
                 .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
-                .show_if = []() { return pref_get(Pref_InputDisp); },
+                .show_if = inputdisp_is_enabled,
             },
     },
 };
@@ -231,6 +243,16 @@ static Widget s_hex_widgets[] = {
     },
 };
 
+static bool ball_uses_preset_color(void) {
+    return pref_get(Pref_BallColorType) == 0;
+}
+static bool ball_uses_rgb_color(void) {
+    return pref_get(Pref_BallColorType) == 1;
+}
+static bool ape_uses_preset_color(void) {
+    return pref_get(Pref_ApeColorType) == 0;
+}
+
 static Widget s_ball_color_widgets[] = {
     {
         .type = WidgetType_Header,
@@ -252,7 +274,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_widgets,
                 .num_widgets = LEN(s_preset_widgets),
-                .show_if = []() { return pref_get(Pref_BallColorType) == 0; },
+                .show_if = ball_uses_preset_color,
             },
     },
     {
@@ -261,7 +283,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_hex_widgets,
                 .num_widgets = LEN(s_hex_widgets),
-                .show_if = []() { return pref_get(Pref_BallColorType) == 1; },
+                .show_if = ball_uses_rgb_color,
             },
     },
     {WidgetType_Separator},
@@ -285,7 +307,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
-                .show_if = []() { return pref_get(Pref_ApeColorType) == 0; },
+                .show_if = ape_uses_preset_color,
             },
     },
 };
@@ -315,6 +337,10 @@ static Widget s_il_battle_score_widgets[] = {
             },
     },
 };
+
+static bool il_battle_score_is_shown(void) {
+    return pref_get(Pref_IlBattleShowScore);
+}
 
 static Widget s_il_battle_subwidgets[] = {
     {
@@ -359,7 +385,7 @@ static Widget s_il_battle_subwidgets[] = {
             {
                 .widgets = s_il_battle_score_widgets,
                 .num_widgets = LEN(s_il_battle_score_widgets),
-                .show_if = []() { return pref_get(Pref_IlBattleShowScore); },
+                .show_if = il_battle_score_is_shown,
             },
     },
     {
@@ -389,6 +415,10 @@ static Widget s_il_battle_subwidgets[] = {
     {.type = WidgetType_Text, .text = {"  Press Ready Bind then Retry to start a battle"}},
 };
 
+static bool il_battle_display_is_enabled(void) {
+    return pref_get(Pref_IlBattleDisplay);
+}
+
 static Widget s_il_battle_widgets[] = {
     {
         .type = WidgetType_Checkbox,
@@ -404,7 +434,7 @@ static Widget s_il_battle_widgets[] = {
             {
                 .widgets = s_il_battle_subwidgets,
                 .num_widgets = LEN(s_il_battle_subwidgets),
-                .show_if = []() { return pref_get(Pref_IlBattleDisplay); },
+                .show_if = il_battle_display_is_enabled,
             },
     },
 };
@@ -422,38 +452,67 @@ static void rumble_set(int controller_idx, bool value) {
     }
 }
 
+static bool controller_1_rumble_get(void) {
+    return rumble_get(0);
+}
+static void controller_1_rumble_set(bool enable) {
+    rumble_set(0, enable);
+}
+static bool controller_2_rumble_get(void) {
+    return rumble_get(1);
+}
+static void controller_2_rumble_set(bool enable) {
+    rumble_set(1, enable);
+}
+static bool controller_3_rumble_get(void) {
+    return rumble_get(2);
+}
+static void controller_3_rumble_set(bool enable) {
+    rumble_set(2, enable);
+}
+static bool controller_4_rumble_get(void) {
+    return rumble_get(3);
+}
+static void controller_4_rumble_set(bool enable) {
+    rumble_set(3, enable);
+}
+
 static Widget s_rumble_widgets[] = {
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 1 Rumble",
-            .get = []() { return rumble_get(0); },
-            .set = [](bool enable) { rumble_set(0, enable); },
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 1 Rumble",
+                .get = controller_1_rumble_get,
+                .set = controller_1_rumble_set,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 2 Rumble",
-            .get = []() { return rumble_get(1); },
-            .set = [](bool enable) { rumble_set(1, enable); },
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 2 Rumble",
+                .get = controller_2_rumble_get,
+                .set = controller_2_rumble_set,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 3 Rumble",
-            .get = []() { return rumble_get(2); },
-            .set = [](bool enable) { rumble_set(2, enable); },
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 3 Rumble",
+                .get = controller_3_rumble_get,
+                .set = controller_3_rumble_set,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 4 Rumble",
-            .get = []() { return rumble_get(3); },
-            .set = [](bool enable) { rumble_set(3, enable); },
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 4 Rumble",
+                .get = controller_4_rumble_get,
+                .set = controller_4_rumble_set,
+            },
     },
 };
 
@@ -490,11 +549,18 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType_ColoredText,
-        .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw_BLUE},
+        .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", COLOR_BLUE},
     },
 };
 
 static const char *CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
+
+static void start_beginner_1_10_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Beginner1);
+}
+static void start_beginner_extra_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_BeginnerExtra);
+}
 
 static Widget s_cm_beg_widgets[] = {
     {
@@ -502,8 +568,8 @@ static Widget s_cm_beg_widgets[] = {
         .button =
             {
                 .label = "Beginner 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Beginner1); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_beginner_1_10_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -511,11 +577,24 @@ static Widget s_cm_beg_widgets[] = {
         .button =
             {
                 .label = "Beginner Extra 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_BeginnerExtra); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_beginner_extra_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
 };
+
+static void start_advanced_1_10_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Advanced1);
+}
+static void start_advanced_11_20_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Advanced11);
+}
+static void start_advanced_21_30_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Advanced21);
+}
+static void start_advanced_extra_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_AdvancedExtra);
+}
 
 static Widget s_cm_adv_widgets[] = {
     {
@@ -523,8 +602,8 @@ static Widget s_cm_adv_widgets[] = {
         .button =
             {
                 .label = "Advanced 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Advanced1); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_advanced_1_10_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -532,8 +611,8 @@ static Widget s_cm_adv_widgets[] = {
         .button =
             {
                 .label = "Advanced 11-20",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Advanced11); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_advanced_11_20_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -541,8 +620,8 @@ static Widget s_cm_adv_widgets[] = {
         .button =
             {
                 .label = "Advanced 21-30",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Advanced21); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_advanced_21_30_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -550,11 +629,30 @@ static Widget s_cm_adv_widgets[] = {
         .button =
             {
                 .label = "Advanced Extra 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_AdvancedExtra); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_advanced_extra_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
 };
+
+static void start_expert_1_10_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Expert1);
+}
+static void start_expert_11_20_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Expert11);
+}
+static void start_expert_21_30_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Expert21);
+}
+static void start_expert_31_40_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Expert31);
+}
+static void start_expert_41_50_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Expert41);
+}
+static void start_expert_extra_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_ExpertExtra);
+}
 
 static Widget s_cm_exp_widgets[] = {
     {
@@ -562,8 +660,8 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Expert1); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_1_10_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -571,8 +669,8 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert 11-20",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Expert11); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_11_20_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -580,8 +678,8 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert 21-30",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Expert21); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_21_30_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -589,8 +687,8 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert 31-40",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Expert31); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_31_40_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -598,8 +696,8 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert 41-50",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Expert41); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_41_50_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -607,11 +705,18 @@ static Widget s_cm_exp_widgets[] = {
         .button =
             {
                 .label = "Expert Extra 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_ExpertExtra); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_expert_extra_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
 };
+
+static void start_master_1_10_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_Master1);
+}
+static void start_master_extra_segment(void) {
+    cmseg_request_cm_seg(cmseg_Seg_MasterExtra);
+}
 
 static Widget s_cm_mas_widgets[] = {
     {
@@ -619,8 +724,8 @@ static Widget s_cm_mas_widgets[] = {
         .button =
             {
                 .label = "Master 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_Master1); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_master_1_10_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -628,8 +733,8 @@ static Widget s_cm_mas_widgets[] = {
         .button =
             {
                 .label = "Master Extra 1-10",
-                .push = [] { cmseg_request_cm_seg(cmseg_Seg_MasterExtra); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = start_master_extra_segment,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
 };
@@ -900,8 +1005,8 @@ static Widget s_unlock_confirm_widgets[] = {
         .button =
             {
                 .label = "Cancel",
-                .push = nullptr,
-                .flags = ButtonFlags_GoBack,
+                .push = NULL,
+                .flags = ButtonFlag_GoBack,
             },
     },
     {
@@ -910,7 +1015,7 @@ static Widget s_unlock_confirm_widgets[] = {
             {
                 .label = "Confirm",
                 .push = unlock_unlock_everything,
-                .flags = ButtonFlags_GoBack,
+                .flags = ButtonFlag_GoBack,
             },
     },
 };
@@ -997,6 +1102,10 @@ static Widget s_freecam_subwidgets[] = {
     },
 };
 
+static bool freecam_is_enabled(void) {
+    return pref_get(Pref_Freecam);
+}
+
 static Widget s_freecam_widgets[] = {
     {
         .type = WidgetType_Checkbox,
@@ -1022,7 +1131,7 @@ static Widget s_freecam_widgets[] = {
             {
                 .widgets = s_freecam_subwidgets,
                 .num_widgets = LEN(s_freecam_subwidgets),
-                .show_if = []() { return pref_get(Pref_Freecam); },
+                .show_if = freecam_is_enabled,
             },
     },
 };
@@ -1142,6 +1251,10 @@ static Widget s_savestate_subwidgets[] = {
     },
 };
 
+static bool savestates_are_enabled(void) {
+    return pref_get(Pref_Savestates);
+}
+
 static Widget s_savestate_widgets[] = {
     {
         .type = WidgetType_Checkbox,
@@ -1157,7 +1270,7 @@ static Widget s_savestate_widgets[] = {
             {
                 .widgets = s_savestate_subwidgets,
                 .num_widgets = LEN(s_savestate_subwidgets),
-                .show_if = []() { return pref_get(Pref_Savestates); },
+                .show_if = savestates_are_enabled,
             },
     },
 };
@@ -1169,7 +1282,7 @@ static Widget s_tools_widgets[] = {
             {
                 .label = "Go To Story Mode",
                 .push = gotostory_load_storymode,
-                .flags = ButtonFlags_CloseMenu,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
     {
@@ -1222,6 +1335,10 @@ static Widget s_tools_widgets[] = {
     },
 };
 
+static void disable_il_invalidating_settings(void) {
+    ilmark_disable_invalidating_settings();
+}
+
 static Widget s_il_mark_widgets[] = {
     {
         .type = WidgetType_Header,
@@ -1232,8 +1349,8 @@ static Widget s_il_mark_widgets[] = {
         .button =
             {
                 .label = "Disable Now",
-                .push = [] { ilmark_disable_invalidating_settings(); },
-                .flags = ButtonFlags_GoBack,
+                .push = disable_il_invalidating_settings,
+                .flags = ButtonFlag_GoBack,
             },
     },
     {.type = WidgetType_Separator},
@@ -1347,6 +1464,10 @@ static Widget s_enabled_physics_widgets[] = {
     },
 };
 
+static bool custom_physics_is_enabled(void) {
+    return pref_get(Pref_UseCustomPhysics);
+}
+
 static Widget s_physics_widgets[] = {
     {
         .type = WidgetType_Checkbox,
@@ -1362,12 +1483,16 @@ static Widget s_physics_widgets[] = {
             {
                 .widgets = s_enabled_physics_widgets,
                 .num_widgets = LEN(s_enabled_physics_widgets),
-                .show_if = []() { return pref_get(Pref_UseCustomPhysics); },
+                .show_if = custom_physics_is_enabled,
             },
     },
 };
 
 static const char *STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
+
+static void select_new_reverse_mode_goal(void) {
+    stage_edits_select_new_goal();
+}
 
 static Widget s_reverse_goal_widgets[] = {
     {
@@ -1375,11 +1500,15 @@ static Widget s_reverse_goal_widgets[] = {
         .button =
             {
                 .label = "Select New Goal",
-                .push = [] { stage_edits_select_new_goal(); },
-                .flags = ButtonFlags_CloseMenu,
+                .push = select_new_reverse_mode_goal,
+                .flags = ButtonFlag_CloseMenu,
             },
     },
 };
+
+static bool reverse_mode_is_selected(void) {
+    return pref_get(Pref_StageEditVariant) == 3;
+}
 
 static Widget s_stage_edit_widgets[] = {
     {
@@ -1398,7 +1527,7 @@ static Widget s_stage_edit_widgets[] = {
             {
                 .widgets = s_reverse_goal_widgets,
                 .num_widgets = LEN(s_reverse_goal_widgets),
-                .show_if = []() { return pref_get(Pref_StageEditVariant) == 3; },
+                .show_if = reverse_mode_is_selected,
             },
     },
     {
@@ -1471,6 +1600,11 @@ static Widget s_gameplay_mods_widgets[] = {
     },
 };
 
+static void restore_default_preferences(void) {
+    pref_set_defaults();
+    pref_save();
+}
+
 static Widget s_reset_prefs_widgets[] = {
     {
         .type = WidgetType_Text,
@@ -1481,8 +1615,8 @@ static Widget s_reset_prefs_widgets[] = {
         .button =
             {
                 .label = "Cancel",
-                .push = nullptr,
-                .flags = ButtonFlags_GoBack,
+                .push = NULL,
+                .flags = ButtonFlag_GoBack,
             },
     },
     {
@@ -1490,12 +1624,8 @@ static Widget s_reset_prefs_widgets[] = {
         .button =
             {
                 .label = "Confirm",
-                .push =
-                    [] {
-                        pref_reset_all_defaults();
-                        pref_save();
-                    },
-                .flags = ButtonFlags_GoBack,
+                .push = restore_default_preferences,
+                .flags = ButtonFlag_GoBack,
             },
     },
 };
@@ -1555,6 +1685,6 @@ MenuWidget menu_root = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void init() {
-    mkb_sprintf(s_version_str, "  Current version: v%s", version_get_version_str());
+void menu_init(void) {
+    mkb_sprintf(s_version_str, "  Current version: v%s", version_get_str());
 }

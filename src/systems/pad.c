@@ -5,6 +5,8 @@
 static constexpr u32 DIR_REPEAT_PERIOD = 3;
 static constexpr u32 DIR_REPEAT_WAIT = 14;
 
+static s32 s_konami_progress;
+static bool s_konami_input_prev_tick;
 static bool s_exclusive_mode;
 static bool s_exclusive_mode_request;
 
@@ -41,6 +43,87 @@ bool pad_analog_pressed(mkb_PadAnalogInput analog_input, bool priority) {
 
 bool pad_analog_released(mkb_PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
+}
+
+static bool any_input_down(void) {
+    return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
+}
+
+static bool any_input_pressed(void) {
+    return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
+}
+
+static void update_konami(void) {
+    if (s_konami_progress >= 11) {
+        s_konami_progress = 0;
+    }
+
+    if (s_konami_input_prev_tick && any_input_down()) return;
+
+    if (!any_input_pressed()) {
+        s_konami_input_prev_tick = false;
+        return;
+    }
+
+    s_konami_input_prev_tick = true;
+    switch (s_konami_progress) {
+    case 0:
+    case 1:
+        if (pad_dir_pressed(DIR_UP, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 2:
+    case 3:
+        if (pad_dir_pressed(DIR_DOWN, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 4:
+    case 6:
+        if (pad_dir_pressed(DIR_LEFT, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 5:
+    case 7:
+        if (pad_dir_pressed(DIR_RIGHT, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 8:
+        if (pad_button_pressed(mkb_PAD_BUTTON_B, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 9:
+        if (pad_button_pressed(mkb_PAD_BUTTON_A, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    case 10:
+        if (pad_button_pressed(mkb_PAD_BUTTON_START, true)) {
+            s_konami_progress++;
+        } else {
+            s_konami_progress = 0;
+        }
+        break;
+    default:
+        s_konami_progress = 0;
+        break;
+    }
 }
 
 bool pad_button_chord_pressed(mkb_PadDigitalInput btn1, mkb_PadDigitalInput btn2, bool priority) {
@@ -132,6 +215,10 @@ void pad_reset_dir_repeat() {
     mkb_memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
 }
 
+bool pad_konami_pressed() {
+    return s_konami_progress == 11;
+}
+
 void pad_set_exclusive_mode(bool enabled) {
     s_exclusive_mode_request = enabled;
 }
@@ -181,5 +268,6 @@ void pad_tick() {
         mkb_memset(mkb_analog_inputs, 0, sizeof(mkb_analog_inputs));
     }
 
+    update_konami();
     update_dir_times();
 }
