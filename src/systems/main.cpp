@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include "utils/base.h"
 
 #include "mkb/mkb2_ghidra.h"
@@ -162,7 +164,7 @@ static bool os_link(mkb::OSModuleHeader *rel_buffer, void *bss_buffer) {
     return ret;
 }
 
-void init() {
+void main_init() {
     version::init();
 
     mkb::OSReport("[pracmod] SMB2 Practice Mod v%s loaded\n", version::get_version_str());
