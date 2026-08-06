@@ -47,13 +47,11 @@ static void draw_debug_text_hook();
 static void process_inputs();
 static u32 pad_read(mkb_PADStatus *statuses);
 static bool os_link(mkb_OSModuleHeader *rel_buffer, void *bss_buffer);
-static void ignore_sound_request(u32 g_sfx_idx);
 
 TRAMP(s_draw_debug_text_tramp, mkb_draw_debugtext, draw_debug_text_hook);
 TRAMP(s_process_inputs_tramp, mkb_process_inputs, process_inputs);
 TRAMP(s_pad_read_tramp, mkb_PADRead, pad_read);
 TRAMP(s_os_link_tramp, mkb_OSLink, os_link);
-TRAMP(s_ignore_sound_request_tramp, mkb_call_SoundReqID_arg_0, ignore_sound_request);
 
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
@@ -161,9 +159,6 @@ static bool os_link(mkb_OSModuleHeader *rel_buffer, void *bss_buffer) {
     return ret;
 }
 
-static void ignore_sound_request(u32 g_sfx_idx) {
-}
-
 void main_init() {
     version_init();
 
@@ -196,7 +191,6 @@ void main_init() {
 
     HOOK_TRAMP(s_pad_read_tramp);
     HOOK_TRAMP(s_process_inputs_tramp);
-    HOOK_TRAMP(s_ignore_sound_request_tramp);
     HOOK_TRAMP(s_draw_debug_text_tramp);
     // Hook for mkb_load_additional_rel
     HOOK_TRAMP(s_os_link_tramp);
