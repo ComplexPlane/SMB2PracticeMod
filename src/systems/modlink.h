@@ -18,11 +18,11 @@ struct ModLink {
     // Other mods share the Workshop Mod's heap.
     // The other mod calls `malloc_func` from assembly during bootstrapping to load itself, then
     // uses `heap_info` and its own heap functions for other heap usage at runtime.
-    void* (*malloc_func)(u32 size);
-    mkb_HeapInfo* heap_info;
+    void *(*malloc_func)(u32 size);
+    mkb_HeapInfo *heap_info;
 } __attribute__((__packed__));
 
 /**
  * Returns shared ModLink struct, or nullptr if not loaded (magic doesn't match)
  */
-ModLink* modlink_get();
+ModLink *modlink_get();

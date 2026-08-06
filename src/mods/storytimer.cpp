@@ -30,6 +30,7 @@ static u32 s_spin_in_timer_correction;
 static u32 s_game_scenario_return_timer_correction;
 static u32 s_world_start_timer_correction;
 static u32 s_loadless_story_timer;
+typedef struct TimerGroup TimerGroup;
 struct TimerGroup {
     static u32 test;
 };

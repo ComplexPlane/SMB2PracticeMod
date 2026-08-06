@@ -12,6 +12,7 @@
 
 namespace inputdisp {
 
+typedef struct MergedStickInputs MergedStickInputs;
 struct MergedStickInputs {
     s32 rawX;
     s32 rawY;

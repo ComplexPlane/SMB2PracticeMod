@@ -4,6 +4,7 @@
 
 namespace pad {
 
+typedef enum Dir Dir;
 enum Dir {
     DIR_UP,
     DIR_UPRIGHT,
