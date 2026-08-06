@@ -9,7 +9,6 @@
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
-
 enum {
     Flags_EnabledThisTick = 1 << 0,
     Flags_EnabledPrevTick = 1 << 1,
@@ -25,20 +24,22 @@ TRAMP(s_event_camera_tick_tramp, mkb_event_camera_tick, event_camera_tick_hook);
 bool freecam_enabled() {
     bool correct_main_mode = mkb_main_mode == mkb_MD_GAME || mkb_main_mode == mkb_MD_ADV ||
                              mkb_main_mode == mkb_MD_MINI || mkb_main_mode == mkb_MD_AUTHOR;
-    bool correct_sub_mode = mkb_sub_mode != mkb_SMD_GAME_SCENARIO_INIT &&
-                            mkb_sub_mode != mkb_SMD_GAME_SCENARIO_MAIN &&
-                            mkb_sub_mode != mkb_SMD_GAME_SCENARIO_RETURN &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_INIT &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_MAIN &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_REINIT;
+    bool correct_sub_mode =
+        mkb_sub_mode != mkb_SMD_GAME_SCENARIO_INIT && mkb_sub_mode != mkb_SMD_GAME_SCENARIO_MAIN &&
+        mkb_sub_mode != mkb_SMD_GAME_SCENARIO_RETURN && mkb_sub_mode != mkb_SMD_ADV_TITLE_INIT &&
+        mkb_sub_mode != mkb_SMD_ADV_TITLE_MAIN && mkb_sub_mode != mkb_SMD_ADV_TITLE_REINIT;
     return pref_get(Pref_Freecam) && correct_main_mode && correct_sub_mode;
 }
 
-bool freecam_should_freeze_timer() { return freecam_enabled() && pref_get(Pref_FreecamFreezeTimer); }
+bool freecam_should_freeze_timer() {
+    return freecam_enabled() && pref_get(Pref_FreecamFreezeTimer);
+}
 
-bool freecam_should_hide_hud() { return freecam_enabled() && pref_get(Pref_FreecamHideHud); }
+bool freecam_should_hide_hud() {
+    return freecam_enabled() && pref_get(Pref_FreecamHideHud);
+}
 
-static void update_cam(mkb_Camera* camera, mkb_Ball* ball) {
+static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
     if (!(s_flags & Flags_EnabledPrevTick)) {
         s_eye = mkb_cameras[0].pos;
         s_rot = mkb_cameras[0].rot;
@@ -92,7 +93,7 @@ static void update_cam(mkb_Camera* camera, mkb_Ball* ball) {
     }
 }
 
-static void call_camera_func_hook(mkb_Camera* camera, mkb_Ball* ball) {
+static void call_camera_func_hook(mkb_Camera *camera, mkb_Ball *ball) {
     if (s_flags & Flags_EnabledThisTick) {
         update_cam(camera, ball);
     } else {
@@ -111,8 +112,7 @@ static void event_camera_tick_hook() {
 }
 
 void freecam_init() {
-    patch_write_branch_bl((void*)(0x8028353c),
-                           (void*)(call_camera_func_hook));
+    patch_write_branch_bl((void *)(0x8028353c), (void *)(call_camera_func_hook));
 
     HOOK_TRAMP(s_event_camera_tick_tramp);
 }

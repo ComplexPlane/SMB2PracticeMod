@@ -13,7 +13,6 @@
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
-
 static s32 s_active_state_slot;
 
 static bool s_created_state_last_frame;
@@ -50,42 +49,42 @@ void savest_ui_tick() {
         }
 
         switch (savest_save(s_active_state_slot)) {
-            case SS_SaveResult_Ok: {
-                break;
-            }
-            case SS_SaveResult_ErrMainMode: {
-                MOD_ASSERT(false);
-                return;
-                // Unreachable
-            }
-            case SS_SaveResult_ErrPostFallout: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate After Fallout");
-                return;
-            }
-            case SS_SaveResult_ErrPostGoal: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate After Goal");
-                return;
-            }
-            case SS_SaveResult_ErrDuringRetry: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate During Retry");
-                return;
-            }
-            case SS_SaveResult_ErrPostTimeout: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate After Timeout");
-                return;
-            }
-            case SS_SaveResult_ErrSubMode: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate Here");
-                return;
-            }
-            case SS_SaveResult_ErrViewStage: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate in View Stage");
-                return;
-            }
-            case SS_SaveResult_ErrInsufficientMemory: {
-                draw_notify(COLOR_RED, "Cannot Create Savestate: Not Enough Memory");
-                return;
-            }
+        case SS_SaveResult_Ok: {
+            break;
+        }
+        case SS_SaveResult_ErrMainMode: {
+            MOD_ASSERT(false);
+            return;
+            // Unreachable
+        }
+        case SS_SaveResult_ErrPostFallout: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate After Fallout");
+            return;
+        }
+        case SS_SaveResult_ErrPostGoal: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate After Goal");
+            return;
+        }
+        case SS_SaveResult_ErrDuringRetry: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate During Retry");
+            return;
+        }
+        case SS_SaveResult_ErrPostTimeout: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate After Timeout");
+            return;
+        }
+        case SS_SaveResult_ErrSubMode: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate Here");
+            return;
+        }
+        case SS_SaveResult_ErrViewStage: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate in View Stage");
+            return;
+        }
+        case SS_SaveResult_ErrInsufficientMemory: {
+            draw_notify(COLOR_RED, "Cannot Create Savestate: Not Enough Memory");
+            return;
+        }
         }
 
         // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
@@ -105,43 +104,43 @@ void savest_ui_tick() {
                (pad_button_down(mkb_PAD_BUTTON_X, false) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != DIR_NONE)) {
         switch (savest_load(s_active_state_slot)) {
-            case SS_LoadResult_Ok: {
-                break;
-            }
-            case SS_LoadResult_ErrMainMode: {
-                MOD_ASSERT(false);
-                return;
-                // Unreachable
-            }
-            case SS_LoadResult_ErrSubMode: {
-                draw_notify(COLOR_RED, "Cannot Load Savestate Here");
-                return;
-            }
-            case SS_LoadResult_ErrTimeOver: {
-                draw_notify(COLOR_RED, "Cannot Load Savestate After Time Over");
-                return;
-            }
-            case SS_LoadResult_ErrEmpty: {
-                draw_notify(COLOR_RED, "Slot %d Empty", s_active_state_slot + 1);
-                return;
-            }
-            case SS_LoadResult_ErrWrongStage: {
-                draw_notify(COLOR_RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
-                return;
-            }
-            case SS_LoadResult_ErrWrongMonkey: {
-                // Thank you StevenCW for finding this marvelous bug
-                draw_notify(COLOR_RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
-                return;
-            }
-            case SS_LoadResult_ErrViewStage: {
-                draw_notify(COLOR_RED, "Cannot Load Savestate in View Stage");
-                return;
-            }
-            case SS_LoadResult_ErrPausedAndNonGameplaySubmode: {
-                draw_notify(COLOR_RED, "Cannot Load Savestate, Please Unpause");
-                return;
-            }
+        case SS_LoadResult_Ok: {
+            break;
+        }
+        case SS_LoadResult_ErrMainMode: {
+            MOD_ASSERT(false);
+            return;
+            // Unreachable
+        }
+        case SS_LoadResult_ErrSubMode: {
+            draw_notify(COLOR_RED, "Cannot Load Savestate Here");
+            return;
+        }
+        case SS_LoadResult_ErrTimeOver: {
+            draw_notify(COLOR_RED, "Cannot Load Savestate After Time Over");
+            return;
+        }
+        case SS_LoadResult_ErrEmpty: {
+            draw_notify(COLOR_RED, "Slot %d Empty", s_active_state_slot + 1);
+            return;
+        }
+        case SS_LoadResult_ErrWrongStage: {
+            draw_notify(COLOR_RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
+            return;
+        }
+        case SS_LoadResult_ErrWrongMonkey: {
+            // Thank you StevenCW for finding this marvelous bug
+            draw_notify(COLOR_RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
+            return;
+        }
+        case SS_LoadResult_ErrViewStage: {
+            draw_notify(COLOR_RED, "Cannot Load Savestate in View Stage");
+            return;
+        }
+        case SS_LoadResult_ErrPausedAndNonGameplaySubmode: {
+            draw_notify(COLOR_RED, "Cannot Load Savestate, Please Unpause");
+            return;
+        }
         }
 
         if (!s_created_state_last_frame) {

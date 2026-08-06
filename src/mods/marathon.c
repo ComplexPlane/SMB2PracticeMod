@@ -2,21 +2,20 @@
 
 #include "utils/base.h"
 
-#include "utils/draw.h"
 #include "systems/heap.h"
-#include "utils/memstore.h"
 #include "systems/pad.h"
-#include "utils/patch.h"
 #include "systems/pref.h"
 #include "timer.h"
-
+#include "utils/draw.h"
+#include "utils/memstore.h"
+#include "utils/patch.h"
 
 typedef enum MarathonState MarathonState;
 enum MarathonState {
-    MarathonState_WaitForGoal,         // No velocity is stored
-    MarathonState_StoringVel,          // Goal was just passed, vel will be stored next frame
-    MarathonState_WaitForFirstApply,   // Vel stored, waiting to be applied (but not stored, so we dont store
-                         // multiple times in one goal)
+    MarathonState_WaitForGoal,        // No velocity is stored
+    MarathonState_StoringVel,         // Goal was just passed, vel will be stored next frame
+    MarathonState_WaitForFirstApply,  // Vel stored, waiting to be applied (but not stored, so we
+                                      // dont store multiple times in one goal)
     MarathonState_WaitForApplyOrGoal,  // Vel stored, waiting to be applied or stored again
 };
 

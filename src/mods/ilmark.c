@@ -1,16 +1,15 @@
 #include "mods/ilmark.h"
 
-#include "utils/base.h"
 #include "mods/freecam.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/version.h"
+#include "utils/base.h"
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
-
 
 static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
@@ -26,8 +25,7 @@ static const Pref INVALID_BOOL_PREFS[] = {
 };
 
 static const Pref INVALID_U8_PREFS[] = {
-    Pref_TimerType, Pref_Friction,         Pref_Restitution,
-    Pref_Camera,    Pref_FalloutPlaneType,
+    Pref_TimerType, Pref_Friction, Pref_Restitution, Pref_Camera, Pref_FalloutPlaneType,
 };
 
 void ilmark_disable_invalidating_settings() {
@@ -55,7 +53,7 @@ void ilmark_tick() {
         s_paused_frame = 0;
 
     } else if (mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN) {
-        bool paused_now = *(u32*)(0x805BC474) & 8;
+        bool paused_now = *(u32 *)(0x805BC474) & 8;
         if (paused_now) {
             if (s_paused_frame == 0) {
                 s_paused_frame = mkb_mode_info.stage_time_frames_remaining;
@@ -67,9 +65,10 @@ void ilmark_tick() {
         if (savest_was_state_loaded_this_frame()) s_valid_run = false;
 
         // Using dpad controls is disallowed
-        bool dpad_down =
-            pad_button_down(mkb_PAD_BUTTON_DOWN, false) || pad_button_down(mkb_PAD_BUTTON_LEFT, false) ||
-            pad_button_down(mkb_PAD_BUTTON_RIGHT, false) || pad_button_down(mkb_PAD_BUTTON_UP, false);
+        bool dpad_down = pad_button_down(mkb_PAD_BUTTON_DOWN, false) ||
+                         pad_button_down(mkb_PAD_BUTTON_LEFT, false) ||
+                         pad_button_down(mkb_PAD_BUTTON_RIGHT, false) ||
+                         pad_button_down(mkb_PAD_BUTTON_UP, false);
         if (pref_get(Pref_DpadControls) && dpad_down) s_valid_run = false;
 
         // Opening the mod menu is disallowed

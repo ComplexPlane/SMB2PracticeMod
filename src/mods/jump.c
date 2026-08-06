@@ -1,12 +1,11 @@
 #include "mods/jump.h"
 
-#include "utils/base.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "utils/base.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
-
 
 const s32 JUMP_FRAMES = 15;
 
@@ -55,8 +54,8 @@ static void enable() {
 static void disable() {
     if (mkb_main_mode == mkb_MD_GAME) {
         // These overwrites exist in main_game.rel which isn't always loaded
-        patch_write_word((void*)(0x808f4d18), s_patch1);
-        patch_write_word((void*)(0x808f5168), s_patch2);
+        patch_write_word((void *)(0x808f4d18), s_patch1);
+        patch_write_word((void *)(0x808f5168), s_patch2);
     }
     mkb_ball_friction = s_orig_friction;
     mkb_ball_restitution = s_orig_restitution;
@@ -65,19 +64,19 @@ static void disable() {
 
 static void jumping() {
     if (mkb_main_mode == mkb_MD_GAME) {
-        u32* patch1_loc = (u32*)(0x808f4d18);
-        u32* patch2_loc = (u32*)(0x808f5168);
+        u32 *patch1_loc = (u32 *)(0x808f4d18);
+        u32 *patch2_loc = (u32 *)(0x808f5168);
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
-            s_patch1 = patch_write_nop((void*)(0x808f4d18));
+            s_patch1 = patch_write_nop((void *)(0x808f4d18));
         }
         if (*patch2_loc != 0x60000000) {
-            s_patch2 = patch_write_nop((void*)(0x808f5168));
+            s_patch2 = patch_write_nop((void *)(0x808f5168));
         }
     }
 
-    bool paused_now = *(u32*)(0x805BC474) & 8;  // TODO actually give this a name
+    bool paused_now = *(u32 *)(0x805BC474) & 8;  // TODO actually give this a name
     if ((mkb_sub_mode == mkb_SMD_GAME_READY_MAIN || mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN) &&
         !paused_now) {
         if (pad_button_pressed(mkb_PAD_BUTTON_B, false)) {

@@ -8,8 +8,8 @@ Non shit RNG
 
 #include "utils/base.h"
 
-#include "systems/pad.h"
 #include "mods/ilmark.h"
+#include "systems/pad.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
@@ -121,18 +121,18 @@ void disp() {
 
     if (!m_hidden) {
         switch (m_state) {
-            case State_DROPPING:
-                handle_dropping_state();
-                break;
-            case State_ROWCLEAR:
-                handle_rowclear_state();
-                break;
-            case State_GAMEOVER:
-                handle_game_over_state();
-                break;
-            case State_NEWGAME:
-                handle_new_game_state();
-                break;
+        case State_DROPPING:
+            handle_dropping_state();
+            break;
+        case State_ROWCLEAR:
+            handle_rowclear_state();
+            break;
+        case State_GAMEOVER:
+            handle_game_over_state();
+            break;
+        case State_NEWGAME:
+            handle_new_game_state();
+            break;
         }
 
         draw();
@@ -288,7 +288,9 @@ void try_transition_to_dropping() {
     }
 }
 
-Cell gen_random_cell() { return (Cell)(mkb_rand() % NUM_CELL_TYPES); }
+Cell gen_random_cell() {
+    return (Cell)(mkb_rand() % NUM_CELL_TYPES);
+}
 
 Tetrad gen_random_tetrad() {
     return (Tetrad)(mkb_rand() % NUM_TETRADS);
@@ -323,11 +325,11 @@ void draw_ascii_rect(s32 xpos, s32 ypos, s32 xchars, s32 ychars, u8 color) {
     // Draw corners
     mkb_draw_debugtext_char_en(xpos, ypos, BOXCHAR_UL, color);
     mkb_draw_debugtext_char_en(xpos + (xchars - 1) * COLOR_DEBUG_CHAR_WIDTH, ypos, BOXCHAR_UR,
-                                color);
+                               color);
     mkb_draw_debugtext_char_en(xpos + (xchars - 1) * COLOR_DEBUG_CHAR_WIDTH,
-                                ypos + (ychars - 1) * COLOR_DEBUG_CHAR_WIDTH, BOXCHAR_DR, color);
+                               ypos + (ychars - 1) * COLOR_DEBUG_CHAR_WIDTH, BOXCHAR_DR, color);
     mkb_draw_debugtext_char_en(xpos, ypos + (ychars - 1) * COLOR_DEBUG_CHAR_WIDTH, BOXCHAR_DL,
-                                color);
+                               color);
 
     const s32 X_VDIV = 16;
     const s32 Y_HDIV = 24;
@@ -338,16 +340,16 @@ void draw_ascii_rect(s32 xpos, s32 ypos, s32 xchars, s32 ychars, u8 color) {
         if (i != X_VDIV) {
             mkb_draw_debugtext_char_en(x, ypos, BOXCHAR_HBAR, color);
             mkb_draw_debugtext_char_en(x, ypos + (ychars - 1) * COLOR_DEBUG_CHAR_WIDTH,
-                                        BOXCHAR_HBAR, color);
+                                       BOXCHAR_HBAR, color);
         } else {
             mkb_draw_debugtext_char_en(x, ypos, BOXCHAR_DT, color);
             mkb_draw_debugtext_char_en(x, ypos + (ychars - 1) * COLOR_DEBUG_CHAR_WIDTH, BOXCHAR_UT,
-                                        color);
+                                       color);
         }
 
         if (i > X_VDIV) {
             mkb_draw_debugtext_char_en(x, ypos + Y_HDIV * COLOR_DEBUG_CHAR_WIDTH, BOXCHAR_HBAR,
-                                        color);
+                                       color);
         }
     }
 
@@ -358,14 +360,14 @@ void draw_ascii_rect(s32 xpos, s32 ypos, s32 xchars, s32 ychars, u8 color) {
 
         if (i == Y_HDIV) {
             mkb_draw_debugtext_char_en(xpos + X_VDIV * COLOR_DEBUG_CHAR_WIDTH + 1, y, BOXCHAR_RT,
-                                        color);
+                                       color);
             mkb_draw_debugtext_char_en(xpos + (xchars - 1) * COLOR_DEBUG_CHAR_WIDTH, y, BOXCHAR_LT,
-                                        color);
+                                       color);
         } else {
             mkb_draw_debugtext_char_en(xpos + X_VDIV * COLOR_DEBUG_CHAR_WIDTH, y, BOXCHAR_VBAR,
-                                        color);
+                                       color);
             mkb_draw_debugtext_char_en(xpos + (xchars - 1) * COLOR_DEBUG_CHAR_WIDTH, y,
-                                        BOXCHAR_VBAR, color);
+                                       BOXCHAR_VBAR, color);
         }
     }
 }
@@ -456,7 +458,7 @@ void draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation) {
 static void sprite_go_disp_hook(mkb_Sprite *sprite);
 static TRAMP(s_sprite_go_disp_tramp, mkb_sprite_go_disp, sprite_go_disp_hook);
 
-static void sprite_go_disp_hook(mkb_Sprite* sprite) {
+static void sprite_go_disp_hook(mkb_Sprite *sprite) {
     int i;
     int t;
     int x_offset;
@@ -499,9 +501,8 @@ static void sprite_go_disp_hook(mkb_Sprite* sprite) {
             phi_f30_2 = (i == 0) ? -240.0f : 240.0f;
             y_add = phi_f30_2 * mkb_math_sin((0xF - sprite->g_counter) * 0x444);
         }
-        mkb_textdraw_set_pos(
-            (sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
-            (sprite->pos.y + y_add) - y_offset);
+        mkb_textdraw_set_pos((sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
+                             (sprite->pos.y + y_add) - y_offset);
         mkb_textdraw_put_char((i == 0) ? 0x47 : 0x4F);
     }
 }
@@ -600,7 +601,8 @@ bool tetrad_intersects_grid(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotatio
 
 // Undefined if tetrad is already intersecting grid or out-of-bounds
 s32 find_lowest_possible_tetrad_y(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation) {
-    while (!tetrad_intersects_grid(tetrad, tetradX, tetradY, rotation)) tetradY--;
+    while (!tetrad_intersects_grid(tetrad, tetradX, tetradY, rotation))
+        tetradY--;
     return tetradY + 1;
 }
 
@@ -622,5 +624,8 @@ void tetris_init() {
     HOOK_TRAMP(s_sprite_go_disp_tramp);
 }
 
-void tetris_disp() { disp(); }
-void tetris_tick() {}
+void tetris_disp() {
+    disp();
+}
+void tetris_tick() {
+}

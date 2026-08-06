@@ -1,13 +1,12 @@
 #include "mods/ilbattle.h"
-#include "utils/base.h"
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "utils/base.h"
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
-
 
 typedef enum IlBattleState IlBattleState;
 enum IlBattleState {
@@ -65,23 +64,22 @@ static bool s_score_buzzer = false;
 static void old_buzzer_display(u32 start_y) {
     s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED,
-                         "EPIC BUZZER BEATER B)");
+        draw_debug_text(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 5)
         draw_debug_text(X - 12 * CWIDTH, start_y + 2 * CHEIGHT, COLOR_ORANGE,
-                         "EPIC BUZZER BEATER B)");
+                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 10)
         draw_debug_text(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, COLOR_GOLD,
-                         "EPIC BUZZER BEATER B)");
+                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 15)
         draw_debug_text(X - 12 * CWIDTH, start_y + 4 * CHEIGHT, COLOR_GREEN,
-                         "EPIC BUZZER BEATER B)");
+                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 20)
         draw_debug_text(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, COLOR_BLUE,
-                         "EPIC BUZZER BEATER B)");
+                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 25)
         draw_debug_text(X - 12 * CWIDTH, start_y + 6 * CHEIGHT, COLOR_BRIGHT_PURPLE,
-                         "EPIC BUZZER BEATER B)");
+                        "EPIC BUZZER BEATER B)");
 }
 
 static void battle_display(mkb_GXColor text_color) {
@@ -103,7 +101,7 @@ static void battle_display(mkb_GXColor text_color) {
     draw_debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
     if (battle_hours > 0) {
         draw_debug_text(X - 6, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
-                         battle_seconds);
+                        battle_seconds);
     } else {
         draw_debug_text(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
     }
@@ -113,10 +111,10 @@ static void battle_display(mkb_GXColor text_color) {
         draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
         if (pref_get(Pref_IlBattleTieCount) && s_best_frames_ties > 0) {
             draw_debug_text(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
-                             best_centiseconds, s_best_frames_ties + 1);
+                            best_centiseconds, s_best_frames_ties + 1);
         } else {
             draw_debug_text(X - 6, current_y, time_color, "%d.%02d", best_seconds,
-                             best_centiseconds);
+                            best_centiseconds);
         }
     }
     if (pref_get(Pref_IlBattleShowScore)) {
@@ -124,7 +122,7 @@ static void battle_display(mkb_GXColor text_color) {
         draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
         if (pref_get(Pref_IlBattleTieCount) && s_best_score_ties > 0) {
             draw_debug_text(X - 6, current_y, score_color, "%d (%d)", s_best_score,
-                             s_best_score_ties + 1);
+                            s_best_score_ties + 1);
         } else {
             draw_debug_text(X - 6, current_y, score_color, "%d", s_best_score);
         }
@@ -136,7 +134,7 @@ static void battle_display(mkb_GXColor text_color) {
             current_y += CHEIGHT;
             draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
             draw_debug_text(X - 6, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
-                             best_score_centiseconds, s_best_score_bananas);
+                            best_score_centiseconds, s_best_score_bananas);
         } else if (breakdown_value == 2) {
             // full
             current_y += CHEIGHT;
@@ -145,7 +143,7 @@ static void battle_display(mkb_GXColor text_color) {
             current_y += CHEIGHT;
             draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "  TIMER:");
             draw_debug_text(X - 6, current_y, text_color, "%d.%02d", best_score_seconds,
-                             best_score_centiseconds);
+                            best_score_centiseconds);
         }
     }
     if (pref_get(Pref_IlBattleAttemptCount)) {
@@ -163,7 +161,7 @@ static void battle_display(mkb_GXColor text_color) {
 
 static u32 score_calc(u32 score) {
     u32 igt_score = mkb_mode_info.stage_time_frames_remaining * 100 / 60;  // Score from timer
-    u32 goal_bonus = 0;                                                     // Blue goal (no bonus)
+    u32 goal_bonus = 0;                                                    // Blue goal (no bonus)
     if (mkb_mode_info.entered_goal_type == 1) {
         goal_bonus = 10000;  // Green goal bonus
     } else if (mkb_mode_info.entered_goal_type == 2) {
@@ -195,8 +193,7 @@ void clear_display() {
     s_attempts = 0;
     s_time_buzzer = false;
     s_score_buzzer = false;
-    s_battle_length =
-        convert_battle_length((IlBattleLength)(pref_get(Pref_IlBattleLength)));
+    s_battle_length = convert_battle_length((IlBattleLength)(pref_get(Pref_IlBattleLength)));
 }
 
 void ilbattle_new_battle() {
@@ -205,7 +202,7 @@ void ilbattle_new_battle() {
 }
 
 static void track_first_retry() {
-    bool paused_now = *(u32*)(0x805BC474) & 8;
+    bool paused_now = *(u32 *)(0x805BC474) & 8;
     if (!paused_now && mkb_sub_mode == mkb_SMD_GAME_READY_INIT) {
         ilbattle_new_battle();
         s_state = IlBattleState_BattleRunning;
@@ -263,7 +260,7 @@ static void track_best() {
 }
 
 static void track_invalid_pauses() {
-    bool paused_now = *(u32*)(0x805BC474) & 8;
+    bool paused_now = *(u32 *)(0x805BC474) & 8;
     if (mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
         s_paused_frame = 0;       // attempt is now valid
@@ -281,11 +278,10 @@ static void track_invalid_pauses() {
 }
 
 static void track_final_attempt() {
-    bool paused_now = *(u32*)(0x805BC474) & 8;
+    bool paused_now = *(u32 *)(0x805BC474) & 8;
     // End battle if: Paused, Fallout, or Time Over
     if (paused_now || mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT ||
-        mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN ||
-        mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT ||
+        mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN || mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT ||
         mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_MAIN) {
         s_state = IlBattleState_BattleDone;
     }
@@ -309,8 +305,7 @@ static void track_final_attempt() {
     // Game is no longer in goal phase...
     // Save score and end battle
     else if (s_state == IlBattleState_BuzzerBeaterPostgoal &&
-             !(mkb_sub_mode == mkb_SMD_GAME_GOAL_INIT ||
-               mkb_sub_mode == mkb_SMD_GAME_GOAL_MAIN)) {
+             !(mkb_sub_mode == mkb_SMD_GAME_GOAL_INIT || mkb_sub_mode == mkb_SMD_GAME_GOAL_MAIN)) {
         u32 pre_buzzer_score = s_best_score;
         track_best();
         s_state = IlBattleState_BattleDone;
@@ -350,28 +345,28 @@ void ilbattle_tick() {
     s_rainbow = (s_rainbow + 11) % 1080;
 
     switch (s_state) {
-        case IlBattleState_WaitForFirstRetry: {
-            track_first_retry();
-            break;
-        }
-        case IlBattleState_BattleRunning: {
-            track_invalid_pauses();
-            track_best();
-            run_battle_timer();  // TODO: Implement realtime timer (without loads), if I figure how
-            break;
-        }
-        case IlBattleState_BuzzerBeater: {
-            track_invalid_pauses();
-            track_final_attempt();
-            break;
-        }
-        case IlBattleState_BuzzerBeaterPostgoal: {
-            track_invalid_pauses();
-            track_final_attempt();
-            break;
-        }
-        default: {
-        }
+    case IlBattleState_WaitForFirstRetry: {
+        track_first_retry();
+        break;
+    }
+    case IlBattleState_BattleRunning: {
+        track_invalid_pauses();
+        track_best();
+        run_battle_timer();  // TODO: Implement realtime timer (without loads), if I figure how
+        break;
+    }
+    case IlBattleState_BuzzerBeater: {
+        track_invalid_pauses();
+        track_final_attempt();
+        break;
+    }
+    case IlBattleState_BuzzerBeaterPostgoal: {
+        track_invalid_pauses();
+        track_final_attempt();
+        break;
+    }
+    default: {
+    }
     }
 
     // Reset display if menu when battle over
@@ -397,43 +392,43 @@ void ilbattle_disp() {
     if (!pref_get(Pref_IlBattleDisplay)) return;
 
     switch (s_state) {
-        case IlBattleState_NotReady: {
-            if (mkb_main_mode != mkb_MD_GAME) return;
-            u8 input = pref_get(Pref_IlBattleReadyBind);
-            char buf[25];
-            binds_get_bind_str(input, buf);
-            draw_debug_text(X - 12 * CWIDTH, Y, COLOR_LIGHT_PURPLE, "NOT READY");
-            draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_LIGHT_PURPLE, "%s to ready", buf);
-            break;
+    case IlBattleState_NotReady: {
+        if (mkb_main_mode != mkb_MD_GAME) return;
+        u8 input = pref_get(Pref_IlBattleReadyBind);
+        char buf[25];
+        binds_get_bind_str(input, buf);
+        draw_debug_text(X - 12 * CWIDTH, Y, COLOR_LIGHT_PURPLE, "NOT READY");
+        draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_LIGHT_PURPLE, "%s to ready", buf);
+        break;
+    }
+    case IlBattleState_WaitForFirstRetry: {
+        if (mkb_main_mode == mkb_MD_GAME) {
+            draw_debug_text(X - 12 * CWIDTH, Y, COLOR_GOLD, "READY");
+            draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_GOLD, "Retry to begin");
         }
-        case IlBattleState_WaitForFirstRetry: {
-            if (mkb_main_mode == mkb_MD_GAME) {
-                draw_debug_text(X - 12 * CWIDTH, Y, COLOR_GOLD, "READY");
-                draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_GOLD, "Retry to begin");
-            }
-            break;
+        break;
+    }
+    case IlBattleState_BattleRunning:
+    case IlBattleState_BuzzerBeater: {
+        if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb_current_stage_id &&
+            mkb_main_mode == mkb_MD_GAME) {
+            draw_debug_text(X - 12 * CWIDTH, Y, COLOR_RED, "WRONG STAGE");
+        } else {
+            battle_display(COLOR_LIGHT_GREEN);
         }
-        case IlBattleState_BattleRunning:
-        case IlBattleState_BuzzerBeater: {
-            if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb_current_stage_id &&
-                mkb_main_mode == mkb_MD_GAME) {
-                draw_debug_text(X - 12 * CWIDTH, Y, COLOR_RED, "WRONG STAGE");
-            } else {
-                battle_display(COLOR_LIGHT_GREEN);
-            }
-            break;
-        }
-        case IlBattleState_BuzzerBeaterPostgoal: {
-            if (pref_get(Pref_IlBattleShowScore)) {
-                battle_display(COLOR_LIGHT_GREEN);
-            } else {
-                battle_display(COLOR_LIGHT_PURPLE);
-            }
-            break;
-        }
-        case IlBattleState_BattleDone: {
+        break;
+    }
+    case IlBattleState_BuzzerBeaterPostgoal: {
+        if (pref_get(Pref_IlBattleShowScore)) {
+            battle_display(COLOR_LIGHT_GREEN);
+        } else {
             battle_display(COLOR_LIGHT_PURPLE);
-            break;
         }
+        break;
+    }
+    case IlBattleState_BattleDone: {
+        battle_display(COLOR_LIGHT_PURPLE);
+        break;
+    }
     }
 }

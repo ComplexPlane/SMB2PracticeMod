@@ -10,7 +10,6 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
-
 typedef enum State State;
 enum State {
     State_Default,
@@ -28,7 +27,7 @@ static u32 s_seg_time;
 static void reset_cm_course_hook();
 TRAMP(s_reset_cm_course_tramp, mkb_g_reset_cm_course, reset_cm_course_hook);
 
-static mkb_CourseCommand* s_overwritten_entry;
+static mkb_CourseCommand *s_overwritten_entry;
 static mkb_CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
 
@@ -51,7 +50,7 @@ static u32 s_pbs[13];
 /**
  * Create a new course in an existing one by inserting a COURSE_CMD_END entry
  */
-static void gen_course(mkb_CourseCommand* course, u32 start_course_stage_num, u32 stage_count) {
+static void gen_course(mkb_CourseCommand *course, u32 start_course_stage_num, u32 stage_count) {
     s32 start_entry_idx = -1;
     s32 end_entry_idx = -1;
 
@@ -121,8 +120,8 @@ static void state_load_menu() {
     s_state = State_EnterCm;
 }
 
-static const mkb_ApeCharacter s_ape_charas[] = {mkb_CHARA_AIAI, mkb_CHARA_MEEMEE,
-                                                 mkb_CHARA_BABY, mkb_CHARA_GONGON};
+static const mkb_ApeCharacter s_ape_charas[] = {mkb_CHARA_AIAI, mkb_CHARA_MEEMEE, mkb_CHARA_BABY,
+                                                mkb_CHARA_GONGON};
 
 static void state_enter_cm() {
     mkb_num_players = 1;
@@ -191,8 +190,7 @@ static void state_seg_active() {
 
 void state_seg_complete() {
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
-    if (mkb_mode_info.cm_stage_id == -1 &&
-        mkb_mode_info.ball_mode & mkb_BALLMODE_ON_BONUS_STAGE) {
+    if (mkb_mode_info.cm_stage_id == -1 && mkb_mode_info.ball_mode & mkb_BALLMODE_ON_BONUS_STAGE) {
         if (mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT ||
             mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT) {
             mkb_sub_mode_frame_counter += 120;
@@ -220,103 +218,103 @@ void state_seg_complete() {
 }
 
 void init_seg() {
-    mkb_CourseCommand* course = 0;
+    mkb_CourseCommand *course = 0;
     u32 start_course_stage_num = 0;
     mkb_mode_flags &= ~(mkb_MF_G_PLAYING_MASTER_COURSE | mkb_MF_PLAYING_EXTRA_COURSE |
-                         mkb_MF_PLAYING_MASTER_NOEX_COURSE | mkb_MF_PLAYING_MASTER_EX_COURSE);
+                        mkb_MF_PLAYING_MASTER_NOEX_COURSE | mkb_MF_PLAYING_MASTER_EX_COURSE);
     switch (s_seg_request) {
-        case cmseg_Seg_Beginner1: {
-            mkb_curr_difficulty = mkb_DIFF_BEGINNER;
-            course = mkb_cm_courses[0];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_BeginnerExtra: {
-            mkb_curr_difficulty = mkb_DIFF_BEGINNER;
-            mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
-            course = mkb_cm_courses[3];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_Advanced1: {
-            mkb_curr_difficulty = mkb_DIFF_ADVANCED;
-            course = mkb_cm_courses[1];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_Advanced11: {
-            mkb_curr_difficulty = mkb_DIFF_ADVANCED;
-            course = mkb_cm_courses[1];
-            start_course_stage_num = 11;
-            break;
-        }
-        case cmseg_Seg_Advanced21: {
-            mkb_curr_difficulty = mkb_DIFF_ADVANCED;
-            course = mkb_cm_courses[1];
-            start_course_stage_num = 21;
-            break;
-        }
-        case cmseg_Seg_AdvancedExtra: {
-            mkb_curr_difficulty = mkb_DIFF_ADVANCED;
-            mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
-            course = mkb_cm_courses[4];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_Expert1: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            course = mkb_cm_courses[2];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_Expert11: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            course = mkb_cm_courses[2];
-            start_course_stage_num = 11;
-            break;
-        }
-        case cmseg_Seg_Expert21: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            course = mkb_cm_courses[2];
-            start_course_stage_num = 21;
-            break;
-        }
-        case cmseg_Seg_Expert31: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            course = mkb_cm_courses[2];
-            start_course_stage_num = 31;
-            break;
-        }
-        case cmseg_Seg_Expert41: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            course = mkb_cm_courses[2];
-            start_course_stage_num = 41;
-            break;
-        }
-        case cmseg_Seg_ExpertExtra: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
-            course = mkb_cm_courses[5];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_Master1: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE | mkb_MF_G_PLAYING_MASTER_COURSE |
-                               mkb_MF_PLAYING_MASTER_NOEX_COURSE;
-            course = mkb_cm_courses[6];
-            start_course_stage_num = 1;
-            break;
-        }
-        case cmseg_Seg_MasterExtra: {
-            mkb_curr_difficulty = mkb_DIFF_EXPERT;
-            // Magic set of flags used in Master Extra,
-            // can't be bothered to reverse all of them
-            mkb_mode_flags = 0x0280071D;
-            course = mkb_cm_courses[7];
-            start_course_stage_num = 1;
-            break;
-        }
+    case cmseg_Seg_Beginner1: {
+        mkb_curr_difficulty = mkb_DIFF_BEGINNER;
+        course = mkb_cm_courses[0];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_BeginnerExtra: {
+        mkb_curr_difficulty = mkb_DIFF_BEGINNER;
+        mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
+        course = mkb_cm_courses[3];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_Advanced1: {
+        mkb_curr_difficulty = mkb_DIFF_ADVANCED;
+        course = mkb_cm_courses[1];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_Advanced11: {
+        mkb_curr_difficulty = mkb_DIFF_ADVANCED;
+        course = mkb_cm_courses[1];
+        start_course_stage_num = 11;
+        break;
+    }
+    case cmseg_Seg_Advanced21: {
+        mkb_curr_difficulty = mkb_DIFF_ADVANCED;
+        course = mkb_cm_courses[1];
+        start_course_stage_num = 21;
+        break;
+    }
+    case cmseg_Seg_AdvancedExtra: {
+        mkb_curr_difficulty = mkb_DIFF_ADVANCED;
+        mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
+        course = mkb_cm_courses[4];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_Expert1: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        course = mkb_cm_courses[2];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_Expert11: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        course = mkb_cm_courses[2];
+        start_course_stage_num = 11;
+        break;
+    }
+    case cmseg_Seg_Expert21: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        course = mkb_cm_courses[2];
+        start_course_stage_num = 21;
+        break;
+    }
+    case cmseg_Seg_Expert31: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        course = mkb_cm_courses[2];
+        start_course_stage_num = 31;
+        break;
+    }
+    case cmseg_Seg_Expert41: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        course = mkb_cm_courses[2];
+        start_course_stage_num = 41;
+        break;
+    }
+    case cmseg_Seg_ExpertExtra: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
+        course = mkb_cm_courses[5];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_Master1: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE | mkb_MF_G_PLAYING_MASTER_COURSE |
+                          mkb_MF_PLAYING_MASTER_NOEX_COURSE;
+        course = mkb_cm_courses[6];
+        start_course_stage_num = 1;
+        break;
+    }
+    case cmseg_Seg_MasterExtra: {
+        mkb_curr_difficulty = mkb_DIFF_EXPERT;
+        // Magic set of flags used in Master Extra,
+        // can't be bothered to reverse all of them
+        mkb_mode_flags = 0x0280071D;
+        course = mkb_cm_courses[7];
+        start_course_stage_num = 1;
+        break;
+    }
     }
     gen_course(course, start_course_stage_num, 10);
 }
@@ -364,8 +362,7 @@ void cmseg_disp() {
             color = COLOR_GOLD;
         else
             color = COLOR_WHITE;
-        timerdisp_draw_timer(380, 0, 44, "SEG:", (s32)(s_seg_time), 0, false, false,
-                              color);
+        timerdisp_draw_timer(380, 0, 44, "SEG:", (s32)(s_seg_time), 0, false, false, color);
     }
 }
 

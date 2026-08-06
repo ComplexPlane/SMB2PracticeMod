@@ -10,7 +10,6 @@
 #include "utils/draw.h"
 #include "utils/patch.h"
 
-
 typedef struct MergedStickInputs MergedStickInputs;
 struct MergedStickInputs {
     s32 rawX;
@@ -52,10 +51,13 @@ static void get_merged_stick_inputs(MergedStickInputs *outInputs) {
     }
 }
 
-static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
+static void draw_ring(u32 pts,
+                      Vec2d center,
+                      f32 inner_radius,
+                      f32 outer_radius,
                       mkb_GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb_GXTexObj* texobj = (mkb_GXTexObj*)(0x807ad0e0);
+    mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
     mkb_GXSetTevColor(mkb_GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
@@ -93,7 +95,7 @@ static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
 
 static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb_GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb_GXTexObj* texobj = (mkb_GXTexObj*)(0x807ad0e0);
+    mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
     mkb_GXSetTevColor(mkb_GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
@@ -102,7 +104,7 @@ static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb_GXColor color) {
     mkb_GXPosition3f32(center.x, center.y, z);
     mkb_GXTexCoord2f32(0, 0);
 
-    for (s32 i = (s32)(pts) * 2 - 1; i >= (s32)(pts) - 1; i--) {
+    for (s32 i = (s32)(pts) * 2 - 1; i >= (s32)(pts)-1; i--) {
         u16 angle = 0xFFFF * i / pts;
         f32 sin_cos[2];
         mkb_math_sin_cos_v((s32)(angle), sin_cos);
@@ -139,20 +141,21 @@ static void create_speed_sprites_hook(f32 x, f32 y) {
     s_create_speed_sprites_tramp.chain(x + 5, y);
 }
 
-void inputdisp_init() { HOOK_TRAMP(s_create_speed_sprites_tramp); }
+void inputdisp_init() {
+    HOOK_TRAMP(s_create_speed_sprites_tramp);
+}
 
-void inputdisp_on_PADRead(mkb_PADStatus* statuses) {
+void inputdisp_on_PADRead(mkb_PADStatus *statuses) {
     mkb_memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
 }
 
 void inputdisp_tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
-    set_sprite_visible(!pref_get(Pref_InputDisp) ||
-                       (pref_get(Pref_InputDispCenterLocation) &&
-                        !pref_get(Pref_InputDispRawStickInputs)));
+    set_sprite_visible(!pref_get(Pref_InputDisp) || (pref_get(Pref_InputDispCenterLocation) &&
+                                                     !pref_get(Pref_InputDispRawStickInputs)));
 }
 
-static bool get_notch_pos(const MergedStickInputs *stick_inputs, Vec2d* out_pos) {
+static bool get_notch_pos(const MergedStickInputs *stick_inputs, Vec2d *out_pos) {
     const f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
@@ -186,38 +189,38 @@ static bool get_notch_pos(const MergedStickInputs *stick_inputs, Vec2d* out_pos)
 }
 
 static const mkb_GXColor s_color_map[] = {
-    COLOR_PURPLE,              // Purple
-    COLOR_RED,                 // Red
-    COLOR_ORANGE,              // Orange
+    COLOR_PURPLE,                           // Purple
+    COLOR_RED,                              // Red
+    COLOR_ORANGE,                           // Orange
     (mkb_GXColor){0xfd, 0xfb, 0x78, 0xff},  // Yellow
     (mkb_GXColor){0x78, 0xfd, 0x85, 0xff},  // Green
     (mkb_GXColor){0x78, 0xca, 0xfd, 0xff},  // Blue
-    COLOR_PINK,                // Pink
-    COLOR_BLACK,               // Black
+    COLOR_PINK,                             // Pink
+    COLOR_BLACK,                            // Black
 };
 
 static mkb_GXColor get_color() {
     InputDispColorType color_pref = (InputDispColorType)(pref_get(Pref_InputDispColorType));
     switch (color_pref) {
-        case InputDispColorType_Default: {
-            return s_color_map[pref_get(Pref_InputDispColor)];
-        }
-        case InputDispColorType_RGB: {
-            return (mkb_GXColor){
-                .r = pref_get(Pref_InputDispRed),
-                .g = pref_get(Pref_InputDispGreen),
-                .b = pref_get(Pref_InputDispBlue),
-                .a = 0xff,
-            };
-        }
-        case InputDispColorType_Rainbow: {
-            return draw_num_to_rainbow(s_rainbow);
-        }
-        case InputDispColorType_MatchBall: {
-            mkb_GXColor current = ballcolor_get_current_color();
-            current.a = 0xff;
-            return current;
-        }
+    case InputDispColorType_Default: {
+        return s_color_map[pref_get(Pref_InputDispColor)];
+    }
+    case InputDispColorType_RGB: {
+        return (mkb_GXColor){
+            .r = pref_get(Pref_InputDispRed),
+            .g = pref_get(Pref_InputDispGreen),
+            .b = pref_get(Pref_InputDispBlue),
+            .a = 0xff,
+        };
+    }
+    case InputDispColorType_Rainbow: {
+        return draw_num_to_rainbow(s_rainbow);
+    }
+    case InputDispColorType_MatchBall: {
+        mkb_GXColor current = ballcolor_get_current_color();
+        current.a = 0xff;
+        return current;
+    }
     }
 
     // shouldn't reach
@@ -267,7 +270,8 @@ static void draw_buttons(const Vec2d *center, f32 scale) {
     }
 }
 
-static void draw_notch_indicators(const MergedStickInputs *stick_inputs, const Vec2d *center,
+static void draw_notch_indicators(const MergedStickInputs *stick_inputs,
+                                  const Vec2d *center,
                                   f32 scale) {
     if (!pref_get(Pref_InputDispNotchIndicators)) return;
 
@@ -296,19 +300,17 @@ static void draw_raw_stick_inputs(const MergedStickInputs *stick_inputs) {
 }
 
 void inputdisp_disp() {
-    bool in_replay = mkb_sub_mode == mkb_SMD_OPTION_REPLAY_INIT ||
-                     mkb_sub_mode == mkb_SMD_OPTION_REPLAY_MAIN ||
-                     mkb_sub_mode == mkb_SMD_OPTION_REPLAY_PLAY_INIT ||
-                     mkb_sub_mode == mkb_SMD_OPTION_REPLAY_PLAY_MAIN ||
-                     mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_LOAD_INIT ||
-                     mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_LOAD_MAIN ||
-                     mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_INIT ||
-                     mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_MAIN;
+    bool in_replay =
+        mkb_sub_mode == mkb_SMD_OPTION_REPLAY_INIT || mkb_sub_mode == mkb_SMD_OPTION_REPLAY_MAIN ||
+        mkb_sub_mode == mkb_SMD_OPTION_REPLAY_PLAY_INIT ||
+        mkb_sub_mode == mkb_SMD_OPTION_REPLAY_PLAY_MAIN ||
+        mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_LOAD_INIT ||
+        mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_LOAD_MAIN ||
+        mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_INIT || mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_MAIN;
 
     if (!pref_get(Pref_InputDisp) || freecam_should_hide_hud() || in_replay) return;
 
-    Vec2d center =
-        pref_get(Pref_InputDispCenterLocation) ? (Vec2d){430, 60} : (Vec2d){534, 60};
+    Vec2d center = pref_get(Pref_InputDispCenterLocation) ? (Vec2d){430, 60} : (Vec2d){534, 60};
     f32 scale = 0.6f;
 
     MergedStickInputs stick_inputs;

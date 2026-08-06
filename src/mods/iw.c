@@ -14,9 +14,8 @@
 // I tried this before but it seems like there might be a spurious frame where it thinks the IW is
 // completed when beating the second-to-last level, so the fastest time isn't saving correctly.
 
-
 static u32 s_anim_counter;
-static const char* s_anim_strs[4] = {"/", "-", "\\", " |"};
+static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
 static u32 s_iw_files;  // Bitflag for which save files are IW save files
 
@@ -27,8 +26,10 @@ static u32 s_prev_retrace_count;
 static void handle_iw_selection() {
     if (mkb_scen_info.mode != 5) return;
 
-    if (pad_analog_down(mkb_PAI_LSTICK_LEFT, false) || pad_analog_down(mkb_PAI_LSTICK_RIGHT, false)) return;
-    if (pad_button_down(mkb_PAD_BUTTON_LEFT, false) || pad_button_down(mkb_PAD_BUTTON_RIGHT, false)) return;
+    if (pad_analog_down(mkb_PAI_LSTICK_LEFT, false) || pad_analog_down(mkb_PAI_LSTICK_RIGHT, false))
+        return;
+    if (pad_button_down(mkb_PAD_BUTTON_LEFT, false) || pad_button_down(mkb_PAD_BUTTON_RIGHT, false))
+        return;
 
     bool lstick_up = pad_analog_pressed(mkb_PAI_LSTICK_UP, false);
     bool lstick_down = pad_analog_pressed(mkb_PAI_LSTICK_DOWN, false);
@@ -63,7 +64,7 @@ static void set_save_file_info() {
         mkb_StoryModeSaveFile *story_save = &mkb_storymode_save_files[i];
         if (s_iw_files & (1 << i)) {
             mkb_sprintf(story_save->file_name, "W%02d IW %s", story_save->current_world + 1,
-                         s_anim_strs[s_anim_counter / 2 % 4]);
+                        s_anim_strs[s_anim_counter / 2 % 4]);
             story_save->num_beaten_stages_in_current_world = 0;
             story_save->score = 0;
             story_save->playtime_in_frames = 0;
@@ -91,17 +92,15 @@ static void handle_iw_timer() {
 }
 
 void iw_init() {
-    patch_write_branch((void*)(0x80274804),
-                        (void*)(asm_stage_select_menu_hook));
-    patch_write_branch((void*)(0x8032a86c),
-                        (void*)(asm_pause_menu_text_hook));
+    patch_write_branch((void *)(0x80274804), (void *)(asm_stage_select_menu_hook));
+    patch_write_branch((void *)(0x8032a86c), (void *)(asm_pause_menu_text_hook));
 }
 
 void iw_tick() {
     asm_currently_playing_iw = false;
     if (mkb_main_mode != mkb_MD_GAME || mkb_main_game_mode != mkb_STORY_MODE) return;
 
-    const char* msg = "Up/Down to Change World.";
+    const char *msg = "Up/Down to Change World.";
     mkb_strcpy(mkb_continue_saved_game_text, (char *)(msg));
     mkb_strcpy(mkb_start_game_from_beginning_text, (char *)(msg));
 
@@ -122,6 +121,5 @@ void iw_disp() {
         mkb_main_game_mode != mkb_STORY_MODE || !asm_currently_playing_iw ||
         freecam_should_hide_hud())
         return;
-    timerdisp_draw_timer(392, 0, 32, "IW:", (s32)(s_iw_time), 0, false, false,
-                          COLOR_WHITE);
+    timerdisp_draw_timer(392, 0, 32, "IW:", (s32)(s_iw_time), 0, false, false, COLOR_WHITE);
 }

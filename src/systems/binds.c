@@ -1,8 +1,7 @@
 #include "binds.h"
-#include "utils/base.h"
 #include "pad.h"
+#include "utils/base.h"
 #include "utils/macro_utils.h"
-
 
 static const mkb_PadDigitalInput INPUT_LIST[] = {
     mkb_PAD_BUTTON_A,    mkb_PAD_BUTTON_B,    mkb_PAD_BUTTON_X,     mkb_PAD_BUTTON_Y,
@@ -10,7 +9,7 @@ static const mkb_PadDigitalInput INPUT_LIST[] = {
     mkb_PAD_BUTTON_DOWN, mkb_PAD_BUTTON_LEFT, mkb_PAD_BUTTON_RIGHT, mkb_PAD_BUTTON_START,
 };
 
-static const char* INPUT_STRINGS[] = {
+static const char *INPUT_STRINGS[] = {
     "A",       "B",         "X",         "Y",          "L",     "R",     "Z",
     "Dpad-Up", "Dpad-Down", "Dpad-Left", "Dpad-Right", "Start", "ERROR",
 };
@@ -43,32 +42,33 @@ static bool is_num_pressed(u8 num) {
 static void encode_bind(binds_EncodingType type) {
     s_encoding_type = type;
     switch (type) {
-        case binds_EncodingType_Invalid: {
-            break;
-        }
-        case binds_EncodingType_SinglePress: {
-            u8 encoding = 0;
+    case binds_EncodingType_Invalid: {
+        break;
+    }
+    case binds_EncodingType_SinglePress: {
+        u8 encoding = 0;
+        encoding += s_prev_pressed[0];
+        encoding += s_prev_pressed[0] * 12;
+        s_encoding = encoding;
+        break;
+    }
+    case binds_EncodingType_ChordPress: {
+        u8 encoding = 0;
+        if (s_prev_pressed[0] < s_prev_pressed[1]) {
             encoding += s_prev_pressed[0];
+            encoding += s_prev_pressed[1] * 12;
+        } else {
+            encoding += s_prev_pressed[1];
             encoding += s_prev_pressed[0] * 12;
-            s_encoding = encoding;
-            break;
         }
-        case binds_EncodingType_ChordPress: {
-            u8 encoding = 0;
-            if (s_prev_pressed[0] < s_prev_pressed[1]) {
-                encoding += s_prev_pressed[0];
-                encoding += s_prev_pressed[1] * 12;
-            } else {
-                encoding += s_prev_pressed[1];
-                encoding += s_prev_pressed[0] * 12;
-            }
-            s_encoding = encoding;
-            break;
-        }
+        s_encoding = encoding;
+        break;
+    }
     }
 }
 
-void binds_init() {}
+void binds_init() {
+}
 
 void binds_tick() {
     get_button_values();
@@ -108,14 +108,20 @@ u8 binds_get_current_encoding() {
     return s_encoding;
 }
 
-binds_EncodingType binds_get_encoding_type() { return s_encoding_type; }
+binds_EncodingType binds_get_encoding_type() {
+    return s_encoding_type;
+}
 
-static u8 get_input1(u8 bind_id) { return bind_id % 12; }
+static u8 get_input1(u8 bind_id) {
+    return bind_id % 12;
+}
 
-static u8 get_input2(u8 bind_id) { return (bind_id - (bind_id % 12)) / 12; }
+static u8 get_input2(u8 bind_id) {
+    return (bind_id - (bind_id % 12)) / 12;
+}
 
 // buf needs to be big enough for longest possible combo (dpad-left+dpad-right)
-void binds_get_bind_str(u8 bind_id, char* buf) {
+void binds_get_bind_str(u8 bind_id, char *buf) {
     u8 i1 = get_input1(bind_id);
     u8 i2 = get_input2(bind_id);
     if (bind_id == INVALID) {

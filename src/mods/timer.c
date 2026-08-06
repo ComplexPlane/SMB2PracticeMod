@@ -1,8 +1,8 @@
 #include "timer.h"
 
-#include "utils/base.h"
 #include "mods/freecam.h"
 #include "systems/pref.h"
+#include "utils/base.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
@@ -14,8 +14,10 @@ static s32 s_pause_timer;
 
 static u32 s_framesave;
 
-static bool did_ball_enter_goal(mkb_Ball *ball, int *out_stage_goal_idx,
-                                int *out_itemgroup_id, byte *out_goal_flags);
+static bool did_ball_enter_goal(mkb_Ball *ball,
+                                int *out_stage_goal_idx,
+                                int *out_itemgroup_id,
+                                byte *out_goal_flags);
 
 TRAMP(s_goal_tramp, mkb_did_ball_enter_goal, did_ball_enter_goal);
 
@@ -49,8 +51,7 @@ static bool line_intersects(const Vec *line_start, const Vec *line_end, const mk
             return false;
         } else {
             // update framesave if first goal entered
-            if (mkb_sub_mode != mkb_SMD_GAME_GOAL_INIT &&
-                mkb_sub_mode != mkb_SMD_GAME_GOAL_MAIN &&
+            if (mkb_sub_mode != mkb_SMD_GAME_GOAL_INIT && mkb_sub_mode != mkb_SMD_GAME_GOAL_MAIN &&
                 mkb_sub_mode != mkb_SMD_GAME_GOAL_REPLAY_INIT &&
                 mkb_sub_mode != mkb_SMD_GAME_GOAL_REPLAY_MAIN) {
                 s_framesave = (u32)((start.z / (start.z - end.z)) * 100);
@@ -60,7 +61,9 @@ static bool line_intersects(const Vec *line_start, const Vec *line_end, const mk
     }
 }
 
-static void find_framesave(mkb_Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id,
+static void find_framesave(mkb_Ball *ball,
+                           int *out_stage_goal_idx,
+                           int *out_itemgroup_id,
                            byte *out_goal_flags) {
     // mostly a ghidra copy-paste
     int itemgroup_goal_idx;
@@ -111,10 +114,11 @@ static void find_framesave(mkb_Ball *ball, int *out_stage_goal_idx, int *out_ite
     } while (true);
 }
 
-static bool did_ball_enter_goal(mkb_Ball *ball, int *out_stage_goal_idx,
-                                int *out_itemgroup_id, byte *out_goal_flags) {
-    bool result =
-        s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+static bool did_ball_enter_goal(mkb_Ball *ball,
+                                int *out_stage_goal_idx,
+                                int *out_itemgroup_id,
+                                byte *out_goal_flags) {
+    bool result = s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
     if (result) {
         // Determine framesave percentage.
         find_framesave(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
@@ -132,22 +136,22 @@ void timer_disp() {
     if (mkb_main_mode != mkb_MD_GAME) return;
 
     switch (mkb_sub_mode) {
-        case mkb_SMD_GAME_READY_INIT:
-        case mkb_SMD_GAME_READY_MAIN:
-        case mkb_SMD_GAME_PLAY_INIT:
-        case mkb_SMD_GAME_PLAY_MAIN:
-        case mkb_SMD_GAME_GOAL_INIT:
-        case mkb_SMD_GAME_GOAL_MAIN:
-        case mkb_SMD_GAME_RINGOUT_INIT:
-        case mkb_SMD_GAME_RINGOUT_MAIN:
-        case mkb_SMD_GAME_TIMEOVER_INIT:
-        case mkb_SMD_GAME_TIMEOVER_MAIN:
-        case mkb_SMD_GAME_GOAL_REPLAY_INIT:
-        case mkb_SMD_GAME_GOAL_REPLAY_MAIN:
-            break;
-        default:
-            s_pause_timer = 0;
-            return;
+    case mkb_SMD_GAME_READY_INIT:
+    case mkb_SMD_GAME_READY_MAIN:
+    case mkb_SMD_GAME_PLAY_INIT:
+    case mkb_SMD_GAME_PLAY_MAIN:
+    case mkb_SMD_GAME_GOAL_INIT:
+    case mkb_SMD_GAME_GOAL_MAIN:
+    case mkb_SMD_GAME_RINGOUT_INIT:
+    case mkb_SMD_GAME_RINGOUT_MAIN:
+    case mkb_SMD_GAME_TIMEOVER_INIT:
+    case mkb_SMD_GAME_TIMEOVER_MAIN:
+    case mkb_SMD_GAME_GOAL_REPLAY_INIT:
+    case mkb_SMD_GAME_GOAL_REPLAY_MAIN:
+        break;
+    default:
+        s_pause_timer = 0;
+        return;
     }
 
     s_prev_retrace_count = s_retrace_count;
@@ -163,9 +167,9 @@ void timer_disp() {
             s_pause_timer++;
         }
     }
-    
+
     u32 row = 1;
-    
+
     if (pref_get(Pref_TimerShowRTA) && !freecam_should_hide_hud()) {
         timerdisp_draw_timer(380, row++, 44, "RTA:", s_rta_timer, 0, false, true, COLOR_WHITE);
     }
@@ -173,16 +177,15 @@ void timer_disp() {
     if (pref_get(Pref_TimerShowPause) && !freecam_should_hide_hud()) {
         timerdisp_draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true, COLOR_WHITE);
     }
-    
 
     switch (mkb_sub_mode) {
-        case mkb_SMD_GAME_GOAL_INIT:
-        case mkb_SMD_GAME_GOAL_MAIN:
-        case mkb_SMD_GAME_GOAL_REPLAY_INIT:
-        case mkb_SMD_GAME_GOAL_REPLAY_MAIN:
-            break;
-        default:
-            return;
+    case mkb_SMD_GAME_GOAL_INIT:
+    case mkb_SMD_GAME_GOAL_MAIN:
+    case mkb_SMD_GAME_GOAL_REPLAY_INIT:
+    case mkb_SMD_GAME_GOAL_REPLAY_MAIN:
+        break;
+    default:
+        return;
     }
 
     if (pref_get(Pref_TimerShowSubtick) && !freecam_should_hide_hud()) {
@@ -199,7 +202,7 @@ void timer_disp() {
 
     if (pref_get(Pref_TimerShowFramesave) && !freecam_should_hide_hud()) {
         timerdisp_draw_percentage(s_framesave, "FSV:", row++, COLOR_WHITE);
-    } 
+    }
 }
 
 void timer_save_state(Store *store, StoreFunc func) {

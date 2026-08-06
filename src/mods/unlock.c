@@ -34,4 +34,6 @@ void unlock_tick() {
     if (s_flags & Flag_ShouldUnlock) do_unlock();
 }
 
-void unlock_unlock_everything() { s_flags |= Flag_ShouldUnlock; }
+void unlock_unlock_everything() {
+    s_flags |= Flag_ShouldUnlock;
+}
