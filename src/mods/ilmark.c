@@ -142,7 +142,7 @@ void ilmark_disp() {
     mkb_textdraw_set_pos(x, y);
     mkb_textdraw_set_alignment(mkb_ALIGN_UPPER_LEFT);
     mkb_textdraw_set_scale(0.8, 0.8);
-    mkb_GXColor color = s_valid_run ? COLOR_LIGHT_GREEN : COLOR_LIGHT_RED;
+    GXColor color = s_valid_run ? COLOR_LIGHT_GREEN : COLOR_LIGHT_RED;
     mkb_textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb_textdraw_set_font_style(mkb_STYLE_BOLD);
 

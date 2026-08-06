@@ -17,7 +17,7 @@ void timerdisp_draw_timer(u32 pos_x,
                           s32 frames_2,
                           bool show_second_argument,
                           bool show_seconds_only,
-                          mkb_GXColor color) {
+                          GXColor color) {
     bool positive = frames_1 >= 0;
     if (!positive) frames_1 = -frames_1;
     const char *sign = positive ? "" : "-";
@@ -108,7 +108,7 @@ void timerdisp_draw_timer(u32 pos_x,
 void timerdisp_draw_subtick_timer(s32 frames,
                                   const char *prefix,
                                   u32 row,
-                                  mkb_GXColor color,
+                                  GXColor color,
                                   bool show_minutes,
                                   u32 framesave,
                                   bool extra_precision) {
@@ -133,7 +133,7 @@ void timerdisp_draw_subtick_timer(s32 frames,
     }
 }
 
-void timerdisp_draw_percentage(s32 fsave, const char *prefix, u32 row, mkb_GXColor color) {
+void timerdisp_draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
     s32 y = Y + row * 16;
     draw_debug_text(X, y, color, prefix);
     draw_debug_text(X + 48, y, color, "%2d%", fsave);

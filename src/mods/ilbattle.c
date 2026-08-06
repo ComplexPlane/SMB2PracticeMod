@@ -82,7 +82,7 @@ static void old_buzzer_display(u32 start_y) {
                         "EPIC BUZZER BEATER B)");
 }
 
-static void battle_display(mkb_GXColor text_color) {
+static void battle_display(GXColor text_color) {
     u32 battle_hours = s_battle_frames / HOUR_FRAMES;
     u32 battle_minutes = s_battle_frames % HOUR_FRAMES / MINUTE_FRAMES;
     u32 battle_seconds = s_battle_frames % MINUTE_FRAMES / SECOND_FRAMES;
@@ -95,8 +95,8 @@ static void battle_display(mkb_GXColor text_color) {
 
     u32 current_y = Y;
 
-    mkb_GXColor time_color = s_time_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
-    mkb_GXColor score_color = s_score_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
+    GXColor time_color = s_time_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
+    GXColor score_color = s_score_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
 
     draw_debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
     if (battle_hours > 0) {

@@ -10,23 +10,29 @@ static void draw_bg_hook();
 TRAMP(s_draw_bg_tramp, mkb_g_draw_bg, draw_bg_hook);
 static void clear_hook();
 TRAMP(s_clear_tramp, mkb_g_set_clear_color, clear_hook);
+
 // HUD
 static void draw_sprite_hook(mkb_Sprite *sprite);
 TRAMP(s_draw_sprite_tramp, mkb_draw_sprite, draw_sprite_hook);
 static void draw_minimap_hook();
 TRAMP(s_draw_minimap_tramp, mkb_g_draw_minimap, draw_minimap_hook);
+
 // Stage
 static void draw_stage_hook();
 TRAMP(s_draw_stage_tramp, mkb_g_draw_stage, draw_stage_hook);
+
 // Ball
 static void draw_ball_hook();
 TRAMP(s_draw_ball_tramp, mkb_g_draw_ball_and_ape, draw_ball_hook);
+
 // Items
 static void draw_items_hook();
 TRAMP(s_draw_items_tramp, mkb_draw_items, draw_items_hook);
+
 // Stage objects
 static void draw_stobjs_hook();
 TRAMP(s_draw_stobjs_tramp, mkb_draw_items, draw_stobjs_hook);
+
 // Effects
 static void draw_effects_hook();
 TRAMP(s_draw_effects_tramp, mkb_g_draw_effects, draw_effects_hook);
@@ -58,12 +64,12 @@ static void draw_bg_hook() {
 }
 static void clear_hook() {
     if (should_hide_bg()) {
-        mkb_GXColor backup_color = mkb_g_some_theme_color;
+        GXColor backup_color = mkb_g_some_theme_color;
         u8 backup_override_r = mkb_g_override_clear_r;
         u8 backup_override_g = mkb_g_override_clear_g;
         u8 backup_override_b = mkb_g_override_clear_b;
 
-        mkb_g_some_theme_color = (mkb_GXColor){0, 0, 0, 0xff};
+        mkb_g_some_theme_color = (GXColor){0, 0, 0, 0xff};
         mkb_g_override_clear_r = 0;
         mkb_g_override_clear_g = 0;
         mkb_g_override_clear_b = 0;

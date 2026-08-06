@@ -357,7 +357,7 @@ void cmseg_disp() {
 
     if (s_state == State_SegActive || s_state == State_SegComplete) {
         u32 seg = (u32)(s_seg_request);
-        mkb_GXColor color;
+        GXColor color;
         if (s_state == State_SegComplete && s_pbs[seg] == s_seg_time)
             color = COLOR_GOLD;
         else

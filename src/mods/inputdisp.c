@@ -55,7 +55,7 @@ static void draw_ring(u32 pts,
                       Vec2d center,
                       f32 inner_radius,
                       f32 outer_radius,
-                      mkb_GXColor color) {
+                      GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
@@ -93,7 +93,7 @@ static void draw_ring(u32 pts,
     }
 }
 
-static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb_GXColor color) {
+static void draw_circle(u32 pts, Vec2d center, f32 radius, GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
@@ -188,25 +188,25 @@ static bool get_notch_pos(const MergedStickInputs *stick_inputs, Vec2d *out_pos)
     return notch_found;
 }
 
-static const mkb_GXColor s_color_map[] = {
+static const GXColor s_color_map[] = {
     COLOR_PURPLE,                           // Purple
     COLOR_RED,                              // Red
     COLOR_ORANGE,                           // Orange
-    (mkb_GXColor){0xfd, 0xfb, 0x78, 0xff},  // Yellow
-    (mkb_GXColor){0x78, 0xfd, 0x85, 0xff},  // Green
-    (mkb_GXColor){0x78, 0xca, 0xfd, 0xff},  // Blue
+    (GXColor){0xfd, 0xfb, 0x78, 0xff},  // Yellow
+    (GXColor){0x78, 0xfd, 0x85, 0xff},  // Green
+    (GXColor){0x78, 0xca, 0xfd, 0xff},  // Blue
     COLOR_PINK,                             // Pink
     COLOR_BLACK,                            // Black
 };
 
-static mkb_GXColor get_color() {
+static GXColor get_color() {
     InputDispColorType color_pref = (InputDispColorType)(pref_get(Pref_InputDispColorType));
     switch (color_pref) {
     case InputDispColorType_Default: {
         return s_color_map[pref_get(Pref_InputDispColor)];
     }
     case InputDispColorType_RGB: {
-        return (mkb_GXColor){
+        return (GXColor){
             .r = pref_get(Pref_InputDispRed),
             .g = pref_get(Pref_InputDispGreen),
             .b = pref_get(Pref_InputDispBlue),
@@ -217,7 +217,7 @@ static mkb_GXColor get_color() {
         return draw_num_to_rainbow(s_rainbow);
     }
     case InputDispColorType_MatchBall: {
-        mkb_GXColor current = ballcolor_get_current_color();
+        GXColor current = ballcolor_get_current_color();
         current.a = 0xff;
         return current;
     }
@@ -225,14 +225,14 @@ static mkb_GXColor get_color() {
 
     // shouldn't reach
     MOD_ASSERT(false);
-    return (mkb_GXColor){0};
+    return (GXColor){0};
 }
 
 static void draw_stick(const MergedStickInputs *stick_inputs, const Vec2d *center, f32 scale) {
-    mkb_GXColor chosen_color = get_color();
+    GXColor chosen_color = get_color();
 
-    draw_ring(8, *center, 54 * scale, 60 * scale, (mkb_GXColor){0x00, 0x00, 0x00, 0xFF});
-    draw_circle(8, *center, 54 * scale, (mkb_GXColor){0x00, 0x00, 0x00, 0x7F});
+    draw_ring(8, *center, 54 * scale, 60 * scale, (GXColor){0x00, 0x00, 0x00, 0xFF});
+    draw_circle(8, *center, 54 * scale, (GXColor){0x00, 0x00, 0x00, 0x7F});
     draw_ring(8, *center, 50 * scale, 58 * scale, chosen_color);
 
     Vec2d scaled_input = {
@@ -240,7 +240,7 @@ static void draw_stick(const MergedStickInputs *stick_inputs, const Vec2d *cente
         center->y - (f32)(stick_inputs->rawY) / 2.7f * scale,
     };
 
-    draw_circle(16, scaled_input, 9 * scale, (mkb_GXColor){0xFF, 0xFF, 0xFF, 0xFF});
+    draw_circle(16, scaled_input, 9 * scale, (GXColor){0xFF, 0xFF, 0xFF, 0xFF});
 }
 
 static void draw_buttons(const Vec2d *center, f32 scale) {
@@ -281,7 +281,7 @@ static void draw_notch_indicators(const MergedStickInputs *stick_inputs,
             .x = notch_norm.x * 60 * scale + center->x,
             .y = -notch_norm.y * 60 * scale + center->y,
         };
-        draw_circle(6, notch_pos, 5 * scale, (mkb_GXColor){0xFF, 0xFF, 0xFF, 0xFF});
+        draw_circle(6, notch_pos, 5 * scale, (GXColor){0xFF, 0xFF, 0xFF, 0xFF});
     }
 }
 

@@ -25,10 +25,10 @@ enum ClothingType {
 };
 
 static u32 s_rainbow = 0;  // tick for rainbow animation
-static mkb_GXColor s_default_color;
-static mkb_GXColor s_current_color;
+static GXColor s_default_color;
+static GXColor s_current_color;
 
-mkb_GXColor ballcolor_get_current_color() {
+GXColor ballcolor_get_current_color() {
     return s_current_color;
 }
 
@@ -47,7 +47,7 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
 }
 
 void ballcolor_init() {
-    s_default_color = *(mkb_GXColor *)(0x80472a34);  // default color
+    s_default_color = *(GXColor *)(0x80472a34);  // default color
 }
 
 void ballcolor_tick() {
@@ -57,7 +57,7 @@ void ballcolor_tick() {
     if (mkb_main_mode != mkb_MD_GAME ||
         (mkb_sub_mode == mkb_SMD_GAME_SCENARIO_INIT || mkb_sub_mode == mkb_SMD_GAME_SCENARIO_MAIN ||
          mkb_sub_mode == mkb_SMD_GAME_SCENARIO_RETURN)) {
-        *(mkb_GXColor *)(0x80472a34) = s_default_color;
+        *(GXColor *)(0x80472a34) = s_default_color;
         return;
     }
 
@@ -66,10 +66,10 @@ void ballcolor_tick() {
 
     switch (ball_type) {
     case BallColorType_Preset: {
-        *(mkb_GXColor *)(0x80472a34) = s_default_color;  // reset default color
+        *(GXColor *)(0x80472a34) = s_default_color;  // reset default color
         u8 color_id = convert_to_ball_color_id(pref_get(Pref_BallColor));
         mkb_balls[mkb_curr_player_idx].g_ball_color_index = color_id;
-        s_current_color = ((mkb_GXColor *)0x80472a28)[color_id];
+        s_current_color = ((GXColor *)0x80472a28)[color_id];
         break;
     }
     case BallColorType_RGB: {
@@ -77,8 +77,8 @@ void ballcolor_tick() {
         u8 red = pref_get(Pref_BallRed);
         u8 green = pref_get(Pref_BallGreen);
         u8 blue = pref_get(Pref_BallBlue);
-        s_current_color = (mkb_GXColor){red, green, blue, 0};
-        *(mkb_GXColor *)(0x80472a34) = s_current_color;
+        s_current_color = (GXColor){red, green, blue, 0};
+        *(GXColor *)(0x80472a34) = s_current_color;
         break;
     }
     case BallColorType_Rainbow: {
@@ -89,7 +89,7 @@ void ballcolor_tick() {
             s_rainbow = (s_rainbow + 3) % 1080;
         }
         s_current_color = draw_num_to_rainbow(s_rainbow);
-        *(mkb_GXColor *)(0x80472a34) = s_current_color;
+        *(GXColor *)(0x80472a34) = s_current_color;
         break;
     }
     case BallColorType_Random: {
@@ -100,8 +100,8 @@ void ballcolor_tick() {
             u32 red = CLAMP(((mkb_rand() % 256) + bonus_brightness), 0, 0xff);
             u32 green = CLAMP(((mkb_rand() % 256) + bonus_brightness), 0, 0xff);
             u32 blue = CLAMP(((mkb_rand() % 256) + bonus_brightness), 0, 0xff);
-            s_current_color = (mkb_GXColor){(u8)red, (u8)green, (u8)blue, 0};
-            *(mkb_GXColor *)(0x80472a34) = s_current_color;
+            s_current_color = (GXColor){(u8)red, (u8)green, (u8)blue, 0};
+            *(GXColor *)(0x80472a34) = s_current_color;
         }
         break;
     }

@@ -58,9 +58,9 @@ static bool tetrad_intersects_grid(Tetrad, s32, s32, s32), is_row_full(s32);
 static s32 find_lowest_possible_tetrad_y(Tetrad, s32, s32, s32);
 static void draw(), draw_ascii_window(), draw_grid(), draw_info_text();
 static void draw_tetrad_queue(), draw_dropping_tetrad(), draw_game_over_text();
-static void draw_grid_cell(s32, s32, mkb_GXColor);
+static void draw_grid_cell(s32, s32, GXColor);
 
-static const mkb_GXColor CELL_COLORS[NUM_CELL_TYPES] = {
+static const GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA},  // I
     {0x00, 0x02, 0xec, CELL_ALPHA},  // J
     {0xef, 0xa0, 0x00, CELL_ALPHA},  // L
@@ -382,7 +382,7 @@ void draw_ascii_window() {
     float end_x = X + WIDTH_CHARS * COLOR_DEBUG_CHAR_WIDTH - MARGIN;
     float end_y = (Y + HEIGHT_CHARS * COLOR_DEBUG_CHAR_WIDTH) * YSCALE - MARGIN;
 
-    draw_rect(start_x, start_y, end_x, end_y, (mkb_GXColor){0x00, 0x00, 0x00, 0x80});
+    draw_rect(start_x, start_y, end_x, end_y, (GXColor){0x00, 0x00, 0x00, 0x80});
     draw_ascii_rect(X, Y, WIDTH_CHARS, HEIGHT_CHARS, 0b01001110);
 }
 
@@ -393,13 +393,13 @@ void draw_grid() {
         for (s32 x = 0; x < BOARD_WIDTH; x++) {
             Cell cell = m_board[x][y];
             if (cell != Cell_EMPTY) {
-                mkb_GXColor color = {0};
+                GXColor color = {0};
 
                 if (m_state == State_ROWCLEAR && row_roll) {
                     if (m_state_timer % ROW_FLASH_PERIOD < (ROW_FLASH_PERIOD / 2)) {
-                        color = (mkb_GXColor){0x00, 0x00, 0x00, 0x00};
+                        color = (GXColor){0x00, 0x00, 0x00, 0x00};
                     } else {
-                        color = (mkb_GXColor){0xff, 0xff, 0xff, 0xff};
+                        color = (GXColor){0xff, 0xff, 0xff, 0xff};
                     }
 
                 } else {
@@ -415,13 +415,13 @@ void draw_grid() {
 void draw_info_text() {
     const s32 STARTX = 335, STARTY = 310;
 
-    draw_debug_text(STARTX, STARTY, (mkb_GXColor){0x00, 0xc0, 0xff, 0xff}, "SCORE");
-    draw_debug_text(STARTX, STARTY + 16, (mkb_GXColor){0xff, 0xff, 0xff, 0xff}, "%d", m_score);
+    draw_debug_text(STARTX, STARTY, (GXColor){0x00, 0xc0, 0xff, 0xff}, "SCORE");
+    draw_debug_text(STARTX, STARTY + 16, (GXColor){0xff, 0xff, 0xff, 0xff}, "%d", m_score);
 
-    draw_debug_text(STARTX, STARTY + 50, (mkb_GXColor){0x40, 0xff, 0xc0, 0xff}, "HIGH SCORE");
-    draw_debug_text(STARTX, STARTY + 66, (mkb_GXColor){0xff, 0xff, 0xff, 0xff}, "%d", m_high_score);
+    draw_debug_text(STARTX, STARTY + 50, (GXColor){0x40, 0xff, 0xc0, 0xff}, "HIGH SCORE");
+    draw_debug_text(STARTX, STARTY + 66, (GXColor){0xff, 0xff, 0xff, 0xff}, "%d", m_high_score);
 
-    draw_debug_text(429, 22, (mkb_GXColor){0xff, 0xc0, 0x00, 0xff}, "NEXT");
+    draw_debug_text(429, 22, (GXColor){0xff, 0xc0, 0x00, 0xff}, "NEXT");
 
     draw_debug_text(490, 90, COLOR_WHITE, "DPAD: MOVE");
 
@@ -434,7 +434,7 @@ void draw_info_text() {
 
 void draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation) {
     u8 tet = (u8)tetrad;
-    mkb_GXColor color = CELL_COLORS[tet];
+    GXColor color = CELL_COLORS[tet];
 
     // Note that the effectice "cell y" when indexing the tetrad rotation
     // is in the wrong direction, but is flipped again when
@@ -521,8 +521,8 @@ void draw_tetrad_queue() {
 void draw_dropping_tetrad() {
     u8 tet = (u8)m_dropping_tetrad;
     u16 rot = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot];
-    mkb_GXColor color = CELL_COLORS[tet];
-    mkb_GXColor preview_color = {color.r, color.g, color.b, 0x40};
+    GXColor color = CELL_COLORS[tet];
+    GXColor preview_color = {color.r, color.g, color.b, 0x40};
 
     // Draw drop preview
     // TODO deduplicate?
@@ -551,7 +551,7 @@ void draw_dropping_tetrad() {
     }
 }
 
-void draw_grid_cell(s32 cellx, s32 celly, mkb_GXColor color) {
+void draw_grid_cell(s32 cellx, s32 celly, GXColor color) {
     const s32 DRAWX_START = 143, DRAWY_START = 25;
 
     float draw_x1 = DRAWX_START + cellx * (CELL_WIDTH + CELL_PAD);
