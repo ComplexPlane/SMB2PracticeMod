@@ -376,5 +376,5 @@ void savest_tick() {
 }
 
 bool savest_is_enabled() {
-    return pref_get(BoolPref_Savestates) && !pref_get(BoolPref_Freecam);
+    return pref_get(Pref_Savestates) && !pref_get(Pref_Freecam);
 }

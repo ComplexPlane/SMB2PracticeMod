@@ -11,8 +11,7 @@
 
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
-typedef enum Pref : u16 Pref;
-enum Pref : u16 {
+typedef enum Pref : u16 {
     Pref_Savestates = 1,
     Pref_InputDisp = 2,
     Pref_InputDispCenterLocation = 3,
@@ -93,7 +92,7 @@ enum Pref : u16 {
     Pref_SegmentTimerOptions = 78,
     Pref_StoryTimerWarning = 79,
     Pref_ShowDeathCounter = 80,
-};
+} Pref;
 
 void pref_init();
 void pref_save();
