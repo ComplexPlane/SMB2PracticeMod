@@ -6,7 +6,7 @@
 enum { Flag_ShouldUnlock = 1 << 0 };
 static u32 s_flags;
 
-static void do_unlock(void) {
+static void do_unlock() {
     mkb_unlock_info.master_unlocked = true;
     mkb_unlock_info.monkeys = 99;
     mkb_unlock_info.staff_credits_game_unlocked = true;
@@ -20,7 +20,7 @@ static void do_unlock(void) {
     mkb_g_some_gift_menu_flags |= 8;
 }
 
-void unlock_init(void) {
+void unlock_init() {
     char gamecode[7] = {};
     mkb_memcpy(gamecode, mkb_DVD_GAME_NAME, 6);
     if (mkb_strcmp(gamecode, (char *)"GM2E8P") == 0) {
@@ -30,8 +30,8 @@ void unlock_init(void) {
     }
 }
 
-void unlock_tick(void) {
+void unlock_tick() {
     if (s_flags & Flag_ShouldUnlock) do_unlock();
 }
 
-void unlock_unlock_everything(void) { s_flags |= Flag_ShouldUnlock; }
+void unlock_unlock_everything() { s_flags |= Flag_ShouldUnlock; }

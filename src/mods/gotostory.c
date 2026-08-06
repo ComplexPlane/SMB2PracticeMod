@@ -11,18 +11,18 @@ enum State {
 
 static State s_state;
 
-void gotostory_load_storymode(void) {
+void gotostory_load_storymode() {
     s_state = mkb_main_mode == mkb_MD_SEL ? State_LoadStoryReq : State_LoadMenuReq;
 }
 
-static void reset_screenfade_state(void) {
+static void reset_screenfade_state() {
     mkb_g_screenfade_flags = 0x00000100;
     mkb_g_screenfade_color = 0x00000000;
     mkb_g_screenfading1 = 0x0000001a;
     mkb_g_screenfading2 = 0x0000001b;
 }
 
-void gotostory_tick(void) {
+void gotostory_tick() {
     if (s_state == State_LoadMenuReq) {
         mkb_g_some_other_flags &= ~mkb_OF_GAME_PAUSED;
         mkb_main_mode_request = mkb_MD_SEL;

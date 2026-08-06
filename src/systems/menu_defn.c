@@ -81,10 +81,10 @@ static Widget s_input_hex[] = {
     },
 };
 
-static bool inputdisp_uses_preset_color(void) {
+static bool inputdisp_uses_preset_color() {
     return pref_get(Pref_InputDispColorType) == 0;
 }
-static bool inputdisp_uses_rgb_color(void) {
+static bool inputdisp_uses_rgb_color() {
     return pref_get(Pref_InputDispColorType) == 1;
 }
 
@@ -143,7 +143,7 @@ static Widget s_inputdisp_subwidgets[] = {
     },
 };
 
-static bool inputdisp_is_enabled(void) {
+static bool inputdisp_is_enabled() {
     return pref_get(Pref_InputDisp);
 }
 
@@ -243,13 +243,13 @@ static Widget s_hex_widgets[] = {
     },
 };
 
-static bool ball_uses_preset_color(void) {
+static bool ball_uses_preset_color() {
     return pref_get(Pref_BallColorType) == 0;
 }
-static bool ball_uses_rgb_color(void) {
+static bool ball_uses_rgb_color() {
     return pref_get(Pref_BallColorType) == 1;
 }
-static bool ape_uses_preset_color(void) {
+static bool ape_uses_preset_color() {
     return pref_get(Pref_ApeColorType) == 0;
 }
 
@@ -338,7 +338,7 @@ static Widget s_il_battle_score_widgets[] = {
     },
 };
 
-static bool il_battle_score_is_shown(void) {
+static bool il_battle_score_is_shown() {
     return pref_get(Pref_IlBattleShowScore);
 }
 
@@ -415,7 +415,7 @@ static Widget s_il_battle_subwidgets[] = {
     {.type = WidgetType_Text, .text = {"  Press Ready Bind then Retry to start a battle"}},
 };
 
-static bool il_battle_display_is_enabled(void) {
+static bool il_battle_display_is_enabled() {
     return pref_get(Pref_IlBattleDisplay);
 }
 
@@ -452,25 +452,25 @@ static void rumble_set(int controller_idx, bool value) {
     }
 }
 
-static bool controller_1_rumble_get(void) {
+static bool controller_1_rumble_get() {
     return rumble_get(0);
 }
 static void controller_1_rumble_set(bool enable) {
     rumble_set(0, enable);
 }
-static bool controller_2_rumble_get(void) {
+static bool controller_2_rumble_get() {
     return rumble_get(1);
 }
 static void controller_2_rumble_set(bool enable) {
     rumble_set(1, enable);
 }
-static bool controller_3_rumble_get(void) {
+static bool controller_3_rumble_get() {
     return rumble_get(2);
 }
 static void controller_3_rumble_set(bool enable) {
     rumble_set(2, enable);
 }
-static bool controller_4_rumble_get(void) {
+static bool controller_4_rumble_get() {
     return rumble_get(3);
 }
 static void controller_4_rumble_set(bool enable) {
@@ -555,10 +555,10 @@ static Widget s_about_widgets[] = {
 
 static const char *CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
-static void start_beginner_1_10_segment(void) {
+static void start_beginner_1_10_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Beginner1);
 }
-static void start_beginner_extra_segment(void) {
+static void start_beginner_extra_segment() {
     cmseg_request_cm_seg(cmseg_Seg_BeginnerExtra);
 }
 
@@ -583,16 +583,16 @@ static Widget s_cm_beg_widgets[] = {
     },
 };
 
-static void start_advanced_1_10_segment(void) {
+static void start_advanced_1_10_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Advanced1);
 }
-static void start_advanced_11_20_segment(void) {
+static void start_advanced_11_20_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Advanced11);
 }
-static void start_advanced_21_30_segment(void) {
+static void start_advanced_21_30_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Advanced21);
 }
-static void start_advanced_extra_segment(void) {
+static void start_advanced_extra_segment() {
     cmseg_request_cm_seg(cmseg_Seg_AdvancedExtra);
 }
 
@@ -635,22 +635,22 @@ static Widget s_cm_adv_widgets[] = {
     },
 };
 
-static void start_expert_1_10_segment(void) {
+static void start_expert_1_10_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Expert1);
 }
-static void start_expert_11_20_segment(void) {
+static void start_expert_11_20_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Expert11);
 }
-static void start_expert_21_30_segment(void) {
+static void start_expert_21_30_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Expert21);
 }
-static void start_expert_31_40_segment(void) {
+static void start_expert_31_40_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Expert31);
 }
-static void start_expert_41_50_segment(void) {
+static void start_expert_41_50_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Expert41);
 }
-static void start_expert_extra_segment(void) {
+static void start_expert_extra_segment() {
     cmseg_request_cm_seg(cmseg_Seg_ExpertExtra);
 }
 
@@ -711,10 +711,10 @@ static Widget s_cm_exp_widgets[] = {
     },
 };
 
-static void start_master_1_10_segment(void) {
+static void start_master_1_10_segment() {
     cmseg_request_cm_seg(cmseg_Seg_Master1);
 }
-static void start_master_extra_segment(void) {
+static void start_master_extra_segment() {
     cmseg_request_cm_seg(cmseg_Seg_MasterExtra);
 }
 
@@ -1102,7 +1102,7 @@ static Widget s_freecam_subwidgets[] = {
     },
 };
 
-static bool freecam_is_enabled(void) {
+static bool freecam_is_enabled() {
     return pref_get(Pref_Freecam);
 }
 
@@ -1251,7 +1251,7 @@ static Widget s_savestate_subwidgets[] = {
     },
 };
 
-static bool savestates_are_enabled(void) {
+static bool savestates_are_enabled() {
     return pref_get(Pref_Savestates);
 }
 
@@ -1335,7 +1335,7 @@ static Widget s_tools_widgets[] = {
     },
 };
 
-static void disable_il_invalidating_settings(void) {
+static void disable_il_invalidating_settings() {
     ilmark_disable_invalidating_settings();
 }
 
@@ -1464,7 +1464,7 @@ static Widget s_enabled_physics_widgets[] = {
     },
 };
 
-static bool custom_physics_is_enabled(void) {
+static bool custom_physics_is_enabled() {
     return pref_get(Pref_UseCustomPhysics);
 }
 
@@ -1490,7 +1490,7 @@ static Widget s_physics_widgets[] = {
 
 static const char *STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
 
-static void select_new_reverse_mode_goal(void) {
+static void select_new_reverse_mode_goal() {
     stage_edits_select_new_goal();
 }
 
@@ -1506,7 +1506,7 @@ static Widget s_reverse_goal_widgets[] = {
     },
 };
 
-static bool reverse_mode_is_selected(void) {
+static bool reverse_mode_is_selected() {
     return pref_get(Pref_StageEditVariant) == 3;
 }
 
@@ -1600,7 +1600,7 @@ static Widget s_gameplay_mods_widgets[] = {
     },
 };
 
-static void restore_default_preferences(void) {
+static void restore_default_preferences() {
     pref_set_defaults();
     pref_save();
 }
@@ -1685,6 +1685,6 @@ MenuWidget menu_root = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void menu_init(void) {
+void menu_init() {
     mkb_sprintf(s_version_str, "  Current version: v%s", version_get_str());
 }

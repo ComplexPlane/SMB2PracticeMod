@@ -15,7 +15,7 @@ static ActiveMode s_current_mode = ActiveMode_None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
-static void ready_init_hook(void);
+static void ready_init_hook();
 static void load_stagedef_hook(u32 stage_id);
 static TRAMP(s_ready_init_tramp, mkb_smd_game_ready_init, ready_init_hook);
 static TRAMP(s_load_stagedef_tramp, mkb_load_stagedef, load_stagedef_hook);
@@ -112,7 +112,7 @@ static void set_mode(ActiveMode mode) {
     }
 }
 
-static void ready_init_hook(void) {
+static void ready_init_hook() {
         ActiveMode next_mode = (ActiveMode)(pref_get(Pref_StageEditVariant));
         if (s_current_mode != next_mode) {
             undo_mode(s_current_mode);

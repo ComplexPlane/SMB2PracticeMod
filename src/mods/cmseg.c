@@ -25,7 +25,7 @@ static cmseg_Seg s_seg_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
-static void reset_cm_course_hook(void);
+static void reset_cm_course_hook();
 TRAMP(s_reset_cm_course_tramp, mkb_g_reset_cm_course, reset_cm_course_hook);
 
 static mkb_CourseCommand* s_overwritten_entry;
@@ -369,7 +369,7 @@ void cmseg_disp() {
     }
 }
 
-static void reset_cm_course_hook(void) {
+static void reset_cm_course_hook() {
     s_reset_cm_course_tramp.chain();
     if (s_state == State_SegActive) init_seg();
 }

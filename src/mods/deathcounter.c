@@ -8,7 +8,7 @@
 static bool s_can_die;
 static u32 s_death_count;
 
-void deathcounter_tick(void) {
+void deathcounter_tick() {
     if (mkb_scen_info.mode == 5) s_death_count = 0;
     if (mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN) s_can_die = true;
 
@@ -27,7 +27,7 @@ void deathcounter_tick(void) {
     }
 }
 
-void deathcounter_disp(void) {
+void deathcounter_disp() {
     if ((mkb_main_game_mode != mkb_STORY_MODE && mkb_sub_mode != mkb_SMD_AUTHOR_PLAY_INIT &&
          mkb_sub_mode != mkb_SMD_AUTHOR_PLAY_MAIN) ||
         freecam_should_hide_hud() || !pref_get(Pref_ShowDeathCounter)) {

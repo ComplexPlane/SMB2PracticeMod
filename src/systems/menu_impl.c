@@ -47,7 +47,7 @@ static void push_menu(MenuWidget * menu) {
     pad_reset_dir_repeat();
 }
 
-static void pop_menu(void) {
+static void pop_menu() {
     if (s_menu_stack_ptr == 0) {
         s_visible = false;
     } else {
@@ -99,7 +99,7 @@ static u32 get_selectable_widget_count(Widget * widgets, u32 num_widgets) {
     return selectable;
 }
 
-static void handle_widget_bind(void) {
+static void handle_widget_bind() {
     MenuWidget * menu = s_menu_stack[s_menu_stack_ptr];
     s32 target_idx = menu->selected_idx;
     s32 curr_idx = -1;
@@ -259,7 +259,7 @@ static void handle_widget_bind(void) {
     }
 }
 
-void menu_impl_tick(void) {
+void menu_impl_tick() {
     if (s_binding == BindingState_Active) {
         handle_widget_bind();
         return;
@@ -346,7 +346,7 @@ static const s32 BUTTON_START = -83;
 static const s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
 static const s32 HALF_SPACE = 12;
 
-static void draw_help_layout(void) {
+static void draw_help_layout() {
     // draw seperator
     draw_rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
                SCREEN_HEIGHT - MARGIN - 30, COLOR_GRAY);
@@ -639,7 +639,7 @@ static void draw_menu_widgets(MenuWidget * menu) {
     }
 }
 
-static void draw_breadcrumbs(void) {
+static void draw_breadcrumbs() {
     const char* ARROW_STR = " \x1c ";
 
     u32 x = MARGIN + PAD;
@@ -659,7 +659,7 @@ static void draw_breadcrumbs(void) {
     draw_rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, COLOR_GRAY);
 }
 
-void menu_impl_disp(void) {
+void menu_impl_disp() {
     if (!s_visible) return;
     MenuWidget * menu = s_menu_stack[s_menu_stack_ptr];
     draw_rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
@@ -675,4 +675,4 @@ void menu_impl_disp(void) {
     }
 }
 
-bool menu_impl_is_visible(void) { return s_visible; }
+bool menu_impl_is_visible() { return s_visible; }

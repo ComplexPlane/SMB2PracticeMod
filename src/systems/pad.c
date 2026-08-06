@@ -45,15 +45,15 @@ bool pad_analog_released(mkb_PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
-static bool any_input_down(void) {
+static bool any_input_down() {
     return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
 }
 
-static bool any_input_pressed(void) {
+static bool any_input_pressed() {
     return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
 }
 
-static void update_konami(void) {
+static void update_konami() {
     if (s_konami_progress >= 11) {
         s_konami_progress = 0;
     }

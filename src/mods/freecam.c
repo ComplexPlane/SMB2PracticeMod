@@ -19,7 +19,7 @@ static u32 s_flags;
 static Vec s_eye = {0};
 static S16Vec s_rot = {0};
 
-static void event_camera_tick_hook(void);
+static void event_camera_tick_hook();
 TRAMP(s_event_camera_tick_tramp, mkb_event_camera_tick, event_camera_tick_hook);
 
 bool freecam_enabled() {
@@ -100,7 +100,7 @@ static void call_camera_func_hook(mkb_Camera* camera, mkb_Ball* ball) {
     }
 }
 
-static void event_camera_tick_hook(void) {
+static void event_camera_tick_hook() {
     if (freecam_enabled()) {
         for (u32 i = 0; i < LEN(mkb_world_infos); i++) {
             mkb_world_infos[i].stage_tilt_x = 0;

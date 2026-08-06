@@ -49,15 +49,15 @@ static Cell m_board[BOARD_WIDTH][BOARD_HEIGHT];
 static Tetrad m_tetrad_queue[TETRAD_QUEUE_LEN], m_dropping_tetrad;
 static s32 m_dropping_tetrad_rot, m_dropping_tetrad_x, m_dropping_tetrad_y;
 
-static void try_transition_to_dropping(void), transition_from_dropping(void);
-static void transition_dropping_to_rowclear(void);
-static void handle_dropping_state(void), handle_rowclear_state(void);
-static void handle_game_over_state(void), handle_new_game_state(void);
-static Tetrad gen_random_tetrad(void), pop_tetrad_queue(void);
+static void try_transition_to_dropping(), transition_from_dropping();
+static void transition_dropping_to_rowclear();
+static void handle_dropping_state(), handle_rowclear_state();
+static void handle_game_over_state(), handle_new_game_state();
+static Tetrad gen_random_tetrad(), pop_tetrad_queue();
 static bool tetrad_intersects_grid(Tetrad, s32, s32, s32), is_row_full(s32);
 static s32 find_lowest_possible_tetrad_y(Tetrad, s32, s32, s32);
-static void draw(void), draw_ascii_window(void), draw_grid(void), draw_info_text(void);
-static void draw_tetrad_queue(void), draw_dropping_tetrad(void), draw_game_over_text(void);
+static void draw(), draw_ascii_window(), draw_grid(), draw_info_text();
+static void draw_tetrad_queue(), draw_dropping_tetrad(), draw_game_over_text();
 static void draw_grid_cell(s32, s32, mkb_GXColor);
 
 static const mkb_GXColor CELL_COLORS[NUM_CELL_TYPES] = {
@@ -614,7 +614,7 @@ bool is_row_full(s32 y) {
     return true;
 }
 
-void tetris_init(void) {
+void tetris_init() {
     m_hidden = true;
     m_high_score = 0;
     new_game();
@@ -622,5 +622,5 @@ void tetris_init(void) {
     HOOK_TRAMP(s_sprite_go_disp_tramp);
 }
 
-void tetris_disp(void) { disp(); }
-void tetris_tick(void) {}
+void tetris_disp() { disp(); }
+void tetris_tick() {}

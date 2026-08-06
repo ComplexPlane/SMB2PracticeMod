@@ -160,4 +160,4 @@ struct Widget {
 
 extern MenuWidget menu_root;
 
-void menu_init(void);
+void menu_init();

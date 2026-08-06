@@ -14,9 +14,9 @@ enum CameraType {
 
 static CameraType s_prev_value;
 
-void camera_init(void) {}
+void camera_init() {}
 
-void camera_tick(void) {
+void camera_tick() {
     CameraType value = (CameraType)pref_get(Pref_Camera);
 
     switch (value) {

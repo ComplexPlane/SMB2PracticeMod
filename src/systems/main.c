@@ -14,7 +14,6 @@
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/libsavest.h"
-#include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
 
@@ -44,8 +43,7 @@
 #include "mods/timer.h"
 #include "mods/unlock.h"
 
-
-static void draw_debug_text_hook(void);
+static void draw_debug_text_hook();
 static void process_inputs();
 static u32 pad_read(mkb_PADStatus *statuses);
 static bool os_link(mkb_OSModuleHeader *rel_buffer, void *bss_buffer);
@@ -60,8 +58,7 @@ TRAMP(s_ignore_sound_request_tramp, mkb_call_SoundReqID_arg_0, ignore_sound_requ
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
-    patch_write_branch_bl((void *)(0x80270704),
-                          (void *)(asm_start_main_loop_assembly));
+    patch_write_branch_bl((void *)(0x80270704), (void *)(asm_start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -76,8 +73,7 @@ static void perform_assembly_patches() {
 
     // Titlescreen patches
     mkb_strcpy((char *)(0x8047f4ec), "SMB2 PRACTICE MOD");
-    patch_write_branch((void *)(0x8032ad0c),
-                       (void *)(asm_custom_titlescreen_text_color));
+    patch_write_branch((void *)(0x8032ad0c), (void *)(asm_custom_titlescreen_text_color));
 }
 
 static void process_inputs() {
@@ -111,7 +107,7 @@ static void process_inputs() {
     scratch_tick();
 }
 
-static void draw_debug_text_hook(void) {
+static void draw_debug_text_hook() {
     // Drawing hook for UI elements.
     // Gets run at the start of smb2's function which draws debug text windows,
     // which is called at the end of smb2's function which draws the UI in general.
@@ -122,8 +118,8 @@ static void draw_debug_text_hook(void) {
     // elements. The original screenshot call is nopped.
     if (mkb_g_pause_status == 1) {
         mkb_take_pausemenu_screenshot(&mkb_fullscreen_texture_buf, 0, 0,
-                                       mkb_current_render_mode->fbWidth,
-                                       mkb_current_render_mode->efbHeight, mkb_GX_TF_RGB5A3);
+                                      mkb_current_render_mode->fbWidth,
+                                      mkb_current_render_mode->efbHeight, mkb_GX_TF_RGB5A3);
     }
 
     draw_predraw();
@@ -165,7 +161,8 @@ static bool os_link(mkb_OSModuleHeader *rel_buffer, void *bss_buffer) {
     return ret;
 }
 
-static void ignore_sound_request(u32 g_sfx_idx) { (void)g_sfx_idx; }
+static void ignore_sound_request(u32 g_sfx_idx) {
+}
 
 void main_init() {
     version_init();
@@ -209,7 +206,7 @@ void main_init() {
  * This runs at the very start of the main game loop. Most per-frame code runs after
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
-void main_tick(void) {
+void main_tick() {
     if (pref_get(Pref_DebugMode)) {
         mkb_dip_switches |= mkb_DIP_DEBUG | mkb_DIP_DISP;
     } else {

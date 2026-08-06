@@ -1,7 +1,6 @@
 #include "memstore.h"
 
 void store_compute_size(Store *store, void *ptr, u32 size) {
-    (void)ptr;
     store->size += size;
 }
 
