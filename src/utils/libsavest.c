@@ -17,13 +17,6 @@ enum SS_Flag {
     SS_Flag_ReloadState = 1 << 1,
 };
 
-typedef struct Store Store;
-struct Store {
-    void *buf;
-    u32 pos;
-    u32 size;
-};
-
 typedef struct SaveState SaveState;
 struct SaveState {
     SS_Flag flags;
@@ -33,22 +26,6 @@ struct SaveState {
     u8 pause_menu_sprite_status;
     mkb_Sprite pause_menu_sprite;
 };
-
-void store_compute_size(Store *store, void *ptr, u32 size) {
-    store->size += size;
-}
-
-void store_save(Store *store, void *ptr, u32 size) {
-    mkb_memcpy((u8 *)store->buf + store->pos, ptr, size);
-    store->pos += size;
-}
-
-void store_load(Store *store, void *ptr, u32 size) {
-    mkb_memcpy(ptr, (u8 *)store->buf + store->pos, size);
-    store->pos += size;
-}
-
-typedef void (*StoreFunc)(Store *store, void *ptr, u32 size);
 
 static bool s_state_loaded_this_frame = false;
 static SaveState s_states[SS_SLOT_COUNT];
@@ -399,5 +376,5 @@ void savest_tick() {
 }
 
 bool savest_is_enabled() {
-    return pref_get(pref_BoolPref_Savestates) && !pref_get(pref_BoolPref_Freecam);
+    return pref_get(BoolPref_Savestates) && !pref_get(BoolPref_Freecam);
 }
