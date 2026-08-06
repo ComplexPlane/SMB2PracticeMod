@@ -46,8 +46,8 @@ namespace main {
 
 static void draw_debug_text();
 static void process_inputs();
-static u32 pad_read(mkb::PADStatus* statuses);
-static bool os_link(mkb::OSModuleHeader* rel_buffer, void* bss_buffer);
+static u32 pad_read(mkb::PADStatus *statuses);
+static bool os_link(mkb::OSModuleHeader *rel_buffer, void *bss_buffer);
 
 TRAMP(s_draw_debug_text_tramp, mkb::draw_debugtext, draw_debug_text);
 TRAMP(s_process_inputs_tramp, mkb::process_inputs, process_inputs);
@@ -57,24 +57,24 @@ TRAMP(s_os_link_tramp, mkb::OSLink, os_link);
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
-                           reinterpret_cast<void*>(start_main_loop_assembly));
+    patch_write_branch_bl(reinterpret_cast<void *>(0x80270704),
+                          reinterpret_cast<void *>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
     // Only needs to be applied to the US version
-    patch::write_nop(reinterpret_cast<void*>(0x80033E9C));
+    patch_write_nop(reinterpret_cast<void *>(0x80033E9C));
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
-    patch::write_nop(reinterpret_cast<void*>(0x80299f54));
+    patch_write_nop(reinterpret_cast<void *>(0x80299f54));
     // Nop this pausemenu screenshot call so we can call it when we want to
-    patch::write_nop(reinterpret_cast<void*>(0x80270aac));
+    patch_write_nop(reinterpret_cast<void *>(0x80270aac));
 
     // Titlescreen patches
-    mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
-    patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
-                        reinterpret_cast<void*>(main::custom_titlescreen_text_color));
+    mkb_strcpy(reinterpret_cast<char *>(0x8047f4ec), "SMB2 PRACTICE MOD");
+    patch_write_branch(reinterpret_cast<void *>(0x8032ad0c),
+                       reinterpret_cast<void *>(main_custom_titlescreen_text_color));
 }
 
 static void process_inputs() {
@@ -138,7 +138,7 @@ static void draw_debug_text() {
     scratch::disp();
 }
 
-static u32 pad_read(mkb::PADStatus* statuses) {
+static u32 pad_read(mkb::PADStatus *statuses) {
     u32 ret = s_pad_read_tramp.chain(statuses);
 
     // Dpad can modify effective stick input, shown by input display
@@ -148,7 +148,7 @@ static u32 pad_read(mkb::PADStatus* statuses) {
     return ret;
 }
 
-static bool os_link(mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+static bool os_link(mkb::OSModuleHeader *rel_buffer, void *bss_buffer) {
     bool ret = s_os_link_tramp.chain(rel_buffer, bss_buffer);
 
     // Main game init functions
@@ -194,6 +194,8 @@ void init() {
 
     HOOK_TRAMP(s_pad_read_tramp);
     HOOK_TRAMP(s_process_inputs_tramp);
+    patch_hook_function(s_call_SoundReqID_arg_0_tramp, mkb_call_SoundReqID_arg_0,
+                        [](u32 g_sfx_idx) {});
     HOOK_TRAMP(s_draw_debug_text_tramp);
     // Hook for mkb::load_additional_rel
     HOOK_TRAMP(s_os_link_tramp);

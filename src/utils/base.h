@@ -144,7 +144,7 @@ constexpr u32 mkb_CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 // Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore
 // assertions Prefer to use MOD_ASSERT and friends instead
 
-#define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-#define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
+#define ASSERT(exp) (void)((exp) || (mkb_OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
+#define ASSERTMSG(exp, msg) (void)((exp) || (mkb_OSPanic(__FILE__, __LINE__, (msg)), 0))
 
 #endif
