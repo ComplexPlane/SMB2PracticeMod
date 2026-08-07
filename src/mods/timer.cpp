@@ -7,6 +7,8 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
+namespace timer {
+
 static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
@@ -112,7 +114,7 @@ static void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_it
 }
 
 static bool did_ball_enter_goal(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-                                byte* out_goal_flags) {
+                                mkb::byte* out_goal_flags) {
     bool result = s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
     if (result) {
         // Determine framesave percentage.
@@ -121,13 +123,13 @@ static bool did_ball_enter_goal(mkb::Ball* ball, int* out_stage_goal_idx, int* o
     return result;
 }
 
-void timer_init() {
+void init() {
     s_retrace_count = mkb::VIGetRetraceCount();
     HOOK_TRAMP(s_goal_tramp);
 }
 
 // Need to do logic in disp() so that we can know the game state _after_ the frame has processed
-void timer_disp() {
+void disp() {
     if (mkb::main_mode != mkb::MD_GAME) return;
 
     switch (mkb::sub_mode) {
@@ -155,7 +157,7 @@ void timer_disp() {
     if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_rta_timer = mkb::mode_info.stage_time_limit;
         s_pause_timer = 0;
-    } else if ((mkb::mode_info.ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0) {
+    } else if ((mkb::mode_info.g_ball_mode & mkb::BALLMODE_FREEZE_TIMER) == 0) {
         s_rta_timer -= s_retrace_count - s_prev_retrace_count;
         //        if (s_rtaTimer < 0) s_rtaTimer = 0;
         if (mkb::g_some_other_flags & mkb::OF_GAME_PAUSED) {
@@ -165,12 +167,13 @@ void timer_disp() {
 
     u32 row = 1;
 
-    if (pref_get(Pref_TimerShowRTA) && !freecam_should_hide_hud()) {
-        timerdisp_draw_timer(380, row++, 44, "RTA:", s_rta_timer, 0, false, true, COLOR_WHITE);
+    if (pref::get(pref::BoolPref::TimerShowRTA) && !freecam::should_hide_hud()) {
+        timerdisp::draw_timer(380, row++, 44, "RTA:", s_rta_timer, 0, false, true, draw::WHITE);
     }
 
-    if (pref_get(Pref_TimerShowPause) && !freecam_should_hide_hud()) {
-        timerdisp_draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true, COLOR_WHITE);
+    if (pref::get(pref::BoolPref::TimerShowPause) && !freecam::should_hide_hud()) {
+        timerdisp::draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true,
+                              draw::WHITE);
     }
 
     switch (mkb::sub_mode) {
@@ -183,32 +186,34 @@ void timer_disp() {
             return;
     }
 
-    if (pref_get(Pref_TimerShowSubtick) && !freecam_should_hide_hud()) {
-        timerdisp_draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                     COLOR_WHITE, true, s_framesave, false);
+    if (pref::get(pref::BoolPref::TimerShowSubtick) && !freecam::should_hide_hud()) {
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
+                                      draw::WHITE, true, s_framesave, false);
     }
 
-    if (pref_get(Pref_TimerShowUnrounded) && !freecam_should_hide_hud()) {
-        timerdisp_draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
-                                     COLOR_WHITE, true, 0, false);
-        timerdisp_draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:", row++,
-                                     COLOR_WHITE, true, 0, false);
+    if (pref::get(pref::BoolPref::TimerShowUnrounded) && !freecam::should_hide_hud()) {
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
+                                      draw::WHITE, true, 0, false);
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:",
+                                      row++, draw::WHITE, true, 0, false);
     }
 
-    if (pref_get(Pref_TimerShowFramesave) && !freecam_should_hide_hud()) {
-        timerdisp_draw_percentage(s_framesave, "FSV:", row++, COLOR_WHITE);
+    if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {
+        timerdisp::draw_percentage(s_framesave, "FSV:", row++, draw::WHITE);
     }
 }
 
-void timer_save_state(Store* store, StoreFunc func) {
-    func(store, &s_retrace_count, sizeof(s_retrace_count));
-    func(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
-    func(store, &s_rta_timer, sizeof(s_rta_timer));
-    func(store, &s_pause_timer, sizeof(s_pause_timer));
-    if (func == store_load) {
+void save_state(store::Store* state, store::StoreFunc func) {
+    func(state, &s_retrace_count, sizeof(s_retrace_count));
+    func(state, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
+    func(state, &s_rta_timer, sizeof(s_rta_timer));
+    func(state, &s_pause_timer, sizeof(s_pause_timer));
+    if (func == store::load) {
         // This might not be completely consistently correct
         u32 count = mkb::VIGetRetraceCount();
         s_prev_retrace_count = count - 1;
         s_retrace_count = count - 1;
     }
 }
+
+}  // namespace timer

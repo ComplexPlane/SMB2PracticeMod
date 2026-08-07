@@ -7,12 +7,11 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
 #include "utils/macro_utils.h"
+#include "utils/savest.h"
 
 namespace savest_ui {
 
-static libsavest::SaveState s_states[8];
 static s32 s_active_state_slot;
 
 static bool s_created_state_last_frame;
@@ -23,12 +22,10 @@ static bool is_either_trigger_held() {
 }
 
 void tick() {
-    if (!libsavest::savestates_enabled()) return;
+    if (!savest::is_enabled()) return;
 
     // Must tick savestates every frame
-    for (u32 i = 0; i < LEN(s_states); i++) {
-        s_states[i].tick();
-    }
+    savest::tick();
 
     if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;
@@ -45,46 +42,45 @@ void tick() {
     }
 
     if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
-        auto& state = s_states[s_active_state_slot];
-
-        if (!state.isEmpty() && pref::get(pref::BoolPref::SavestateDisableOverwrite)) {
+        if (!savest::is_empty(s_active_state_slot) &&
+            pref::get(pref::BoolPref::SavestateDisableOverwrite)) {
             draw::notify(draw::RED, "Slot %d Full", s_active_state_slot + 1);
             return;
         }
 
-        using SaveResult = libsavest::SaveState::SaveResult;
-        switch (state.save()) {
+        using SaveResult = savest::SaveResult;
+        switch (savest::save(s_active_state_slot)) {
             case SaveResult::Ok: {
                 break;
             }
-            case SaveResult::ErrorMainMode: {
+            case SaveResult::ErrMainMode: {
                 UNREACHABLE();
             }
-            case SaveResult::ErrorPostFallout: {
+            case SaveResult::ErrPostFallout: {
                 draw::notify(draw::RED, "Cannot Create Savestate After Fallout");
                 return;
             }
-            case SaveResult::ErrorPostGoal: {
+            case SaveResult::ErrPostGoal: {
                 draw::notify(draw::RED, "Cannot Create Savestate After Goal");
                 return;
             }
-            case SaveResult::ErrorDuringRetry: {
+            case SaveResult::ErrDuringRetry: {
                 draw::notify(draw::RED, "Cannot Create Savestate During Retry");
                 return;
             }
-            case SaveResult::ErrorPostTimeout: {
+            case SaveResult::ErrPostTimeout: {
                 draw::notify(draw::RED, "Cannot Create Savestate After Timeout");
                 return;
             }
-            case SaveResult::ErrorSubMode: {
+            case SaveResult::ErrSubMode: {
                 draw::notify(draw::RED, "Cannot Create Savestate Here");
                 return;
             }
-            case SaveResult::ErrorViewStage: {
+            case SaveResult::ErrViewStage: {
                 draw::notify(draw::RED, "Cannot Create Savestate in View Stage");
                 return;
             }
-            case SaveResult::ErrorInsufficientMemory: {
+            case SaveResult::ErrInsufficientMemory: {
                 draw::notify(draw::RED, "Cannot Create Savestate: Not Enough Memory");
                 return;
             }
@@ -101,47 +97,45 @@ void tick() {
         s_created_state_last_frame = true;
 
     } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearBind))) {
-        auto& state = s_states[s_active_state_slot];
-        state.clear();
+        savest::clear(s_active_state_slot);
         draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {
-        auto& state = s_states[s_active_state_slot];
-        using LoadResult = libsavest::SaveState::LoadResult;
-        switch (state.load()) {
+        using LoadResult = savest::LoadResult;
+        switch (savest::load(s_active_state_slot)) {
             case LoadResult::Ok: {
                 break;
             }
-            case LoadResult::ErrorMainMode: {
+            case LoadResult::ErrMainMode: {
                 UNREACHABLE();
             }
-            case LoadResult::ErrorSubMode: {
+            case LoadResult::ErrSubMode: {
                 draw::notify(draw::RED, "Cannot Load Savestate Here");
                 return;
             }
-            case LoadResult::ErrorTimeOver: {
+            case LoadResult::ErrTimeOver: {
                 draw::notify(draw::RED, "Cannot Load Savestate After Time Over");
                 return;
             }
-            case LoadResult::ErrorEmpty: {
+            case LoadResult::ErrEmpty: {
                 draw::notify(draw::RED, "Slot %d Empty", s_active_state_slot + 1);
                 return;
             }
-            case LoadResult::ErrorWrongStage: {
+            case LoadResult::ErrWrongStage: {
                 draw::notify(draw::RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
                 return;
             }
-            case LoadResult::ErrorWrongMonkey: {
+            case LoadResult::ErrWrongMonkey: {
                 // Thank you StevenCW for finding this marvelous bug
                 draw::notify(draw::RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
                 return;
             }
-            case LoadResult::ErrorViewStage: {
+            case LoadResult::ErrViewStage: {
                 draw::notify(draw::RED, "Cannot Load Savestate in View Stage");
                 return;
             }
-            case LoadResult::ErrorPausedAndNonGameplaySubmode: {
+            case LoadResult::ErrPausedAndNonGameplaySubmode: {
                 draw::notify(draw::RED, "Cannot Load Savestate, Please Unpause");
                 return;
             }

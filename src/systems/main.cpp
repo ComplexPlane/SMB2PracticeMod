@@ -10,10 +10,10 @@
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
+#include "utils/savest.h"
 
 #include "mods/ballcolor.h"
 #include "mods/banans.h"
@@ -167,7 +167,7 @@ void init() {
     Tetris::get_instance().init();
     physics::init();
     iw::init();
-    libsavest::init();
+    savest::init();
     timer::init();
     inputdisp::init();
     cmseg::init();

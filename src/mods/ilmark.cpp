@@ -7,7 +7,7 @@
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
+#include "utils/savest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
@@ -65,7 +65,7 @@ void tick() {
             }
         }
         // Loading savestates is disallowed
-        if (libsavest::state_loaded_this_frame()) s_valid_run = false;
+        if (savest::was_state_loaded_this_frame()) s_valid_run = false;
 
         // Using dpad controls is disallowed
         bool dpad_down =

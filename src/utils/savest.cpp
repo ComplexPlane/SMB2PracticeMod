@@ -1,6 +1,6 @@
 // Savestate functionality decoupled from UI/controls
 
-#include "libsavest.h"
+#include "savest.h"
 
 #include "mkb/mkb.h"
 #include "mods/timer.h"
@@ -20,7 +20,7 @@ enum Flag {
 };
 
 struct SaveState {
-    Flag flags;
+    u32 flags;
     s32 stage_id;
     u8 character;
     store::Store store;
@@ -49,7 +49,7 @@ TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, [](u32 id) {
     }
 });
 
-void savest_init() {
+void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
     HOOK_TRAMP(s_set_minimap_mode_tramp);
@@ -58,7 +58,7 @@ void savest_init() {
     HOOK_TRAMP(s_soundreq_tramp);
 }
 
-bool savest_was_state_loaded_this_frame() { return s_state_loaded_this_frame; }
+bool was_state_loaded_this_frame() { return s_state_loaded_this_frame; }
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
@@ -242,7 +242,7 @@ static bool handle_load_state_from_nonplay_submode(SaveState* s) {
     return true;
 }
 
-SaveResult savest_save(u32 slot) {
+SaveResult save(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState* state = &s_states[slot];
@@ -291,7 +291,7 @@ SaveResult savest_save(u32 slot) {
     return SaveResult::Ok;
 }
 
-LoadResult savest_load(u32 slot) {
+LoadResult load(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState* state = &s_states[slot];
@@ -348,7 +348,7 @@ LoadResult savest_load(u32 slot) {
     return LoadResult::Ok;
 }
 
-void savest_clear(u32 slot) {
+void clear(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState* state = &s_states[slot];
@@ -358,16 +358,16 @@ void savest_clear(u32 slot) {
     *state = (SaveState){};
 }
 
-bool savest_is_empty(u32 slot) {
+bool is_empty(u32 slot) {
     ASSERT(slot < LEN(s_states));
     return !(s_states[slot].flags & Flag_IsPresent);
 }
 
-void savest_tick() {
+void tick() {
     s_state_loaded_this_frame = false;
     for (u32 i = 0; i < LEN(s_states); i++) {
         if (s_states[i].flags & Flag_ReloadState) {
-            savest_load(i);  // Ignore result, spooky!
+            load(i);  // Ignore result, spooky!
         }
     }
 }

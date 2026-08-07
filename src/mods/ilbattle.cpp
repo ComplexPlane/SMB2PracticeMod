@@ -4,7 +4,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
+#include "utils/savest.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
@@ -274,7 +274,7 @@ static void track_invalid_pauses() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
         s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
     } else if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) ||
-               libsavest::state_loaded_this_frame()) {
+               savest::was_state_loaded_this_frame()) {
         s_valid_run = false;
     }
 }
