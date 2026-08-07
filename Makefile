@@ -38,7 +38,7 @@ elf2rel: $(ELF2REL)
 $(ELF2REL): $(ELF2REL_DIR)/elf2rel.cpp $(ELF2REL_HEADERS)
 	@echo "Compiling elf2rel..."
 	@mkdir -p $(ELF2REL_BUILD)
-	$(HOST_CXX) -std=c++20 -I$(ELF2REL_DIR) $< -o $@
+	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_DIR) $< -o $@
 
 clean_elf2rel:
 	@echo "clean ... elf2rel"
