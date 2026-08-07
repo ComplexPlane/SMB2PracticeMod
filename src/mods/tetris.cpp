@@ -41,7 +41,7 @@ static constexpr s32 ROW_FLASH_PERIOD = 4;
 static constexpr s32 INITIAL_DROP_PERIOD = 60;
 static constexpr s32 MIN_DROP_PERIOD = 20;
 
-static const mkb::GXColor CELL_COLORS[NUM_CELL_TYPES] = {
+static const GXColor CELL_COLORS[NUM_CELL_TYPES] = {
     {0x02, 0xf0, 0xed, CELL_ALPHA},  // I
     {0x00, 0x02, 0xec, CELL_ALPHA},  // J
     {0xef, 0xa0, 0x00, CELL_ALPHA},  // L
@@ -376,7 +376,7 @@ void Tetris::draw_grid() {
         for (s32 x = 0; x < BOARD_WIDTH; x++) {
             Cell cell = m_board[x][y];
             if (cell != Cell::EMPTY) {
-                mkb::GXColor color = {};
+                GXColor color = {};
 
                 if (m_state == State::ROWCLEAR && row_roll) {
                     if (m_state_timer % ROW_FLASH_PERIOD < (ROW_FLASH_PERIOD / 2)) {
@@ -418,7 +418,7 @@ void Tetris::draw_info_text() {
 
 void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation) {
     u8 tet = static_cast<u8>(tetrad);
-    mkb::GXColor color = CELL_COLORS[tet];
+    GXColor color = CELL_COLORS[tet];
 
     // Note that the effectice "cell y" when indexing the tetrad rotation
     // is in the wrong direction, but is flipped again when
@@ -511,8 +511,8 @@ void Tetris::draw_tetrad_queue() {
 void Tetris::draw_dropping_tetrad() {
     u8 tet = static_cast<u8>(m_dropping_tetrad);
     u16 rot = TETRAD_ROTATIONS[tet][m_dropping_tetrad_rot];
-    mkb::GXColor color = CELL_COLORS[tet];
-    mkb::GXColor preview_color = {color.r, color.g, color.b, 0x40};
+    GXColor color = CELL_COLORS[tet];
+    GXColor preview_color = {color.r, color.g, color.b, 0x40};
 
     // Draw drop preview
     // TODO deduplicate?
@@ -541,7 +541,7 @@ void Tetris::draw_dropping_tetrad() {
     }
 }
 
-void Tetris::draw_grid_cell(s32 cellx, s32 celly, mkb::GXColor color) {
+void Tetris::draw_grid_cell(s32 cellx, s32 celly, GXColor color) {
     constexpr s32 DRAWX_START = 143;
     constexpr s32 DRAWY_START = 25;
 

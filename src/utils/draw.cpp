@@ -13,7 +13,7 @@ namespace draw {
 
 static char s_notify_msg_buf[80];
 static s32 s_notify_frame_counter;
-static mkb::GXColor s_notify_color;
+static GXColor s_notify_color;
 
 void init() {
     patch::write_branch(relutil::relocate_addr(0x802aeca4),
@@ -25,12 +25,12 @@ void predraw() {
 
     // Seems necessary to avoid discoloration / lighting interference when using
     // debugtext-drawing-related funcs
-    mkb::GXColor tev1_color = {0, 0, 0, 0};
+    GXColor tev1_color = {0, 0, 0, 0};
     mkb::GXSetTevColor(mkb::GX_TEVREG1, tev1_color);
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-void rect(float x1, float y1, float x2, float y2, mkb::GXColor color) {
+void rect(float x1, float y1, float x2, float y2, GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb::GXTexObj* texobj =
         reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
@@ -60,7 +60,7 @@ void debug_text_palette() {
     }
 }
 
-static void debug_text_buf(s32 x, s32 y, mkb::GXColor color, const char* buf) {
+static void debug_text_buf(s32 x, s32 y, GXColor color, const char* buf) {
     main::debug_text_color = color;
     for (s32 i = 0; buf[i] != '\0'; i++) {
         // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
@@ -71,7 +71,7 @@ static void debug_text_buf(s32 x, s32 y, mkb::GXColor color, const char* buf) {
     main::debug_text_color = {};
 }
 
-static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char* format, va_list args) {
+static void debug_text_v(s32 x, s32 y, GXColor color, const char* format, va_list args) {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
@@ -79,7 +79,7 @@ static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char* format, v
     debug_text_buf(x, y, color, buf);
 }
 
-void debug_text(s32 x, s32 y, mkb::GXColor color, const char* format, ...) {
+void debug_text(s32 x, s32 y, GXColor color, const char* format, ...) {
     va_list args;
     va_start(args, format);
     debug_text_v(x, y, color, format, args);
@@ -130,10 +130,10 @@ void heart() {
 
 static constexpr u8 LOW_COLOR = 0x41;
 static constexpr u8 HIGH_COLOR = 0xf5;
-mkb::GXColor num_to_rainbow(int num) {
+GXColor num_to_rainbow(int num) {
     int state = num / 180;
     int loc = num % 180;
-    mkb::GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
+    GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
     switch (state) {
         case 0: {  // R-G^B
             color.r = HIGH_COLOR;
@@ -173,7 +173,7 @@ void disp() {
     s32 notify_len = mkb::strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
     s32 draw_y = 426;
-    mkb::GXColor color = s_notify_color;
+    GXColor color = s_notify_color;
 
     if (s_notify_frame_counter > 40) {
         color.a = 0xff - (s_notify_frame_counter - 40) * 0xff / 20;
@@ -184,7 +184,7 @@ void disp() {
     if (s_notify_frame_counter > 60) s_notify_frame_counter = 60;
 }
 
-void notify(mkb::GXColor color, const char* format, ...) {
+void notify(GXColor color, const char* format, ...) {
     va_list args;
     va_start(args, format);
     mkb::vsprintf(s_notify_msg_buf, const_cast<char*>(format), args);

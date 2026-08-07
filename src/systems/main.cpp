@@ -61,8 +61,7 @@ static void perform_assembly_patches() {
     patch::write_nop(relutil::relocate_addr(0x80270aac));
 
     // Titlescreen patches
-    mkb::strcpy(reinterpret_cast<char*>(relutil::relocate_addr(0x8047f4ec)),
-                "SMB2 PRACTICE MOD");
+    mkb::strcpy(reinterpret_cast<char*>(relutil::relocate_addr(0x8047f4ec)), "SMB2 PRACTICE MOD");
     patch::write_branch(relutil::relocate_addr(0x8032ad0c),
                         reinterpret_cast<void*>(main::custom_titlescreen_text_color));
 }

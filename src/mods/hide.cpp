@@ -37,12 +37,12 @@ TRAMP(s_draw_bg_tramp, mkb::g_draw_bg, []() {
 
 TRAMP(s_clear_tramp, mkb::g_set_clear_color, []() {
     if (should_hide_bg()) {
-        mkb::GXColor backup_color = mkb::g_some_theme_color;
+        GXColor backup_color = mkb::g_some_theme_color;
         u8 backup_override_r = mkb::g_override_clear_r;
         u8 backup_override_g = mkb::g_override_clear_g;
         u8 backup_override_b = mkb::g_override_clear_b;
 
-        mkb::GXColor black = {};
+        GXColor black = {};
         black.a = 0xff;
         mkb::g_some_theme_color = black;
         mkb::g_override_clear_r = 0;

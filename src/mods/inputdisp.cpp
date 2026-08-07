@@ -53,7 +53,7 @@ static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
 }
 
 static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
-                      mkb::GXColor color) {
+                      GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb::GXTexObj* texobj =
         reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
@@ -92,7 +92,7 @@ static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
     }
 }
 
-static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb::GXColor color) {
+static void draw_circle(u32 pts, Vec2d center, f32 radius, GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb::GXTexObj* texobj =
         reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
@@ -183,7 +183,7 @@ static bool get_notch_pos(const MergedStickInputs& stick_inputs, Vec2d* out_pos)
     return notch_found;
 }
 
-static const mkb::GXColor s_color_map[] = {
+static const GXColor s_color_map[] = {
     draw::PURPLE,              // Purple
     draw::RED,                 // Red
     draw::ORANGE,              // Orange
@@ -194,7 +194,7 @@ static const mkb::GXColor s_color_map[] = {
     draw::BLACK,               // Black
 };
 
-static mkb::GXColor get_color() {
+static GXColor get_color() {
     InputDispColorType color_pref = InputDispColorType(pref::get(pref::U8Pref::InputDispColorType));
     switch (color_pref) {
         case InputDispColorType::Default: {
@@ -212,7 +212,7 @@ static mkb::GXColor get_color() {
             return draw::num_to_rainbow(s_rainbow);
         }
         case InputDispColorType::MatchBall: {
-            mkb::GXColor current = ballcolor::get_current_color();
+            GXColor current = ballcolor::get_current_color();
             current.a = 0xff;
             return current;
         }
@@ -222,7 +222,7 @@ static mkb::GXColor get_color() {
 }
 
 static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {
-    mkb::GXColor chosen_color = get_color();
+    GXColor chosen_color = get_color();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});

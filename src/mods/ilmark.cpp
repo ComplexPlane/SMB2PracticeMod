@@ -145,7 +145,7 @@ void disp() {
     mkb::textdraw_set_pos(x, y);
     mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
     mkb::textdraw_set_scale(0.8, 0.8);
-    mkb::GXColor color = s_valid_run ? draw::LIGHT_GREEN : draw::LIGHT_RED;
+    GXColor color = s_valid_run ? draw::LIGHT_GREEN : draw::LIGHT_RED;
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 

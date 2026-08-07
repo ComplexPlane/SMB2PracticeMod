@@ -51,6 +51,7 @@ constexpr u32 CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 // It's convenient to always use these types "as our own", without having to namespace-address them
 using mkb::f32;
 using mkb::f64;
+using mkb::GXColor;
 using mkb::Quat;
 using mkb::s16;
 using mkb::S16Vec;

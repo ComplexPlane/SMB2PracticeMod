@@ -26,10 +26,10 @@ enum class ClothingType {
 };
 
 static u32 s_rainbow = 0;  // tick for rainbow animation
-static mkb::GXColor s_default_color;
-static mkb::GXColor s_current_color;
+static GXColor s_default_color;
+static GXColor s_current_color;
 
-mkb::GXColor get_current_color() { return s_current_color; }
+GXColor get_current_color() { return s_current_color; }
 
 static u8 convert_to_ball_color_id(u8 color_choice) {
     if (color_choice == 0) {
@@ -47,7 +47,7 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
 
 void init() {
     s_default_color =
-        *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34));  // default color
+        *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34));  // default color
 }
 
 void tick() {
@@ -57,7 +57,7 @@ void tick() {
     if (mkb::main_mode != mkb::MD_GAME || (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT ||
                                            mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN ||
                                            mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN)) {
-        *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34)) = s_default_color;
+        *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) = s_default_color;
         return;
     }
 
@@ -66,12 +66,12 @@ void tick() {
 
     switch (ball_type) {
         case BallColorType::Preset: {
-            *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34)) =
+            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
                 s_default_color;  // reset default color
             u8 color_id = convert_to_ball_color_id(pref::get(pref::U8Pref::BallColor));
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = color_id;
             s_current_color =
-                reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a28))[color_id];
+                reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a28))[color_id];
             break;
         }
         case BallColorType::RGB: {
@@ -80,7 +80,7 @@ void tick() {
             u8 green = pref::get(pref::U8Pref::BallGreen);
             u8 blue = pref::get(pref::U8Pref::BallBlue);
             s_current_color = {red, green, blue, 0};
-            *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34)) =
+            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
                 s_current_color;
             break;
         }
@@ -92,7 +92,7 @@ void tick() {
                 s_rainbow = (s_rainbow + 3) % 1080;
             }
             s_current_color = draw::num_to_rainbow(s_rainbow);
-            *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34)) =
+            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
                 s_current_color;
             break;
         }
@@ -106,7 +106,7 @@ void tick() {
                 u32 blue = CLAMP(((mkb::rand() % 256) + bonus_brightness), 0, 0xff);
                 s_current_color = {static_cast<u8>(red), static_cast<u8>(green),
                                    static_cast<u8>(blue), 0};
-                *reinterpret_cast<mkb::GXColor*>(relutil::relocate_addr(0x80472a34)) =
+                *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
                     s_current_color;
             }
             break;

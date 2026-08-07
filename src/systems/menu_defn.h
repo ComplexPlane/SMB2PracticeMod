@@ -30,7 +30,7 @@ struct TextWidget {
 
 struct ColoredTextWidget {
     const char* label;
-    mkb::GXColor color;
+    GXColor color;
 };
 
 // Just a different color TextWidget

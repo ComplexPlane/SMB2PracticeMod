@@ -1,6 +1,7 @@
 #include "menu_impl.h"
 
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 #include "systems/binds.h"
 #include "systems/log.h"
 #include "systems/menu_defn.h"
@@ -28,8 +29,8 @@ static constexpr s32 LINE_HEIGHT = 20;
 
 static constexpr s32 L_R_BIND = 64;  // bind id for an L+R bind
 
-static const mkb::GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
-static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
+static const GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
+static const GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
 
 static bool s_visible;
 static u32 s_cursor_frame = 0;
@@ -312,13 +313,13 @@ void tick() {
     handle_widget_bind();
 }
 
-static mkb::GXColor lerp_colors(mkb::GXColor color1, mkb::GXColor color2, f32 t) {
+static GXColor lerp_colors(GXColor color1, GXColor color2, f32 t) {
     f32 r = (1.f - t) * color1.r + t * color2.r;
     f32 g = (1.f - t) * color1.g + t * color2.g;
     f32 b = (1.f - t) * color1.b + t * color2.b;
     f32 a = (1.f - t) * color1.a + t * color2.a;
 
-    mkb::GXColor ret;
+    GXColor ret;
     ret.r = CLAMP(r, 0, 255);
     ret.g = CLAMP(g, 0, 255);
     ret.b = CLAMP(b, 0, 255);
@@ -438,7 +439,7 @@ static void draw_help(const Widget& widget) {
 }
 
 void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
-                 mkb::GXColor lerped_color) {
+                 GXColor lerped_color) {
     switch (widget.type) {
         case WidgetType::HideableGroupWidget: {
             if (widget.hideable_group.show_if()) {
@@ -608,8 +609,7 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
                                  selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                                  "  %s", widget.input_select.label);
             }
-            mkb::GXColor bind_color =
-                selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
+            GXColor bind_color = selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
             if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
                 bind_color = draw::GOLD;
             }
@@ -633,7 +633,7 @@ void draw_menu_widgets(MenuWidget* menu) {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
 
-    mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+    GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
 
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget& widget = menu->widgets[i];
@@ -647,7 +647,7 @@ static void draw_breadcrumbs() {
     u32 x = MARGIN + PAD;
     for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
         MenuWidget* menu = s_menu_stack[i];
-        mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
+        GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
         draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
         x += mkb::strlen(const_cast<char*>(menu->label)) * draw::DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr) {
