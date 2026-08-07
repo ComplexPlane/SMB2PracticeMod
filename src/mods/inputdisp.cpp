@@ -26,7 +26,8 @@ enum class InputDispColorType {
     MatchBall = 3,
 };
 
-static patch::Tramp<decltype(&mkb::create_speed_sprites)> s_create_speed_sprites_tramp;
+TRAMP(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
+      [](f32 x, f32 y) { s_create_speed_sprites_tramp.chain(x + 5, y); });
 
 static mkb::PADStatus s_raw_inputs[4];
 
@@ -133,10 +134,7 @@ static void set_sprite_visible(bool visible) {
     }
 }
 
-void init() {
-    patch::hook_function(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
-                         [](f32 x, f32 y) { s_create_speed_sprites_tramp.dest(x + 5, y); });
-}
+void init() { HOOK_TRAMP(s_create_speed_sprites_tramp); }
 
 void on_PADRead(mkb::PADStatus* statuses) {
     mkb::memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));

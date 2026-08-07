@@ -15,9 +15,6 @@ static ActiveMode s_current_mode = ActiveMode::None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
-static patch::Tramp<decltype(&mkb::smd_game_ready_init)> s_ready_init_tramp;
-static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
-
 void select_new_goal() { s_new_goal = true; }
 
 static void undo_mode(ActiveMode mode) {
@@ -110,30 +107,30 @@ static void set_mode(ActiveMode mode) {
     }
 }
 
-void main_game_init() {
-    patch::hook_function(s_ready_init_tramp, mkb::smd_game_ready_init, []() {
-        ActiveMode next_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
-        if (s_current_mode != next_mode) {
-            undo_mode(s_current_mode);
-            s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
-            set_mode(s_current_mode);
-        } else if (s_current_mode == ActiveMode::Reverse && s_new_goal) {
-            undo_mode(ActiveMode::Reverse);
-            s_rev_goal_idx++;
-            set_mode(ActiveMode::Reverse);
-        }
-        s_new_goal = false;
-        s_ready_init_tramp.dest();
-    });
-}
-
-void init() {
-    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
-        s_load_stagedef_tramp.dest(stage_id);
+TRAMP(s_ready_init_tramp, mkb::smd_game_ready_init, []() {
+    ActiveMode next_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+    if (s_current_mode != next_mode) {
+        undo_mode(s_current_mode);
         s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
         set_mode(s_current_mode);
-    });
-}
+    } else if (s_current_mode == ActiveMode::Reverse && s_new_goal) {
+        undo_mode(ActiveMode::Reverse);
+        s_rev_goal_idx++;
+        set_mode(ActiveMode::Reverse);
+    }
+    s_new_goal = false;
+    s_ready_init_tramp.chain();
+});
+
+TRAMP(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
+    s_load_stagedef_tramp.chain(stage_id);
+    s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+    set_mode(s_current_mode);
+});
+
+void main_game_init() { HOOK_TRAMP(s_ready_init_tramp); }
+
+void init() { HOOK_TRAMP(s_load_stagedef_tramp); }
 
 void tick() {
     switch (s_current_mode) {

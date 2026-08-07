@@ -22,51 +22,49 @@ enum class TimerType {
     Invalid  // this state is used to determine when
 };
 
-static patch::Tramp<decltype(&mkb::did_ball_fallout)> s_did_ball_fallout_tramp;
-
 static TimerType s_prev_pref = TimerType::Invalid;
 static TimerType s_prev_freecam = TimerType::Invalid;
 
 static bool s_halted;  // freeze timer for TimerType::FreezeAtZero
 
-void init() {
-    // stop fallouts
-    patch::hook_function(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
-        mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.dest(ball);
-        bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
-        bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
+// stop fallouts
+TRAMP(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
+    mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
+    bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
+    bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
 
-        switch (FalloutPlaneType(pref::get(pref::U8Pref::FalloutPlaneType))) {
-            case FalloutPlaneType::Normal: {
-                if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(below_fallout);
-                } else {
-                    return static_cast<mkb::BOOL32>(orig_result);
-                }
-                break;
+    switch (FalloutPlaneType(pref::get(pref::U8Pref::FalloutPlaneType))) {
+        case FalloutPlaneType::Normal: {
+            if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(below_fallout);
+            } else {
+                return static_cast<mkb::BOOL32>(orig_result);
             }
-            case FalloutPlaneType::Disabled: {
-                if (below_fallout) {
-                    return static_cast<mkb::BOOL32>(false);
-                } else if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(false);
-                }
-                break;
-            }
-            case FalloutPlaneType::Bouncy: {
-                if (below_fallout) {
-                    ball->vel.y = ABS(ball->vel.y) * 1.05;
-                    return static_cast<mkb::BOOL32>(false);
-                } else if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(false);
-                }
-                break;
-            }
+            break;
         }
+        case FalloutPlaneType::Disabled: {
+            if (below_fallout) {
+                return static_cast<mkb::BOOL32>(false);
+            } else if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(false);
+            }
+            break;
+        }
+        case FalloutPlaneType::Bouncy: {
+            if (below_fallout) {
+                ball->vel.y = ABS(ball->vel.y) * 1.05;
+                return static_cast<mkb::BOOL32>(false);
+            } else if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(false);
+            }
+            break;
+        }
+    }
 
-        return orig_result;
-    });
-}
+    return orig_result;
+});
+
+void init() { HOOK_TRAMP(s_did_ball_fallout_tramp); }
 
 void freeze_timer() {
     TimerType current_pref = TimerType(pref::get(pref::U8Pref::TimerType));

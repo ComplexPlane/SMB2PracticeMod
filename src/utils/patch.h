@@ -2,17 +2,17 @@
 
 #include "mkb/mkb.h"
 
-#define TRAMP(name, s, d)      \
-    struct {                   \
-        typeof(&(s)) src;      \
-        typeof(&(s)) override; \
-        typeof(&(s)) chain;    \
-        u32 instrs[2];         \
+#define TRAMP(name, s, d)        \
+    struct {                     \
+        decltype(&(s)) src;      \
+        decltype(&(s)) override; \
+        decltype(&(s)) chain;    \
+        u32 instrs[2];           \
     } name = {.src = (&s), .override = (d)}
 
 #define HOOK_TRAMP(tramp)                                                                          \
     ({                                                                                             \
-        typeof(&tramp) _tramp_ = (&tramp);                                                         \
+        decltype(&tramp) _tramp_ = (&tramp);                                                       \
         patch::hook_function_tramp((void*)_tramp_->src, (void*)_tramp_->override, _tramp_->instrs, \
                                    (void**)&_tramp_->chain);                                       \
     })

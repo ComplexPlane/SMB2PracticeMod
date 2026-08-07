@@ -24,8 +24,6 @@ static Seg s_seg_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
-static patch::Tramp<decltype(&mkb::g_reset_cm_course)> s_reset_cm_course_tramp;
-
 static mkb::CourseCommand* s_overwritten_entry;
 static mkb::CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
@@ -331,11 +329,13 @@ void request_cm_seg(Seg seg) {
     }
 }
 
+TRAMP(s_reset_cm_course_tramp, mkb::g_reset_cm_course, []() {
+    s_reset_cm_course_tramp.chain();
+    if (s_state == State::SegActive) init_seg();
+});
+
 void init() {
-    patch::hook_function(s_reset_cm_course_tramp, mkb::g_reset_cm_course, []() {
-        s_reset_cm_course_tramp.dest();
-        if (s_state == State::SegActive) init_seg();
-    });
+    HOOK_TRAMP(s_reset_cm_course_tramp);
 
     // Set PBs to maximum time
     for (u32& s_pb : s_pbs) {
@@ -365,7 +365,8 @@ void disp() {
             color = draw::GOLD;
         else
             color = draw::WHITE;
-        timerdisp::draw_timer(380, 0, 44, "SEG:", static_cast<s32>(s_seg_time), 0, false, false, draw::WHITE);
+        timerdisp::draw_timer(380, 0, 44, "SEG:", static_cast<s32>(s_seg_time), 0, false, false,
+                              draw::WHITE);
     }
 }
 
