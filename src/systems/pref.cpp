@@ -386,8 +386,8 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 //
 
 struct PrefState {
-    u8 bool_prefs[9];  
-    u8 u8_prefs[28];   
+    u8 bool_prefs[9];
+    u8 u8_prefs[28];
 };
 
 static PrefState s_pref_state, s_default_pref_state;
@@ -519,7 +519,7 @@ static void pref_struct_to_card_buf() {
         }
 
         // There should be no other types of preferences!
-        MOD_ASSERT(false);
+        UNREACHABLE();
     }
 }
 

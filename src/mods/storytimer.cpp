@@ -3,11 +3,9 @@
 #include "mkb/mkb.h"
 
 #include "mods/freecam.h"
-#include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
-#include "utils/patch.h"
 #include "utils/timerdisp.h"
 
 namespace storytimer {
@@ -68,7 +66,6 @@ static constexpr s32 IW_TIME_TEXT_OFFSET = 32;
 static constexpr s32 STAGE_FADE_OUT_TIME = 49;
 static u32 s_dummy;
 static u32 s_dummy_2;
-static u32 s_dummy_3;
 
 void tick() {
     // for later use, it's useful to record how many stages we've completed
@@ -80,7 +77,8 @@ void tick() {
         s_can_lower_stage_counter = true;
     }
 
-    // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select screen, lower the counter by exactly 1
+    // if you retry after SMD_GAME_GOAL_INIT but before returning to the stage select screen, lower
+    // the counter by exactly 1
     if (s_can_lower_stage_counter && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         s_completed_stages += -1;
         s_can_lower_stage_counter = false;
@@ -421,9 +419,12 @@ void disp() {
                 }
             }
             break;
-        case TimerOptions::DontShow:
+        case TimerOptions::DontShow: {
             s_display_segment_timer = false;
             break;
+        }
+        case TimerOptions::EndOfRun: {
+        }
     }
 
     // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the
@@ -524,10 +525,14 @@ void disp() {
     */
 
     if (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
-        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60*s_completed_stages), 1,
+        timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60 * s_completed_stages), 1,
                               false, true, draw::WHITE);
-        timerdisp::draw_timer(380, 1, 44, "dbg:", static_cast<s32>(60*mkb::get_world_unbeaten_stage_count(0)), 1, false, true, draw::WHITE); 
-        timerdisp::draw_timer(380, 2, 44, "dbg:", static_cast<s32>(60*mkb::mode_info.g_selected_world_idx), 1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 1, 44,
+                              "dbg:", static_cast<s32>(60 * mkb::get_world_unbeaten_stage_count(0)),
+                              1, false, true, draw::WHITE);
+        timerdisp::draw_timer(380, 2, 44,
+                              "dbg:", static_cast<s32>(60 * mkb::mode_info.g_selected_world_idx), 1,
+                              false, true, draw::WHITE);
     }
     // mkb::scen_info.world
     // 10*mkb::scen_info.world+mkb::get_world_unbeaten_stage_count(mkb::scen_info.world)

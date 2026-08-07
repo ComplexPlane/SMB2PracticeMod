@@ -32,7 +32,7 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ELF2REL_BUILD := $(CURDIR)/3rdparty/ttyd-tools/ttyd-tools/elf2rel/build
+ELF2REL_BUILD := $(CURDIR)/3rdparty/elf2rel/build
 
 elf2rel:
 	@echo "Compiling elf2rel..."
@@ -70,8 +70,11 @@ MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os -Wall -Wno-write-strings -Wno-address-of-packed-member -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
-CXXFLAGS	= -fno-exceptions -fno-rtti -std=gnu++20 $(CFLAGS)
+CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os \
+			  -Wall -Wno-write-strings -Wno-address-of-packed-member \
+			  -Werror -Wshadow -Wimplicit-fallthrough \
+			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
+CXXFLAGS	= -fno-exceptions -fno-rtti -std=c++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
@@ -173,9 +176,8 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-TTYDTOOLS := $(abspath $(CURDIR)/../3rdparty/ttyd-tools/ttyd-tools)
-ELF2REL := $(TTYDTOOLS)/elf2rel/build/elf2rel
-GCIPACK := /usr/bin/env python3 $(TTYDTOOLS)/gcipack/gcipack.py
+ELF2REL := $(abspath $(CURDIR))/../3rdparty/elf2rel/build/elf2rel
+GCIPACK := /usr/bin/env python3 $(abspath $(CURDIR))/../3rdparty/gcipack.py
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -189,7 +191,7 @@ $(OFILES_SOURCES) : $(HFILES)
 # REL linking
 %.rel: %.elf
 	@echo output ... $(notdir $@)
-	@$(ELF2REL) $< -s $(MAPFILE) --rel-version 2 --rel-id 101
+	$(ELF2REL) $< $(MAPFILE) $@ 101 2
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)

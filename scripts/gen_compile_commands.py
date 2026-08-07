@@ -9,11 +9,13 @@ def main():
     repo_dir = Path(__file__).parent.parent.resolve()
     src_dir = repo_dir / "src"
     include_dir = repo_dir / "src"
-    for src_path in src_dir.glob("**/*.cpp"):
+    for src_path in src_dir.glob("**/*.c*"):
+        compiler = "/usr/bin/cc" if src_path.suffix == ".c" else "/usr/bin/c++"
+        cxx_version = "c23" if src_path.suffix == ".c" else "c++20"
         command = (
-            "/usr/bin/c++ "
+            f"{compiler} "
             f"-I {include_dir} "
-            "-m32 -std=gnu++20 "
+            f"-m32 -std={cxx_version} -Werror -Wshadow -Wimplicit-fallthrough "
             f"-c {src_path} -o {src_path.with_suffix('.o')}"
         )
         cmds.append(

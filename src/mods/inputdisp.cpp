@@ -217,9 +217,7 @@ static mkb::GXColor get_color() {
         }
     }
 
-    // shouldn't reach
-    MOD_ASSERT(false);
-    return {};
+    UNREACHABLE();
 }
 
 static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {

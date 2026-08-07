@@ -3,15 +3,12 @@
 #include "mkb/mkb.h"
 
 #include "systems/binds.h"
-#include "systems/heap.h"
 #include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
-#include "utils/memstore.h"
-#include "utils/patch.h"
 
 namespace savest_ui {
 
@@ -61,8 +58,7 @@ void tick() {
                 break;
             }
             case SaveResult::ErrorMainMode: {
-                MOD_ASSERT(false);
-                // Unreachable
+                UNREACHABLE();
             }
             case SaveResult::ErrorPostFallout: {
                 draw::notify(draw::RED, "Cannot Create Savestate After Fallout");
@@ -118,8 +114,7 @@ void tick() {
                 break;
             }
             case LoadResult::ErrorMainMode: {
-                MOD_ASSERT(false);
-                // Unreachable
+                UNREACHABLE();
             }
             case LoadResult::ErrorSubMode: {
                 draw::notify(draw::RED, "Cannot Load Savestate Here");
