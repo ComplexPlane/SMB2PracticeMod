@@ -17,8 +17,48 @@ static s32 s_active_state_slot;
 static bool s_created_state_last_frame;
 static bool s_frame_advance_mode;
 
+enum class SaveTo : u8 {
+    Selected,
+    NextEmpty,
+    NextEmptyThenOldest,
+};
+
 static bool is_either_trigger_held() {
     return pad::analog_down(mkb::PAI_LTRIG) || pad::analog_down(mkb::PAI_RTRIG);
+}
+
+static s32 find_next_empty() {
+    for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
+        u32 slot = (s_active_state_slot + i) % savest::SLOT_COUNT;
+        if (savest::is_empty(slot)) return slot;
+    }
+    return -1;
+}
+
+static s32 pick_save_slot() {
+    // Always write to the current slot during frame advance.
+    if (s_frame_advance_mode) return s_active_state_slot;
+
+    SaveTo save_to = static_cast<SaveTo>(pref::get(pref::U8Pref::SavestateSaveTo));
+    switch (save_to) {
+        case SaveTo::Selected:
+            return s_active_state_slot;
+        case SaveTo::NextEmpty:
+            return find_next_empty();
+        case SaveTo::NextEmptyThenOldest: {
+            s32 next_empty = find_next_empty();
+            if (next_empty >= 0) return next_empty;
+
+            s32 oldest_slot = 0;
+            for (u32 i = 1; i < savest::SLOT_COUNT; i++) {
+                if (savest::get_timestamp(i) < savest::get_timestamp(oldest_slot)) {
+                    oldest_slot = i;
+                }
+            }
+            return oldest_slot;
+        }
+    }
+    UNREACHABLE();
 }
 
 void tick() {
@@ -42,14 +82,14 @@ void tick() {
     }
 
     if (pad::button_pressed(mkb::PAD_BUTTON_X)) {
-        if (!savest::is_empty(s_active_state_slot) &&
-            pref::get(pref::BoolPref::SavestateDisableOverwrite)) {
-            draw::notify(draw::RED, "Slot %d Full", s_active_state_slot + 1);
+        s32 save_slot = pick_save_slot();
+        if (save_slot < 0) {
+            draw::notify(draw::RED, "Cannot Create Savestate: No Slots Left");
             return;
         }
 
         using SaveResult = savest::SaveResult;
-        switch (savest::save(s_active_state_slot)) {
+        switch (savest::save(save_slot)) {
             case SaveResult::Ok: {
                 break;
             }
@@ -86,6 +126,7 @@ void tick() {
             }
         }
 
+        s_active_state_slot = save_slot;
         // TODO allow entering frame advance by pressing L/R while holding X in load-state mode
         s_frame_advance_mode = is_either_trigger_held();
         if (s_frame_advance_mode) {
@@ -99,6 +140,12 @@ void tick() {
     } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearBind))) {
         savest::clear(s_active_state_slot);
         draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
+    } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearAllBind))) {
+        for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
+            savest::clear(i);
+        }
+        s_active_state_slot = 0;
+        draw::notify(draw::BLUE, "All Slots Cleared");
     } else if (pad::button_down(mkb::PAD_BUTTON_Y) ||
                (pad::button_down(mkb::PAD_BUTTON_X) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != pad::DIR_NONE)) {

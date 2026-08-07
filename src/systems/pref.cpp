@@ -82,7 +82,7 @@ enum class PrefId : u16 {
     UseCustomPhysics = 62,
     Friction = 63,
     Restitution = 64,
-    SavestateDisableOverwrite = 65,
+    // Do not reuse 65, it belonged to SavestateDisableOverwrite
     MenuBind = 66,
     IlBattleReadyBind = 67,
     FreecamToggleBind = 68,
@@ -98,6 +98,8 @@ enum class PrefId : u16 {
     SegmentTimerOptions = 78,
     StoryTimerWarning = 79,
     ShowDeathCounter = 80,
+    SavestateSaveTo = 84,
+    SavestateClearAllBind = 85,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -157,7 +159,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::Friction,
     PrefId::Restitution,
     PrefId::UseCustomPhysics,
-    PrefId::SavestateDisableOverwrite,
     PrefId::ApeColorType,
     PrefId::IlBattleBreakdown,
     PrefId::InputDispColorType,
@@ -179,6 +180,8 @@ static const PrefId s_pref_ids[] = {
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
     PrefId::ShowDeathCounter,
+    PrefId::SavestateSaveTo,
+    PrefId::SavestateClearAllBind,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -265,8 +268,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::IlBattleBuzzerOld;
         case PrefId::UseCustomPhysics:
             return BoolPref::UseCustomPhysics;
-        case PrefId::SavestateDisableOverwrite:
-            return BoolPref::SavestateDisableOverwrite;
         case PrefId::IlBattleTieCount:
             return BoolPref::IlBattleTieCount;
         case PrefId::IlBattleAttemptCount:
@@ -346,6 +347,10 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::FullgameTimerOptions;
         case PrefId::SegmentTimerOptions:
             return U8Pref::SegmentTimerOptions;
+        case PrefId::SavestateSaveTo:
+            return U8Pref::SavestateSaveTo;
+        case PrefId::SavestateClearAllBind:
+            return U8Pref::SavestateClearAllBind;
         default:
             return {};
     }
@@ -372,13 +377,14 @@ struct DefaultU8Pref {
 
 // Non-zero default values of u8 preferences
 static DefaultU8Pref s_default_u8_prefs[] = {
-    {U8Pref::FreecamSpeedMult, 3},      // 3
-    {U8Pref::MenuBind, 64},             // L + R
-    {U8Pref::Friction, 110},            // 0.10
-    {U8Pref::Restitution, 150},         // 0.5
-    {U8Pref::IlBattleReadyBind, 104},   // dpad-down
-    {U8Pref::FreecamToggleBind, 255},   // unbound
-    {U8Pref::SavestateClearBind, 255},  // unbound
+    {U8Pref::FreecamSpeedMult, 3},         // 3
+    {U8Pref::MenuBind, 64},                // L + R
+    {U8Pref::Friction, 110},               // 0.10
+    {U8Pref::Restitution, 150},            // 0.5
+    {U8Pref::IlBattleReadyBind, 104},      // dpad-down
+    {U8Pref::FreecamToggleBind, 255},      // unbound
+    {U8Pref::SavestateClearBind, 255},     // unbound
+    {U8Pref::SavestateClearAllBind, 255},  // unbound
 };
 
 //
@@ -387,7 +393,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[9];
-    u8 u8_prefs[28];
+    u8 u8_prefs[30];
 };
 
 static PrefState s_pref_state, s_default_pref_state;

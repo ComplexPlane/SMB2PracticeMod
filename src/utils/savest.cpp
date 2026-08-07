@@ -22,6 +22,7 @@ enum Flag {
 
 struct SaveState {
     u32 flags;
+    u32 timestamp;
     s32 stage_id;
     u8 character;
     store::Store store;
@@ -30,6 +31,7 @@ struct SaveState {
 };
 
 static bool s_state_loaded_this_frame = false;
+static u32 s_timestamp;
 static SaveState s_states[SLOT_COUNT];
 
 //
@@ -290,6 +292,7 @@ SaveResult save(u32 slot) {
     state->stage_id = mkb::current_stage_id;
     state->character = mkb::selected_characters[mkb::curr_player_idx];
     state->flags |= Flag_IsPresent;
+    state->timestamp = s_timestamp;
 
     return SaveResult::Ok;
 }
@@ -348,6 +351,7 @@ LoadResult load(u32 slot) {
     }
 
     s_state_loaded_this_frame = true;
+    state->timestamp = s_timestamp;
     return LoadResult::Ok;
 }
 
@@ -359,6 +363,7 @@ void clear(u32 slot) {
         heap::free(state->store.buf);
     }
     *state = (SaveState){};
+    state->timestamp = s_timestamp;
 }
 
 bool is_empty(u32 slot) {
@@ -366,7 +371,13 @@ bool is_empty(u32 slot) {
     return !(s_states[slot].flags & Flag_IsPresent);
 }
 
+u32 get_timestamp(u32 slot) {
+    ASSERT(slot < LEN(s_states));
+    return s_states[slot].timestamp;
+}
+
 void tick() {
+    s_timestamp++;
     s_state_loaded_this_frame = false;
     for (u32 i = 0; i < LEN(s_states); i++) {
         if (s_states[i].flags & Flag_ReloadState) {

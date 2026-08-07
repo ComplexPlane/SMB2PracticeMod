@@ -37,6 +37,7 @@ SaveResult save(u32 slot);
 LoadResult load(u32 slot);
 void clear(u32 slot);
 bool is_empty(u32 slot);
+u32 get_timestamp(u32 slot);
 
 bool was_state_loaded_this_frame();
 bool is_enabled();

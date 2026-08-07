@@ -29,6 +29,12 @@ static_assert(LEN(INPUTDISP_COLORS) == inputdisp::NUM_COLORS);
 
 static const char* CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
+static const char* SAVESTATE_SAVE_TO_OPTIONS[] = {
+    "Selected Slot",
+    "Next Empty Slot",
+    "Empty, Then Oldest",
+};
+
 static const char* INPUTDISP_COLOR_TYPE_OPTIONS[] = {
     "Preset",
     "RGB Selector",
@@ -1124,6 +1130,16 @@ static Widget s_assist_widgets[] = {
 
 static Widget s_savestate_subwidgets[] = {
     {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Save To",
+                .choices = SAVESTATE_SAVE_TO_OPTIONS,
+                .num_choices = LEN(SAVESTATE_SAVE_TO_OPTIONS),
+                .pref = pref::U8Pref::SavestateSaveTo,
+            },
+    },
+    {
         .type = WidgetType::InputSelect,
         .input_select =
             {
@@ -1134,11 +1150,13 @@ static Widget s_savestate_subwidgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::InputSelect,
+        .input_select =
             {
-                .label = "Prevent Overriding",
-                .pref = pref::BoolPref::SavestateDisableOverwrite,
+                .label = "Clear All Bind",
+                .pref = pref::U8Pref::SavestateClearAllBind,
+                .required_chord = false,
+                .can_unbind = true,
             },
     },
 };

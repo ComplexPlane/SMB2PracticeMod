@@ -48,7 +48,6 @@ enum class BoolPref : u8 {
     IlBattleShowScore,
     IlBattleBuzzerOld,
     UseCustomPhysics,
-    SavestateDisableOverwrite,
     IlBattleTieCount,
     IlBattleAttemptCount,
     TimerShowSubtick,
@@ -89,6 +88,8 @@ enum class U8Pref : u8 {
     StageEditVariant,
     FullgameTimerOptions,
     SegmentTimerOptions,
+    SavestateSaveTo,
+    SavestateClearAllBind,
 };
 
 void init();
