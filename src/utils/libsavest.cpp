@@ -70,14 +70,14 @@ bool savest_was_state_loaded_this_frame() { return s_state_loaded_this_frame; }
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in
-static void pass_over_regions(Store* s, StoreFunc f) {
+static void pass_over_regions(store::Store* s, store::StoreFunc f) {
     f(s, &mkb::balls[0], sizeof(mkb::balls[0]));
     f(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
     f(s, &mkb::mode_info.stage_time_frames_remaining,
       sizeof(mkb::mode_info.stage_time_frames_remaining));
     f(s, (void*)(0x8054E03C), 0xe0);  // Camera region
     f(s, (void*)(0x805BD830), 0x1c);  // Some physics region
-    f(s, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
+    f(s, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
     f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
@@ -139,7 +139,7 @@ static void pass_over_regions(Store* s, StoreFunc f) {
     }
 
     // RTA timer
-    timer_save_state(s, f);
+    timer::save_state(s, f);
 }
 
 static void handle_pause_menu_save(SaveState* state) {
@@ -215,6 +215,7 @@ static void destruct_distracting_effects() {
             case mkb::EFFECT_HOLDING_BANANA:
             case mkb::EFFECT_GET_BANANA: {
                 mkb::effect_pool_info.status_list[i] = 0;
+                break;
             }
             default:
                 break;
@@ -378,6 +379,8 @@ void savest_tick() {
     }
 }
 
-bool savest_is_enabled() { return pref_get(Pref_Savestates) && !pref_get(Pref_Freecam); }
+bool is_enabled() {
+    return pref::get(pref::BoolPref::Savestates) && !pref::get(pref::BoolPref::Freecam);
+}
 
 }  // namespace savest
