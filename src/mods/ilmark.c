@@ -9,35 +9,29 @@
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
-#include "utils/patch.h"
 
 static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
 static bool s_is_romhack = false;
 
-static const Pref INVALID_BOOL_PREFS[] = {
+static const Pref INVALID_PREFS[] = {
     Pref_DisableFalloutVolumes,
     Pref_UseCustomPhysics,
     Pref_JumpMod,
     Pref_Moon,
     Pref_Marathon,
     Pref_DebugMode,
-};
-
-static const Pref INVALID_U8_PREFS[] = {
-    Pref_TimerType, Pref_Friction, Pref_Restitution, Pref_Camera, Pref_FalloutPlaneType,
+    Pref_TimerType,
+    Pref_Friction,
+    Pref_Restitution,
+    Pref_Camera,
+    Pref_FalloutPlaneType,
 };
 
 void ilmark_disable_invalidating_settings() {
-    // set all bool prefs to default
-    for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
-        pref_set(INVALID_BOOL_PREFS[i], pref_get_default(INVALID_BOOL_PREFS[i]));
+    for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
+        pref_set(INVALID_PREFS[i], pref_get_default(INVALID_PREFS[i]));
     }
-    // set all u8 prefs to default
-    for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
-        pref_set(INVALID_U8_PREFS[i], pref_get_default(INVALID_U8_PREFS[i]));
-    }
-
     pref_save();
 }
 
@@ -74,15 +68,9 @@ void ilmark_tick() {
         // Opening the mod menu is disallowed
         if (menu_impl_is_visible()) s_valid_run = false;
 
-        // Invalid bool prefs are enabled
-        for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
-            if (pref_get(INVALID_BOOL_PREFS[i]) != pref_get_default(INVALID_BOOL_PREFS[i])) {
-                s_valid_run = false;
-            }
-        }
-        // Invalid u8 prefs are enabled
-        for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
-            if (pref_get(INVALID_U8_PREFS[i]) != pref_get_default(INVALID_U8_PREFS[i])) {
+        // Invalid prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
+            if (pref_get(INVALID_PREFS[i]) != pref_get_default(INVALID_PREFS[i])) {
                 s_valid_run = false;
             }
         }
