@@ -16,11 +16,6 @@ us: elf2rel
 clean: clean_elf2rel
 	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
 
-#---------------------------------------------------------------------------------
-# For now, make elf2rel a phony target
-# Place target here (instead of inside recursive Makefile call) so it's only built once
-#---------------------------------------------------------------------------------
-
 # Unexport some compiler vars exported by devkitppc as they interfere
 # when we build elf2rel, which uses the system compiler
 unexport AS
@@ -32,13 +27,18 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ELF2REL_BUILD := $(CURDIR)/3rdparty/elf2rel/build
+HOST_CXX ?= c++
+ELF2REL_DIR := $(CURDIR)/3rdparty/elf2rel
+ELF2REL_BUILD := $(ELF2REL_DIR)/build
+ELF2REL := $(ELF2REL_BUILD)/elf2rel
+ELF2REL_HEADERS := $(ELF2REL_DIR)/elf2rel.h $(wildcard $(ELF2REL_DIR)/elfio/*.hpp)
 
-elf2rel:
+elf2rel: $(ELF2REL)
+
+$(ELF2REL): $(ELF2REL_DIR)/elf2rel.cpp $(ELF2REL_HEADERS)
 	@echo "Compiling elf2rel..."
-	mkdir -p $(ELF2REL_BUILD)
-	cd $(ELF2REL_BUILD) && cmake ..
-	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
+	@mkdir -p $(ELF2REL_BUILD)
+	$(HOST_CXX) -std=c++20 -I$(ELF2REL_DIR) $< -o $@
 
 clean_elf2rel:
 	@echo "clean ... elf2rel"

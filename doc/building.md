@@ -12,7 +12,7 @@ You will need a Linux environment. A native Linux install or Windows+WSL works. 
 
 ```sh
 sudo apt update
-sudo apt install build-essential pkg-config cmake libboost-dev libboost-program-options-dev
+sudo apt install build-essential
 ```
 
 ### Install devkitPro
