@@ -35,26 +35,19 @@ static SaveState s_states[SLOT_COUNT];
 // Hooks
 //
 
-// Forward declarations
-static void set_minimap_mode(mkb::MinimapMode mode);
-static void soundreq(u32 id);
-
-TRAMP(s_set_minimap_mode_tramp, mkb::set_minimap_mode, set_minimap_mode);
-TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, soundreq);
-
-static void set_minimap_mode(mkb::MinimapMode mode) {
+TRAMP(s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
     if (!is_enabled() ||
         !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
           mode == mkb::MINIMAP_SHRINK)) {
         s_set_minimap_mode_tramp.chain(mode);
     }
-}
+});
 
-static void soundreq(u32 id) {
+TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, [](u32 id) {
     if (!s_state_loaded_this_frame) {
         s_soundreq_tramp.chain(id);
     }
-}
+});
 
 void savest_init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout

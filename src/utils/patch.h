@@ -8,7 +8,7 @@
         typeof(&(s)) override; \
         typeof(&(s)) chain;    \
         u32 instrs[2];         \
-    } name = {.src = (&s), .override = (&d)}
+    } name = {.src = (&s), .override = (d)}
 
 #define HOOK_TRAMP(tramp)                                                                          \
     ({                                                                                             \
