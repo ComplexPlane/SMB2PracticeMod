@@ -6,6 +6,7 @@
 #include "utils/draw.h"
 #include "utils/savest.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
 namespace ilbattle {
@@ -204,7 +205,7 @@ void new_battle() {
 }
 
 static void track_first_retry() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
     if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         new_battle();
         s_state = IlBattleState::BattleRunning;
@@ -262,7 +263,7 @@ static void track_best() {
 }
 
 static void track_invalid_pauses() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
         s_paused_frame = 0;       // attempt is now valid
@@ -280,7 +281,7 @@ static void track_invalid_pauses() {
 }
 
 static void track_final_attempt() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
     // End battle if: Paused, Fallout, or Time Over
     if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||

@@ -10,6 +10,7 @@
 #include "utils/macro_utils.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace savest {
 
@@ -68,8 +69,8 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
     f(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
     f(s, &mkb::mode_info.stage_time_frames_remaining,
       sizeof(mkb::mode_info.stage_time_frames_remaining));
-    f(s, (void*)(0x8054E03C), 0xe0);  // Camera region
-    f(s, (void*)(0x805BD830), 0x1c);  // Some physics region
+    f(s, relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
+    f(s, relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
     f(s, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
     f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
@@ -115,8 +116,8 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
     f(s, mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    f(s, (void*)(0x8054DCA8), 56);  // Pause menu state
-    f(s, (void*)(0x805BC474), 4);   // Pause menu bitfield
+    f(s, relutil::relocate_addr(0x8054DCA8), 56);  // Pause menu state
+    f(s, relutil::relocate_addr(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
@@ -161,7 +162,8 @@ static void handle_pause_menu_load(SaveState* state) {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-            if ((u32)(mkb::sprites[i].disp_func) == 0x8032a4bc) {
+            if ((u32)(mkb::sprites[i].disp_func) ==
+                reinterpret_cast<u32>(relutil::relocate_addr(0x8032a4bc))) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
             }
@@ -225,7 +227,8 @@ static bool handle_load_state_from_nonplay_submode(SaveState* s) {
         return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *(u32*)(0x805BC474) & 8;  // TODO actually give this a name
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) &
+                      8;  // TODO actually give this a name
     if (paused_now) {
         return false;
     }

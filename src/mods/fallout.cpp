@@ -5,6 +5,7 @@
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace fallout {
 
@@ -75,38 +76,38 @@ void freeze_timer() {
     switch (current_pref) {
         case TimerType::Default: {
             // time over at 0 frames
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
+            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
             // add -1 to timer each frame
             if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
             }
             break;
         }
         case TimerType::FreezeInstantly: {
             // time over at 0 frames
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c000000;
+            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
             // add 0 to timer each frame (timer doesnt move)
             if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
             }
             break;
         }
         case TimerType::FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
             // add -1 to timer each frame (will need to freeze timer at 0.00 and unfreeze on retry)
             if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
             }
 
             // when timer hits 0, add 0 to timer each frame
             if (mkb::mode_info.stage_time_frames_remaining <= 0 && !s_halted) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
                 s_halted = true;
             }
             // when timer is reset on retry, add -1 to timer each frame
             else if (mkb::mode_info.stage_time_frames_remaining > 0 && s_halted) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
                 s_halted = false;
             }
             break;
@@ -116,10 +117,10 @@ void freeze_timer() {
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(0x80297548) = 0x2c00ffa0;
+            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
             // add 1 to timer each frame
             if (update_timer_incr) {
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030001);
             }
             break;
         }

@@ -2,6 +2,7 @@
 #include "mkb/mkb.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "utils/relutil.h"
 
 namespace physics {
 
@@ -14,7 +15,7 @@ void init() {
 }
 
 static void moon_gravity() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now) {
         mkb::balls[mkb::curr_player_idx].vel.y += .005;
     }

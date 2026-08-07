@@ -6,6 +6,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
 namespace storytimer {
@@ -71,7 +72,7 @@ void tick() {
     // for later use, it's useful to record how many stages we've completed
     // increment the completed stages by 1 during the init
     // need to check that the game is not paused to ensure the counter only goes up by 1
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
     if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT) {
         s_completed_stages += 1;
         s_can_lower_stage_counter = true;

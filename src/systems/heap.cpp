@@ -44,8 +44,9 @@ mkb::ChunkInfo* find_chunk_in_list(mkb::ChunkInfo* list, mkb::ChunkInfo* chunk) 
 }
 
 static void make_heap() {
-    u32 start = mkb::OSRoundUp32B(*reinterpret_cast<u32*>(0x8000452C));
-    void* end_ptr = relutil::compute_mainloop_reldata_boundary();  // TODO precompute?
+    u32 start = mkb::OSRoundUp32B(
+        *reinterpret_cast<u32*>(relutil::relocate_addr(0x8000452C)));
+    void* end_ptr = relutil::compute_mainloop_reldata_boundary(reinterpret_cast<void*>(start));
     u32 end = mkb::OSRoundDown32B(reinterpret_cast<u32>(end_ptr));
     u32 size = end - start;
 

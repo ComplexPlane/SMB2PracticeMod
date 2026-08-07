@@ -10,6 +10,7 @@
 #include "utils/savest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace ilmark {
 
@@ -56,7 +57,7 @@ void tick() {
         s_paused_frame = 0;
 
     } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-        bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+        bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
         if (paused_now) {
             if (s_paused_frame == 0) {
                 s_paused_frame = mkb::mode_info.stage_time_frames_remaining;

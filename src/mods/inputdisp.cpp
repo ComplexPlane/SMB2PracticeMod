@@ -9,6 +9,7 @@
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace inputdisp {
 
@@ -54,7 +55,8 @@ static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
 static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
                       mkb::GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb::GXTexObj* texobj = reinterpret_cast<mkb::GXTexObj*>(0x807ad0e0);
+    mkb::GXTexObj* texobj =
+        reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
     mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
     mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
     float z = -1.0f / 128.0f;
@@ -92,7 +94,8 @@ static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
 
 static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb::GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb::GXTexObj* texobj = reinterpret_cast<mkb::GXTexObj*>(0x807ad0e0);
+    mkb::GXTexObj* texobj =
+        reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
     mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
     mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
     float z = -1.0f / 128.0f;

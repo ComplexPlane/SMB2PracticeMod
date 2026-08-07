@@ -6,6 +6,7 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace jump {
 
@@ -56,8 +57,8 @@ static void enable() {
 static void disable() {
     if (mkb::main_mode == mkb::MD_GAME) {
         // These overwrites exist in main_game.rel which isn't always loaded
-        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
-        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+        patch::write_word(relutil::relocate_addr(0x808f4d18), s_patch1);
+        patch::write_word(relutil::relocate_addr(0x808f5168), s_patch2);
     }
     mkb::ball_friction = s_orig_friction;
     mkb::ball_restitution = s_orig_restitution;
@@ -66,19 +67,20 @@ static void disable() {
 
 static void jumping() {
     if (mkb::main_mode == mkb::MD_GAME) {
-        u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
-        u32* patch2_loc = reinterpret_cast<u32*>(0x808f5168);
+        u32* patch1_loc = reinterpret_cast<u32*>(relutil::relocate_addr(0x808f4d18));
+        u32* patch2_loc = reinterpret_cast<u32*>(relutil::relocate_addr(0x808f5168));
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
-            s_patch1 = patch::write_nop(reinterpret_cast<void*>(0x808f4d18));
+            s_patch1 = patch::write_nop(relutil::relocate_addr(0x808f4d18));
         }
         if (*patch2_loc != 0x60000000) {
-            s_patch2 = patch::write_nop(reinterpret_cast<void*>(0x808f5168));
+            s_patch2 = patch::write_nop(relutil::relocate_addr(0x808f5168));
         }
     }
 
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
+    bool paused_now =
+        *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;  // TODO name this
     if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) &&
         !paused_now) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {

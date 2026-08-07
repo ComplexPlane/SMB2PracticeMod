@@ -4,6 +4,7 @@
 #include "mods/freecam.h"
 #include "systems/pref.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace hide {
 
@@ -119,9 +120,9 @@ static void init_hide_bg() {
     HOOK_TRAMP(s_clear_tramp);
 
     // Black fog
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80352e58),
+    patch::write_branch_bl(relutil::relocate_addr(0x80352e58),
                            reinterpret_cast<void*>(avdisp_set_fog_color_hook));
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80352eac),
+    patch::write_branch_bl(relutil::relocate_addr(0x80352eac),
                            reinterpret_cast<void*>(nl2ngc_set_fog_color_hook));
 }
 
