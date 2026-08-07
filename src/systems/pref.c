@@ -92,11 +92,10 @@ static const Pref PREF_IDS[] = {
     Pref_ShowDeathCounter,
 };
 
-typedef struct DefaultPref DefaultPref;
-struct DefaultPref {
+typedef struct DefaultPref {
     Pref pref;
     u8 value;
-};
+} DefaultPref;
 
 // Non-zero default preference values
 static const DefaultPref DEFAULT_PREFS[] = {
@@ -125,21 +124,19 @@ static const DefaultPref DEFAULT_PREFS[] = {
 
 static constexpr u32 MAX_PREFS = 100;
 
-typedef struct FileHeader FileHeader;
-struct FileHeader {
+typedef struct FileHeader {
     char magic[4];  // "APMP"
     u16 semver_major;
     u16 semver_minor;
     u16 semver_patch;
     u16 num_prefs;
-} __attribute__((__packed__));
+} __attribute__((__packed__)) FileHeader;
 
-typedef struct IdEntry IdEntry;
-struct IdEntry {
+typedef struct IdEntry {
     u16 id;
     u16 data;  // Either the preference value itself (if <= 2 bytes), or offset into buffer
                // prefs, etc
-} __attribute((__packed__));
+} __attribute((__packed__)) IdEntry;
 
 // Maps pref ID to value
 u8 s_pref_state[MAX_PREFS];

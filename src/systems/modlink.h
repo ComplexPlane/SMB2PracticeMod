@@ -4,8 +4,7 @@
 #include "version.h"
 
 // Struct read by additional SMB2 mods like the Practice Mod, to load themselves after Workshop Mod
-typedef struct ModLink ModLink;
-struct ModLink {
+typedef struct ModLink {
     u32 magic;  // 0xFEEDC0DE
 
     // ModLink format version, shouldn't change much if ever. Bump major version to prevent existing
@@ -20,7 +19,7 @@ struct ModLink {
     // uses `heap_info` and its own heap functions for other heap usage at runtime.
     void *(*malloc_func)(u32 size);
     mkb_HeapInfo *heap_info;
-} __attribute__((__packed__));
+} __attribute__((__packed__)) ModLink;
 
 /**
  * Returns shared ModLink struct, or nullptr if not loaded (magic doesn't match)

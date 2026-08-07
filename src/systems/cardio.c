@@ -3,22 +3,20 @@
 #include "systems/heap.h"
 
 // Corresponds to CARD call we're waiting for
-typedef enum WriteState WriteState;
-enum WriteState {
+typedef enum WriteState {
     WriteState_Idle,
     WriteState_Mount,
     WriteState_Create,  // If memcard file doesn't exist
     WriteState_Delete,  // Else, it exists but it's too small, delete and create from scratch
     WriteState_Write,
-};
+} WriteState;
 
-typedef struct WriteRequest WriteRequest;
-struct WriteRequest {
+typedef struct WriteRequest {
     const char *file_name;
     const void *buf;
     u32 buf_size;
     void (*callback)(mkb_CARDResult);
-};
+} WriteRequest;
 
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards, this sucks!
 // Reminder we only have ~550KB to work with for the entire mod, including savestates

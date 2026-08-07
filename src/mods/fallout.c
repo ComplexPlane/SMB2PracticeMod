@@ -6,21 +6,19 @@
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
-typedef enum FalloutPlaneType FalloutPlaneType;
-enum FalloutPlaneType {
+typedef enum FalloutPlaneType {
     FalloutPlaneType_Normal,
     FalloutPlaneType_Disabled,
     FalloutPlaneType_Bouncy,
-};
+} FalloutPlaneType;
 
-typedef enum TimerType TimerType;
-enum TimerType {
+typedef enum TimerType {
     TimerType_Default,
     TimerType_FreezeInstantly,
     TimerType_FreezeAtZero,
     TimerType_CountUpwards,
     TimerType_Invalid  // this state is used to determine when
-};
+} TimerType;
 
 static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball);
 TRAMP(s_did_ball_fallout_tramp, mkb_did_ball_fallout, did_ball_fallout_hook);
@@ -72,7 +70,7 @@ static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball) {
 }
 
 void freeze_timer() {
-    TimerType current_pref = (TimerType)(pref_get(Pref_TimerType));
+    TimerType current_pref = pref_get(Pref_TimerType);
     bool update_timer_incr = mkb_sub_mode == mkb_SMD_GAME_READY_INIT || current_pref != s_prev_pref;
     s_prev_pref = current_pref;
 

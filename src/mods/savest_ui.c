@@ -37,7 +37,7 @@ void savest_ui_tick() {
 
     // Change the savestate slot with C stick
     s32 cstick_dir = pad_get_cstick_dir(false);
-    if (cstick_dir != DIR_NONE) {
+    if (cstick_dir != PadDir_None) {
         s_active_state_slot = cstick_dir;
         draw_notify(COLOR_WHITE, "Slot %d Selected", cstick_dir + 1);
     }
@@ -102,7 +102,7 @@ void savest_ui_tick() {
         draw_notify(COLOR_BLUE, "Slot %d Cleared", s_active_state_slot + 1);
     } else if (pad_button_down(mkb_PAD_BUTTON_Y, false) ||
                (pad_button_down(mkb_PAD_BUTTON_X, false) && s_created_state_last_frame) ||
-               s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != DIR_NONE)) {
+               s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != PadDir_None)) {
         switch (savest_load(s_active_state_slot)) {
         case SS_LoadResult_Ok: {
             break;

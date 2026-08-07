@@ -69,7 +69,7 @@ static void update_konami() {
     switch (s_konami_progress) {
     case 0:
     case 1:
-        if (pad_dir_pressed(DIR_UP, true)) {
+        if (pad_dir_pressed(PadDir_Up, true)) {
             s_konami_progress++;
         } else {
             s_konami_progress = 0;
@@ -77,7 +77,7 @@ static void update_konami() {
         break;
     case 2:
     case 3:
-        if (pad_dir_pressed(DIR_DOWN, true)) {
+        if (pad_dir_pressed(PadDir_Down, true)) {
             s_konami_progress++;
         } else {
             s_konami_progress = 0;
@@ -85,7 +85,7 @@ static void update_konami() {
         break;
     case 4:
     case 6:
-        if (pad_dir_pressed(DIR_LEFT, true)) {
+        if (pad_dir_pressed(PadDir_Left, true)) {
             s_konami_progress++;
         } else {
             s_konami_progress = 0;
@@ -93,7 +93,7 @@ static void update_konami() {
         break;
     case 5:
     case 7:
-        if (pad_dir_pressed(DIR_RIGHT, true)) {
+        if (pad_dir_pressed(PadDir_Right, true)) {
             s_konami_progress++;
         } else {
             s_konami_progress = 0;
@@ -138,38 +138,38 @@ bool pad_analog_chord_pressed(mkb_PadDigitalInput analog1,
            (pad_analog_pressed(analog1, priority) && pad_analog_down(analog2, priority));
 }
 
-s32 pad_get_cstick_dir(bool priority) {
+PadDir pad_get_cstick_dir(bool priority) {
     bool left = pad_analog_down(mkb_PAI_CSTICK_LEFT, priority);
     bool right = pad_analog_down(mkb_PAI_CSTICK_RIGHT, priority);
     bool up = pad_analog_down(mkb_PAI_CSTICK_UP, priority);
     bool down = pad_analog_down(mkb_PAI_CSTICK_DOWN, priority);
 
-    if (up && left) return DIR_UPLEFT;
-    if (up && right) return DIR_UPRIGHT;
-    if (down && left) return DIR_DOWNLEFT;
-    if (down && right) return DIR_DOWNRIGHT;
-    if (up) return DIR_UP;
-    if (down) return DIR_DOWN;
-    if (left) return DIR_LEFT;
-    if (right) return DIR_RIGHT;
-    return DIR_NONE;
+    if (up && left) return PadDir_UpLeft;
+    if (up && right) return PadDir_UpRight;
+    if (down && left) return PadDir_DownLeft;
+    if (down && right) return PadDir_DownRight;
+    if (up) return PadDir_Up;
+    if (down) return PadDir_Down;
+    if (left) return PadDir_Left;
+    if (right) return PadDir_Right;
+    return PadDir_None;
 }
 
-bool pad_dir_down(Dir dir, bool priority) {
+bool pad_dir_down(PadDir dir, bool priority) {
     switch (dir) {
-    case DIR_UP: {
+    case PadDir_Up: {
         return pad_button_down(mkb_PAD_BUTTON_UP, priority) ||
                pad_analog_down(mkb_PAI_LSTICK_UP, priority);
     }
-    case DIR_LEFT: {
+    case PadDir_Left: {
         return pad_button_down(mkb_PAD_BUTTON_LEFT, priority) ||
                pad_analog_down(mkb_PAI_LSTICK_LEFT, priority);
     }
-    case DIR_RIGHT: {
+    case PadDir_Right: {
         return pad_button_down(mkb_PAD_BUTTON_RIGHT, priority) ||
                pad_analog_down(mkb_PAI_LSTICK_RIGHT, priority);
     }
-    case DIR_DOWN: {
+    case PadDir_Down: {
         return pad_button_down(mkb_PAD_BUTTON_DOWN, priority) ||
                pad_analog_down(mkb_PAI_LSTICK_DOWN, priority);
     }
@@ -179,21 +179,21 @@ bool pad_dir_down(Dir dir, bool priority) {
     }
 }
 
-bool pad_dir_pressed(Dir dir, bool priority) {
+bool pad_dir_pressed(PadDir dir, bool priority) {
     switch (dir) {
-    case DIR_UP: {
+    case PadDir_Up: {
         return pad_button_pressed(mkb_PAD_BUTTON_UP, priority) ||
                pad_analog_pressed(mkb_PAI_LSTICK_UP, priority);
     }
-    case DIR_LEFT: {
+    case PadDir_Left: {
         return pad_button_pressed(mkb_PAD_BUTTON_LEFT, priority) ||
                pad_analog_pressed(mkb_PAI_LSTICK_LEFT, priority);
     }
-    case DIR_RIGHT: {
+    case PadDir_Right: {
         return pad_button_pressed(mkb_PAD_BUTTON_RIGHT, priority) ||
                pad_analog_pressed(mkb_PAI_LSTICK_RIGHT, priority);
     }
-    case DIR_DOWN: {
+    case PadDir_Down: {
         return pad_button_pressed(mkb_PAD_BUTTON_DOWN, priority) ||
                pad_analog_pressed(mkb_PAI_LSTICK_DOWN, priority);
     }
@@ -203,7 +203,7 @@ bool pad_dir_pressed(Dir dir, bool priority) {
     }
 }
 
-bool pad_dir_repeat(Dir dir, bool priority) {
+bool pad_dir_repeat(PadDir dir, bool priority) {
     if (s_exclusive_mode && !priority) return false;
 
     u32 t = s_dir_down_time[dir];

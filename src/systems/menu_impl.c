@@ -297,7 +297,7 @@ void menu_impl_tick() {
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
 
     // Update selected menu item
-    s32 dir_delta = pad_dir_repeat(DIR_DOWN, true) - pad_dir_repeat(DIR_UP, true);
+    s32 dir_delta = pad_dir_repeat(PadDir_Down, true) - pad_dir_repeat(PadDir_Up, true);
     u32 selectable = get_selectable_widget_count(menu->widgets, menu->num_widgets);
     menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
 

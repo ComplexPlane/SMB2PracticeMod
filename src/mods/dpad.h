@@ -1,6 +1,6 @@
 /*
-* Mod that allows controlling the ball with the Gamecube controller's d-pad
-*/
+ * Mod that allows controlling the ball with the Gamecube controller's d-pad
+ */
 
 #pragma once
 
