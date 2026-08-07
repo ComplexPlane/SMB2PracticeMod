@@ -53,19 +53,12 @@ using mkb::f32;
 using mkb::f64;
 using mkb::Quat;
 using mkb::s16;
+using mkb::S16Vec;
 using mkb::s32;
+using mkb::S32Vec;
 using mkb::s8;
 using mkb::u16;
 using mkb::u32;
 using mkb::u8;
-using mkb::Vec2d;
-using mkb::S32Vec;
 using mkb::Vec;
-using mkb::S16Vec;
-
-// Necessary to use macros here so file information is accurate
-// Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore
-// assertions Prefer to use MOD_ASSERT and friends instead
-
-#define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-#define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
+using mkb::Vec2d;

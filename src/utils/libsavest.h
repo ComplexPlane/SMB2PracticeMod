@@ -1,59 +1,44 @@
-// Savestate functionality decoupled from UI/controls
-
 #pragma once
 
 #include "mkb/mkb.h"
-#include "utils/memstore.h"
 
-namespace libsavest {
+namespace savest {
 
-class SaveState {
- public:
-    enum class SaveResult {
-        Ok,
-        ErrorMainMode,
-        ErrorPostFallout,
-        ErrorPostGoal,
-        ErrorDuringRetry,
-        ErrorPostTimeout,
-        ErrorSubMode,
-        ErrorViewStage,
-        ErrorInsufficientMemory,
-    };
-    enum class LoadResult {
-        Ok,
-        ErrorMainMode,
-        ErrorSubMode,
-        ErrorTimeOver,
-        ErrorEmpty,
-        ErrorWrongStage,
-        ErrorWrongMonkey,
-        ErrorViewStage,
-        ErrorPausedAndNonGameplaySubmode,
-    };
+constexpr u32 SLOT_COUNT = 8;
 
-    void tick();
-    SaveResult save();
-    LoadResult load();
-    bool isEmpty();
-    void clear();
-
- private:
-    u32 m_flags = 0;
-    s32 m_stage_id = -1;
-    u8 m_character = 0;
-    memstore::MemStore m_store;
-    u8 m_pause_menu_sprite_status = 0;
-    mkb::Sprite m_pause_menu_sprite;
-
-    void pass_over_regions();
-    void handle_pause_menu_save();
-    void handle_pause_menu_load();
-    bool handle_load_state_from_nonplay_submode();
+enum class SaveResult {
+    Ok,
+    ErrMainMode,
+    ErrPostFallout,
+    ErrPostGoal,
+    ErrDuringRetry,
+    ErrPostTimeout,
+    ErrSubMode,
+    ErrViewStage,
+    ErrInsufficientMemory,
 };
 
-void init();  // Global initialization for savestates
-bool state_loaded_this_frame();
-bool savestates_enabled();
+enum class LoadResult {
+    Ok,
+    ErrMainMode,
+    ErrSubMode,
+    ErrTimeOver,
+    ErrEmpty,
+    ErrWrongStage,
+    ErrWrongMonkey,
+    ErrViewStage,
+    ErrPausedAndNonGameplaySubmode,
+};
 
-}  // namespace libsavest
+void init();
+void tick();
+
+SaveResult save(u32 slot);
+LoadResult load(u32 slot);
+void clear(u32 slot);
+bool is_empty(u32 slot);
+
+bool was_state_loaded_this_frame();
+bool is_enabled();
+
+}  // namespace savest

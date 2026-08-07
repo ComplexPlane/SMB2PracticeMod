@@ -5,72 +5,92 @@
 #include "mkb/mkb.h"
 #include "mods/timer.h"
 #include "systems/heap.h"
-#include "systems/pad.h"
+#include "systems/log.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
+#include "utils/macro_utils.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
-namespace libsavest {
+namespace savest {
 
-enum Flags {
-    FLAG_ACTIVE = 1 << 0,
+enum Flag {
+    Flag_IsPresent = 1 << 0,
     // For when a state should be loaded on the subsequent frame
-    FLAG_RELOAD_STATE = 1 << 1,
+    Flag_ReloadState = 1 << 1,
 };
 
-static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
-static patch::Tramp<decltype(&mkb::call_SoundReqID_arg_0)> s_call_SoundReqID_arg_0_tramp;
+struct SaveState {
+    Flag flags;
+    s32 stage_id;
+    u8 character;
+    store::Store store;
+    u8 pause_menu_sprite_status;
+    mkb::Sprite pause_menu_sprite;
+};
+
 static bool s_state_loaded_this_frame = false;
+static SaveState s_states[SLOT_COUNT];
 
-void init() {
-    // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
-    // This way the minimap is unaffected when loading savestates after goal/fallout
-    patch::hook_function(
-        s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode) {
-            if (!savestates_enabled() ||
-                !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
-                  mode == mkb::MINIMAP_SHRINK)) {
-                s_set_minimap_mode_tramp.dest(mode);
-            }
-        });
+//
+// Hooks
+//
 
-    // Prevent sound effects from playing while loading states
-    patch::hook_function(s_call_SoundReqID_arg_0_tramp, mkb::call_SoundReqID_arg_0,
-                         [](u32 g_sfx_idx) {
-                             if (!s_state_loaded_this_frame) {
-                                 s_call_SoundReqID_arg_0_tramp.dest(g_sfx_idx);
-                             }
-                         });
+// Forward declarations
+static void set_minimap_mode(mkb::MinimapMode mode);
+static void soundreq(u32 id);
+
+TRAMP(s_set_minimap_mode_tramp, mkb::set_minimap_mode, set_minimap_mode);
+TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, soundreq);
+
+static void set_minimap_mode(mkb::MinimapMode mode) {
+    if (!is_enabled() ||
+        !(mkb::main_mode == mkb::MD_GAME && mkb::main_game_mode == mkb::PRACTICE_MODE &&
+          mode == mkb::MINIMAP_SHRINK)) {
+        s_set_minimap_mode_tramp.chain(mode);
+    }
 }
 
-bool state_loaded_this_frame() { return s_state_loaded_this_frame; }
+static void soundreq(u32 id) {
+    if (!s_state_loaded_this_frame) {
+        s_soundreq_tramp.chain(id);
+    }
+}
+
+void savest_init() {
+    // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
+    // This way the minimap is unaffected when loading savestates after goal/fallout
+    HOOK_TRAMP(s_set_minimap_mode_tramp);
+
+    // Prevent sound effects from playing while loading states
+    HOOK_TRAMP(s_soundreq_tramp);
+}
+
+bool savest_was_state_loaded_this_frame() { return s_state_loaded_this_frame; }
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in
-void SaveState::pass_over_regions() {
-    m_store.do_region(&mkb::balls[0], sizeof(mkb::balls[0]));
-    m_store.do_region(&mkb::sub_mode, sizeof(mkb::sub_mode));
-    m_store.do_region(&mkb::mode_info.stage_time_frames_remaining,
-                      sizeof(mkb::mode_info.stage_time_frames_remaining));
-    m_store.do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
-    m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
-    m_store.do_region(&mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
-    m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
+static void pass_over_regions(Store* s, StoreFunc f) {
+    f(s, &mkb::balls[0], sizeof(mkb::balls[0]));
+    f(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
+    f(s, &mkb::mode_info.stage_time_frames_remaining,
+      sizeof(mkb::mode_info.stage_time_frames_remaining));
+    f(s, (void*)(0x8054E03C), 0xe0);  // Camera region
+    f(s, (void*)(0x805BD830), 0x1c);  // Some physics region
+    f(s, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
+    f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
     mkb::Ape* ape = mkb::balls[0].ape;
-    m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
-    m_store.do_region(
-        ape->g_some_ape_state->g_buf5,
-        0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
+    f(s, ape, sizeof(*ape));  // Store entire ape struct for now
+    f(s, ape->g_some_ape_state->g_buf5,
+      0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
 
     // Itemgroups
-    m_store.do_region(mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
+    f(s, mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
 
     // Bananas
-    m_store.do_region(&mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
+    f(s, &mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
     for (u32 i = 0; i < mkb::stobj_pool_info.upper_bound; i++) {
@@ -82,7 +102,7 @@ void SaveState::pass_over_regions() {
             case mkb::STOBJ_GOALBAG_EXMASTER:
             case mkb::STOBJ_BUTTON:
             case mkb::STOBJ_JAMABAR: {
-                m_store.do_region(&mkb::stobjs[i], sizeof(mkb::stobjs[i]));
+                f(s, &mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
             default:
@@ -93,17 +113,17 @@ void SaveState::pass_over_regions() {
     // Seesaws
     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
         if (mkb::stagedef->coli_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW) {
-            m_store.do_region(mkb::itemgroups[i].seesaw_info->state, 12);
+            f(s, mkb::itemgroups[i].seesaw_info->state, 12);
         }
     }
 
     // Goal tape and party ball-specific extra data
-    m_store.do_region(mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goal_count);
-    m_store.do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
+    f(s, mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goal_count);
+    f(s, mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    m_store.do_region(reinterpret_cast<void*>(0x8054DCA8), 56);  // Pause menu state
-    m_store.do_region(reinterpret_cast<void*>(0x805BC474), 4);   // Pause menu bitfield
+    f(s, (void*)(0x8054DCA8), 56);  // Pause menu state
+    f(s, (void*)(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
@@ -111,52 +131,52 @@ void SaveState::pass_over_regions() {
 
         if (sprite->tick_func == mkb::sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
-            m_store.do_region(sprite, sizeof(*sprite));
+            f(s, sprite, sizeof(*sprite));
         } else if (sprite->tick_func == mkb::sprite_score_tick) {
             // Score sprite's lerped score value
-            m_store.do_region(&sprite->fpara1, sizeof(sprite->fpara1));
+            f(s, &sprite->fpara1, sizeof(sprite->fpara1));
         }
     }
 
     // RTA timer
-    timer::save_state(&m_store);
+    timer_save_state(s, f);
 }
 
-void SaveState::handle_pause_menu_save() {
-    m_pause_menu_sprite_status = 0;
+static void handle_pause_menu_save(SaveState* state) {
+    state->pause_menu_sprite_status = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite& sprite = mkb::sprites[i];
-        if (sprite.disp_func == mkb::sprite_pausemenu_disp) {
-            m_pause_menu_sprite_status = mkb::sprite_pool_info.status_list[i];
-            m_pause_menu_sprite = sprite;
+        mkb::Sprite* sprite = &mkb::sprites[i];
+        if (sprite->disp_func == mkb::sprite_pausemenu_disp) {
+            state->pause_menu_sprite_status = mkb::sprite_pool_info.status_list[i];
+            state->pause_menu_sprite = *sprite;
 
             break;
         }
     }
 }
 
-void SaveState::handle_pause_menu_load() {
+static void handle_pause_menu_load(SaveState* state) {
     bool paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED;
-    bool paused_in_state = m_pause_menu_sprite_status != 0;
+    bool paused_in_state = state->pause_menu_sprite_status != 0;
 
     if (paused_now && !paused_in_state) {
         // Destroy the pause menu sprite that currently exists
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) == 0x8032a4bc) {
+            if ((u32)(mkb::sprites[i].disp_func) == 0x8032a4bc) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
             }
         }
     } else if (!paused_now && paused_in_state) {
         // Allocate a new pause menu sprite
-        s32 i = mkb::pool_alloc(&mkb::sprite_pool_info, m_pause_menu_sprite_status);
-        mkb::sprites[i] = m_pause_menu_sprite;
+        s32 i = mkb::pool_alloc(&mkb::sprite_pool_info, state->pause_menu_sprite_status);
+        mkb::sprites[i] = state->pause_menu_sprite;
     }
 }
 
@@ -202,7 +222,7 @@ static void destruct_distracting_effects() {
     }
 }
 
-bool SaveState::handle_load_state_from_nonplay_submode() {
+static bool handle_load_state_from_nonplay_submode(SaveState* s) {
     if (!(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
           mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
           mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT ||
@@ -211,7 +231,7 @@ bool SaveState::handle_load_state_from_nonplay_submode() {
         return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
+    bool paused_now = *(u32*)(0x805BC474) & 8;  // TODO actually give this a name
     if (paused_now) {
         return false;
     }
@@ -223,100 +243,105 @@ bool SaveState::handle_load_state_from_nonplay_submode() {
     // Loading a state for one frame after being in a replay fails to load the state properly, but
     // also loading after a frame has elapsed seems to fix it. There's probably some extra data I
     // need to save, but for now this works.
-    m_flags |= FLAG_RELOAD_STATE;
+    s->flags |= Flag_ReloadState;
 
     return true;
 }
 
-SaveState::SaveResult SaveState::save() {
+SaveResult savest_save(u32 slot) {
+    ASSERT(slot < LEN(s_states));
+
+    SaveState* state = &s_states[slot];
+
     // Must be in main game
     if (mkb::main_mode != mkb::MD_GAME) {
-        return SaveResult::ErrorMainMode;
+        return SaveResult::ErrMainMode;
     }
 
     if (mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN || mkb::sub_mode_request != mkb::SMD_INVALID) {
         if (mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
             mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN) {
-            return SaveResult::ErrorPostFallout;
+            return SaveResult::ErrPostFallout;
         }
         if (mkb::sub_mode == mkb::SMD_GAME_GOAL_INIT || mkb::sub_mode == mkb::SMD_GAME_GOAL_MAIN) {
-            return SaveResult::ErrorPostGoal;
+            return SaveResult::ErrPostGoal;
         }
         if (mkb::sub_mode == mkb::SMD_GAME_READY_INIT ||
             mkb::sub_mode == mkb::SMD_GAME_READY_MAIN) {
-            return SaveResult::ErrorDuringRetry;
+            return SaveResult::ErrDuringRetry;
         }
         if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
             mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
-            return SaveResult::ErrorPostTimeout;
+            return SaveResult::ErrPostTimeout;
         }
-        return SaveResult::ErrorSubMode;
+        return SaveResult::ErrSubMode;
     }
 
     if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL) {
-        return SaveResult::ErrorViewStage;
+        return SaveResult::ErrViewStage;
     }
 
-    // Test that there is enough memory to create state
-    // TODO use a scratch savestate instead of obliterating whichever slot was currently
-    // selected?
-    m_store.enter_prealloc_mode();
-    pass_over_regions();
-    if (!m_store.enter_save_mode()) {
-        m_flags &= ~FLAG_ACTIVE;
-        return SaveResult::ErrorInsufficientMemory;
+    clear(slot);
+    pass_over_regions(&state->store, store::compute_size);
+    state->store.buf = heap::alloc(state->store.size);
+    if (state->store.buf == nullptr) {
+        return SaveResult::ErrInsufficientMemory;
     }
 
-    m_flags |= FLAG_ACTIVE;
-    m_stage_id = mkb::current_stage_id;
-    m_character = mkb::selected_characters[mkb::curr_player_idx];
-    pass_over_regions();
-    handle_pause_menu_save();
+    pass_over_regions(&state->store, store::save);
+    handle_pause_menu_save(state);
+    state->stage_id = mkb::current_stage_id;
+    state->character = mkb::selected_characters[mkb::curr_player_idx];
+    state->flags |= Flag_IsPresent;
 
     return SaveResult::Ok;
 }
 
-SaveState::LoadResult SaveState::load() {
+LoadResult savest_load(u32 slot) {
+    ASSERT(slot < LEN(s_states));
+
+    SaveState* state = &s_states[slot];
+
     // Must be in main game
     if (mkb::main_mode != mkb::MD_GAME) {
-        return LoadResult::ErrorMainMode;
+        return LoadResult::ErrMainMode;
     }
 
-    m_flags &= ~FLAG_RELOAD_STATE;
+    state->flags &= ~Flag_ReloadState;
 
     // TODO allow loading savestate during timeover
     if (mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_TIMEOVER_MAIN) {
-        return LoadResult::ErrorTimeOver;
+        return LoadResult::ErrTimeOver;
     }
     if (mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_INTR_SEL_MAIN ||
         mkb::sub_mode == mkb::SMD_GAME_SUGG_SAVE_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_SUGG_SAVE_MAIN) {
-        return LoadResult::ErrorSubMode;
+        return LoadResult::ErrSubMode;
     }
-    if (!(m_flags & FLAG_ACTIVE)) {
-        return LoadResult::ErrorEmpty;
+    if (!(state->flags & Flag_IsPresent)) {
+        return LoadResult::ErrEmpty;
     }
-    if (m_stage_id != mkb::current_stage_id) {
-        return LoadResult::ErrorWrongStage;
+    if (state->stage_id != mkb::current_stage_id) {
+        return LoadResult::ErrWrongStage;
     }
-    if (m_character != mkb::selected_characters[mkb::curr_player_idx]) {
-        return LoadResult::ErrorWrongMonkey;
+    if (state->character != mkb::selected_characters[mkb::curr_player_idx]) {
+        return LoadResult::ErrWrongMonkey;
     }
     if (mkb::events[mkb::EVENT_VIEW].status != mkb::STAT_NULL) {
-        return LoadResult::ErrorViewStage;
+        return LoadResult::ErrViewStage;
     }
-    if (!handle_load_state_from_nonplay_submode()) {
-        return LoadResult::ErrorPausedAndNonGameplaySubmode;
+    if (!handle_load_state_from_nonplay_submode(state)) {
+        return LoadResult::ErrPausedAndNonGameplaySubmode;
     }
 
     // Need to handle pausemenu-specific loading first so we can detect the game isn't currently
     // paused
-    handle_pause_menu_load();
+    handle_pause_menu_load(state);
 
-    m_store.enter_load_mode();
-    pass_over_regions();
+    state->store.pos = 0;
+    pass_over_regions(&state->store, store::load);
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 
@@ -329,22 +354,30 @@ SaveState::LoadResult SaveState::load() {
     return LoadResult::Ok;
 }
 
-void SaveState::clear() {
-    m_flags = 0;
-    m_store.enter_prealloc_mode();
+void savest_clear(u32 slot) {
+    ASSERT(slot < LEN(s_states));
+
+    SaveState* state = &s_states[slot];
+    if (state->store.buf != nullptr) {
+        heap::free(state->store.buf);
+    }
+    *state = (SaveState){};
 }
 
-bool SaveState::isEmpty() { return !(m_flags & FLAG_ACTIVE); }
+bool savest_is_empty(u32 slot) {
+    ASSERT(slot < LEN(s_states));
+    return !(s_states[slot].flags & Flag_IsPresent);
+}
 
-void SaveState::tick() {
+void savest_tick() {
     s_state_loaded_this_frame = false;
-    if (m_flags & FLAG_RELOAD_STATE) {
-        load();  // Ignore result, spooky!
+    for (u32 i = 0; i < LEN(s_states); i++) {
+        if (s_states[i].flags & Flag_ReloadState) {
+            savest_load(i);  // Ignore result, spooky!
+        }
     }
 }
 
-bool savestates_enabled() {
-    return pref::get(pref::BoolPref::Savestates) && !pref::get(pref::BoolPref::Freecam);
-}
+bool savest_is_enabled() { return pref_get(Pref_Savestates) && !pref_get(Pref_Freecam); }
 
-}  // namespace libsavest
+}  // namespace savest

@@ -73,8 +73,8 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
     }
 
     // Check if we found stage indices
-    MOD_ASSERT(start_entry_idx > -1);
-    MOD_ASSERT(end_entry_idx > -1);
+    ASSERT(start_entry_idx > -1);
+    ASSERT(end_entry_idx > -1);
 
     // Write new course end marker
     s_overwritten_entry = &course[end_entry_idx];

@@ -42,7 +42,7 @@ static s32 s_intedit_tick = 0;
 static s32 s_edit_tick = 0;
 
 static void push_menu(MenuWidget* menu) {
-    MOD_ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
+    ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
     s_menu_stack_ptr++;
     s_menu_stack[s_menu_stack_ptr] = menu;
     s_cursor_frame = 0;

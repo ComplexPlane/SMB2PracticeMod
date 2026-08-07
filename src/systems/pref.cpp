@@ -411,7 +411,7 @@ static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
 
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
-    MOD_ASSERT(static_cast<u16>(bpi / 8) < LEN(PrefState{}.bool_prefs));  // Out of room for bool
+    ASSERT(static_cast<u16>(bpi / 8) < LEN(PrefState{}.bool_prefs));  // Out of room for bool
                                                                           // prefs
     return bpi;
 }
@@ -432,7 +432,7 @@ static void set_bool_pref(BoolPref bp, bool value, PrefState& state) {
 
 static u32 validate_u8_pref(U8Pref pref) {
     u32 idx = static_cast<u32>(pref);
-    MOD_ASSERT(idx < LEN(PrefState{}.u8_prefs));
+    ASSERT(idx < LEN(PrefState{}.u8_prefs));
     return idx;
 }
 
