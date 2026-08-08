@@ -108,7 +108,7 @@ void tick() {
         mkb::g_storymode_stageselect_state == 3 ||
         mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_IDLE ||
         mkb::g_storymode_stageselect_state == 5 ||
-        mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED) {
+        mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_SELECTED) {
         // 3, 5 unlabelled inits
         s_is_on_stage_select_screen = true;
     } else {
@@ -186,7 +186,7 @@ void tick() {
     // serves to reset the timer) to do: in the future, have the timer not reset unless the file's
     // data is reset (either manually or by using the IW move up/down feature)
 
-    if (mkb::g_storymode_mode == 5) {
+    if (mkb::scen_info.mode == 5) {
         // zero the timer on the file select screen and set the number of completed stages to 0
         s_spin_in_timer_correction = 0;
         s_spin_in_timer = 0;
@@ -248,9 +248,9 @@ void tick() {
             // increment the timer every frame on the story mode select screen until the a press
             // input; we do not include the transition time after pressing a afterwards
             //  even ignoring completely white frames, the time spent on
-            //  mkb::g_storymode_stageselect_state == mkb::STAGE_SELECTED can be highly variable (up
-            //  to over 40 frames sometimes!), so for the purpose of a loadless timer, it makes
-            //  sense to cut this out from the timer
+            //  mkb::g_storymode_stageselect_state == mkb::STAGE_SELECT_SELECTED can be highly
+            //  variable (up to over 40 frames sometimes!), so for the purpose of a loadless timer,
+            //  it makes sense to cut this out from the timer
             s_stage_select_timer += 1;
         }
         if (s_is_on_exit_game_screen == true) {
@@ -473,8 +473,8 @@ void disp() {
     if (pref::get(pref::BoolPref::StoryTimerWarning) == true &&
         TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
         TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
-        mkb::g_storymode_mode == 21) {
-        // mkb::g_storymode_mode 21 is the name entry screen, not sure if it has a name in ghidra
+        mkb::scen_info.mode == 21) {
+        // scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
     }
 

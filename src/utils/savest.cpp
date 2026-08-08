@@ -73,7 +73,7 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
       sizeof(mkb::mode_info.stage_time_frames_remaining));
     f(s, relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
     f(s, relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
-    f(s, &mkb::mode_info.g_ball_mode, sizeof(mkb::mode_info.g_ball_mode));
+    f(s, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)

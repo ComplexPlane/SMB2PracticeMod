@@ -18,7 +18,7 @@ static u32 s_death_count;
 void tick() {
     // bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
     // set the death count to 0 on the file select screen
-    if (mkb::g_storymode_mode == 5) {
+    if (mkb::scen_info.mode == 5) {
         s_death_count = 0;
     }
 

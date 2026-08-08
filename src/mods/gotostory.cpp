@@ -42,9 +42,9 @@ void tick() {
         s_state = State::LoadStoryReq;
 
         // Set menu state to have chosen Main Game -> Story Mode
-        mkb::menu_stack_ptr = 1;
-        mkb::g_menu_stack[0] = 0;  // ??
-        mkb::g_menu_stack[1] = 7;  // Main game
+        mkb::sel_menu_info.menu_stack_ptr = 1;
+        mkb::sel_menu_info.menu_stack[0] = 0;  // ??
+        mkb::sel_menu_info.menu_stack[1] = 7;  // Main game
         mkb::g_focused_root_menu = 0;
         mkb::g_focused_maingame_menu = 0;
 

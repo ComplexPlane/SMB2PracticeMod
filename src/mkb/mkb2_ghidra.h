@@ -11,6 +11,7 @@ typedef long long    longlong;
 typedef unsigned long long    qword;
 typedef unsigned char    uchar;
 typedef unsigned int    uint;
+typedef unsigned long long    uint16;
 typedef unsigned int    uint3;
 typedef unsigned long    ulong;
 typedef unsigned long long    ulonglong;
@@ -41,23 +42,23 @@ struct SeesawState {
 static_assert(sizeof(SeesawState) == 0x78);
 
 enum { /* The character associated with an Ape */
-    APE_AIAI=0,
-    APE_MEEMEE=1,
-    APE_BABY=2,
-    APE_GONGON=3,
-    APE_MADH=4,
-    APE_KOBUN=5,
-    APE_MALE=6,
-    APE_FEMALE=7,
-    APE_JIJI=8,
-    APE_BABA=9,
-    APE_MADSPA=10,
-    APE_MADFRG=11,
-    APE_MADNKD=12,
-    APE_ROB=13,
-    APE_WHALE=14,
-    APE_MADCRS=15,
-    APE_KOBSPA=16
+    CHARA_AIAI=0,
+    CHARA_MEEMEE=1,
+    CHARA_BABY=2,
+    CHARA_GONGON=3,
+    CHARA_MADH=4,
+    CHARA_KOBUN=5,
+    CHARA_MALE=6,
+    CHARA_FEMALE=7,
+    CHARA_JIJI=8,
+    CHARA_BABA=9,
+    CHARA_MADSPA=10,
+    CHARA_MADFRG=11,
+    CHARA_MADNKD=12,
+    CHARA_ROB=13,
+    CHARA_WHALE=14,
+    CHARA_MADCRS=15,
+    CHARA_KOBSPA=16
 };
 typedef undefined4 ApeCharacter;
 
@@ -112,7 +113,7 @@ enum {
     WATER_SURFACE_STORY=40,
     BOWLING_STORY=41
 };
-typedef undefined1 WorldTheme;
+typedef undefined2 WorldTheme;
 
 typedef struct GoalTape GoalTape, *PGoalTape;
 
@@ -141,11 +142,15 @@ typedef undefined2 StobjType;
 
 typedef struct Vec Vec, *PVec;
 
+typedef struct ColiPlane ColiPlane, *PColiPlane;
+
 typedef struct GmaModel GmaModel, *PGmaModel;
 
 typedef struct S16Vec S16Vec, *PS16Vec;
 
 typedef signed char s8;
+
+typedef ushort u16;
 
 enum { /* Per-GMA model attributes */
     GCMF_ATTR_16BIT=1,
@@ -154,8 +159,6 @@ enum { /* Per-GMA model attributes */
     GCMF_ATTR_EFFECTIVE_MODEL=16
 };
 typedef undefined4 GcmfAttributes;
-
-typedef ushort u16;
 
 typedef struct GXTexObj GXTexObj, *PGXTexObj;
 
@@ -190,6 +193,21 @@ enum {
     GX_TF_A8=32
 };
 typedef undefined4 GXTexFmt;
+
+struct Vec {
+    float x;
+    float y;
+    float z;
+} __attribute__((__packed__));
+static_assert(sizeof(Vec) == 0xc);
+
+struct ColiPlane {
+    struct Vec point;
+    struct Vec normal;
+    u16 g_flags1;
+    u16 g_flags2;
+} __attribute__((__packed__));
+static_assert(sizeof(ColiPlane) == 0x1c);
 
 struct S16Vec { /* Often used for rotations */
     s16 x;
@@ -230,13 +248,6 @@ struct GXTexObj {
 } __attribute__((__packed__));
 static_assert(sizeof(GXTexObj) == 0x20);
 
-struct Vec {
-    float x;
-    float y;
-    float z;
-} __attribute__((__packed__));
-static_assert(sizeof(Vec) == 0xc);
-
 struct PhysicsBall { /* A representation of a Ball with just the physics/collision-related info */
     dword flags;
     struct Vec pos;
@@ -245,12 +256,10 @@ struct PhysicsBall { /* A representation of a Ball with just the physics/collisi
     float radius;
     float acceleration;
     float restitution;
-    dword g_jerk;
-    undefined field_0x38[0xc];
-    struct Vec g_some_vec;
-    undefined field_0x50[0x4];
-    dword field25_0x54;
-    float field26_0x58;
+    dword hardest_coli_speed;
+    struct ColiPlane hardest_coli_plane;
+    dword hardest_coli_ig_idx;
+    float friction;
     dword itemgroup_idx; /* The itemgroup that this PhysicsBall is relative to, aka in the local space of */
 } __attribute__((__packed__));
 static_assert(sizeof(PhysicsBall) == 0x60);
@@ -314,6 +323,8 @@ static_assert(sizeof(GmaModel) == 0x40);
 
 typedef struct MenuScreen MenuScreen, *PMenuScreen;
 
+typedef uchar u8;
+
 typedef struct MenuEntry MenuEntry, *PMenuEntry;
 
 typedef uint uint32_t;
@@ -321,38 +332,40 @@ typedef uint uint32_t;
 typedef uint32_t u32;
 
 enum {
-    MODE_SELECT_MENU=0,
-    PARTY_GAME_SELECT_MENU=1,
-    OPTIONS_MENU=2,
-    RETURN_TO_TITLE_SCREEN=3,
-    NUMBER_OF_PLAYERS_MENU=4,
-    CHARACTER_SELECT_MENU=5,
-    CHARACTER_SELECT_GAMEWILLBEGIN_MENU=6,
-    MAIN_GAME_SELECT_MENU=7,
-    LEVEL_SELECT_NOMASTER_MENU=8,
-    LEVEL_SELECT_WITHMASTER_MENU=9,
-    PRACTICE_STAGE_SELECT_MENU=10,
-    CHALLENGE_GAMEPLAY_SETTINGS_MENU=11,
-    STORY_MODE_SELECTED=12,
-    CHALLENGE_DIFFICULTY_SELECTED=13,
-    MONKEY_RACE_MODE_SELECT_MENU=15,
-    MONKEY_RACE_COURSE_SELECT_MENU=16,
-    REPLAY_MENU=80,
-    PLAY_POINTS_MENU=81,
-    GIFT_MENU=82,
-    RANKING_MENU=83,
-    GAME_DATA_MENU=84,
-    CONTROLLERS_MENU=85,
-    SCREEN_MENU=86,
-    SOUND_MENU=87
+    MENUSCREEN_MODE_SELECT=0,
+    MENUSCREEN_PARTY_GAME_SELECT=1,
+    MENUSCREEN_OPTIONS=2,
+    MENUSCREEN_RETURN_TO_TITLE_SCREEN=3,
+    MENUSCREEN_NUMBER_OF_PLAYERS=4,
+    MENUSCREEN_CHARACTER_SELECT_1=5,
+    MENUSCREEN_CHARACTER_SELECT_2=6,
+    MENUSCREEN_MAIN_GAME_SELECT=7,
+    MENUSCREEN_LEVEL_SELECT_NOMASTER=8,
+    MENUSCREEN_LEVEL_SELECT_WITHMASTER=9,
+    MENUSCREEN_PRACTICE_STAGE_SELECT=10,
+    MENUSCREEN_CHALLENGE_GAMEPLAY_SETTINGS=11,
+    MENUSCREEN_STORY_MODE_SELECTED=12,
+    MENUSCREEN_CHALLENGE_DIFFICULTY=13,
+    MENUSCREEN_MONKEY_RACE_MODE_SELECT=15,
+    MENUSCREEN_MONKEY_RACE_COURSE_SELECT=16,
+    MENUSCREEN_REPLAY=80,
+    MENUSCREEN_PLAY_POINTS=81,
+    MENUSCREEN_GIFT=82,
+    MENUSCREEN_RANKING=83,
+    MENUSCREEN_GAME_DATA_SETTINGS=84,
+    MENUSCREEN_CONTROLLER_SETTINGS=85,
+    MENUSCREEN_SCREEN_SETTINGS=86,
+    MENUSCREEN_SOUND_SETTINGS=87
 };
 typedef undefined1 MenuScreenID;
 
 struct MenuScreen {
-    struct MenuEntry * menu_entries; /* Nullable */
-    void * g_enter_submenu_func;
-    u32 g_some_bitflag; /* 0x40 repositions stuff and makes stuff up/down controls */
-    undefined field_0xc[0x4];
+    u8 field0_0x0;
+    u8 entry_count;
+    undefined field_0x2[0x2];
+    struct MenuEntry * entries;
+    void * tick;
+    u32 bitflag; /* 0x40 repositions stuff and makes stuff up/down controls */
 } __attribute__((__packed__));
 static_assert(sizeof(MenuScreen) == 0x10);
 
@@ -789,15 +802,13 @@ typedef undefined4 DipSwitch;
 
 typedef struct Replay Replay, *PReplay;
 
-typedef uchar u8;
-
 struct Replay { /* Unknown size atm */
     undefined field_0x0[0x4];
     u8 difficulty;
     u8 floorNum;
     u8 monkey;
     undefined field_0x7[0x9];
-    u32 field16_0x10;
+    u32 score;
     undefined field_0x14[0x4];
     s16 g_stageTimeLimit1;
     s16 g_duration;
@@ -848,61 +859,65 @@ typedef struct SomeApeState SomeApeState, *PSomeApeState;
 
 typedef struct Mal Mal, *PMal;
 
-typedef struct SKLRoot SKLRoot, *PSKLRoot;
+typedef struct ApeArchive ApeArchive, *PApeArchive;
 
-typedef struct ArcFileInfo ArcFileInfo, *PArcFileInfo;
+typedef struct Component Component, *PComponent;
 
-typedef struct SKLFile SKLFile, *PSKLFile;
-
-typedef struct GApeAnim GApeAnim, *PGApeAnim;
+typedef struct GComponentDefList GComponentDefList, *PGComponentDefList;
 
 typedef struct GmaBuffer GmaBuffer, *PGmaBuffer;
 
 enum {
-    GAME_COMMON=0,
-    GAME_MAIN=1,
-    GAME_DUMMY1=2,
-    GAME_DUMMY2=3,
-    GAME_DUMMY3=4,
-    GAME_DUMMY4=5,
-    GAME_DUMMY5=6,
-    GAME_DUMMY6=7,
-    GAME_DUMMY7=8,
-    GAME_DUMMY8=9,
-    GAME_DUMMY9=10,
-    GAME_DUMMY10=11,
-    GAME_RACE=12,
-    GAME_FGT=13,
-    GAME_PILOT=14,
-    GAME_GOLF=15,
-    GAME_BOWL=16,
-    GAME_BILL=17,
-    GAME_BOAT=18,
-    GAME_DOGF=19,
-    GAME_TENNIS=20,
-    GAME_BBALL=21,
-    GAME_GUNS=22,
-    GAME_ADV=23,
-    GAME_SEL=24,
-    GAME_COMMEND=25,
-    GAME_SCENE1A=26,
-    GAME_SCENE1B=27,
-    GAME_SCENE2=28,
-    GAME_SCENE3=29,
-    GAME_SCENE4=30,
-    GAME_SCENE5=31,
-    GAME_SCENE6=32,
-    GAME_SCENE7=33,
-    GAME_SCENE8=34,
-    GAME_SCENE9=35,
-    GAME_SCENE10=36,
-    GAME_LASTSCENE=37,
-    GAME_ENDING1=38,
-    GAME_ENDING2=39,
-    GAME_ENDING3=40,
-    GAME_ENDING4=41
+    SCENE_COMMON=0,
+    SCENE_MAIN=1,
+    SCENE_DUMMY1=2,
+    SCENE_DUMMY2=3,
+    SCENE_DUMMY3=4,
+    SCENE_DUMMY4=5,
+    SCENE_DUMMY5=6,
+    SCENE_DUMMY6=7,
+    SCENE_DUMMY7=8,
+    SCENE_DUMMY8=9,
+    SCENE_DUMMY9=10,
+    SCENE_DUMMY10=11,
+    SCENE_RACE=12,
+    SCENE_FGT=13,
+    SCENE_PILOT=14,
+    SCENE_GOLF=15,
+    SCENE_BOWL=16,
+    SCENE_BILL=17,
+    SCENE_BOAT=18,
+    SCENE_DOGF=19,
+    SCENE_TENNIS=20,
+    SCENE_BBALL=21,
+    SCENE_GUNS=22,
+    SCENE_ADV=23,
+    SCENE_SEL=24,
+    SCENE_COMMEND=25,
+    SCENE_SCENE1A=26,
+    SCENE_SCENE1B=27,
+    SCENE_SCENE2=28,
+    SCENE_SCENE3=29,
+    SCENE_SCENE4=30,
+    SCENE_SCENE5=31,
+    SCENE_SCENE6=32,
+    SCENE_SCENE7=33,
+    SCENE_SCENE8=34,
+    SCENE_SCENE9=35,
+    SCENE_SCENE10=36,
+    SCENE_LASTSCENE=37,
+    SCENE_ENDING1=38,
+    SCENE_ENDING2=39,
+    SCENE_ENDING3=40,
+    SCENE_ENDING4=41
 };
-typedef undefined2 ApeGame;
+typedef undefined2 SceneId;
+
+enum { /* Whether ape models are skinning or stitching? */
+    DEFORM_SKINNING=0,
+    DEFORM_STITCHING=1
+};
+typedef undefined1 DeformType;
 
 enum {
     FACE_BASE=0,
@@ -918,6 +933,13 @@ enum {
 };
 typedef undefined2 ApeFace;
 
+enum {
+    G_APE_RENDER_TRANSPARENT=1048576,
+    G_APE_RENDER_LOWER_Y=16777216,
+    G_APE_RENDER_UNCULLED=67108864
+};
+typedef undefined4 ApeRenderFlag;
+
 typedef struct Quat Quat, *PQuat;
 
 enum {
@@ -928,53 +950,23 @@ enum {
 };
 typedef undefined4 ApeLOD;
 
-typedef struct SKLInfo SKLInfo, *PSKLInfo;
+typedef struct ArcFileInfo ArcFileInfo, *PArcFileInfo;
 
-typedef struct gFloats gFloats, *PgFloats;
+typedef struct SkeletonState SkeletonState, *PSkeletonState;
 
-typedef struct ARCHandle ARCHandle, *PARCHandle;
+typedef struct SkeletonDef SkeletonDef, *PSkeletonDef;
 
-typedef struct SKLBone SKLBone, *PSKLBone;
-
-typedef struct g_thing g_thing, *Pg_thing;
+typedef struct GComponentDef GComponentDef, *PGComponentDef;
 
 typedef struct GmaModelEntry GmaModelEntry, *PGmaModelEntry;
 
-struct Quat {
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 w;
-} __attribute__((__packed__));
-static_assert(sizeof(Quat) == 0x10);
+typedef struct ARCHandle ARCHandle, *PARCHandle;
 
-struct gFloats {
-    short field0_0x0;
-    short field1_0x2;
-    short field2_0x4;
-    short field3_0x6;
-    struct Vec vec3;
-} __attribute__((__packed__));
-static_assert(sizeof(gFloats) == 0x14);
+typedef struct BoneState BoneState, *PBoneState;
 
-struct SKLRoot {
-    ushort bone_count;
-    ushort g_flag; /* Created by retype action */
-    float g_some_float;
-    struct SKLInfo * bones;
-    struct Quat rotation1;
-    struct Quat rotation2;
-    char * g_bone_name;
-    struct Vec translation;
-    undefined field_0x3c[0x4];
-    struct gFloats float_thing1;
-    undefined field_0x54[0x4];
-    struct gFloats float_thing2;
-    undefined field_0x6c[0x4];
-    struct SKLInfo * gBoneData;
-    undefined field_0x74[0x100];
-} __attribute__((__packed__));
-static_assert(sizeof(SKLRoot) == 0x174);
+typedef struct GSkeletonStateSubA GSkeletonStateSubA, *PGSkeletonStateSubA;
+
+typedef struct BoneKeyframe BoneKeyframe, *PBoneKeyframe;
 
 struct SomeApeState {
     u8 g_chara_idx;
@@ -991,21 +983,11 @@ struct SomeApeState {
 } __attribute__((__packed__));
 static_assert(sizeof(SomeApeState) == 0x60);
 
-struct SKLBone {
-    short parentNumber;
-    short g_maybe_flag;
-    struct Quat Rotation1;
-    struct Quat Rotation2;
-    struct Vec Translation;
+struct ApeArchive { /* Extremely simple archive format used for packing Ape skeleton/animation files into a single file. List of pointers/offsets to objects immediately follows/ */
+    u32 count; /* Number of objects in the archive (e.g. skeletons for .ska) */
+    char * name_table; /* Pointer/offset to packed object name string list */
 } __attribute__((__packed__));
-static_assert(sizeof(SKLBone) == 0x30);
-
-struct SKLFile {
-    short bone_count;
-    undefined2 padding;
-    struct SKLBone bone_section;
-} __attribute__((__packed__));
-static_assert(sizeof(SKLFile) == 0x34);
+static_assert(sizeof(ApeArchive) == 0x8);
 
 struct ArcFileInfo {
     struct ARCHandle * Handle;
@@ -1014,12 +996,11 @@ struct ArcFileInfo {
 } __attribute__((__packed__));
 static_assert(sizeof(ArcFileInfo) == 0xc);
 
-struct g_thing {
-    undefined field_0x0[0x8];
-    char * Name;
-    undefined field_0xc[0x1c];
+struct GComponentDefList {
+    struct GComponentDef * list;
+    u32 count;
 } __attribute__((__packed__));
-static_assert(sizeof(g_thing) == 0x28);
+static_assert(sizeof(GComponentDefList) == 0x8);
 
 struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for loaded GMA files. The first 32 bytes are extra; not part of the original GMA file */
     s32 model_count;
@@ -1031,24 +1012,61 @@ struct GmaBuffer { /* Represents the first 32 bytes of buffer allocated for load
 } __attribute__((__packed__));
 static_assert(sizeof(GmaBuffer) == 0x20);
 
-struct SKLInfo {
-    char * bone_name;
-    short g_flag;
-    short parentNumber;
-    struct Vec vec3f1;
-    float vec3f1_len; /* Created by retype action */
-    struct Vec vec3f1copy;
-    float g_float;
-    Mtx g_mtx1;
-    undefined1 g_mtx2; /* Created by retype action */
-    undefined field_0x59[0x2f];
-    Mtx matrix; /* Created by retype action */
-    struct Vec vec3f3; /* Created by retype action */
-    undefined field_0xc4[0xc];
-    float g_float2;
-    undefined field_0xd4[0xa0];
+struct BoneKeyframe {
+    undefined field_0x0[0x8];
 } __attribute__((__packed__));
-static_assert(sizeof(SKLInfo) == 0x174);
+static_assert(sizeof(BoneKeyframe) == 0x8);
+
+struct GSkeletonStateSubA {
+    short field0_0x0;
+    short field1_0x2;
+    short g_anim_duration;
+    short field3_0x6;
+    undefined field_0x8[0x4];
+    float field8_0xc;
+    float field9_0x10;
+    short field10_0x14;
+    undefined field_0x16[0x2];
+} __attribute__((__packed__));
+static_assert(sizeof(GSkeletonStateSubA) == 0x18);
+
+struct SkeletonState { /* Bone state array is allocated after this */
+    u16 bone_count;
+    u16 flags;
+    float field2_0x4;
+    struct BoneState * bone_states;
+    float field4_0xc;
+    float field5_0x10;
+    float field6_0x14;
+    undefined4 field7_0x18;
+    undefined4 field8_0x1c;
+    undefined4 field9_0x20;
+    struct ApeArchive * mta;
+    undefined4 field11_0x28;
+    undefined4 field12_0x2c;
+    undefined4 field13_0x30;
+    undefined4 field14_0x34;
+    undefined4 field15_0x38;
+    void * field16_0x3c;
+    struct GSkeletonStateSubA g_skeleton_state_subA_1;
+    struct GSkeletonStateSubA g_skeleton_state_subA_2;
+} __attribute__((__packed__));
+static_assert(sizeof(SkeletonState) == 0x70);
+
+struct GComponentDef {
+    undefined field_0x0[0x8];
+    char * g_name;
+    undefined field_0xc[0x1c];
+} __attribute__((__packed__));
+static_assert(sizeof(GComponentDef) == 0x28);
+
+struct Quat {
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
+} __attribute__((__packed__));
+static_assert(sizeof(Quat) == 0x10);
 
 struct ARCHandle { /* I don't actually know the struct contents in the slightest */
     void * arc_data;
@@ -1061,58 +1079,51 @@ struct ARCHandle { /* I don't actually know the struct contents in the slightest
 } __attribute__((__packed__));
 static_assert(sizeof(ARCHandle) == 0x1c);
 
-struct GApeAnim { /* Unknown length -Crafted */
-    u8 field0_0x0;
-    undefined field_0x1[0x3];
-    struct g_thing * count;
-    struct GApeAnim * ape;
-    s32 * field6_0xc; /* Ptr to some struct? */
-    undefined field_0x10[0xc];
-    s32 g_either_motion_or_skel2;
-    undefined field_0x20[0x8];
+struct SkeletonDef { /* Bone definitions immediately follow */
+    short bone_count;
+    undefined2 padding;
 } __attribute__((__packed__));
-static_assert(sizeof(GApeAnim) == 0x28);
+static_assert(sizeof(SkeletonDef) == 0x4);
+
+struct Component { /* Subcomponent of an Ape, like body, face, hands, eyes */
+    struct SkeletonState * skeleton_state;
+    struct SkeletonDef * skeleton_def;
+    struct ApeArchive * mta; /* Animation definitions */
+} __attribute__((__packed__));
+static_assert(sizeof(Component) == 0xc);
 
 struct Ape {
     struct SomeApeState * g_some_ape_state;
-    struct Mal * common_mal; /* Was originally ushort -Crafted */
-    void * game_mal; /* It's not, a lot of these labels were confusingly wrong?? - bomb Is this even a float? -Crafted */
-    struct SKLRoot * frame_ptr;
-    struct ArcFileInfo * arc_location;
-    float g_some_ptr;
-    struct SKLRoot * faceSKLStorage;
-    struct SKLFile * faceSKLFile;
-    void * faceMTA;
-    struct SKLRoot * handRSKLStorage;
-    struct SKLFile * handRSKLFile;
-    void * handrMTA;
-    struct SKLRoot * handLSKLStorage;
-    struct SKLFile * handLSKLFile;
-    void * handlMTA;
-    struct SKLRoot * tailSKLStorage;
-    struct SKLFile * tailSKLFile;
-    struct GApeAnim * animLengthBytes; /* Created by retype action */
-    struct SKLRoot * g_some_skl;
-    struct GmaBuffer * GMABuffer;
-    struct TplBuffer * TPLBuffer;
-    undefined2 field21_0x54;
+    struct Mal * common_mal;
+    void * game_mal;
+    void * field3_0xc;
+    struct ApeArchive * g_skel_ska; /* Pointer to contents of "skel.ska", which has one skeleton per character */
+    void * field5_0x14;
+    struct Component g_face_component;
+    struct Component g_handr_component;
+    struct Component g_handl_component;
+    struct Component g_tail_component;
+    struct GComponentDefList * g_component_defs;
+    struct GmaBuffer * gma;
+    struct TplBuffer * tpl;
+    undefined2 field13_0x54;
     undefined field_0x56[0x2];
-    undefined2 field24_0x58;
+    undefined2 field16_0x58;
     undefined field_0x5a[0x2];
     void * anim_func; /* Created by retype action */
     float float_0x60;
     undefined field_0x64[0x10];
-    ApeGame  game; /* Created by retype action */
-    char g_ape_variant;
+    SceneId  scene_id; /* Created by retype action */
+    DeformType  g_deform_type;
     undefined field_0x77[0x1];
-    int g_smth_with_game; /* Created by retype action */
-    undefined4 field49_0x7c;
-    undefined2 field50_0x80;
+    int g_smth_with_scene; /* Created by retype action */
+    undefined4 field41_0x7c;
+    undefined2 field42_0x80;
     undefined field_0x82[0x2];
-    short field53_0x84;
+    short field45_0x84;
     u8 chara_anim_type; /* Some value that changes the type of animation the character is doing. From standing still, to walking, to the "I lost" state, etc */
     byte g_anim_step;
-    int ape_total_index; /* Something to do with character spinning post-goal */
+    int g_next_ape_idx; /* Something to do with character spinning post-goal */
     ushort g_handr_short;
     ushort g_handl_short;
     ApeFace  face;
@@ -1123,92 +1134,104 @@ struct Ape {
     ushort some_flag_1;
     undefined field_0xa4[0x4];
     int g_some_length1;
-    int field75_0xac;
-    float field76_0xb0;
-    undefined4 field77_0xb4;
-    undefined4 field78_0xb8;
-    undefined4 field79_0xbc;
-    int field80_0xc0;
-    void * g_frames1[40];
-    void * field82_0x164;
-    void * field83_0x168;
-    void * field84_0x16c;
-    void * field85_0x170;
-    void * field86_0x174;
-    void * field87_0x178;
-    void * field88_0x17c;
-    void * field89_0x180;
-    void * field90_0x184;
-    void * field91_0x188;
-    void * field92_0x18c;
-    void * field93_0x190;
-    void * field94_0x194;
-    void * field95_0x198;
-    void * field96_0x19c;
-    void * field97_0x1a0;
-    void * field98_0x1a4;
-    void * field99_0x1a8;
-    void * field100_0x1ac;
-    void * field101_0x1b0;
-    void * field102_0x1b4;
-    void * field103_0x1b8;
-    void * field104_0x1bc;
-    undefined field_0x1c0[0x1c];
-    void * expression_models[9];
-    undefined field_0x200[0x4];
-    void * HandL_GHA_model;
-    void * HandL_PHA_model;
-    void * HandR_GHA_model;
-    void * HANDR_PHA_model;
+    int field67_0xac;
+    float field68_0xb0;
+    undefined4 field69_0xb4;
+    undefined4 field70_0xb8;
+    undefined4 field71_0xbc;
+    int field72_0xc0;
+    struct GmaModel * g_component_models[40];
+    struct GmaModel * g_eye_models1[15]; /* Not unique models, repeated! Blink pattern? */
+    struct GmaModel * g_eye_models2[15]; /* Same underlying models as above, but blink pattern may differ between characters?!? */
+    struct GmaModel * face_models[10];
+    struct GmaModel * handl_fist_model;
+    struct GmaModel * handl_flat_model;
+    struct GmaModel * handr_fist_model;
+    struct GmaModel * handr_flat_model;
     float float_0x214;
-    short field143_0x218;
+    short field82_0x218;
     undefined field_0x21a[0x2];
     char flag2;
     undefined field_0x21d[0x3];
     uint flag3;
     uint flag4;
     undefined field_0x228[0x14];
-    undefined4 field172_0x23c;
-    undefined4 field173_0x240;
-    int character;
-    u32 flag1;
-    undefined4 field176_0x24c;
-    undefined4 field177_0x250;
-    undefined4 field178_0x254;
+    undefined4 field111_0x23c;
+    undefined4 field112_0x240;
+    ApeCharacter  chara;
+    ApeRenderFlag  g_render_flags;
+    undefined4 field115_0x24c;
+    undefined4 field116_0x250;
+    undefined4 field117_0x254;
     struct Vec pos;
     struct Vec some_vec3;
-    undefined4 field181_0x270;
-    undefined4 field182_0x274;
-    undefined4 field183_0x278;
-    undefined4 field184_0x27c;
+    undefined4 field120_0x270;
+    undefined4 field121_0x274;
+    undefined4 field122_0x278;
+    undefined4 field123_0x27c;
     float scale;
     undefined field_0x284[0x4];
-    struct Quat chara_rotation;
-    int ape_index;
-    undefined4 field192_0x29c;
+    struct Quat ape_rotation;
+    int ape_idx;
+    undefined4 field131_0x29c;
     ApeLOD  lod;
-    undefined4 field194_0x2a4;
+    undefined4 field133_0x2a4;
     float g_smth_w_velocity1;
     float g_smth_w_velocity2;
     float g_smth_w_velocity3;
     float g_smth_w_velocity4;
-    undefined4 field199_0x2b8;
+    undefined4 field138_0x2b8;
     int color_index;
     undefined field_0x2c0[0x8];
     char ball_idx; /* Created by retype action */
     byte camera_visible_bitmask;
     undefined field_0x2ca[0x2];
-    float field213_0x2cc;
-    float field214_0x2d0;
-    float field215_0x2d4;
-    float field216_0x2d8;
-    float field217_0x2dc;
-    float field218_0x2e0;
-    float field219_0x2e4;
-    float field220_0x2e8;
-    float field221_0x2ec;
+    float field152_0x2cc;
+    float field153_0x2d0;
+    float field154_0x2d4;
+    float field155_0x2d8;
+    float field156_0x2dc;
+    float field157_0x2e0;
+    float field158_0x2e4;
+    float field159_0x2e8;
+    float field160_0x2ec;
 } __attribute__((__packed__));
 static_assert(sizeof(Ape) == 0x2f0);
+
+struct BoneState {
+    char * bone_name;
+    short flags;
+    short parent_id;
+    struct Vec translation;
+    float translation_distance; /* Created by retype action */
+    struct Vec g_translation_copy;
+    float g_float1;
+    Mtx g_rotation_mtx1;
+    Mtx g_rotation_mtx2; /* Created by retype action */
+    Mtx mtx; /* Created by retype action */
+    struct Vec g_vec; /* Created by retype action */
+    undefined field_0xc4[0xc];
+    undefined4 field23_0xd0;
+    short g_keyframe_a_count[3];
+    undefined field_0xda[0x6];
+    short g_keyframe_b_count[3];
+    undefined field_0xe6[0x6];
+    short g_keyframe_c_count[3];
+    undefined field_0xf2[0x6];
+    short g_keyframe_a_unk[3];
+    undefined field_0xfe[0x6];
+    short g_keyframe_b_unk[3];
+    undefined field_0x10a[0x6];
+    short g_keyframe_c_unk[3];
+    undefined field_0x116[0x6];
+    struct BoneKeyframe * g_keyframes_a[3];
+    undefined field_0x128[0xc];
+    struct BoneKeyframe * g_keyframes_b[3];
+    undefined field_0x140[0xc];
+    struct BoneKeyframe * g_keyframes_c[3];
+    undefined field_0x158[0x1c];
+} __attribute__((__packed__));
+static_assert(sizeof(BoneState) == 0x174);
 
 struct Mal { /* Structure of common_mal ape animation files? Header size unknown atm */
     undefined field_0x0[0x21];
@@ -1518,6 +1541,7 @@ enum {
     SPRITE_COPYRIGHT_TEXT_2=38,
     SPRITE_COPYRIGHT_TEXT_3=39,
     SPRITE_DEMO_MES=58,
+    SPRITE_GAMEDATA=95,
     SPRITE_HUD_KIWAKU_WORLD=112,
     SPRITE_TITLE=113
 };
@@ -1572,11 +1596,12 @@ struct Sprite {
     f32 fpara3; /* Arbitrary float param 3 */
     struct Sprite * prev_sprite;
     struct Sprite * next_sprite;
-    undefined4 g_maybe_pos_x;
-    undefined4 g_maybe_pos_y;
-    undefined4 field47_0x74;
-    undefined4 field48_0x78;
-    undefined field_0x7c[0x4];
+    s32 left;
+    s32 top;
+    s32 right;
+    s32 bottom;
+    u16 rot;
+    u16 field50_0x7e;
     float alpha; /* called trnsl in game? */
     struct Rgb24 add_color;
     undefined field_0x87[0x1];
@@ -1610,10 +1635,9 @@ struct DVDFileInfo { /* Not entirely sure about this one... I've filled in some 
     struct DVDCommandBlock cb;
     u32 startAddr;
     u32 length;
-    struct DVDFileInfo * next;
     void (* callback)(s32, struct DVDFileInfo *);
 } __attribute__((__packed__));
-static_assert(sizeof(DVDFileInfo) == 0x40);
+static_assert(sizeof(DVDFileInfo) == 0x3c);
 
 struct DVDDiskID {
     char gameName[4];
@@ -1639,6 +1663,7 @@ struct SpriteTex {
     GXTexFmt  format;
     OSHeapHandle heap;
     struct DVDFileInfo dvd_file;
+    undefined field_0x78[0x4];
 } __attribute__((__packed__));
 static_assert(sizeof(SpriteTex) == 0x7c);
 
@@ -1687,7 +1712,7 @@ struct SpriteDrawRequest { /* Used by Sprite disp() functions to render a textur
     SpriteDrawReqFlags  flags;
     u32 mult_color; /* RGB24 multiply blend color */
     u32 add_color; /* RGB24 add blend color */
-    s16 g_some_x_value;
+    s16 widescreen_translation_x;
     undefined field_0x42[0xe];
 } __attribute__((__packed__));
 static_assert(sizeof(SpriteDrawRequest) == 0x50);
@@ -1740,6 +1765,16 @@ struct WorldInfo {
 } __attribute__((__packed__));
 static_assert(sizeof(WorldInfo) == 0x3c);
 
+enum { /* Requested parameter to be returned from textdraw_chara_load. */
+    RETURN_WIDTH=0,
+    RETURN_CHARACTER_COUNT=1,
+    G_RETURN_SOME_BOOL=2,
+    RETURN_LINE_COUNT=3,
+    G_LOAD_ARAM_FONT=4,
+    G_LOAD_ARAM_FONT_2=5
+};
+typedef undefined1 TextdrawCharaLoadReturnParameter;
+
 typedef struct SeesawInfo SeesawInfo, *PSeesawInfo;
 
 struct SeesawInfo { /* Allocated on the heap for an itemgroup if it's a seesaw. Points to another struct also allocated on the heap that contains physics state info like current rotation angle. */
@@ -1755,24 +1790,29 @@ struct SeesawInfo { /* Allocated on the heap for an itemgroup if it's a seesaw. 
 } __attribute__((__packed__));
 static_assert(sizeof(SeesawInfo) == 0x20);
 
+typedef struct GSoundCue GSoundCue, *PGSoundCue;
+
+struct GSoundCue {
+    short g_sfx_id;
+    short g_sfx_rid;
+    char field2_0x4;
+    byte g_sfx_pan; /* From 0 - 127? */
+    char g_sfx_span;
+    char g_sfx_grp;
+    int player_id;
+} __attribute__((__packed__));
+static_assert(sizeof(GSoundCue) == 0xc);
+
 enum {
     DATA_SELECT=0,
     STAGE_SELECT_PRE_INTRO_SEQUENCE=1,
     STAGE_SELECT_INTRO_SEQUENCE=2,
+    STAGE_SELECT_UNK3=3,
     STAGE_SELECT_IDLE=4,
-    STAGE_SELECTED=6
+    STAGE_SELECT_UNK5=5,
+    STAGE_SELECT_SELECTED=6
 };
 typedef undefined2 StoryModeStageSelectState;
-
-typedef struct GCachedFileEntry GCachedFileEntry, *PGCachedFileEntry;
-
-struct GCachedFileEntry {
-    undefined field_0x0[0x4];
-    int dvd_entrynum;
-    struct DVDCommandBlock * next; /* Created by retype action */
-    struct DVDCommandBlock * prev;
-} __attribute__((__packed__));
-static_assert(sizeof(GCachedFileEntry) == 0x10);
 
 enum {
     MF_NONE=0,
@@ -1783,6 +1823,7 @@ enum {
     MF_PLAYING_MASTER_NOEX_COURSE=16,
     MF_0x20=32,
     MF_ADDITIONAL_REL_LOADED=512,
+    MG_G_NO_BANANAS=4096,
     MF_0x2000=8192,
     MF_OPTION_MODE=262144,
     MF_G_STOP_GAME_LOOP=2097152,
@@ -1792,19 +1833,6 @@ enum {
 };
 typedef undefined4 ModeFlag;
 
-typedef struct GSomeSoundStruct GSomeSoundStruct, *PGSomeSoundStruct;
-
-struct GSomeSoundStruct {
-    short g_sfx_id;
-    short g_sfx_rid;
-    char field2_0x4;
-    byte g_sfx_pan;
-    char g_sfx_span;
-    char g_sfx_grp;
-    int g_player_id;
-} __attribute__((__packed__));
-static_assert(sizeof(GSomeSoundStruct) == 0xc);
-
 typedef struct GSomeSpriteStruct GSomeSpriteStruct, *PGSomeSpriteStruct;
 
 struct GSomeSpriteStruct {
@@ -1813,6 +1841,15 @@ struct GSomeSpriteStruct {
     struct GSomeSpriteStruct * g_next;
 } __attribute__((__packed__));
 static_assert(sizeof(GSomeSpriteStruct) == 0xc);
+
+typedef struct GStaffRollStruct GStaffRollStruct, *PGStaffRollStruct;
+
+struct GStaffRollStruct {
+    undefined field_0x0[0x4];
+    undefined4 field4_0x4;
+    undefined field_0x8[0x50];
+} __attribute__((__packed__));
+static_assert(sizeof(GStaffRollStruct) == 0x58);
 
 typedef struct Item Item, *PItem;
 
@@ -2089,6 +2126,33 @@ struct UnlockInfo { /* Info about which stuff in the game is unlocked, such as m
 } __attribute__((__packed__));
 static_assert(sizeof(UnlockInfo) == 0x84);
 
+typedef struct DigitalInputGroup DigitalInputGroup, *PDigitalInputGroup;
+
+enum { /* These are normally just #defines in the SDK's PAD library */
+    PAD_BUTTON_LEFT=1,
+    PAD_BUTTON_RIGHT=2,
+    PAD_BUTTON_DOWN=4,
+    PAD_BUTTON_UP=8,
+    PAD_TRIGGER_Z=16,
+    PAD_TRIGGER_R=32,
+    PAD_TRIGGER_L=64,
+    PAD_BUTTON_A=256,
+    PAD_BUTTON_B=512,
+    PAD_BUTTON_X=1024,
+    PAD_BUTTON_Y=2048,
+    PAD_BUTTON_START=4096
+};
+typedef undefined2 PadDigitalInput;
+
+struct DigitalInputGroup { /* Consolidated bitfields for digital button inputs corresponding to the five PadStatusGroup types */
+    PadDigitalInput  raw;
+    PadDigitalInput  prev_tick;
+    PadDigitalInput  pressed;
+    PadDigitalInput  released;
+    PadDigitalInput  repeated;
+} __attribute__((__packed__));
+static_assert(sizeof(DigitalInputGroup) == 0xa);
+
 typedef struct Ball Ball, *PBall;
 
 enum {
@@ -2163,7 +2227,7 @@ struct Ball {
     int field48_0x108;
     struct Vec ape_facedir_point; /* The point of interest that the monkey looks at (goal, banana, etc) */
     float something_with_ape_facedir; /* Approaches 1 the closer you are to the point of interest */
-    struct Vec g_last_collision_normal; /* Maybe inverse of the normal of the last triangle collided with? */
+    struct Vec g_last_coli_normal; /* Maybe inverse of the normal of the last triangle collided with? */
     undefined field_0x128[0x4];
     dword g_race_flags;
     short g_other_counter;
@@ -2192,6 +2256,25 @@ struct Ball {
 } __attribute__((__packed__));
 static_assert(sizeof(Ball) == 0x1b0);
 
+typedef struct File File, *PFile;
+
+typedef struct FileCacheEntry FileCacheEntry, *PFileCacheEntry;
+
+struct FileCacheEntry {
+    s32 has_data;
+    s32 entry_num;
+    u32 aram_addr;
+    u32 aram_size;
+} __attribute__((__packed__));
+static_assert(sizeof(FileCacheEntry) == 0x10);
+
+struct File {
+    BOOL32 is_cached;
+    struct DVDFileInfo dvd_file_info;
+    struct FileCacheEntry cache_entry;
+} __attribute__((__packed__));
+static_assert(sizeof(File) == 0x50);
+
 typedef struct SmWorldInfo SmWorldInfo, *PSmWorldInfo;
 
 typedef struct SmStageInfo SmStageInfo, *PSmStageInfo;
@@ -2209,11 +2292,69 @@ struct SmStageInfo { /* A list of 10 of these is used to define a world */
 } __attribute__((__packed__));
 static_assert(sizeof(SmStageInfo) == 0x4);
 
+enum {
+    DMD_SCEN_1ST_INIT=0,
+    DMD_SCEN_RETURN_INIT=1,
+    DMD_SCEN_NEWGAME_INIT=2,
+    DMD_SCEN_NEWGAME_MAIN=3,
+    DMD_SCEN_LOADGAME_INIT=4,
+    DMD_SCEN_LOADGAME_MAIN=5,
+    DMD_SCEN_SCENEPLAY_INIT=6,
+    DMD_SCEN_SCENEPLAY_MAIN=7,
+    DMD_SCEN_SEL_WORLD_INIT=8,
+    DMD_SCEN_SEL_WORLD_NEXT=9,
+    DMD_SCEN_SEL_FLOOR_INIT=10,
+    DMD_SCEN_SEL_FLOOR_MAIN=11,
+    DMD_SCEN_GAME_INIT=12,
+    DMD_SCEN_GAME_MAIN=13,
+    DMD_SCEN_GAME_CLEAR_INIT=14,
+    DMD_SCEN_GAME_CLEAR_MAIN=15,
+    DMD_SCEN_GAME_OVER_INIT=16,
+    DMD_SCEN_GAME_OVER_MAIN=17,
+    DMD_SCEN_SELECT_INIT=18,
+    DMD_SCEN_SELECT_MAIN=19,
+    DMD_SCEN_ENTRY_INIT=20,
+    DMD_SCEN_ENTRY_MAIN=21,
+    DMD_SCEN_SCNPLAY_RETURN=22,
+    DMD_SCEN_SCNPLAY_RETURN_LOADING=23,
+    DMD_SCEN_LOADGAME_RESTORE=24,
+    DMD_SCEN_NAMEENTRY_INIT=25,
+    DMD_SCEN_NAMEENTRY_MAIN=26
+};
+typedef undefined2 ScenMode;
+
+typedef struct FontDefinition FontDefinition, *PFontDefinition;
+
+struct FontDefinition {
+    short g_aram_flag;
+    byte width;
+    byte height;
+    int g_start_index;
+    int g_end_index;
+    char field5_0xc;
+    undefined field_0xd[0x3];
+    float field9_0x10;
+    float field10_0x14;
+    float field11_0x18;
+    float field12_0x1c;
+    char field13_0x20;
+    char field14_0x21;
+    char field15_0x22;
+    char field16_0x23;
+    char * name;
+    ushort g_some_size;
+    undefined field_0x2a[0x2];
+    ushort * g_some_avtext_lookup; /* Some short that usually always begins with '8' */
+    short * g_aram_char_lookup;
+    float field23_0x34;
+} __attribute__((__packed__));
+static_assert(sizeof(FontDefinition) == 0x38);
+
 typedef struct Itemgroup Itemgroup, *PItemgroup;
 
 struct Itemgroup { /* Contains the current animation-related state of each item group in a stage (each thing corresponding to a collision header in the stagedef) */
     dword playback_state; /* Corresponding to the switch playback type which is controlling the item group, see PlaybackState */
-    dword anim_frame;
+    s32 anim_frame;
     struct Vec position;
     struct Vec prev_position;
     struct S16Vec rotation;
@@ -2224,6 +2365,21 @@ struct Itemgroup { /* Contains the current animation-related state of each item 
     struct SeesawInfo * seesaw_info;
 } __attribute__((__packed__));
 static_assert(sizeof(Itemgroup) == 0xa0);
+
+typedef struct GSoundGroupEntry GSoundGroupEntry, *PGSoundGroupEntry;
+
+struct GSoundGroupEntry {
+    undefined2 g_flags;
+    undefined field_0x2[0x2];
+    undefined2 field3_0x4;
+    undefined field_0x6[0x2];
+    undefined2 field6_0x8;
+    undefined field_0xa[0x2];
+    char * g_name;
+} __attribute__((__packed__));
+static_assert(sizeof(GSoundGroupEntry) == 0x10);
+
+typedef char CharPair[2];
 
 typedef struct StoryModeSaveFile StoryModeSaveFile, *PStoryModeSaveFile;
 
@@ -2243,14 +2399,24 @@ struct StoryModeSaveFile {
 } __attribute__((__packed__));
 static_assert(sizeof(StoryModeSaveFile) == 0x84);
 
-typedef struct GBone GBone, *PGBone;
+typedef struct BoneChannel BoneChannel, *PBoneChannel;
 
-struct GBone {
-    struct SKLFile * SKLData;
-    void * MTAData;
-    void * UnknownPtr;
+struct BoneChannel {
+    u16 keyframe_count;
+    u16 padding;
 } __attribute__((__packed__));
-static_assert(sizeof(GBone) == 0xc);
+static_assert(sizeof(BoneChannel) == 0x4);
+
+typedef struct BoneDef BoneDef, *PBoneDef;
+
+struct BoneDef { /* Null-terminated bone name directly follows, followed by 4(?) byte-aligned next bone */
+    short parent_bone_id;
+    short flags;
+    struct Quat g_rotation1;
+    struct Quat g_rotation2;
+    struct Vec translation;
+} __attribute__((__packed__));
+static_assert(sizeof(BoneDef) == 0x30);
 
 typedef struct RankingEntry RankingEntry, *PRankingEntry;
 
@@ -2273,6 +2439,41 @@ struct GTableEntry {
     undefined field_0x4[0x8];
 } __attribute__((__packed__));
 static_assert(sizeof(GTableEntry) == 0xc);
+
+typedef struct BoneAnim BoneAnim, *PBoneAnim;
+
+struct BoneAnim {
+    ushort channels_bitfield;
+    undefined2 field1_0x2;
+} __attribute__((__packed__));
+static_assert(sizeof(BoneAnim) == 0x4);
+
+typedef struct theme_light theme_light, *Ptheme_light;
+
+typedef short int16_t;
+
+struct theme_light { /* A struct used for each theme ID's lighting */
+    float unk_float; /* Usually 0.6 */
+    float light_group_r;
+    float light_group_g;
+    float light_group_b;
+    float light_group_null;
+    float unk_one_1;
+    float unk_one_2;
+    float unk_one_3;
+    float unk_one_null;
+    float unk_half_1;
+    float unk_half_2;
+    float unk_half_3;
+    float unk_half_null;
+    float light_param_r;
+    float light_param_g;
+    float light_param_b;
+    int16_t xa;
+    int16_t ya;
+    float null;
+} __attribute__((__packed__));
+static_assert(sizeof(theme_light) == 0x48);
 
 typedef struct OptiGXChanSettings OptiGXChanSettings, *POptiGXChanSettings;
 
@@ -2308,6 +2509,13 @@ struct OptiGXChanSettings { /* Opti = For optimization */
     GXAttnFn  attn_fn;
 } __attribute__((__packed__));
 static_assert(sizeof(OptiGXChanSettings) == 0x18);
+
+typedef struct GSomeLightStruct GSomeLightStruct, *PGSomeLightStruct;
+
+struct GSomeLightStruct {
+    undefined field_0x0[0x12b];
+} __attribute__((__packed__));
+static_assert(sizeof(GSomeLightStruct) == 0x12b);
 
 typedef struct CmListEntry CmListEntry, *PCmListEntry;
 
@@ -2512,36 +2720,41 @@ struct g_someGameInfo {
 } __attribute__((__packed__));
 static_assert(sizeof(g_someGameInfo) == 0x50);
 
-enum {
-    DMD_SCEN_1ST_INIT=0,
-    DMD_SCEN_RETURN_INIT=1,
-    DMD_SCEN_NEWGAME_INIT=2,
-    DMD_SCEN_NEWGAME_MAIN=3,
-    DMD_SCEN_LOADGAME_INIT=4,
-    DMD_SCEN_LOADGAME_MAIN=5,
-    DMD_SCEN_SCENEPLAY_INIT=6,
-    DMD_SCEN_SCENEPLAY_MAIN=7,
-    DMD_SCEN_SEL_WORLD_INIT=8,
-    DMD_SCEN_SEL_WORLD_NEXT=9,
-    DMD_SCEN_SEL_FLOOR_INIT=10,
-    DMD_SCEN_SEL_FLOOR_MAIN=11,
-    DMD_SCEN_GAME_INIT=12,
-    DMD_SCEN_GAME_MAIN=13,
-    DMD_SCEN_GAME_CLEAR_INIT=14,
-    DMD_SCEN_GAME_CLEAR_MAIN=15,
-    DMD_SCEN_GAME_OVER_INIT=16,
-    DMD_SCEN_GAME_OVER_MAIN=17,
-    DMD_SCEN_SELECT_INIT=18,
-    DMD_SCEN_SELECT_MAIN=19,
-    DMD_SCEN_ENTRY_INIT=20,
-    DMD_SCEN_ENTRY_MAIN=21,
-    DMD_SCEN_SCNPLAY_RETURN=22,
-    DMD_SCEN_SCNPLAY_RETURN_LOADING=23,
-    DMD_SCEN_LOADGAME_RESTORE=24,
-    DMD_SCEN_NAMEENTRY_INIT=25,
-    DMD_SCEN_NAMEENTRY_MAIN=26
-};
-typedef undefined2 StoryModeFunc;
+typedef struct GSoundGroup GSoundGroup, *PGSoundGroup;
+
+struct GSoundGroup { /* Has same length as GSoundGroupEntry and a fair bit of overlap - is this unioned with that? -Alice */
+    undefined field_0x0[0x4];
+    char * field4_0x4;
+    undefined2 field5_0x8;
+    undefined field_0xa[0x2];
+    char * g_name;
+    struct GSoundGroupEntry field9_0x10[0]; /* vla? */
+} __attribute__((__packed__));
+static_assert(sizeof(GSoundGroup) == 0x10);
+
+typedef struct ScenInfo ScenInfo, *PScenInfo;
+
+struct ScenInfo {
+    ScenMode  mode;
+    ScenMode  mode_request;
+    undefined2 world;
+    s16 world_stage;
+    undefined4 flags;
+    undefined2 next_world;
+    undefined field_0xe[2];
+    undefined4 score;
+    undefined4 bananas;
+    undefined4 g_some_storymode_func_ptr;
+    undefined field_0x1c[6];
+    undefined1 save_file_idx;
+    undefined field_0x23[1];
+    undefined4 field19_0x24;
+    undefined4 field20_0x28;
+    undefined4 field21_0x2c;
+    undefined4 field22_0x30;
+    undefined4 field23_0x34;
+} __attribute__((__packed__));
+static_assert(sizeof(ScenInfo) == 0x38);
 
 enum {
     FONT16_ASCII=0,
@@ -2713,33 +2926,9 @@ struct MemCardInfo { /* Some struct that seems to hold per-memcard info; there a
 } __attribute__((__packed__));
 static_assert(sizeof(MemCardInfo) == 0x44);
 
-typedef struct GSomeFileStruct GSomeFileStruct, *PGSomeFileStruct;
-
-struct GSomeFileStruct {
-    BOOL32 dvd_entrynum;
-    struct DVDFileInfo dvdFileInfo;
-} __attribute__((__packed__));
-static_assert(sizeof(GSomeFileStruct) == 0x44);
-
 typedef struct PadStatusGroup PadStatusGroup, *PPadStatusGroup;
 
 typedef struct PADStatus PADStatus, *PPADStatus;
-
-enum { /* These are normally just #defines in the SDK's PAD library */
-    PAD_BUTTON_LEFT=1,
-    PAD_BUTTON_RIGHT=2,
-    PAD_BUTTON_DOWN=4,
-    PAD_BUTTON_UP=8,
-    PAD_TRIGGER_Z=16,
-    PAD_TRIGGER_R=32,
-    PAD_TRIGGER_L=64,
-    PAD_BUTTON_A=256,
-    PAD_BUTTON_B=512,
-    PAD_BUTTON_X=1024,
-    PAD_BUTTON_Y=2048,
-    PAD_BUTTON_START=4096
-};
-typedef undefined2 PadDigitalInput;
 
 struct PADStatus {
     PadDigitalInput  button; /* Or-ed PAD_BUTTON_* and PAD_TRIGGER_* bits */
@@ -2765,16 +2954,12 @@ struct PadStatusGroup { /* A set of PADStatus structs for a given controller, wi
 } __attribute__((__packed__));
 static_assert(sizeof(PadStatusGroup) == 0x3c);
 
-typedef struct DigitalInputGroup DigitalInputGroup, *PDigitalInputGroup;
-
-struct DigitalInputGroup { /* Consolidated bitfields for digital button inputs corresponding to the five PadStatusGroup types */
-    PadDigitalInput  raw;
-    PadDigitalInput  prev_tick;
-    PadDigitalInput  pressed;
-    PadDigitalInput  released;
-    PadDigitalInput  repeated;
-} __attribute__((__packed__));
-static_assert(sizeof(DigitalInputGroup) == 0xa);
+enum { /* Some flags that get set during render loops, perhaps? */
+    RENDERFLAG_NONE=0,
+    RENDERFLAG_DISP=8,
+    RENDERFLAG_MINIMAP=1024
+};
+typedef undefined4 GRenderringFlags;
 
 typedef struct AnalogInputGroup AnalogInputGroup, *PAnalogInputGroup;
 
@@ -2830,6 +3015,14 @@ enum {
 };
 typedef undefined1 WidescreenMode;
 
+typedef struct SkeletonAnim SkeletonAnim, *PSkeletonAnim;
+
+struct SkeletonAnim {
+    short g_unk1;
+    short bone_count;
+} __attribute__((__packed__));
+static_assert(sizeof(SkeletonAnim) == 0x4);
+
 typedef struct MemCardFile MemCardFile, *PMemCardFile;
 
 typedef struct CARDFileInfo CARDFileInfo, *PCARDFileInfo;
@@ -2880,7 +3073,7 @@ enum {
 typedef undefined1 GoalType;
 
 struct ModeInfo { /* I don't know what to call this, but there's some important global game info in here! -Complex */
-    G_BallMode  g_ball_mode; /* Correlates with the ball's 'mode' in the debug menu's ball display. Bonus stages have 0x40 set, final stages in a difficulty have 0x1000 set.  0x8 seems to stop the timer? -Crafted */
+    G_BallMode  ball_mode; /* Correlates with the ball's 'mode' in the debug menu's ball display. Bonus stages have 0x40 set, final stages in a difficulty have 0x1000 set.  0x8 seems to stop the timer? -Crafted */
     s16 stage_time_frames_remaining;
     undefined2 stage_time_limit;
     undefined4 field3_0x8;
@@ -2892,8 +3085,8 @@ struct ModeInfo { /* I don't know what to call this, but there's some important 
     undefined2 cm_course_stage_num; /* Current course stage num, updated immediately after completing stage */
     undefined2 g_some_stage_jump_distance;
     undefined4 bananas_remaining;
-    undefined2 field12_0x28;
-    undefined2 field13_0x2a;
+    u16 death_count;
+    undefined2 continues_used;
     undefined2 g_next_stage_id2;
     s16 cm_stage_id; /* Current challenge mode stage id, updated immediately after finishing stage */
     undefined2 field16_0x30;
@@ -2991,6 +3184,15 @@ struct S32Vec {
 } __attribute__((__packed__));
 static_assert(sizeof(S32Vec) == 0x8);
 
+typedef struct StoryStagePreviewParam StoryStagePreviewParam, *PStoryStagePreviewParam;
+
+struct StoryStagePreviewParam { /* Used for each stage preview on the Story Mode Stage Select screen */
+    s16 stage_id; /* Only used when generating previews through Debug Mode */
+    undefined2 field0x2; /* Seems to usually be 0x1000 or 0x1800 */
+    float scale; /* Usually 1 with the exception of Entangled Path */
+} __attribute__((__packed__));
+static_assert(sizeof(StoryStagePreviewParam) == 0x8);
+
 enum {
     OF_G_SMTH_WITH_CAMERA=2,
     OF_GAME_PAUSED=8
@@ -3023,6 +3225,8 @@ enum {
     MINIMAP_INIT=4
 };
 typedef undefined4 MinimapMode;
+
+typedef longlong OSTime;
 
 typedef struct DipSwitchesOld DipSwitchesOld, *PDipSwitchesOld;
 
@@ -3147,6 +3351,29 @@ enum { /* Abbreviated "ET" in the game */
 };
 typedef undefined2 EffectType;
 
+typedef struct GApeAnim GApeAnim, *PGApeAnim;
+
+typedef struct g_thing g_thing, *Pg_thing;
+
+struct g_thing {
+    undefined field_0x0[0x8];
+    char * Name;
+    undefined field_0xc[0x1c];
+} __attribute__((__packed__));
+static_assert(sizeof(g_thing) == 0x28);
+
+struct GApeAnim { /* Unknown length -Crafted */
+    u8 field0_0x0;
+    undefined field_0x1[0x3];
+    struct g_thing * count;
+    struct GApeAnim * ape;
+    s32 * field6_0xc; /* Ptr to some struct? */
+    undefined field_0x10[0xc];
+    s32 g_either_motion_or_skel2;
+    undefined field_0x20[0x8];
+} __attribute__((__packed__));
+static_assert(sizeof(GApeAnim) == 0x28);
+
 enum {
     GX_USAGE_NONE=0,
     GX_USAGE_LOCKED_CACHE_ENABLED=2,
@@ -3216,12 +3443,22 @@ enum {
     PMT_CHALLENGE=1,
     PMT_PRACTICE=2,
     PMT_UNKNOWN3=3,
-    PMT_UNKNOWN4=4,
+    PMT_BILLIARDS=4,
     PMT_STORY_STAGE_SELECT=5,
     PMT_STORY_PLAY=6,
     PMT_UNKNOWN7=7
 };
 typedef undefined4 PauseMenuType;
+
+typedef struct ShadowReceive ShadowReceive, *PShadowReceive;
+
+struct ShadowReceive {
+    void * ptr1;
+    u16 val1;
+    u16 val2;
+    void * ptr2;
+} __attribute__((__packed__));
+static_assert(sizeof(ShadowReceive) == 0xc);
 
 typedef struct ytgut ytgut, *Pytgut;
 
@@ -3229,6 +3466,14 @@ struct ytgut {
     undefined field_0x0[0x4];
 } __attribute__((__packed__));
 static_assert(sizeof(ytgut) == 0x4);
+
+typedef struct GDialogStruct GDialogStruct, *PGDialogStruct;
+
+struct GDialogStruct {
+    undefined4 g_test_dialog_ptr;
+    undefined field_0x4[0x138];
+} __attribute__((__packed__));
+static_assert(sizeof(GDialogStruct) == 0x13c);
 
 typedef struct PoolInfo PoolInfo, *PPoolInfo;
 
@@ -3239,6 +3484,16 @@ struct PoolInfo { /* Metadata and status info for lists of "tickable" objects li
     u8 * status_list; /* Byte array of same length as the pool, each byte corresponds to some status of the corresponding object. Usually either 0 for "empty slot" and either 1 or 2 for "active". This does not appear to be a Status like Events use. */
 } __attribute__((__packed__));
 static_assert(sizeof(PoolInfo) == 0x10);
+
+typedef struct SelMenuInfo SelMenuInfo, *PSelMenuInfo;
+
+struct SelMenuInfo {
+    u8 menu_stack_ptr;
+    u8 menu_stack[10];
+    undefined field_0xb[0x3];
+    undefined2 field5_0xe;
+} __attribute__((__packed__));
+static_assert(sizeof(SelMenuInfo) == 0x10);
 
 enum {
     PIID_LEFT=0,
@@ -3261,6 +3516,21 @@ enum {
     PLAYBACK_FAST_BACKWARD=4
 };
 typedef undefined2 PlaybackState;
+
+typedef struct OrdTblData OrdTblData, *POrdTblData;
+
+struct OrdTblData {
+    Mtx matrices[5];
+    struct OrdTblNode * entries;
+    s32 max_entries;
+    float depth_offset;
+    float min_depth;
+    float max_depth;
+    struct OrdTblNode * last_entry;
+    struct OrdTblNode * first_entry;
+    float depth_range;
+} __attribute__((__packed__));
+static_assert(sizeof(OrdTblData) == 0x110);
 
 enum { /* Options for rendering text with font */
     TEXTDRAW_FLAG_BORDER=536870912,
@@ -3319,15 +3589,117 @@ static_assert(sizeof(_IO_FILE) == 0x74);
 
 typedef double f64;
 
+#define __WORDSIZE 32
+
+#define __GLIBC_HAVE_LONG_LONG 1
+
 typedef struct _IO_FILE __FILE;
 
 typedef struct _IO_FILE FILE;
 
-typedef int bool_t;
-
 typedef signed char int8_t;
 
+typedef int bool_t;
+
 typedef int int32_t;
+
+typedef struct g_some_card_struct g_some_card_struct, *Pg_some_card_struct;
+
+typedef struct OSThreadQueue OSThreadQueue, *POSThreadQueue;
+
+typedef struct OSThread OSThread, *POSThread;
+
+typedef struct OSContext OSContext, *POSContext;
+
+typedef s32 OSPriority;
+
+typedef struct OSThreadLink OSThreadLink, *POSThreadLink;
+
+typedef struct OSMutex OSMutex, *POSMutex;
+
+typedef struct OSMutexQueue OSMutexQueue, *POSMutexQueue;
+
+typedef struct OSMutexLink OSMutexLink, *POSMutexLink;
+
+struct OSContext {
+    u32 gpr[32]; /* General-purpose registers */
+    u32 cr;
+    u32 lr;
+    u32 ctr;
+    u32 xer;
+    f64 fpr[32]; /* Floating-point registers */
+    u32 fpscr_pad;
+    u32 fpscr;
+    u32 ssr0; /* Exception handling registers */
+    u32 ssr1;
+    u16 mode; /* Context mode - since UIMM is 16 bits in PPC */
+    u16 state; /* OR-ed OS_CONTEXT_STATE_* */
+    u32 gqr[8]; /* Place Gekko regs at the end so we have minimal changes to existing code */
+    f64 psf[32];
+} __attribute__((__packed__));
+static_assert(sizeof(OSContext) == 0x2c4);
+
+struct OSThreadQueue {
+    struct OSThread * head;
+    struct OSThread * tail;
+} __attribute__((__packed__));
+static_assert(sizeof(OSThreadQueue) == 0x8);
+
+struct OSMutexQueue {
+    struct OSMutex * head;
+    struct OSMutex * tail;
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutexQueue) == 0x8);
+
+struct OSThreadLink {
+    struct OSThread * next;
+    struct OSThread * prev;
+} __attribute__((__packed__));
+static_assert(sizeof(OSThreadLink) == 0x8);
+
+struct OSThread {
+    struct OSContext context; /* register context */
+    u16 state; /* OS_THREAD_STATE_* */
+    u16 attr; /* OS_THREAD_ATTR_* */
+    s32 suspend; /* suspended if the count is greater than zero */
+    OSPriority priority; /* effective scheduling priority */
+    OSPriority base; /* base scheduling priority */
+    void * val; /* exit value */
+    struct OSThreadQueue * queue; /* queue thread is on */
+    struct OSThreadLink link; /* queue link */
+    struct OSThreadQueue * queueJoin; /* list of threads waiting for termination (join) */
+    struct OSMutex * mutex; /* mutex trying to lock */
+    struct OSMutexQueue queueMutex; /* list of mutexes owned */
+    struct OSThreadLink linkActive; /* list of all threads for debugging */
+    u8 * stackBase; /* the thread's designated stack (high address) */
+    u32 * stackEnd; /* last word of stack (low address) */
+} __attribute__((__packed__));
+static_assert(sizeof(OSThread) == 0x304);
+
+struct OSMutexLink {
+    struct OSMutex * next;
+    struct OSMutex * prev;
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutexLink) == 0x8);
+
+struct OSMutex {
+    struct OSThreadQueue queue;
+    struct OSThread * thread; /* the current owner */
+    s32 count; /* lock count */
+    struct OSMutexLink link; /* for OSThread.queueMutex */
+} __attribute__((__packed__));
+static_assert(sizeof(OSMutex) == 0x18);
+
+struct g_some_card_struct {
+    undefined field_0x0[0x4];
+    undefined4 field4_0x4;
+    undefined field_0x8[0x84];
+    struct OSThreadQueue field137_0x8c;
+    undefined field_0x94[0x4c];
+    undefined4 field214_0xe0;
+    undefined field_0xe4[0x2c];
+} __attribute__((__packed__));
+static_assert(sizeof(g_some_card_struct) == 0x110);
 
 typedef struct gSceneData gSceneData, *PgSceneData;
 
@@ -3379,7 +3751,8 @@ struct StagedefAnimKeyframe {
     Easing  easing;
     float time;
     float value;
-    undefined field_0xc[0x8];
+    float tangent_in;
+    float tangent_out;
 } __attribute__((__packed__));
 static_assert(sizeof(StagedefAnimKeyframe) == 0x14);
 
@@ -3517,7 +3890,7 @@ typedef undefined2 StagedefAnimType;
 
 typedef struct StagedefColiTri StagedefColiTri, *PStagedefColiTri;
 
-typedef struct StagedefMystery5 StagedefMystery5, *PStagedefMystery5;
+typedef struct GStagedefBoundSphere GStagedefBoundSphere, *PGStagedefBoundSphere;
 
 typedef struct StagedefBackgroundAnim2Header StagedefBackgroundAnim2Header, *PStagedefBackgroundAnim2Header;
 
@@ -3603,7 +3976,7 @@ struct StagedefColiCylinder {
 static_assert(sizeof(StagedefColiCylinder) == 0x1c);
 
 struct StagedefBackgroundModel {
-    undefined field_0x0[0x4];
+    uint g_model_flag;
     char * model_name;
     struct GmaModel * gma_model; /* Created by retype action */
     struct Vec position;
@@ -3633,15 +4006,6 @@ struct StagedefBanana {
     BananaType  type;
 } __attribute__((__packed__));
 static_assert(sizeof(StagedefBanana) == 0x10);
-
-struct StagedefMystery5 {
-    undefined field_0x0[0x4];
-    float field4_0x4;
-    float field5_0x8;
-    float field6_0xc;
-    float field7_0x10;
-} __attribute__((__packed__));
-static_assert(sizeof(StagedefMystery5) == 0x14);
 
 struct StagedefColiCone {
     struct Vec position;
@@ -3688,6 +4052,15 @@ struct StagedefColiTri {
     struct Vec2d bitangent;
 } __attribute__((__packed__));
 static_assert(sizeof(StagedefColiTri) == 0x40);
+
+struct GStagedefBoundSphere {
+    undefined field_0x0[0x4];
+    float field4_0x4;
+    float field5_0x8;
+    float field6_0xc;
+    float field7_0x10;
+} __attribute__((__packed__));
+static_assert(sizeof(GStagedefBoundSphere) == 0x14);
 
 struct StagedefGoal {
     struct Vec position;
@@ -3860,15 +4233,15 @@ struct StagedefColiHeader {
     u32 button_count;
     struct StagedefButton * button_list;
     undefined field_0xb0[0x4];
-    struct StagedefMystery5 * mystery5;
+    struct GStagedefBoundSphere * g_bound_sphere;
     float seesaw_sensitivity; /* Higher is more sensitive, negative makes the seesaw reversed */
     float seesaw_friction; /* Lower is looser */
     float seesaw_spring; /* 0 prevents the seesaw from resetting */
     u32 wormhole_count;
     struct StagedefWormhole * wormhole_list;
     u32 initial_playback_state; /* Should this be split into 2x padding bytes + PlaybackState enum? */
-    undefined field_0xd0[0x4];
-    float anim_loop_point_seconds;
+    float loop_start_sec;
+    float loop_end_sec;
     struct StagedefTextureScroll * texture_scroll;
     undefined field_0xdc[0x3c0];
 } __attribute__((__packed__));
@@ -3986,91 +4359,6 @@ struct OSSectionInfo {
     u32 size;
 } __attribute__((__packed__));
 static_assert(sizeof(OSSectionInfo) == 0x8);
-
-typedef struct OSThreadLink OSThreadLink, *POSThreadLink;
-
-typedef struct OSThread OSThread, *POSThread;
-
-typedef struct OSContext OSContext, *POSContext;
-
-typedef s32 OSPriority;
-
-typedef struct OSThreadQueue OSThreadQueue, *POSThreadQueue;
-
-typedef struct OSMutex OSMutex, *POSMutex;
-
-typedef struct OSMutexQueue OSMutexQueue, *POSMutexQueue;
-
-typedef struct OSMutexLink OSMutexLink, *POSMutexLink;
-
-struct OSThreadLink {
-    struct OSThread * next;
-    struct OSThread * prev;
-} __attribute__((__packed__));
-static_assert(sizeof(OSThreadLink) == 0x8);
-
-struct OSMutexLink {
-    struct OSMutex * next;
-    struct OSMutex * prev;
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutexLink) == 0x8);
-
-struct OSThreadQueue {
-    struct OSThread * head;
-    struct OSThread * tail;
-} __attribute__((__packed__));
-static_assert(sizeof(OSThreadQueue) == 0x8);
-
-struct OSMutex {
-    struct OSThreadQueue queue;
-    struct OSThread * thread; /* the current owner */
-    s32 count; /* lock count */
-    struct OSMutexLink link; /* for OSThread.queueMutex */
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutex) == 0x18);
-
-struct OSContext {
-    u32 gpr[32]; /* General-purpose registers */
-    u32 cr;
-    u32 lr;
-    u32 ctr;
-    u32 xer;
-    f64 fpr[32]; /* Floating-point registers */
-    u32 fpscr_pad;
-    u32 fpscr;
-    u32 ssr0; /* Exception handling registers */
-    u32 ssr1;
-    u16 mode; /* Context mode - since UIMM is 16 bits in PPC */
-    u16 state; /* OR-ed OS_CONTEXT_STATE_* */
-    u32 gqr[8]; /* Place Gekko regs at the end so we have minimal changes to existing code */
-    f64 psf[32];
-} __attribute__((__packed__));
-static_assert(sizeof(OSContext) == 0x2c4);
-
-struct OSMutexQueue {
-    struct OSMutex * head;
-    struct OSMutex * tail;
-} __attribute__((__packed__));
-static_assert(sizeof(OSMutexQueue) == 0x8);
-
-struct OSThread {
-    struct OSContext context; /* register context */
-    u16 state; /* OS_THREAD_STATE_* */
-    u16 attr; /* OS_THREAD_ATTR_* */
-    s32 suspend; /* suspended if the count is greater than zero */
-    OSPriority priority; /* effective scheduling priority */
-    OSPriority base; /* base scheduling priority */
-    void * val; /* exit value */
-    struct OSThreadQueue * queue; /* queue thread is on */
-    struct OSThreadLink link; /* queue link */
-    struct OSThreadQueue * queueJoin; /* list of threads waiting for termination (join) */
-    struct OSMutex * mutex; /* mutex trying to lock */
-    struct OSMutexQueue queueMutex; /* list of mutexes owned */
-    struct OSThreadLink linkActive; /* list of all threads for debugging */
-    u8 * stackBase; /* the thread's designated stack (high address) */
-    u32 * stackEnd; /* last word of stack (low address) */
-} __attribute__((__packed__));
-static_assert(sizeof(OSThread) == 0x304);
 
 enum {
     GX_NONE=0,
@@ -4649,6 +4937,22 @@ enum {
 };
 typedef undefined4 GXPosNrmMtx;
 
+typedef struct OSCalendarTime OSCalendarTime, *POSCalendarTime;
+
+struct OSCalendarTime {
+    int sec; /* seconds after the minute [0, 61] */
+    int min; /* minutes after the hour [0, 59] */
+    int hour; /* hours since midnight [0, 23] */
+    int mday; /* day of the month [1, 31] */
+    int mon; /* month since January [0, 11] */
+    int year; /* years in AD [1, ...] */
+    int wday; /* days since Sunday [0, 6] */
+    int yday; /* days since January 1 [0, 365] */
+    int msec; /* milliseconds after the second [0,999] */
+    int usec; /* microseconds after the millisecond [0,999] */
+} __attribute__((__packed__));
+static_assert(sizeof(OSCalendarTime) == 0x28);
+
 enum {
     GX_PF_RGB8_Z24=0,
     GX_PF_RGBA6_Z24=1,
@@ -5024,22 +5328,6 @@ enum {
 };
 typedef undefined4 GXIndTexScale;
 
-typedef struct OSCalendarTime OSCalendarTime, *POSCalendarTime;
-
-struct OSCalendarTime {
-    int sec; /* seconds after the minute [0, 61] */
-    int min; /* minutes after the hour [0, 59] */
-    int hour; /* hours since midnight [0, 23] */
-    int mday; /* day of the month [1, 31] */
-    int mon; /* month since January [0, 11] */
-    int year; /* years in AD [1, ...] */
-    int wday; /* days since Sunday [0, 6] */
-    int yday; /* days since January 1 [0, 365] */
-    int msec; /* milliseconds after the second [0,999] */
-    int usec; /* microseconds after the millisecond [0,999] */
-} __attribute__((__packed__));
-static_assert(sizeof(OSCalendarTime) == 0x28);
-
 typedef s16 __OSInterrupt;
 
 enum {
@@ -5276,7 +5564,7 @@ extern "C" {
     extern undefined thermal_management_interrupt_exception_handler;
     extern undefined4 osStringTablePtr;
     extern pointer switchdataD_80081a8c;
-    extern undefined2 g_some_font_array;
+    extern struct FontDefinition FONT_DEFINITIONS[144];
     extern undefined fullscreen_texture_buf;
     extern pointer switchdataD_80110c1c;
     extern undefined * switchdataD_80111e20;
@@ -5322,7 +5610,6 @@ extern "C" {
     extern undefined4 safe_thread_priority;
     extern undefined4 vsync_thread_priority;
     extern undefined4 mwidle_thread_priority;
-    extern undefined stdout;
     extern undefined * switchdataD_801444c0;
     extern char ASCII_LOWERCASE[256];
     extern char ASCII_UPPERCASE[256];
@@ -5338,6 +5625,10 @@ extern "C" {
     extern struct DigitalInputGroup merged_digital_inputs;
     extern struct AnalogInputGroup analog_inputs[4];
     extern dword frames_since_last_input_change;
+    extern undefined4 g_some_arq_request_src;
+    extern undefined g_aram_font_file_buffer;
+    extern undefined g_aram_font_source_location;
+    extern struct ARQRequest arq_task_struct;
     extern struct GXTexObj sega_splash_tex;
     extern undefined synthGlobalVariable;
     extern undefined shdwRegs;
@@ -5403,6 +5694,9 @@ extern "C" {
     extern undefined4 g_some_func_ptr1;
     extern undefined4 g_some_OSTime;
     extern u32 (* console_reset_callback)(void);
+    extern undefined4 aram_ptr;
+    extern undefined4 aram_font_to_mram_font_spinlock;
+    extern undefined4 g_some_arq_req_spinlock;
     extern undefined4 BootInfo;
     extern undefined4 BI2DebugFlag;
     extern undefined4 AreWeInitialized;
@@ -5422,6 +5716,7 @@ extern "C" {
     extern undefined2 displayOffsetV;
     extern undefined4 showChangeMode;
     extern undefined4 shdwChanged;
+    extern undefined4 g_arq_chunk_size;
     extern undefined4 CPUFifo;
     extern undefined4 GPFifo;
     extern undefined4 TokenCB;
@@ -5480,6 +5775,7 @@ extern "C" {
     extern float FLOAT0;
     extern float FLOAT1;
     extern float FLOAT400;
+    extern byte pausemenu_entry_counts[8];
     extern undefined4 g_something_with_camera;
     extern double g_related_to_camera_turn_rate_and_stage_tilt;
     extern float camera_near_clip_z;
@@ -5489,18 +5785,22 @@ extern "C" {
     extern double camera_height;
     extern double camera_pivot_height;
     extern float camera_distance;
+    extern undefined4 g_some_array_related_to_lights_2;
     extern undefined4 g_some_light_color;
     extern float FLOAT20000;
     extern float FLOAT0_2;
     extern float FLOAT480;
     extern float FLOAT640;
     extern BgmTrack  g_bgm_id_lookup_table[43];
+    extern struct GSoundGroup g_sound_group_GRPse04;
+    extern struct GSoundGroupEntry g_sound_group_GRPse04_items[1463];
     extern struct GXColor debugtext_bg_color;
     extern float MAX_GX_FIFO_BUF_SIZE;
     extern float visual_ball_size;
     extern float ball_friction;
     extern float epsilon;
     extern float g_goal_post_vertical_offset;
+    extern float stage_tilt_multiplier;
     extern undefined8 g_itemgroup_anim_rate_post_dropin;
     extern float g_bg_animation_timescale;
     extern undefined4 bonus_stage_id_list;
@@ -5508,11 +5808,19 @@ extern "C" {
     extern double jamabar_friction;
     extern double jamabar_lower_bound;
     extern float jamabar_lower_bound_2;
+    extern undefined g_some_font_value_lookup_table;
+    extern char g_some_avtext_array[344][2];
     extern undefined BTM_SetDefaultLinkSuperTout;
     extern undefined THPSimpleGetCurrentFrame;
     extern undefined THPSimpleGetCurrentFrame;
     extern undefined THPSimpleGetCurrentFrame;
-    extern undefined1 G_ICE_THEME_ID;
+    extern undefined1 ICE_FOG_THEME_ID;
+    extern undefined1 ICE_FOG_TYPE;
+    extern float ICE_FOG_START;
+    extern float ICE_FOG_END;
+    extern undefined1 ICE_FOG_RED;
+    extern undefined1 ICE_FOG_GREEN;
+    extern undefined1 ICE_FOG_BLUE;
     extern undefined8 divisor;
     extern undefined8 base;
     extern struct HeapConfig heap_configs[19];
@@ -5528,7 +5836,7 @@ extern "C" {
     extern undefined * MAIN_MODE_NAMES[8];
     extern undefined * SUB_MODE_NAMES[265];
     extern struct RelBufferInfo additional_rel_buffer_info;
-    extern undefined * DEBUG_MENU_OPTION_NAMES[7];
+    extern char * DEBUG_MENU_OPTION_NAMES[7];
     extern undefined * switchdataD_80370704;
     extern undefined * switchdataD_80370758;
     extern undefined * switchdataD_80370794;
@@ -5542,6 +5850,7 @@ extern "C" {
     extern undefined * switchdataD_803727e4;
     extern undefined * switchdataD_80372878;
     extern pointer switchdataD_80374aac;
+    extern pointer g_some_submode_file_name_list;
     extern u8 g_active_players[4];
     extern void (* camera_funcs[93])(struct Camera *, struct Ball *);
     extern undefined * switchdataD_80374e54;
@@ -5551,6 +5860,7 @@ extern "C" {
     extern undefined * switchdataD_8037ed54;
     extern pointer switchdataD_8037ed78;
     extern undefined * switchdataD_8037edf8;
+    extern struct theme_light theme_lights[41];
     extern char init_common_p_lz[17];
     extern char init_common_lz[15];
     extern struct BmpInfo bmp_infos[25];
@@ -5558,14 +5868,21 @@ extern "C" {
     extern pointer switchdataD_803809d0;
     extern struct SpriteDrawRequest ui_sprite_draw_req;
     extern undefined4 monkey_flags;
+    extern pointer SEL_WORLD_PTR;
     extern undefined g_some_music_status_array;
     extern undefined * switchdataD_80391aa0;
     extern undefined * switchdataD_80391ad8;
     extern undefined * switchdataD_80391be8;
     extern undefined * switchdataD_80391e70;
-    extern undefined1 g_fifo_use_color;
+    extern undefined1 g_debug_textdraw_color;
     extern undefined * switchdataD_8039b19c;
     extern undefined * switchdataD_8039b280;
+    extern pointer g_debug_text_buffers;
+    extern pointer g_debug_color_bufers;
+    extern char s_RateIntp[12];
+    extern char s_CalcIntp[12];
+    extern char s_Face_Dir[12];
+    extern char s_No_loop[12];
     extern char * EVENT_STATUS_NAMES[12];
     extern float physical_ball_size;
     extern float ball_accel;
@@ -5574,12 +5891,14 @@ extern "C" {
     extern undefined * switchdataD_8039c560;
     extern undefined * switchdataD_8039c5a4;
     extern pointer switchdataD_8039c5dc;
+    extern struct GXColor ball_colors[10];
     extern undefined * switchdataD_8039c838;
     extern pointer switchdataD_8039ccf8;
     extern undefined1 g_fog_type;
     extern s32 g_current_stage_id;
     extern s32 g_stage_id_to_load;
     extern undefined1 g_smb1_stage_list;
+    extern char s_stage[6];
     extern undefined * LOCALE_STRINGS;
     extern struct GmaBuffer * * g_loaded_gmas_list[5];
     extern pointer goal_gma_model_names;
@@ -5590,14 +5909,18 @@ extern "C" {
     extern void (* effect_disp_funcs[71])(struct Effect *);
     extern void (* effect_dest_funcs[71])(struct Effect *);
     extern WorldTheme  world_theme;
-    extern float tex_scroll_timer;
+    extern float g_bg_related_timer;
     extern struct GXColor g_some_theme_color;
     extern undefined4 g_something_with_world_theme_2;
     extern undefined4 g_something_with_world_theme_3;
     extern s32 g_smth_for_drawing;
+    extern undefined4 g_maybe_some_bg_effect_func_ptr;
+    extern void * * g_some_bg_struct_ptr;
     extern undefined2 g_something_with_world_theme_4;
     extern undefined2 g_something_with_world_theme_5;
     extern struct Ape * * BGApeTable;
+    extern undefined4 g_smth_with_bg_models;
+    extern struct GXColor background_colors[42];
     extern undefined bg_init_funcs;
     extern undefined bg_tick_funcs;
     extern undefined bg_dest_funcs;
@@ -5654,6 +5977,8 @@ extern "C" {
     extern pointer switchdataD_803a7210;
     extern pointer switchdataD_803a7234;
     extern undefined * switchdataD_803a7258;
+    extern undefined * FONT_NAME_LIST;
+    extern undefined * FONT_STYLE_NAME_LIST;
     extern undefined * switchdataD_803a8264;
     extern pointer switchdataD_803a83dc;
     extern pointer switchdataD_803a84b8;
@@ -5665,6 +5990,18 @@ extern "C" {
     extern pointer switchdataD_803a8800;
     extern pointer switchdataD_803a8894;
     extern undefined * switchdataD_803a88cc;
+    extern char PAUSEMENU_EXIT_GAME_STRING[10];
+    extern char * challenge_play_pausemenu_entries[24];
+    extern char * challenge_goal_pausemenu_entries[24];
+    extern char PAUSEMENU_STAGE_SELECT_STRING[13];
+    extern char * practice_play_pausemenu_entries[36];
+    extern char * practice_goal_pausemenu_entries[36];
+    extern char PAUSEMENU_GUIDE_STRING[6];
+    extern char * story_play_pausemenu_entries[36];
+    extern char * story_goal_pausemenu_entries[36];
+    extern char * * pausemenu_entry_pointers[16];
+    extern char PAUSEMENU_ON_STRING[3];
+    extern char PAUSEMENU_OFF_STRING[4];
     extern char LOADIN_TEXT_ROUND[9];
     extern char LOADIN_TEXT_WORLD[12];
     extern char LOADIN_TEXT_MASTER_EX[12];
@@ -5674,7 +6011,12 @@ extern "C" {
     extern char LOADIN_TEXT_BONUS_STAGE[12];
     extern char LOADIN_TEXT_FINAL_ROUND[12];
     extern char LOADIN_TEXT_FINAL_STAGE[12];
+    extern undefined stage_name_tilde_fmt_string;
+    extern char JUMP_TO_STAGE_STRING[17];
     extern undefined * switchdataD_803a96f8;
+    extern char SPRITE_1UP_TEXT_STRING[4];
+    extern char GO_TO_THE_STAGE_STRING[6];
+    extern char POSTGOAL_SPRITES_STAGE_STRING[15];
     extern undefined * switchdataD_803a9e6c;
     extern pointer switchdataD_803a9ea4;
     extern undefined * switchdataD_803a9ee8;
@@ -5685,13 +6027,17 @@ extern "C" {
     extern char HUD_TEXT_WORLD_STAGE_NO[6];
     extern char HUD_TEXT_STAGE_NO[3];
     extern char HUD_TEXT_STAGE_NAME[3];
+    extern char SPRITE_TEXT_FINAL_STAGE[12];
+    extern char sprite_banana_count_fmt_string[5];
     extern MinimapMode  g_minimap_mode;
     extern undefined4 minimap_zoom_level;
     extern undefined2 minimap_scale;
     extern undefined2 minimap_rotation;
     extern pointer switchdataD_803c0bc4;
+    extern char s_cannot_read_file[18];
     extern pointer switchdataD_803c12c8;
     extern undefined * switchdataD_803c14b8;
+    extern undefined1 g_last_used_memcard_slot_2;
     extern pointer g_some_card_funcs;
     extern pointer g_some_card_funcs2;
     extern undefined * switchdataD_803ce82c;
@@ -5707,19 +6053,34 @@ extern "C" {
     extern pointer switchdataD_803d1624;
     extern pointer switchdataD_803d1c2c;
     extern undefined * switchdataD_803d35f0;
-    extern undefined * postfix_table;
-    extern undefined * postfix_table_s;
-    extern undefined * ape_name_enum;
+    extern undefined4 g_mini_race_scene;
+    extern undefined4 g_mini_target_scene;
+    extern undefined4 g_mini_bowling_scene;
+    extern undefined4 g_mini_billiards_scene;
+    extern struct GComponentDef g_aiai_lod0_skel_def2_list[8];
+    extern struct GComponentDef g_aiai_lod1_skel_def2_list[8];
+    extern struct GComponentDef g_aiai_lod3_lod4_skel_def2_list[7];
+    extern struct GComponentDefList g_component_defs[68];
+    extern char * ape_lod_names[8];
+    extern undefined * chara_names;
     extern undefined * storymode_ape_enum;
     extern undefined * ape_lod_enum;
+    extern pointer g_mesh_type_name;
     extern undefined * eye_string_table;
-    extern char * * eye_name_table[17];
-    extern undefined * game_name_enum;
-    extern char * enum_face_types[9];
+    extern undefined * aiai_eye_model_names;
+    extern char * * g_per_chara_blink_models[17];
+    extern undefined * scene_names;
+    extern char * ape_face_names[9];
     extern undefined * ape_face_enum_alt;
-    extern undefined * ape_face_enum_monkey;
+    extern undefined * ape_face_expr_names;
+    extern char s_ape[4];
     extern undefined * switchdataD_803d9220;
     extern char DIP_APENUM_FORMAT[5];
+    extern char s_null[5];
+    extern char s_HANDL_GHA[10];
+    extern char s_HANDL_PHA[10];
+    extern char s_HANDR_GHA[10];
+    extern char s_HANDR_PHA[10];
     extern undefined * RANKING_DEFAULT_NAMES;
     extern u32 RANKING_DEFAULT_SCORES[20];
     extern u32 G_RANKING_DEFAULT_APE_IDS[20];
@@ -5730,12 +6091,15 @@ extern "C" {
     extern pointer switchdataD_803dca38;
     extern undefined * switchdataD_803dca6c;
     extern undefined * g_some_chara_anim_funcs;
+    extern undefined4 g_active_scene_category;
     extern pointer switchdataD_803dd32c;
     extern undefined * switchdataD_803dd37c;
     extern pointer switchdataD_803dd3c0;
     extern char * CUTSCENE_BIN_FILE_NAMES[16];
     extern undefined * switchdataD_803de11c;
     extern pointer switchdataD_803de8f8;
+    extern undefined * scene_filenames;
+    extern undefined * dialog_locale_suffix;
     extern pointer switchdataD_803ded34;
     extern undefined * switchdataD_803ded7c;
     extern undefined * switchdataD_803dedc4;
@@ -5750,17 +6114,11 @@ extern "C" {
     extern undefined g_some_tpl_buffer;
     extern undefined g_init_common_tpl_buf;
     extern undefined g_some_nl_model_buffer_2;
+    extern struct NlBuffer * g_stage_nl_buf;
     extern struct NlBuffer * * g_init_common_gma_buf;
-    extern StoryModeFunc  g_storymode_mode;
-    extern StoryModeFunc  active_story_mode_func;
-    extern undefined2 curr_world;
-    extern undefined2 selected_storymode_stage;
-    extern undefined2 g_storymode_next_world;
-    extern undefined4 storymode_score;
-    extern undefined4 storymode_bananas;
-    extern undefined4 g_some_storymode_func_ptr;
-    extern undefined1 curr_storymode_save_file_idx;
-    extern Mtx * g_ord_tbl_stuff;
+    extern struct ScenInfo scen_info;
+    extern struct OrdTblData * g_ord_tbl_stuff;
+    extern struct OrdTblData * ord_tbl_data;
     extern undefined4 is_more_than_24_mib;
     extern undefined4 g_some_buffer_ptr;
     extern undefined4 g_some_other_heap_lo;
@@ -5783,22 +6141,27 @@ extern "C" {
     extern undefined4 num_players;
     extern MainGameMode  main_game_mode;
     extern undefined4 curr_player_idx;
-    extern undefined4 g_set_when_enter_cm1;
-    extern undefined2 g_set_when_enter_cm2;
+    extern undefined4 mode_number_of_players;
+    extern undefined2 g_has_started_a_game;
     extern undefined1 g_3player_camera_setting;
     extern bool stage_complete;
     extern WidescreenMode  widescreen_mode;
     extern char * g_curr_main_mode_name;
     extern char * g_curr_sub_mode_name;
     extern undefined4 g_some_func_ptr_related_to_sub_mode2;
-    extern undefined4 g_some_func_ptr_related_to_sub_mode;
+    extern void * sub_mode_destination;
+    extern undefined4 test_draw_func_ptr;
     extern undefined1 g_repause_cooldown_counter;
-    extern undefined4 g_some_bitflag2;
+    extern undefined4 g_related_to_pause_menu_input;
+    extern undefined4 g_some_status_bitflag_maybe_pause_related;
     extern undefined4 g_current_focused_pause_menu_entry;
     extern undefined4 g_current_pause_menu_entry_count;
     extern PauseMenuType  pausemenu_type;
     extern Status  g_pause_status;
-    extern undefined4 g_some_other_flags;
+    extern undefined4 g_some_pausemenu_var;
+    extern undefined1 g_some_pausemenu_var2;
+    extern undefined4 g_some_pausemenu_var3;
+    extern GRenderringFlags  g_some_render_flag;
     extern struct Vec g_mirror_pos1;
     extern struct Vec g_some_scale_vec3;
     extern struct Vec g_mirror_pos2;
@@ -5818,14 +6181,22 @@ extern "C" {
     extern undefined1 g_focused_maingame_menu;
     extern undefined1 selected_cm_difficulty2;
     extern undefined1 selected_cm_difficulty;
+    extern undefined1 g_how_to_sprite_var_7;
     extern u8 selected_characters[4];
-    extern byte menu_stack_ptr;
-    extern undefined1 g_menu_stack[10];
+    extern struct SelMenuInfo sel_menu_info;
     extern s8 number_of_starting_monkeys;
     extern bool stageselect_is_storymode;
     extern s8 stageselect_course_idx[2];
     extern s8 stageselect_course_stage_idx[2][10];
-    extern undefined4 g_some_func_ptr4;
+    extern undefined1 stageselect_category_selected;
+    extern undefined1 g_last_selected_bowling_difficulty;
+    extern undefined4 g_auto_reload_setting;
+    extern undefined1 bat_first_setting;
+    extern undefined1 number_of_innings_setting;
+    extern undefined1 baseball_com_level_setting;
+    extern undefined4 menu_tick_func;
+    extern undefined4 menu_draw_func;
+    extern struct RelBufferInfo g_some_sel_ngc_rel_buffer;
     extern undefined4 g_something_with_camera3;
     extern struct Camera * g_current_camera;
     extern struct Camera cameras[5];
@@ -5833,7 +6204,8 @@ extern "C" {
     extern undefined1 g_related_to_fov2;
     extern undefined4 g_minigame_camera_func;
     extern s16 g_camera_standstill_counters[5];
-    extern undefined4 g_maybe_something_with_lights;
+    extern undefined4 g_active_light_group;
+    extern undefined2 g_some_array_related_to_lights_1;
     extern undefined4 g_light_group_stack;
     extern u8 num_light_groups;
     extern undefined4 next_fifo_use_array_idx;
@@ -5842,10 +6214,16 @@ extern "C" {
     extern u32 gx_fifo_use_size;
     extern BOOL32 g_video_mode_change_requested;
     extern struct ModeInfo mode_info;
+    extern undefined4 practice_best_score;
+    extern undefined4 is_practice_score_new_best;
     extern struct GmaBuffer * g_bg_gma;
     extern struct TplBuffer * g_bg_tpl;
-    extern undefined4 g_related_to_sprite_draw_req;
-    extern undefined g_some_buf_related_to_sprites;
+    extern undefined4 active_sprite_draw_req_count;
+    extern undefined4 g_smth_with_sprite_draw_reqs_widescreen;
+    extern struct TplBuffer * bmp_com_tpl;
+    extern undefined4 g_smth_with_widescreen;
+    extern undefined2 g_global_widescreen_translation_x;
+    extern struct SpriteDrawRequest sprite_draw_req_buffer[640];
     extern u32 g_profile_timer_start_times[9];
     extern undefined4 g_something_with_perf_profiling;
     extern BOOL32 g_enable_perf;
@@ -5880,16 +6258,19 @@ extern "C" {
     extern undefined4 g_something_with_sound5;
     extern undefined4 g_smth_with_sound;
     extern undefined4 g_player_id_for_sound;
-    extern char g_debugtext_unknown_buf1[1961];
-    extern char g_debugtext_unknown_buf2[1961];
-    extern char g_debugtext_unknown_buf3[1961];
-    extern char g_debugtext_colorbuf1[1961];
+    extern undefined4 g_debug_textdraw_pos_x_2;
+    extern undefined4 g_debug_textdraw_pos_x_1;
+    extern undefined4 g_debug_textdraw_pos_y;
+    extern char g_debug_text_buffer_0[1961];
+    extern char g_debug_text_buffer_1[1961];
+    extern char g_debug_text_color_buffer_0[1961];
+    extern char g_debug_text_color_buffer_1[1961];
     extern undefined2 g_debugtext_unknown7;
     extern undefined2 g_debugtext_unknown8;
     extern undefined2 g_debugtext_unknown9;
     extern undefined2 g_debugtext_unknown10;
-    extern char g_debugtext_unknown_buf5[1961];
-    extern char g_debugtext_colorbuf2[1961];
+    extern char g_debug_text_buffer_2[1961];
+    extern char g_debug_text_color_buffer_2[1961];
     extern u16 os_font_encoding;
     extern DipSwitch  dip_switches;
     extern GOtherFlags  g_some_other_flags;
@@ -5914,20 +6295,24 @@ extern "C" {
     extern struct Ball balls[8];
     extern struct Ball * current_ball;
     extern uint active_monkey_id[4];
+    extern undefined4 g_some_menu_func_1;
     extern u32 player_pad_map[4];
     extern struct WorldInfo world_infos[4];
     extern struct Vec g_gravity_dir;
     extern undefined4 current_world_info;
     extern int g_some_frame_counter;
     extern float g_some_frame_counter_float;
+    extern undefined1 g_some_coli_nonsense1;
+    extern undefined4 g_some_gameplay_flags;
+    extern int * g_some_draw_var;
     extern struct Itemgroup * itemgroups;
     extern struct StagedefFileHeader * stagedef;
     extern undefined2 seesaw_count;
     extern undefined1 g_something_with_wl;
-    extern undefined4 stage_tpl;
+    extern struct TplBuffer * stage_tpl;
     extern struct GmaBuffer * stage_gma;
     extern undefined2 current_stage_id;
-    extern char g_current_stage_name[128];
+    extern char current_stage_name[128];
     extern undefined4 worm_surface_gma_model;
     extern struct GmaModel * wormhole_gma_model;
     extern struct GmaModel * continue_gma_model;
@@ -5947,8 +6332,9 @@ extern "C" {
     extern undefined4 g_loaded_player_score;
     extern undefined2 next_effect_id;
     extern struct Effect effects[512];
+    extern undefined g_some_bg_mtx;
     extern Mtx g_related_to_texture_UV_map;
-    extern undefined1 cm_unlock_entries[18];
+    extern u8 cm_unlock_entries[18];
     extern struct CourseCommand * current_cm_entry;
     extern int stage_jump_distance;
     extern BOOL32 in_practice_mode;
@@ -5956,7 +6342,7 @@ extern "C" {
     extern ModeFlag  g_mode_flags2;
     extern undefined4 g_some_course_length;
     extern struct CmPlayerProgress cm_player_progress[12];
-    extern undefined1 storymode_unlock_entries[13];
+    extern u8 storymode_unlock_entries[13];
     extern undefined2 g_next_item_id;
     extern struct Item items[256];
     extern undefined2 next_stobj_id;
@@ -5974,9 +6360,10 @@ extern "C" {
     extern u32 g_screenfade_color;
     extern undefined4 g_screenfading1;
     extern undefined4 g_screenfading2;
-    extern undefined4 g_something_with_fonts3[512];
-    extern float g_global_font_sprite_pos_x;
-    extern struct Vec2d g_global_font_sprite_pos;
+    extern void * g_some_font_ptr_array[512];
+    extern s32 g_related_to_aram_font_pages[145];
+    extern float textdraw_pos_x;
+    extern struct Vec2d textdraw_pos;
     extern Font16  textdraw_font;
     extern undefined4 textdraw_mul_color;
     extern undefined4 textdraw_add_color;
@@ -6000,6 +6387,16 @@ extern "C" {
     extern undefined4 g_textdraw_unk8;
     extern undefined4 g_font_char_var_1;
     extern undefined4 g_font_char_var_2;
+    extern undefined4 g_smth_with_how_to_sprite_mode;
+    extern undefined1 g_how_to_sprite_var_3;
+    extern undefined1 g_how_to_sprite_var_1;
+    extern undefined1 g_how_to_sprite_var_4;
+    extern undefined1 g_how_to_sprite_var_6;
+    extern undefined1 g_how_to_sprite_var_8;
+    extern undefined1 g_how_to_sprite_var_5;
+    extern float g_how_to_bg_scale_x;
+    extern float g_how_to_bg_scale_y;
+    extern undefined1 g_how_to_sprite_var_2;
     extern u8 g_banana_disp_efc_req_count;
     extern undefined g_banana_disp_efc_stack[10];
     extern undefined4 global_ape_lod;
@@ -6008,18 +6405,26 @@ extern "C" {
     extern undefined4 disc_queue_start;
     extern undefined4 disc_queue_end;
     extern undefined4 discQueueGroup;
-    extern struct GCachedFileEntry g_cached_file_entries[128];
+    extern struct FileCacheEntry file_cache_entries[128];
     extern undefined4 g_last_filename_attempted_to_open;
+    extern undefined4 g_aram_read_pending;
     extern undefined4 g_minigame_tick_func;
+    extern undefined4 g_mini_draw_func_ptr;
     extern undefined1 g_haze_type;
     extern undefined1 g_override_clear_r;
     extern undefined1 g_override_clear_g;
     extern undefined1 g_override_clear_b;
-    extern undefined4 g_maybe_smth_related_to_pausing;
+    extern undefined4 g_some_flag_relating_to_pausing;
     extern struct MemCardInfo memcard_infos[2];
+    extern undefined1 g_last_used_memcard_slot;
+    extern undefined4 g_result_code;
+    extern undefined1 g_some_memcard_var;
+    extern undefined1 g_maybe_last_selected_memcard_slot;
+    extern undefined g_storymode_file_memcard_buffer;
     extern struct StoryModeSaveFile storymode_save_files[3];
-    extern undefined1 g_storymode_unlock_entries_copy[13];
-    extern undefined1 g_cm_unlock_entries_copy[18];
+    extern undefined1 g_storymode_unlock_entries_copy;
+    extern undefined1 g_cm_unlock_entries_copy;
+    extern bool autosave;
     extern undefined g_some_string;
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array1[4];
     extern struct GSomethingWithPadMotorsStruct g_some_pad_motor_array2[4];
@@ -6027,31 +6432,34 @@ extern "C" {
     extern float g_avdisp_bound_sphere_scale;
     extern float g_avdisp_material_alpha;
     extern Mtx avdisp_tex_mtx;
-    extern undefined main_mta_storage;
-    extern struct GBone face_bones[16];
-    extern struct GBone handR_bones[16];
-    extern struct GBone tailBone;
-    extern struct GBone handLbones[16];
+    extern struct Component g_main_components[17];
+    extern struct Component g_face_components[17];
+    extern struct Component g_handr_components[17];
+    extern struct Component g_tail_component;
+    extern struct Component g_handl_components[17];
     extern void * common_anim_storage[17];
     extern void * game_mal_storage[17];
-    extern struct ArcFileInfo * arc_location;
+    extern struct ApeArchive * skel_ska;
     extern void * common_mal_sizes[17];
     extern int game_mal_sizes[17];
     extern void * ape_tpls[68];
     extern void * rep_tpl_table[17];
     extern void * ape_gma_table[68];
-    extern struct ARCHandle ape_skl_arc_handle;
-    extern void * ape_skl_arc_data;
-    extern Mtx g_common_mtx;
-    extern float g_some_floats[64];
-    extern undefined ape_ref_count_table;
+    extern struct ARCHandle arc_file_handle;
+    extern void * skl_arc;
+    extern Mtx g_common_ape_mtx;
+    extern float g_ape_alphas[64];
+    extern int ape_ref_count_table[136];
     extern struct Ape * registered_apes[64];
     extern undefined4 total_apes_registered;
     extern undefined4 g_ptr_to_something;
+    extern undefined1 g_nameentry_state;
     extern undefined1 g_some_gift_menu_flags;
-    extern undefined4 g_something_with_cutscenes3;
+    extern bool g_nameentry_did_get_top_5;
+    extern undefined4 scene_data;
+    extern undefined4 dialog_tbl;
     extern undefined2 g_author_frame;
-    extern undefined2 g_author_frame_max;
+    extern undefined2 scene_length;
     extern undefined4 g_some_author_related_data;
     extern undefined4 g_author_scene;
     extern undefined4 g_new_main_mode_req;
@@ -6061,10 +6469,14 @@ extern "C" {
     extern undefined4 g_some_author_cutscene_flag;
     extern undefined4 g_playpoint_msg_counter;
     extern struct UnlockInfo unlock_info;
+    extern float view_stage_aspect_ratio;
     extern pointer switchdataD_804ee064;
     extern undefined * story_mode_funcs;
+    extern struct StoryStagePreviewParam MAIN_GAME_STORY_STAGE_PREVIEW_PARAMS[100];
+    extern undefined1 ape_story_select_anim_table;
     extern pointer switchdataD_804eee68;
     extern pointer switchdataD_804eee88;
+    extern pointer g_unk_difficulty1;
     extern pointer switchdataD_804eef70;
     extern pointer switchdataD_804ef084;
     extern pointer switchdataD_804ef11c;
@@ -6129,19 +6541,39 @@ extern "C" {
     extern char start_game_from_beginning_text[35];
     extern undefined * switchdataD_804f0588;
     extern undefined * switchdataD_804f0734;
+    extern byte g_some_staff_roll_alignment_array;
+    extern undefined4 g_staff_roll_big_banana_count_2;
+    extern undefined4 staff_roll_item_percentage;
+    extern undefined4 staff_roll_all_bananas_bonus;
+    extern undefined4 staff_roll_all_big_bananas_bonus;
+    extern undefined4 staff_roll_all_items_bonus;
+    extern undefined4 staff_roll_all_letters_bonus;
+    extern undefined4 staff_roll_no_letters_bonus;
     extern undefined * switchdataD_805435f0;
     extern pointer switchdataD_80543614;
     extern pointer switchdataD_80543648;
     extern undefined * switchdataD_80543690;
+    extern undefined4 staff_roll_results_monkey_rating_color;
+    extern undefined staff_roll_results_monkey_rating_fmt_string;
+    extern char * staff_roll_results_monkey_rating_buffer;
     extern undefined * switchdataD_805437a4;
     extern undefined * switchdataD_805437cc;
     extern undefined * switchdataD_80543840;
     extern undefined * switchdataD_80543868;
-    extern undefined4 scen_stgname_buffer;
+    extern char * * scen_stgname_buffer;
     extern undefined4 g_scen_stage_names_loaded;
+    extern undefined4 g_are_story_select_sprites_visible;
+    extern undefined2 g_amount_of_stages_per_world;
+    extern undefined2 g_amount_of_beaten_stages_in_world;
+    extern undefined4 g_difficulty_y_offset;
+    extern undefined2 g_story_select_sprites_anim_state;
+    extern undefined2 g_story_select_sprites_timer;
     extern float some_ape_float;
     extern float some_ape_float2;
-    extern undefined4 some_ape_float3;
+    extern undefined4 g_some_story_select_sprite_timer;
+    extern undefined4 g_some_story_select_sprite_timer_2;
+    extern undefined4 g_some_story_select_sprite_initial_timer;
+    extern float some_ape_float3;
     extern struct SpriteTex g_storymode_preview_textures;
     extern StoryModeStageSelectState  g_storymode_stageselect_state;
     extern undefined2 g_storymode_stageselect_framecounter;
@@ -6157,6 +6589,14 @@ extern "C" {
     extern undefined1 selected_story_file_idx;
     extern undefined1 g_dataselect_menu_framecounter;
     extern StoryModeMenuState  storymode_menu_state;
+    extern undefined4 staff_roll_final_score;
+    extern undefined4 staff_roll_banana_count;
+    extern undefined4 staff_roll_big_banana_count;
+    extern undefined4 staff_roll_item_count;
+    extern undefined4 staff_roll_hittable_object_count;
+    extern undefined4 staff_roll_hit_percentage;
+    extern undefined4 g_some_pausemenu_var4;
+    extern undefined4 staff_roll_banana_percentage;
     extern struct Ape * g_some_ape;
     extern undefined4 view_stage_camera_x;
     extern undefined4 view_stage_camera_y;
@@ -6164,28 +6604,112 @@ extern "C" {
     extern undefined2 view_stage_camera_rot_x;
     extern undefined2 view_stage_camera_rot_y;
     extern undefined2 view_stage_camera_rot_z;
+    extern s16 view_stage_timer;
+    extern undefined4 view_stage_camera_zoom;
+    extern u16 view_stage_camera_horizontal_rotation;
+    extern undefined2 view_stage_camera_vertical_pan;
+    extern undefined2 view_stage_camera_horizontal_pan;
     extern undefined * switchdataD_80574504;
     extern undefined * switchdataD_80574614;
     extern pointer switchdataD_805747cc;
     extern pointer switchdataD_805748e8;
     extern pointer switchdataD_805749f8;
     extern pointer switchdataD_80574bb0;
-    extern struct MenuEntry main_menu_list;
+    extern char CAN_PLAY_NUM_PARTY_GAMES_NEED_UNLOCK_STRING[124];
+    extern struct MenuEntry menu_mode_select_entries;
     extern char CAN_PLAY_NUM_PARTY_GAMES_STRING[49];
-    extern undefined party_game_menu_list;
+    extern undefined menu_party_game_select_entries;
     extern char CAN_PURCHASE_PARTY_GAME_STRING[93];
     extern char CANNOT_SELECT_PARTY_GAME_STRING[84];
-    extern undefined options_menu_list;
-    extern struct MenuEntry main_game_menu_list[3];
-    extern struct MenuScreen menu_screen_list[87];
+    extern undefined menu_option_entries;
+    extern char NUM_OF_PLAYERS_DESCRIPTION[36];
+    extern struct MenuEntry menu_number_of_players_entries;
+    extern char NUM_OF_PLAYERS_DESCRIPTION_PLAYPOINTS[67];
+    extern char NUM_OF_PLAYERS_DESCRIPTION_NO_PLAYPOINTS[71];
+    extern struct MenuEntry menu_character_select_1_entries[4];
+    extern char CHARACTER_SELECT_DESCRIPTION_UNUSED[76];
+    extern struct MenuEntry menu_character_select_2_entries[4];
+    extern char MENU_STORY_DESCRIPTION_TEXT[151];
+    extern char MENU_CHALLENGE_DESCRIPTION_TEXT[135];
+    extern struct MenuEntry menu_main_game_select_entries[3];
+    extern undefined menu_level_select_1_entries;
+    extern undefined menu_level_select_2_entries;
+    extern undefined menu_stage_select_entries;
+    extern undefined menu_gameplay_settings_entries;
+    extern undefined menu_race_mode_select_entries;
+    extern undefined menu_race_course_select_one_course_race_entries;
+    extern struct MenuEntry menu_race_course_select_time_trial_entries[6];
+    extern undefined menu_race_gameplay_settings_one_course_race_entries;
+    extern undefined menu_race_gameplay_settings_grand_prix_entries;
+    extern undefined menu_fight_mode_select_entries;
+    extern undefined menu_fight_no_of_wins_entries;
+    extern undefined menu_fight_stage_select_entries;
+    extern undefined menu_fight_gameplay_settings_normal_entries;
+    extern undefined menu_fight_gameplay_settings_survival_entries;
+    extern undefined menu_target_empty_entries;
+    extern undefined menu_target_gameplay_settings_entries;
+    extern undefined menu_billiards_mode_select_entries;
+    extern undefined menu_billiards_rule_select_entries;
+    extern undefined menu_billiards_game_settings_multiplayer_entries;
+    extern undefined menu_billiards_game_settings_1p_entries;
+    extern undefined menu_bowling_mode_select_entries;
+    extern undefined menu_bowling_rule_select_entries;
+    extern undefined menu_bowling_level_select_entries;
+    extern undefined menu_golf_mode_select_entries;
+    extern undefined menu_golf_gameplay_settings_entries;
+    extern undefined menu_boat_mode_select_entries;
+    extern undefined menu_boat_course_select_one_course_race_entries;
+    extern undefined menu_boat_course_select_time_attack_entries;
+    extern undefined menu_boat_game_settings_one_course_race_entries;
+    extern undefined menu_boat_game_settings_grand_prix_entries;
+    extern undefined menu_shot_empty_entries;
+    extern undefined menu_shot_stage_select_entries;
+    extern char SHOT_AUTO_RELOAD_OPTION_STRING[12];
+    extern char SHOT_AUTO_RELOAD_DESCRIPTION_STRING[55];
+    extern undefined menu_shot_gameplay_settings_1p_entries;
+    extern undefined menu_shot_gameplay_settings_2p_entries;
+    extern undefined menu_shot_gameplay_settings_3p_entries;
+    extern undefined menu_shot_gameplay_settings_4p_entries;
+    extern undefined menu_dogfight_mode_select_entries;
+    extern undefined menu_dogfight_stage_select_entries;
+    extern undefined menu_dogfight_game_settings_normal_entries;
+    extern undefined menu_dogfight_game_settings_survival_entries;
+    extern undefined menu_soccer_mode_select_entries;
+    extern undefined menu_soccer_team_select_entries;
+    extern undefined menu_soccer_game_settings_no_com_entries;
+    extern undefined menu_soccer_game_settings_com_entries;
+    extern undefined menu_baseball_mode_select_entries;
+    extern undefined menu_baseball_character_select_entries;
+    extern undefined menu_baseball_stadium_select_entries;
+    extern undefined menu_baseball_game_settings_com_entries;
+    extern undefined menu_baseball_game_settings_no_com_entries;
+    extern undefined menu_tennis_mode_select_entries;
+    extern undefined menu_tennis_pair_select_2p_entries;
+    extern undefined menu_tennis_pair_select_3p_entries;
+    extern undefined menu_tennis_pair_select_4p_entries;
+    extern undefined menu_tennis_court_select_entries;
+    extern undefined menu_tennis_game_settings_com_entries;
+    extern undefined menu_tennis_game_settings_no_com_entries;
+    extern undefined menu_option_replay_entries;
+    extern undefined menu_option_play_points_entries;
+    extern undefined menu_option_gift_entries;
+    extern undefined menu_option_ranking_entries;
+    extern undefined menu_option_game_data_entries;
+    extern undefined menu_option_controller_entries;
+    extern undefined menu_option_screen_entries;
+    extern struct MenuScreen menu_screen_list[88];
     extern pointer switchdataD_80580b70;
+    extern undefined menu_bmp_ids;
+    extern char SPRITE_BUTTON_LESSON_TEXT[7];
+    extern char SPRITE_BUTTON_TUTORIAL_TEXT[9];
     extern undefined * switchdataD_805837fc;
     extern pointer switchdataD_80584584;
     extern undefined * switchdataD_805846ac;
     extern MenuScreenID  g_currently_visible_menu_screen;
     extern MenuScreenID  g_next_menu_screen;
     extern undefined1 g_menu_transition_frametimer;
-    extern undefined1 g_character_selected;
+    extern byte g_character_selected;
+    extern u32 g_menu_frame_count_until_input_locked;
     extern char * g_menu_description_text;
     extern undefined4 g_active_pads_bitfield;
     extern undefined1 g_language_id;
@@ -6193,9 +6717,14 @@ extern "C" {
     extern struct Ape * menu_apes[4];
     extern undefined4 g_menu_color_overlay_timer;
     extern undefined g_something_with_preview_textures;
+    extern undefined4 option_game_data_current_operation;
+    extern undefined4 g_current_game_data_selection;
+    extern undefined4 g_replay_stage_id_to_load;
     extern undefined1 g_gift_menu_cursor_pos;
     extern undefined * switchdataD_80590050;
     extern pointer switchdataD_805b1fc6;
+    extern undefined s_bmp;
+    extern undefined s_ape_;
     extern pointer switchdataD_805b20d2;
     extern pointer switchdataD_805b22ae;
     extern pointer switchdataD_805b22ea;
@@ -6229,14 +6758,24 @@ extern "C" {
     extern undefined1 g_debug_sound_ics_pan_R;
     extern undefined2 g_debug_stream_bgm_id;
     extern undefined1 g_debug_sound_efc;
-    extern u16 g_something_with_cutscenes2;
-    extern u16 g_something_with_cutscenes;
+    extern Font16  test_aram_font_type;
+    extern undefined1 test_aram_font_proportional;
+    extern undefined1 test_aram_font_style;
+    extern undefined1 test_aram_font_page;
+    extern undefined4 test_aram_font_char;
+    extern u16 g_something_with_test_cutscenes;
+    extern u16 test_scene_number;
+    extern undefined2 g_test_dialog_category_idx;
+    extern undefined2 g_test_dialog_data_idx;
+    extern struct GDialogStruct g_test_dialog_ptr;
+    extern struct Ape * g_test_ape_ptr;
     extern undefined * switchdataD_8065c7a0;
     extern pointer switchdataD_80685ba0;
     extern pointer switchdataD_80686b64;
     extern pointer switchdataD_80686c20;
     extern undefined2 player_count;
     extern undefined4 race_frames_remaining;
+    extern float golf_max_wind_velocity_divisor;
     extern undefined * switchdataD_806c6ec4;
     extern undefined * switchdataD_806c6ef8;
     extern undefined * switchdataD_806c6fe0;
@@ -6249,6 +6788,8 @@ extern "C" {
     extern undefined * switchdataD_806cb6b8;
     extern pointer switchdataD_806cb6fc;
     extern pointer switchdataD_806cb784;
+    extern undefined4 golf_wind_angle;
+    extern float golf_wind_velocity;
     extern pointer switchdataD_806fd0d8;
     extern pointer switchdataD_806fd190;
     extern pointer switchdataD_80706bac;
@@ -6323,14 +6864,14 @@ extern "C" {
     void * memset(void * ptr, int value, size_t num);
     void * __fill_mem(void * ptr, int value, size_t num);
     void * memcpy(void * dest, void * src, size_t count);
-    int TRK_memset(int param_1, uint param_2, uint param_3);
+    int TRK_memset(int param_1, byte param_2, uint param_3);
     void TRK_memcpy(int param_1, int param_2, int param_3);
     void g_init_console(void);
     void g_some_heap_init(void);
     void load_run_main_loop_parent1(void);
     uint read_and_set_os_string_table(void);
     void load_main_loop_rel_and_run(char * rel_filepath, struct RelBufferInfo * buffer_info);
-    OSModuleInfo * * unload_main_loop_rel(struct OSModuleInfo * * mainLoopBufPtrs);
+    int * unload_main_loop_rel(int * mainLoopBufPtrs);
     void load_common_gma_tpl(void);
     void set_init_rel_index(u32 index);
     undefined4 g_clear_prev_GX_settings_something1(void);
@@ -6371,7 +6912,7 @@ extern "C" {
     void GXSetNumChans_cached(u8 nChans);
     void opti_GXSetChanCtrl(GXChannelID  chan, GXBool enable, GXColorSrc  amb_src, GXColorSrc  mat_src, u32 light_mask, GXDiffuseFn  diff_fn, GXAttnFn  attn_fn);
     void GXSetZMode_cached(GXBool compare_enable, GXCompare  func, GXBool update_enable);
-    void g_read_something_from_prev_GX_settings(undefined * param_1, undefined4 * param_2, undefined * param_3);
+    void g_read_something_from_prev_GX_settings(undefined1 * param_1, undefined4 * param_2, undefined1 * param_3);
     void g_set_some_gx_settings(void);
     void g_draw_something(double param_1, double param_2, double param_3, ushort * param_4);
     void mark_finished_waiting_for_dvdread(s32 result, struct DVDFileInfo * file_info);
@@ -6393,9 +6934,13 @@ extern "C" {
     u32 (* get_console_reset_callback(void))(void);
     void * OSAlloc(u32 size);
     void OSFree(void * ptr);
+    void g_some_arq_request_callback(void);
+    void aram_font_to_mram_font_callback(void);
     void g_load_aram_font(void);
     void gARAMFont_DVDRead(struct DVDFileInfo * param_1, int param_2, int param_3);
-    void g_fancy_memcpy(void * dest, void * src, size_t count);
+    void g_some_arq_request(void * source);
+    void aram_font_to_mram_font(Font8  font, int g_char_idx, void * dest);
+    void memcpy_handler(void * dest, void * src, size_t count);
     void g_something_with_video_progressive_mode(void);
     void bootup_draw_sega_splash(void);
     void init_sega_splash_tex(struct GXTexObj * tex_obj);
@@ -6476,8 +7021,8 @@ extern "C" {
     void L2GlobalInvalidate(void);
     void DMAErrorHandler(undefined4 param_1, undefined4 * param_2);
     void __OSCacheInit(void);
-    void __OSLoadFPUContext(undefined8 param_1, undefined4 param_2, int param_3);
-    void __OSSaveFPUContext(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined8 param_9, undefined8 param_10, undefined8 param_11_00, undefined8 param_12, undefined8 param_13, undefined4 param_14, undefined4 param_15, int param_16);
+    undefined8 __OSLoadFPUContext(undefined8 param_1, undefined4 param_2, int param_3);
+    void __OSSaveFPUContext(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, double param_7, double param_8, undefined4 param_9, undefined4 param_10, int param_11);
     void OSSetCurrentContext(struct OSContext * context);
     OSContext * OSGetCurrentContext(void);
     undefined4 OSSaveContext(int param_1);
@@ -6541,9 +7086,9 @@ extern "C" {
     undefined4 __OSSyncSram(void);
     uint __OSReadROM(void * param_1, u32 param_2, int param_3);
     u32 OSGetSoundMode(void);
-    void OSSetSoundMode(uint param_1);
+    void OSSetSoundMode(byte param_1);
     u32 OSGetProgressiveMode(void);
-    void OSSetProgressiveMode(uint param_1);
+    void OSSetProgressiveMode(char param_1);
     undefined2 OSGetWirelessID(int param_1);
     void OSSetWirelessID(int param_1, short param_2);
     void __OSInitSystemCall(void);
@@ -6566,12 +7111,12 @@ extern "C" {
     void OSWakeupThread(int * param_1);
     undefined4 OSSetThreadPriority(int param_1, int param_2);
     undefined4 OSGetThreadPriority(int param_1);
-    void OSGetTime(void);
+    OSTime OSGetTime(void);
     OSTick OSGetTick(void);
     ulonglong __OSGetSystemTime(void);
     undefined8 __OSTimeToSystemTime(int param_1, uint param_2);
     void GetDates(int param_1, int param_2);
-    void OSTicksToCalendarTime(uint param_1, uint param_2, int * param_3);
+    void OSTicksToCalendarTime(OSTime ticks, struct OSCalendarTime * td);
     void init_cpp_wrapper(void);
     void __init_cpp(void);
     void ppc_halt_wrapper(void);
@@ -6592,7 +7137,7 @@ extern "C" {
     uint SIDisablePolling(uint param_1);
     bool SIGetResponseRaw(int param_1);
     int SIGetResponse(int param_1, undefined4 * param_2);
-    undefined4 SITransfer(uint param_1, undefined4 * param_2, int param_3, undefined4 param_4, int param_5, int param_6, uint param_7, uint param_8);
+    undefined4 SITransfer(uint param_1, undefined4 * param_2, int param_3, undefined4 param_4, int param_5, int param_6, int param_7, uint param_8);
     void GetTypeCallback(uint param_1, uint param_2);
     int SIGetType(uint param_1);
     int SIGetTypeAsync(uint param_1, undefined * param_2);
@@ -6617,7 +7162,7 @@ extern "C" {
     undefined4 EXILock(int param_1, int param_2, int param_3);
     undefined4 EXIUnlock(int param_1);
     undefined4 sndReadFlag(int param_1);
-    undefined4 EXIGetID(int param_1, int param_2, undefined4 * param_3);
+    undefined4 EXIGetID(int param_1, int param_2, byte * param_3);
     undefined4 InitializeUART(void);
     undefined4 WriteUARTN(byte * param_1, uint param_2);
     void DBInit(void);
@@ -6625,20 +7170,20 @@ extern "C" {
     void __DBExceptionDestination(void);
     uint __DBIsExceptionMarked(uint param_1);
     void DBPrintf(void);
-    undefined8 PSMTXIdentity(int param_1);
-    undefined8 PSMTXCopy(int param_1, int param_2);
-    undefined8 PSMTXConcat(int param_1, int param_2, int param_3);
-    undefined4 PSMTXInverse(int param_1, int param_2);
+    undefined8 PSMTXIdentity(short * param_1);
+    undefined8 PSMTXCopy(float * param_1, float * param_2);
+    undefined8 PSMTXConcat(float * param_1, float * param_2, float * param_3);
+    undefined4 PSMTXInverse(float * param_1, float * param_2);
     void PSMTXScale(double param_1, double param_2, double param_3, float * param_4);
     void C_MTXLookAt(Mtx * mtx, struct Vec * cam_pos, struct Vec * cam_up, struct Vec * target);
     void C_MTXFrustum(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, float * param_7);
     void C_MTXPerspective(Mtx44 * m, double fovy, double aspect, double n, double f);
     void C_MTXOrtho(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, float * m);
-    void PSVECAdd(int param_1, int param_2, int param_3);
-    void PSVECSubtract(int param_1, int param_2, int param_3);
-    void PSVECScale(undefined8 param_1, int param_2, int param_3);
-    undefined8 PSVECNormalize(int param_1, int param_2);
-    undefined8 PSVECCrossProduct(int param_1, int param_2, int param_3);
+    void PSVECAdd(float * param_1, float * param_2, float * param_3);
+    void PSVECSubtract(float * param_1, float * param_2, float * param_3);
+    void PSVECScale(double param_1, float * param_2, float * param_3);
+    undefined8 PSVECNormalize(float * param_1, float * param_2);
+    undefined8 PSVECCrossProduct(float * param_1, float * param_2, float * param_3);
     void __DVDInitWA(void);
     void AlarmHandlerForTimeout(undefined4 param_1, struct OSContext * param_2);
     void Read(undefined4 param_1, uint param_2, uint param_3, undefined4 param_4);
@@ -6715,7 +7260,7 @@ extern "C" {
     void __DVDPrepareResetAsync(undefined * param_1);
     void __DVDClearWaitingQueue(void);
     undefined4 __DVDPushWaitingQueue(int param_1, undefined4 * param_2);
-    int * * __DVDPopWaitingQueue(void);
+    int * __DVDPopWaitingQueue(void);
     undefined4 __DVDCheckWaitingQueue(void);
     undefined4 __DVDDequeueWaitingQueue(int * param_1);
     char ErrorCode2Num(uint param_1);
@@ -6728,7 +7273,7 @@ extern "C" {
     void VIInit(void);
     void VIWaitForRetrace(void);
     void setFbbRegs(int param_1, uint * param_2, uint * param_3, uint * param_4, uint * param_5);
-    void setVerticalRegs(uint param_1, ushort param_2, byte param_3, short param_4, short param_5, short param_6, short param_7, short param_8, int param_9);
+    void setVerticalRegs(ushort param_1, ushort param_2, byte param_3, short param_4, short param_5, short param_6, short param_7, short param_8, int param_9);
     void VIConfigure(struct GXRenderModeObj * rm);
     void VIFlush(void);
     void VISetNextFrameBuffer(void * fb);
@@ -6778,7 +7323,7 @@ extern "C" {
     void __AICallbackStackSwitch(undefined * param_1);
     void __AI_SRC_INIT(void);
     ushort ARGetDMAStatus(void);
-    void ARStartDMA(int param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4);
+    void ARStartDMA(short param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4);
     undefined4 ARInit(undefined4 param_1, undefined4 param_2);
     undefined4 ARGetBaseAddress(void);
     void __ARHandler(undefined4 param_1, struct OSContext * param_2);
@@ -6789,6 +7334,7 @@ extern "C" {
     void ARQInit(void);
     void ARQPostRequest(struct ARQRequest * request, u32 owner, u32 type, u32 priority, u32 source, u32 dest, u32 length, void (* callback)(u32));
     void ARQSetChunkSize(uint param_1);
+    undefined4 g_get_arq_chunk_size(void);
     void hwExit(void);
     void hwDisableIrq(void);
     void salExitAi(void);
@@ -6838,7 +7384,7 @@ extern "C" {
     int __CARDEraseSector(int param_1, uint param_2, int param_3);
     void CARDInit(void);
     void __CARDSetDiskID(undefined * param_1);
-    undefined4 __CARDGetControlBlock(int param_1, int * * param_2);
+    undefined4 __CARDGetControlBlock(int param_1, undefined4 * param_2);
     int __CARDPutControlBlock(int * param_1, int param_2);
     s32 CARDGetResultCode(int param_1);
     int CARDFreeBlocks(int param_1, int * param_2, int * param_3);
@@ -6889,7 +7435,7 @@ extern "C" {
     undefined4 return_0(void);
     void CreateCallbackFat(int param_1, int param_2);
     void CARDCreateAsync(s32 chan, char * fileName, u32 size, struct CARDFileInfo * fileInfo, void * callback);
-    int __CARDSeek(int * param_1, int param_2, uint param_3, int * * param_4);
+    int __CARDSeek(int * param_1, int param_2, uint param_3, undefined4 * param_4);
     void ReadCallback(int param_1, int param_2);
     s32 CARDReadAsync(struct CARDFileInfo * fileInfo, void * buf, s32 length, s32 offset, void * callback);
     void WriteCallback(int param_1, int param_2);
@@ -7010,7 +7556,7 @@ extern "C" {
     GXTexWrapMode GXGetTexObjWrapS(struct GXTexObj * obj);
     GXTexWrapMode GXGetTexObjWrapT(struct GXTexObj * obj);
     GXBool GXGetTexObjMipMap(struct GXTexObj * obj);
-    void g_GX_something(uint * param_1, uint * param_2, uint * param_3, float * param_4, float * param_5, float * param_6, byte * param_7, undefined * param_8, uint * param_9);
+    void g_GX_something(uint * param_1, uint * param_2, uint * param_3, float * param_4, float * param_5, float * param_6, byte * param_7, undefined1 * param_8, uint * param_9);
     void GXLoadTexObjPreLoaded(struct GXTexObj * obj, struct GXTexRegion * region, GXTexMapID  id);
     void GXLoadTexObj(struct GXTexObj * obj, GXTexMapID  id);
     void GXInitTexCacheRegion(struct GXTexRegion * region, GXBool is_32b_mipmap, u32 tmem_even, GXTexCacheSize  size_even, u32 tmem_odd, GXTexCacheSize  size_odd);
@@ -7067,9 +7613,9 @@ extern "C" {
     void GXSetProjection(f32 mtx[4][4], GXProjectionType  type);
     void GXSetProjectionv(f32 * ptr);
     void GXGetProjectionv(float * ptr);
-    undefined8 WriteMTXPS4x3(int param_1, undefined4 param_2);
-    void WriteMTXPS3x3from3x4(int param_1, undefined4 * param_2);
-    undefined8 WriteMTXPS4x2(int param_1, undefined4 param_2);
+    undefined8 WriteMTXPS4x3(float * param_1, float * param_2);
+    void WriteMTXPS3x3from3x4(float * param_1, float * param_2);
+    undefined8 WriteMTXPS4x2(float * param_1, float * param_2);
     void GXLoadPosMtxImm(float mtxPtr[3][4], u32 id);
     void GXLoadNrmMtxImm(float mtxPtr[3][4], u32 id);
     void GXSetCurrentMtx(u32 id);
@@ -7087,10 +7633,10 @@ extern "C" {
     void GXInitXfRasMetric(void);
     void GXReadXfRasMetric(undefined4 * param_1, undefined4 * param_2, undefined4 * param_3, undefined4 * param_4);
     undefined4 ARCInitHandle(void * arc_data, struct ARCHandle * out_arc_handle);
-    BOOL32 ARCOpen(struct ARCHandle * arc_handle, char * file, struct ArcFileInfo * arcFileInfo);
+    BOOL32 ARCOpen(struct ARCHandle * arc_handle, void * filebuf, struct ArcFileInfo * arcFileInfo);
     uint arc_path_to_entrynum(struct ARCHandle * arcHandle, char * file);
     void arc_get_dir(int param_1, int param_2, int param_3);
-    int ARCGetStartAddrInMem(int * * param_1);
+    void * ARCGetStartAddrInMem(struct ArcFileInfo * af);
     undefined4 arcGetLength(struct ArcFileInfo * fileInfo);
     undefined4 return_1(void);
     void g_some_perf_init_func(void);
@@ -7120,7 +7666,7 @@ extern "C" {
     uint GetPublicId(int param_1);
     uint seqGetPrivateId(uint param_1);
     void empty_function(void);
-    uint seqStartPlay(int * param_1, int * param_2, int param_3, int * param_4, uint * param_5, undefined param_6, undefined2 param_7);
+    uint seqStartPlay(int param_1, int param_2, int param_3, int * param_4, uint * param_5, undefined1 param_6, undefined2 param_7);
     void HandleMasterTrack(uint param_1);
     void StartPause(int * param_1);
     void seqPause(uint param_1);
@@ -7143,10 +7689,10 @@ extern "C" {
     void synthSetBpm(int param_1, byte param_2, uint param_3);
     undefined4 synthGetTicksPerSecond(int param_1);
     void synthInitPortamento(int param_1);
-    int * do_voice_portamento(byte param_1, char param_2, char param_3, int param_4, undefined4 * param_5);
-    int * StartLayer(undefined2 param_1, int param_2, undefined4 param_3, undefined4 param_4, uint param_5, byte param_6, uint param_7, uint param_8, byte param_9, undefined param_10, ushort param_11, undefined2 param_12, int param_13, undefined param_14, undefined param_15, int param_16);
-    int * StartKeymap(undefined2 param_1, short param_2, undefined4 param_3, undefined4 param_4, uint param_5, byte param_6, uint param_7, uint param_8, byte param_9, undefined param_10, ushort param_11, undefined2 param_12, uint param_13, undefined param_14, undefined param_15, int param_16);
-    int * synthStartSound(uint param_1, int param_2, undefined4 param_3, uint param_4, byte param_5, uint param_6, uint param_7, uint param_8, undefined param_9, ushort param_10, undefined2 param_11, undefined param_12, short param_13, undefined param_14, int param_15);
+    uint do_voice_portamento(byte param_1, char param_2, char param_3, int param_4, undefined4 * param_5);
+    uint StartLayer(undefined2 param_1, int param_2, undefined4 param_3, undefined4 param_4, uint param_5, byte param_6, uint param_7, uint param_8, byte param_9, undefined1 param_10, ushort param_11, undefined2 param_12, int param_13, undefined1 param_14, undefined1 param_15, int param_16);
+    int * StartKeymap(undefined2 param_1, short param_2, undefined4 param_3, undefined4 param_4, uint param_5, byte param_6, uint param_7, uint param_8, byte param_9, undefined1 param_10, ushort param_11, undefined2 param_12, uint param_13, undefined1 param_14, undefined1 param_15, int param_16);
+    int * synthStartSound(uint param_1, int param_2, undefined4 param_3, uint param_4, byte param_5, uint param_6, uint param_7, uint param_8, undefined1 param_9, ushort param_10, undefined2 param_11, undefined1 param_12, short param_13, undefined1 param_14, int param_15);
     void synthAddJob(int * param_1, int * param_2, uint param_3);
     void synthStartSynthJobHandling(int * param_1);
     void synthForceLowPrecisionUpdate(int * param_1);
@@ -7154,14 +7700,14 @@ extern "C" {
     void HandleJobQueue(int * param_1, undefined * param_2);
     void HandleFaderTermination(int param_1);
     void synthHandle(uint param_1);
-    int * synthFXStart(undefined2 param_1, byte param_2, uint param_3, undefined param_4, int param_5);
+    int * synthFXStart(undefined2 param_1, byte param_2, uint param_3, undefined1 param_4, uint param_5);
     undefined4 synthFXSetCtrl(uint param_1, byte param_2, byte param_3);
     undefined4 synthFXSetCtrl14(uint param_1, byte param_2, uint param_3);
     void synthFXCloneMidiSetup(int param_1, int param_2);
     undefined4 synthSendKeyOff(uint param_1);
-    void synthVolume(uint param_1, uint param_2, uint param_3, undefined param_4, undefined4 param_5);
+    void synthVolume(uint param_1, uint param_2, uint param_3, undefined1 param_4, undefined4 param_5);
     undefined4 synthIsFadeOutActive(uint param_1);
-    void synthSetMusicVolumeType(uint param_1, undefined param_2);
+    void synthSetMusicVolumeType(uint param_1, undefined1 param_2);
     void synthInit(undefined4 param_1, int param_2);
     void sndSeqSpeed(uint param_1, undefined2 param_2);
     void sndSeqContinue(uint param_1);
@@ -7177,7 +7723,7 @@ extern "C" {
     void sndVolume(uint param_1, uint param_2, uint param_3);
     void sndMasterVolume(uint param_1, uint param_2, char param_3, char param_4);
     void sndSetAuxProcessingCallbacks(uint param_1, int param_2, undefined4 param_3, char param_4, uint param_5, int param_6, undefined4 param_7, char param_8, uint param_9);
-    void synthActivateStudio(uint param_1, undefined param_2, undefined4 param_3);
+    void synthActivateStudio(uint param_1, undefined1 param_2, undefined4 param_3);
     void synthDeactivateStudio(uint param_1);
     void synthAddStudioInput(uint param_1, byte * param_2);
     void synthRemoveStudioInput(uint param_1, int param_2);
@@ -7187,8 +7733,8 @@ extern "C" {
     void streamKill(int param_1);
     int GetPrivateIndex(int param_1);
     void sndStreamARAMUpdate(int param_1, uint param_2, uint param_3, uint param_4, uint param_5);
-    void CheckOutputMode(undefined * param_1, undefined * param_2);
-    int sndStreamAllocEx(undefined param_1, undefined4 param_2, int param_3, undefined4 param_4, undefined param_5, undefined param_6, undefined param_7, undefined param_8, undefined param_9, undefined param_10, uint param_11, undefined4 param_12, undefined4 param_13, undefined2 * param_14);
+    void CheckOutputMode(undefined1 * param_1, undefined1 * param_2);
+    int sndStreamAllocEx(undefined1 param_1, undefined4 param_2, int param_3, undefined4 param_4, undefined1 param_5, undefined1 param_6, undefined1 param_7, undefined1 param_8, undefined1 param_9, undefined1 param_10, uint param_11, undefined4 param_12, undefined4 param_13, undefined2 * param_14);
     uint sndStreamAllocLength(int param_1, uint param_2);
     void sndStreamADPCMParameter(int param_1, undefined2 * param_2);
     void sndStreamFrq(int param_1, undefined4 param_2);
@@ -7239,19 +7785,19 @@ extern "C" {
     void macHandleActive(int * param_1);
     void macHandle(uint param_1);
     void macSampleEndNotify(int * param_1);
-    uint macSetExternalKeyoff(int * param_1);
+    int macSetExternalKeyoff(int * param_1);
     void macSetPedalState(int * param_1, int param_2);
     void TimeQueueAdd(int param_1);
     void UnYieldMacro(int * param_1, int param_2);
     void macMakeActive(int * param_1);
     void macMakeInactive(int param_1, int param_2);
-    int * macStart(uint param_1, byte param_2, byte param_3, short param_4, byte param_5, undefined param_6, undefined param_7, uint param_8, byte param_9, undefined param_10, ushort param_11, undefined param_12, byte param_13, undefined param_14, undefined param_15, int param_16);
+    uint macStart(uint param_1, byte param_2, byte param_3, short param_4, byte param_5, undefined1 param_6, undefined1 param_7, uint param_8, byte param_9, undefined1 param_10, ushort param_11, undefined1 param_12, byte param_13, undefined1 param_14, undefined1 param_15, int param_16);
     void macInit(void);
     int vidInit(void);
     undefined4 * get_vidlist(uint param_1);
     void vidRemoveVoiceReferences(int param_1);
     undefined4 vidMakeRoot(int param_1);
-    int * vidMakeNew(int param_1, int param_2);
+    uint vidMakeNew(int param_1, int param_2);
     undefined4 vidGetInternalId(uint param_1);
     void voiceRemovePriority(int param_1);
     void voiceSetPriority(int param_1, byte param_2);
@@ -7288,11 +7834,11 @@ extern "C" {
     void ScanIDListReverse(ushort * param_1, int * param_2, byte param_3, int param_4);
     undefined4 sndPushGroup(int * param_1, short param_2, undefined4 param_3, int * param_4, int * param_5);
     undefined4 sndPopGroup(void);
-    uint seqPlaySong(short param_1, short param_2, int * param_3, uint * param_4, char param_5, undefined param_6);
-    void sndSeqPlayEx(short param_1, short param_2, int * param_3, uint * param_4, undefined param_5);
+    uint seqPlaySong(short param_1, short param_2, int * param_3, uint * param_4, char param_5, undefined1 param_6);
+    void sndSeqPlayEx(short param_1, short param_2, int * param_3, uint * param_4, undefined1 param_5);
     undefined4 salInitDspCtrl(byte param_1, byte param_2, int param_3);
     void salInitHRTFBuffer(void);
-    void salActivateStudio(uint param_1, undefined param_2, undefined4 param_3);
+    void salActivateStudio(uint param_1, undefined1 param_2, undefined4 param_3);
     void salDeactivateStudio(uint param_1);
     undefined4 salCheckVolErrorAndResetDelta(undefined2 * param_1, undefined2 * param_2, short * param_3, short param_4, int param_5, ushort param_6);
     void HandleDepopVoice(int param_1, int * param_2);
@@ -7317,7 +7863,7 @@ extern "C" {
     void StartContinousEmitters(void);
     void s3dHandle(void);
     void s3dInit(uint param_1);
-    int sndInit(byte param_1, undefined param_2, undefined param_3, byte param_4, uint param_5, int param_6);
+    int sndInit(byte param_1, undefined1 param_2, undefined1 param_3, byte param_4, uint param_5, int param_6);
     void salApplyMatrix(float * param_1, float * param_2, float * param_3);
     void salNormalizeVector(float * param_1);
     void inpSetGlobalMIDIDirtyFlag(uint param_1, uint param_2, uint param_3);
@@ -7330,8 +7876,8 @@ extern "C" {
     void inpResetChannelDefaults(uint param_1, uint param_2);
     void inpAddCtrl(int param_1, uint param_2, undefined4 param_3, byte param_4, int param_5);
     void inpFXCopyCtrl(uint param_1, int param_2, int param_3);
-    void inpSetMidiLastNote(uint param_1, uint param_2, undefined param_3);
-    void inpGetMidiLastNote(uint param_1, uint param_2);
+    void inpSetMidiLastNote(uint param_1, uint param_2, undefined1 param_3);
+    undefined1 inpGetMidiLastNote(uint param_1, uint param_2);
     uint _GetInputValue(int param_1, byte * param_2, uint param_3, uint param_4);
     void inpInit(int param_1);
     uint inpTranslateExCtrl(uint param_1);
@@ -7353,18 +7899,18 @@ extern "C" {
     uint sndConvert2Ms(uint param_1);
     void snd_handle_irq(void);
     undefined4 hwInit(undefined4 * param_1, byte param_2, byte param_3, uint param_4);
-    void hwSetTimeOffset(undefined param_1);
-    void WPADGetDpdSensitivity(void);
+    void hwSetTimeOffset(undefined1 param_1);
+    undefined1 WPADGetDpdSensitivity(void);
     bool hwIsActive(int param_1);
     void hwSetPriority(int param_1, undefined4 param_2);
     void hwInitSamplePlayback(int param_1, undefined2 param_2, undefined4 * param_3, int param_4, undefined4 param_5, undefined4 param_6, int param_7, char param_8);
     void hwBreak(int param_1);
     void hwSetADSR(int param_1, uint * param_2, byte param_3);
     void hwSetVirtualSampleLoopBuffer(int param_1, undefined4 param_2, undefined4 param_3);
-    void hwGetVirtualSampleState(int param_1);
-    void hwGetVirtualSampleState(int param_1);
+    undefined1 hwGetVirtualSampleState(int param_1);
+    undefined1 hwGetVirtualSampleState(int param_1);
     undefined2 hwGetSampleID(int param_1);
-    void hwSetStreamLoopPS(int param_1, undefined param_2);
+    void hwSetStreamLoopPS(int param_1, undefined1 param_2);
     void hwStart(int param_1, byte param_2);
     void hwKeyOff(int param_1);
     void hwSetPitch(int param_1, ushort param_2);
@@ -7382,7 +7928,7 @@ extern "C" {
     void hwTransAddr(void);
     void hwFrq2Pitch(undefined4 param_1);
     void hwInitSampleMem(undefined4 param_1, int param_2);
-    void hwSaveSample(int * param_1, void * * param_2);
+    void hwSaveSample(int * param_1, int * param_2);
     void hwRemoveSample(int param_1, undefined4 param_2);
     void hwSyncSampleMem(void);
     void empty_function(void);
@@ -7419,12 +7965,12 @@ extern "C" {
     undefined4 g_something_with_sound8_wrapper(int param_1);
     undefined4 ReverbHICreate(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, void * param_7);
     undefined4 ReverbHIModify(double param_1, double param_2, double param_3, double param_4, double param_5, double param_6, void * param_7);
-    void DoCrossTalk(undefined8 param_1, undefined8 param_2, uint * param_3, uint * param_4);
+    void DoCrossTalk(double param_1, double param_2, uint * param_3, uint * param_4);
     void HandleReverb(uint * param_1, int param_2, int param_3);
     void ReverbHICallback(uint * param_1, uint * param_2, uint * param_3, int param_4);
     void ReverbHIFree(int param_1);
-    void do_src1(int * * param_1);
-    void do_src2(int * * param_1);
+    void do_src1(undefined4 * param_1);
+    void do_src2(undefined4 * param_1);
     undefined4 sndAuxCallbackUpdateSettingsChorus(int param_1);
     undefined4 sndAuxCallbackPrepareChorus(int * param_1);
     undefined4 sndAuxCallbackShutdownChorus(void);
@@ -7467,8 +8013,8 @@ extern "C" {
     float math_sin(s16 angle);
     void math_sin_cos_v(s16 param_1, float * param_2);
     void g_math_sin_cos_wrapper(s16 angle, float * out_sin, float * out_cos);
-    void math_sin_cos(s16 angle);
-    void CHUNK__math_sin_cos(s16 angle, float * out_sin, float * out_cos);
+    void CHUNK__math_sin_cos(s16 angle);
+    void math_sin_cos(s16 angle, float * out_sin, float * out_cos);
     float math_tan(s16 param_1);
     s16 math_atan2(double param_1, double param_2);
     int math_atan(double param_1);
@@ -7490,7 +8036,7 @@ extern "C" {
     void mtxa_from_rotate_y(short angle);
     void mtxa_from_rotate_z(short angle);
     void mtxa_from_mtxb_translate(struct Vec * vec);
-    double mtxa_from_mtxb_translate_xyz(undefined8 param_1, undefined8 param_2, undefined8 param_3);
+    double mtxa_from_mtxb_translate_xyz(double param_1, double param_2, double param_3);
     void mtxa_normalize_basis(void);
     undefined8 mtxa_push(void);
     void mtxa_pop(void);
@@ -7533,7 +8079,7 @@ extern "C" {
     void mtxa_rotate_z_sin_cos(float sin_z_angle, float cos_z_angle);
     void mtxa_from_quat(struct Quat * quat);
     void quat_mult(struct Quat * dest, struct Quat * quat1, struct Quat * quat2);
-    undefined8 g_math_smth1(int param_1);
+    undefined8 g_math_smth1(float * param_1);
     void g_math_unk6(float * param_1);
     void g_math_unk7(double param_1, struct Quat * param_2, float * param_3, float * param_4);
     void g_math_unk8(double param_1, struct Quat * param_2, float * param_3, float * param_4);
@@ -7578,7 +8124,7 @@ extern "C" {
     void g_init_gx(BOOL32 make_second_fifo, u32 fifo_size, int g_something_with_alpha);
     void g_init_locked_cache_mtx_stack(int matrix_stack, int param_2);
     void * allocate_mem_from_arena(int size);
-    void g_set_some_func_ptrs2(DVDFileInfo * (** param_1)(void));
+    void g_set_some_func_ptrs2(undefined4 * param_1);
     void g_set_some_dvd_func_ptrs(void);
     void * (* set_alloc_from_heap_func_ptr(void * (* new_func)(u32)))(u32);
     void (* set_free_to_heap_func_ptr(void (* new_func)(void *)))(void *);
@@ -7608,7 +8154,7 @@ extern "C" {
     void g_zero_something(void);
     void g_something_with_GX_vtx_desc(uint param_1);
     void empty_function(void);
-    void g_load_gpu_transform_mtx(Mtx * mtx, int param_2);
+    void load_gx_pos_nrm_mtx(Mtx * mtx, int id);
     undefined8 g_smth_with_gpu_and_locked_cache_mtx(void);
     void g_something_with_texture_scroll_3(undefined4 param_1, Mtx * param_2);
     void avdisp_set_post_mult_color(double red, double green, double blue, double alpha);
@@ -7624,7 +8170,7 @@ extern "C" {
     undefined8 g_some_GmaSomeStruct_func5(struct GmaShape * gma_struct);
     void g_some_GmaSomeStruct_func4(struct GmaShape * param_1);
     void g_free_some_memory(void);
-    Mtx * draw_poly(int param_1, Mtx * * param_2);
+    Mtx * draw_poly(int param_1, undefined4 * param_2);
     uint pointer_range_advance(byte * g_frame_pointer, int * toset);
     void g_avdisp_draw_model_now1(struct GmaModel * model);
     void g_avdisp_draw_model_now2(struct GmaModel * model);
@@ -7641,7 +8187,7 @@ extern "C" {
     void g_maybe_something_with_normals(int param_1);
     void g_init_gma(struct GmaBuffer * gma_buffer, struct Gma * gma_header, struct TplBuffer * tpl);
     int g_init_gma_model_materials(struct GmaModel * model, struct TplBuffer * tpl, struct GXTexObj * texobj_array);
-    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1_1_1, size_t count);
+    void g_memcpy_using_locked_cache(void * dest, void * curr_src_1_1_1_1_1_1_1_1_1_1_1_1_1_1_1, size_t count);
     void g_something_with_locked_cache_2(void * param_1, uint param_2, uint param_3);
     void memcpy2(void * dest, void * src, size_t count);
     int * __va_arg(char * param_1, int param_2);
@@ -7728,26 +8274,26 @@ extern "C" {
     undefined8 __shr2u(uint param_1, uint param_2, int param_3);
     undefined8 __shr2i(int param_1, uint param_2, uint param_3);
     double __cvt_sll_flt(uint param_1, uint param_2);
-    void __cvt_dbl_usll(ulonglong param_1);
+    undefined8 __cvt_dbl_usll(ulonglong param_1);
     undefined4 OSGetStackPointer(void);
     void __fini_cpp_exceptions(void);
     void __init_cpp_exceptions(void);
     void __unregister_fragment(int param_1);
     undefined4 __register_fragment(undefined4 param_1, undefined4 param_2);
     void free(int * * __ptr);
-    void deallocate_from_fixed_pools(int * * param_1, int * * param_2, uint param_3);
+    void deallocate_from_fixed_pools(undefined4 * param_1, int * param_2, uint param_3);
     uint * soft_allocate_from_var_pools(int * param_1, int param_2, uint * param_3);
-    void SubBlock_merge_next(uint * param_1, uint * * param_2);
+    void SubBlock_merge_next(uint * param_1, uint * param_2);
     void Block_link(int param_1, uint * param_2);
     undefined4 __flush_all(void);
     void __close_all(void);
     uint * __find_unopened_file(void);
-    void __num2dec(double param_1, int param_2, char * param_3);
+    void __num2dec(double param_1_00, int param_2, char * param_3);
     void __num2dec_internal(double param_1, char * param_2);
     uint __equals_dec(int param_1, int param_2);
     void __two_exp(undefined4 * param_1, ushort param_2);
-    void __timesdec(undefined * param_1, int param_2, int param_3);
-    void __ull2dec(undefined * param_1, undefined4 param_2, uint param_3, uint param_4);
+    void __timesdec(undefined1 * param_1, int param_2, int param_3);
+    void __ull2dec(undefined1 * param_1, undefined4 param_2, int param_3, int param_4);
     int __count_trailing_zerol(uint param_1);
     int __flush_buffer(undefined4 * param_1, undefined4 * param_2);
     void __prep_buffer(int param_1);
@@ -7781,13 +8327,13 @@ extern "C" {
     byte * float2str(double param_1, int param_2, int param_3);
     void round_decimal(int param_1, int param_2);
     char * double2hex(double param_1, int param_2, int param_3);
-    char * longlong2str(uint param_1, uint param_2, int param_3, char * param_4);
+    char * longlong2str(uint param_1, int param_2, int param_3, char * param_4);
     char * long2str(uint param_1, int param_2, char * param_3);
     char * parse_format(int param_1, char * param_2, uint * param_3);
     void qsort(void * __base, size_t __nmemb, size_t __size, __compar_fn_t __compar);
     void srand(u32 seed);
     int rand(void);
-    byte * __StringRead(byte * * param_1, byte * param_2, int param_3);
+    uint __StringRead(int * param_1, uint param_2, int param_3);
     char * strstr(char * __haystack, char * __needle);
     char * strchr(char * __s, int __c);
     int strncmp(char * __s1, char * __s2, size_t __n);
@@ -7828,7 +8374,7 @@ extern "C" {
     float cosf(float __x);
     void TRKNubMainLoop(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void TRKDestructEvent(int param_1);
-    void TRKConstructEvent(undefined * param_1, undefined param_2);
+    void TRKConstructEvent(undefined1 * param_1, undefined1 param_2);
     undefined4 TRKPostEvent(int param_1);
     undefined4 TRKGetNextEvent(int param_1);
     undefined4 TRKInitializeEventQueue(void);
@@ -7836,19 +8382,19 @@ extern "C" {
     undefined4 TRKTerminateNub(void);
     int TRKInitializeNub(void);
     void TRKMessageSend(int param_1);
-    void TRKReadBuffer_ui32(int param_1, undefined * param_2, int param_3);
+    void TRKReadBuffer_ui32(int param_1, undefined1 * param_2, int param_3);
     void TRKReadBuffer_ui8(int param_1, int param_2, int param_3);
-    int TRKReadBuffer1_ui64(int param_1, undefined * param_2);
-    int TRKReadBuffer1_ui32(int param_1, undefined * param_2);
-    int TRKReadBuffer1_ui16(int param_1, undefined * param_2);
+    int TRKReadBuffer1_ui64(int param_1, undefined1 * param_2);
+    int TRKReadBuffer1_ui32(int param_1, undefined1 * param_2);
+    int TRKReadBuffer1_ui16(int param_1, undefined1 * param_2);
     undefined4 TRKReadBuffer1_ui8(int param_1, int param_2);
     void TRKAppendBuffer_ui32(int param_1, undefined4 * param_2, int param_3);
-    int TRKAppendBuffer_ui8(int param_1, undefined * param_2, int param_3);
+    int TRKAppendBuffer_ui8(int param_1, undefined1 * param_2, int param_3);
     void TRKAppendBuffer1_ui64(int param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4);
     void TRKAppendBuffer1_ui32(int param_1, undefined4 param_2);
     void TRKAppendBuffer1_ui16(int param_1, undefined2 param_2);
     undefined4 TRKReadBuffer(int param_1, int param_2, uint param_3);
-    undefined4 TRKAppendBuffer(int param_1, undefined * param_2, uint param_3);
+    undefined4 TRKAppendBuffer(int param_1, undefined1 * param_2, uint param_3);
     undefined4 TRKSetBufferPosition(int param_1, uint param_2);
     void TRKResetBuffer(int param_1, char param_2);
     void TRKReleaseBuffer(int param_1);
@@ -7880,11 +8426,11 @@ extern "C" {
     int TRKDoDisconnect(int param_1);
     void TRKDoConnect(int param_1);
     void TRKDoUnsupported(int param_1);
-    void TRKStandardACK(int param_1, undefined param_2, undefined param_3);
+    void TRKStandardACK(int param_1, undefined1 param_2, undefined1 param_3);
     void SetTRKConnected(undefined4 param_1);
-    int HandlePositionFileSupportRequest(undefined4 param_1, undefined4 * param_2, undefined param_3, undefined * param_4);
-    int HandleCloseFileSupportRequest(undefined4 param_1, undefined * param_2);
-    int HandleOpenFileSupportRequest(char * param_1, undefined param_2, undefined4 * param_3, undefined * param_4);
+    int HandlePositionFileSupportRequest(undefined4 param_1, undefined4 * param_2, undefined1 param_3, undefined1 * param_4);
+    int HandleCloseFileSupportRequest(undefined4 param_1, undefined1 * param_2);
+    int HandleOpenFileSupportRequest(char * param_1, undefined1 param_2, undefined4 * param_3, undefined1 * param_4);
     int TRKRequestSend(int param_1, int * param_2, uint param_3, int param_4, int param_5);
     int TRKSuppAccessFile(int param_1, int param_2, uint * param_3, char * param_4, int param_5, int param_6);
     undefined4 return_0(void);
@@ -7892,7 +8438,7 @@ extern "C" {
     undefined4 return_0(void);
     int TRKDoNotifyStopped(char param_1);
     void TRK_flush_cache(uint param_1, int param_2);
-    void TRK_fill_mem(int param_1, uint param_2, uint param_3);
+    void TRK_fill_mem(int param_1, byte param_2, uint param_3);
     void __TRK_get_MSR(void);
     void __TRK_set_MSR(void);
     void TRK_ppc_memcpy(int param_1, int param_2, int param_3);
@@ -7907,9 +8453,9 @@ extern "C" {
     void TRKTargetAddExceptionInfo(int param_1);
     void TRKTargetAddStopInfo(int param_1);
     int TRKTargetInterrupt(byte * param_1);
-    undefined4 TRKTargetCPUType(undefined * param_1);
-    undefined4 TRKTargetSupportMask(undefined * param_1);
-    undefined4 TRKTargetVersions(undefined * param_1);
+    undefined4 TRKTargetCPUType(undefined1 * param_1);
+    undefined4 TRKTargetSupportMask(undefined1 * param_1);
+    undefined4 TRKTargetVersions(undefined1 * param_1);
     int TRKTargetAccessExtended2(uint param_1, uint param_2, int param_3, int * param_4, int param_5);
     uint TRKTargetAccessExtended1(uint param_1, uint param_2, int param_3, int * param_4, int param_5);
     int TRKTargetAccessFP(uint param_1, uint param_2, int param_3, int * param_4, int param_5);
@@ -7928,20 +8474,20 @@ extern "C" {
     void TRKRestoreExtended1Block(void);
     undefined4 TRKTargetCPUMinorType(void);
     void TRK_main(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
-    undefined4 * TRKLoadContext(undefined4 * param_1, int param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
+    undefined4 TRKLoadContext(undefined4 * param_1, int param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void empty_function(void);
     void TRK_board_display(char * param_1);
     void UnreserveEXI2Port(void);
     void UnreserveEXI2Port(void);
-    int TRKReadUARTPoll(undefined * param_1);
-    undefined4 WriteUART1(undefined param_1);
+    int TRKReadUARTPoll(undefined1 * param_1);
+    undefined4 WriteUART1(undefined1 param_1);
     int WriteUARTFlush(void);
     void UnreserveEXI2Port(void);
     undefined4 TRKInitializeIntDrivenUART(void);
     void InitMetroTRKCommTable(int param_1);
     void TRKEXICallBack(undefined4 param_1, undefined4 * param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     undefined4 TRKTargetContinue(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
-    void SetUseSerialIO(undefined param_1);
+    void SetUseSerialIO(undefined1 param_1);
     undefined4 __position_file(void);
     undefined4 __close_file(void);
     undefined4 __write_file(undefined4 param_1, undefined4 param_2, undefined4 * param_3);
@@ -7993,14 +8539,15 @@ extern "C" {
     void handle_start_button_with_debug_mode(void);
     void handle_start_button_no_debug_mode(void);
     void smd_null(void);
-    void g_set_current_sub_mode_dest(undefined4 param_1);
-    void g_maybe_call_some_func_ptr_related_to_sub_mode(void);
+    void set_sub_mode_destination(void * func);
+    void call_then_reset_sub_mode_destination(void);
     uint get_next_player_idx(void);
     int g_get_next_stage_id(void);
-    void g_construct_pause_menu_sprite(int param_1);
-    void g_check_input_in_pausemenu(int param_1);
-    void handle_pausemenu_selection(int param_1);
-    void g_pause_game(void);
+    void construct_pause_menu_sprite(struct Sprite * pause_sprite);
+    void check_pause_menu_input(struct Sprite * pause_sprite);
+    void handle_paused_input_in_menu(struct Sprite * pause_sprite);
+    void handle_paused_input_out_of_menu(struct Sprite * pause_sprite);
+    void pause_game(void);
     void init_events(void);
     void tick_events(void);
     void event_init(EventID  event_id);
@@ -8008,24 +8555,30 @@ extern "C" {
     void event_freeze(EventID  event_id);
     void event_restart(EventID  event_id);
     void dest_all_events(void);
-    void polydisp_main(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void draw_mode(undefined8 param_1, undefined8 param_2, double param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 * param_11, int param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void draw_mode_adv(void);
-    void g_draw_world(void);
+    void polydisp_main(void);
+    void draw_func_handler(void);
+    void adv_draw_func_handler(void);
+    void game_main_draw_func(void);
+    void g_draw_world_child(void);
+    void game_extra_draw_func(void);
+    void game_result_draw_func(void);
+    void handle_test_camera(void);
     void g_set_clear_color(void);
     void g_smth_with_bg_color_drawing(struct GXColor param_1);
+    void g_draw_func_init(void);
     void g_something_with_view_stage(void);
+    void fade_color_base_default(void);
     void take_pausemenu_screenshot(void * out_image_buffer, undefined4 src_left_px, undefined4 src_top_px, short width_px, short height_px, GXTexFmt  fmt);
     void init_pausemenu_screenshot_texobj(struct GXTexObj * param_1);
     void g_draw_pausemenu_screenshot(struct GXTexObj * tex);
-    void md_adv_func(void);
+    uint md_adv_func(void);
     void empty_function(void);
     void empty_function(void);
     void smd_adv_logo_init(void);
     void smd_adv_logo_tick(void);
     void smd_adv_demo_init(void);
     void smd_adv_demo_tick(void);
-    void smd_adv_movie_init(void);
+    void test_mode_sub_mode_handler(void);
     void smd_adv_movie_return(void);
     void g_smth_with_adv_sprites_and_stage_loading(s32 param_1);
     void smd_adv_title_init(void);
@@ -8033,6 +8586,7 @@ extern "C" {
     void smd_adv_title_tick(void);
     void smd_adv_info_init(void);
     void smd_adv_info_tick(void);
+    void caseD_f3(void);
     void smd_adv_game_ready_init(void);
     void smd_adv_game_ready_tick(void);
     void smd_adv_game_play_init(void);
@@ -8058,16 +8612,19 @@ extern "C" {
     void create_demo_mask_sprites(void);
     void sprite_demo_mask_banana_tick(u8 * status, struct Sprite * sprite);
     void g_set_lots_of_initial_state(void);
-    void md_sel_func(void);
+    uint md_sel_func(void);
     void smd_sel_ngc_dest(void);
-    void g_return_to_sel_mode(undefined4 param_1);
+    void g_return_to_sel_ngc(undefined4 param_1);
     void g_load_stage_for_menu_bg(char param_1, int param_2);
-    void smd_sel_stage_init_and_ngc_init_and_ngc_reinit(void);
-    void smd_sel_stage_and_ngc_tick(void);
+    void g_set_some_sel_ngc_global_func_ptrs(void * func1, void * func2, void * func3, void * func4);
+    void smd_sel_ngc_init(void);
+    void smd_sel_ngc_tick(void);
+    void g_sel_draw_func_handler(void);
+    void g_sel_ngc_sub_mode_destination(void);
     void init_cameras(void);
     void event_camera_init(void);
     void event_camera_tick(void);
-    void g_some_camera_parent_func(undefined param_1, undefined param_2, undefined param_3, undefined param_4, undefined param_5, undefined param_6, undefined param_7, undefined param_8, undefined4 param_9, undefined4 param_10, undefined4 param_11, undefined8 param_12, undefined8 param_13, undefined8 param_14, undefined8 param_15, undefined4 param_16, undefined4 param_17);
+    void g_some_camera_parent_func(void);
     void event_camera_dest(void);
     void enable_camera(int camera_idx);
     void disable_all_cameras(void);
@@ -8076,6 +8633,7 @@ extern "C" {
     void g_something_with_camera2(int player_number);
     void g_some_camera_setup_function(void);
     void g_smth_with_camera_and_reflective_objects(int param_1);
+    void g_something_with_cameras(void);
     void g_set_mode_of_all_cameras_optionally(u8 param_1);
     void g_set_camera_mode(uint param_1, byte mode);
     void g_camera_func27(struct Camera * camera, struct Ball * ball);
@@ -8156,15 +8714,16 @@ extern "C" {
     void g_camera_func85(struct Camera * camera, struct Ball * ball);
     void g_camera_func91(struct Camera * camera, struct Ball * ball);
     void g_camera_func92(struct Camera * camera, struct Ball * ball);
-    bool g_is_sphere_visible(undefined8 radius, struct Vec * center);
+    bool g_is_sphere_visible(double radius, struct Vec * center);
     bool g_is_sphere_visible_scaled(double radius, double g_scale, struct Vec * center);
     void g_init_lights(void);
     void g_something_to_do_with_lights(void);
     undefined4 g_some_stage_init_func(void * param_1);
-    void g_something_with_lights(int param_1);
-    undefined4 g_get_maybe_something_with_lights(void);
-    void g_push_light_group(void);
-    void g_pop_light_group(void);
+    void g_set_active_light_group(int g_smth_with_lights);
+    undefined4 get_active_light_group(void);
+    void push_light_group(void);
+    void pop_light_group(void);
+    void g_set_light_color_maybe(double param_1, double param_2, double param_3, int param_4);
     void g_smth_with_avdisp_globals(double param_1, double param_2, double param_3);
     void g_something_with_gx_modes_and_compare(void);
     void gx_finish_frame_and_reset_z_and_alpha_compare_modes(void);
@@ -8198,11 +8757,14 @@ extern "C" {
     void threshold_analog_inputs(void);
     void g_calc_frames_since_last_input_change(void);
     void merge_inputs(void);
+    void load_bmp_com(void);
     TplBuffer * load_bmp(char * filepath);
-    void g_something_with_bmp_bmp_com(int g_idx);
-    void g_something_with_freeing_memory(int param_1);
+    void load_bmp_by_id_child(int g_idx);
+    void free_bmp_by_id(int id);
     void free_nl2ngc_tpl_buf_to_heap(struct TplBuffer * param_1);
+    void set_bmp_com_tpl_pointer(int param_1);
     void g_zero_some_sprite_related_state(void);
+    void g_some_sprite_reset_gx_state_func(void);
     void draw_ui(void);
     void g_draw_sprite_requests_from_buffer(void);
     u16 g_get_bmp_width(uint param_1);
@@ -8228,7 +8790,7 @@ extern "C" {
     void g_perf_finish_frame(void);
     void g_perf_start_frame(void);
     void g_reset_draw_perf_counters(void);
-    void g_printf_sound_error(bool is_warning, char * origin, undefined4 g_error_format, ...);
+    void g_printf_sound_error(BOOL32 is_error, char * origin, undefined4 g_error_format, ...);
     void * try_alloc_memory_for_sound(u32 size);
     void g_OSFree_wrapper(void * param_1);
     void init_sound(void);
@@ -8242,13 +8804,13 @@ extern "C" {
     void event_sound_dest(void);
     double g_smth_called_by_event_tick_sound_1(char param_1, short param_2);
     void g_smth_called_by_event_tick_sound_2(void);
-    void g_set_smth_with_sound(undefined param_1);
-    void g_smth_calls_sndFXStartParaInfo(struct GSomeSoundStruct * param_1);
+    void g_set_smth_with_sound(undefined1 param_1);
+    void g_smth_calls_sndFXStartParaInfo(struct GSoundCue * cue);
     int g_something_with_volume(uint * param_1, int param_2, int param_3);
     undefined4 g_something_calls_sndFXKeyOff(uint param_1, int param_2, int param_3);
     int SoundReq(uint g_some_id);
     int SoundReqDirect(uint sfx_id);
-    int SoundReqID(uint g_sfx_id, int param_2);
+    int SoundReqID(uint g_sfx_id, int soundreq_arg);
     void call_SoundReqID_arg_0(u32 g_sfx_id);
     void call_SoundReqID_arg_1(uint g_sfx_id);
     void call_SoundReqID_arg_2(uint g_sfx_id);
@@ -8300,26 +8862,26 @@ extern "C" {
     void g_something_with_sound6(void);
     void g_something_with_sound11(void);
     void empty_function(void);
-    uint g_something_with_sound4(undefined * param_1, undefined4 param_2, undefined param_3, undefined param_4, undefined param_5, undefined param_6);
-    int g_smgr_allocate_stereo(undefined4 param_1, undefined4 param_2, undefined param_3, undefined param_4, char * param_5, char * param_6, char param_7);
+    uint g_something_with_sound4(undefined1 * param_1, undefined4 param_2, undefined1 param_3, undefined1 param_4, undefined1 param_5, undefined1 param_6);
+    int g_smgr_allocate_stereo(undefined4 param_1, undefined4 param_2, undefined1 param_3, undefined1 param_4, char * param_5, char * param_6, char param_7);
     void g_some_dvd_read_async_sound_callback(s32 result, struct DVDFileInfo * file_info);
     void event_adx_init(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void event_adx_tick(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void event_adx_dest(void);
-    void g_adx_error_call_back(undefined4 param_1, undefined4 param_2);
+    void g_adx_error_call_back(undefined4 param_1, char * param_2);
     void g_draw_ingame_debug_menu(uint * param_1, int param_2);
     void g_draw_debug_window_boundaries(uint * param_1);
     void draw_debugtext(void);
     void window_init(void);
     void g_something_with_replays3(void);
-    void g_maybe_align_text_to_be_printed(uint g_x_pos, uint g_y_pos);
+    void debug_textdraw_set_pos(uint g_x_pos, uint g_y_pos);
     void debug_window_printf(undefined param_1, char * format, ...);
-    void g_smth_with_fifo_color(uint8_t color);
-    void g_debug_text_put1(int param_1, char * param_2);
+    void debug_textdraw_set_color(uint8_t color);
+    void debug_textdraw_put(int buffer_idx, char * string);
     void g_set_up_debugtext_buffer(void);
-    undefined4 g_some_printf_function_1(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void g_print_formatted_string_on_screen(char * format, ...);
-    void g_debug_text_put2(char * text);
+    undefined4 debug_textdraw_vsprintf_buf_0(char * fmt, ...);
+    void debug_textdraw_vsprintf_buf_1(char * format, ...);
+    void debug_textdraw_put_buf_1(char * text);
     undefined4 g_some_printf_function_2(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void draw_debugtext_char_en(u32 x, u32 y, char ch, u8 color_rrggbbaa);
     void draw_debugtext_char_jp(u32 x, u32 y, byte * ch, uint color_unknown_format);
@@ -8340,7 +8902,8 @@ extern "C" {
     void nl2ngc(struct NlBuffer * * out_nl_buffer, undefined4 out_tpl_buffer, char * p_lz_path, char * lz_path);
     undefined4 g_nl2ngc_gma_func(struct NlBuffer * nl_buf);
     void g_nl2ngc_tpl_func(struct NlBuffer * param_1, struct TplBuffer * param_2);
-    void g_smth_with_some_nl_model_buffer(struct GmaModel * param_1);
+    void g_nl_model_draw_func(struct GmaModel * param_1);
+    void g_some_draw_func5(int * param_1);
     void nl2ngc_set_fog_params(double param_1, double param_2, undefined4 param_3);
     void nl2ngc_set_fog_color(u8 r, u8 g, u8 b);
     void empty_function(void);
@@ -8359,40 +8922,43 @@ extern "C" {
     void g_something_with_translating_items(double param_1, int param_2, struct Vec * param_position);
     void g_maybe_sets_number_of_starting_monkeys(struct Ball * ball);
     void g_reset_ball(struct Ball * in_ball);
+    void g_competition_mode_respawn_start(struct Ball * ball);
     void ball_physics_g_something_w_postgoal_slowdown(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up(struct Ball * param_1);
     void g_ball_mode_play_replay(struct Ball * ball);
+    void g_handle_competition_mode_respawn(struct Ball * ball);
     void ball_physics_g_something_w_poastgoal_slowdown_blast_up(struct Ball * param_1);
     void ball_physics_g_something_w_postgoal_blast_up2(struct Ball * ball);
     void g_move_and_collide(struct Ball * ball, struct PhysicsBall * physicsBall);
     void g_apply_ball_velocity(struct Ball * ball);
-    void collide_with_stage(struct Ball * ball, struct PhysicsBall * physicsball);
+    void handle_ball_stage_coli(struct Ball * ball, struct PhysicsBall * physicsball);
     void position_ball(struct Ball * ball, struct PhysicsBall * phys_ball);
     void set_ball_properties(struct Ball * ball, int constants_idx);
     void ball_collision_stars(struct Ball * ball);
     void init_physicsball_from_ball(struct Ball * ball, struct PhysicsBall * physicsball);
-    void g_copy_physicsball_to_ball(struct Ball * ball, struct PhysicsBall * physicsball);
+    void apply_physicsball_to_ball(struct Ball * ball, struct PhysicsBall * physicsball);
     void g_ball_ape_rotation(struct Ball * ball);
     void spawn_postgoal_ball_sparkle(void);
     void g_some_ballfunc(struct Ball * param_1);
     void ball_sounds_gameplay(struct Ball * ball);
     G_BallMode * ball_movement_sparks(struct Ball * ball);
     void set_visual_scale(struct Ball * ball);
+    void draw_storysel_ball_clear_half(Mtx * mtx, int lod);
     void g_draw_ball_and_ape(void);
     void g_something_with_view_stage_and_ball(void);
-    undefined4 * g_some_ball_stage_coli_func(struct PhysicsBall * physicsball, struct StagedefFileHeader * stagedef);
-    undefined4 meshcoli_grid_lookup(float x, float z, struct StagedefColiHeader * coli_header);
-    void stcoli_sub03(struct PhysicsBall * physicsball, struct StagedefColiTri * tri);
-    void stcoli_sub04(struct PhysicsBall * physball, struct StagedefColiTri * tri);
-    void stcoli_sub05(struct PhysicsBall * param_1, struct Vec * param_2, struct Vec * param_3, float * param_4);
-    void stcoli_sub06(struct PhysicsBall * physball, struct StagedefColiTri * tri);
-    undefined8 stcoli_sub07(struct PhysicsBall * param_1, float * param_2, float * param_3);
+    void collide_ball_with_stage(struct PhysicsBall * physicsball, struct StagedefFileHeader * stagedef);
+    short * tri_coli_grid_lookup(float x, float z, struct StagedefColiHeader * coli_header);
+    void collide_ball_with_tri_face(struct PhysicsBall * physicsball, struct StagedefColiTri * tri);
+    void collide_ball_with_tri_edges(struct PhysicsBall * physball, struct StagedefColiTri * tri);
+    void collide_ball_with_tri_edge(struct PhysicsBall * param_1, struct Vec * param_2, struct Vec * param_3, float * param_4);
+    void collide_ball_with_tri_vertices(struct PhysicsBall * physball, struct StagedefColiTri * tri);
+    undefined8 collide_ball_with_tri_vertex(struct PhysicsBall * param_1, float * param_2, float * param_3);
     void g_some_jamabar_coli_func(struct PhysicsBall * physicsball, float * param_2);
-    void g_cylinder_coli_something(struct PhysicsBall * physball, struct StagedefColiCylinder * cylinder);
+    void collide_ball_with_cylinder(struct PhysicsBall * physball, struct StagedefColiCylinder * cylinder);
     void stcoli_sub10(struct PhysicsBall * param_1, struct Vec * param_2);
-    void g_sphere_coli_something(struct PhysicsBall * param_1, struct StagedefColiSphere * param_2);
-    void g_cone_coli_something(struct PhysicsBall * param_1, struct StagedefColiCone * param_2);
-    void g_something_with_physicsball_restitution(struct PhysicsBall * physicsball, struct Vec * param_2);
+    void collide_ball_with_sphere(struct PhysicsBall * param_1, struct StagedefColiSphere * param_2);
+    void collide_ball_with_cone(struct PhysicsBall * param_1, struct StagedefColiCone * param_2);
+    void collide_ball_with_plane(struct PhysicsBall * physicsball, struct ColiPlane * plane);
     BOOL32 line_intersects_rect(struct Vec * lineStart, struct Vec * lineEnd, struct Rect * rect);
     void stobj_jamabar_child_coli(struct PhysicsBall * physicsball, struct Stobj * stobj);
     void raycast_stage_down(struct Vec * origin, struct RaycastHit * out_hit, struct Vec * out_vel_at_point);
@@ -8400,9 +8966,9 @@ extern "C" {
     BOOL32 raycast_cone(struct Vec * line_origin, undefined4 line_dir, struct StagedefColiCone * cone, struct Vec * out_hit_pos, struct Vec * out_hit_normal);
     BOOL32 raycast_sphere(struct Vec * line_origin, struct Vec * line_dir, struct StagedefColiSphere * sphere, struct Vec * out_hit_pos, struct Vec * out_hit_normal);
     BOOL32 raycast_cylinder(undefined4 line_origin, undefined4 line_dir, struct StagedefColiCylinder * cylinder, undefined4 out_hit_pos, undefined4 out_hit_normal);
-    uint g_goal_coli_something(struct PhysicsBall * param_1, struct StagedefGoal * param_2);
-    void stcoli_sub22(struct PhysicsBall * param_1, struct Vec * param_2);
-    void stcoli_sub24(struct PhysicsBall * param_1, struct Vec * param_2);
+    uint collide_ball_with_goal(struct PhysicsBall * physicsball, struct StagedefGoal * goal_def);
+    void g_goal_coli_func1(struct PhysicsBall * param_1, struct Vec * param_2);
+    void g_goal_coli_func2(struct PhysicsBall * param_1, struct Vec * param_2);
     void stcoli_sub25(struct PhysicsBall * param_1, int param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void g_draw_stage_collision(void);
     void stcoli_sub27(int param_1);
@@ -8410,29 +8976,36 @@ extern "C" {
     void stcoli_sub29(float * param_1, float * param_2, float * param_3, float * param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void tf_physicsball_by_mtxa(struct PhysicsBall * physicsball1, struct PhysicsBall * physicsball2);
     void inv_tf_physicsball_by_mtxa(struct PhysicsBall * src_physicsball, struct PhysicsBall * dest_physicsball);
-    void tf_physball_to_itemgroup_space(struct PhysicsBall * physicsball, int itemgroup_idx);
-    uint g_something_w_ig_and_coli_headers(struct Itemgroup * ig_list, struct StagedefColiHeader * coli_header_list, undefined4 param_3, struct Vec * physicsball_x);
-    undefined4 g_something_w_ig_and_coli_headers_2(struct Itemgroup * ig_list, struct StagedefColiHeader * coli_header_list, struct Vec * physicsball_pos);
+    void tf_physball_to_itemgroup_space(struct PhysicsBall * physicsball, int dest_ig_idx);
+    uint g_is_ball_in_ig_coli_range(struct Itemgroup * ig_list, struct StagedefColiHeader * coli_header_list, undefined4 param_3, struct Vec * physicsball_x);
+    BOOL32 g_ball_ig_bound_sphere_overlap(struct Itemgroup * ig_anim, struct StagedefColiHeader * ig_def, struct Vec * physicsball_pos);
     void event_world_init(void);
     void event_world_tick(void);
     void event_world_dest(void);
+    double evaluate_stagedef_keyframe(double g_anim_frame, int count, struct StagedefAnimKeyframe * keyframe);
     void event_stage_init(void);
     void event_stage_tick(void);
     void event_stage_dest(void);
-    double g_advance_itemgroup_anim_frame(struct Itemgroup * itemgroup, struct StagedefColiHeader * colis_header);
+    float advance_itemgroup_anim(struct Itemgroup * itemgroup, struct StagedefColiHeader * colis_header);
     void g_advance_stage_animation(void);
     void g_transform_some_itemgroup_vec(void);
     GmaModel * get_GmaBuffer_entry(struct GmaBuffer * buffer, char * name);
     void g_stgname_init(void);
     void init_itemgroups(void);
     void empty_function(void);
-    void g_load_stage_2(u32 stage_id);
+    void load_stage(int stage_id);
+    void unload_stage(void);
     void queue_stage_load(uint stage_number);
     void g_load_stage_gma_tpl_lz(u32 stage_id);
+    undefined4 g_handle_bonus_wave_collision(float * param_1, float * param_2, float * param_3);
     WorldTheme get_stage_world_theme(int stage_id);
     WorldTheme get_stage_world_theme(int stage_id);
+    int g_some_draw_func2(int param_1);
+    int g_some_draw_func4(double param_1, int param_2);
     void g_smth_with_stage_anim_groups(int anim_group_id, uint param_2);
+    BOOL32 g_smth_with_buttons(int anim_group_id, uint param_2);
     void g_init_smth_with_seesaws(void);
+    void collide_ball_with_seesaws(undefined2 param_1, undefined2 g_ball_idx, struct PhysicsBall * param_3);
     undefined4 get_seesaw_replay_state_size(struct SeesawInfo * seesaw_info);
     void g_smth_with_stage_fog(double param_1);
     bool is_stage_id_not_for_party_game(int stage_id);
@@ -8463,7 +9036,7 @@ extern "C" {
     int g_something_with_shadow_cast(void);
     void g_load_stgname_file(int locale_index);
     undefined4 g_load_stgname_dvd_entrynum(s32 stgname_dvd_entrynum);
-    int g_get_storymode_stage_name_buf_size(void);
+    int g_get_scen_stgname_buffer_size(void);
     bool g_queue_stage_name_load(void);
     undefined4 g_read_storymode_select_stage_names_from_dvd(int * param_1);
     char * read_stage_name_from_dvd(int stage_id, char * out_stage_name, int out_stage_name_buf_size);
@@ -8495,17 +9068,19 @@ extern "C" {
     void empty_function(void);
     void g_something_with_score(void);
     void g_advance_replay2(double replay_frames_remaining, float * param_2);
+    short g_get_replay_time(void);
     uint rle_encode(void * input, void * output, uint inputSize);
     uint get_compressed_replay_size(void);
     uint compress_replay(void * outCompressedReplay);
     int g_smth_with_cmp_recplay(void * param_1);
+    undefined4 g_some_replay_func5(void);
     Replay * init_replay(struct Replay * replay, int stage_time_limit);
     undefined4 init_replay_playable_ig_and_seesaw_state(struct Replay * replay, short * param_2, int param_3, u32 playableIgAndSeesawSize);
     Replay * create_replay(int stage_time_limit);
     void convert_replay_ptrs_to_offsets(struct Replay * replay, struct Replay * outReplay);
     void convert_replay_offsets_to_ptrs(struct Replay * replay);
     void increment_score(int g_some_flag, int score);
-    int get_goal_score(uint * param_1, int * param_2);
+    int get_goal_score(uint * g_jump_dist_ptr, int * g_score_ptr);
     void event_effect_init(void);
     void event_effect_tick(void);
     void event_effect_dest(void);
@@ -8603,19 +9178,21 @@ extern "C" {
     void event_background_init(void);
     void event_background_tick(void);
     void event_background_dest(void);
+    void g_maybe_some_bg_effect_handler(void);
     void g_draw_bg(void);
     void g_something_with_world_themes(void);
     void g_something_with_init_or_maybe_leftover_from_smb1(int param_1);
     void g_something_with_stage_world_themes2(int theme_id);
     void g_something_with_view_stage_and_bg(void);
     void call_item_coin_coli_func_for_cur_world_theme(void);
-    void bg_e3_and_bow2_and_gol2_init(void);
-    void bg_e3_and_bow2_and_gol2_tick(void);
-    void bg_e3_and_bow2_and_gol2_dest(void);
-    void bg_e3_and_bow2_and_gol2_disp(void);
-    void bg_e3_and_bow2_and_gol2_item_coin_coli(void);
+    void bg_init_base(void);
+    void bg_tick_base(void);
+    void bg_dest_base(void);
+    void bg_disp_base(void);
+    void bg_item_coin_coli_base(void);
+    void g_handle_bg_fg_model_anim(struct StagedefBackgroundModel * bg_model_ptr, int bg_model_count);
     void g_render_foreground_objects(Mtx * g_stage_tilt_mtx, struct StagedefForegroundModel * fg_model, int foreground_model_count);
-    void g_compute_texture_scroll(struct StagedefTextureScroll * tex_scroll);
+    void g_something_with_texture_scroll(struct StagedefTextureScroll * tex_scroll);
     void bg_nig_init(void);
     void bg_nig_tick(void);
     void bg_nig_dest(void);
@@ -8656,12 +9233,15 @@ extern "C" {
     void bg_boat_dest(void);
     void bg_boat_disp(void);
     void bg_boat_item_coin_coli(void);
-    void bg_author_and_park_author_init(void);
-    void bg_author_and_park_author_tick(void);
-    void bg_author_and_park_author_dest(void);
-    void bg_author_and_park_author_disp(void);
-    void bg_author_and_park_author_item_coin_coli(void);
-    void g_init_stagedef_bg_fg_models(struct StagedefBackgroundModel * model, int count, struct GSomeBgStruct * some_bg_struct, undefined * param_4);
+    void bg_park_init(void);
+    void bg_park_tick(void);
+    void bg_park_dest(void);
+    void bg_park_disp(void);
+    void bg_park_item_coin_coli(void);
+    void g_smth_with_bg_model_names(struct GmaModelEntry * model, void * g_some_func);
+    void g_init_stagedef_bg_fg_models(struct StagedefBackgroundModel * model, int count, struct GSomeBgStruct * some_bg_struct, void * g_effect_func);
+    BOOL32 is_game_paused_and_in_view_stage(void);
+    int g_smth_with_challenge_mode_var_and_3p(void);
     void bg_jun_init(void);
     void bg_jun_tick(void);
     void bg_jun_dest(void);
@@ -8677,6 +9257,7 @@ extern "C" {
     void bg_wat_dest(void);
     void bg_wat_disp(void);
     void bg_wat_item_coin_coli(void);
+    undefined4 g_set_bgwat_bubble_effect(int param_1, uint * param_2);
     void bg_spa_init(void);
     void bg_spa_tick(void);
     void bg_spa_dest(void);
@@ -8717,19 +9298,21 @@ extern "C" {
     void bg_lava_dest(void);
     void bg_lava_disp(void);
     void bg_lava_item_coin_coli(void);
+    void g_draw_lava_particles(int param_1);
     void g_something_with_stage_heap_and_lava_theme(int * param_1);
-    void bg_wat2_and_wat2_author_init(void);
-    void bg_bg_init_wat2_and_wat2_author_tick(void);
-    void bg_wat2_and_wat2_author_dest(void);
-    void bg_wat2_and_wat2_author_disp(void);
-    void bg_wat2_and_wat2_author_item_coin_coli(void);
+    void bg_wat2_init(void);
+    void bg_wat2_tick(void);
+    void bg_wat2_dest(void);
+    void bg_wat2_disp(void);
+    void bg_wat2_item_coin_coli(void);
     void empty_function(void);
     void empty_function(void);
-    void bg_pil2_and_pil2_author_init(void);
-    void bg_pil2_and_pil2_author_tick(void);
-    void bg_pil2_and_pil2_author_dest(void);
-    void bg_pil2_and_pil2_author_disp(void);
-    void bg_pil2_and_pil2_author_item_coin_coli(void);
+    void wat2_draw_caustics(void * some_pointer);
+    void bg_pil2_init(void);
+    void bg_pil2_tick(void);
+    void bg_pil2_dest(void);
+    void bg_pil2_disp(void);
+    void bg_pil2_item_coin_coli(void);
     void bg_spa2_init(void);
     void bg_spa2_tick(void);
     void bg_spa2_dest(void);
@@ -8769,18 +9352,18 @@ extern "C" {
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
-    void bg_bubble_and_bubble_author_init(void);
-    void bg_bubble_and_bubble_author_tick(void);
-    void bg_bubble_and_bubble_author_dest(void);
-    void bg_bubble_and_bubble_author_disp(void);
-    void bg_bubble_and_bubble_author_item_coin_coli(void);
+    void bg_bubble_init(void);
+    void bg_bubble_tick(void);
+    void bg_bubble_dest(void);
+    void bg_bubble_disp(void);
+    void bg_bubble_item_coin_coli(void);
     void empty_function(void);
     void empty_function(void);
-    void bg_gear_and_gear_author_init(void);
-    void bg_gear_and_gear_author_tick(void);
-    void bg_gear_and_gear_author_dest(void);
-    void bg_gear_and_gear_author_disp(void);
-    void bg_gear_and_gear_author_item_coin_coli(void);
+    void bg_gear_init(void);
+    void bg_gear_author_tick(void);
+    void bg_gear_author_dest(void);
+    void bg_gear_author_disp(void);
+    void bg_gear_item_coin_coli(void);
     void g_something_with_stage_heap_and_gear_theme(int param_1);
     void bg_jun2_init(void);
     void bg_jun2_tick(void);
@@ -8817,6 +9400,7 @@ extern "C" {
     s32 get_current_cm_stage_time_limit(void);
     u32 g_update_cm_course(Difficulty  difficulty, s32 course_stage_num, ModeFlag  mode_flags);
     int calc_course_idx(Difficulty  difficulty, ModeFlag  mode_flags);
+    int g_get_some_difficulty_count_2(int param_1, ModeFlag  mode_flags);
     bool g_are_on_final_course_level(int difficulty_id, int course_stage, uint difficulty_flags);
     bool is_bonus_stage(int stage_id);
     void g_something_with_cm_entries_practice_mode(void);
@@ -8826,13 +9410,14 @@ extern "C" {
     void clear_cm_player_progress(void);
     void update_course_progress(void);
     void g_something_with_cm_player_progress(void);
-    void sprite_debug_course_display_disp(undefined8 param_1, undefined8 param_2, double param_3, double param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void sprite_debug_course_display_disp(int param_1);
     void g_save_cm_unlock_entries(void);
     void g_load_cm_unlock_entries(void);
     int get_world_stage_count(int world);
     int get_world_unbeaten_stage_count(int world);
     int get_story_mode_stage_id(int world_idx, int world_stage_idx);
     int get_story_mode_stage_difficulty(int world, int stage);
+    uint is_storymode_stage_beaten(int world, int world_stage);
     void clear_unlocked_storymode_stages(void);
     void g_save_storymode_unlock_entries(void);
     void g_load_storymode_unlock_entries(void);
@@ -8858,7 +9443,7 @@ extern "C" {
     void item_coin_dest(void);
     void item_coin_replay_init(struct Item * item);
     void item_debug_coin(struct Item * item);
-    GmaModel * g_something_with_coins(int * * param_1);
+    GmaModel * g_something_with_coins(undefined4 * param_1);
     void event_stobj_collision_init(void);
     void event_stobj_collision_tick(void);
     void event_stobj_collision_dest(void);
@@ -8869,6 +9454,7 @@ extern "C" {
     void event_stobj_tick(void);
     void event_stobj_dest(void);
     void g_draw_stobjs(void);
+    void g_stobj_sound_something(void);
     int spawn_stobj(struct Stobj * stobj);
     void g_something_with_bumper_LODs(void);
     void load_bumper_stobjs(struct StagedefColiHeader * coli_header_list, int coli_header_count);
@@ -8937,14 +9523,17 @@ extern "C" {
     void event_sprite_dest(void);
     void g_smth_with_drawing_all_sprites(int param_1);
     void draw_sprite(struct Sprite * sprite);
-    void call_something_with_bmp_bmp_com(int param_1);
-    void g_call_smth_with_freeing_memory(int param_1);
+    void load_bmp_by_id(int param_1);
+    void call_free_bmp_by_id(int param_1);
     void g_something_with_iteratively_freeing_memory(void);
     Sprite * create_sprite(void);
     Sprite * create_linked_sprite(struct Sprite * sprite);
     void destroy_sprite_with_unique_id(SpriteUniqueID  unique_id);
     void dest_all_sprites(void);
     Sprite * get_sprite_with_unique_id(SpriteUniqueID  unique_id);
+    void calc_sprite_bounds(struct Sprite * sprite, s32 * left, s32 * top, s32 * right, s32 * bottom);
+    void g_get_font_char_width(char * character, Font32  font, struct FontDefinition * g_font_struct);
+    double g_get_font_char_width_scaling(char * character, Font32  font);
     void textdraw_reset(void);
     void textdraw_set_font(Font32  font_type);
     void textdraw_set_mul_color(uint param_1);
@@ -8953,7 +9542,7 @@ extern "C" {
     void textdraw_set_depth(float param_1);
     void textdraw_set_scale(float width, float height);
     void textdraw_set_alpha(double alpha);
-    void textdraw_set_flags(uint param_1);
+    void textdraw_set_flags(TextDrawFlags  param_1);
     void textdraw_clear_flags(uint param_1);
     void textdraw_set_alignment(SpriteAlignment  alignment);
     void textdraw_set_drop_shadow_with_params(float alpha, s16 offset_x, s16 offset_y);
@@ -8966,37 +9555,51 @@ extern "C" {
     void textdraw_set_font_style(FontStyle  style);
     void textdraw_set_spacing(float x, float y);
     void g_textdraw_set_counter(undefined2 param_1);
-    void g_textdraw_set_smth_with_pos(double param_1, double param_2);
+    void textdraw_set_pos_for_aram_font_test(double x, double y);
     void textdraw_set_pos(float x, float y);
-    void textdraw_putchar(char ch);
+    void textdraw_put_char(char ch);
     void textdraw_print(char * string);
     void textdraw_printf(char * format, ...);
     void draw_text_sprite(struct Sprite * sprite);
     void draw_bmp_sprite(struct Sprite * sprite);
     void draw_texture_sprite(struct Sprite * sprite);
-    void g_draw_text_sprite_string_within_width(double width, byte * string);
-    void g_some_printf_function_3(double param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void g_get_string_sprite_width_2(byte * param_1);
-    void g_call_call_smth_with_fonts_chara_load_w_defaults(byte * param_1);
-    float g_call_get_string_sprite_width(char * str);
+    void textdraw_print_and_fit_to_width(double width, char * string);
+    void textdraw_printf_and_fit_to_width(double g_width, char * format, ...);
+    int g_get_font_def_aram_flag(int param_1);
+    void g_get_string_sprite_width_2(char * param_1);
+    void g_call_get_string_sprite_width_3_discard_result(char * param_1);
+    f32 textdraw_get_pixel_width_of_string_as_f32(char * string);
+    float textdraw_get_pixel_width_of_string(char * str);
+    double textdraw_get_pixel_height_of_string(char * param_1);
+    void g_smth_with_fonts_chara_load_wrapper_discard_result(char * param_1);
+    int textdraw_get_line_count_of_string(char * str);
     void g_smth_with_screen_fading(void);
     void fade_screen_to_color(uint flags, u32 color, uint frames);
     undefined4 draw_sprite_draw_request(struct SpriteDrawRequest * request);
     void g_scale_sprite_for_widescreen(uint param_1);
-    void g_smth_calls_GXLoadPosMtxImm2(void);
-    void g_something_with_fonts2(void);
-    void g_something_with_load_fonts(int param_1);
-    void g_smth_with_sprite_draw_request(struct SpriteDrawRequest * request);
+    void g_reset_sprite_mtx_for_widescreen(void);
+    void g_something_loading_fonts(void);
+    void g_load_specific_font(Font32  font);
+    void g_draw_sprite_draw_request_unbuffered(struct SpriteDrawRequest * request);
+    uint g_parse_avtext_non_alphanumeric(u32 next_two_chars_as_uint);
+    undefined4 g_parse_avtext_other_codes(char * string, ushort * next_two_chars);
+    undefined4 parse_avtext_color_codes(char * string, struct SpriteDrawRequest * sprite_draw_req);
+    uint g_some_avtext_array_lookup(ushort next_two_chars, float some_float, short * float_as_short_ptr);
+    double textdraw_print_internal_func_2(double param_1, double param_2, int param_3, short param_4);
+    double textdraw_print_internal_func_3(int param_1, int param_2, short param_3, int param_4);
     int g_get_tex_id(undefined4 param_1, ushort param_2, ushort * param_3, int param_4);
-    void g_smth_with_font_drawing(byte * string);
-    float g_smth_with_fonts_chara_load(byte * string, int param_2, char param_3);
-    void g_call_smth_with_fonts_chara_load_w_defaults(byte * string);
-    float g_get_string_sprite_width(char * string);
+    void textdraw_print_internal_func_1(byte * string);
+    float textdraw_chara_load(char * string, BOOL32 stop_on_newline, TextdrawCharaLoadReturnParameter  return_parameter);
+    double g_get_string_sprite_width_3(char * param_1);
+    f32 textdraw_get_pixel_width_of_string_as_f32_child(char * string);
+    float textdraw_get_pixel_width_of_string_child(char * string);
+    int g_smth_with_fonts_chara_load_wrapper(char * param_1);
+    int textdraw_get_line_count_of_string_child(char * param_1);
     void g_display_playpoint_or_gift_message_child(int param_1, int param_2, int * param_3);
     void g_smth_with_playpoint_or_gift_msg(int param_1, char * param_2);
     void g_some_printf_function_4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void create_pausemenu_sprite(void);
-    void g_smth_creates_gameover_sprite(undefined4 param_1, struct Sprite * sprite);
+    void g_something_with_pause_menu_and_game_over_sprite(undefined4 param_1, struct Sprite * sprite);
     void sprite_pausemenu_disp(struct Sprite * sprite);
     void create_titlescreen_press_start_sprites(int param_1);
     void sprite_titlescreen_press_start_tick(u8 * status, struct Sprite * sprite);
@@ -9048,7 +9651,7 @@ extern "C" {
     void g_sprite_extra_all_mask_tick(u8 * status, struct Sprite * sprite);
     void g_sprite_go_to_the_tick(u8 * status, struct Sprite * sprite);
     void g_sprite_go_to_the_disp(struct Sprite * sprite);
-    void create_postgoal_score_sprites(undefined4 param_1, undefined4 param_2, uint param_3);
+    void create_postgoal_score_sprites(int param_1, int param_2, uint param_3);
     void sprite_clear_score_disp(struct Sprite * sprite);
     void sprite_warp_bonus_disp(struct Sprite * sprite);
     void sprite_time_bonus_disp(struct Sprite * sprite);
@@ -9059,11 +9662,15 @@ extern "C" {
     void sprite_save_tick(u8 * status, struct Sprite * sprite);
     void sprite_save_disp(struct Sprite * sprite);
     void sprite_monkey_counter_icon_disp(struct Sprite * sprite);
-    undefined4 g_smth_with_get_active_monkey_icon(undefined4 param_1, int param_2, int param_3);
-    void g_create_how_to_sprite(void);
-    void g_sprite_how_to_tick(u8 * status, struct Sprite * sprite);
-    void g_sprite_how_to_disp(struct Sprite * sprite);
-    void g_sprite_how_to_dest(void);
+    undefined4 g_smth_with_get_active_monkey_icon(int param_1, int param_2, int param_3);
+    void create_how_to_sprite(void);
+    void sprite_how_to_tick(u8 * status, struct Sprite * sprite);
+    void g_how_to_sprite_draw_controller_tooltips(int param_1, int param_2, struct SpriteDrawRequest * param_3);
+    void g_how_to_sprite_draw_rules_page(char param_1, struct Sprite * sprite, struct SpriteDrawRequest * req, char param_4, char param_5, char param_6, char param_7);
+    void sprite_how_to_disp(struct Sprite * sprite);
+    void sprite_how_to_dest(void);
+    void g_how_to_sprite_mtx_setup_stuff(void);
+    void g_how_to_sprite_mtx_cleanup(void);
     void create_hud_sprites(void);
     void create_score_sprites(float pos_x, float pos_y);
     void create_timer_sprites(float param_1, float param_2);
@@ -9076,6 +9683,7 @@ extern "C" {
     void sprite_score_tick(u8 * status, struct Sprite * sprite);
     void sprite_score_disp(struct Sprite * sprite);
     void sprite_timer_ball_tick(u8 * status, struct Sprite * sprite);
+    void sprite_speed_tick(u8 * status, struct Sprite * sprite);
     void sprite_current_stage_display_tick(u8 * status, struct Sprite * sprite);
     void sprite_current_stage_display_disp(struct Sprite * sprite);
     void sprite_hud_stage_name_tick(u8 * status, struct Sprite * sprite);
@@ -9093,7 +9701,7 @@ extern "C" {
     void g_draw_minimap(void);
     void g_smth_with_rendefc_reflective_height(double height);
     OrdTblNode * ord_tbl_get_entry_for_pos(struct Vec * pos);
-    void g_some_perf_timer_function(void);
+    void ord_tbl_draw_nodes(void);
     void * ord_tbl_alloc_node(u32 size);
     void g_replay_screen_stage_name(void);
     void empty_function(void);
@@ -9108,16 +9716,17 @@ extern "C" {
     void empty_function(void);
     void empty_function(void);
     void g_ape_anim_head(struct Ape * ape, struct Vec * ape_facedir_point, int flags);
+    void g_smth_with_ape_rotation(struct Ape * ape, struct Vec * vec_in);
     void empty_function(void);
     uint decompress_lz(byte * in_compressed, byte * out_decompressed);
     void g_some_arq_callback(u32 pointerToARQRequest);
     void load_disc_queue(void);
     BOOL32 g_something_with_dvd(s32 entry_num, undefined4 * param_2);
-    BOOL32 g_open_file(char * file_path, struct GSomeFileStruct * fileStruct);
-    BOOL32 dvd_close(struct GSomeFileStruct * file);
-    void g_some_ARQPostRequest_callback(void);
-    u32 g_something_with_reading_dvd_file(int * dvdEntrynum, void * buffer, u32 length, int offset);
-    int fileSize(struct GSomeFileStruct * fileStruct);
+    BOOL32 file_open(char * file_path, struct File * file);
+    BOOL32 file_close(struct File * file);
+    void ARQPostRequest_on_finish(void);
+    u32 file_read(struct File * file, void * buffer, u32 length, int offset);
+    int file_size(struct File * file);
     void g_some_dvd_callback(s32 result, struct DVDFileInfo * fileInfo);
     void g_something_with_dvd2(uint param_1, int param_2);
     int add_one_wrap_if_over127(int num);
@@ -9129,19 +9738,22 @@ extern "C" {
     int g_get_debug_level_select_loading_left_asterisks(void);
     undefined4 g_swapDiscQueueGroup(undefined4 newValue);
     void g_fill_some_memory_with_0x0_and_0xff(void * ptr);
-    void g_some_shadow_draw_func(int * param_1);
+    void g_some_shadow_draw_func(struct ShadowReceive * shadow_receive);
     undefined4 g_check_some_condition(ushort param_1);
     void debug_draw_shadow_textures(void);
-    void md_mini_func(void);
+    uint md_mini_func(void);
     void g_set_minigame_specific_funcs(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4);
     void g_smd_mini_generic_init(void);
     void g_smd_mini_generic_tick(void);
+    void g_mini_draw_func_handler(void);
     void smd_mini_select_init(void);
     void smd_mini_select_tick(void);
     void smd_mini_ending_init(void);
     void smd_mini_ending_tick(void);
+    void mini_ending_draw_func(void);
     void smd_mini_s_roll_init(void);
     void smd_mini_s_roll_tick(void);
+    void mini_nameentry_draw_func(void);
     void event_mouse_init(void);
     void event_mouse_tick(void);
     void event_mouse_dest(void);
@@ -9151,21 +9763,24 @@ extern "C" {
     void event_rend_efc_dest(void);
     void g_something_with_rend_efc(uint param_1);
     void g_init_rendefc_for_stage(void);
-    void g_smth_with_loading_reflective_stgobjs(undefined * param_1);
+    void g_smth_with_loading_reflective_stgobjs(undefined1 * param_1);
     void g_smth_calling_reflective_obj_draw_hdlr(int g_some_flag, int * param_2);
     void g_reflective_object_draw_handler(int g_some_flag, int * g_some_ptr);
     void g_reflective_object_draw_handler_2(undefined4 param_1, int param_2);
-    void g_some_rendefc_func_1(undefined * param_1);
+    void g_some_rendefc_func_1(undefined1 * param_1);
+    void g_smth_with_pil2_ref(undefined1 * param_1);
     void g_something_with_stage_heap_and_target_theme(int param_1);
     void g_some_rendefc_func_2(int param_1, int param_2);
     void g_smth_with_reflective_models(undefined4 param_1, int param_2);
-    void g_smth_with_wormhole_surfaces(undefined * param_1);
+    void g_smth_with_wormhole_surfaces(undefined1 * param_1);
     void fog_main(void);
     void g_set_something3(char param_1);
     void smd_mini_commend_init(void);
     void smd_mini_commend_tick(void);
+    void g_mini_commend_draw_func(void);
     void g_something_with_rotation_not_aiai(struct Ape * ape);
     void g_something_with_drawing_apes(void);
+    uint g_check_flag_related_to_pausing(void);
     void event_commend_init(void);
     void event_commend_tick(double param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8, undefined4 param_9);
     void event_commend_dest(void);
@@ -9173,11 +9788,15 @@ extern "C" {
     undefined4 return_1(void);
     void empty_function(void);
     void g_something_with_card13(void);
+    void g_some_replay_func4(byte param_1, byte param_2, byte * param_3);
     void g_something_with_card3(void);
     void print_card_submode_error(byte * param_1);
+    void g_memcard_func_1(struct MemCardInfo * info);
     void empty_function(void);
+    void g_memcard_func_2(struct MemCardInfo * info);
     void empty_function(void);
     void mount_memory_card(byte * param_1);
+    void g_memcard_func_4(struct MemCardInfo * info);
     void g_something_free_card_blocks(struct MemCardFile * param_1);
     void g_open_card_file(struct MemCardFile * file);
     void something_that_calls_CARDCreateAsync(byte * param_1);
@@ -9185,7 +9804,7 @@ extern "C" {
     void g_related_to_memcard_rw(byte * param_1);
     void g_something_with_card12(byte * param_1);
     void g_something_with_card(void);
-    void g_something_with_card10(byte * param_1);
+    void g_something_with_card10(char * param_1);
     void g_some_printf_function_5(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void g_something_with_card11(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_card9(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
@@ -9193,9 +9812,20 @@ extern "C" {
     void g_something_with_card4(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void g_something_with_card8(void);
     void g_something_with_card6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    byte g_check_some_memcard_field(void);
+    undefined4 g_get_result_code(void);
+    undefined1 g_get_some_memcard_var(void);
+    void g_sprintf_memcard_error(int param_1, char * param_2);
+    undefined1 g_get_last_used_memcard_slot(void);
+    void g_save_game_data(void);
+    void g_some_loading_function(void);
+    void smd_game_over_save_child(void);
     void g_something_with_card2(int card_chan, int param_2);
+    void * g_some_replay_func(undefined4 * param_1, uint * param_2);
+    undefined4 g_some_replay_func2(byte * param_1);
+    char * g_some_replay_func3(byte * param_1, char * param_2);
     uint g_something_with_fonts(void);
-    void g_some_printf_function_6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, int param_10, int param_11, char * param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void g_some_printf_function_6(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 param_11, char * param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_mini_ranking_init(void);
     void smd_mini_ranking_tick(void);
     void g_load_preview_texture(struct SpriteTex * sprite_tex, char * file_path, undefined4 param_3, u16 width, u16 height, GXTexFmt  format);
@@ -9206,7 +9836,7 @@ extern "C" {
     void event_name_entry_init(void);
     void event_name_entry_tick(void);
     void event_name_entry_dest(void);
-    void g_something_with_name_entry(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    void g_something_with_name_entry(void);
     void g_something_with_smb1_ranking_main_game_defaults(void);
     void empty_function(void);
     void effect_nameent_code_init(int param_1);
@@ -9247,11 +9877,14 @@ extern "C" {
     void avdisp_draw_model_culled_sort_always(struct GmaModel * gma_model);
     void g_some_ord_node_func1(int param_1);
     void g_some_ord_node_func2(int param_1);
+    void avdisp_set_scale_factor(float scale);
     void call_g_avdisp_set_ambient(double param_1, double param_2, double param_3);
+    void avdisp_set_alpha(float param_1);
+    void g_some_cleanup_func(undefined1 param_1, undefined1 param_2, undefined1 param_3);
     undefined4 g_something_with_texture_scroll_2(int param_1);
-    void g_stores_doubles(double param_1, double param_2, double param_3, double param_4);
+    void set_post_mult_color(double param_1, double param_2, double param_3, double param_4);
     void g_stores_doubles2(double param_1, double param_2, double param_3, double param_4);
-    void avdisp_set_fog_params(double param_1, double param_2, undefined param_3);
+    void avdisp_set_fog_params(double param_1, double param_2, undefined1 param_3);
     void avdisp_set_fog_color(u8 r, u8 g, u8 b);
     void g_yet_another_unk_draw_func(undefined4 param_1);
     void g_avdisp_reset_alpha_and_bound_sphere_scale(void);
@@ -9261,34 +9894,37 @@ extern "C" {
     void free_from_current_heap(void * ptr);
     undefined8 teleport_through_wormhole(int ball_idx, int wormhole_idx);
     f32 * g_compute_wormhole_tf(int wormhole_idx, f32 * param_2);
+    void g_mtx_mult_right(Mtx * ret, Mtx * param_2);
     void apply_wormhole_tf_to_mtx(Mtx * src_tf, Mtx * wormhole_tf);
     void apply_wormhole_tf_to_vec(struct Vec * vec, Mtx * wormhole_tf);
+    void g_apply_wormhole_pos_to_camera(struct Vec * camera_pos, struct Vec * camera_vel, Mtx * mtx);
     void apply_wormhole_tf_to_quat(struct Quat * quat, Mtx * wormhole_tf);
     void empty_function(void);
-    void g_load_skl(struct SKLRoot * sklRoot, struct SKLInfo * boneData, struct SKLFile * sklFile);
-    void g_handL_SKL_func(void * param_1, int param_2);
-    void gan_setanim_wrapper(void * param_1, char * param_2);
-    void gan_setAnim(void * mal, undefined * param_2, short animation_number);
-    void gan_setanim_edance(undefined4 param_1, undefined param_2, uint param_3, uint param_4, uint param_5);
-    void g_init_floatthing(struct gFloats * param_1);
-    void gan_incframe(double g_speed, struct Ape * ape);
+    void init_component_state(struct SkeletonState * component_state, struct BoneState * bone_states, struct SkeletonDef * skl);
+    void g_init_some_handl_component_stuff(struct SkeletonState * component_state, undefined4 * param_2);
+    void g_init_mta(struct SkeletonState * skeleton_state, struct ApeArchive * mta);
+    void g_some_ape_anim_init_wrapper(void * param_1, char * param_2);
+    void g_init_skeleton_animation(struct SkeletonState * skeleton_state, void * param_2, short g_anim_id);
+    void g_unk_ape_anim1(undefined4 param_1, undefined param_2, uint param_3, uint param_4, uint param_5);
+    void g_init_bone_state_subA(struct GSkeletonStateSubA * param_1);
+    void g_unk_ape_anim2(double g_speed, struct Ape * ape);
     void g_set_more_ape_state(undefined2 * param_1, undefined2 * param_2);
     void g_smth_with_quat_slerp(ushort * param_1);
-    void g_something_arc(struct ArcFileInfo * fileInfo);
-    uint g_table_index(struct SKLRoot * param1, char * str);
-    void load_ape_body(int ape_index, int game_index);
-    void gan_setanim_estagebegin(struct Ape * ape, int chara_index, int scene_index);
-    void g_something_freeing_chara_heap_3(void * * param_1);
-    void g_something_with_new_ape(struct Ape * ape, int chara_index, int scene_index);
-    ulonglong event_ape_init(void);
+    void ape_archive_offsets_to_pointers(struct ApeArchive * g_ska);
+    uint g_table_index(undefined param1, char * str);
+    void g_load_ape_mtas(ApeCharacter  chara, undefined scene_id);
+    void g_init_mtas(struct Ape * ape, ApeCharacter  chara, undefined scene_id);
+    void g_something_freeing_chara_heap_3(int * param_1);
+    void g_load_ape_mals(struct Ape * ape, ApeCharacter  chara, undefined scene_id);
+    void event_ape_init(void);
     void event_ape_tick(void);
     void event_ape_dest(void);
-    Ape * load_ape(int chara_index, ApeLOD  LOD, int game_index, int s_mal);
-    Ape * load_ape_s(int chara_id, int LOD, int game_index);
-    Ape * load_ape_gameplay(int monkey_id, undefined4 LOD, int g_variant);
-    Ape * load_ape_gameplay_LOD(int monkey_id, ApeLOD  LOD);
+    Ape * load_ape(ApeCharacter  chara, ApeLOD  ape_lod, undefined scene_id, undefined deform_type);
+    Ape * g_load_ape_variant0(ApeCharacter  chara, ApeLOD  lod, undefined scene_id);
+    Ape * load_ape_gameplay(ApeCharacter  chara, undefined4 lod, int g_ape_variant);
+    Ape * g_load_ape_gameplay_variant0(ApeCharacter  chara, ApeLOD  lod);
     void draw_ape_subroutine(int param_1);
-    void g_draw_ape1(double param_1, struct Ape * ape2);
+    void g_draw_ape(double param_1, struct Ape * ape);
     void draw_ape(struct Ape * ape);
     void g_something_with_freeing_chara_heap_ape(struct Ape * ape);
     void ape_default_anim(struct Ape * ape);
@@ -9296,49 +9932,53 @@ extern "C" {
     void g_load_mal_files_from_disc(int chara_index, int LOD, int s_mal, int game_index);
     void g_something_freeing_chara_heap_4(int param_1, int param_2, int param_3);
     void g_something_freeing_chara_heap_2(int param_1, int param_2);
-    void assign_model_pointers(struct Ape * ape, ApeLOD  lod);
-    int gan_getsomeframe(struct Ape * ape, int index);
+    void assign_ape_assets(struct Ape * ape, ApeLOD  lod);
+    BoneState * g_get_ape_anim_smth(struct Ape * ape, int index);
     double body_frame_add72(struct Ape * ape);
-    undefined * get_ape_game_string(struct Ape * ape);
+    char * get_ape_scene_name(struct Ape * ape);
     int get_ape_anim_flags(struct Ape * ape, undefined4 param_2, int param_3);
-    void preload_ape(int chara_index, int LOD, int s_mal, int game_index);
-    void g_load_ape_mta_mal_files(int game_index, int chara_index);
+    void preload_ape(ApeCharacter  chara, ApeLOD  lod, int s_mal, int scene_id);
+    void g_queue_ape_mta_mal_load(int scene_id, ApeCharacter  chara);
     uint g_something_with_comparing_strings(undefined4 param_1, char * param_2);
     void register_ape(struct Ape * ape);
     void unregister_ape(struct Ape * ape);
-    Ape get_ape_index(struct Ape * __return_storage_ptr__, int index);
+    Ape * get_ape_by_idx(int param_1);
     void dip_apenum_draw(struct Ape * ape);
-    char * get_ape_name_string(struct Ape * ape);
+    char * get_ape_chara_name(struct Ape * ape);
     char * get_ape_lod_string(struct Ape * ape);
-    char * get_ape_face_string(struct Ape * ape);
+    char * g_get_ape_skinning_or_stitching_name(struct Ape * ape);
+    char * get_ape_face_expr_name(struct Ape * ape);
     int seek(char * param_1);
-    void g_load_models(struct Ape * ape);
+    void assign_ape_models(struct Ape * ape);
     SomeApeState * g_get_structure_from_ape_common_mal_struct(struct Mal * common_mal);
     void g_something_freeing_heap_3(void * param_1);
     int g_get_ape_flag(struct Ape * ape, undefined4 g_something_with_game, int param_3);
     undefined4 g_alloc_some_ape_state_0x8(struct SomeApeState * g_some_ape_state, int chara_idx);
-    void gan_setanim_e4(struct Ape * ape);
+    void g_ape_anim_unk3(struct Ape * ape);
     void g_set_ape_dance_state1(int param_1, int param_2, undefined2 param_3, int param_4, undefined4 param_5, undefined4 param_6, int param_7);
     void g_set_ape_dance_state2(struct SomeApeState * g_some_ape_state, uint param_2, uint param_3, int param_4, int param_5, undefined4 param_6, undefined4 param_7, int param_8);
-    void gan_setAnim2(struct Ape * ape, int param_2, short * param_3);
+    void g_ape_anim_unk4(struct Ape * ape, int param_2, short * param_3);
     int g_some_ape_anim_func2(int param_1, int param_2, undefined4 param_3, undefined4 param_4, int param_5);
     void g_set_ape_stuff_in_chara_heap(undefined2 * param_1, undefined2 * param_2);
     void g_something_with_GXPeekZ(void);
     void empty_function(void);
     void g_init_rankings_to_defaults_wrapper(void);
     void g_init_rankings_to_defaults(void);
+    void g_smth_with_ending_course_2(void);
     void g_NameEntry2_InitFirst(void);
     void g_nameentry2_init(void);
+    void game_nameentry_draw_func(void);
     void ape_assignment(void);
     void sprite_rank_tick(void);
-    void sprite_rank_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    void sprite_rank_disp(void);
     void g_something_with_name_entry_get_course(int param_1);
     void g_some_ape_anim_func1(struct Ape * ape);
     void set_ape_anim(struct Ape * ape, undefined animationType);
     void g_some_set_ape_anim(struct Ape * ape, undefined chara_anim_type, undefined2 param_3);
     void run_anim_funcs(struct Ape * ape);
-    void g_something_with_loading_cutscenes(int param_1_00);
-    uint g_something_to_do_with_cutscenes(int g_cutscene_id);
+    void load_scene_files(int scene_category);
+    uint load_scene_data(int scene_category);
+    void g_parse_scene_data(int * param_1);
     void empty_function(void);
     void empty_function(void);
     void g_something_freeing_heap_4(void);
@@ -9349,7 +9989,9 @@ extern "C" {
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
-    void g_SceneSoundLoad(char param_1_00);
+    OSHeapHandle * load_dialog_tbl(int scene_id);
+    undefined4 g_smth_with_dialog2(int * param_1, int param_2);
+    void load_scene_sound(char param_1_00);
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
@@ -9363,7 +10005,8 @@ extern "C" {
     void smd_author_play_ending_init(void);
     void smd_author_play_from_sel(void);
     void smd_author_play_ret_sel(void);
-    void md_author_func(void);
+    uint md_author_func(void);
+    void author_draw_func(void);
     void g_assign_new_main_and_sub_mode_for_play_tick(MainMode  param_1, SubMode  param_2);
     void g_set_some_author_tick_func(undefined4 param_1);
     undefined4 g_get_some_author_related_data(void);
@@ -9375,13 +10018,15 @@ extern "C" {
     void g_load_stageselect_after_cutscene(void);
     void g_preload_next_stage_files(int param_1, int param_2, int param_3);
     void clear_unlock_info(void);
-    byte g_is_master_unlocked(void);
+    void unlock_master(void);
+    byte is_master_unlocked(void);
     void empty_function(void);
     void g_set_unlockables_status(void);
+    void g_handle_goal(void);
     void empty_function(void);
     void compare_play_points_with_99999_after_exit_game(void);
     dword get_play_point_count(void);
-    void g_display_playpoint_or_gift_message(double g_x_pos, double g_y_pos, undefined param_3);
+    void g_display_playpoint_or_gift_message(double g_x_pos, double g_y_pos, undefined1 param_3);
     void g_playpoint_or_gift_msg_disp(undefined8 param_1_00, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     bool is_able_to_unlock_party_game(void);
     void unlock_party_game(int party_game);
@@ -9405,7 +10050,7 @@ extern "C" {
     void main_game_rel_prolog(void);
     void main_game_rel_epilog(void);
     void main_game_rel_unlinked(void);
-    void md_game_func(void);
+    uint md_game_func(void);
     void smd_game_first_init(void);
     void smd_game_restart_init(void);
     void smd_game_ready_init(void);
@@ -9453,11 +10098,13 @@ extern "C" {
     void smd_game_sugg_save_tick(void);
     int get_next_stage_id(void);
     uint g_decrement_active_ball_monkey_count(void);
+    void g_smth_with_ending_course(void);
     void smd_game_force_exit_init(void);
     void smd_game_force_exit_tick(void);
     void smd_game_scenscnplay_return(void);
     void smd_game_force_over_init(void);
     void smd_game_force_over_tick(void);
+    void g_maybe_some_goal_func(void);
     void g_preload_stage_or_results(void);
     void g_challenge_mode_start(struct Ball * ball);
     void challenge_mode_physics(struct Ball * ball);
@@ -9468,6 +10115,7 @@ extern "C" {
     void smd_game_scenario_init_child(void);
     void smd_game_scenario_tick_child(void);
     void g_some_storymode_dest_function(void);
+    void game_scenario_draw_func(void);
     undefined4 get_storymode_score(void);
     void set_storymode_score(int value);
     undefined4 get_storymode_banana_count(void);
@@ -9508,16 +10156,31 @@ extern "C" {
     void dmd_scen_entry_main(void);
     void g_some_storymode_mode_func(void);
     StoryModeSaveFile * get_current_storymode_save_file(void);
-    void g_some_scenario_init_func_4(void);
+    void g_init_scen_stage_name_buffer(void);
     void g_free_scen_stage_name_buffer(void);
     void empty_function(void);
     void empty_function(void);
     void g_create_storymode_select_sprites(uint param_1);
     void g_related_to_loading_story_stageselect(uint param_1);
-    void g_draw_ape_storymode_select_screen(int param_1);
-    void empty_function(void);
-    void sprite_scen_stagesel_stage_name_tick(undefined4 param_1, int param_2);
+    void sprite_story_stage_select_tick(u8 * status, struct Sprite * sprite);
+    void sprite_story_stage_select_disp(struct Sprite * sprite);
+    void g_handle_story_clear_stage_balls(short param_1);
+    void sprite_clear_floors_tick(u8 * status, struct Sprite * sprite);
+    void sprite_clear_floors_disp(struct Sprite * sprite);
+    void sprite_decoration_bar_tick(u8 * param_1, struct Sprite * param_2);
+    void sprite_decoration_bar_disp(struct Sprite * sprite);
+    void sprite_world_tick(u8 * status, struct Sprite * sprite);
+    void sprite_world_disp(struct Sprite * sprite);
+    void g_animate_story_select_sprites(undefined2 param_1);
+    void g_sprite_world_info_tick(u8 * status, struct Sprite * sprite);
+    void g_sprite_world_info_disp(struct Sprite * sprite);
+    void sprite_scen_stagesel_stage_name_tick(u8 * param_1, struct Sprite * sprite);
     void sprite_scen_stagesel_stage_name_disp(struct Sprite * sprite);
+    void sprite_story_difficulty_tick(u8 * status, struct Sprite * sprite);
+    void sprite_story_difficulty_disp(struct Sprite * sprite);
+    void g_draw_story_stage_preview_ball(undefined2 param_1);
+    void g_sprite_story_stage_info_tick(u8 * status, struct Sprite * sprite);
+    void g_sprite_story_stage_info_disp(struct Sprite * sprite);
     void g_preload_all_story_preview_images(void);
     void g_draw_now_loading_text(void);
     uint g_get_storymode_next_world(void);
@@ -9527,7 +10190,7 @@ extern "C" {
     void g_handle_storymode_stageselect_state(void);
     void dmd_scen_sel_floor_init_child(void);
     void g_set_some_storymode_stageids(void);
-    void g_load_new_storymode_stage(u32 param_1);
+    void g_load_new_storymode_stage(int param_1);
     void g_some_scenario_init_func_2(void);
     void empty_function(void);
     void g_smth_with_storymode(void);
@@ -9540,11 +10203,31 @@ extern "C" {
     void dmd_scen_loadgame_main_child(void);
     int get_storymode_menu_state(void);
     void staff_roll_init(void);
+    void g_smth_with_staff_roll_init_7(undefined4 param_1, undefined4 param_2, short param_3);
+    void game_roll_draw_func(void);
+    void smd_staff_roll_dest(void);
+    void g_smth_with_staff_roll_init_1(void);
+    void g_smth_with_staff_roll_init_2(void);
+    void g_staff_roll_name_align(void);
+    void g_staff_roll_banana_set(undefined2 * param_1);
+    void g_smth_with_staff_roll_init_4(void);
+    void g_smth_with_staff_roll_init_3(short * param_1);
+    void g_smth_with_staff_roll_init_6(void);
+    void staff_roll_results_draw_final_score(void);
+    void staff_roll_results_draw_monkey_rating(void);
+    void staff_roll_results_draw_banana_count(void);
+    void staff_roll_results_draw_big_banana_count(void);
+    void staff_roll_results_draw_item_count(void);
+    void staff_roll_results_draw_letter_count(void);
+    void g_smth_with_staff_roll_init_5(void);
+    void game_continue_draw_func(void);
     void event_view_init(void);
     void event_view_tick(void);
     void event_view_dest(void);
     void g_something_with_view_stage2(void);
     void draw_reflective_objects_in_viewstage(void);
+    void g_call_advance_stage_animation(void);
+    void g_increment_bg_related_timer(void);
     void view_stage_draw_bananas(void);
     void g_smth_with_rendering_models_for_reflective_surfaces(void);
     void g_draw_stobjs_in_viewstage(void);
@@ -9552,29 +10235,77 @@ extern "C" {
     void sel_ngc_prolog(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void sel_ngc_epilog(void);
     void sel_ngc_unlinked_func(void);
+    uint g_b_button_handler_for_sel_ngc(void);
     bool did_any_pad_press_input(PadInputID  input_id);
     void g_create_main_menu(void);
-    void smd_sel_ngc_init(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
-    void smd_sel_ngc_reinit(void);
+    void g_initialize_sel_ngc(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    void g_reinitialize_sel_ngc(void);
     undefined4 g_called_when_fading_to_storymode(void);
     void g_sel_ngc_item_selected(int play_menu_selction_sound);
     void g_b_button_pressed_on_menu(int param_1_00);
     BOOL32 g_is_screen_in_screen_stack(byte g_screen_id);
-    void g_some_menu_handling_func(void);
+    void menu_tick(void);
     void g_something_with_menus(int param_1);
-    void g_menu_main_handler(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
-    void g_menu_party_mode_handler(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
-    void switch_mode_to_smd_adv_title_reinit(void);
-    void g_something_with_menus2(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int * param_11, MenuScreenID  * param_12, u8 * param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
-    void g_something_with_menus3(void);
-    void g_on_main_menu_pressed(void);
-    void g_something_with_menus4(void);
-    void g_something_with_practice_stage_select_screen(void);
-    void enter_challenge_mode(void);
-    void enter_practice_mode(void);
-    byte * g_handle_starting_monkeys_count(int param_1, int param_2);
+    void menu_mode_select_tick(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    void menu_party_game_select_tick(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
+    void menu_option_tick(void);
+    void menu_return_to_title(void);
+    void menu_number_of_players_tick(void);
+    void menu_character_select_tick(void);
+    void menu_gameplay_settings_tick(void);
+    void menu_main_game_select_tick(void);
+    void menu_level_select_tick(void);
+    void g_get_some_challenge_mode_difficulty_info(int param_1);
+    void g_get_some_category_count(int flag, int * g_out_1, int * g_out_2);
+    void menu_stage_select_tick(void);
+    void menu_start_story_mode(void);
+    void menu_start_challenge_mode(void);
+    void menu_start_practice_mode(void);
+    void menu_race_mode_select_tick(void);
+    void menu_race_course_select_tick(void);
+    void menu_start_race(void);
+    void menu_fight_mode_select_tick(void);
+    void menu_fight_no_of_wins_tick(void);
+    void menu_fight_stage_select_tick(void);
+    void menu_start_fight(void);
+    void menu_start_target(void);
+    void menu_billiards_mode_select_tick(void);
+    void menu_billiards_rule_select_tick(void);
+    void menu_start_billiards(void);
+    void menu_bowling_mode_select_tick(void);
+    void menu_bowling_rule_select_tick(void);
+    void menu_bowling_level_select_tick(void);
+    void menu_start_bowling(void);
+    void menu_golf_mode_select_tick(void);
+    void menu_start_golf(void);
+    void menu_boat_mode_select_entries_tick(void);
+    void menu_boat_course_select_tick(void);
+    void menu_start_boat(void);
+    void menu_shot_stage_select_tick(void);
+    void menu_start_shot(void);
+    void menu_dogfight_mode_select_tick(void);
+    void menu_dogfight_stage_select_tick(void);
+    void menu_start_dogfight(void);
+    void menu_soccer_mode_select_tick(void);
+    void menu_start_soccer(void);
+    void menu_baseball_mode_select_tick(void);
+    void menu_baseball_stadium_select_tick(void);
+    void menu_start_baseball(void);
+    void menu_tennis_mode_select_tick(void);
+    void menu_tennis_pair_select_tick(void);
+    void menu_tennis_court_select_tick(void);
+    void menu_start_tennis(void);
+    void menu_option_replay_tick(void);
+    void menu_option_play_points_tick(void);
+    void menu_option_gift_tick(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, u32 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void menu_option_ranking_tick(void);
+    void menu_option_game_data_tick(void);
+    void menu_option_controller_tick(void);
+    void menu_option_screen_tick(void);
+    char * g_handle_starting_monkeys_count(int param_1, int param_2);
     void create_main_menu_sprites(void);
     void g_display_game_settings_sprite(void);
+    void create_practice_mode_stage_select_sprite(void);
     void sprite_title_str_tick(u8 * status, struct Sprite * sprite);
     void sprite_title_str_disp(struct Sprite * sprite);
     void sprite_info_str_tick(u8 * status, struct Sprite * sprite);
@@ -9588,16 +10319,17 @@ extern "C" {
     void sprite_game_settings_tick(u8 * status, struct Sprite * sprite);
     void sprite_game_settings_disp(struct Sprite * param_1);
     void sprite_practice_stage_select_tick(u8 * status, struct Sprite * sprite);
-    void sprite_practice_stage_select_disp(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, int param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void sprite_practice_stage_select_disp(struct Sprite * sprite);
     void sprite_fight_stage_select_tick(u8 * status, struct Sprite * sprite);
     void sprite_fight_stage_select_disp(struct Sprite * param_1);
     void sprite_button_tick(u8 * status, struct Sprite * sprite);
     void sprite_button_disp(struct Sprite * param_1);
     void g_blink_selected_menu_item(void);
     void g_something_with_menus5(void);
+    void g_set_some_option_menu_sprite_param(void);
     void g_load_select_apes(void);
     void g_load_some_apes(void);
-    void handle_main_menu_bg(void);
+    void menu_draw_background(void);
     void g_draw_menu_bg_overlay(struct GXColor * param_1, GXTexFmt  param_2);
     void free_some_apes(void);
     void g_draw_stage_0x9f_for_menu_bg(void);
@@ -9606,7 +10338,12 @@ extern "C" {
     void sprite_practice_stage_preview_tick(u8 * status, struct Sprite * sprite);
     void sprite_practice_stage_preview_disp(struct Sprite * sprite);
     void sprite_practice_stage_preview_mask_disp(u8 * status, struct Sprite * sprite);
-    void g_create_some_practice_mode_preview_sprites(void);
+    void create_practice_mode_preview_sprites(void);
+    void create_fight_stage_preview_sprites(void);
+    void sprite_gamedata_disp(int param_1);
+    void create_gamedata_sprite(void);
+    void menu_option_game_data_tick_child(void);
+    void destroy_gamedata_sprite(void);
     void g_draw_controller_sprites(void);
     void g_draw_gift_menu(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, u32 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void empty_function(void);
@@ -9625,20 +10362,23 @@ extern "C" {
     void g_references_420_04(void);
     void sample_unlinked_func(void);
     void test_mode_prolog(void);
+    void test_mode_epilog(void);
     void test_mode_unlinked_func(void);
     void smd_test_select_init(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_test_select_main(void);
+    undefined2 * test_select_draw_func(void);
     void smd_test_dip_init(void);
     void smd_test_dip_main(void);
     void smd_test_input_init(void);
     void smd_test_input_main(void);
     void smd_test_sound_init(void);
     void smd_test_sound_main(void);
-    void g_draw_debug_mode_sound_screen(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, int param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    void test_sound_draw_func(void);
     void smd_test_adx_init(void);
     void smd_test_adx_main(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, undefined4 param_9, undefined4 param_10, uint * param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
     void smd_test_blur_init(void);
     void smd_test_blur_main(void);
+    void test_blur_draw_func(void);
     void smd_test_shadow_init(void);
     void smd_test_shadow_main(void);
     void smd_test_focus_init(void);
@@ -9649,10 +10389,13 @@ extern "C" {
     void smd_test_nlobject_main(void);
     void smd_test_bitmap_init(void);
     void smd_test_bitmap_main(void);
+    void test_bitmap_draw_func(void);
     void smd_test_font_init(void);
     void smd_test_font_main(void);
+    void test_font_draw_func(void);
     void smd_test_aram_font_init(void);
     void smd_test_aram_font_main(void);
+    void test_aram_font_draw_func(void);
     void smd_test_motion_init(void);
     void smd_test_motion_main(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
     void smd_test_newmotion_init(void);
@@ -9660,41 +10403,59 @@ extern "C" {
     void smd_test_advreplay_init(void);
     void smd_test_model_init(void);
     void smd_test_model_main(void);
+    void test_model_draw_func(void);
     void smd_test_newmodel_init(void);
     void smd_test_newmodel_main(void);
+    void test_newmodel_draw_func(void);
     void smd_test_pattern_init(void);
     void smd_test_pattern_main(void);
+    void test_pattern_draw_func(void);
     void smd_test_romfont_init(void);
     void smd_test_romfont_main(void);
     void smd_test_prerend_init(void);
     void smd_test_prerend_main(void);
+    void test_prerend_draw_func(void);
     void smd_test_preview_init(void);
     void smd_test_preview_main(void);
     void smd_test_replay_init(void);
     void smd_test_replay_main(void);
     void smd_test_scene_play_init(void);
     void smd_test_scene_play_main(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
+    void test_scene_play_draw_func(void);
     void smd_test_dialog_init(void);
     void smd_test_dialog_main(undefined4 param_1, undefined4 param_2, undefined2 * param_3, undefined4 param_4, undefined4 param_5, undefined4 param_6, undefined4 param_7, undefined4 param_8);
+    void test_dialog_draw_func(void);
     void smd_test_difficulty_init(void);
     void smd_test_difficulty_main(void);
+    void test_difficulty_draw_func(void);
     void smd_test_chk_repsize_init(void);
     void smd_test_chk_repsize_main(void);
+    void test_draw_func_handler(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8);
     void smd_test_shadow_main_child(void);
+    void g_test_shadow_draw_func_1(void);
+    void g_test_shadow_draw_func_2(void);
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
     void smd_test_focus_main_child(void);
+    void test_focus_draw_func(void);
     void empty_function(void);
     void smd_test_indirect_main_child(void);
+    void test_indirect_draw_func(void);
     void empty_function(void);
     void g_some_printf_function_7(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, char * param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
+    undefined8 g_test_motion_main_draw_func(void);
+    void test_adx_draw_func(void);
+    void test_newmotion_draw_func(void);
     void g_something_freeing_something_from_main_heap_2(void);
-    void gan_setanim_e5(struct ArcFileInfo * * param_1, char * param_2, void * * param_3);
-    void gan_set_anim_e6(int param_1);
-    void gan_setanim_e7(int param_1, undefined4 param_2, int param_3);
-    void gan_setanim_e8(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, int param_5);
+    void g_ape_anim_unk5(undefined4 * param_1, char * param_2, int * param_3);
+    void g_ape_anim_unk6(int param_1);
+    uint g_ape_anim_unk7(int param_1, undefined4 param_2, int param_3);
+    void g_ape_anim_unk8(undefined4 param_1, undefined4 param_2, undefined4 param_3, undefined4 param_4, int param_5);
+    void option_prolog(void);
+    void option_epilog(void);
     void option_unlinked_func(void);
+    void option_draw_func(void);
     void g_references_420_06(int param_1, short param_2);
     void race2_rel_prolog(void);
     void race2_rel_epilog(void);
@@ -9705,6 +10466,7 @@ extern "C" {
     void g_print_race_time_remaining(undefined4 param_1, int param_2);
     void golf2_unlinked_func(void);
     void g_golf_init(void);
+    void g_smth_with_golf_wind_velocity(double wind_velocity);
     void empty_function(void);
     void mini_fight2_unlinked_func(void);
     void empty_function(void);
@@ -9729,12 +10491,11 @@ extern "C" {
     void boat_unlinked_func(void);
     void g_load_boat(void);
     void shooting_unlinked_func(void);
-    void g_read_something_for_shooting_from_dvd(char * param_1, struct ArcFileInfo * * param_2, int * param_3);
-    void g_read_something_for_shooting_2(struct SKLFile * * param_1, char * param_2, struct SKLRoot * * param_3);
+    void g_read_something_for_shooting_from_dvd(char * param_1, undefined4 * param_2, int * param_3);
+    void g_read_something_for_shooting_2(undefined4 * param_1, char * param_2, int * param_3);
     void mini_futsal_unlinked_func(void);
     void empty_function(void);
     void empty_function(void);
-    void load_bg_ape(void);
     void dogfight_unlinked_func(void);
     void g_load_dog(void);
     void g_some_printf_function_10(undefined8 param_1, undefined8 param_2, undefined8 param_3, undefined8 param_4, undefined8 param_5, undefined8 param_6, undefined8 param_7, undefined8 param_8, char * param_9, undefined4 param_10, undefined4 param_11, undefined4 param_12, undefined4 param_13, undefined4 param_14, undefined4 param_15, undefined4 param_16);
@@ -9758,7 +10519,7 @@ extern "C" {
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
-    void g_load_baseball(byte player_id, BallMode  param_2, undefined param_3, byte param_4, byte param_5, uint param_6, void * param_7, int param_8);
+    void g_load_baseball(byte player_id, BallMode  param_2, undefined1 param_3, byte param_4, byte param_5, uint param_6, void * param_7, int param_8);
     void empty_function(void);
     void empty_function(void);
     void empty_function(void);
@@ -9774,7 +10535,12 @@ extern "C" {
     double something_with_distance_sq(float * param_1, float * param_2);
     void GXResetOverflowCount(int param_1, undefined4 param_2);
     void ttyClearProperty(int param_1, undefined4 param_2);
+    void exoption_prolog(void);
+    void exoption_epilog(void);
     void exoption_unlinked_func(void);
+    void exoption_draw_func(void);
+    void create_replay_hud_sprites(void);
+    void create_replay_stage_name_sprites(float x, float y);
 #ifdef __cplusplus
 } // extern "C"
 #endif
