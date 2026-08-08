@@ -28,9 +28,17 @@ struct TextWidget {
     const char* (*label_func)();  // For dynamic text
 };
 
+enum class TextLine : u8 {
+    NewLine,
+    Overlap,
+};
+
 struct ColoredTextWidget {
     const char* label;
-    GXColor color;
+    GXColor color_left;
+    GXColor color_right;
+    u8 offset_x;
+    TextLine line;
 };
 
 // Just a different color TextWidget

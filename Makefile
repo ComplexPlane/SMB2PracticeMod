@@ -67,13 +67,19 @@ INCLUDES	:=	src
 
 MACHDEP		= -mno-sdata -mgcn -DGEKKO -mcpu=750 -meabi -mhard-float
 
+GIT_HASH := $(shell git rev-parse --short=8 HEAD 2>/dev/null || echo unknown)
+ifneq ($(strip $(shell git status --porcelain 2>/dev/null)),)
+GIT_HASH := $(GIT_HASH)-dirty
+endif
+
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
 CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os \
 			  -Wall -Wno-write-strings -Wno-address-of-packed-member \
 			  -Werror -Wshadow -Wimplicit-fallthrough \
-			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. $(MACHDEP) $(INCLUDE)
+			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. -DGIT_HASH=\"$(GIT_HASH)\" \
+			  $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= -fno-exceptions -fno-rtti -std=c++20 $(CFLAGS)
 ASFLAGS     = -mregnames # Don't require % in front of register names
 
@@ -187,6 +193,10 @@ $(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE)
 $(OUTPUT).elf: $(LDFILES) $(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
+
+# Keep the commit shown on the About screen current across incremental builds.
+.PHONY: force_git_hash
+menu_defn.o: force_git_hash
 
 # REL linking
 %.rel: %.elf

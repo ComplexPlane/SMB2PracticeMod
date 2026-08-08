@@ -21,6 +21,7 @@
 namespace menu_defn {
 
 static char s_version_str[36];
+static const char* GIT_HASH_STR = "  Git commit:      " GIT_HASH;
 
 static const char* INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
@@ -517,18 +518,50 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  Made with   by ComplexPlane"},
+        .text = {"  Made with   by"},
     },
     {
         .type = WidgetType::Custom,
         .custom = {draw::heart},
     },
     {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "ComplexPlane",
+                .color_left = {0x00, 0xde, 0x38, 0xff},
+                .color_right = {0x0a, 0xf2, 0xef, 0xff},
+                .offset_x = 17,
+                .line = TextLine::Overlap,
+            },
+    },
+    {
         .type = WidgetType::Text,
-        .text = {"  With contributions from rehtrop & Nambo"},
+        .text = {"  With contributions from:        ,      "},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "rehtrop",
+                .color_left = {0x69, 0xe3, 0xff, 0xff},
+                .color_right = {0xdd, 0x9b, 0xdc, 0xff},
+                .offset_x = 27,
+                .line = TextLine::Overlap,
+            },
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "Nambo",
+                .color_left = {0xd0, 0x67, 0xff, 0xff},
+                .color_right = {0xf3, 0xe3, 0xff, 0xff},
+                .offset_x = 36,
+                .line = TextLine::Overlap,
+            },
     },
     {.type = WidgetType::Separator},
-
     {
         .type = WidgetType::Header,
         .header = {"Updates"},
@@ -539,11 +572,23 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  For the latest version of SMB2 Practice Mod:"},
+        .text = {GIT_HASH_STR},
+    },
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Text,
+        .text = {"  Download the latest version at:"},
     },
     {
         .type = WidgetType::ColoredText,
-        .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE},
+        .colored_text =
+            {
+                .label = "  github.com/ComplexPlane/SMB2PracticeMod",
+                .color_left = draw::BLUE,
+                .color_right = draw::BLUE,
+                .offset_x = 0,
+                .line = TextLine::NewLine,
+            },
     },
 };
 

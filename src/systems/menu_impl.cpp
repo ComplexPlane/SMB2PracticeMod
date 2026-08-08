@@ -474,8 +474,16 @@ void draw_widget(Widget& widget, u32 selected_idx, u32* selectable_idx, u32* y,
             break;
         }
         case WidgetType::ColoredText: {
-            draw::debug_text(MARGIN + PAD, *y, widget.colored_text.color,
-                             widget.colored_text.label);
+            if (widget.colored_text.line == TextLine::Overlap) *y -= LINE_HEIGHT;
+
+            u32 len = mkb::strlen(const_cast<char*>(widget.colored_text.label));
+            for (u32 i = 0; i < len; i++) {
+                f32 t = len > 1 ? static_cast<f32>(i) / (len - 1) : 0.f;
+                GXColor color =
+                    lerp_colors(widget.colored_text.color_left, widget.colored_text.color_right, t);
+                u32 x = MARGIN + PAD + (widget.colored_text.offset_x + i) * draw::DEBUG_CHAR_WIDTH;
+                draw::debug_text(x, *y, color, "%c", widget.colored_text.label[i]);
+            }
             *y += LINE_HEIGHT;
             break;
         }

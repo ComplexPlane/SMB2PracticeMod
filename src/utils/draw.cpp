@@ -75,45 +75,16 @@ void debug_text(s32 x, s32 y, GXColor color, const char* format, ...) {
     va_end(args);
 }
 
-// Too lazy to make index buffer or display list or whatnot
-static Vec2d heart_verts[] = {
-    {65.f, 118.14f}, {113, 74},       {120, 63},      {122, 52},      {123, 40},
-    {116, 22.5},     {103.25, 13.88}, {88.63, 12.63}, {77.88, 16.25}, {65.25, 29.25},
-};
-
 void heart() {
-    // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    bind_white_texture_obj();
+    mkb::textdraw_reset();
+    mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
+    mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
+    mkb::textdraw_set_scale(0.75f, 0.60f);
+    mkb::textdraw_set_pos(187.f, 108.f);
+    mkb::textdraw_set_mul_color(RGBA(255, 66, 118, 0xff));
 
-    mkb::GXSetTevColor(mkb::GX_TEVREG0, {0xFF, 0x07, 0x07, 0xFF});
-    constexpr f32 Z = -1.0f / 128.0f;
-    constexpr f32 CENTER_X = 65.f;
-    constexpr f32 CENTER_Y = 62.f;
-    constexpr f32 SCALE = 0.13;
-    constexpr f32 OFFSET_X = 178.f;
-    constexpr f32 OFFSET_Y = 100.f;
-    constexpr u32 PERIOD = 120;
-
-    f32 t = static_cast<f32>(mkb::frame_counter % PERIOD) / PERIOD;
-    f32 scale = mkb::math_sin(t * 0xFFFF) * 0.02f + SCALE;
-
-    mkb::GXBegin(mkb::GX_TRIANGLEFAN, mkb::GX_VTXFMT7, LEN(heart_verts) * 2 - 1);
-    for (s32 i = LEN(heart_verts) - 1; i >= 0; i--) {
-        f32 x = heart_verts[i % LEN(heart_verts)].x;
-        f32 y = heart_verts[i % LEN(heart_verts)].y;
-        x = (x - CENTER_X) * scale + OFFSET_X;
-        y = (y - CENTER_Y) * scale + OFFSET_Y;
-        mkb::GXPosition3f32(x, y, Z);
-        mkb::GXTexCoord2f32(0, 0);
-    }
-    for (u32 i = 1; i < LEN(heart_verts); i++) {
-        f32 x = -(heart_verts[i % LEN(heart_verts)].x - CENTER_X) + CENTER_X;
-        f32 y = heart_verts[i % LEN(heart_verts)].y;
-        x = (x - CENTER_X) * scale + OFFSET_X;
-        y = (y - CENTER_Y) * scale + OFFSET_Y;
-        mkb::GXPosition3f32(x, y, Z);
-        mkb::GXTexCoord2f32(0, 0);
-    }
+    u8 text[] = {0x84, 214, 0x00, 0x00};
+    mkb::textdraw_print(reinterpret_cast<char*>(text));
 }
 
 static constexpr u8 LOW_COLOR = 0x41;
