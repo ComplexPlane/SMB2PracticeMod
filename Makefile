@@ -11,7 +11,7 @@ include $(DEVKITPPC)/gamecube_rules
 
 ifeq ($(REGION),)
 
-us: elf2rel gcipack
+us:
 	@$(MAKE) --no-print-directory REGION=us
 clean:
 	@$(MAKE) --no-print-directory clean_target REGION=us
@@ -27,26 +27,7 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-HOST_CXX ?= c++
-ELF2REL_SRC := $(CURDIR)/3rdparty/elf2rel
-ELF2REL := $(CURDIR)/build/elf2rel
-ELF2REL_HEADERS := $(ELF2REL_SRC)/elf2rel.h $(wildcard $(ELF2REL_SRC)/elfio/*.hpp)
-
-elf2rel: $(ELF2REL)
-
-$(ELF2REL): $(ELF2REL_SRC)/elf2rel.cpp $(ELF2REL_HEADERS)
-	@echo "Compiling elf2rel..."
-	@mkdir -p $(CURDIR)/build
-	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
-
-GCIPACK := $(CURDIR)/build/gcipack
-gcipack: $(GCIPACK)
-$(GCIPACK): $(CURDIR)/3rdparty/gcipack.cpp
-	@echo "Compiling gcipack..."
-	@mkdir -p $(CURDIR)/build
-	$(HOST_CXX) -std=c++20 -O2 $< -o $@
-
-.PHONY: all clean us elf2rel gcipack
+.PHONY: all clean us
 
 else
 
@@ -176,14 +157,11 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-ELF2REL := $(abspath $(CURDIR))/../build/elf2rel
-GCIPACK := $(abspath $(CURDIR))/../build/gcipack
-
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
-$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE)
+$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE) gcipack
+$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) elf2rel
 $(OUTPUT).elf: $(LDFILES) $(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
@@ -210,6 +188,31 @@ menu_defn.o: force_git_hash
 	$(bin2o)
 
 -include $(DEPENDS)
+
+#---------------------------------------------------------------------------------
+# build tools
+#---------------------------------------------------------------------------------
+
+HOST_CXX ?= c++
+ELF2REL_SRC := $(CURDIR)/../3rdparty/elf2rel
+ELF2REL := $(CURDIR)/elf2rel
+ELF2REL_HEADERS := $(ELF2REL_SRC)/elf2rel.h $(wildcard $(ELF2REL_SRC)/elfio/*.hpp)
+
+elf2rel: $(ELF2REL)
+
+$(ELF2REL): $(ELF2REL_SRC)/elf2rel.cpp $(ELF2REL_HEADERS)
+	@echo "Compiling elf2rel..."
+	@mkdir -p $(CURDIR)/build
+	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
+
+GCIPACK := $(CURDIR)/gcipack
+gcipack: $(GCIPACK)
+$(GCIPACK): $(CURDIR)/../3rdparty/gcipack.cpp
+	@echo "Compiling gcipack..."
+	@mkdir -p $(CURDIR)/build
+	$(HOST_CXX) -std=c++20 -O2 $< -o $@
+
+.PHONY: elf2rel gcipack
 
 #---------------------------------------------------------------------------------
 endif
