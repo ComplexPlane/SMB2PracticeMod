@@ -50,4 +50,6 @@ GXColor num_to_rainbow(int num);
 // Show a notification in the bottom-right of the screen which fades out after a short period
 void notify(GXColor color, const char* format, ...);
 
+void bind_white_texture_obj();
+
 }  // namespace draw

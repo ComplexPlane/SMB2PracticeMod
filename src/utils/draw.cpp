@@ -31,10 +31,7 @@ void predraw() {
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
 void rect(float x1, float y1, float x2, float y2, GXColor color) {
-    // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb::GXTexObj* texobj =
-        reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
-    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+    draw::bind_white_texture_obj();
 
     // Specify the color of the rectangle
     mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
@@ -94,9 +91,8 @@ static Vec2d heart_verts[] = {
 
 void heart() {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
-    mkb::GXTexObj* texobj =
-        reinterpret_cast<mkb::GXTexObj*>(relutil::relocate_addr(0x807ad0e0));
-    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
+    bind_white_texture_obj();
+
     mkb::GXSetTevColor(mkb::GX_TEVREG0, {0xFF, 0x07, 0x07, 0xFF});
     constexpr f32 Z = -1.0f / 128.0f;
     constexpr f32 CENTER_X = 65.f;
@@ -192,6 +188,11 @@ void notify(GXColor color, const char* format, ...) {
 
     s_notify_frame_counter = 0;
     s_notify_color = color;
+}
+
+void bind_white_texture_obj() {
+    mkb::GXTexObj* texobj = &mkb::bmp_com_tpl->texobjs[0x4b];
+    mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
 }
 
 }  // namespace draw
