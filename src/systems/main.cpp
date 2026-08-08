@@ -87,7 +87,7 @@ TRAMP(s_process_inputs_tramp, mkb::process_inputs, []() {
     fallout::tick();
     physics::tick();
     iw::tick();
-    storytimer::tick();
+    // storytimer::tick();
     savest_ui::tick();
     menu_impl::tick();
     jump::tick();
@@ -123,7 +123,7 @@ TRAMP(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
     draw::predraw();
     timer::disp();
     iw::disp();
-    storytimer::disp();
+    // storytimer::disp();
     Tetris::get_instance().disp();
     ilbattle::disp();
     cmseg::disp();

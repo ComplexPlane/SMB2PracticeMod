@@ -69,6 +69,9 @@ static u32 s_dummy;
 static u32 s_dummy_2;
 
 void tick() {
+    // TODO is this correct?
+    if (mkb::main_mode != mkb::MD_GAME) return;
+
     // for later use, it's useful to record how many stages we've completed
     // increment the completed stages by 1 during the init
     // need to check that the game is not paused to ensure the counter only goes up by 1
