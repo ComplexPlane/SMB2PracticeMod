@@ -15,7 +15,9 @@ static ActiveMode s_current_mode = ActiveMode::None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
-void select_new_goal() { s_new_goal = true; }
+void select_new_goal() {
+    s_new_goal = true;
+}
 
 static void undo_mode(ActiveMode mode) {
     switch (mode) {
@@ -128,9 +130,13 @@ TRAMP(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
     set_mode(s_current_mode);
 });
 
-void main_game_init() { HOOK_TRAMP(s_ready_init_tramp); }
+void main_game_init() {
+    HOOK_TRAMP(s_ready_init_tramp);
+}
 
-void init() { HOOK_TRAMP(s_load_stagedef_tramp); }
+void init() {
+    HOOK_TRAMP(s_load_stagedef_tramp);
+}
 
 void tick() {
     switch (s_current_mode) {

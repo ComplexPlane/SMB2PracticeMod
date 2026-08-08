@@ -24,8 +24,8 @@ enum class WidgetType {
 };
 
 struct TextWidget {
-    const char* label;            // For static text
-    const char* (*label_func)();  // For dynamic text
+    const char *label;            // For static text
+    const char *(*label_func)();  // For dynamic text
 };
 
 enum class TextLine : u8 {
@@ -34,7 +34,7 @@ enum class TextLine : u8 {
 };
 
 struct ColoredTextWidget {
-    const char* label;
+    const char *label;
     GXColor color_left;
     GXColor color_right;
     u8 offset_x;
@@ -43,24 +43,24 @@ struct ColoredTextWidget {
 
 // Just a different color TextWidget
 struct HeaderWidget {
-    const char* label;
+    const char *label;
 };
 
 struct CheckboxWidget {
-    const char* label;
+    const char *label;
     pref::BoolPref pref;
 };
 
 // For the rare cases a checkbox doesn't correspond to a preference
 struct GetSetCheckboxWidget {
-    const char* label;
+    const char *label;
     bool (*get)();
     void (*set)(bool);
 };
 
 struct MenuWidget {
-    const char* label;
-    struct Widget* widgets;
+    const char *label;
+    struct Widget *widgets;
     u32 num_widgets;
     // It's too convenient to store currently selected menu entry in the widget itself,
     // even if it violates the otherwise immutable nature of the menu definition
@@ -68,13 +68,13 @@ struct MenuWidget {
 };
 
 struct FloatViewWidget {
-    const char* label;
+    const char *label;
     f32 (*get)();
 };
 
 struct ChooseWidget {
-    const char* label;
-    const char** choices;
+    const char *label;
+    const char **choices;
     u16 num_choices;
     pref::U8Pref pref;
 };
@@ -87,14 +87,14 @@ enum {
 }
 
 struct ButtonWidget {
-    const char* label;
+    const char *label;
     void (*push)();  // Runs when pushed. Can be null
     u32 flags;
 };
 
 // Pretty limited for now
 struct IntEditWidget {
-    const char* label;
+    const char *label;
     pref::U8Pref pref;
     u8 min;
     u8 max;
@@ -102,7 +102,7 @@ struct IntEditWidget {
 
 // even more limited for now
 struct FloatEditWidget {
-    const char* label;
+    const char *label;
     pref::U8Pref pref;
     u32 precision;  // denominator, 100
     u8 min;
@@ -112,7 +112,7 @@ struct FloatEditWidget {
 };
 
 struct InputSelectWidget {
-    const char* label;
+    const char *label;
     pref::U8Pref pref;
     bool required_chord;  // must be a 2 button bind if true
     bool can_unbind;
@@ -121,7 +121,7 @@ struct InputSelectWidget {
 enum class HideableType : u8 { U8Hideable, BoolHideable };
 
 struct HideableGroupWidget {
-    struct Widget* widgets;
+    struct Widget *widgets;
     u32 num_widgets;
     bool (*show_if)();  // show if function returns true
 };

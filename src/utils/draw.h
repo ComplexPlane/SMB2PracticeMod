@@ -36,7 +36,7 @@ void predraw();
 
 void rect(float x1, float y1, float x2, float y2, GXColor color);
 void debug_text_palette();
-void debug_text(s32 x, s32 y, GXColor color, const char* format, ...);
+void debug_text(s32 x, s32 y, GXColor color, const char *format, ...);
 void heart();
 
 // allows a color to cycle through a rainbow animation, have num value be...
@@ -48,7 +48,7 @@ GXColor num_to_rainbow(int num);
  */
 
 // Show a notification in the bottom-right of the screen which fades out after a short period
-void notify(GXColor color, const char* format, ...);
+void notify(GXColor color, const char *format, ...);
 
 void bind_white_texture_obj();
 

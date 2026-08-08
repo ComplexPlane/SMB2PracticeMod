@@ -29,7 +29,7 @@ static TimerType s_prev_freecam = TimerType::Invalid;
 static bool s_halted;  // freeze timer for TimerType::FreezeAtZero
 
 // stop fallouts
-TRAMP(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
+TRAMP(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball *ball) {
     mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
     bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
     bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
@@ -65,7 +65,9 @@ TRAMP(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
     return orig_result;
 });
 
-void init() { HOOK_TRAMP(s_did_ball_fallout_tramp); }
+void init() {
+    HOOK_TRAMP(s_did_ball_fallout_tramp);
+}
 
 void freeze_timer() {
     TimerType current_pref = TimerType(pref::get(pref::U8Pref::TimerType));
@@ -76,7 +78,7 @@ void freeze_timer() {
     switch (current_pref) {
         case TimerType::Default: {
             // time over at 0 frames
-            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
+            *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
             // add -1 to timer each frame
             if (update_timer_incr) {
                 patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
@@ -85,7 +87,7 @@ void freeze_timer() {
         }
         case TimerType::FreezeInstantly: {
             // time over at 0 frames
-            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
+            *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548)) = 0x2c000000;
             // add 0 to timer each frame (timer doesnt move)
             if (update_timer_incr) {
                 patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
@@ -94,7 +96,7 @@ void freeze_timer() {
         }
         case TimerType::FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
+            *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
             // add -1 to timer each frame (will need to freeze timer at 0.00 and unfreeze on retry)
             if (update_timer_incr) {
                 patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
@@ -117,7 +119,7 @@ void freeze_timer() {
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            *reinterpret_cast<u32*>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
+            *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548)) = 0x2c00ffa0;
             // add 1 to timer each frame
             if (update_timer_incr) {
                 patch::write_word(relutil::relocate_addr(0x80297534), 0x38030001);
@@ -140,6 +142,7 @@ void tick() {
     }
     freeze_timer();
 }
-void disp() {}
+void disp() {
+}
 
 }  // namespace fallout

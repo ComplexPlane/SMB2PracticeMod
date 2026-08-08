@@ -17,7 +17,7 @@ static GXColor s_notify_color;
 
 void init() {
     patch::write_branch(relutil::relocate_addr(0x802aeca4),
-                        reinterpret_cast<void*>(main::full_debug_text_color));
+                        reinterpret_cast<void *>(main::full_debug_text_color));
 }
 
 void predraw() {
@@ -49,7 +49,7 @@ void rect(float x1, float y1, float x2, float y2, GXColor color) {
     mkb::GXTexCoord2f32(0, 1);
 }
 
-static void debug_text_buf(s32 x, s32 y, GXColor color, const char* buf) {
+static void debug_text_buf(s32 x, s32 y, GXColor color, const char *buf) {
     main::debug_text_color = color;
     for (s32 i = 0; buf[i] != '\0'; i++) {
         // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
@@ -60,15 +60,15 @@ static void debug_text_buf(s32 x, s32 y, GXColor color, const char* buf) {
     main::debug_text_color = {};
 }
 
-static void debug_text_v(s32 x, s32 y, GXColor color, const char* format, va_list args) {
+static void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_list args) {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
-    mkb::vsprintf(buf, const_cast<char*>(format), args);
+    mkb::vsprintf(buf, const_cast<char *>(format), args);
     debug_text_buf(x, y, color, buf);
 }
 
-void debug_text(s32 x, s32 y, GXColor color, const char* format, ...) {
+void debug_text(s32 x, s32 y, GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
     debug_text_v(x, y, color, format, args);
@@ -84,7 +84,7 @@ void heart() {
     mkb::textdraw_set_mul_color(RGBA(255, 66, 118, 0xff));
 
     u8 text[] = {0x84, 214, 0x00, 0x00};
-    mkb::textdraw_print(reinterpret_cast<char*>(text));
+    mkb::textdraw_print(reinterpret_cast<char *>(text));
 }
 
 static constexpr u8 LOW_COLOR = 0x41;
@@ -143,10 +143,10 @@ void disp() {
     if (s_notify_frame_counter > 60) s_notify_frame_counter = 60;
 }
 
-void notify(GXColor color, const char* format, ...) {
+void notify(GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
-    mkb::vsprintf(s_notify_msg_buf, const_cast<char*>(format), args);
+    mkb::vsprintf(s_notify_msg_buf, const_cast<char *>(format), args);
     va_end(args);
 
     s_notify_frame_counter = 0;
@@ -154,7 +154,7 @@ void notify(GXColor color, const char* format, ...) {
 }
 
 void bind_white_texture_obj() {
-    mkb::GXTexObj* texobj = &mkb::bmp_com_tpl->texobjs[0x4b];
+    mkb::GXTexObj *texobj = &mkb::bmp_com_tpl->texobjs[0x4b];
     mkb::GXLoadTexObj_cached(texobj, mkb::GX_TEXMAP0);
 }
 

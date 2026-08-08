@@ -61,7 +61,7 @@ TRAMP(s_clear_tramp, mkb::g_set_clear_color, []() {
 });
 
 // HUD
-TRAMP(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite* sprite) {
+TRAMP(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite *sprite) {
     // Hide every sprite except the pause menu
     bool hide_hud = pref::get(pref::BoolPref::HideHud);
     bool freecam_hide = freecam::should_hide_hud();
@@ -121,9 +121,9 @@ static void init_hide_bg() {
 
     // Black fog
     patch::write_branch_bl(relutil::relocate_addr(0x80352e58),
-                           reinterpret_cast<void*>(avdisp_set_fog_color_hook));
+                           reinterpret_cast<void *>(avdisp_set_fog_color_hook));
     patch::write_branch_bl(relutil::relocate_addr(0x80352eac),
-                           reinterpret_cast<void*>(nl2ngc_set_fog_color_hook));
+                           reinterpret_cast<void *>(nl2ngc_set_fog_color_hook));
 }
 
 static void init_hide_hud() {

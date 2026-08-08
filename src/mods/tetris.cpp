@@ -269,7 +269,9 @@ void Tetris::try_transition_to_dropping() {
     }
 }
 
-Tetris::Cell Tetris::gen_random_cell() { return static_cast<Cell>(mkb::rand() % NUM_CELL_TYPES); }
+Tetris::Cell Tetris::gen_random_cell() {
+    return static_cast<Cell>(mkb::rand() % NUM_CELL_TYPES);
+}
 
 Tetris::Tetrad Tetris::gen_random_tetrad() {
     return static_cast<Tetrad>(mkb::rand() % NUM_TETRADS);
@@ -443,7 +445,7 @@ namespace ilmark {
 bool is_ilmark_enabled();
 }
 
-static void sprite_go_disp_hook(mkb::Sprite* sprite) {
+static void sprite_go_disp_hook(mkb::Sprite *sprite) {
     int i;
     int t;
     int x_offset;
@@ -592,7 +594,8 @@ bool Tetris::tetrad_intersects_grid(Tetrad tetrad, s32 tetradX, s32 tetradY, s32
 
 // Undefined if tetrad is already intersecting grid or out-of-bounds
 s32 Tetris::find_lowest_possible_tetrad_y(Tetrad tetrad, s32 tetradX, s32 tetradY, s32 rotation) {
-    while (!tetrad_intersects_grid(tetrad, tetradX, tetradY, rotation)) tetradY--;
+    while (!tetrad_intersects_grid(tetrad, tetradX, tetradY, rotation))
+        tetradY--;
     return tetradY + 1;
 }
 
@@ -614,7 +617,7 @@ void Tetris::init() {
     HOOK_TRAMP(s_sprite_go_disp_tramp);
 }
 
-Tetris& Tetris::get_instance() {
+Tetris &Tetris::get_instance() {
     static Tetris tetris;
     return tetris;
 }

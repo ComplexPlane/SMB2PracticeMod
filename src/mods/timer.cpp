@@ -16,12 +16,14 @@ static s32 s_pause_timer;
 
 static u32 s_framesave;
 
-static bool did_ball_enter_goal(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-                                mkb::byte* out_goal_flags);
+static bool did_ball_enter_goal(mkb::Ball *ball,
+                                int *out_stage_goal_idx,
+                                int *out_itemgroup_id,
+                                mkb::byte *out_goal_flags);
 
 TRAMP(s_goal_tramp, mkb::did_ball_enter_goal, did_ball_enter_goal);
 
-static bool line_intersects(const Vec* line_start, const Vec* line_end, const mkb::Rect* rect) {
+static bool line_intersects(const Vec *line_start, const Vec *line_end, const mkb::Rect *rect) {
     Vec end;
     Vec start;
     float half_height;
@@ -29,7 +31,7 @@ static bool line_intersects(const Vec* line_start, const Vec* line_end, const mk
 
     start = *line_start;
     end = *line_end;
-    mkb::mtxa_from_translate((Vec*)&rect->pos);
+    mkb::mtxa_from_translate((Vec *)&rect->pos);
     mkb::mtxa_rotate_z(rect->rot.z);
     mkb::mtxa_rotate_y(rect->rot.y);
     mkb::mtxa_rotate_x(rect->rot.x);
@@ -62,14 +64,16 @@ static bool line_intersects(const Vec* line_start, const Vec* line_end, const mk
     }
 }
 
-static void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-                           mkb::byte* out_goal_flags) {
+static void find_framesave(mkb::Ball *ball,
+                           int *out_stage_goal_idx,
+                           int *out_itemgroup_id,
+                           mkb::byte *out_goal_flags) {
     // mostly a ghidra copy-paste
     int itemgroup_goal_idx;
-    mkb::StagedefGoal* goal;
+    mkb::StagedefGoal *goal;
     mkb::dword itemgroup_idx;
     int stage_goal_idx;
-    mkb::StagedefColiHeader* itemgroup;
+    mkb::StagedefColiHeader *itemgroup;
     mkb::Rect goal_trigger;
     mkb::PhysicsBall physicsball;
 
@@ -113,8 +117,10 @@ static void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_it
     } while (true);
 }
 
-static bool did_ball_enter_goal(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-                                mkb::byte* out_goal_flags) {
+static bool did_ball_enter_goal(mkb::Ball *ball,
+                                int *out_stage_goal_idx,
+                                int *out_itemgroup_id,
+                                mkb::byte *out_goal_flags) {
     bool result = s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
     if (result) {
         // Determine framesave percentage.
@@ -202,7 +208,7 @@ void disp() {
     }
 }
 
-void save_state(store::Store* state, store::StoreFunc func) {
+void save_state(store::Store *state, store::StoreFunc func) {
     func(state, &s_retrace_count, sizeof(s_retrace_count));
     func(state, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
     func(state, &s_rta_timer, sizeof(s_rta_timer));

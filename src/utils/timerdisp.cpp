@@ -11,11 +11,18 @@ static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
 
-void draw_timer(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefix, s32 frames_1,
-                s32 frames_2, bool show_second_argument, bool show_seconds_only, GXColor color) {
+void draw_timer(u32 pos_x,
+                u32 pos_y,
+                u32 text_offset,
+                const char *prefix,
+                s32 frames_1,
+                s32 frames_2,
+                bool show_second_argument,
+                bool show_seconds_only,
+                GXColor color) {
     bool positive = frames_1 >= 0;
     if (!positive) frames_1 = -frames_1;
-    const char* sign = positive ? "" : "-";
+    const char *sign = positive ? "" : "-";
 
     u32 hours_1 = frames_1 / HOUR_FRAMES;
     u32 minutes_1 = frames_1 % HOUR_FRAMES / MINUTE_FRAMES;
@@ -100,11 +107,16 @@ void draw_timer(u32 pos_x, u32 pos_y, u32 text_offset, const char* prefix, s32 f
     }
 }
 
-void draw_subtick_timer(s32 frames, const char* prefix, u32 row, GXColor color, bool show_minutes,
-                        u32 framesave, bool extra_precision) {
+void draw_subtick_timer(s32 frames,
+                        const char *prefix,
+                        u32 row,
+                        GXColor color,
+                        bool show_minutes,
+                        u32 framesave,
+                        bool extra_precision) {
     bool positive = frames >= 0;
     if (!positive) frames = -frames;
-    const char* sign = positive ? "" : "-";
+    const char *sign = positive ? "" : "-";
 
     u32 hours = frames / HOUR_FRAMES;
     u32 minutes = frames % HOUR_FRAMES / MINUTE_FRAMES;
@@ -123,7 +135,7 @@ void draw_subtick_timer(s32 frames, const char* prefix, u32 row, GXColor color, 
     }
 }
 
-void draw_percentage(s32 fsave, const char* prefix, u32 row, GXColor color) {
+void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
     s32 y = Y + row * 16;
     draw::debug_text(X, y, color, prefix);
     draw::debug_text(X + 48, y, color, "%2d%", fsave);

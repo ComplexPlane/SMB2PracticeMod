@@ -7,8 +7,12 @@ namespace mkb {
 // Originally #define'd
 constexpr GXBool GX_TRUE = 1;
 constexpr GXBool GX_FALSE = 0;
-inline u32 OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
-inline u32 OSRoundDown32B(u32 x) { return x & ~31; }
+inline u32 OSRoundUp32B(u32 x) {
+    return (x + 31) & ~31;
+}
+inline u32 OSRoundDown32B(u32 x) {
+    return x & ~31;
+}
 
 // Originally #define'd
 enum {

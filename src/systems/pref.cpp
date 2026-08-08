@@ -443,12 +443,12 @@ static inline u16 validate_bool_pref(BoolPref bp) {
     return bpi;
 }
 
-static bool get_bool_pref(BoolPref bp, const PrefState& state) {
+static bool get_bool_pref(BoolPref bp, const PrefState &state) {
     u16 bpi = validate_bool_pref(bp);
     return state.bool_prefs[bpi / 8] & (1 << (bpi % 8));
 }
 
-static void set_bool_pref(BoolPref bp, bool value, PrefState& state) {
+static void set_bool_pref(BoolPref bp, bool value, PrefState &state) {
     u16 bpi = validate_bool_pref(bp);
     if (value) {
         state.bool_prefs[bpi / 8] |= (1 << (bpi % 8));
@@ -463,11 +463,11 @@ static u32 validate_u8_pref(U8Pref pref) {
     return idx;
 }
 
-static u8 get_u8_pref(U8Pref pref, const PrefState& state) {
+static u8 get_u8_pref(U8Pref pref, const PrefState &state) {
     return state.u8_prefs[validate_u8_pref(pref)];
 }
 
-static void set_u8_pref(U8Pref pref, u8 value, PrefState& state) {
+static void set_u8_pref(U8Pref pref, u8 value, PrefState &state) {
     state.u8_prefs[validate_u8_pref(pref)] = value;
 }
 
@@ -484,12 +484,12 @@ static void load_default_prefs() {
     mkb::memcpy(&s_default_pref_state, &s_pref_state, sizeof(s_default_pref_state));
 }
 
-static void card_buf_to_pref_struct(void* card_buf) {
-    FileHeader* header = static_cast<FileHeader*>(card_buf);
+static void card_buf_to_pref_struct(void *card_buf) {
+    FileHeader *header = static_cast<FileHeader *>(card_buf);
     if (header->semver_major > 1) return;  // Preferences file format too new for this mod
 
-    IdEntry* entry_list =
-        reinterpret_cast<IdEntry*>(reinterpret_cast<u32>(card_buf) + sizeof(FileHeader));
+    IdEntry *entry_list =
+        reinterpret_cast<IdEntry *>(reinterpret_cast<u32>(card_buf) + sizeof(FileHeader));
 
     for (s32 i = 0; i < header->num_prefs; i++) {
         PrefId id = static_cast<PrefId>(entry_list[i].id);
@@ -514,9 +514,9 @@ static void card_buf_to_pref_struct(void* card_buf) {
 }
 
 static void pref_struct_to_card_buf() {
-    FileHeader* header = static_cast<FileHeader*>(static_cast<void*>(s_card_buf));
-    IdEntry* entry_list =
-        reinterpret_cast<IdEntry*>(reinterpret_cast<u32>(s_card_buf) + sizeof(FileHeader));
+    FileHeader *header = static_cast<FileHeader *>(static_cast<void *>(s_card_buf));
+    IdEntry *entry_list =
+        reinterpret_cast<IdEntry *>(reinterpret_cast<u32>(s_card_buf) + sizeof(FileHeader));
 
     header->magic[0] = 'A';
     header->magic[1] = 'P';
@@ -550,13 +550,13 @@ static void pref_struct_to_card_buf() {
     }
 }
 
-static constexpr char* PREF_FILENAME = "apmp";
+static constexpr char *PREF_FILENAME = "apmp";
 
 void init() {
     load_default_prefs();
 
-    FileHeader* header = nullptr;
-    s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void**>(&header));
+    FileHeader *header = nullptr;
+    s32 result = cardio::read_file(PREF_FILENAME, reinterpret_cast<void **>(&header));
     if (result == mkb::CARD_RESULT_READY) {
         card_buf_to_pref_struct(header);
         heap::free(header);
@@ -582,11 +582,23 @@ void reset_all_defaults() {
     mkb::memcpy(&s_pref_state, &s_default_pref_state, sizeof(s_pref_state));
 }
 
-bool get(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_pref_state); }
-u8 get(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_pref_state); }
-void set(BoolPref bool_pref, bool value) { set_bool_pref(bool_pref, value, s_pref_state); };
-void set(U8Pref u8_pref, u8 value) { set_u8_pref(u8_pref, value, s_pref_state); }
-bool get_default(BoolPref bool_pref) { return get_bool_pref(bool_pref, s_default_pref_state); }
-u8 get_default(U8Pref u8_pref) { return get_u8_pref(u8_pref, s_default_pref_state); }
+bool get(BoolPref bool_pref) {
+    return get_bool_pref(bool_pref, s_pref_state);
+}
+u8 get(U8Pref u8_pref) {
+    return get_u8_pref(u8_pref, s_pref_state);
+}
+void set(BoolPref bool_pref, bool value) {
+    set_bool_pref(bool_pref, value, s_pref_state);
+};
+void set(U8Pref u8_pref, u8 value) {
+    set_u8_pref(u8_pref, value, s_pref_state);
+}
+bool get_default(BoolPref bool_pref) {
+    return get_bool_pref(bool_pref, s_default_pref_state);
+}
+u8 get_default(U8Pref u8_pref) {
+    return get_u8_pref(u8_pref, s_default_pref_state);
+}
 
 }  // namespace pref

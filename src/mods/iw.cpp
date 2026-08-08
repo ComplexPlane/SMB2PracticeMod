@@ -18,7 +18,7 @@
 namespace iw {
 
 static u32 s_anim_counter;
-static const char* s_anim_strs[4] = {"/", "-", "\\", " |"};
+static const char *s_anim_strs[4] = {"/", "-", "\\", " |"};
 
 static u32 s_iw_files;  // Bitflag for which save files are IW save files
 
@@ -38,7 +38,7 @@ static void handle_iw_selection() {
     bool dpad_down = pad::button_pressed(mkb::PAD_BUTTON_DOWN);
 
     s32 dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
-    auto& story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];
+    auto &story_save = mkb::storymode_save_files[mkb::selected_story_file_idx];
     if (s_iw_files & (1 << mkb::selected_story_file_idx)) {
         s32 world = story_save.current_world + dir;
         if (world < 0 || world > 9) {
@@ -62,7 +62,7 @@ static void set_save_file_info() {
     s_anim_counter += 1;
 
     for (s32 i = 0; i < 3; i++) {
-        auto& story_save = mkb::storymode_save_files[i];
+        auto &story_save = mkb::storymode_save_files[i];
         if (s_iw_files & (1 << i)) {
             mkb::sprintf(story_save.file_name, "W%02d IW %s", story_save.current_world + 1,
                          s_anim_strs[s_anim_counter / 2 % 4]);
@@ -94,18 +94,18 @@ static void handle_iw_timer() {
 
 void init() {
     patch::write_branch(relutil::relocate_addr(0x80274804),
-                        reinterpret_cast<void*>(main::stage_select_menu_hook));
+                        reinterpret_cast<void *>(main::stage_select_menu_hook));
     patch::write_branch(relutil::relocate_addr(0x8032a86c),
-                        reinterpret_cast<void*>(main::pause_menu_text_hook));
+                        reinterpret_cast<void *>(main::pause_menu_text_hook));
 }
 
 void tick() {
     main::currently_playing_iw = false;
     if (mkb::main_mode != mkb::MD_GAME || mkb::main_game_mode != mkb::STORY_MODE) return;
 
-    const char* msg = "Up/Down to Change World.";
-    mkb::strcpy(mkb::continue_saved_game_text, const_cast<char*>(msg));
-    mkb::strcpy(mkb::start_game_from_beginning_text, const_cast<char*>(msg));
+    const char *msg = "Up/Down to Change World.";
+    mkb::strcpy(mkb::continue_saved_game_text, const_cast<char *>(msg));
+    mkb::strcpy(mkb::start_game_from_beginning_text, const_cast<char *>(msg));
 
     handle_iw_selection();
     set_save_file_info();

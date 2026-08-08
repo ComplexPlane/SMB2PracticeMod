@@ -1,12 +1,8 @@
 ---
-BasedOnStyle: Google
-AccessModifierOffset: -3
+BasedOnStyle: Chromium
 ColumnLimit: 100
 IndentWidth: 4
-Standard: c++20
-PenaltyBreakComment: 60
-DerivePointerAlignment: false
-PointerAlignment: Left
-IndentPPDirectives: AfterHash
-IncludeBlocks: Preserve
+AllowShortIfStatementsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: None
+PointerAlignment: Right
 ...

@@ -24,7 +24,7 @@ static Seg s_seg_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
-static mkb::CourseCommand* s_overwritten_entry;
+static mkb::CourseCommand *s_overwritten_entry;
 static mkb::CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
 
@@ -47,7 +47,7 @@ static u32 s_pbs[13];
 /**
  * Create a new course in an existing one by inserting a COURSE_CMD_END entry
  */
-static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u32 stage_count) {
+static void gen_course(mkb::CourseCommand *course, u32 start_course_stage_num, u32 stage_count) {
     s32 start_entry_idx = -1;
     s32 end_entry_idx = -1;
 
@@ -86,12 +86,12 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
     mkb::g_another_stage_id = first_stage_id;
 
     // Make up "previous" stage for "current" stage
-    mkb::CmStage& curr_stage = mkb::cm_player_progress[0].curr_stage;
+    mkb::CmStage &curr_stage = mkb::cm_player_progress[0].curr_stage;
     curr_stage.stage_course_num = start_course_stage_num - 1;
     curr_stage.stage_id = first_stage_id - 1;
 
     // Next stage for player is the first one we want to start on
-    mkb::CmStage& next_stage = mkb::cm_player_progress[0].next_stages[0];
+    mkb::CmStage &next_stage = mkb::cm_player_progress[0].next_stages[0];
     next_stage.stage_course_num = start_course_stage_num;
     next_stage.stage_id = first_stage_id;
 }
@@ -165,7 +165,7 @@ static void state_seg_active() {
     if (s_overwritten_opcode != mkb::COURSE_CMD_END) {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-            mkb::Sprite& sprite = mkb::sprites[i];
+            mkb::Sprite &sprite = mkb::sprites[i];
             if (sprite.tick_func == mkb::sprite_final_stage_tick) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
@@ -216,7 +216,7 @@ void state_seg_complete() {
 }
 
 void init_seg() {
-    mkb::CourseCommand* course = nullptr;
+    mkb::CourseCommand *course = nullptr;
     u32 start_course_stage_num = 0;
     mkb::mode_flags &= ~(mkb::MF_G_PLAYING_MASTER_COURSE | mkb::MF_PLAYING_EXTRA_COURSE |
                          mkb::MF_PLAYING_MASTER_NOEX_COURSE | mkb::MF_PLAYING_MASTER_EX_COURSE);
@@ -338,7 +338,7 @@ void init() {
     HOOK_TRAMP(s_reset_cm_course_tramp);
 
     // Set PBs to maximum time
-    for (u32& s_pb : s_pbs) {
+    for (u32 &s_pb : s_pbs) {
         s_pb = 0xFFFFFFFF;
     }
 }

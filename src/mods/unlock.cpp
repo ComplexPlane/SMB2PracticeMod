@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 #include "systems/pref.h"
+#include "utils/gamecode.h"
 
 namespace unlock {
 
@@ -32,9 +33,7 @@ static void do_unlock() {
 void init() {
     // Unlock progress every frame (so it works even if a saved game is loaded), but only enact this
     // policy if the corresponding setting was enabled on startup.
-    char gamecode[7] = {};
-    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
-    if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
+    if (gamecode::is_vanilla()) {
         if (pref::get(pref::BoolPref::UnlockVanilla)) {
             s_flags |= Flags::ShouldUnlock;
         }
@@ -49,6 +48,8 @@ void tick() {
     }
 }
 
-void unlock_everything() { s_flags |= Flags::ShouldUnlock; }
+void unlock_everything() {
+    s_flags |= Flags::ShouldUnlock;
+}
 
 }  // namespace unlock

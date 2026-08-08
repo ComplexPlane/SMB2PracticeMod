@@ -3,12 +3,12 @@
 #include "mkb/mkb.h"
 
 class Tetris {
- public:
-    static Tetris& get_instance();
+   public:
+    static Tetris &get_instance();
     void init();
     void disp();
 
- private:
+   private:
     static constexpr s32 BOARD_WIDTH = 10;
     static constexpr s32 BOARD_HEIGHT = 24;
     static constexpr s32 TETRAD_QUEUE_LEN = 5;

@@ -35,11 +35,15 @@ bool enabled() {
     return pref::get(pref::BoolPref::Freecam) && correct_main_mode && correct_sub_mode;
 }
 
-bool should_freeze_timer() { return enabled() && pref::get(pref::BoolPref::FreecamFreezeTimer); }
+bool should_freeze_timer() {
+    return enabled() && pref::get(pref::BoolPref::FreecamFreezeTimer);
+}
 
-bool should_hide_hud() { return enabled() && pref::get(pref::BoolPref::FreecamHideHud); }
+bool should_hide_hud() {
+    return enabled() && pref::get(pref::BoolPref::FreecamHideHud);
+}
 
-static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
+static void update_cam(mkb::Camera *camera, mkb::Ball *ball) {
     if (!(s_flags & Flags::EnabledPrevTick)) {
         s_eye = mkb::cameras[0].pos;
         s_rot = mkb::cameras[0].rot;
@@ -93,7 +97,7 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     }
 }
 
-static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
+static void call_camera_func_hook(mkb::Camera *camera, mkb::Ball *ball) {
     if (s_flags & Flags::EnabledThisTick) {
         update_cam(camera, ball);
     } else {
@@ -113,7 +117,7 @@ TRAMP(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
 
 void init() {
     patch::write_branch_bl(relutil::relocate_addr(0x8028353c),
-                           reinterpret_cast<void*>(call_camera_func_hook));
+                           reinterpret_cast<void *>(call_camera_func_hook));
 
     HOOK_TRAMP(s_event_camera_tick_tramp);
 }

@@ -7,6 +7,7 @@
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
+#include "utils/gamecode.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
@@ -16,7 +17,6 @@ namespace ilmark {
 
 static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
-static bool s_is_romhack = false;
 
 static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
     pref::BoolPref::DisableFalloutVolumes,
@@ -45,19 +45,13 @@ void disable_invalidating_settings() {
     pref::save();
 }
 
-void init() {
-    char gamecode[7] = {};
-    mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
-    s_is_romhack = mkb::strcmp(gamecode, "GM2E8P") != 0;
-}
-
 void tick() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
         s_paused_frame = 0;
 
     } else if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) {
-        bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
+        bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
         if (paused_now) {
             if (s_paused_frame == 0) {
                 s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
@@ -107,7 +101,7 @@ bool is_ilmark_enabled() {
         return false;
     }
 
-    if (s_is_romhack && !pref::get(pref::BoolPref::IlMarkRomhacks)) {
+    if (!gamecode::is_vanilla() && !pref::get(pref::BoolPref::IlMarkRomhacks)) {
         return false;
     }
 
@@ -149,7 +143,7 @@ void disp() {
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
-    mkb::textdraw_print(const_cast<char*>(version::get_version_str()));
+    mkb::textdraw_print(const_cast<char *>(version::get_version_str()));
 }
 
 }  // namespace ilmark

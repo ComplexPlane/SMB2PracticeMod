@@ -15,7 +15,7 @@ void init() {
 }
 
 static void moon_gravity() {
-    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now) {
         mkb::balls[mkb::curr_player_idx].vel.y += .005;
     }
@@ -40,6 +40,7 @@ void tick() {
         mkb::ball_restitution = ((float)pref::get(pref::U8Pref::Restitution) - 100) / 100.0;
     }
 }
-void disp() {}
+void disp() {
+}
 
 }  // namespace physics

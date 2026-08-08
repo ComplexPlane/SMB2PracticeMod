@@ -47,7 +47,9 @@ bool analog_released(mkb::PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
-static bool any_input_down() { return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw; }
+static bool any_input_down() {
+    return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
+}
 
 static bool any_input_pressed() {
     return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
@@ -139,7 +141,8 @@ bool button_chord_pressed(mkb::PadDigitalInput btn1, mkb::PadDigitalInput btn2, 
            (button_pressed(btn1, priority) && button_down(btn2, priority));
 }
 
-bool analog_chord_pressed(mkb::PadDigitalInput analog1, mkb::PadDigitalInput analog2,
+bool analog_chord_pressed(mkb::PadDigitalInput analog1,
+                          mkb::PadDigitalInput analog2,
                           bool priority) {
     return (analog_down(analog1, priority) && analog_pressed(analog2, priority)) ||
            (analog_pressed(analog1, priority) && analog_down(analog2, priority));
@@ -218,13 +221,21 @@ bool dir_repeat(Dir dir, bool priority) {
            (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
-void reset_dir_repeat() { mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time)); }
+void reset_dir_repeat() {
+    mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
+}
 
-bool konami_pressed() { return s_konami_progress == 11; }
+bool konami_pressed() {
+    return s_konami_progress == 11;
+}
 
-void set_exclusive_mode(bool enabled) { s_exclusive_mode_request = enabled; }
+void set_exclusive_mode(bool enabled) {
+    s_exclusive_mode_request = enabled;
+}
 
-bool get_exclusive_mode() { return s_exclusive_mode; }
+bool get_exclusive_mode() {
+    return s_exclusive_mode;
+}
 
 void on_frame_start() {
     if (s_exclusive_mode) {

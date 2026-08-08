@@ -19,7 +19,7 @@ extern void init();
 
 void _prolog() {
     // Run global constructors
-    for (PFN_voidfunc* ctor = _ctors_start; ctor != _ctors_end && *ctor; ++ctor) {
+    for (PFN_voidfunc *ctor = _ctors_start; ctor != _ctors_end && *ctor; ++ctor) {
         (*ctor)();
     }
 
@@ -29,9 +29,10 @@ void _prolog() {
 
 void _epilog() {
     // In the unlikely event we ever get here, run the global destructors
-    for (PFN_voidfunc* dtor = _dtors_start; dtor != _dtors_end && *dtor; ++dtor) {
+    for (PFN_voidfunc *dtor = _dtors_start; dtor != _dtors_end && *dtor; ++dtor) {
         (*dtor)();
     }
 }
 
-void _unresolved(void) {}
+void _unresolved(void) {
+}

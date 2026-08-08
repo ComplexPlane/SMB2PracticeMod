@@ -39,6 +39,7 @@
 #include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
+#include "utils/gamecode.h"
 
 namespace main {
 
@@ -46,7 +47,7 @@ static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
     patch::write_branch_bl(relutil::relocate_addr(0x80270704),
-                           reinterpret_cast<void*>(start_main_loop_assembly));
+                           reinterpret_cast<void *>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -60,12 +61,12 @@ static void perform_assembly_patches() {
     patch::write_nop(relutil::relocate_addr(0x80270aac));
 
     // Titlescreen patches
-    mkb::strcpy(reinterpret_cast<char*>(relutil::relocate_addr(0x8047f4ec)), "SMB2 PRACTICE MOD");
+    mkb::strcpy(reinterpret_cast<char *>(relutil::relocate_addr(0x8047f4ec)), "SMB2 PRACTICE MOD");
     patch::write_branch(relutil::relocate_addr(0x8032ad0c),
-                        reinterpret_cast<void*>(main::custom_titlescreen_text_color));
+                        reinterpret_cast<void *>(main::custom_titlescreen_text_color));
 }
 
-TRAMP(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
+TRAMP(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus *statuses) {
     u32 ret = s_PADRead_tramp.chain(statuses);
 
     // Dpad can modify effective stick input, shown by input display
@@ -135,7 +136,7 @@ TRAMP(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
 });
 
 // Hook for mkb::load_additional_rel
-TRAMP(s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+TRAMP(s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader *rel_buffer, void *bss_buffer) {
     bool ret = s_OSLink_tramp.chain(rel_buffer, bss_buffer);
 
     // Main game init functions
@@ -157,8 +158,8 @@ void init() {
     perform_assembly_patches();
     mkb::OSReport("performed assembly patches\n");
 
+    gamecode::init();
     heap::init();
-    cardio::init();
     pref::init();
     unlock::init();
     draw::init();
@@ -174,7 +175,6 @@ void init() {
     menu_defn::init();
     freecam::init();
     hide::init();
-    ilmark::init();
     camera::init();
     fallout::init();
     stage_edits::init();

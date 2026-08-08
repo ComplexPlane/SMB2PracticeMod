@@ -28,7 +28,7 @@ static Vec s_saved_vel = {};
 
 // [Nambo] Transforms the stored ball velocity relative to the startpos, and applies it to the ball
 static void apply_saved_vel() {
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];  // I think this makes ball.vel work
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];  // I think this makes ball.vel work
 
     // Set up the TF matrix for World ---> Start
     mkb::mtxa_from_rotate_z(mkb::stagedef->start->rotation.z);
@@ -58,7 +58,7 @@ static void apply_saved_vel() {
 
 // [Nambo] Transforms the current ball velocity relative to the goal, and stores it
 static void store_saved_vel() {
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];  // I think this makes ball.vel work
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];  // I think this makes ball.vel work
 
     // Gives names to the item group index for the goal's IG, and the goal's index inside that IG
     // This keeps the [] stuff inside the TF code short!

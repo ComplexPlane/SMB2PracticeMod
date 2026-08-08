@@ -16,7 +16,8 @@ enum class CameraType {
 
 static CameraType s_prev_value;
 
-void init() {}
+void init() {
+}
 
 void tick() {
     CameraType value = CameraType(pref::get(pref::U8Pref::Camera));

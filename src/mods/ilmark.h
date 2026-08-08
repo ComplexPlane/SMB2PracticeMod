@@ -4,7 +4,6 @@ namespace ilmark {
 
 void disable_invalidating_settings();
 
-void init();
 void tick();
 void disp();
 

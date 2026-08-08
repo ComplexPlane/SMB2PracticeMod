@@ -36,14 +36,15 @@ struct Gradient {
     f32 end;
 };
 
-TRAMP(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
-      [](f32 x, f32 y) { s_create_speed_sprites_tramp.chain(x + 5, y); });
+TRAMP(s_create_speed_sprites_tramp, mkb::create_speed_sprites, [](f32 x, f32 y) {
+    s_create_speed_sprites_tramp.chain(x + 5, y);
+});
 
 static mkb::PADStatus s_raw_inputs[4];
 
 static u32 s_rainbow;
 
-static void get_merged_stick_inputs(MergedStickInputs& outInputs) {
+static void get_merged_stick_inputs(MergedStickInputs &outInputs) {
     outInputs = {};
 
     // Accumulate stick inputs from all controllers since we don't always
@@ -98,7 +99,7 @@ static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
     }
 }
 
-static GXColor get_gradient_color(Vec2d point, Vec2d origin, f32 radius, const Gradient& gradient) {
+static GXColor get_gradient_color(Vec2d point, Vec2d origin, f32 radius, const Gradient &gradient) {
     f32 sin_cos[2];
     mkb::math_sin_cos_v(gradient.rotation, sin_cos);
     f32 dot = (point.x - origin.x) * sin_cos[0] + (point.y - origin.y) * sin_cos[1];
@@ -113,8 +114,11 @@ static GXColor get_gradient_color(Vec2d point, Vec2d origin, f32 radius, const G
     };
 }
 
-static void draw_gradient_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
-                               const Gradient& gradient) {
+static void draw_gradient_ring(u32 pts,
+                               Vec2d center,
+                               f32 inner_radius,
+                               f32 outer_radius,
+                               const Gradient &gradient) {
     constexpr f32 Z = -1.f / 128.f;
     draw::setup_vertex_color_pipeline();
     mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT5, pts * 4);
@@ -172,7 +176,7 @@ static void set_sprite_visible(bool visible) {
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite& sprite = mkb::sprites[i];
+        mkb::Sprite &sprite = mkb::sprites[i];
         if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
             sprite.disp_func == mkb::sprite_monkey_counter_icon_disp || sprite.bmp == 0x502 ||
             sprite.tick_func == mkb::sprite_banana_icon_tick ||
@@ -187,9 +191,11 @@ static void set_sprite_visible(bool visible) {
     }
 }
 
-void init() { HOOK_TRAMP(s_create_speed_sprites_tramp); }
+void init() {
+    HOOK_TRAMP(s_create_speed_sprites_tramp);
+}
 
-void on_PADRead(mkb::PADStatus* statuses) {
+void on_PADRead(mkb::PADStatus *statuses) {
     mkb::memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
 }
 
@@ -200,7 +206,7 @@ void tick() {
                         !pref::get(pref::BoolPref::InputDispRawStickInputs)));
 }
 
-static bool get_notch_pos(const MergedStickInputs& stick_inputs, Vec2d* out_pos) {
+static bool get_notch_pos(const MergedStickInputs &stick_inputs, Vec2d *out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
@@ -244,7 +250,9 @@ static const GXColor s_color_map[] = {
     draw::BLACK,               // Black
 };
 
-static Gradient solid_gradient(GXColor color) { return {color, color, 0, 0.f, 1.f}; }
+static Gradient solid_gradient(GXColor color) {
+    return {color, color, 0, 0.f, 1.f};
+}
 
 static Gradient get_gradient() {
     InputDispColorType color_pref = InputDispColorType(pref::get(pref::U8Pref::InputDispColorType));
@@ -289,7 +297,7 @@ static Gradient get_gradient() {
     UNREACHABLE();
 }
 
-static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {
+static void draw_stick(const MergedStickInputs &stick_inputs, const Vec2d &center, f32 scale) {
     Gradient gradient = get_gradient();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
@@ -304,7 +312,7 @@ static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& cente
     draw_circle(16, scaled_input, 9 * scale, {0xFF, 0xFF, 0xFF, 0xFF});
 }
 
-static void draw_buttons(const Vec2d& center, f32 scale) {
+static void draw_buttons(const Vec2d &center, f32 scale) {
     if (pad::button_down(mkb::PAD_BUTTON_START)) {
         draw::debug_text(center.x + 65 * scale, center.y - 45 * scale, draw::WHITE, "Start");
     }
@@ -331,7 +339,8 @@ static void draw_buttons(const Vec2d& center, f32 scale) {
     }
 }
 
-static void draw_notch_indicators(const MergedStickInputs& stick_inputs, const Vec2d& center,
+static void draw_notch_indicators(const MergedStickInputs &stick_inputs,
+                                  const Vec2d &center,
                                   f32 scale) {
     if (!pref::get(pref::BoolPref::InputDispNotchIndicators)) return;
 
@@ -345,7 +354,7 @@ static void draw_notch_indicators(const MergedStickInputs& stick_inputs, const V
     }
 }
 
-static void draw_raw_stick_inputs(const MergedStickInputs& stick_inputs) {
+static void draw_raw_stick_inputs(const MergedStickInputs &stick_inputs) {
     if (!pref::get(pref::BoolPref::InputDispRawStickInputs)) return;
 
     Vec2d center = {

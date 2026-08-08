@@ -67,8 +67,8 @@ static void disable() {
 
 static void jumping() {
     if (mkb::main_mode == mkb::MD_GAME) {
-        u32* patch1_loc = reinterpret_cast<u32*>(relutil::relocate_addr(0x808f4d18));
-        u32* patch2_loc = reinterpret_cast<u32*>(relutil::relocate_addr(0x808f5168));
+        u32 *patch1_loc = reinterpret_cast<u32 *>(relutil::relocate_addr(0x808f4d18));
+        u32 *patch2_loc = reinterpret_cast<u32 *>(relutil::relocate_addr(0x808f5168));
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
@@ -80,7 +80,7 @@ static void jumping() {
     }
 
     bool paused_now =
-        *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) & 8;  // TODO name this
+        *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;  // TODO name this
     if ((mkb::sub_mode == mkb::SMD_GAME_READY_MAIN || mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN) &&
         !paused_now) {
         if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
@@ -95,7 +95,7 @@ static void jumping() {
         return;
     }
 
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];
 
     bool jump_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
     bool ground_touched = ball.phys_flags & mkb::PHYS_ON_GROUND;

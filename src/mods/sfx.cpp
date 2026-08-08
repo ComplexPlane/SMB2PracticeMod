@@ -6,7 +6,8 @@
 
 namespace sfx {
 
-TRAMP(s_SoftStreamStart_tramp, mkb::SoftStreamStart,
+TRAMP(s_SoftStreamStart_tramp,
+      mkb::SoftStreamStart,
       [](u32 g_looping_state, mkb::BgmTrack g_bgm_id, u32 param_3) -> s32 { return 0; });
 
 TRAMP(s_call_SoundReqID_arg_0_tramp, mkb::call_SoundReqID_arg_0, [](u32 g_sfx_idx) {

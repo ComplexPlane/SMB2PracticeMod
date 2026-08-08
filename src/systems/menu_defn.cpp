@@ -13,6 +13,7 @@
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
+#include "utils/gamecode.h"
 #include "utils/macro_utils.h"
 
 // TODO update buttons with close menu flag
@@ -21,22 +22,22 @@
 namespace menu_defn {
 
 static char s_version_str[36];
-static const char* GIT_HASH_STR = "  Git commit:      " GIT_HASH;
+static const char *GIT_HASH_STR = "  Git commit:      " GIT_HASH;
 
-static const char* INPUTDISP_COLORS[] = {
+static const char *INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
 static_assert(LEN(INPUTDISP_COLORS) == inputdisp::NUM_COLORS);
 
-static const char* CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
+static const char *CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
-static const char* SAVESTATE_SAVE_TO_OPTIONS[] = {
+static const char *SAVESTATE_SAVE_TO_OPTIONS[] = {
     "Selected Slot",
     "Next Empty Slot",
     "Empty, Then Oldest",
 };
 
-static const char* INPUTDISP_COLOR_TYPE_OPTIONS[] = {
+static const char *INPUTDISP_COLOR_TYPE_OPTIONS[] = {
     "Preset", "RGB Solid", "Rainbow", "Match Ball", "RGB Gradient",
 };
 
@@ -209,19 +210,19 @@ static Widget s_inputdisp_widgets[] = {
     },
 };
 
-static const char* BALL_COLORS[] = {
+static const char *BALL_COLORS[] = {
     "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
 };
 static_assert(LEN(BALL_COLORS) == ballcolor::NUM_COLORS);
 
-static const char* BALL_COLOR_TYPES[] = {
+static const char *BALL_COLOR_TYPES[] = {
     "Preset",
     "RGB Selector",
     "Rainbow",
     "Random",
 };
 
-static const char* CLOTHING_COLOR_TYPES[] = {
+static const char *CLOTHING_COLOR_TYPES[] = {
     "Preset",
     "Random",
 };
@@ -344,13 +345,13 @@ static Widget s_ball_color_widgets[] = {
     },
 };
 
-static const char* IL_BATTLE_LENGTHS[] = {
+static const char *IL_BATTLE_LENGTHS[] = {
     "5 min",
     "7 min",
     "10 min",
     "Endless",
 };
-static const char* SCORE_BREAKDOWN_OPTIONS[] = {
+static const char *SCORE_BREAKDOWN_OPTIONS[] = {
     "Off",
     "Minimal",
     "Full",
@@ -592,7 +593,7 @@ static Widget s_about_widgets[] = {
     },
 };
 
-static const char* CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
+static const char *CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget s_cm_beg_widgets[] = {
     {
@@ -787,7 +788,14 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
-static const char* TIMER_OPTIONS[] = {
+static Widget s_cm_seg_menu_widgets[] = {
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
+    },
+};
+
+static const char *TIMER_OPTIONS[] = {
     "Don't show",
     "Always show",
     "Between worlds",
@@ -1179,8 +1187,8 @@ static Widget s_hide_widgets[] = {
     },
 };
 
-static const char* TIMER_TYPES[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
-static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
+static const char *TIMER_TYPES[] = {"Default", "Freeze at max", "Freeze at 0", "Count up from 0"};
+static const char *FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
 
 static Widget s_assist_widgets[] = {
     {
@@ -1288,8 +1296,13 @@ static Widget s_tools_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Menu,
-        .menu = {"Challenge Mode Seg", s_cm_seg_widgets, LEN(s_cm_seg_widgets)},
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_cm_seg_menu_widgets,
+                .num_widgets = LEN(s_cm_seg_menu_widgets),
+                .show_if = gamecode::is_vanilla,
+            },
     },
     {
         .type = WidgetType::Menu,
@@ -1480,7 +1493,7 @@ static Widget s_physics_widgets[] = {
     },
 };
 
-static const char* STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
+static const char *STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
 
 static Widget s_reverse_goal_widgets[] = {
     {
@@ -1687,6 +1700,8 @@ MenuWidget root_menu = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void init() { mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str()); }
+void init() {
+    mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str());
+}
 
 }  // namespace menu_defn

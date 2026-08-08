@@ -61,12 +61,14 @@ void init() {
     HOOK_TRAMP(s_soundreq_tramp);
 }
 
-bool was_state_loaded_this_frame() { return s_state_loaded_this_frame; }
+bool was_state_loaded_this_frame() {
+    return s_state_loaded_this_frame;
+}
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in
-static void pass_over_regions(store::Store* s, store::StoreFunc f) {
+static void pass_over_regions(store::Store *s, store::StoreFunc f) {
     f(s, &mkb::balls[0], sizeof(mkb::balls[0]));
     f(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
     f(s, &mkb::mode_info.stage_time_frames_remaining,
@@ -77,7 +79,7 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
     f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
-    mkb::Ape* ape = mkb::balls[0].ape;
+    mkb::Ape *ape = mkb::balls[0].ape;
     f(s, ape, sizeof(*ape));  // Store entire ape struct for now
     f(s, ape->g_some_ape_state->g_buf5,
       0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
@@ -123,7 +125,7 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-        mkb::Sprite* sprite = &mkb::sprites[i];
+        mkb::Sprite *sprite = &mkb::sprites[i];
 
         if (sprite->tick_func == mkb::sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
@@ -138,14 +140,14 @@ static void pass_over_regions(store::Store* s, store::StoreFunc f) {
     timer::save_state(s, f);
 }
 
-static void handle_pause_menu_save(SaveState* state) {
+static void handle_pause_menu_save(SaveState *state) {
     state->pause_menu_sprite_status = 0;
 
     // Look for an active sprite that has the same dest func pointer as the pause menu sprite
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite* sprite = &mkb::sprites[i];
+        mkb::Sprite *sprite = &mkb::sprites[i];
         if (sprite->disp_func == mkb::sprite_pausemenu_disp) {
             state->pause_menu_sprite_status = mkb::sprite_pool_info.status_list[i];
             state->pause_menu_sprite = *sprite;
@@ -155,7 +157,7 @@ static void handle_pause_menu_save(SaveState* state) {
     }
 }
 
-static void handle_pause_menu_load(SaveState* state) {
+static void handle_pause_menu_load(SaveState *state) {
     bool paused_now = mkb::g_some_other_flags & mkb::OF_GAME_PAUSED;
     bool paused_in_state = state->pause_menu_sprite_status != 0;
 
@@ -181,7 +183,7 @@ static void destruct_non_gameplay_sprites() {
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite* sprite = &mkb::sprites[i];
+        mkb::Sprite *sprite = &mkb::sprites[i];
         bool post_goal_sprite = (sprite->disp_func == mkb::sprite_goal_disp ||
                                  sprite->disp_func == mkb::sprite_clear_score_disp ||
                                  sprite->disp_func == mkb::sprite_warp_bonus_disp ||
@@ -220,7 +222,7 @@ static void destruct_distracting_effects() {
     }
 }
 
-static bool handle_load_state_from_nonplay_submode(SaveState* s) {
+static bool handle_load_state_from_nonplay_submode(SaveState *s) {
     if (!(mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
           mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
           mkb::sub_mode == mkb::SMD_GAME_GOAL_REPLAY_INIT ||
@@ -229,7 +231,7 @@ static bool handle_load_state_from_nonplay_submode(SaveState* s) {
         return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *reinterpret_cast<u32*>(relutil::relocate_addr(0x805BC474)) &
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) &
                       8;  // TODO actually give this a name
     if (paused_now) {
         return false;
@@ -250,7 +252,7 @@ static bool handle_load_state_from_nonplay_submode(SaveState* s) {
 SaveResult save(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
-    SaveState* state = &s_states[slot];
+    SaveState *state = &s_states[slot];
 
     // Must be in main game
     if (mkb::main_mode != mkb::MD_GAME) {
@@ -300,7 +302,7 @@ SaveResult save(u32 slot) {
 LoadResult load(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
-    SaveState* state = &s_states[slot];
+    SaveState *state = &s_states[slot];
 
     // Must be in main game
     if (mkb::main_mode != mkb::MD_GAME) {
@@ -358,7 +360,7 @@ LoadResult load(u32 slot) {
 void clear(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
-    SaveState* state = &s_states[slot];
+    SaveState *state = &s_states[slot];
     if (state->store.buf != nullptr) {
         heap::free(state->store.buf);
     }

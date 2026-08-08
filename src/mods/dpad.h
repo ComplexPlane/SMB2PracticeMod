@@ -8,6 +8,6 @@
 
 namespace dpad {
 
-void on_PADRead(mkb::PADStatus* statuses);
+void on_PADRead(mkb::PADStatus *statuses);
 
 }  // namespace dpad
