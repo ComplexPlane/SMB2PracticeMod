@@ -19,14 +19,15 @@ sudo apt install build-essential
 
 devkitPro is a gcc-based compiler suite for GameCube and other consoles.
 
-To install it on Ubuntu 22.04:
+To install it on Ubuntu:
 
 ```sh
-wget https://apt.devkitpro.org/install-devkitpro-pacman
+wget -U "dkp-apt" https://apt.devkitpro.org/install-devkitpro-pacman
 chmod +x ./install-devkitpro-pacman
 sudo ./install-devkitpro-pacman
-sudo dkp-pacman -S gamecube-dev
 ```
+
+(See the [official installation guide](https://devkitpro.org/wiki/devkitPro_pacman) for other Linux distributions)
 
 Then add `export DEVKITPPC=/opt/devkitpro/devkitPPC` to your `~/.bashrc`. Restart your shell with `exec bash`.
 
