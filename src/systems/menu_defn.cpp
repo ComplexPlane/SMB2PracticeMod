@@ -781,11 +781,6 @@ static Widget s_cm_seg_widgets[] = {
                 .pref = pref::U8Pref::CmChara,
             },
     },
-    {.type = WidgetType::Separator},
-    {
-        .type = WidgetType::Text,
-        .text = {"Segments may crash in some romhacks"},
-    },
 };
 
 static Widget s_cm_seg_menu_widgets[] = {
