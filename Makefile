@@ -11,10 +11,10 @@ include $(DEVKITPPC)/gamecube_rules
 
 ifeq ($(REGION),)
 
-us: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2E8P
-clean: clean_elf2rel
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
+us: elf2rel gcipack
+	@$(MAKE) --no-print-directory REGION=us
+clean:
+	@$(MAKE) --no-print-directory clean_target REGION=us
 
 # Unexport some compiler vars exported by devkitppc as they interfere
 # when we build elf2rel, which uses the system compiler
@@ -28,23 +28,25 @@ unexport NM
 unexport RANLIB
 
 HOST_CXX ?= c++
-ELF2REL_DIR := $(CURDIR)/3rdparty/elf2rel
-ELF2REL_BUILD := $(ELF2REL_DIR)/build
-ELF2REL := $(ELF2REL_BUILD)/elf2rel
-ELF2REL_HEADERS := $(ELF2REL_DIR)/elf2rel.h $(wildcard $(ELF2REL_DIR)/elfio/*.hpp)
+ELF2REL_SRC := $(CURDIR)/3rdparty/elf2rel
+ELF2REL := $(CURDIR)/build/elf2rel
+ELF2REL_HEADERS := $(ELF2REL_SRC)/elf2rel.h $(wildcard $(ELF2REL_SRC)/elfio/*.hpp)
 
 elf2rel: $(ELF2REL)
 
-$(ELF2REL): $(ELF2REL_DIR)/elf2rel.cpp $(ELF2REL_HEADERS)
+$(ELF2REL): $(ELF2REL_SRC)/elf2rel.cpp $(ELF2REL_HEADERS)
 	@echo "Compiling elf2rel..."
-	@mkdir -p $(ELF2REL_BUILD)
-	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_DIR) $< -o $@
+	@mkdir -p $(CURDIR)/build
+	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
 
-clean_elf2rel:
-	@echo "clean ... elf2rel"
-	@rm -rf $(ELF2REL_BUILD)
+GCIPACK := $(CURDIR)/build/gcipack
+gcipack: $(GCIPACK)
+$(GCIPACK): $(CURDIR)/3rdparty/gcipack.cpp
+	@echo "Compiling gcipack..."
+	@mkdir -p $(CURDIR)/build
+	$(HOST_CXX) -std=c++20 -O2 $< -o $@
 
-.PHONY: all clean us gaiden monkeyed2 deluxein2 commpack2020 elf2rel clean_elf2rel
+.PHONY: all clean us elf2rel gcipack
 
 else
 
@@ -139,16 +141,8 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
-ifeq ($(REGION),us)
-	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
-else ifeq ($(REGION),jp)
-	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
-else ifeq ($(REGION),eu)
-	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
-endif
+export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
+export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
@@ -182,8 +176,8 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-ELF2REL := $(abspath $(CURDIR))/../3rdparty/elf2rel/build/elf2rel
-GCIPACK := /usr/bin/env python3 $(abspath $(CURDIR))/../3rdparty/gcipack.py
+ELF2REL := $(abspath $(CURDIR))/../build/elf2rel
+GCIPACK := $(abspath $(CURDIR))/../build/gcipack
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -205,7 +199,7 @@ menu_defn.o: force_git_hash
 	
 %.gci: %.rel
 	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
