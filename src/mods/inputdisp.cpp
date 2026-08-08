@@ -8,6 +8,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/macro_utils.h"
 #include "utils/patch.h"
 
 namespace inputdisp {
@@ -20,10 +21,19 @@ struct MergedStickInputs {
 };
 
 enum class InputDispColorType {
-    Default = 0,
-    RGB = 1,
+    Preset = 0,
+    RGBSolid = 1,
     Rainbow = 2,
     MatchBall = 3,
+    RGBGradient = 4,
+};
+
+struct Gradient {
+    GXColor color1;
+    GXColor color2;
+    s16 rotation;
+    f32 start;
+    f32 end;
 };
 
 TRAMP(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
@@ -86,6 +96,52 @@ static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
         mkb::GXPosition3f32(curr_inner_x, curr_inner_y, z);
         mkb::GXTexCoord2f32(0, 0);
     }
+}
+
+static GXColor get_gradient_color(Vec2d point, Vec2d origin, f32 radius, const Gradient& gradient) {
+    f32 sin_cos[2];
+    mkb::math_sin_cos_v(gradient.rotation, sin_cos);
+    f32 dot = (point.x - origin.x) * sin_cos[0] + (point.y - origin.y) * sin_cos[1];
+    f32 t = CLAMP(gradient.start + (dot / radius * .5f + .5f) * (gradient.end - gradient.start),
+                  0.f, 1.f);
+
+    return {
+        .r = static_cast<u8>((1.f - t) * gradient.color1.r + t * gradient.color2.r),
+        .g = static_cast<u8>((1.f - t) * gradient.color1.g + t * gradient.color2.g),
+        .b = static_cast<u8>((1.f - t) * gradient.color1.b + t * gradient.color2.b),
+        .a = 0xff,
+    };
+}
+
+static void draw_gradient_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
+                               const Gradient& gradient) {
+    constexpr f32 Z = -1.f / 128.f;
+    draw::setup_vertex_color_pipeline();
+    mkb::GXBegin(mkb::GX_QUADS, mkb::GX_VTXFMT5, pts * 4);
+
+    auto write_vertex = [&](f32 x, f32 y) {
+        mkb::GXPosition3f32(x, y, Z);
+        GXColor color = get_gradient_color({x, y}, center, outer_radius, gradient);
+        mkb::GXColor4u8(color.r, color.g, color.b, color.a);
+    };
+
+    for (u32 i = 0; i < pts; i++) {
+        f32 curr_normal[2];
+        f32 next_normal[2];
+        mkb::math_sin_cos_v(static_cast<s16>(0xFFFF * i / pts), curr_normal);
+        mkb::math_sin_cos_v(static_cast<s16>(0xFFFF * ((i + 1) % pts) / pts), next_normal);
+
+        write_vertex(next_normal[0] * inner_radius + center.x,
+                     next_normal[1] * inner_radius + center.y);
+        write_vertex(next_normal[0] * outer_radius + center.x,
+                     next_normal[1] * outer_radius + center.y);
+        write_vertex(curr_normal[0] * outer_radius + center.x,
+                     curr_normal[1] * outer_radius + center.y);
+        write_vertex(curr_normal[0] * inner_radius + center.x,
+                     curr_normal[1] * inner_radius + center.y);
+    }
+
+    draw::restore_ui_pipeline();
 }
 
 static void draw_circle(u32 pts, Vec2d center, f32 radius, GXColor color) {
@@ -188,27 +244,45 @@ static const GXColor s_color_map[] = {
     draw::BLACK,               // Black
 };
 
-static GXColor get_color() {
+static Gradient solid_gradient(GXColor color) { return {color, color, 0, 0.f, 1.f}; }
+
+static Gradient get_gradient() {
     InputDispColorType color_pref = InputDispColorType(pref::get(pref::U8Pref::InputDispColorType));
     switch (color_pref) {
-        case InputDispColorType::Default: {
-            return s_color_map[pref::get(pref::U8Pref::InputDispColor)];
+        case InputDispColorType::Preset: {
+            return solid_gradient(s_color_map[pref::get(pref::U8Pref::InputDispColor)]);
         }
-        case InputDispColorType::RGB: {
-            return {
+        case InputDispColorType::RGBSolid: {
+            return solid_gradient({
                 .r = pref::get(pref::U8Pref::InputDispRed),
                 .g = pref::get(pref::U8Pref::InputDispGreen),
                 .b = pref::get(pref::U8Pref::InputDispBlue),
                 .a = 0xff,
+            });
+        }
+        case InputDispColorType::RGBGradient: {
+            return {
+                .color1 = {pref::get(pref::U8Pref::InputDispRed),
+                           pref::get(pref::U8Pref::InputDispGreen),
+                           pref::get(pref::U8Pref::InputDispBlue), 0xff},
+                .color2 = {pref::get(pref::U8Pref::InputDispGradientColor2Red),
+                           pref::get(pref::U8Pref::InputDispGradientColor2Green),
+                           pref::get(pref::U8Pref::InputDispGradientColor2Blue), 0xff},
+                .rotation = static_cast<s16>(
+                    static_cast<s32>(pref::get(pref::U8Pref::InputDispGradientRotation)) * 65535 /
+                        100 -
+                    32768),
+                .start = pref::get(pref::U8Pref::InputDispGradientStart) / 100.f,
+                .end = pref::get(pref::U8Pref::InputDispGradientEnd) / 100.f,
             };
         }
         case InputDispColorType::Rainbow: {
-            return draw::num_to_rainbow(s_rainbow);
+            return solid_gradient(draw::num_to_rainbow(s_rainbow));
         }
         case InputDispColorType::MatchBall: {
             GXColor current = ballcolor::get_current_color();
             current.a = 0xff;
-            return current;
+            return solid_gradient(current);
         }
     }
 
@@ -216,11 +290,11 @@ static GXColor get_color() {
 }
 
 static void draw_stick(const MergedStickInputs& stick_inputs, const Vec2d& center, f32 scale) {
-    GXColor chosen_color = get_color();
+    Gradient gradient = get_gradient();
 
     draw_ring(8, center, 54 * scale, 60 * scale, {0x00, 0x00, 0x00, 0xFF});
     draw_circle(8, center, 54 * scale, {0x00, 0x00, 0x00, 0x7F});
-    draw_ring(8, center, 50 * scale, 58 * scale, chosen_color);
+    draw_gradient_ring(8, center, 50 * scale, 58 * scale, gradient);
 
     Vec2d scaled_input = {
         center.x + static_cast<f32>(stick_inputs.rawX) / 2.7f * scale,

@@ -20,7 +20,7 @@ extern const PracmodVersion PRACMOD_VERSION;
 
 void init();
 s32 compare(const SemVer& v1, const SemVer& v2);
-s32 compare(const PracmodVersion& v1, const PracmodVersion &v2);
-const char *get_version_str();
+s32 compare(const PracmodVersion& v1, const PracmodVersion& v2);
+const char* get_version_str();
 
-}
+}  // namespace version

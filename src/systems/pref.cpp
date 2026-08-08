@@ -99,6 +99,12 @@ enum class PrefId : u16 {
     StoryTimerWarning = 79,
     SavestateSaveTo = 84,
     SavestateClearAllBind = 85,
+    InputDispGradientColor2Red = 86,
+    InputDispGradientColor2Green = 87,
+    InputDispGradientColor2Blue = 88,
+    InputDispGradientRotation = 89,
+    InputDispGradientStart = 90,
+    InputDispGradientEnd = 91,
 };
 
 // Verbatim list of preference IDs we iterate over when writing savefile back out
@@ -180,6 +186,12 @@ static const PrefId s_pref_ids[] = {
     PrefId::StoryTimerWarning,
     PrefId::SavestateSaveTo,
     PrefId::SavestateClearAllBind,
+    PrefId::InputDispGradientColor2Red,
+    PrefId::InputDispGradientColor2Green,
+    PrefId::InputDispGradientColor2Blue,
+    PrefId::InputDispGradientRotation,
+    PrefId::InputDispGradientStart,
+    PrefId::InputDispGradientEnd,
 };
 
 static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
@@ -347,6 +359,18 @@ static std::optional<U8Pref> pref_id_to_u8_pref(PrefId id) {
             return U8Pref::SavestateSaveTo;
         case PrefId::SavestateClearAllBind:
             return U8Pref::SavestateClearAllBind;
+        case PrefId::InputDispGradientColor2Red:
+            return U8Pref::InputDispGradientColor2Red;
+        case PrefId::InputDispGradientColor2Green:
+            return U8Pref::InputDispGradientColor2Green;
+        case PrefId::InputDispGradientColor2Blue:
+            return U8Pref::InputDispGradientColor2Blue;
+        case PrefId::InputDispGradientRotation:
+            return U8Pref::InputDispGradientRotation;
+        case PrefId::InputDispGradientStart:
+            return U8Pref::InputDispGradientStart;
+        case PrefId::InputDispGradientEnd:
+            return U8Pref::InputDispGradientEnd;
         default:
             return {};
     }
@@ -381,6 +405,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
     {U8Pref::FreecamToggleBind, 255},      // unbound
     {U8Pref::SavestateClearBind, 255},     // unbound
     {U8Pref::SavestateClearAllBind, 255},  // unbound
+    {U8Pref::InputDispGradientEnd, 100},
 };
 
 //
@@ -389,7 +414,7 @@ static DefaultU8Pref s_default_u8_prefs[] = {
 
 struct PrefState {
     u8 bool_prefs[9];
-    u8 u8_prefs[30];
+    u8 u8_prefs[36];
 };
 
 static PrefState s_pref_state, s_default_pref_state;

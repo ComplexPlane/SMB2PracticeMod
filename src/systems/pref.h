@@ -89,6 +89,12 @@ enum class U8Pref : u8 {
     SegmentTimerOptions,
     SavestateSaveTo,
     SavestateClearAllBind,
+    InputDispGradientColor2Red,
+    InputDispGradientColor2Green,
+    InputDispGradientColor2Blue,
+    InputDispGradientRotation,
+    InputDispGradientStart,
+    InputDispGradientEnd,
 };
 
 void init();

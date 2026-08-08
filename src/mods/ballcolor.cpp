@@ -80,8 +80,7 @@ void tick() {
             u8 green = pref::get(pref::U8Pref::BallGreen);
             u8 blue = pref::get(pref::U8Pref::BallBlue);
             s_current_color = {red, green, blue, 0};
-            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
-                s_current_color;
+            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             break;
         }
         case BallColorType::Rainbow: {
@@ -92,8 +91,7 @@ void tick() {
                 s_rainbow = (s_rainbow + 3) % 1080;
             }
             s_current_color = draw::num_to_rainbow(s_rainbow);
-            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
-                s_current_color;
+            *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             break;
         }
         case BallColorType::Random: {
@@ -106,8 +104,7 @@ void tick() {
                 u32 blue = CLAMP(((mkb::rand() % 256) + bonus_brightness), 0, 0xff);
                 s_current_color = {static_cast<u8>(red), static_cast<u8>(green),
                                    static_cast<u8>(blue), 0};
-                *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) =
-                    s_current_color;
+                *reinterpret_cast<GXColor*>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             }
             break;
         }

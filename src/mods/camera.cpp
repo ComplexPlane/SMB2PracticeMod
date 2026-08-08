@@ -29,8 +29,7 @@ void tick() {
                     mkb::cameras[0].mode = 0x4c;
                 }
 
-                patch::write_word(relutil::relocate_addr(0x802886c8),
-                                  PPC_INSTR_LI(PPC_R0, 0x200));
+                patch::write_word(relutil::relocate_addr(0x802886c8), PPC_INSTR_LI(PPC_R0, 0x200));
                 mkb::g_camera_turn_rate_scale = 0.75;
                 mkb::camera_pivot_height = 0.18;
                 mkb::camera_height = 0.8;

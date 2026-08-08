@@ -4,9 +4,9 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
-#include "utils/savest.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
+#include "utils/savest.h"
 #include "utils/timerdisp.h"
 
 namespace ilbattle {

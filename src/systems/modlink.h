@@ -17,8 +17,8 @@ struct ModLink {
     version::SemVer wsmod_version;
 
     // Other mods share the Workshop Mod's heap.
-    // The other mod calls `malloc_func` from assembly during bootstrapping to load itself, then uses `heap_info` and
-    // its own heap functions for other heap usage at runtime.
+    // The other mod calls `malloc_func` from assembly during bootstrapping to load itself, then
+    // uses `heap_info` and its own heap functions for other heap usage at runtime.
     void* (*malloc_func)(u32 size);
     mkb::HeapInfo* heap_info;
 } __attribute__((__packed__));
@@ -28,4 +28,4 @@ struct ModLink {
  */
 ModLink* get();
 
-}
+}  // namespace modlink

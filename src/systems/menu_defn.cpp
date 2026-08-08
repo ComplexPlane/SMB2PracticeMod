@@ -36,10 +36,7 @@ static const char* SAVESTATE_SAVE_TO_OPTIONS[] = {
 };
 
 static const char* INPUTDISP_COLOR_TYPE_OPTIONS[] = {
-    "Preset",
-    "RGB Selector",
-    "Rainbow",
-    "Match Ball",
+    "Preset", "RGB Solid", "Rainbow", "Match Ball", "RGB Gradient",
 };
 
 static Widget s_input_preset[] = {
@@ -85,6 +82,45 @@ static Widget s_input_hex[] = {
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
             },
+    },
+};
+
+static Widget s_input_gradient[] = {
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 1 Red", pref::U8Pref::InputDispRed, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 1 Green", pref::U8Pref::InputDispGreen, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 1 Blue", pref::U8Pref::InputDispBlue, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 2 Red", pref::U8Pref::InputDispGradientColor2Red, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 2 Green", pref::U8Pref::InputDispGradientColor2Green, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Color 2 Blue", pref::U8Pref::InputDispGradientColor2Blue, 0, 255},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Rotation", pref::U8Pref::InputDispGradientRotation, 0, 100},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient Start", pref::U8Pref::InputDispGradientStart, 0, 100},
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit = {"Gradient End", pref::U8Pref::InputDispGradientEnd, 0, 100},
     },
 };
 
@@ -139,6 +175,15 @@ static Widget s_inputdisp_subwidgets[] = {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
                 .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_input_gradient,
+                .num_widgets = LEN(s_input_gradient),
+                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 4; },
             },
     },
 };

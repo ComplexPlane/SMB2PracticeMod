@@ -6,4 +6,4 @@ void init();
 void tick();
 void unlock_everything();
 
-}
+}  // namespace unlock

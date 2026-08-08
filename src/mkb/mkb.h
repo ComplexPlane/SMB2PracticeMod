@@ -43,6 +43,12 @@ inline void GXTexCoord2f32(float s, float t) {
     GXWGFifo.v_f32 = s;
     GXWGFifo.v_f32 = t;
 }
+inline void GXColor4u8(u8 r, u8 g, u8 b, u8 a) {
+    GXWGFifo.v_u8 = r;
+    GXWGFifo.v_u8 = g;
+    GXWGFifo.v_u8 = b;
+    GXWGFifo.v_u8 = a;
+}
 
 constexpr u32 CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 

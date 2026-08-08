@@ -172,8 +172,7 @@ void disp() {
     }
 
     if (pref::get(pref::BoolPref::TimerShowPause) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true,
-                              draw::WHITE);
+        timerdisp::draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true, draw::WHITE);
     }
 
     switch (mkb::sub_mode) {
@@ -194,8 +193,8 @@ void disp() {
     if (pref::get(pref::BoolPref::TimerShowUnrounded) && !freecam::should_hide_hud()) {
         timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "CUR:", row++,
                                       draw::WHITE, true, 0, false);
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:",
-                                      row++, draw::WHITE, true, 0, false);
+        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining + 1, "NXT:", row++,
+                                      draw::WHITE, true, 0, false);
     }
 
     if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {

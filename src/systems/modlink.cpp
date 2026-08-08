@@ -1,8 +1,8 @@
 #include "modlink.h"
 
-#include "version.h"
 #include "heap.h"
 #include "utils/relutil.h"
+#include "version.h"
 
 namespace modlink {
 
@@ -17,4 +17,4 @@ ModLink* get() {
     return link;
 }
 
-}
+}  // namespace modlink

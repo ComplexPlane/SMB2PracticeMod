@@ -2,13 +2,13 @@
 
 #include "mkb/mkb.h"
 
-#include "utils/draw.h"
 #include "systems/heap.h"
-#include "utils/memstore.h"
 #include "systems/pad.h"
-#include "utils/patch.h"
 #include "systems/pref.h"
 #include "timer.h"
+#include "utils/draw.h"
+#include "utils/memstore.h"
+#include "utils/patch.h"
 
 namespace marathon {
 

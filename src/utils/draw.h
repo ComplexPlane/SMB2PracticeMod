@@ -52,4 +52,10 @@ void notify(GXColor color, const char* format, ...);
 
 void bind_white_texture_obj();
 
+// Configure GX to draw untextured geometry with a color supplied by each vertex.
+void setup_vertex_color_pipeline();
+
+// Restore the GX state expected by the game's 2D UI drawing functions.
+void restore_ui_pipeline();
+
 }  // namespace draw
