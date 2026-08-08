@@ -49,14 +49,6 @@ void rect(float x1, float y1, float x2, float y2, GXColor color) {
     mkb::GXTexCoord2f32(0, 1);
 }
 
-void debug_text_palette() {
-    for (char c = 0; c != 0x80; c++) {
-        s32 x = c % 16 * DEBUG_CHAR_WIDTH;
-        s32 y = c / 16 * DEBUG_CHAR_WIDTH;
-        mkb::draw_debugtext_char_en(x, y, c, c * 2);
-    }
-}
-
 static void debug_text_buf(s32 x, s32 y, GXColor color, const char* buf) {
     main::debug_text_color = color;
     for (s32 i = 0; buf[i] != '\0'; i++) {
