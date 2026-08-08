@@ -23,9 +23,9 @@ struct MergedStickInputs {
 enum class InputDispColorType {
     Preset = 0,
     RGBSolid = 1,
-    Rainbow = 2,
-    MatchBall = 3,
-    RGBGradient = 4,
+    RGBGradient = 2,
+    Rainbow = 3,
+    MatchBall = 4,
 };
 
 struct Gradient {
