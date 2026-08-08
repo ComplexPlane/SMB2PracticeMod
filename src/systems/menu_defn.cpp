@@ -22,6 +22,10 @@
 namespace menu_defn {
 
 static char s_version_str[36];
+
+#ifndef GIT_HASH
+#define GIT_HASH "<unknown>"
+#endif
 static const char *GIT_HASH_STR = "  Git commit:      " GIT_HASH;
 
 static const char *INPUTDISP_COLORS[] = {
@@ -38,7 +42,7 @@ static const char *SAVESTATE_SAVE_TO_OPTIONS[] = {
 };
 
 static const char *INPUTDISP_COLOR_TYPE_OPTIONS[] = {
-    "Preset", "RGB Solid", "Rainbow", "Match Ball", "RGB Gradient",
+    "Preset", "RGB Solid", "RGB Gradient", "Rainbow", "Match Ball",
 };
 
 static Widget s_input_preset[] = {
@@ -167,7 +171,11 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
+                .show_if =
+                    []() {
+                        return pref::get(pref::U8Pref::InputDispColorType) ==
+                               (u8)inputdisp::InputDispColorType::Preset;
+                    },
             },
     },
     {
@@ -176,7 +184,11 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+                .show_if =
+                    []() {
+                        return pref::get(pref::U8Pref::InputDispColorType) ==
+                               (u8)inputdisp::InputDispColorType::RGBSolid;
+                    },
             },
     },
     {
@@ -185,7 +197,11 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_gradient,
                 .num_widgets = LEN(s_input_gradient),
-                .show_if = []() { return pref::get(pref::U8Pref::InputDispColorType) == 4; },
+                .show_if =
+                    []() {
+                        return pref::get(pref::U8Pref::InputDispColorType) ==
+                               (u8)inputdisp::InputDispColorType::RGBGradient;
+                    },
             },
     },
 };

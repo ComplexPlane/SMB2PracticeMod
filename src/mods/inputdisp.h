@@ -4,6 +4,8 @@
 
 namespace inputdisp {
 
+static constexpr u32 NUM_COLORS = 8;
+
 enum class Color {
     Purple,
     Red,
@@ -15,7 +17,13 @@ enum class Color {
     Black,
 };
 
-static constexpr u32 NUM_COLORS = 8;
+enum class InputDispColorType {
+    Preset = 0,
+    RGBSolid = 1,
+    RGBGradient = 2,
+    Rainbow = 3,
+    MatchBall = 4,
+};
 
 void init();
 void on_PADRead(mkb::PADStatus *statuses);

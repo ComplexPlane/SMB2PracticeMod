@@ -20,14 +20,6 @@ struct MergedStickInputs {
     s32 gameY;
 };
 
-enum class InputDispColorType {
-    Preset = 0,
-    RGBSolid = 1,
-    RGBGradient = 2,
-    Rainbow = 3,
-    MatchBall = 4,
-};
-
 struct Gradient {
     GXColor color1;
     GXColor color2;
