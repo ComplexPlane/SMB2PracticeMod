@@ -21,6 +21,12 @@ enum class BindingState {
 };
 static BindingState s_binding = BindingState::Inactive;
 
+enum class EditDir {
+    Increase,
+    Decrease,
+    Neutral,
+};
+
 static constexpr s32 SCREEN_WIDTH = 640;
 static constexpr s32 SCREEN_HEIGHT = 480;
 static constexpr s32 MARGIN = 20;
@@ -39,8 +45,8 @@ constexpr u32 MENU_STACK_SIZE = 5;
 static MenuWidget* s_menu_stack[MENU_STACK_SIZE] = {&root_menu};
 static u32 s_menu_stack_ptr = 0;
 
-static s32 s_intedit_tick = 0;
-static s32 s_edit_tick = 0;
+static f32 s_edit_inc = 1.f;
+static EditDir s_last_edit_dir = EditDir::Neutral;
 
 static void push_menu(MenuWidget* menu) {
     ASSERT(s_menu_stack_ptr < MENU_STACK_SIZE - 1);  // Menu stack overflow
@@ -57,6 +63,8 @@ static void pop_menu() {
         s_menu_stack_ptr--;
     }
     s_cursor_frame = 0;
+    s_edit_inc = 1.f;
+    s_last_edit_dir = EditDir::Neutral;
     pad::reset_dir_repeat();
 }
 
@@ -109,21 +117,13 @@ static void handle_widget_bind() {
     Widget* selected = get_selected_widget(menu->widgets, menu->num_widgets, curr_idx, target_idx);
     if (selected == nullptr) return;
 
+    bool a_down = pad::button_down(mkb::PAD_BUTTON_A, true);
+    bool y_down = pad::button_down(mkb::PAD_BUTTON_Y, true);
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A, true);
     bool x_pressed = pad::button_pressed(mkb::PAD_BUTTON_X, true);
     bool y_pressed = pad::button_pressed(mkb::PAD_BUTTON_Y, true);
     bool a_repeat = pad::button_repeat(mkb::PAD_BUTTON_A, true);
     bool y_repeat = pad::button_repeat(mkb::PAD_BUTTON_Y, true);
-
-    // slow down scroll
-    if (s_edit_tick > 0) {
-        s_edit_tick--;
-    } else if (s_edit_tick < 0) {
-        s_edit_tick++;
-    }
-    if (s_intedit_tick > 0) {
-        s_intedit_tick--;
-    }
 
     switch (selected->type) {
         case WidgetType::Checkbox: {
@@ -204,22 +204,34 @@ static void handle_widget_bind() {
                 max = float_edit.max;
             }
 
-            if (pad::button_released(mkb::PAD_BUTTON_A) && s_edit_tick > 0) {
-                s_edit_tick = 0;
-            } else if (pad::button_released(mkb::PAD_BUTTON_Y) && s_edit_tick < 0) {
-                s_edit_tick = 0;
+            EditDir edit_dir = EditDir::Neutral;
+            if ((a_down && y_down) || (!a_down && !y_down)) {
+                edit_dir = EditDir::Neutral;
+            } else if (a_down) {
+                edit_dir = EditDir::Increase;
+            } else {
+                edit_dir = EditDir::Decrease;
+            }
+            if (edit_dir != s_last_edit_dir) {
+                s_edit_inc = 1.f;
+                s_last_edit_dir = edit_dir;
+                pad::reset_dir_repeat();
             }
 
             if (x_pressed) {
                 next = pref::get_default(edit_pref);
-            } else if (a_repeat && !pad::button_down(mkb::PAD_BUTTON_Y, true)) {
-                s_edit_tick += 5;
-                next += (s_edit_tick / 5);
-            } else if (y_repeat && !pad::button_down(mkb::PAD_BUTTON_A, true)) {
-                s_edit_tick -= 5;
-                next += (s_edit_tick / 5);
+            } else if (edit_dir == EditDir::Increase && a_repeat) {
+                s_edit_inc += 0.18f;
+                next += static_cast<s32>(s_edit_inc);
+            } else if (edit_dir == EditDir::Decrease && y_repeat) {
+                s_edit_inc += 0.18f;
+                next -= static_cast<s32>(s_edit_inc);
             }
             next = CLAMP(next, min, max);
+            if (next == min || next == max) {
+                // Prevent overflow
+                s_edit_inc = 1.f;
+            }
             if (next != pref::get(edit_pref)) {
                 pref::set(edit_pref, next);
                 pref::save();
@@ -240,6 +252,7 @@ static void handle_widget_bind() {
                 u8 value = binds::get_current_encoding();
                 pref::set(input_select.pref, value);
                 pref::save();
+                pad::reset_dir_repeat();
                 s_binding = BindingState::Inactive;
             } else if (a_pressed) {
                 // enter rebind mode
