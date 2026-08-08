@@ -13,7 +13,7 @@ u32 write_branch(void* ptr, void* destination) {
 }
 
 u32 write_branch_bl(void* ptr, void* destination) {
-    u32 branch = 0x48000001;  // b/
+    u32 branch = 0x48000001;  // bl
     return write_branch_main(ptr, destination, branch);
 }
 
