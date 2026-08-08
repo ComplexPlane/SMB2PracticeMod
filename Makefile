@@ -172,11 +172,11 @@ menu_defn.o: force_git_hash
 
 # REL linking
 %.rel: %.elf
-	@echo output ... $(notdir $@)
-	$(ELF2REL) $< $(MAPFILE) $@ 101 2
+	@echo elf2rel ... $(notdir $@)
+	@$(ELF2REL) $< $(MAPFILE) $@ 101 2
 	
 %.gci: %.rel
-	@echo packing ... $(notdir $@)
+	@echo gcipack ... $(notdir $@)
 	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
 	
 #---------------------------------------------------------------------------------
@@ -203,14 +203,14 @@ elf2rel: $(ELF2REL)
 $(ELF2REL): $(ELF2REL_SRC)/elf2rel.cpp $(ELF2REL_HEADERS)
 	@echo "Compiling elf2rel..."
 	@mkdir -p $(CURDIR)/build
-	$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
+	@$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
 
 GCIPACK := $(CURDIR)/gcipack
 gcipack: $(GCIPACK)
 $(GCIPACK): $(CURDIR)/../3rdparty/gcipack.cpp
 	@echo "Compiling gcipack..."
 	@mkdir -p $(CURDIR)/build
-	$(HOST_CXX) -std=c++20 -O2 $< -o $@
+	@$(HOST_CXX) -std=c++20 -O2 $< -o $@
 
 .PHONY: elf2rel gcipack
 
