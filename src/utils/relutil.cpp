@@ -1,5 +1,7 @@
 #include "relutil.h"
 
+#include "systems/log.h"
+
 namespace relutil {
 
 // Start of a loaded DOL, REL, or REL BSS
@@ -129,7 +131,7 @@ void* relocate_addr(u32 vanilla_addr) {
         }
     }
 
-    return nullptr;
+    UNREACHABLE();
 }
 
 }  // namespace relutil
