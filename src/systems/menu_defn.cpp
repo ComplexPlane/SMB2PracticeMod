@@ -732,6 +732,13 @@ static Widget s_cm_mas_widgets[] = {
     },
 };
 
+static Widget s_iw_help_widgets[] = {
+    {.type = WidgetType::Text, .text = {"  Story Mode individual world segments can"}},
+    {.type = WidgetType::Text, .text = {"  be done by going to file select in Story"}},
+    {.type = WidgetType::Text, .text = {"  Mode, pressing up/down on an empty file"}},
+    {.type = WidgetType::Text, .text = {"  to select a world, and selecting the file."}},
+};
+
 static Widget s_cm_seg_widgets[] = {
     {
         .type = WidgetType::Header,
@@ -753,6 +760,10 @@ static Widget s_cm_seg_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Master", s_cm_mas_widgets, LEN(s_cm_mas_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Story Mode", s_iw_help_widgets, LEN(s_iw_help_widgets)},
     },
     {.type = WidgetType::Separator},
     {
@@ -892,11 +903,6 @@ static Widget s_savestates_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  L+C or R+C \x1c Browse savestates"}},
 };
 
-static Widget s_iw_help_widgets[] = {
-    {.type = WidgetType::Text, .text = {"  Go to Story Mode, then press up/down on"}},
-    {.type = WidgetType::Text, .text = {"  a file to choose a world."}},
-};
-
 static Widget s_jump_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  A          \x1c Jump"}},
     {.type = WidgetType::Text, .text = {"  B          \x1c Resize minimap"}},
@@ -936,29 +942,6 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  enabled, you can still enable it post-goal to"}},
     {.type = WidgetType::Text, .text = {"  validate your run."}},
     {.type = WidgetType::Separator},
-};
-
-static Widget s_help_widgets[] = {
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Savestates", s_savestates_help_widgets, LEN(s_savestates_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Jump Mod", s_jump_help_widgets, LEN(s_jump_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Freecam", s_freecam_help_widgets, LEN(s_freecam_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Story Mode IWs", s_iw_help_widgets, LEN(s_iw_help_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"IL Validation Mark", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)},
-    },
 };
 
 static Widget s_sound_widgets[] = {
@@ -1123,6 +1106,17 @@ static Widget s_freecam_widgets[] = {
                 .show_if = []() { return pref::get(pref::BoolPref::Freecam); },
             },
     },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Help"}},
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_freecam_help_widgets,
+                .num_widgets = LEN(s_freecam_help_widgets),
+            },
+    },
 };
 
 static Widget s_hide_widgets[] = {
@@ -1270,6 +1264,17 @@ static Widget s_savestate_widgets[] = {
                 .show_if = []() { return pref::get(pref::BoolPref::Savestates); },
             },
     },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Help"}},
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_savestates_help_widgets,
+                .num_widgets = LEN(s_savestates_help_widgets),
+            },
+    },
 };
 
 static Widget s_tools_widgets[] = {
@@ -1382,6 +1387,12 @@ static Widget s_il_mark_widgets[] = {
                 .label = "Romhacks",
                 .pref = pref::BoolPref::IlMarkRomhacks,
             },
+    },
+    {.type = WidgetType::Separator},
+    {.type = WidgetType::Header, .header = {"Help"}},
+    {
+        .type = WidgetType::Menu,
+        .menu = {"About", s_iw_mark_help_widgets, LEN(s_iw_mark_help_widgets)},
     },
 };
 
@@ -1509,6 +1520,28 @@ static Widget s_stage_edit_widgets[] = {
     },
 };
 
+static Widget s_jump_widgets[] = {
+    {.type = WidgetType::Header, .header = {"Jump Settings"}},
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Jump Mod",
+                .pref = pref::BoolPref::JumpMod,
+            },
+    },
+    {.type = WidgetType::Header, .header = {"Help"}},
+    {
+        .type = WidgetType::Menu,
+        .menu =
+            {
+                .label = "Controller Binds",
+                .widgets = s_jump_help_widgets,
+                .num_widgets = LEN(s_jump_help_widgets),
+            },
+    },
+};
+
 static Widget s_gameplay_mods_widgets[] = {
     {
         .type = WidgetType::Choose,
@@ -1548,11 +1581,12 @@ static Widget s_gameplay_mods_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Menu,
+        .menu =
             {
                 .label = "Jump Mod",
-                .pref = pref::BoolPref::JumpMod,
+                .widgets = s_jump_widgets,
+                .num_widgets = LEN(s_jump_widgets),
             },
     },
     {
@@ -1640,10 +1674,6 @@ static Widget s_root_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Settings", s_pracmod_settings_widgets, LEN(s_pracmod_settings_widgets)},
-    },
-    {
-        .type = WidgetType::Menu,
-        .menu = {"Help", s_help_widgets, LEN(s_help_widgets)},
     },
     {
         .type = WidgetType::Menu,

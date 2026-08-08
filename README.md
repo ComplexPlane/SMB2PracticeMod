@@ -27,9 +27,9 @@ To install the Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc
 
 # Usage
 
-Press L+R at the same time on your controller to toggle the in-game menu. Go to the Help menu to see controller bindings
-for savestates and other features. For individual-world practice, head to Story Mode and press Up/Down on a savefile
-to change world.
+Press L+R at the same time on your controller to toggle the in-game menu. Controller bindings for savestates and other
+features are listed in the relevant feature submenus. For individual-world practice, head to Story Mode and press Up/Down
+on a savefile to change world.
 
 Be sure to look for the Easter egg!
 
