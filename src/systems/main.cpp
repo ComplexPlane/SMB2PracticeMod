@@ -158,6 +158,7 @@ void init() {
     mkb::OSReport("[pracmod] SMB2 Practice Mod v%s loaded\n", version::get_version_str());
 
     perform_assembly_patches();
+    mkb::OSReport("performed assembly patches\n");
 
     heap::init();
     cardio::init();

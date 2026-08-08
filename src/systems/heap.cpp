@@ -1,6 +1,5 @@
 #include "heap.h"
 
-#include <cinttypes>
 #include "mkb/mkb.h"
 #include "systems/modlink.h"
 #include "utils/relutil.h"
@@ -44,8 +43,7 @@ mkb::ChunkInfo* find_chunk_in_list(mkb::ChunkInfo* list, mkb::ChunkInfo* chunk) 
 }
 
 static void make_heap() {
-    u32 start = mkb::OSRoundUp32B(
-        *reinterpret_cast<u32*>(relutil::relocate_addr(0x8000452C)));
+    u32 start = mkb::OSRoundUp32B(*reinterpret_cast<u32*>(relutil::relocate_addr(0x8000452C)));
     void* end_ptr = relutil::compute_mainloop_reldata_boundary(reinterpret_cast<void*>(start));
     u32 end = mkb::OSRoundDown32B(reinterpret_cast<u32>(end_ptr));
     u32 size = end - start;
@@ -153,7 +151,7 @@ u32 get_free_space() {
 
 u32 get_total_space() { return s_heap_info->capacity; }
 
-void check_integrity() {
+bool check_integrity() {
     bool valid = true;
 
     mkb::ChunkInfo* current_chunk = nullptr;
@@ -185,11 +183,7 @@ void check_integrity() {
 
         prev_chunk = current_chunk;
     }
-
-    if (!valid) {
-        // Print the error message to the console
-        mkb::OSReport("Heap corrupt at 0x%08" PRIx32 "\n", reinterpret_cast<u32>(current_chunk));
-    }
+    return valid;
 }
 
 void init() {
