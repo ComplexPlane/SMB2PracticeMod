@@ -97,7 +97,6 @@ enum class PrefId : u16 {
     FullgameTimerOptions = 77,
     SegmentTimerOptions = 78,
     StoryTimerWarning = 79,
-    ShowDeathCounter = 80,
     SavestateSaveTo = 84,
     SavestateClearAllBind = 85,
 };
@@ -179,7 +178,6 @@ static const PrefId s_pref_ids[] = {
     PrefId::FullgameTimerOptions,
     PrefId::SegmentTimerOptions,
     PrefId::StoryTimerWarning,
-    PrefId::ShowDeathCounter,
     PrefId::SavestateSaveTo,
     PrefId::SavestateClearAllBind,
 };
@@ -282,8 +280,6 @@ static std::optional<BoolPref> pref_id_to_bool_pref(PrefId id) {
             return BoolPref::TimerShowPause;
         case PrefId::StoryTimerWarning:
             return BoolPref::StoryTimerWarning;
-        case PrefId::ShowDeathCounter:
-            return BoolPref::ShowDeathCounter;
         default:
             return {};
     }
@@ -418,7 +414,7 @@ static u8 s_card_buf[sizeof(FileHeader) + LEN(s_pref_ids) * sizeof(IdEntry)]
 static inline u16 validate_bool_pref(BoolPref bp) {
     u16 bpi = static_cast<u16>(bp);
     ASSERT(static_cast<u16>(bpi / 8) < LEN(PrefState{}.bool_prefs));  // Out of room for bool
-                                                                          // prefs
+                                                                      // prefs
     return bpi;
 }
 

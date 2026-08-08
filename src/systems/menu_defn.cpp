@@ -714,7 +714,7 @@ static Widget s_loadless_timers_widgets[] = {
                 .pref = pref::U8Pref::SegmentTimerOptions,
             },
     },
-      {
+    {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
@@ -724,7 +724,8 @@ static Widget s_loadless_timers_widgets[] = {
     },
 };
 
-static Widget s_timers_widgets[] = { // I might want to reorganize this with the addition of a loadless timer
+static Widget s_timers_widgets[] = {
+    // I might want to reorganize this with the addition of a loadless timer
     {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
         .type = WidgetType::Checkbox,
@@ -1317,14 +1318,6 @@ static Widget s_displays_widgets[] = {
             {
                 .label = "9999 Banana Counter",
                 .pref = pref::BoolPref::BananaCounter9999,
-            },
-    },
-    {
-        .type = WidgetType::Checkbox,
-        .checkbox =
-            {
-                .label = "Show Death Counter",
-                .pref = pref::BoolPref::ShowDeathCounter,
             },
     },
 };

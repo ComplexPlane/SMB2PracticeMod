@@ -56,7 +56,6 @@ enum class BoolPref : u8 {
     TimerShowPause,
     ReverseMode,
     StoryTimerWarning,
-    ShowDeathCounter,
 };
 
 enum class U8Pref : u8 {

@@ -19,7 +19,6 @@
 #include "mods/banans.h"
 #include "mods/camera.h"
 #include "mods/cmseg.h"
-#include "mods/deathcounter.h"
 #include "mods/dpad.h"
 #include "mods/fallout.h"
 #include "mods/freecam.h"
@@ -89,7 +88,6 @@ TRAMP(s_process_inputs_tramp, mkb::process_inputs, []() {
     physics::tick();
     iw::tick();
     storytimer::tick();
-    deathcounter::tick();
     savest_ui::tick();
     menu_impl::tick();
     jump::tick();
@@ -126,7 +124,6 @@ TRAMP(s_draw_debug_text_tramp, mkb::draw_debugtext, []() {
     timer::disp();
     iw::disp();
     storytimer::disp();
-    deathcounter::disp();
     Tetris::get_instance().disp();
     ilbattle::disp();
     cmseg::disp();

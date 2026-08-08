@@ -353,20 +353,9 @@ void disp() {
         return;
     }
 
-    // move the positions of the fullgame and segment timers if the death counter is on
-    if (pref::get(pref::BoolPref::ShowDeathCounter) == true) {
-        s_fullgame_timer_location_y = 3;
-    } else {
-        s_fullgame_timer_location_y = 2;
-    }
-
-    // if the fullgame timer and death counter is off but the segment timer is on, move the segment
-    // timer to the top line; if either the fullgame timer or death counter are on but not both are
-    // on, move it to the 2nd line, if all 3 are enabled, put it on the 3rd line
-    if (s_display_story_timer == false && pref::get(pref::BoolPref::ShowDeathCounter) == false) {
-        s_segment_timer_location_y = 2;
-    } else if (s_display_story_timer == false ||
-               pref::get(pref::BoolPref::ShowDeathCounter) == false) {
+    // TODO auto stack timer positions
+    s_fullgame_timer_location_y = 2;
+    if (s_display_story_timer == false) {
         s_segment_timer_location_y = 3;
     } else {
         s_segment_timer_location_y = 4;
