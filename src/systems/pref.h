@@ -56,6 +56,8 @@ enum class BoolPref : u8 {
     TimerShowPause,
     ReverseMode,
     StoryTimerWarning,
+    JumpChangePhysics,
+    JumpAllowWalljumps,
 };
 
 enum class U8Pref : u8 {
@@ -95,6 +97,11 @@ enum class U8Pref : u8 {
     InputDispGradientRotation,
     InputDispGradientStart,
     InputDispGradientEnd,
+    InputDispLocation,
+    RgbFormat,
+    MonkeyType,
+    JumpProfile,
+    JumpCount,
 };
 
 void init();
