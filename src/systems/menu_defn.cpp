@@ -60,6 +60,15 @@ static Widget s_input_preset[] = {
 
 static Widget s_input_hex[] = {
     {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::U8Pref::InputDispRed,
+                .g_pref = pref::U8Pref::InputDispGreen,
+                .b_pref = pref::U8Pref::InputDispBlue,
+            },
+    },
+    {
         .type = WidgetType::IntEdit,
         .int_edit =
             {
@@ -93,6 +102,15 @@ static Widget s_input_hex[] = {
 
 static Widget s_input_gradient[] = {
     {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::U8Pref::InputDispRed,
+                .g_pref = pref::U8Pref::InputDispGreen,
+                .b_pref = pref::U8Pref::InputDispBlue,
+            },
+    },
+    {
         .type = WidgetType::IntEdit,
         .int_edit = {"Gradient Color 1 Red", pref::U8Pref::InputDispRed, 0, 255},
     },
@@ -103,6 +121,15 @@ static Widget s_input_gradient[] = {
     {
         .type = WidgetType::IntEdit,
         .int_edit = {"Gradient Color 1 Blue", pref::U8Pref::InputDispBlue, 0, 255},
+    },
+    {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::U8Pref::InputDispGradientColor2Red,
+                .g_pref = pref::U8Pref::InputDispGradientColor2Green,
+                .b_pref = pref::U8Pref::InputDispGradientColor2Blue,
+            },
     },
     {
         .type = WidgetType::IntEdit,
@@ -270,6 +297,15 @@ static Widget s_preset_ape_widgets[] = {
 };
 
 static Widget s_hex_widgets[] = {
+    {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::U8Pref::BallRed,
+                .g_pref = pref::U8Pref::BallGreen,
+                .b_pref = pref::U8Pref::BallBlue,
+            },
+    },
     {
         .type = WidgetType::IntEdit,
         .int_edit =

@@ -38,6 +38,11 @@ static constexpr s32 L_R_BIND = 64;  // bind id for an L+R bind
 static const GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
 static const GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
 
+// Do not ask why we need this...
+static float real_y(float y) {
+    return y * 1.072f - 3.0f;
+}
+
 static bool s_visible;
 static u32 s_cursor_frame = 0;
 
@@ -650,6 +655,20 @@ void draw_widget(Widget &widget,
         }
         case WidgetType::Custom: {
             widget.custom.draw();
+            break;
+        }
+        case WidgetType::RgbPreview: {
+            GXColor color = {
+                .r = pref::get(widget.rgb_preview.r_pref),
+                .g = pref::get(widget.rgb_preview.g_pref),
+                .b = pref::get(widget.rgb_preview.b_pref),
+                .a = 0xff,
+            };
+            float x1 = 400.0f;
+            float y1 = real_y(static_cast<float>(*y)) + 4.0f;
+            float y2 = real_y(static_cast<float>(*y)) + 58.0f;
+            float x2 = (y2 - y1) + x1;
+            draw::rect(x1, y1, x2, y2, color);
             break;
         }
     }

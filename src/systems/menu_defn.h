@@ -21,6 +21,7 @@ enum class WidgetType {
     InputSelect,
     HideableGroupWidget,
     Custom,
+    RgbPreview,
 };
 
 struct TextWidget {
@@ -130,6 +131,12 @@ struct CustomWidget {
     void (*draw)();
 };
 
+struct RgbPreviewWidget {
+    pref::U8Pref r_pref;
+    pref::U8Pref g_pref;
+    pref::U8Pref b_pref;
+};
+
 struct Widget {
     WidgetType type;
     union {
@@ -147,6 +154,7 @@ struct Widget {
         InputSelectWidget input_select;
         HideableGroupWidget hideable_group;
         CustomWidget custom;
+        RgbPreviewWidget rgb_preview;
     };
 };
 
