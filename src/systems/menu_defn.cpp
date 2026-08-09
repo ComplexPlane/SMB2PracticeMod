@@ -182,6 +182,7 @@ static Widget s_inputdisp_subwidgets[] = {
                 .pref = pref::BoolPref::InputDispRawStickInputs,
             },
     },
+    {.type = WidgetType::Separator},
     {
         .type = WidgetType::Choose,
         .choose =
