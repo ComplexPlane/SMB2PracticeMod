@@ -18,28 +18,16 @@ namespace ilmark {
 static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
 
-static constexpr pref::Pref INVALID_BOOL_PREFS[] = {
-    pref::Pref::DisableFalloutVolumes,
-    pref::Pref::UseCustomPhysics,
-    pref::Pref::JumpMod,
-    pref::Pref::Moon,
-    pref::Pref::Marathon,
-    pref::Pref::DebugMode,
-};
-
-static constexpr pref::Pref INVALID_U8_PREFS[] = {
-    pref::Pref::TimerType, pref::Pref::Friction,         pref::Pref::Restitution,
-    pref::Pref::Camera,    pref::Pref::FalloutPlaneType,
+static constexpr pref::Pref INVALID_PREFS[] = {
+    pref::Pref::DisableFalloutVolumes, pref::Pref::UseCustomPhysics, pref::Pref::JumpMod,
+    pref::Pref::Moon,                  pref::Pref::Marathon,         pref::Pref::DebugMode,
+    pref::Pref::TimerType,             pref::Pref::Friction,         pref::Pref::Restitution,
+    pref::Pref::Camera,                pref::Pref::FalloutPlaneType,
 };
 
 void disable_invalidating_settings() {
-    // set all bool prefs to default
-    for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
-        pref::set(INVALID_BOOL_PREFS[i], pref::get_default(INVALID_BOOL_PREFS[i]));
-    }
-    // set all u8 prefs to default
-    for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
-        pref::set(INVALID_U8_PREFS[i], pref::get_default(INVALID_U8_PREFS[i]));
+    for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
+        pref::set(INVALID_PREFS[i], pref::get_default(INVALID_PREFS[i]));
     }
 
     pref::save();
@@ -71,15 +59,9 @@ void tick() {
         // Opening the mod menu is disallowed
         if (menu_impl::is_visible()) s_valid_run = false;
 
-        // Invalid bool prefs are enabled
-        for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
-            if (pref::get(INVALID_BOOL_PREFS[i]) != pref::get_default(INVALID_BOOL_PREFS[i])) {
-                s_valid_run = false;
-            }
-        }
-        // Invalid u8 prefs are enabled
-        for (u8 i = 0; i < LEN(INVALID_U8_PREFS); i++) {
-            if (pref::get(INVALID_U8_PREFS[i]) != pref::get_default(INVALID_U8_PREFS[i])) {
+        // Invalid prefs are enabled
+        for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
+            if (pref::get(INVALID_PREFS[i]) != pref::get_default(INVALID_PREFS[i])) {
                 s_valid_run = false;
             }
         }
