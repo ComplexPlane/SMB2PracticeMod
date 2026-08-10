@@ -53,7 +53,7 @@ void init() {
 }
 
 void tick() {
-    BallColorType ball_type = BallColorType(pref::get(pref::U8Pref::BallColorType));
+    BallColorType ball_type = BallColorType(pref::get(pref::Pref::BallColorType));
 
     // dont change color if in story mode menu
     if (mkb::main_mode != mkb::MD_GAME || (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT ||
@@ -70,7 +70,7 @@ void tick() {
         case BallColorType::Preset: {
             *reinterpret_cast<GXColor *>(relutil::relocate_addr(0x80472a34)) =
                 s_default_color;  // reset default color
-            u8 color_id = convert_to_ball_color_id(pref::get(pref::U8Pref::BallColor));
+            u8 color_id = convert_to_ball_color_id(pref::get(pref::Pref::BallColor));
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = color_id;
             s_current_color =
                 reinterpret_cast<GXColor *>(relutil::relocate_addr(0x80472a28))[color_id];
@@ -78,9 +78,9 @@ void tick() {
         }
         case BallColorType::RGB: {
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = convert_to_ball_color_id(0);
-            u8 red = pref::get(pref::U8Pref::BallRed);
-            u8 green = pref::get(pref::U8Pref::BallGreen);
-            u8 blue = pref::get(pref::U8Pref::BallBlue);
+            u8 red = pref::get(pref::Pref::BallRed);
+            u8 green = pref::get(pref::Pref::BallGreen);
+            u8 blue = pref::get(pref::Pref::BallBlue);
             s_current_color = {red, green, blue, 0};
             *reinterpret_cast<GXColor *>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             break;
@@ -112,11 +112,11 @@ void tick() {
         }
     }
 
-    ClothingType clothing_type = ClothingType(pref::get(pref::U8Pref::ApeColorType));
+    ClothingType clothing_type = ClothingType(pref::get(pref::Pref::ApeColorType));
 
     switch (clothing_type) {
         case ClothingType::Preset: {
-            ape->color_index = convert_to_ape_color_id(pref::get(pref::U8Pref::ApeColor));
+            ape->color_index = convert_to_ape_color_id(pref::get(pref::Pref::ApeColor));
             break;
         }
         case ClothingType::Random: {

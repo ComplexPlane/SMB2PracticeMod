@@ -24,20 +24,20 @@ static void moon_gravity() {
 void tick() {
     mkb::ball_friction = s_orig_friction;
     mkb::ball_restitution = s_orig_restitution;
-    if (!pref::get(pref::BoolPref::UseCustomPhysics)) {
+    if (!pref::get(pref::Pref::UseCustomPhysics)) {
         return;
     }
 
-    if (pref::get(pref::BoolPref::Moon)) {
+    if (pref::get(pref::Pref::Moon)) {
         moon_gravity();
     }
 
-    if (pref::get(pref::U8Pref::Friction) != pref::get_default(pref::U8Pref::Friction)) {
-        mkb::ball_friction = ((float)pref::get(pref::U8Pref::Friction) - 100) / 1000.0;
+    if (pref::get(pref::Pref::Friction) != pref::get_default(pref::Pref::Friction)) {
+        mkb::ball_friction = ((float)pref::get(pref::Pref::Friction) - 100) / 1000.0;
     }
 
-    if (pref::get(pref::U8Pref::Restitution) != pref::get_default(pref::U8Pref::Restitution)) {
-        mkb::ball_restitution = ((float)pref::get(pref::U8Pref::Restitution) - 100) / 100.0;
+    if (pref::get(pref::Pref::Restitution) != pref::get_default(pref::Pref::Restitution)) {
+        mkb::ball_restitution = ((float)pref::get(pref::Pref::Restitution) - 100) / 100.0;
     }
 }
 void disp() {

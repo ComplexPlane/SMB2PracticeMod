@@ -190,7 +190,7 @@ void tick() {
     //        }
     //    }
 
-    bool enabled = pref::get(pref::BoolPref::JumpMod);
+    bool enabled = pref::get(pref::Pref::JumpMod);
     if (enabled != s_prev_enabled) {
         s_prev_enabled = enabled;
         if (enabled) {

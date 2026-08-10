@@ -9,7 +9,7 @@
 namespace hide {
 
 static bool should_hide_bg() {
-    return pref::get(pref::BoolPref::HideBg) && mkb::main_mode != mkb::MD_ADV;
+    return pref::get(pref::Pref::HideBg) && mkb::main_mode != mkb::MD_ADV;
 }
 
 static void avdisp_set_fog_color_hook(u8 r, u8 g, u8 b) {
@@ -63,7 +63,7 @@ TRAMP(s_clear_tramp, mkb::g_set_clear_color, []() {
 // HUD
 TRAMP(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite *sprite) {
     // Hide every sprite except the pause menu
-    bool hide_hud = pref::get(pref::BoolPref::HideHud);
+    bool hide_hud = pref::get(pref::Pref::HideHud);
     bool freecam_hide = freecam::should_hide_hud();
     bool correct_mode = mkb::main_mode == mkb::MD_GAME;
     bool is_pausemenu_sprite = sprite->disp_func == mkb::sprite_pausemenu_disp;
@@ -73,7 +73,7 @@ TRAMP(s_draw_sprite_tramp, mkb::draw_sprite, [](mkb::Sprite *sprite) {
 });
 
 TRAMP(s_draw_minimap_tramp, mkb::g_draw_minimap, []() {
-    bool hide_hud = pref::get(pref::BoolPref::HideHud);
+    bool hide_hud = pref::get(pref::Pref::HideHud);
     bool freecam_hide = freecam::should_hide_hud();
     if (!(hide_hud || freecam_hide)) {
         s_draw_minimap_tramp.chain();
@@ -82,35 +82,35 @@ TRAMP(s_draw_minimap_tramp, mkb::g_draw_minimap, []() {
 
 // Stage
 TRAMP(s_draw_stage_tramp, mkb::g_draw_stage, [] {
-    if (!pref::get(pref::BoolPref::HideStage)) {
+    if (!pref::get(pref::Pref::HideStage)) {
         s_draw_stage_tramp.chain();
     }
 });
 
 // Ball
 TRAMP(s_draw_ball_tramp, mkb::g_draw_ball_and_ape, [] {
-    if (!pref::get(pref::BoolPref::HideBall)) {
+    if (!pref::get(pref::Pref::HideBall)) {
         s_draw_ball_tramp.chain();
     }
 });
 
 // Items
 TRAMP(s_draw_items_tramp, mkb::draw_items, [] {
-    if (!pref::get(pref::BoolPref::HideItems)) {
+    if (!pref::get(pref::Pref::HideItems)) {
         s_draw_items_tramp.chain();
     }
 });
 
 // Stage objects
 TRAMP(s_draw_stobjs_tramp, mkb::g_draw_stobjs, [] {
-    if (!pref::get(pref::BoolPref::HideStobjs)) {
+    if (!pref::get(pref::Pref::HideStobjs)) {
         s_draw_stobjs_tramp.chain();
     }
 });
 
 // Effects
 TRAMP(s_draw_effects_tramp, mkb::g_draw_effects, [] {
-    if (!pref::get(pref::BoolPref::HideEffects)) {
+    if (!pref::get(pref::Pref::HideEffects)) {
         s_draw_effects_tramp.chain();
     }
 });

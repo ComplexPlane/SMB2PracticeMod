@@ -193,9 +193,9 @@ void on_PADRead(mkb::PADStatus *statuses) {
 
 void tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
-    set_sprite_visible(!pref::get(pref::BoolPref::InputDisp) ||
-                       (pref::get(pref::BoolPref::InputDispCenterLocation) &&
-                        !pref::get(pref::BoolPref::InputDispRawStickInputs)));
+    set_sprite_visible(!pref::get(pref::Pref::InputDisp) ||
+                       (pref::get(pref::Pref::InputDispCenterLocation) &&
+                        !pref::get(pref::Pref::InputDispRawStickInputs)));
 }
 
 static bool get_notch_pos(const MergedStickInputs &stick_inputs, Vec2d *out_pos) {
@@ -247,33 +247,33 @@ static Gradient solid_gradient(GXColor color) {
 }
 
 static Gradient get_gradient() {
-    InputDispColorType color_pref = InputDispColorType(pref::get(pref::U8Pref::InputDispColorType));
+    InputDispColorType color_pref = InputDispColorType(pref::get(pref::Pref::InputDispColorType));
     switch (color_pref) {
         case InputDispColorType::Preset: {
-            return solid_gradient(s_color_map[pref::get(pref::U8Pref::InputDispColor)]);
+            return solid_gradient(s_color_map[pref::get(pref::Pref::InputDispColor)]);
         }
         case InputDispColorType::RGBSolid: {
             return solid_gradient({
-                .r = pref::get(pref::U8Pref::InputDispRed),
-                .g = pref::get(pref::U8Pref::InputDispGreen),
-                .b = pref::get(pref::U8Pref::InputDispBlue),
+                .r = pref::get(pref::Pref::InputDispRed),
+                .g = pref::get(pref::Pref::InputDispGreen),
+                .b = pref::get(pref::Pref::InputDispBlue),
                 .a = 0xff,
             });
         }
         case InputDispColorType::RGBGradient: {
             return {
-                .color1 = {pref::get(pref::U8Pref::InputDispRed),
-                           pref::get(pref::U8Pref::InputDispGreen),
-                           pref::get(pref::U8Pref::InputDispBlue), 0xff},
-                .color2 = {pref::get(pref::U8Pref::InputDispGradientColor2Red),
-                           pref::get(pref::U8Pref::InputDispGradientColor2Green),
-                           pref::get(pref::U8Pref::InputDispGradientColor2Blue), 0xff},
+                .color1 = {pref::get(pref::Pref::InputDispRed),
+                           pref::get(pref::Pref::InputDispGreen),
+                           pref::get(pref::Pref::InputDispBlue), 0xff},
+                .color2 = {pref::get(pref::Pref::InputDispGradientColor2Red),
+                           pref::get(pref::Pref::InputDispGradientColor2Green),
+                           pref::get(pref::Pref::InputDispGradientColor2Blue), 0xff},
                 .rotation = static_cast<s16>(
-                    static_cast<s32>(pref::get(pref::U8Pref::InputDispGradientRotation)) * 65535 /
+                    static_cast<s32>(pref::get(pref::Pref::InputDispGradientRotation)) * 65535 /
                         100 -
                     32768),
-                .start = pref::get(pref::U8Pref::InputDispGradientStart) / 100.f,
-                .end = pref::get(pref::U8Pref::InputDispGradientEnd) / 100.f,
+                .start = pref::get(pref::Pref::InputDispGradientStart) / 100.f,
+                .end = pref::get(pref::Pref::InputDispGradientEnd) / 100.f,
             };
         }
         case InputDispColorType::Rainbow: {
@@ -334,7 +334,7 @@ static void draw_buttons(const Vec2d &center, f32 scale) {
 static void draw_notch_indicators(const MergedStickInputs &stick_inputs,
                                   const Vec2d &center,
                                   f32 scale) {
-    if (!pref::get(pref::BoolPref::InputDispNotchIndicators)) return;
+    if (!pref::get(pref::Pref::InputDispNotchIndicators)) return;
 
     Vec2d notch_norm = {};
     if (get_notch_pos(stick_inputs, &notch_norm)) {
@@ -347,10 +347,10 @@ static void draw_notch_indicators(const MergedStickInputs &stick_inputs,
 }
 
 static void draw_raw_stick_inputs(const MergedStickInputs &stick_inputs) {
-    if (!pref::get(pref::BoolPref::InputDispRawStickInputs)) return;
+    if (!pref::get(pref::Pref::InputDispRawStickInputs)) return;
 
     Vec2d center = {
-        .x = pref::get(pref::BoolPref::InputDispCenterLocation) ? 540.f : 390.f,
+        .x = pref::get(pref::Pref::InputDispCenterLocation) ? 540.f : 390.f,
         .y = 28.f,
     };
 
@@ -370,10 +370,10 @@ void disp() {
                      mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_INIT ||
                      mkb::sub_mode == mkb::SMD_EXOPT_REPLAY_MAIN;
 
-    if (!pref::get(pref::BoolPref::InputDisp) || freecam::should_hide_hud() || in_replay) return;
+    if (!pref::get(pref::Pref::InputDisp) || freecam::should_hide_hud() || in_replay) return;
 
     Vec2d center =
-        pref::get(pref::BoolPref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
+        pref::get(pref::Pref::InputDispCenterLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
     f32 scale = 0.6f;
 
     MergedStickInputs stick_inputs;

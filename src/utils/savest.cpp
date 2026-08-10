@@ -389,7 +389,7 @@ void tick() {
 }
 
 bool is_enabled() {
-    return pref::get(pref::BoolPref::Savestates) && !pref::get(pref::BoolPref::Freecam);
+    return pref::get(pref::Pref::Savestates) && !pref::get(pref::Pref::Freecam);
 }
 
 }  // namespace savest

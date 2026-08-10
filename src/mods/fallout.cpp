@@ -32,9 +32,9 @@ static bool s_halted;  // freeze timer for TimerType::FreezeAtZero
 TRAMP(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball *ball) {
     mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
     bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
-    bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
+    bool volumes_disabled = pref::get(pref::Pref::DisableFalloutVolumes);
 
-    switch (FalloutPlaneType(pref::get(pref::U8Pref::FalloutPlaneType))) {
+    switch (FalloutPlaneType(pref::get(pref::Pref::FalloutPlaneType))) {
         case FalloutPlaneType::Normal: {
             if (volumes_disabled) {
                 return static_cast<mkb::BOOL32>(below_fallout);
@@ -70,7 +70,7 @@ void init() {
 }
 
 void freeze_timer() {
-    TimerType current_pref = TimerType(pref::get(pref::U8Pref::TimerType));
+    TimerType current_pref = TimerType(pref::get(pref::Pref::TimerType));
     bool update_timer_incr =
         mkb::sub_mode == mkb::SMD_GAME_READY_INIT || current_pref != s_prev_pref;
     s_prev_pref = current_pref;
@@ -134,10 +134,10 @@ void freeze_timer() {
 
 void tick() {
     if (freecam::should_freeze_timer() && s_prev_freecam == TimerType::Invalid) {
-        s_prev_freecam = TimerType(pref::get(pref::U8Pref::TimerType));
-        pref::set(pref::U8Pref::TimerType, 1);
+        s_prev_freecam = TimerType(pref::get(pref::Pref::TimerType));
+        pref::set(pref::Pref::TimerType, 1);
     } else if (!freecam::should_freeze_timer() && s_prev_freecam != TimerType::Invalid) {
-        pref::set(pref::U8Pref::TimerType, static_cast<u8>(s_prev_freecam));
+        pref::set(pref::Pref::TimerType, static_cast<u8>(s_prev_freecam));
         s_prev_freecam = TimerType::Invalid;
     }
     freeze_timer();

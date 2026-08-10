@@ -120,7 +120,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get(pref::BoolPref::IwTimer) || mkb::main_mode != mkb::MD_GAME ||
+    if (!pref::get(pref::Pref::IwTimer) || mkb::main_mode != mkb::MD_GAME ||
         mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw ||
         freecam::should_hide_hud())
         return;

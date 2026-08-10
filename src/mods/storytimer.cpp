@@ -364,7 +364,7 @@ void disp() {
         s_segment_timer_location_y = 4;
     }
 
-    switch (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions))) {
+    switch (TimerOptions(pref::get(pref::Pref::FullgameTimerOptions))) {
         case TimerOptions::AlwaysShow:
             s_display_story_timer = true;
             break;
@@ -393,7 +393,7 @@ void disp() {
                               false, draw::WHITE);
     }
 
-    switch (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions))) {
+    switch (TimerOptions(pref::get(pref::Pref::SegmentTimerOptions))) {
         case TimerOptions::AlwaysShow:
             for (s32 k = 1; k < 11; k++) {
                 if (s_is_on_world[k] == true && s_is_run_complete == false) {
@@ -422,7 +422,7 @@ void disp() {
 
     // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the
     // tape is broken on the last stage
-    if (TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) != TimerOptions::DontShow) {
+    if (TimerOptions(pref::get(pref::Pref::SegmentTimerOptions)) != TimerOptions::DontShow) {
         if (s_is_run_complete == true) {
             // I'm so sorry :(
             // I don't know how to get the text to show "Wk" where k ranges in a for loop
@@ -462,9 +462,9 @@ void disp() {
 
     // show warning on the name entry screen if no timers are on (if the toggle for the warning is
     // turned on)
-    if (pref::get(pref::BoolPref::StoryTimerWarning) == true &&
-        TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
-        TimerOptions(pref::get(pref::U8Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
+    if (pref::get(pref::Pref::StoryTimerWarning) == true &&
+        TimerOptions(pref::get(pref::Pref::FullgameTimerOptions)) == TimerOptions::DontShow &&
+        TimerOptions(pref::get(pref::Pref::SegmentTimerOptions)) == TimerOptions::DontShow &&
         mkb::scen_info.mode == 21) {
         // scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
         draw::debug_text(460, 425, draw::RED, "Timer Not On!");
@@ -517,7 +517,7 @@ void disp() {
     }
     */
 
-    if (TimerOptions(pref::get(pref::U8Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
+    if (TimerOptions(pref::get(pref::Pref::FullgameTimerOptions)) == TimerOptions::AlwaysShow) {
         timerdisp::draw_timer(380, 0, 44, "dbg:", static_cast<s32>(60 * s_completed_stages), 1,
                               false, true, draw::WHITE);
         timerdisp::draw_timer(380, 1, 44,

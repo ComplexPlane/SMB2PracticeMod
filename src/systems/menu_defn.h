@@ -49,7 +49,7 @@ struct HeaderWidget {
 
 struct CheckboxWidget {
     const char *label;
-    pref::BoolPref pref;
+    pref::Pref pref;
 };
 
 // For the rare cases a checkbox doesn't correspond to a preference
@@ -77,7 +77,7 @@ struct ChooseWidget {
     const char *label;
     const char **choices;
     u16 num_choices;
-    pref::U8Pref pref;
+    pref::Pref pref;
 };
 
 namespace ButtonFlags {
@@ -96,7 +96,7 @@ struct ButtonWidget {
 // Pretty limited for now
 struct IntEditWidget {
     const char *label;
-    pref::U8Pref pref;
+    pref::Pref pref;
     u8 min;
     u8 max;
 };
@@ -104,7 +104,7 @@ struct IntEditWidget {
 // even more limited for now
 struct FloatEditWidget {
     const char *label;
-    pref::U8Pref pref;
+    pref::Pref pref;
     u32 precision;  // denominator, 100
     u8 min;
     u8 max;
@@ -114,7 +114,7 @@ struct FloatEditWidget {
 
 struct InputSelectWidget {
     const char *label;
-    pref::U8Pref pref;
+    pref::Pref pref;
     bool required_chord;  // must be a 2 button bind if true
     bool can_unbind;
 };
@@ -132,9 +132,9 @@ struct CustomWidget {
 };
 
 struct RgbPreviewWidget {
-    pref::U8Pref r_pref;
-    pref::U8Pref g_pref;
-    pref::U8Pref b_pref;
+    pref::Pref r_pref;
+    pref::Pref g_pref;
+    pref::Pref b_pref;
 };
 
 struct Widget {

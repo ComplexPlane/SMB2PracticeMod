@@ -195,7 +195,7 @@ static void handle_widget_bind() {
         case WidgetType::IntEdit:
         case WidgetType::FloatEdit: {
             int next;
-            pref::U8Pref edit_pref;
+            pref::Pref edit_pref;
             u8 min, max;
             if (selected->type == WidgetType::IntEdit) {
                 auto &int_edit = selected->int_edit;
@@ -290,7 +290,7 @@ void tick() {
 
     // TODO save settings on close
     // TODO save menu position as settings
-    bool toggle = binds::bind_pressed(pref::get(pref::U8Pref::MenuBind), true);
+    bool toggle = binds::bind_pressed(pref::get(pref::Pref::MenuBind), true);
     if (toggle) {
         s_visible ^= toggle;
     } else if (pad::button_pressed(mkb::PAD_BUTTON_B, true)) {
@@ -307,7 +307,7 @@ void tick() {
     if (!s_visible) {
         // Default binding is L+R, but this lets you know the current binding in case you forget
         // what you changed it to
-        u8 input = pref::get(pref::U8Pref::MenuBind);
+        u8 input = pref::get(pref::Pref::MenuBind);
         if (pad::button_chord_pressed(mkb::PAD_TRIGGER_L, mkb::PAD_TRIGGER_R, true) &&
             input != L_R_BIND) {
             char buf[25];

@@ -39,7 +39,7 @@ static s32 pick_save_slot() {
     // Always write to the current slot during frame advance.
     if (s_frame_advance_mode) return s_active_state_slot;
 
-    SaveTo save_to = static_cast<SaveTo>(pref::get(pref::U8Pref::SavestateSaveTo));
+    SaveTo save_to = static_cast<SaveTo>(pref::get(pref::Pref::SavestateSaveTo));
     switch (save_to) {
         case SaveTo::Selected:
             return s_active_state_slot;
@@ -137,10 +137,10 @@ void tick() {
 
         s_created_state_last_frame = true;
 
-    } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearBind))) {
+    } else if (binds::bind_pressed(pref::get(pref::Pref::SavestateClearBind))) {
         savest::clear(s_active_state_slot);
         draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
-    } else if (binds::bind_pressed(pref::get(pref::U8Pref::SavestateClearAllBind))) {
+    } else if (binds::bind_pressed(pref::get(pref::Pref::SavestateClearAllBind))) {
         for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
             savest::clear(i);
         }

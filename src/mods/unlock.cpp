@@ -34,10 +34,10 @@ void init() {
     // Unlock progress every frame (so it works even if a saved game is loaded), but only enact this
     // policy if the corresponding setting was enabled on startup.
     if (gamecode::is_vanilla()) {
-        if (pref::get(pref::BoolPref::UnlockVanilla)) {
+        if (pref::get(pref::Pref::UnlockVanilla)) {
             s_flags |= Flags::ShouldUnlock;
         }
-    } else if (pref::get(pref::BoolPref::UnlockRomhacks)) {
+    } else if (pref::get(pref::Pref::UnlockRomhacks)) {
         s_flags |= Flags::ShouldUnlock;
     }
 }

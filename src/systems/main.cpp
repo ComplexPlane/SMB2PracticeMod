@@ -191,7 +191,7 @@ void init() {
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
 void tick() {
-    if (pref::get(pref::BoolPref::DebugMode)) {
+    if (pref::get(pref::Pref::DebugMode)) {
         mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
     } else {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);

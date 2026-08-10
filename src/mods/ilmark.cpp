@@ -18,18 +18,18 @@ namespace ilmark {
 static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
 
-static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
-    pref::BoolPref::DisableFalloutVolumes,
-    pref::BoolPref::UseCustomPhysics,
-    pref::BoolPref::JumpMod,
-    pref::BoolPref::Moon,
-    pref::BoolPref::Marathon,
-    pref::BoolPref::DebugMode,
+static constexpr pref::Pref INVALID_BOOL_PREFS[] = {
+    pref::Pref::DisableFalloutVolumes,
+    pref::Pref::UseCustomPhysics,
+    pref::Pref::JumpMod,
+    pref::Pref::Moon,
+    pref::Pref::Marathon,
+    pref::Pref::DebugMode,
 };
 
-static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
-    pref::U8Pref::TimerType, pref::U8Pref::Friction,         pref::U8Pref::Restitution,
-    pref::U8Pref::Camera,    pref::U8Pref::FalloutPlaneType,
+static constexpr pref::Pref INVALID_U8_PREFS[] = {
+    pref::Pref::TimerType, pref::Pref::Friction,         pref::Pref::Restitution,
+    pref::Pref::Camera,    pref::Pref::FalloutPlaneType,
 };
 
 void disable_invalidating_settings() {
@@ -66,7 +66,7 @@ void tick() {
         bool dpad_down =
             pad::button_down(mkb::PAD_BUTTON_DOWN) || pad::button_down(mkb::PAD_BUTTON_LEFT) ||
             pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
-        if (pref::get(pref::BoolPref::DpadControls) && dpad_down) s_valid_run = false;
+        if (pref::get(pref::Pref::DpadControls) && dpad_down) s_valid_run = false;
 
         // Opening the mod menu is disallowed
         if (menu_impl::is_visible()) s_valid_run = false;
@@ -92,16 +92,16 @@ bool is_ilmark_enabled() {
     if (mkb::main_mode != mkb::MD_GAME) return false;
 
     if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkPractice)) return false;
+        if (!pref::get(pref::Pref::IlMarkPractice)) return false;
     } else if (mkb::main_game_mode == mkb::STORY_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkStory)) return false;
+        if (!pref::get(pref::Pref::IlMarkStory)) return false;
     } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkChallenge)) return false;
+        if (!pref::get(pref::Pref::IlMarkChallenge)) return false;
     } else {
         return false;
     }
 
-    if (!gamecode::is_vanilla() && !pref::get(pref::BoolPref::IlMarkRomhacks)) {
+    if (!gamecode::is_vanilla() && !pref::get(pref::Pref::IlMarkRomhacks)) {
         return false;
     }
 
