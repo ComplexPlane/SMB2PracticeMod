@@ -10,14 +10,13 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
-typedef enum State State;
-enum State {
+typedef enum {
     State_Default,
     State_LoadMenu,
     State_EnterCm,
     State_SegActive,
     State_SegComplete,
-};
+} State;
 
 static State s_state = State_Default;
 static cmseg_Seg s_seg_request;

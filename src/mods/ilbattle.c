@@ -8,23 +8,21 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
-typedef enum IlBattleState IlBattleState;
-enum IlBattleState {
+typedef enum {
     IlBattleState_NotReady,
     IlBattleState_WaitForFirstRetry,     // Mod is enabled but first retry hasn't occurred
     IlBattleState_BattleRunning,         // Battle is running
     IlBattleState_BuzzerBeater,          // Time has run out, but an attempt is still going
     IlBattleState_BuzzerBeaterPostgoal,  // Final attempt is over, wait for postgoals for score
     IlBattleState_BattleDone,            // Final attempt is over, show times in blue
-};
+} IlBattleState;
 
-typedef enum IlBattleLength IlBattleLength;
-enum IlBattleLength {
+typedef enum {
     IlBattleLength_FiveMinutes = 0,
     IlBattleLength_SevenMinutes = 1,
     IlBattleLength_TenMinutes = 2,
     IlBattleLength_Endless = 3,
-};
+} IlBattleLength;
 
 // main state
 static IlBattleState s_state = IlBattleState_NotReady;

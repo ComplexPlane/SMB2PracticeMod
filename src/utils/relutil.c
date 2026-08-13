@@ -4,27 +4,43 @@
 #include "relutil.h"
 
 // Start of a loaded DOL, REL, or REL BSS
-typedef struct Region Region;
-struct Region {
+typedef struct {
     RelId id;
     void *vanilla_ptr;
     u32 size;
     bool is_bss;
-};
+} Region;
+
+typedef struct {
+    void *addr;
+    u32 len;
+} OSSectionInfo;
+
+typedef struct {
+    u16 offset;
+    u8 type;
+    u8 section;
+    u32 addend;
+} __attribute__((packed)) OSRel;
+
+typedef struct {
+    u32 id;
+    OSRel *offset;
+} __attribute__((packed)) OSImportInfo;
 
 typedef struct OSModuleHeader OSModuleHeader;
 struct OSModuleHeader {
     u32 id;
-    struct OSModuleHeader *next;
-    struct OSModuleHeader *prev;
+    OSModuleHeader *next;
+    OSModuleHeader *prev;
     u32 numSections;
-    struct OSSectionInfo *sectionInfoOffset;
+    OSSectionInfo *sectionInfoOffset;
     char *nameOffset;
     u32 nameSize;
     u32 version;
     u32 bssSize;
-    struct OSRel *relOffset;
-    struct OSImportInfo *impOffset;
+    OSRel *relOffset;
+    OSImportInfo *impOffset;
     u32 impSize;
     u8 prologSection;
     u8 epilogSection;
@@ -36,26 +52,6 @@ struct OSModuleHeader {
     u32 align;
     u32 bssAlign;
     u32 fixSize;
-} __attribute__((packed));
-
-typedef struct OSSectionInfo OSSectionInfo;
-struct OSSectionInfo {
-    void *addr;
-    u32 len;
-};
-
-typedef struct OSRel OSRel;
-struct OSRel {
-    u16 offset;
-    u8 type;
-    u8 section;
-    u32 addend;
-} __attribute__((packed));
-
-typedef struct OSImportInfo OSImportInfo;
-struct OSImportInfo {
-    u32 id;
-    OSRel *offset;
 } __attribute__((packed));
 
 static Region s_vanilla_regions[] = {

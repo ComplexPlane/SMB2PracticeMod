@@ -1,7 +1,6 @@
 #pragma once
 #include "utils/base.h"
-typedef enum cmseg_Seg cmseg_Seg;
-enum cmseg_Seg {
+typedef enum {
     cmseg_Seg_Beginner1,
     cmseg_Seg_BeginnerExtra,
     cmseg_Seg_Advanced1,
@@ -16,7 +15,7 @@ enum cmseg_Seg {
     cmseg_Seg_ExpertExtra,
     cmseg_Seg_Master1,
     cmseg_Seg_MasterExtra
-};
+} cmseg_Seg;
 
 void cmseg_init();
 void cmseg_tick();

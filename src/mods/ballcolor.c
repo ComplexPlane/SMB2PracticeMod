@@ -10,19 +10,17 @@
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
-typedef enum BallColorType BallColorType;
-enum BallColorType {
+typedef enum {
     BallColorType_Preset = 0,
     BallColorType_RGB = 1,
     BallColorType_Rainbow = 2,
     BallColorType_Random = 3,
-};
+} BallColorType;
 
-typedef enum ClothingType ClothingType;
-enum ClothingType {
+typedef enum {
     ClothingType_Preset = 0,
     ClothingType_Random = 1,
-};
+} ClothingType;
 
 static u32 s_rainbow = 0;  // tick for rainbow animation
 static GXColor s_default_color;

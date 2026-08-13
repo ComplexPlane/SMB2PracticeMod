@@ -5,12 +5,11 @@
 #include "utils/patch.h"
 #include "utils/ppcutil.h"
 
-typedef enum CameraType CameraType;
-enum CameraType {
+typedef enum {
     CameraType_Default,
     CameraType_ForceSMB2,
     CameraType_ForceSMB1,
-};
+} CameraType;
 
 static CameraType s_prev_value;
 

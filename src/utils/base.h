@@ -29,8 +29,7 @@ inline u32 mkb_OSRoundDown32B(u32 x) {
 }
 
 // Originally #define'd
-typedef enum mkb_CARDResult mkb_CARDResult;
-enum mkb_CARDResult {
+typedef enum {
     mkb_CARD_RESULT_READY = 0,
     mkb_CARD_RESULT_BUSY = -1,
     mkb_CARD_RESULT_WRONGDEVICE = -2,
@@ -47,7 +46,7 @@ enum mkb_CARDResult {
     mkb_CARD_RESULT_ENCODING = -13,
     mkb_CARD_RESULT_CANCELED = -14,
     mkb_CARD_RESULT_FATAL_ERROR = -128,
-};
+} mkb_CARDResult;
 constexpr s32 mkb_CARD_READ_SIZE = 512;
 constexpr s32 mkb_CARD_FILENAME_MAX = 32;
 

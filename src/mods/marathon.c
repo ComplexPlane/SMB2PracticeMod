@@ -10,14 +10,13 @@
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
-typedef enum MarathonState MarathonState;
-enum MarathonState {
+typedef enum {
     MarathonState_WaitForGoal,        // No velocity is stored
     MarathonState_StoringVel,         // Goal was just passed, vel will be stored next frame
     MarathonState_WaitForFirstApply,  // Vel stored, waiting to be applied (but not stored, so we
                                       // dont store multiple times in one goal)
     MarathonState_WaitForApplyOrGoal,  // Vel stored, waiting to be applied or stored again
-};
+} MarathonState;
 
 static MarathonState s_state = MarathonState_WaitForGoal;
 

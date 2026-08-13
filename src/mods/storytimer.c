@@ -10,13 +10,12 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
-typedef enum TimerOptions TimerOptions;
-enum TimerOptions {
+typedef enum {
     TimerOptions_DontShow = 0,
     TimerOptions_AlwaysShow = 1,
     TimerOptions_BetweenWorlds = 2,
     TimerOptions_EndOfRun = 3,
-};
+} TimerOptions;
 
 static u32 s_spin_in_timer;
 static u32 s_gameplay_timer;

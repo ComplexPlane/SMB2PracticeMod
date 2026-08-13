@@ -4,8 +4,7 @@
 
 enum { SS_SLOT_COUNT = 8 };
 
-typedef enum SS_SaveResult SS_SaveResult;
-enum SS_SaveResult {
+typedef enum {
     SS_SaveResult_Ok,
     SS_SaveResult_ErrMainMode,
     SS_SaveResult_ErrPostFallout,
@@ -15,10 +14,9 @@ enum SS_SaveResult {
     SS_SaveResult_ErrSubMode,
     SS_SaveResult_ErrViewStage,
     SS_SaveResult_ErrInsufficientMemory,
-};
+} SS_SaveResult;
 
-typedef enum SS_LoadResult SS_LoadResult;
-enum SS_LoadResult {
+typedef enum {
     SS_LoadResult_Ok,
     SS_LoadResult_ErrMainMode,
     SS_LoadResult_ErrSubMode,
@@ -28,7 +26,7 @@ enum SS_LoadResult {
     SS_LoadResult_ErrWrongMonkey,
     SS_LoadResult_ErrViewStage,
     SS_LoadResult_ErrPausedAndNonGameplaySubmode,
-};
+} SS_LoadResult;
 
 void savest_init();
 void savest_tick();

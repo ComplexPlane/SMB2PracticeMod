@@ -2,15 +2,14 @@
 
 #include "base.h"
 
-typedef enum RelId RelId;
-enum RelId {
+typedef enum {
     RelId_Dol = 0,
     RelId_MainLoop = 1,
     RelId_MainGame = 2,
     RelId_SelNgc = 3,
     RelId_WorkshopMod = 100,
     RelId_PracticeMod = 101,
-};
+} RelId;
 
 /**
  * Returns one past the last address of relocation data in mainloop.rel which we are free to

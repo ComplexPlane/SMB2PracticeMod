@@ -10,22 +10,20 @@
 #include "utils/memstore.h"
 #include "utils/patch.h"
 
-typedef enum SS_Flag SS_Flag;
-enum SS_Flag {
+typedef enum {
     SS_Flag_IsPresent = 1 << 0,
     // For when a state should be loaded on the subsequent frame
     SS_Flag_ReloadState = 1 << 1,
-};
+} SS_Flag;
 
-typedef struct SaveState SaveState;
-struct SaveState {
+typedef struct {
     SS_Flag flags;
     s32 stage_id;
     u8 character;
     Store store;
     u8 pause_menu_sprite_status;
     mkb_Sprite pause_menu_sprite;
-};
+} SaveState;
 
 static bool s_state_loaded_this_frame = false;
 static SaveState s_states[SS_SLOT_COUNT];

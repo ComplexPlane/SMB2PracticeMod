@@ -2,13 +2,12 @@
 #include "systems/pref.h"
 #include "utils/patch.h"
 
-typedef enum ActiveMode ActiveMode;
-enum ActiveMode {
+typedef enum {
     ActiveMode_None = 0,
     ActiveMode_Golden = 1,
     ActiveMode_Dark = 2,
     ActiveMode_Reverse = 3,
-};
+} ActiveMode;
 
 static ActiveMode s_current_mode = ActiveMode_None;
 static u32 s_rev_goal_idx = 0;

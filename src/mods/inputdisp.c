@@ -10,21 +10,19 @@
 #include "utils/draw.h"
 #include "utils/patch.h"
 
-typedef struct MergedStickInputs MergedStickInputs;
-struct MergedStickInputs {
+typedef struct {
     s32 rawX;
     s32 rawY;
     s32 gameX;
     s32 gameY;
-};
+} MergedStickInputs;
 
-typedef enum InputDispColorType InputDispColorType;
-enum InputDispColorType {
+typedef enum {
     InputDispColorType_Default = 0,
     InputDispColorType_RGB = 1,
     InputDispColorType_Rainbow = 2,
     InputDispColorType_MatchBall = 3,
-};
+} InputDispColorType;
 
 static void create_speed_sprites_hook(f32 x, f32 y);
 TRAMP(s_create_speed_sprites_tramp, mkb_create_speed_sprites, create_speed_sprites_hook);
