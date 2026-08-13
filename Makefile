@@ -11,15 +11,10 @@ include $(DEVKITPPC)/gamecube_rules
 
 ifeq ($(REGION),)
 
-us: elf2rel
-	@$(MAKE) --no-print-directory REGION=us GAMECODE=GM2E8P
-clean: clean_elf2rel
-	@$(MAKE) --no-print-directory clean_target REGION=us GAMECODE=GM2E8P
-
-#---------------------------------------------------------------------------------
-# For now, make elf2rel a phony target
-# Place target here (instead of inside recursive Makefile call) so it's only built once
-#---------------------------------------------------------------------------------
+us:
+	@$(MAKE) --no-print-directory REGION=us
+clean:
+	@$(MAKE) --no-print-directory clean_target REGION=us
 
 # Unexport some compiler vars exported by devkitppc as they interfere
 # when we build elf2rel, which uses the system compiler
@@ -32,19 +27,7 @@ unexport STRIP
 unexport NM
 unexport RANLIB
 
-ELF2REL_BUILD := $(CURDIR)/3rdparty/elf2rel/build
-
-elf2rel:
-	@echo "Compiling elf2rel..."
-	mkdir -p $(ELF2REL_BUILD)
-	cd $(ELF2REL_BUILD) && cmake ..
-	$(MAKE) -C $(ELF2REL_BUILD) -f $(ELF2REL_BUILD)/Makefile
-
-clean_elf2rel:
-	@echo "clean ... elf2rel"
-	@rm -rf $(ELF2REL_BUILD)
-
-.PHONY: all clean us gaiden monkeyed2 deluxein2 commpack2020 elf2rel clean_elf2rel
+.PHONY: all clean us
 
 else
 
@@ -116,7 +99,7 @@ BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 export LD	:=	$(CC)
 
 export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
-export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
+export OFILES_SOURCES := $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
 export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
@@ -124,16 +107,8 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
-ifeq ($(REGION),us)
-	export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_us.raw
-else ifeq ($(REGION),jp)
-	export BANNERFILE	:= $(CURDIR)/images/banner_jp.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_jp.raw
-else ifeq ($(REGION),eu)
-	export BANNERFILE	:= $(CURDIR)/images/banner_eu.raw
-	export ICONFILE		:= $(CURDIR)/images/icon_eu.raw
-endif
+export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
+export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
@@ -159,7 +134,7 @@ $(BUILD):
 
 #---------------------------------------------------------------------------------
 clean_target:
-	@echo clean ... $(GAMECODE)
+	@echo clean ...
 	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).dol $(OUTPUT).rel $(OUTPUT).gci
 
 #---------------------------------------------------------------------------------
@@ -167,26 +142,23 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-ELF2REL := $(abspath $(CURDIR))/../3rdparty/elf2rel/build/elf2rel
-GCIPACK := /usr/bin/env python3 $(abspath $(CURDIR))/../3rdparty/gcipack.py
-
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE)
-$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE)
+$(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE) gcipack
+$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) elf2rel
 $(OUTPUT).elf: $(LDFILES) $(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
 
 # REL linking
 %.rel: %.elf
-	@echo output ... $(notdir $@)
-	$(ELF2REL) $< $(MAPFILE) $@ 101 2 mkb_
+	@echo elf2rel ... $(notdir $@)
+	@$(ELF2REL) $< $(MAPFILE) $@ 101 2 mkb_
 	
 %.gci: %.rel
-	@echo packing ... $(notdir $@)
-	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) $(GAMECODE)
+	@echo gcipack ... $(notdir $@)
+	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P
 	
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .jpg extension
@@ -197,6 +169,29 @@ $(OFILES_SOURCES) : $(HFILES)
 	$(bin2o)
 
 -include $(DEPENDS)
+
+#---------------------------------------------------------------------------------
+# build tools
+#---------------------------------------------------------------------------------
+
+HOST_CXX ?= c++
+ELF2REL_SRC := $(CURDIR)/../3rdparty/elf2rel
+ELF2REL := $(CURDIR)/elf2rel
+ELF2REL_HEADERS := $(ELF2REL_SRC)/elf2rel.h $(wildcard $(ELF2REL_SRC)/elfio/*.hpp)
+
+elf2rel: $(ELF2REL)
+
+$(ELF2REL): $(ELF2REL_SRC)/elf2rel.cpp $(ELF2REL_HEADERS)
+	@echo "Compiling elf2rel..."
+	@$(HOST_CXX) -std=c++20 -O2 -I$(ELF2REL_SRC) $< -o $@
+
+GCIPACK := $(CURDIR)/gcipack
+gcipack: $(GCIPACK)
+$(GCIPACK): $(CURDIR)/../3rdparty/gcipack.cpp
+	@echo "Compiling gcipack..."
+	@$(HOST_CXX) -std=c++20 -O2 $< -o $@
+
+.PHONY: elf2rel gcipack
 
 #---------------------------------------------------------------------------------
 endif
