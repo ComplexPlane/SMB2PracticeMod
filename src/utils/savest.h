@@ -30,6 +30,17 @@ enum class LoadResult {
     ErrPausedAndNonGameplaySubmode,
 };
 
+enum class Action {
+    None,
+    Load,
+    Save,
+};
+
+struct History {
+    Action curr_frame_action;
+    Action prev_frame_action;
+};
+
 void init();
 void tick();
 
@@ -39,7 +50,7 @@ void clear(u32 slot);
 bool is_empty(u32 slot);
 u32 get_timestamp(u32 slot);
 
-bool was_state_loaded_this_frame();
 bool is_enabled();
+History get_history();
 
 }  // namespace savest

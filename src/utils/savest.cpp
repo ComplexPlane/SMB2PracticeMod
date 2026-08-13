@@ -30,9 +30,9 @@ struct SaveState {
     mkb::Sprite pause_menu_sprite;
 };
 
-static bool s_state_loaded_this_frame = false;
-static u32 s_timestamp;
-static SaveState s_states[SLOT_COUNT];
+u32 s_timestamp;
+SaveState s_states[SLOT_COUNT];
+History s_history;
 
 //
 // Hooks
@@ -47,7 +47,7 @@ TRAMP(s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode)
 });
 
 TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, [](u32 id) {
-    if (!s_state_loaded_this_frame) {
+    if (s_history.curr_frame_action != Action::Load) {
         s_soundreq_tramp.chain(id);
     }
 });
@@ -59,10 +59,6 @@ void init() {
 
     // Prevent sound effects from playing while loading states
     HOOK_TRAMP(s_soundreq_tramp);
-}
-
-bool was_state_loaded_this_frame() {
-    return s_state_loaded_this_frame;
 }
 
 // For all memory regions that involve just saving/loading to the same region...
@@ -296,6 +292,8 @@ SaveResult save(u32 slot) {
     state->flags |= Flag_IsPresent;
     state->timestamp = s_timestamp;
 
+    s_history.curr_frame_action = Action::Save;
+
     return SaveResult::Ok;
 }
 
@@ -352,8 +350,9 @@ LoadResult load(u32 slot) {
         mkb::set_minimap_mode(mkb::MINIMAP_EXPAND);
     }
 
-    s_state_loaded_this_frame = true;
     state->timestamp = s_timestamp;
+    s_history.curr_frame_action = Action::Load;
+
     return LoadResult::Ok;
 }
 
@@ -379,8 +378,12 @@ u32 get_timestamp(u32 slot) {
 }
 
 void tick() {
+    // Rotate history
+    s_history.prev_frame_action = s_history.curr_frame_action;
+    s_history.curr_frame_action = Action::None;
+
     s_timestamp++;
-    s_state_loaded_this_frame = false;
+
     for (u32 i = 0; i < LEN(s_states); i++) {
         if (s_states[i].flags & Flag_ReloadState) {
             load(i);  // Ignore result, spooky!

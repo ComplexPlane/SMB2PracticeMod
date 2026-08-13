@@ -19,10 +19,17 @@ static bool s_valid_run = false;
 static s16 s_paused_frame = 0;
 
 static constexpr pref::Pref INVALID_PREFS[] = {
-    pref::Pref::DisableFalloutVolumes, pref::Pref::UseCustomPhysics, pref::Pref::JumpMod,
-    pref::Pref::Moon,                  pref::Pref::Marathon,         pref::Pref::DebugMode,
-    pref::Pref::TimerType,             pref::Pref::Friction,         pref::Pref::Restitution,
-    pref::Pref::Camera,                pref::Pref::FalloutPlaneType,
+    pref::Pref::DisableFalloutVolumes,
+    pref::Pref::UseCustomPhysics,
+    pref::Pref::JumpMod,
+    pref::Pref::Moon,
+    pref::Pref::Marathon,
+    pref::Pref::DebugMode,
+    pref::Pref::TimerType,
+    pref::Pref::Friction,
+    pref::Pref::Restitution,
+    pref::Pref::Camera,
+    pref::Pref::FalloutPlaneType,
 };
 
 void disable_invalidating_settings() {
@@ -48,7 +55,7 @@ void tick() {
             }
         }
         // Loading savestates is disallowed
-        if (savest::was_state_loaded_this_frame()) s_valid_run = false;
+        if (savest::get_history().curr_frame_action == savest::Action::Load) s_valid_run = false;
 
         // Using dpad controls is disallowed
         bool dpad_down =

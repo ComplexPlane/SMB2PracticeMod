@@ -195,8 +195,7 @@ void clear_display() {
     s_attempts = 0;
     s_time_buzzer = false;
     s_score_buzzer = false;
-    s_battle_length =
-        convert_battle_length(IlBattleLength(pref::get(pref::Pref::IlBattleLength)));
+    s_battle_length = convert_battle_length(IlBattleLength(pref::get(pref::Pref::IlBattleLength)));
 }
 
 void new_battle() {
@@ -275,7 +274,7 @@ static void track_invalid_pauses() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
         s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
     } else if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) ||
-               savest::was_state_loaded_this_frame()) {
+               savest::get_history().curr_frame_action == savest::Action::Load) {
         s_valid_run = false;
     }
 }
