@@ -32,7 +32,7 @@ struct SaveState {
 
 u32 s_timestamp;
 SaveState s_states[SLOT_COUNT];
-History s_history;
+Action s_last_action;
 
 //
 // Hooks
@@ -47,7 +47,7 @@ TRAMP(s_set_minimap_mode_tramp, mkb::set_minimap_mode, [](mkb::MinimapMode mode)
 });
 
 TRAMP(s_soundreq_tramp, mkb::call_SoundReqID_arg_0, [](u32 id) {
-    if (s_history.curr_frame_action != Action::Load) {
+    if (s_last_action != Action::Load) {
         s_soundreq_tramp.chain(id);
     }
 });
@@ -292,7 +292,7 @@ SaveResult save(u32 slot) {
     state->flags |= Flag_IsPresent;
     state->timestamp = s_timestamp;
 
-    s_history.curr_frame_action = Action::Save;
+    s_last_action = Action::Save;
 
     return SaveResult::Ok;
 }
@@ -351,7 +351,7 @@ LoadResult load(u32 slot) {
     }
 
     state->timestamp = s_timestamp;
-    s_history.curr_frame_action = Action::Load;
+    s_last_action = Action::Load;
 
     return LoadResult::Ok;
 }
@@ -378,9 +378,7 @@ u32 get_timestamp(u32 slot) {
 }
 
 void tick() {
-    // Rotate history
-    s_history.prev_frame_action = s_history.curr_frame_action;
-    s_history.curr_frame_action = Action::None;
+    s_last_action = Action::None;
 
     s_timestamp++;
 
@@ -393,6 +391,10 @@ void tick() {
 
 bool is_enabled() {
     return pref::get(pref::Pref::Savestates) && !pref::get(pref::Pref::Freecam);
+}
+
+Action get_last_action() {
+    return s_last_action;
 }
 
 }  // namespace savest

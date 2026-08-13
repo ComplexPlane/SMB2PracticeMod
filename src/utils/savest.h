@@ -36,11 +36,6 @@ enum class Action {
     Save,
 };
 
-struct History {
-    Action curr_frame_action;
-    Action prev_frame_action;
-};
-
 void init();
 void tick();
 
@@ -51,6 +46,6 @@ bool is_empty(u32 slot);
 u32 get_timestamp(u32 slot);
 
 bool is_enabled();
-History get_history();
+Action get_last_action();
 
 }  // namespace savest

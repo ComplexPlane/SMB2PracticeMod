@@ -55,7 +55,7 @@ void tick() {
             }
         }
         // Loading savestates is disallowed
-        if (savest::get_history().curr_frame_action == savest::Action::Load) s_valid_run = false;
+        if (savest::get_last_action() == savest::Action::Load) s_valid_run = false;
 
         // Using dpad controls is disallowed
         bool dpad_down =

@@ -274,7 +274,7 @@ static void track_invalid_pauses() {
     if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
         s_paused_frame = mkb::mode_info.stage_time_frames_remaining;
     } else if ((mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && paused_now) ||
-               savest::get_history().curr_frame_action == savest::Action::Load) {
+               savest::get_last_action() == savest::Action::Load) {
         s_valid_run = false;
     }
 }
