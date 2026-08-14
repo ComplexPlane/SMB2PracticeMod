@@ -11,7 +11,7 @@ static constexpr mkb::PadDigitalInput INPUT_LIST[] = {
     mkb::PAD_BUTTON_DOWN, mkb::PAD_BUTTON_LEFT, mkb::PAD_BUTTON_RIGHT, mkb::PAD_BUTTON_START,
 };
 
-static const char* INPUT_STRINGS[] = {
+static const char *INPUT_STRINGS[] = {
     "A",       "B",         "X",         "Y",          "L",     "R",     "Z",
     "Dpad-Up", "Dpad-Down", "Dpad-Left", "Dpad-Right", "Start", "ERROR",
 };
@@ -69,7 +69,8 @@ static void encode_bind(EncodingType type) {
     }
 }
 
-void init() {}
+void init() {
+}
 
 void tick() {
     get_button_values();
@@ -109,14 +110,20 @@ u8 get_current_encoding() {
     return s_encoding;
 }
 
-EncodingType get_encoding_type() { return s_encoding_type; }
+EncodingType get_encoding_type() {
+    return s_encoding_type;
+}
 
-u8 get_input1(u8 bind_id) { return bind_id % 12; }
+u8 get_input1(u8 bind_id) {
+    return bind_id % 12;
+}
 
-u8 get_input2(u8 bind_id) { return (bind_id - (bind_id % 12)) / 12; }
+u8 get_input2(u8 bind_id) {
+    return (bind_id - (bind_id % 12)) / 12;
+}
 
 // buf needs to be big enough for longest possible combo (dpad-left+dpad-right)
-void get_bind_str(u8 bind_id, char* buf) {
+void get_bind_str(u8 bind_id, char *buf) {
     u8 i1 = get_input1(bind_id);
     u8 i2 = get_input2(bind_id);
     if (bind_id == INVALID) {

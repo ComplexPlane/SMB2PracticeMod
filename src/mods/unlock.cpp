@@ -35,10 +35,10 @@ void init() {
     char gamecode[7] = {};
     mkb::memcpy(gamecode, mkb::DVD_GAME_NAME, 6);
     if (mkb::strcmp(gamecode, "GM2E8P") == 0) {
-        if (pref::get(pref::BoolPref::UnlockVanilla)) {
+        if (pref::get(pref::Pref::UnlockVanilla)) {
             s_flags |= Flags::ShouldUnlock;
         }
-    } else if (pref::get(pref::BoolPref::UnlockRomhacks)) {
+    } else if (pref::get(pref::Pref::UnlockRomhacks)) {
         s_flags |= Flags::ShouldUnlock;
     }
 }
@@ -49,6 +49,8 @@ void tick() {
     }
 }
 
-void unlock_everything() { s_flags |= Flags::ShouldUnlock; }
+void unlock_everything() {
+    s_flags |= Flags::ShouldUnlock;
+}
 
 }  // namespace unlock

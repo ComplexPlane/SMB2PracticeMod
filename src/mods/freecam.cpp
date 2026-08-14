@@ -8,6 +8,7 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace freecam {
 
@@ -38,13 +39,19 @@ static bool in_correct_mode() {
                             mkb::sub_mode != mkb::SMD_EXOPT_REPLAY_LOAD_MAIN;
     return correct_main_mode && correct_sub_mode;
 }
-bool enabled() { return pref::get(pref::BoolPref::Freecam) && in_correct_mode(); }
+bool enabled() {
+    return pref::get(pref::Pref::Freecam) && in_correct_mode();
+}
 
-bool should_freeze_timer() { return enabled() && pref::get(pref::BoolPref::FreecamFreezeTimer); }
+bool should_freeze_timer() {
+    return enabled() && pref::get(pref::Pref::FreecamFreezeTimer);
+}
 
-bool should_hide_hud() { return enabled() && pref::get(pref::BoolPref::FreecamHideHud); }
+bool should_hide_hud() {
+    return enabled() && pref::get(pref::Pref::FreecamHideHud);
+}
 
-static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
+static void update_cam(mkb::Camera *camera, mkb::Ball *ball) {
     if (!(s_flags & Flags::EnabledPrevTick)) {
         s_eye = mkb::cameras[0].pos;
         s_rot = mkb::cameras[0].rot;
@@ -65,12 +72,12 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     bool fast = pad::button_down(mkb::PAD_BUTTON_Y);
     bool slow = pad::button_down(mkb::PAD_BUTTON_X);
 
-    float speed_mult = fast ? pref::get(pref::U8Pref::FreecamSpeedMult) : 1;
+    float speed_mult = fast ? pref::get(pref::Pref::FreecamSpeedMult) : 1;
     speed_mult = slow ? 0.15 : speed_mult;
 
     // New rotation
-    bool invert_yaw = pref::get(pref::BoolPref::FreecamInvertYaw);
-    bool invert_pitch = pref::get(pref::BoolPref::FreecamInvertPitch);
+    bool invert_yaw = pref::get(pref::Pref::FreecamInvertYaw);
+    bool invert_pitch = pref::get(pref::Pref::FreecamInvertPitch);
     s_rot.x -= substick_y * 300 * (invert_pitch ? -1 : 1);
     s_rot.y += substick_x * 490 * (invert_yaw ? -1 : 1);
     s_rot.z = 0;
@@ -104,7 +111,7 @@ static void update_cam(mkb::Camera* camera, mkb::Ball* ball) {
     }
 }
 
-static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
+static void call_camera_func_hook(mkb::Camera *camera, mkb::Ball *ball) {
     if (s_flags & Flags::EnabledThisTick) {
         update_cam(camera, ball);
     } else {
@@ -113,8 +120,8 @@ static void call_camera_func_hook(mkb::Camera* camera, mkb::Ball* ball) {
 }
 
 void init() {
-    patch::write_branch_bl(reinterpret_cast<void*>(0x8028353c),
-                           reinterpret_cast<void*>(call_camera_func_hook));
+    patch::write_branch_bl(relutil::relocate_addr(0x8028353c),
+                           reinterpret_cast<void *>(call_camera_func_hook));
 
     patch::hook_function(s_event_camera_tick_tramp, mkb::event_camera_tick, []() {
         if (enabled()) {
@@ -135,8 +142,8 @@ void tick() {
     }
 
     // Optionally toggle freecam with Z
-    if (binds::bind_pressed(pref::get(pref::U8Pref::FreecamToggleBind)) && in_correct_mode()) {
-        pref::set(pref::BoolPref::Freecam, !pref::get(pref::BoolPref::Freecam));
+    if (binds::bind_pressed(pref::get(pref::Pref::FreecamToggleBind)) && in_correct_mode()) {
+        pref::set(pref::Pref::Freecam, !pref::get(pref::Pref::Freecam));
         pref::save();
     }
 
@@ -145,7 +152,7 @@ void tick() {
         s_flags |= Flags::EnabledThisTick;
 
         // Adjust turbo speed multiplier
-        int speed_mult = pref::get(pref::U8Pref::FreecamSpeedMult);
+        int speed_mult = pref::get(pref::Pref::FreecamSpeedMult);
         bool input_made = false;
         if (pad::button_repeat(mkb::PAD_BUTTON_DOWN)) {
             speed_mult--;
@@ -158,7 +165,7 @@ void tick() {
         speed_mult = CLAMP(speed_mult, TURBO_SPEED_MIN, TURBO_SPEED_MAX);
         if (input_made) {
             draw::notify(draw::WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
-            pref::set(pref::U8Pref::FreecamSpeedMult, speed_mult);
+            pref::set(pref::Pref::FreecamSpeedMult, speed_mult);
             pref::save();
         }
     }

@@ -23,19 +23,29 @@
 namespace menu_defn {
 
 static char s_version_str[36];
+static char s_git_commit_str[] = "  Git commit:      " GIT_HASH;
 
-static const char* INPUTDISP_COLORS[] = {
+static void int_edit_rgb_format(s16 value, char *buf) {
+    if (pref::get(pref::Pref::RgbFormat) == 1) {
+        mkb::sprintf(buf, "0x%02X", static_cast<int>(value));
+    } else {
+        mkb::sprintf(buf, "%d", static_cast<int>(value));
+    }
+}
+
+static void int_edit_percent_format(s16 value, char *buf) {
+    mkb::sprintf(buf, "%d%%", static_cast<int>(value));
+}
+
+static const char *INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
 static_assert(LEN(INPUTDISP_COLORS) == inputdisp::NUM_COLORS);
 
-static const char* CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
+static const char *CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
-static const char* INPUTDISP_COLOR_TYPE_OPTIONS[] = {
-    "Preset",
-    "RGB Selector",
-    "Rainbow",
-    "Match Ball",
+static const char *INPUTDISP_COLOR_TYPE_OPTIONS[] = {
+    "Preset", "RGB Solid", "RGB Gradient", "Rainbow", "Match Ball",
 };
 
 static Widget s_input_preset[] = {
@@ -46,20 +56,30 @@ static Widget s_input_preset[] = {
                 .label = "Preset Color",
                 .choices = INPUTDISP_COLORS,
                 .num_choices = LEN(INPUTDISP_COLORS),
-                .pref = pref::U8Pref::InputDispColor,
+                .pref = pref::Pref::InputDispColor,
             },
     },
 };
 
 static Widget s_input_hex[] = {
     {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::Pref::InputDispRed,
+                .g_pref = pref::Pref::InputDispGreen,
+                .b_pref = pref::Pref::InputDispBlue,
+            },
+    },
+    {
         .type = WidgetType::IntEdit,
         .int_edit =
             {
                 .label = "Red Value",
-                .pref = pref::U8Pref::InputDispRed,
+                .pref = pref::Pref::InputDispRed,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
     {
@@ -67,9 +87,10 @@ static Widget s_input_hex[] = {
         .int_edit =
             {
                 .label = "Green Value",
-                .pref = pref::U8Pref::InputDispGreen,
+                .pref = pref::Pref::InputDispGreen,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
     {
@@ -77,20 +98,145 @@ static Widget s_input_hex[] = {
         .int_edit =
             {
                 .label = "Blue Value",
-                .pref = pref::U8Pref::InputDispBlue,
+                .pref = pref::Pref::InputDispBlue,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
 };
 
+static Widget s_input_gradient[] = {
+    {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::Pref::InputDispRed,
+                .g_pref = pref::Pref::InputDispGreen,
+                .b_pref = pref::Pref::InputDispBlue,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 1 Red",
+                .pref = pref::Pref::InputDispRed,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 1 Green",
+                .pref = pref::Pref::InputDispGreen,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 1 Blue",
+                .pref = pref::Pref::InputDispBlue,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::Pref::InputDispGradientColor2Red,
+                .g_pref = pref::Pref::InputDispGradientColor2Green,
+                .b_pref = pref::Pref::InputDispGradientColor2Blue,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 2 Red",
+                .pref = pref::Pref::InputDispGradientColor2Red,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 2 Green",
+                .pref = pref::Pref::InputDispGradientColor2Green,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Color 2 Blue",
+                .pref = pref::Pref::InputDispGradientColor2Blue,
+                .min = ballcolor::COLOR_MIN,
+                .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Rotation",
+                .pref = pref::Pref::InputDispGradientRotation,
+                .min = 0,
+                .max = 100,
+                .format = int_edit_percent_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient Start",
+                .pref = pref::Pref::InputDispGradientStart,
+                .min = -200,
+                .max = 200,
+                .format = int_edit_percent_format,
+            },
+    },
+    {
+        .type = WidgetType::IntEdit,
+        .int_edit =
+            {
+                .label = "Gradient End",
+                .pref = pref::Pref::InputDispGradientEnd,
+                .min = -100,
+                .max = 300,
+                .format = int_edit_percent_format,
+            },
+    },
+};
+
+static const char *INPUTDISP_LOCATION_OPTIONS[] = {"Right", "Center"};
+
 static Widget s_inputdisp_subwidgets[] = {
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
-                .label = "Use Center Location",
-                .pref = pref::BoolPref::InputDispCenterLocation,
+                .label = "Location",
+                .choices = INPUTDISP_LOCATION_OPTIONS,
+                .num_choices = LEN(INPUTDISP_LOCATION_OPTIONS),
+                .pref = pref::Pref::InputDispLocation,
             },
     },
     {
@@ -98,7 +244,7 @@ static Widget s_inputdisp_subwidgets[] = {
         .checkbox =
             {
                 .label = "Notch Indicators",
-                .pref = pref::BoolPref::InputDispNotchIndicators,
+                .pref = pref::Pref::InputDispNotchIndicators,
             },
     },
     {
@@ -106,9 +252,10 @@ static Widget s_inputdisp_subwidgets[] = {
         .checkbox =
             {
                 .label = "Raw Stick Inputs",
-                .pref = pref::BoolPref::InputDispRawStickInputs,
+                .pref = pref::Pref::InputDispRawStickInputs,
             },
     },
+    {.type = WidgetType::Separator},
     {
         .type = WidgetType::Choose,
         .choose =
@@ -116,7 +263,7 @@ static Widget s_inputdisp_subwidgets[] = {
                 .label = "Color Type",
                 .choices = INPUTDISP_COLOR_TYPE_OPTIONS,
                 .num_choices = LEN(INPUTDISP_COLOR_TYPE_OPTIONS),
-                .pref = pref::U8Pref::InputDispColorType,
+                .pref = pref::Pref::InputDispColorType,
             },
     },
     {
@@ -125,7 +272,7 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_preset,
                 .num_widgets = LEN(s_input_preset),
-                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 0; },
+                .show_if = [] { return pref::get(pref::Pref::InputDispColorType) == 0; },
             },
     },
     {
@@ -134,7 +281,16 @@ static Widget s_inputdisp_subwidgets[] = {
             {
                 .widgets = s_input_hex,
                 .num_widgets = LEN(s_input_hex),
-                .show_if = [] { return pref::get(pref::U8Pref::InputDispColorType) == 1; },
+                .show_if = [] { return pref::get(pref::Pref::InputDispColorType) == 1; },
+            },
+    },
+    {
+        .type = WidgetType::HideableGroupWidget,
+        .hideable_group =
+            {
+                .widgets = s_input_gradient,
+                .num_widgets = LEN(s_input_gradient),
+                .show_if = [] { return pref::get(pref::Pref::InputDispColorType) == 2; },
             },
     },
 };
@@ -145,7 +301,7 @@ static Widget s_inputdisp_widgets[] = {
         .checkbox =
             {
                 .label = "Show Input Display",
-                .pref = pref::BoolPref::InputDisp,
+                .pref = pref::Pref::InputDisp,
             },
     },
     {
@@ -154,24 +310,24 @@ static Widget s_inputdisp_widgets[] = {
             {
                 .widgets = s_inputdisp_subwidgets,
                 .num_widgets = LEN(s_inputdisp_subwidgets),
-                .show_if = [] { return pref::get(pref::BoolPref::InputDisp); },
+                .show_if = [] { return pref::get(pref::Pref::InputDisp) != 0; },
             },
     },
 };
 
-static const char* BALL_COLORS[] = {
+static const char *BALL_COLORS[] = {
     "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
 };
 static_assert(LEN(BALL_COLORS) == ballcolor::NUM_COLORS);
 
-static const char* BALL_COLOR_TYPES[] = {
+static const char *BALL_COLOR_TYPES[] = {
     "Preset",
     "RGB Selector",
     "Rainbow",
     "Random",
 };
 
-static const char* CLOTHING_COLOR_TYPES[] = {
+static const char *CLOTHING_COLOR_TYPES[] = {
     "Preset",
     "Random",
 };
@@ -184,7 +340,7 @@ static Widget s_preset_widgets[] = {
                 .label = "Preset Color",
                 .choices = BALL_COLORS,
                 .num_choices = LEN(BALL_COLORS),
-                .pref = pref::U8Pref::BallColor,
+                .pref = pref::Pref::BallColor,
             },
     },
 };
@@ -197,20 +353,30 @@ static Widget s_preset_ape_widgets[] = {
                 .label = "Preset Color",
                 .choices = BALL_COLORS,
                 .num_choices = LEN(BALL_COLORS),
-                .pref = pref::U8Pref::ApeColor,
+                .pref = pref::Pref::ApeColor,
             },
     },
 };
 
 static Widget s_hex_widgets[] = {
     {
+        .type = WidgetType::RgbPreview,
+        .rgb_preview =
+            {
+                .r_pref = pref::Pref::BallRed,
+                .g_pref = pref::Pref::BallGreen,
+                .b_pref = pref::Pref::BallBlue,
+            },
+    },
+    {
         .type = WidgetType::IntEdit,
         .int_edit =
             {
                 .label = "Red Value",
-                .pref = pref::U8Pref::BallRed,
+                .pref = pref::Pref::BallRed,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
     {
@@ -218,9 +384,10 @@ static Widget s_hex_widgets[] = {
         .int_edit =
             {
                 .label = "Green Value",
-                .pref = pref::U8Pref::BallGreen,
+                .pref = pref::Pref::BallGreen,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
     {
@@ -228,14 +395,15 @@ static Widget s_hex_widgets[] = {
         .int_edit =
             {
                 .label = "Blue Value",
-                .pref = pref::U8Pref::BallBlue,
+                .pref = pref::Pref::BallBlue,
                 .min = ballcolor::COLOR_MIN,
                 .max = ballcolor::COLOR_MAX,
+                .format = int_edit_rgb_format,
             },
     },
 };
 
-static const char* MONKEY_TYPES[] = {
+static const char *MONKEY_TYPES[] = {
     "Default", "Aiai", "Meemee", "Baby", "Gongon", "Random",
 };
 
@@ -251,7 +419,7 @@ static Widget s_ball_color_widgets[] = {
                 .label = "Ball Color Type",
                 .choices = BALL_COLOR_TYPES,
                 .num_choices = LEN(BALL_COLOR_TYPES),
-                .pref = pref::U8Pref::BallColorType,
+                .pref = pref::Pref::BallColorType,
             },
     },
     {
@@ -260,7 +428,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_widgets,
                 .num_widgets = LEN(s_preset_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 0; },
+                .show_if = [] { return pref::get(pref::Pref::BallColorType) == 0; },
             },
     },
     {
@@ -269,7 +437,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_hex_widgets,
                 .num_widgets = LEN(s_hex_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::BallColorType) == 1; },
+                .show_if = [] { return pref::get(pref::Pref::BallColorType) == 1; },
             },
     },
     {WidgetType::Separator},
@@ -284,7 +452,7 @@ static Widget s_ball_color_widgets[] = {
                 .label = "Clothing Color Type",
                 .choices = CLOTHING_COLOR_TYPES,
                 .num_choices = LEN(CLOTHING_COLOR_TYPES),
-                .pref = pref::U8Pref::ApeColorType,
+                .pref = pref::Pref::ApeColorType,
             },
     },
     {
@@ -293,7 +461,7 @@ static Widget s_ball_color_widgets[] = {
             {
                 .widgets = s_preset_ape_widgets,
                 .num_widgets = LEN(s_preset_ape_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::ApeColorType) == 0; },
+                .show_if = [] { return pref::get(pref::Pref::ApeColorType) == 0; },
             },
     },
     {WidgetType::Separator},
@@ -308,18 +476,18 @@ static Widget s_ball_color_widgets[] = {
                 .label = "Monkey Type",
                 .choices = MONKEY_TYPES,
                 .num_choices = LEN(MONKEY_TYPES),
-                .pref = pref::U8Pref::MonkeyType,
+                .pref = pref::Pref::MonkeyType,
             },
     },
 };
 
-static const char* IL_BATTLE_LENGTHS[] = {
+static const char *IL_BATTLE_LENGTHS[] = {
     "5 min",
     "7 min",
     "10 min",
     "Endless",
 };
-static const char* SCORE_BREAKDOWN_OPTIONS[] = {
+static const char *SCORE_BREAKDOWN_OPTIONS[] = {
     "Off",
     "Minimal",
     "Full",
@@ -334,7 +502,7 @@ static Widget s_il_battle_score_widgets[] = {
                 .label = "Score Breakdown",
                 .choices = SCORE_BREAKDOWN_OPTIONS,
                 .num_choices = LEN(SCORE_BREAKDOWN_OPTIONS),
-                .pref = pref::U8Pref::IlBattleBreakdown,
+                .pref = pref::Pref::IlBattleBreakdown,
             },
     },
 };
@@ -347,7 +515,7 @@ static Widget s_il_battle_subwidgets[] = {
                 .label = "Battle Length",
                 .choices = IL_BATTLE_LENGTHS,
                 .num_choices = LEN(IL_BATTLE_LENGTHS),
-                .pref = pref::U8Pref::IlBattleLength,
+                .pref = pref::Pref::IlBattleLength,
             },
     },
     {
@@ -355,7 +523,7 @@ static Widget s_il_battle_subwidgets[] = {
         .input_select =
             {
                 .label = "Ready Bind",
-                .pref = pref::U8Pref::IlBattleReadyBind,
+                .pref = pref::Pref::IlBattleReadyBind,
                 .required_chord = false,
                 .can_unbind = true,
             },
@@ -371,7 +539,7 @@ static Widget s_il_battle_subwidgets[] = {
         .checkbox =
             {
                 .label = "Show Time",
-                .pref = pref::BoolPref::IlBattleShowTime,
+                .pref = pref::Pref::IlBattleShowTime,
             },
     },
     {
@@ -379,7 +547,7 @@ static Widget s_il_battle_subwidgets[] = {
         .checkbox =
             {
                 .label = "Show Score",
-                .pref = pref::BoolPref::IlBattleShowScore,
+                .pref = pref::Pref::IlBattleShowScore,
             },
     },
     {
@@ -388,7 +556,7 @@ static Widget s_il_battle_subwidgets[] = {
             {
                 .widgets = s_il_battle_score_widgets,
                 .num_widgets = LEN(s_il_battle_score_widgets),
-                .show_if = [] { return pref::get(pref::BoolPref::IlBattleShowScore); },
+                .show_if = [] { return pref::get(pref::Pref::IlBattleShowScore) != 0; },
             },
     },
     {.type = WidgetType::Separator},
@@ -401,7 +569,7 @@ static Widget s_il_battle_subwidgets[] = {
         .checkbox =
             {
                 .label = "Show Tie Count",
-                .pref = pref::BoolPref::IlBattleTieCount,
+                .pref = pref::Pref::IlBattleTieCount,
             },
     },
     {
@@ -409,7 +577,7 @@ static Widget s_il_battle_subwidgets[] = {
         .checkbox =
             {
                 .label = "Show Attempts",
-                .pref = pref::BoolPref::IlBattleAttemptCount,
+                .pref = pref::Pref::IlBattleAttemptCount,
             },
     },
     {
@@ -417,7 +585,7 @@ static Widget s_il_battle_subwidgets[] = {
         .checkbox =
             {
                 .label = "Buzzer Message",
-                .pref = pref::BoolPref::IlBattleBuzzerOld,
+                .pref = pref::Pref::IlBattleBuzzerOld,
             },
     },
 };
@@ -432,7 +600,7 @@ static Widget s_il_battle_widgets[] = {
         .checkbox =
             {
                 .label = "IL Battle Display",
-                .pref = pref::BoolPref::IlBattleDisplay,
+                .pref = pref::Pref::IlBattleDisplay,
             },
     },
     {
@@ -441,7 +609,7 @@ static Widget s_il_battle_widgets[] = {
             {
                 .widgets = s_il_battle_subwidgets,
                 .num_widgets = LEN(s_il_battle_subwidgets),
-                .show_if = [] { return pref::get(pref::BoolPref::IlBattleDisplay); },
+                .show_if = [] { return pref::get(pref::Pref::IlBattleDisplay) != 0; },
             },
     },
 };
@@ -501,15 +669,48 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  Made with   by ComplexPlane"},
+        .text = {"  Made with   by"},
     },
     {
         .type = WidgetType::Custom,
         .custom = {draw::heart},
     },
     {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "ComplexPlane",
+                .color_left = {0x00, 0xde, 0x38, 0xff},
+                .color_right = {0x0a, 0xf2, 0xef, 0xff},
+                .offset_x = 17,
+                .overlap = true,
+            },
+    },
+    {
         .type = WidgetType::Text,
-        .text = {"  With contributions from rehtrop & Nambo"},
+        .text = {"  With contributions from:        ,      "},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "rehtrop",
+                .color_left = {0x69, 0xe3, 0xff, 0xff},
+                .color_right = {0xdd, 0x9b, 0xdc, 0xff},
+                .offset_x = 27,
+                .overlap = true,
+            },
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = "Nambo",
+                .color_left = {0xd0, 0x67, 0xff, 0xff},
+                .color_right = {0xf3, 0xe3, 0xff, 0xff},
+                .offset_x = 36,
+                .overlap = true,
+            },
     },
     {.type = WidgetType::Separator},
 
@@ -523,25 +724,23 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
+        .text = {s_git_commit_str},
+    },
+    {
+        .type = WidgetType::Separator,
+    },
+    {
+        .type = WidgetType::Text,
         .text = {"  For the latest version of SMB2 Practice Mod:"},
     },
     {
         .type = WidgetType::ColoredText,
-        .colored_text = {" github.com/ComplexPlane/SMB2PracticeMod/releases", draw::BLUE},
-    },
-    {.type = WidgetType::Separator},
-
-    {
-        .type = WidgetType::Header,
-        .header = {"Documentation"},
-    },
-    {
-        .type = WidgetType::Text,
-        .text = {"  For full documentation of SMB2 Practice Mod:"},
-    },
-    {
-        .type = WidgetType::ColoredText,
-        .colored_text = {"  github.com/ComplexPlane/SMB2PracticeMod/wiki", draw::BLUE},
+        .colored_text =
+            {
+                .label = " github.com/ComplexPlane/SMB2PracticeMod/releases",
+                .color_left = draw::BLUE,
+                .color_right = draw::BLUE,
+            },
     },
 };
 
@@ -590,10 +789,10 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  SMB2 Practice Mod."}},
     {.type = WidgetType::Separator},
 
-    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods, may also be"}},
-    {.type = WidgetType::Text, .text = {"  disallowed for for IL leaderboard submissions."}},
-    {.type = WidgetType::Text, .text = {"  The IL validation does not account for these"}},
-    {.type = WidgetType::Text, .text = {"  visual-only mods."}},
+    {.type = WidgetType::Text, .text = {"  Note that some visual-only mods may also be"}},
+    {.type = WidgetType::Text, .text = {"  disallowed for IL leaderboard submissions."}},
+    {.type = WidgetType::Text, .text = {"  The IL validation mark does not account for"}},
+    {.type = WidgetType::Text, .text = {"  these visual-only mods."}},
     {.type = WidgetType::Separator},
 
     {.type = WidgetType::Text, .text = {"  If you complete a stage without the watermark"}},
@@ -601,7 +800,7 @@ static Widget s_iw_mark_help_widgets[] = {
     {.type = WidgetType::Text, .text = {"  validate your run."}},
 };
 
-static const char* CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
+static const char *CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static Widget s_cm_beg_widgets[] = {
     {
@@ -794,7 +993,7 @@ static Widget s_cm_seg_widgets[] = {
                 .label = "Character",
                 .choices = CHARA_CHOICES,
                 .num_choices = LEN(CHARA_CHOICES),
-                .pref = pref::U8Pref::CmChara,
+                .pref = pref::Pref::CmChara,
             },
     },
     {.type = WidgetType::Separator},
@@ -811,7 +1010,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "Realtime (RTA)",
-                .pref = pref::BoolPref::TimerShowRTA,
+                .pref = pref::Pref::TimerShowRTA,
             },
     },
     {
@@ -819,7 +1018,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "Pausetime (PAU)",
-                .pref = pref::BoolPref::TimerShowPause,
+                .pref = pref::Pref::TimerShowPause,
             },
     },
     {.type = WidgetType::Separator},
@@ -829,7 +1028,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "Framesave (FSV)",
-                .pref = pref::BoolPref::TimerShowFramesave,
+                .pref = pref::Pref::TimerShowFramesave,
             },
     },
     {
@@ -837,7 +1036,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "Subtick (SUB)",
-                .pref = pref::BoolPref::TimerShowSubtick,
+                .pref = pref::Pref::TimerShowSubtick,
             },
     },
     {.type = WidgetType::Separator},
@@ -847,7 +1046,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "Story Mode IWs (IW)",
-                .pref = pref::BoolPref::IwTimer,
+                .pref = pref::Pref::IwTimer,
             },
     },
     {
@@ -855,7 +1054,7 @@ static Widget s_timers_widgets[] = {
         .checkbox =
             {
                 .label = "CM Segments (SEG)",
-                .pref = pref::BoolPref::CmTimer,
+                .pref = pref::Pref::CmTimer,
             },
     },
 };
@@ -866,7 +1065,7 @@ static Widget s_sound_widgets[] = {
         .checkbox =
             {
                 .label = "Mute Background Music",
-                .pref = pref::BoolPref::MuteBgm,
+                .pref = pref::Pref::MuteBgm,
             },
     },
     {.type = WidgetType::Text, .text = {"  To apply background music setting:"}},
@@ -878,7 +1077,7 @@ static Widget s_sound_widgets[] = {
         .checkbox =
             {
                 .label = "Mute Timer Ding",
-                .pref = pref::BoolPref::MuteTimerDing,
+                .pref = pref::Pref::MuteTimerDing,
             },
     },
 };
@@ -932,7 +1131,7 @@ static Widget s_unlock_widgets[] = {
         .checkbox =
             {
                 .label = "For Vanilla SMB2",
-                .pref = pref::BoolPref::UnlockVanilla,
+                .pref = pref::Pref::UnlockVanilla,
             },
     },
     {
@@ -940,7 +1139,7 @@ static Widget s_unlock_widgets[] = {
         .checkbox =
             {
                 .label = "For Romhacks",
-                .pref = pref::BoolPref::UnlockRomhacks,
+                .pref = pref::Pref::UnlockRomhacks,
             },
     },
     {
@@ -959,7 +1158,7 @@ static Widget s_freecam_widgets[] = {
         .checkbox =
             {
                 .label = "Freecam",
-                .pref = pref::BoolPref::Freecam,
+                .pref = pref::Pref::Freecam,
             },
     },
     {
@@ -967,7 +1166,7 @@ static Widget s_freecam_widgets[] = {
         .input_select =
             {
                 .label = "Toggle Bind",
-                .pref = pref::U8Pref::FreecamToggleBind,
+                .pref = pref::Pref::FreecamToggleBind,
                 .required_chord = false,
                 .can_unbind = true,
             },
@@ -982,7 +1181,7 @@ static Widget s_freecam_widgets[] = {
         .checkbox =
             {
                 .label = "Invert Yaw",
-                .pref = pref::BoolPref::FreecamInvertYaw,
+                .pref = pref::Pref::FreecamInvertYaw,
             },
     },
     {
@@ -990,7 +1189,7 @@ static Widget s_freecam_widgets[] = {
         .checkbox =
             {
                 .label = "Invert Pitch",
-                .pref = pref::BoolPref::FreecamInvertPitch,
+                .pref = pref::Pref::FreecamInvertPitch,
             },
     },
     {
@@ -998,7 +1197,7 @@ static Widget s_freecam_widgets[] = {
         .int_edit =
             {
                 .label = "Turbo Speed Factor",
-                .pref = pref::U8Pref::FreecamSpeedMult,
+                .pref = pref::Pref::FreecamSpeedMult,
                 .min = freecam::TURBO_SPEED_MIN,
                 .max = freecam::TURBO_SPEED_MAX,
             },
@@ -1008,7 +1207,7 @@ static Widget s_freecam_widgets[] = {
         .checkbox =
             {
                 .label = "Freeze Timer",
-                .pref = pref::BoolPref::FreecamFreezeTimer,
+                .pref = pref::Pref::FreecamFreezeTimer,
             },
     },
     {
@@ -1016,7 +1215,7 @@ static Widget s_freecam_widgets[] = {
         .checkbox =
             {
                 .label = "Hide HUD",
-                .pref = pref::BoolPref::FreecamHideHud,
+                .pref = pref::Pref::FreecamHideHud,
             },
     },
     {.type = WidgetType::Separator},
@@ -1042,7 +1241,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "HUD",
-                .pref = pref::BoolPref::HideHud,
+                .pref = pref::Pref::HideHud,
             },
     },
     {
@@ -1050,7 +1249,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Ball",
-                .pref = pref::BoolPref::HideBall,
+                .pref = pref::Pref::HideBall,
             },
     },
     {
@@ -1058,7 +1257,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Stage Models",
-                .pref = pref::BoolPref::HideStage,
+                .pref = pref::Pref::HideStage,
             },
     },
     {
@@ -1066,7 +1265,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Stage Items",
-                .pref = pref::BoolPref::HideItems,
+                .pref = pref::Pref::HideItems,
             },
     },
     {
@@ -1074,7 +1273,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Stage Objects",
-                .pref = pref::BoolPref::HideStobjs,
+                .pref = pref::Pref::HideStobjs,
             },
     },
     {
@@ -1082,7 +1281,7 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Effects",
-                .pref = pref::BoolPref::HideEffects,
+                .pref = pref::Pref::HideEffects,
             },
     },
     {
@@ -1090,28 +1289,43 @@ static Widget s_hide_widgets[] = {
         .checkbox =
             {
                 .label = "Background",
-                .pref = pref::BoolPref::HideBg,
+                .pref = pref::Pref::HideBg,
             },
     },
 };
 
+static const char *SAVESTATE_SAVE_TO_OPTIONS[] = {"Selected Slot", "Next Empty Slot",
+                                                  "Empty, Then Oldest"};
+
 static Widget s_savestate_subwidgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Save To",
+                .choices = SAVESTATE_SAVE_TO_OPTIONS,
+                .num_choices = LEN(SAVESTATE_SAVE_TO_OPTIONS),
+                .pref = pref::Pref::SavestateSaveTo,
+            },
+    },
     {
         .type = WidgetType::InputSelect,
         .input_select =
             {
                 .label = "Clear Savestate Bind",
-                .pref = pref::U8Pref::SavestateClearBind,
+                .pref = pref::Pref::SavestateClearBind,
                 .required_chord = false,
                 .can_unbind = true,
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::InputSelect,
+        .input_select =
             {
-                .label = "Prevent Overriding",
-                .pref = pref::BoolPref::SavestateDisableOverwrite,
+                .label = "Clear All Bind",
+                .pref = pref::Pref::SavestateClearAllBind,
+                .required_chord = false,
+                .can_unbind = true,
             },
     },
 };
@@ -1126,7 +1340,7 @@ static Widget s_savestate_widgets[] = {
         .checkbox =
             {
                 .label = "Enable Savestates",
-                .pref = pref::BoolPref::Savestates,
+                .pref = pref::Pref::Savestates,
             },
     },
     {
@@ -1135,7 +1349,7 @@ static Widget s_savestate_widgets[] = {
             {
                 .widgets = s_savestate_subwidgets,
                 .num_widgets = LEN(s_savestate_subwidgets),
-                .show_if = [] { return pref::get(pref::BoolPref::Savestates); },
+                .show_if = [] { return pref::get(pref::Pref::Savestates) != 0; },
             },
     },
     {.type = WidgetType::Separator},
@@ -1209,7 +1423,7 @@ static Widget s_tools_widgets[] = {
         .checkbox =
             {
                 .label = "Debug Mode",
-                .pref = pref::BoolPref::DebugMode,
+                .pref = pref::Pref::DebugMode,
             },
     },
 };
@@ -1258,7 +1472,7 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Practice Mode",
-                .pref = pref::BoolPref::IlMarkPractice,
+                .pref = pref::Pref::IlMarkPractice,
             },
     },
     {
@@ -1266,7 +1480,7 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Story Mode",
-                .pref = pref::BoolPref::IlMarkStory,
+                .pref = pref::Pref::IlMarkStory,
             },
     },
     {
@@ -1274,7 +1488,7 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Challenge Mode",
-                .pref = pref::BoolPref::IlMarkChallenge,
+                .pref = pref::Pref::IlMarkChallenge,
             },
     },
     {
@@ -1282,7 +1496,7 @@ static Widget s_il_mark_widgets[] = {
         .checkbox =
             {
                 .label = "Romhacks",
-                .pref = pref::BoolPref::IlMarkRomhacks,
+                .pref = pref::Pref::IlMarkRomhacks,
             },
     },
     {.type = WidgetType::Separator},
@@ -1318,14 +1532,14 @@ static Widget s_displays_widgets[] = {
         .checkbox =
             {
                 .label = "9999 Banana Counter",
-                .pref = pref::BoolPref::BananaCounter9999,
+                .pref = pref::Pref::BananaCounter9999,
             },
     },
 };
 
-static const char* PHYSICS_PRESETS[] = {"Default",          "Light Ball",  "No Friction",
-                                        "Heavy Ball",       "Bouncy Ball", "Sticky Ball", "High Friction",
-                                        "Jump-Mod Physics"};
+static const char *PHYSICS_PRESETS[] = {"Default",       "Light Ball",      "No Friction",
+                                        "Heavy Ball",    "Bouncy Ball",     "Sticky Ball",
+                                        "High Friction", "Jump-Mod Physics"};
 
 static Widget s_lightball[] = {{.type = WidgetType::Text, .text = {"  Weight: 1.00 -> 0.95"}}};
 static Widget s_nofriction[] = {{.type = WidgetType::Text, .text = {"  Friction: 0.010 -> 0.000"}}};
@@ -1350,7 +1564,7 @@ static Widget s_physics_widgets[] = {
                 .label = "Physics Presets",
                 .choices = PHYSICS_PRESETS,
                 .num_choices = LEN(PHYSICS_PRESETS),
-                .pref = pref::U8Pref::PhysicsPreset,
+                .pref = pref::Pref::PhysicsPreset,
             },
     },
     {
@@ -1361,7 +1575,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_lightball),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::LightBall;
                     },
             },
@@ -1374,7 +1588,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_nofriction),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::NoFriction;
                     },
             },
@@ -1387,7 +1601,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_heavyball),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::HeavyBall;
                     },
             },
@@ -1400,7 +1614,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_bouncyball),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::BouncyBall;
                     },
             },
@@ -1413,7 +1627,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_stickyball),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::StickyBall;
                     },
             },
@@ -1426,7 +1640,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_high_friction),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::HighFriction;
                     },
             },
@@ -1439,7 +1653,7 @@ static Widget s_physics_widgets[] = {
                 .num_widgets = LEN(s_jump_physics),
                 .show_if =
                     [] {
-                        return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) ==
+                        return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) ==
                                physics::PhysicsPreset::JumpPhysics;
                     },
             },
@@ -1449,12 +1663,12 @@ static Widget s_physics_widgets[] = {
         .checkbox =
             {
                 .label = "Display Physics Text",
-                .pref = pref::BoolPref::CustomPhysicsDisp,
+                .pref = pref::Pref::CustomPhysicsDisp,
             },
     },
 };
 
-static const char* STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
+static const char *STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
 
 static Widget s_reverse_goal_widgets[] = {
     {
@@ -1476,7 +1690,7 @@ static Widget s_stage_edit_widgets[] = {
                 .label = "Stage Edit Mode",
                 .choices = STAGE_EDIT_VARIANTS,
                 .num_choices = LEN(STAGE_EDIT_VARIANTS),
-                .pref = pref::U8Pref::StageEditVariant,
+                .pref = pref::Pref::StageEditVariant,
             },
     },
     {
@@ -1485,7 +1699,7 @@ static Widget s_stage_edit_widgets[] = {
             {
                 .widgets = s_reverse_goal_widgets,
                 .num_widgets = LEN(s_reverse_goal_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::StageEditVariant) == 3; },
+                .show_if = [] { return pref::get(pref::Pref::StageEditVariant) == 3; },
             },
     },
     {
@@ -1494,7 +1708,7 @@ static Widget s_stage_edit_widgets[] = {
     },
 };
 
-static const char* JUMP_COUNTS[] = {"One", "Two", "Infinite"};
+static const char *JUMP_COUNTS[] = {"One", "Two", "Infinite"};
 
 static Widget s_jump_classic_widgets[] = {
     {
@@ -1508,7 +1722,7 @@ static Widget s_jump_classic_widgets[] = {
         .checkbox =
             {
                 .label = "Use Changed Physics",
-                .pref = pref::BoolPref::JumpChangePhysics,
+                .pref = pref::Pref::JumpChangePhysics,
             },
     },
 };
@@ -1525,7 +1739,7 @@ static Widget s_jump_standard_widgets[] = {
         .checkbox =
             {
                 .label = "Use Changed Physics",
-                .pref = pref::BoolPref::JumpChangePhysics,
+                .pref = pref::Pref::JumpChangePhysics,
             },
     },
     {
@@ -1533,7 +1747,7 @@ static Widget s_jump_standard_widgets[] = {
         .checkbox =
             {
                 .label = "Allow Walljumps",
-                .pref = pref::BoolPref::JumpAllowWalljumps,
+                .pref = pref::Pref::JumpAllowWalljumps,
             },
     },
     {
@@ -1543,12 +1757,12 @@ static Widget s_jump_standard_widgets[] = {
                 .label = "Jump Count",
                 .choices = JUMP_COUNTS,
                 .num_choices = LEN(JUMP_COUNTS),
-                .pref = pref::U8Pref::JumpCount,
+                .pref = pref::Pref::JumpCount,
             },
     },
 };
 
-static const char* JUMP_PROFILES[] = {"Standard", "Classic"};
+static const char *JUMP_PROFILES[] = {"Standard", "Classic"};
 
 static Widget s_jump_profiles[] = {
     {
@@ -1558,7 +1772,7 @@ static Widget s_jump_profiles[] = {
                 .label = "Jump Profile",
                 .choices = JUMP_PROFILES,
                 .num_choices = LEN(JUMP_PROFILES),
-                .pref = pref::U8Pref::JumpProfile,
+                .pref = pref::Pref::JumpProfile,
             },
     },
     {
@@ -1567,7 +1781,7 @@ static Widget s_jump_profiles[] = {
             {
                 .widgets = s_jump_standard_widgets,
                 .num_widgets = LEN(s_jump_standard_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 0; },
+                .show_if = [] { return pref::get(pref::Pref::JumpProfile) == 0; },
             },
     },
     {
@@ -1576,7 +1790,7 @@ static Widget s_jump_profiles[] = {
             {
                 .widgets = s_jump_classic_widgets,
                 .num_widgets = LEN(s_jump_classic_widgets),
-                .show_if = [] { return pref::get(pref::U8Pref::JumpProfile) == 1; },
+                .show_if = [] { return pref::get(pref::Pref::JumpProfile) == 1; },
             },
     },
 };
@@ -1588,7 +1802,7 @@ static Widget s_jump_widgets[] = {
         .checkbox =
             {
                 .label = "Jump-Mod",
-                .pref = pref::BoolPref::JumpMod,
+                .pref = pref::Pref::JumpMod,
             },
     },
     {
@@ -1597,7 +1811,7 @@ static Widget s_jump_widgets[] = {
             {
                 .widgets = s_jump_profiles,
                 .num_widgets = LEN(s_jump_profiles),
-                .show_if = [] { return pref::get(pref::BoolPref::JumpMod); },
+                .show_if = [] { return pref::get(pref::Pref::JumpMod) != 0; },
             },
     },
     {
@@ -1615,8 +1829,8 @@ static Widget s_jump_widgets[] = {
     },
 };
 
-static const char* TIMER_TYPES[] = {"Default", "Frozen", "Freeze at 0", "Count up from 0"};
-static const char* FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
+static const char *TIMER_TYPES[] = {"Default", "Frozen", "Freeze at 0", "Count up from 0"};
+static const char *FALLOUT_PLANE_TYPE[] = {"Normal", "Disabled", "Bouncy"};
 
 static Widget s_variant_widgets[] = {
     {
@@ -1630,7 +1844,7 @@ static Widget s_variant_widgets[] = {
                 .label = "Camera Type",
                 .choices = CAMERA_OPTIONS,
                 .num_choices = LEN(CAMERA_OPTIONS),
-                .pref = pref::U8Pref::Camera,
+                .pref = pref::Pref::Camera,
             },
     },
     {
@@ -1638,7 +1852,7 @@ static Widget s_variant_widgets[] = {
         .checkbox =
             {
                 .label = "D-Pad Controls",
-                .pref = pref::BoolPref::DpadControls,
+                .pref = pref::Pref::DpadControls,
             },
     },
     {
@@ -1662,7 +1876,7 @@ static Widget s_variant_widgets[] = {
                 .label = "Timer Type",
                 .choices = TIMER_TYPES,
                 .num_choices = LEN(TIMER_TYPES),
-                .pref = pref::U8Pref::TimerType,
+                .pref = pref::Pref::TimerType,
             },
     },
     {
@@ -1672,7 +1886,7 @@ static Widget s_variant_widgets[] = {
                 .label = "Fallout Plane Type",
                 .choices = FALLOUT_PLANE_TYPE,
                 .num_choices = LEN(FALLOUT_PLANE_TYPE),
-                .pref = pref::U8Pref::FalloutPlaneType,
+                .pref = pref::Pref::FalloutPlaneType,
             },
     },
     {
@@ -1680,7 +1894,7 @@ static Widget s_variant_widgets[] = {
         .checkbox =
             {
                 .label = "Disable Fallout Volume",
-                .pref = pref::BoolPref::DisableFalloutVolumes,
+                .pref = pref::Pref::DisableFalloutVolumes,
             },
     },
     {WidgetType::Separator},
@@ -1711,7 +1925,7 @@ static Widget s_variant_widgets[] = {
         .checkbox =
             {
                 .label = "Marathon Mode",
-                .pref = pref::BoolPref::Marathon,
+                .pref = pref::Pref::Marathon,
             },
     },
 };
@@ -1745,18 +1959,32 @@ static Widget s_reset_prefs_widgets[] = {
     },
 };
 
+static const char *RGB_FORMAT_OPTIONS[] = {"Decimal", "Hex"};
+
 static Widget s_pracmod_settings_widgets[] = {
     {
         .type = WidgetType::InputSelect,
         .input_select =
             {
                 .label = "Menu Bind",
-                .pref = pref::U8Pref::MenuBind,
+                .pref = pref::Pref::MenuBind,
                 .required_chord = true,
                 .can_unbind = false,
             },
     },
     {.text = {"  Menu Bind Requires 2 Buttons"}},
+    {.type = WidgetType::Separator},
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "RGB Format",
+                .choices = RGB_FORMAT_OPTIONS,
+                .num_choices = LEN(RGB_FORMAT_OPTIONS),
+                .pref = pref::Pref::RgbFormat,
+            },
+    },
+    {.type = WidgetType::Separator},
     {
         .type = WidgetType::Menu,
         .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},
@@ -1796,6 +2024,8 @@ MenuWidget root_menu = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void init() { mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str()); }
+void init() {
+    mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str());
+}
 
 }  // namespace menu_defn

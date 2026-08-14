@@ -5,6 +5,7 @@
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace fallout {
 
@@ -30,12 +31,12 @@ static bool s_toggled_freecam = false;
 
 void init() {
     // stop fallouts
-    patch::hook_function(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball* ball) {
+    patch::hook_function(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball *ball) {
         mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.dest(ball);
         bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
-        bool volumes_disabled = pref::get(pref::BoolPref::DisableFalloutVolumes);
+        bool volumes_disabled = pref::get(pref::Pref::DisableFalloutVolumes);
 
-        switch (FalloutPlaneType(pref::get(pref::U8Pref::FalloutPlaneType))) {
+        switch (FalloutPlaneType(pref::get(pref::Pref::FalloutPlaneType))) {
             case FalloutPlaneType::Normal: {
                 if (volumes_disabled) {
                     return static_cast<mkb::BOOL32>(below_fallout);
@@ -68,20 +69,20 @@ void init() {
 
     patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
         // Set the current default values before loading the stagedef
-        patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
-        patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
+        patch::write_word(relutil::relocate_addr(0x80297548), s_timeover_condition);
+        patch::write_word(relutil::relocate_addr(0x80297534), s_timer_increment);
         s_load_stagedef_tramp.dest(stage_id);
         // Stardust's custom code sets the timers after loading the stagedef, this will run
         // afterwards and collect those timer defaults
         // For non-Stardust packs, this will simply collect the default values again (and not affect
         // anything)
-        s_timeover_condition = *reinterpret_cast<u32*>(0x80297548);
-        s_timer_increment = *reinterpret_cast<u32*>(0x80297534);
+        s_timeover_condition = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548));
+        s_timer_increment = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297534));
     });
 }
 
 void freeze_timer() {
-    TimerType type = TimerType(pref::get(pref::U8Pref::TimerType));
+    TimerType type = TimerType(pref::get(pref::Pref::TimerType));
     if (freecam::should_freeze_timer()) {
         type = TimerType::FreezeInstantly;
         s_toggled_freecam = true;
@@ -89,32 +90,32 @@ void freeze_timer() {
 
     switch (type) {
         case TimerType::Default: {
-            if (pref::did_change(pref::U8Pref::TimerType) || s_toggled_freecam) {
+            if (pref::did_change(pref::Pref::TimerType) || s_toggled_freecam) {
                 // time over at 0 frames
-                patch::write_word(reinterpret_cast<u32*>(0x80297548), s_timeover_condition);
+                patch::write_word(relutil::relocate_addr(0x80297548), s_timeover_condition);
                 // add -1 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), s_timer_increment);
+                patch::write_word(relutil::relocate_addr(0x80297534), s_timer_increment);
                 s_toggled_freecam = false;
             }
             break;
         }
         case TimerType::FreezeInstantly: {
             // time over at -60 frames (for leniency when switching modes)
-            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
+            patch::write_word(relutil::relocate_addr(0x80297548), 0x2c00ffa0);
             // add 0 to timer each frame (timer doesnt move)
-            patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+            patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
             break;
         }
         case TimerType::FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
+            patch::write_word(relutil::relocate_addr(0x80297548), 0x2c00ffa0);
 
             if (mkb::mode_info.stage_time_frames_remaining <= 0) {
                 // when timer hits 0, add 0 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
             } else {
                 // timer is ticking normally, add -1 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x3803ffff);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x3803ffff);
             }
             break;
         }
@@ -123,22 +124,25 @@ void freeze_timer() {
                 mkb::mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            patch::write_word(reinterpret_cast<u32*>(0x80297548), 0x2c00ffa0);
+            patch::write_word(relutil::relocate_addr(0x80297548), 0x2c00ffa0);
 
             // getting close to signed integer overflow, freeze timer to prevent time-over
             if (mkb::mode_info.stage_time_frames_remaining >= 32400) {
                 // add 0 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030000);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030000);
             } else {
                 // timer is ticking normally, add +1 to timer each frame
-                patch::write_word(reinterpret_cast<u32*>(0x80297534), 0x38030001);
+                patch::write_word(relutil::relocate_addr(0x80297534), 0x38030001);
             }
             break;
         }
     }
 }
 
-void tick() { freeze_timer(); }
-void disp() {}
+void tick() {
+    freeze_timer();
+}
+void disp() {
+}
 
 }  // namespace fallout

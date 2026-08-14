@@ -5,6 +5,7 @@
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
+#include "utils/relutil.h"
 
 namespace physics {
 
@@ -12,7 +13,8 @@ static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
 bool using_custom_physics() {
-    return physics::PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset)) != physics::PhysicsPreset::Default;
+    return physics::PhysicsPreset(pref::get(pref::Pref::PhysicsPreset)) !=
+           physics::PhysicsPreset::Default;
 }
 
 void init() {
@@ -27,12 +29,12 @@ static void change_physics() {
     mkb::balls[mkb::curr_player_idx].restitution = s_orig_restitution;
 
     // update physics depending on preset
-    switch (PhysicsPreset(pref::get(pref::U8Pref::PhysicsPreset))) {
+    switch (PhysicsPreset(pref::get(pref::Pref::PhysicsPreset))) {
         case PhysicsPreset::Default: {
             break;
         }
         case PhysicsPreset::LightBall: {
-            bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+            bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now) {
                 mkb::balls[mkb::curr_player_idx].vel.y += 0.005f;
             }
@@ -43,7 +45,7 @@ static void change_physics() {
             break;
         }
         case PhysicsPreset::HeavyBall: {
-            bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+            bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
             if (mkb::sub_mode == mkb::SMD_GAME_PLAY_MAIN && !paused_now) {
                 mkb::balls[mkb::curr_player_idx].vel.y -= 0.005f;
             }
@@ -81,7 +83,7 @@ void disp() {
         mkb::sub_mode != mkb::SMD_GAME_PLAY_INIT && mkb::sub_mode != mkb::SMD_GAME_PLAY_MAIN)
         return;
 
-    if (using_custom_physics() && pref::get(pref::BoolPref::CustomPhysicsDisp) &&
+    if (using_custom_physics() && pref::get(pref::Pref::CustomPhysicsDisp) &&
         !freecam::should_hide_hud()) {
         mkb::textdraw_reset();
         mkb::textdraw_set_font(mkb::FONT32_ASC_8x16);

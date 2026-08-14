@@ -9,6 +9,7 @@
 #include "utils/macro_utils.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace ballcolor {
 
@@ -39,7 +40,9 @@ static mkb::GXColor s_current_color;
 
 static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
-mkb::GXColor get_current_color() { return s_current_color; }
+mkb::GXColor get_current_color() {
+    return s_current_color;
+}
 
 static u8 convert_to_ball_color_id(u8 color_choice) {
     if (color_choice == 0) {
@@ -56,7 +59,7 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
 }
 
 void switch_monkey() {
-    switch (MonkeyType(pref::get(pref::U8Pref::MonkeyType))) {
+    switch (MonkeyType(pref::get(pref::Pref::MonkeyType))) {
         case MonkeyType::Default: {
             break;
         }
@@ -84,7 +87,8 @@ void switch_monkey() {
 }
 
 void init() {
-    s_default_color = *reinterpret_cast<mkb::GXColor*>(0x80472a34);  // default color
+    s_default_color =
+        *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34));  // default color
 
     patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
         s_load_stagedef_tramp.dest(stage_id);
@@ -93,45 +97,47 @@ void init() {
 }
 
 void tick() {
-    BallColorType ball_type = BallColorType(pref::get(pref::U8Pref::BallColorType));
+    BallColorType ball_type = BallColorType(pref::get(pref::Pref::BallColorType));
 
     // dont change color if in story mode menu
     if (mkb::main_mode != mkb::MD_GAME || (mkb::sub_mode == mkb::SMD_GAME_SCENARIO_INIT ||
                                            mkb::sub_mode == mkb::SMD_GAME_SCENARIO_MAIN ||
                                            mkb::sub_mode == mkb::SMD_GAME_SCENARIO_RETURN)) {
-        *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_default_color;
+        *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34)) = s_default_color;
         return;
     }
 
-    mkb::Ape* ape = mkb::balls[mkb::curr_player_idx].ape;
+    mkb::Ape *ape = mkb::balls[mkb::curr_player_idx].ape;
     if (ape == nullptr) return;
 
     switch (ball_type) {
         case BallColorType::Preset: {
-            *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_default_color;  // reset default color
-            u8 color_id = convert_to_ball_color_id(pref::get(pref::U8Pref::BallColor));
+            *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34)) =
+                s_default_color;  // reset default color
+            u8 color_id = convert_to_ball_color_id(pref::get(pref::Pref::BallColor));
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = color_id;
-            s_current_color = reinterpret_cast<mkb::GXColor*>(0x80472a28)[color_id];
+            s_current_color =
+                reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a28))[color_id];
             break;
         }
         case BallColorType::RGB: {
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = convert_to_ball_color_id(0);
-            u8 red = pref::get(pref::U8Pref::BallRed);
-            u8 green = pref::get(pref::U8Pref::BallGreen);
-            u8 blue = pref::get(pref::U8Pref::BallBlue);
+            u8 red = pref::get(pref::Pref::BallRed);
+            u8 green = pref::get(pref::Pref::BallGreen);
+            u8 blue = pref::get(pref::Pref::BallBlue);
             s_current_color = {red, green, blue, 0};
-            *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_current_color;
+            *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             break;
         }
         case BallColorType::Rainbow: {
             mkb::balls[mkb::curr_player_idx].g_ball_color_index = convert_to_ball_color_id(0);
 
-            bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+            bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
             if (!paused_now) {
                 s_rainbow = (s_rainbow + 3) % 1080;
             }
             s_current_color = draw::num_to_rainbow(s_rainbow);
-            *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_current_color;
+            *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             break;
         }
         case BallColorType::Random: {
@@ -144,17 +150,18 @@ void tick() {
                 u32 blue = CLAMP(((mkb::rand() % 256) + bonus_brightness), 0, 0xff);
                 s_current_color = {static_cast<u8>(red), static_cast<u8>(green),
                                    static_cast<u8>(blue), 0};
-                *reinterpret_cast<mkb::GXColor*>(0x80472a34) = s_current_color;
+                *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34)) =
+                    s_current_color;
             }
             break;
         }
     }
 
-    ClothingType clothing_type = ClothingType(pref::get(pref::U8Pref::ApeColorType));
+    ClothingType clothing_type = ClothingType(pref::get(pref::Pref::ApeColorType));
 
     switch (clothing_type) {
         case ClothingType::Preset: {
-            ape->color_index = convert_to_ape_color_id(pref::get(pref::U8Pref::ApeColor));
+            ape->color_index = convert_to_ape_color_id(pref::get(pref::Pref::ApeColor));
             break;
         }
         case ClothingType::Random: {

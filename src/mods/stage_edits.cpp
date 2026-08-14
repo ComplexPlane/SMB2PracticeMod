@@ -17,7 +17,9 @@ static bool s_new_goal = false;
 
 static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
 
-void select_new_goal() { s_new_goal = true; }
+void select_new_goal() {
+    s_new_goal = true;
+}
 
 static void undo_mode(ActiveMode mode) {
     switch (mode) {
@@ -110,10 +112,10 @@ static void set_mode(ActiveMode mode) {
 }
 
 void smd_game_ready_init() {
-    ActiveMode next_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+    ActiveMode next_mode = ActiveMode(pref::get(pref::Pref::StageEditVariant));
     if (s_current_mode != next_mode) {
         undo_mode(s_current_mode);
-        s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+        s_current_mode = ActiveMode(pref::get(pref::Pref::StageEditVariant));
         set_mode(s_current_mode);
     } else if (s_current_mode == ActiveMode::Reverse && s_new_goal) {
         undo_mode(ActiveMode::Reverse);
@@ -126,7 +128,7 @@ void smd_game_ready_init() {
 void init() {
     patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
         s_load_stagedef_tramp.dest(stage_id);
-        s_current_mode = ActiveMode(pref::get(pref::U8Pref::StageEditVariant));
+        s_current_mode = ActiveMode(pref::get(pref::Pref::StageEditVariant));
         set_mode(s_current_mode);
     });
 }

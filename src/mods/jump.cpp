@@ -7,6 +7,7 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace jump {
 
@@ -50,16 +51,16 @@ static void reset() {
 void patch_minimap() {
     // Patch out Minimap Toggle
     // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
-    if (mkb::main_mode == mkb::MD_GAME && pref::get(pref::BoolPref::JumpMod)) {
-        u32* patch1_loc = reinterpret_cast<u32*>(0x808f4d18);
-        u32* patch2_loc = reinterpret_cast<u32*>(0x808f5168);
+    if (mkb::main_mode == mkb::MD_GAME && pref::get(pref::Pref::JumpMod)) {
+        u32 *patch1_loc = reinterpret_cast<u32 *>(relutil::relocate_addr(0x808f4d18));
+        u32 *patch2_loc = reinterpret_cast<u32 *>(relutil::relocate_addr(0x808f5168));
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
-            s_patch1 = patch::write_nop(reinterpret_cast<void*>(0x808f4d18));
+            s_patch1 = patch::write_nop(relutil::relocate_addr(0x808f4d18));
         }
         if (*patch2_loc != 0x60000000) {
-            s_patch2 = patch::write_nop(reinterpret_cast<void*>(0x808f5168));
+            s_patch2 = patch::write_nop(relutil::relocate_addr(0x808f5168));
         }
     }
 }
@@ -67,16 +68,15 @@ void patch_minimap() {
 static void restore_minimap() {
     if (mkb::main_mode == mkb::MD_GAME) {
         // These overwrites exist in main_game.rel which isn't always loaded
-        patch::write_word(reinterpret_cast<void*>(0x808f4d18), s_patch1);
-        patch::write_word(reinterpret_cast<void*>(0x808f5168), s_patch2);
+        patch::write_word(relutil::relocate_addr(0x808f4d18), s_patch1);
+        patch::write_word(relutil::relocate_addr(0x808f5168), s_patch2);
     }
 }
 
 static void enable() {
     patch_minimap();
-    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset,
-                  static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
+    if (pref::get(pref::Pref::JumpChangePhysics)) {
+        pref::set(pref::Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
         pref::save();
     }
     reset();
@@ -84,8 +84,8 @@ static void enable() {
 
 static void disable() {
     restore_minimap();
-    if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-        pref::set(pref::U8Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Default));
+    if (pref::get(pref::Pref::JumpChangePhysics)) {
+        pref::set(pref::Pref::PhysicsPreset, static_cast<u8>(physics::PhysicsPreset::Default));
         pref::save();
     }
 }
@@ -117,12 +117,12 @@ static void jumping() {
     }
 
     // Setup vars
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
     bool a_down = pad::button_down(mkb::PAD_BUTTON_A);
     bool a_released = pad::button_released(mkb::PAD_BUTTON_A);
     bool ground_touched = (ball.phys_flags & mkb::PHYS_ON_GROUND);
-    Vec normal_vec = mkb::balls[mkb::curr_player_idx].g_last_collision_normal;
+    Vec normal_vec = mkb::balls[mkb::curr_player_idx].g_last_coli_normal;
 
     // Track Jump Presses
     if (a_pressed) {
@@ -132,12 +132,12 @@ static void jumping() {
     }
 
     bool valid_location =
-        normal_vec.y < WALLJUMP_NORMAL || pref::get(pref::BoolPref::JumpAllowWalljumps);
+        normal_vec.y < WALLJUMP_NORMAL || pref::get(pref::Pref::JumpAllowWalljumps);
     // Track Ground Touched
     if (ground_touched && valid_location) {
         s_ticks_since_ground = 0;
 
-        MaxJumpCount count = MaxJumpCount(pref::get(pref::U8Pref::JumpCount));
+        MaxJumpCount count = MaxJumpCount(pref::get(pref::Pref::JumpCount));
         if (count == MaxJumpCount::Two) {
             s_aerial_jumps = 1;
         } else {
@@ -153,7 +153,7 @@ static void jumping() {
         ground_touched && s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
     bool coyote_late = s_ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
     // check extra jump count
-    bool aerial_jumped = (s_aerial_jumps > 0 || MaxJumpCount(pref::get(pref::U8Pref::JumpCount)) ==
+    bool aerial_jumped = (s_aerial_jumps > 0 || MaxJumpCount(pref::get(pref::Pref::JumpCount)) ==
                                                     MaxJumpCount::Infinite) &&
                          a_pressed;
     bool start_jump = mkb::sub_mode == mkb::SMD_GAME_PLAY_INIT &&
@@ -218,7 +218,7 @@ static void classic_jumping() {
     }
 
     // Setup vars
-    mkb::Ball& ball = mkb::balls[mkb::curr_player_idx];
+    mkb::Ball &ball = mkb::balls[mkb::curr_player_idx];
     bool a_pressed = pad::button_pressed(mkb::PAD_BUTTON_A);
     bool a_down = pad::button_down(mkb::PAD_BUTTON_A);
     bool a_released = pad::button_released(mkb::PAD_BUTTON_A);
@@ -265,8 +265,8 @@ static void classic_jumping() {
 }
 
 void tick() {
-    bool enabled = pref::get(pref::BoolPref::JumpMod);
-    if (pref::did_change(pref::BoolPref::JumpMod)) {
+    bool enabled = pref::get(pref::Pref::JumpMod);
+    if (pref::did_change(pref::Pref::JumpMod)) {
         if (enabled) {
             enable();
         } else {
@@ -274,22 +274,22 @@ void tick() {
         }
     }
     if (enabled) {
-        if (pref::did_change(pref::BoolPref::JumpChangePhysics)) {
-            if (pref::get(pref::BoolPref::JumpChangePhysics)) {
-                pref::set(pref::U8Pref::PhysicsPreset,
+        if (pref::did_change(pref::Pref::JumpChangePhysics)) {
+            if (pref::get(pref::Pref::JumpChangePhysics)) {
+                pref::set(pref::Pref::PhysicsPreset,
                           static_cast<u8>(physics::PhysicsPreset::JumpPhysics));
             } else {
-                pref::set(pref::U8Pref::PhysicsPreset,
+                pref::set(pref::Pref::PhysicsPreset,
                           static_cast<u8>(physics::PhysicsPreset::Default));
             }
             pref::save();
         }
         // Don't run logic while paused
-        bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+        bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
         if (paused_now) return;
         toggle_minimap();
 
-        if (pref::get(pref::U8Pref::JumpProfile) == 0) {
+        if (pref::get(pref::Pref::JumpProfile) == 0) {
             jumping();
         } else {
             classic_jumping();

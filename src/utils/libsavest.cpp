@@ -10,6 +10,7 @@
 #include "utils/draw.h"
 #include "utils/memstore.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace libsavest {
 
@@ -22,6 +23,7 @@ enum Flags {
 static patch::Tramp<decltype(&mkb::set_minimap_mode)> s_set_minimap_mode_tramp;
 static patch::Tramp<decltype(&mkb::call_SoundReqID_arg_0)> s_call_SoundReqID_arg_0_tramp;
 static bool s_state_loaded_this_frame = false;
+static u32 s_timestamp = 0;
 
 void init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
@@ -44,7 +46,13 @@ void init() {
                          });
 }
 
-bool state_loaded_this_frame() { return s_state_loaded_this_frame; }
+bool state_loaded_this_frame() {
+    return s_state_loaded_this_frame;
+}
+
+void tick() {
+    s_timestamp++;
+}
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
@@ -54,13 +62,13 @@ void SaveState::pass_over_regions() {
     m_store.do_region(&mkb::sub_mode, sizeof(mkb::sub_mode));
     m_store.do_region(&mkb::mode_info.stage_time_frames_remaining,
                       sizeof(mkb::mode_info.stage_time_frames_remaining));
-    m_store.do_region(reinterpret_cast<void*>(0x8054E03C), 0xe0);  // Camera region
-    m_store.do_region(reinterpret_cast<void*>(0x805BD830), 0x1c);  // Some physics region
+    m_store.do_region(relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
+    m_store.do_region(relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
     m_store.do_region(&mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
     m_store.do_region(mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
-    mkb::Ape* ape = mkb::balls[0].ape;
+    mkb::Ape *ape = mkb::balls[0].ape;
     m_store.do_region(ape, sizeof(*ape));  // Store entire ape struct for now
     m_store.do_region(
         ape->g_some_ape_state->g_buf5,
@@ -102,12 +110,12 @@ void SaveState::pass_over_regions() {
     m_store.do_region(mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    m_store.do_region(reinterpret_cast<void*>(0x8054DCA8), 56);  // Pause menu state
-    m_store.do_region(reinterpret_cast<void*>(0x805BC474), 4);   // Pause menu bitfield
+    m_store.do_region(relutil::relocate_addr(0x8054DCA8), 56);  // Pause menu state
+    m_store.do_region(relutil::relocate_addr(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-        mkb::Sprite* sprite = &mkb::sprites[i];
+        mkb::Sprite *sprite = &mkb::sprites[i];
 
         if (sprite->tick_func == mkb::sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
@@ -129,7 +137,7 @@ void SaveState::handle_pause_menu_save() {
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite& sprite = mkb::sprites[i];
+        mkb::Sprite &sprite = mkb::sprites[i];
         if (sprite.disp_func == mkb::sprite_pausemenu_disp) {
             m_pause_menu_sprite_status = mkb::sprite_pool_info.status_list[i];
             m_pause_menu_sprite = sprite;
@@ -148,7 +156,8 @@ void SaveState::handle_pause_menu_load() {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) == 0x8032a4bc) {
+            if (reinterpret_cast<u32>(mkb::sprites[i].disp_func) ==
+                reinterpret_cast<u32>(relutil::relocate_addr(0x8032a4bc))) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
             }
@@ -164,7 +173,7 @@ static void destruct_non_gameplay_sprites() {
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
 
-        mkb::Sprite* sprite = &mkb::sprites[i];
+        mkb::Sprite *sprite = &mkb::sprites[i];
         bool post_goal_sprite = (sprite->disp_func == mkb::sprite_goal_disp ||
                                  sprite->disp_func == mkb::sprite_clear_score_disp ||
                                  sprite->disp_func == mkb::sprite_warp_bonus_disp ||
@@ -211,7 +220,8 @@ bool SaveState::handle_load_state_from_nonplay_submode() {
         return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;  // TODO actually give this a name
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) &
+                      8;  // TODO actually give this a name
     if (paused_now) {
         return false;
     }
@@ -270,6 +280,7 @@ SaveState::SaveResult SaveState::save() {
     m_flags |= FLAG_ACTIVE;
     m_stage_id = mkb::current_stage_id;
     m_character = mkb::active_monkey_id[mkb::curr_player_idx];
+    m_timestamp = s_timestamp;
     pass_over_regions();
     handle_pause_menu_save();
 
@@ -326,15 +337,23 @@ SaveState::LoadResult SaveState::load() {
     }
 
     s_state_loaded_this_frame = true;
+    m_timestamp = s_timestamp;
     return LoadResult::Ok;
 }
 
 void SaveState::clear() {
     m_flags = 0;
     m_store.enter_prealloc_mode();
+    m_timestamp = s_timestamp;
 }
 
-bool SaveState::isEmpty() { return !(m_flags & FLAG_ACTIVE); }
+bool SaveState::isEmpty() {
+    return !(m_flags & FLAG_ACTIVE);
+}
+
+u32 SaveState::timestamp() {
+    return m_timestamp;
+}
 
 void SaveState::tick() {
     s_state_loaded_this_frame = false;
@@ -344,7 +363,7 @@ void SaveState::tick() {
 }
 
 bool savestates_enabled() {
-    return pref::get(pref::BoolPref::Savestates) && !pref::get(pref::BoolPref::Freecam);
+    return pref::get(pref::Pref::Savestates) && !pref::get(pref::Pref::Freecam);
 }
 
 }  // namespace libsavest

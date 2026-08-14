@@ -8,6 +8,7 @@
 #include "utils/draw.h"
 #include "utils/libsavest.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
 namespace ilbattle {
@@ -107,10 +108,10 @@ static void battle_display(mkb::GXColor text_color) {
         draw::debug_text(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
     }
 
-    if (pref::get(pref::BoolPref::IlBattleShowTime)) {
+    if (pref::get(pref::Pref::IlBattleShowTime)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
-        if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_frames_ties > 0) {
+        if (pref::get(pref::Pref::IlBattleTieCount) && s_best_frames_ties > 0) {
             draw::debug_text(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
                              best_centiseconds, s_best_frames_ties + 1);
         } else {
@@ -118,10 +119,10 @@ static void battle_display(mkb::GXColor text_color) {
                              best_centiseconds);
         }
     }
-    if (pref::get(pref::BoolPref::IlBattleShowScore)) {
+    if (pref::get(pref::Pref::IlBattleShowScore)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
-        if (pref::get(pref::BoolPref::IlBattleTieCount) && s_best_score_ties > 0) {
+        if (pref::get(pref::Pref::IlBattleTieCount) && s_best_score_ties > 0) {
             draw::debug_text(X - 6, current_y, score_color, "%d (%d)", s_best_score,
                              s_best_score_ties + 1);
         } else {
@@ -129,7 +130,7 @@ static void battle_display(mkb::GXColor text_color) {
         }
 
         // breakdown
-        u8 breakdown_value = pref::get(pref::U8Pref::IlBattleBreakdown);
+        u8 breakdown_value = pref::get(pref::Pref::IlBattleBreakdown);
         if (breakdown_value == 1) {
             // minimal
             current_y += CHEIGHT;
@@ -147,15 +148,15 @@ static void battle_display(mkb::GXColor text_color) {
                              best_score_centiseconds);
         }
     }
-    if (pref::get(pref::BoolPref::IlBattleAttemptCount)) {
+    if (pref::get(pref::Pref::IlBattleAttemptCount)) {
         current_y += CHEIGHT;
         draw::debug_text(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
         draw::debug_text(X - 6, current_y, text_color, "%d", s_attempts);
     }
 
-    if (pref::get(pref::BoolPref::IlBattleBuzzerOld) &&
-        ((s_time_buzzer && pref::get(pref::BoolPref::IlBattleShowTime)) ||
-         (s_score_buzzer && pref::get(pref::BoolPref::IlBattleShowScore)))) {
+    if (pref::get(pref::Pref::IlBattleBuzzerOld) &&
+        ((s_time_buzzer && pref::get(pref::Pref::IlBattleShowTime)) ||
+         (s_score_buzzer && pref::get(pref::Pref::IlBattleShowScore)))) {
         old_buzzer_display(current_y + CHEIGHT);
     }
 }
@@ -194,8 +195,7 @@ void clear_display() {
     s_attempts = 0;
     s_time_buzzer = false;
     s_score_buzzer = false;
-    s_battle_length =
-        convert_battle_length(IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)));
+    s_battle_length = convert_battle_length(IlBattleLength(pref::get(pref::Pref::IlBattleLength)));
 }
 
 static void new_battle() {
@@ -204,7 +204,7 @@ static void new_battle() {
 }
 
 static void track_first_retry() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
     if (!paused_now && mkb::sub_mode == mkb::SMD_GAME_READY_INIT) {
         new_battle();
         s_state = IlBattleState::BattleRunning;
@@ -219,7 +219,7 @@ static void run_battle_timer() {
             s_accepted_retry = true;
         }
     }
-    if (IlBattleLength(pref::get(pref::U8Pref::IlBattleLength)) == IlBattleLength::Endless) {
+    if (IlBattleLength(pref::get(pref::Pref::IlBattleLength)) == IlBattleLength::Endless) {
         // timer is endless
         s_battle_frames++;
     } else if (s_battle_frames < s_battle_length) {
@@ -286,7 +286,7 @@ void validate_attempt() {
 }
 
 static void final_attempt() {
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
     // End battle if: Paused, Fallout, or Time Over
     if (paused_now || mkb::sub_mode == mkb::SMD_GAME_RINGOUT_INIT ||
         mkb::sub_mode == mkb::SMD_GAME_RINGOUT_MAIN ||
@@ -309,7 +309,7 @@ static void track_postgoal() {
 }
 
 void tick() {
-    if (!pref::get(pref::BoolPref::IlBattleDisplay)) {
+    if (!pref::get(pref::Pref::IlBattleDisplay)) {
         clear_display();
         s_state = IlBattleState::NotReady;
     }
@@ -366,7 +366,7 @@ void tick() {
 
     // Resets battles when Dpad Down is pressed
     if (mkb::main_mode == mkb::MD_GAME &&
-        binds::bind_pressed(pref::get(pref::U8Pref::IlBattleReadyBind))) {
+        binds::bind_pressed(pref::get(pref::Pref::IlBattleReadyBind))) {
         new_battle();
     }
 }
@@ -377,12 +377,12 @@ void disp() {
         return;
     }
 
-    if (!pref::get(pref::BoolPref::IlBattleDisplay) || freecam::should_hide_hud()) return;
+    if (!pref::get(pref::Pref::IlBattleDisplay) || freecam::should_hide_hud()) return;
 
     switch (s_state) {
         case IlBattleState::NotReady: {
             if (mkb::main_mode != mkb::MD_GAME) return;
-            u8 input = pref::get(pref::U8Pref::IlBattleReadyBind);
+            u8 input = pref::get(pref::Pref::IlBattleReadyBind);
             char buf[25];
             binds::get_bind_str(input, buf);
             draw::debug_text(X - 12 * CWIDTH, Y, draw::LIGHT_PURPLE, "NOT READY");
@@ -407,7 +407,7 @@ void disp() {
             break;
         }
         case IlBattleState::BuzzerBeaterPostgoal: {
-            if (pref::get(pref::BoolPref::IlBattleShowScore)) {
+            if (pref::get(pref::Pref::IlBattleShowScore)) {
                 battle_display(draw::LIGHT_GREEN);
             } else {
                 battle_display(draw::LIGHT_PURPLE);

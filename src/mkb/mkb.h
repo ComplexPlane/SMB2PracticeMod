@@ -7,8 +7,12 @@ namespace mkb {
 // Originally #define'd
 constexpr GXBool GX_TRUE = 1;
 constexpr GXBool GX_FALSE = 0;
-inline u32 OSRoundUp32B(u32 x) { return (x + 31) & ~31; }
-inline u32 OSRoundDown32B(u32 x) { return x & ~31; }
+inline u32 OSRoundUp32B(u32 x) {
+    return (x + 31) & ~31;
+}
+inline u32 OSRoundDown32B(u32 x) {
+    return x & ~31;
+}
 
 // Originally #define'd
 enum {
@@ -33,6 +37,9 @@ typedef s32 CARDResult;
 constexpr s32 CARD_READ_SIZE = 512;
 constexpr s32 CARD_FILENAME_MAX = 32;
 
+// GXCompCnt for positions (originally #define'd)
+constexpr GXCompCnt GX_POS_XYZ = static_cast<GXCompCnt>(1);
+
 // A few inline GX functions we need
 inline void GXPosition3f32(float x, float y, float z) {
     GXWGFifo.v_f32 = x;
@@ -43,6 +50,12 @@ inline void GXTexCoord2f32(float s, float t) {
     GXWGFifo.v_f32 = s;
     GXWGFifo.v_f32 = t;
 }
+inline void GXColor4u8(u8 r, u8 g, u8 b, u8 a) {
+    GXWGFifo.v_u8 = r;
+    GXWGFifo.v_u8 = g;
+    GXWGFifo.v_u8 = b;
+    GXWGFifo.v_u8 = a;
+}
 
 constexpr u32 CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 
@@ -51,21 +64,15 @@ constexpr u32 CARD_WORKAREA_SIZE = 5 * 8 * 1024;
 // It's convenient to always use these types "as our own", without having to namespace-address them
 using mkb::f32;
 using mkb::f64;
+using mkb::GXColor;
 using mkb::Quat;
 using mkb::s16;
+using mkb::S16Vec;
 using mkb::s32;
+using mkb::S32Vec;
 using mkb::s8;
 using mkb::u16;
 using mkb::u32;
 using mkb::u8;
-using mkb::Vec2d;
-using mkb::S32Vec;
 using mkb::Vec;
-using mkb::S16Vec;
-
-// Necessary to use macros here so file information is accurate
-// Note that these macros won't necessarily halt the game in Dolphin as Dolphin lets you ignore
-// assertions Prefer to use MOD_ASSERT and friends instead
-
-#define ASSERT(exp) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, "Failed assertion " #exp), 0))
-#define ASSERTMSG(exp, msg) (void)((exp) || (gc::OSPanic(__FILE__, __LINE__, (msg)), 0))
+using mkb::Vec2d;

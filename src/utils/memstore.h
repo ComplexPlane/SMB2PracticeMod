@@ -11,14 +11,14 @@ enum class Mode {
 };
 
 class MemStore {
- public:
+   public:
     MemStore() noexcept;
     ~MemStore();
 
-    MemStore(const MemStore& store) = delete;
-    MemStore(MemStore&& store) = delete;
-    MemStore& operator=(const MemStore& store) = delete;
-    MemStore& operator=(MemStore&& store) = delete;
+    MemStore(const MemStore &store) = delete;
+    MemStore(MemStore &&store) = delete;
+    MemStore &operator=(const MemStore &store) = delete;
+    MemStore &operator=(MemStore &&store) = delete;
 
     void enter_prealloc_mode();
 
@@ -33,15 +33,15 @@ class MemStore {
     // In PREALLOC mode, this is used to size the buffer
     // In SAVE mode, this copies the region into the buffer
     // In LOAD mode, this copies the region from the buffer to the ptr
-    void do_region(void* ptr, u32 size);
+    void do_region(void *ptr, u32 size);
 
     void print_stats() const;
     Mode get_mode() const;
 
- private:
+   private:
     Mode m_mode;
 
-    u8* m_save_buf;
+    u8 *m_save_buf;
     u32 m_save_buf_idx;
     u32 m_save_buf_len;
 };

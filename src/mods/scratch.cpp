@@ -2,8 +2,11 @@
 
 namespace scratch {
 
-void init() {}
-void tick() {}
-void disp() {}
+void init() {
+}
+void tick() {
+}
+void disp() {
+}
 
 }  // namespace scratch

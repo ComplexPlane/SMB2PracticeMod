@@ -36,8 +36,12 @@ void predraw();
 
 void rect(float x1, float y1, float x2, float y2, mkb::GXColor color);
 void debug_text_palette();
-void debug_text(s32 x, s32 y, mkb::GXColor color, const char* format, ...);
+void debug_text(s32 x, s32 y, mkb::GXColor color, const char *format, ...);
 void heart();
+void tm();
+
+// Linear interpolation between two colors (t in range [0, 1])
+mkb::GXColor lerp_colors(f32 t, mkb::GXColor c1, mkb::GXColor c2);
 
 // allows a color to cycle through a rainbow animation, have num value be...
 // num = (num + gradient_speed) % 1080;
@@ -47,7 +51,18 @@ mkb::GXColor num_to_rainbow(int num);
  * Functions which cause drawing during disp() and don't necessarily need to be called each frame
  */
 
+enum class NotifyDuration {
+    Short,
+    Long,
+};
+
 // Show a notification in the bottom-right of the screen which fades out after a short period
-void notify(mkb::GXColor color, const char* format, ...);
+void notify(mkb::GXColor color, NotifyDuration duration, const char *format, ...);
+void notify(mkb::GXColor color, const char *format, ...);
+
+void bind_white_texture_obj();
+
+void set_vertex_color_pipeline();
+void unset_vertex_color_pipeline();
 
 }  // namespace draw

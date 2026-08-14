@@ -7,6 +7,7 @@
 #include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/relutil.h"
 
 namespace validate {
 
@@ -20,18 +21,18 @@ static bool s_loaded_savestate;
 
 static patch::Tramp<decltype(&mkb::did_ball_enter_goal)> s_goal_tramp;
 
-static constexpr pref::BoolPref INVALID_BOOL_PREFS[] = {
-    pref::BoolPref::DisableFalloutVolumes,
-    pref::BoolPref::JumpMod,
-    pref::BoolPref::Marathon,
-    pref::BoolPref::DebugMode,
+static constexpr pref::Pref INVALID_BOOL_PREFS[] = {
+    pref::Pref::DisableFalloutVolumes,
+    pref::Pref::JumpMod,
+    pref::Pref::Marathon,
+    pref::Pref::DebugMode,
 };
 
-static constexpr pref::U8Pref INVALID_U8_PREFS[] = {
-    pref::U8Pref::PhysicsPreset,
-    pref::U8Pref::TimerType,
-    pref::U8Pref::FalloutPlaneType,
-    pref::U8Pref::StageEditVariant,
+static constexpr pref::Pref INVALID_U8_PREFS[] = {
+    pref::Pref::PhysicsPreset,
+    pref::Pref::TimerType,
+    pref::Pref::FalloutPlaneType,
+    pref::Pref::StageEditVariant,
 };
 
 void disable_invalidating_settings() {
@@ -49,7 +50,7 @@ void disable_invalidating_settings() {
 
 void validate_run() {
     // Track pauses
-    bool paused_now = *reinterpret_cast<u32*>(0x805BC474) & 8;
+    bool paused_now = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x805BC474)) & 8;
     if (paused_now && !s_entered_goal) {
         s_has_paused = true;
     }
@@ -61,7 +62,7 @@ void validate_run() {
     bool dpad_down =
         pad::button_down(mkb::PAD_BUTTON_DOWN) || pad::button_down(mkb::PAD_BUTTON_LEFT) ||
         pad::button_down(mkb::PAD_BUTTON_RIGHT) || pad::button_down(mkb::PAD_BUTTON_UP);
-    if (pref::get(pref::BoolPref::DpadControls) && dpad_down) s_used_mods = true;
+    if (pref::get(pref::Pref::DpadControls) && dpad_down) s_used_mods = true;
 
     // Opening the mod menu is disallowed
     if (menu_impl::is_visible()) s_used_mods = true;
@@ -84,7 +85,7 @@ void validate_run() {
 }
 
 // Copy-paste of line_intersects from ghidra with slight changes to calculate s_framesave
-static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb::Rect& rect) {
+static bool line_intersects(const Vec &lineStart, const Vec &lineEnd, const mkb::Rect &rect) {
     Vec end;
     Vec start;
     float half_height;
@@ -96,7 +97,7 @@ static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb:
     end.x = lineEnd.x;
     end.y = lineEnd.y;
     end.z = lineEnd.z;
-    mkb::mtxa_from_translate(&const_cast<Vec&>(rect.pos));
+    mkb::mtxa_from_translate(&const_cast<Vec &>(rect.pos));
     mkb::mtxa_rotate_z((rect.rot).z);
     mkb::mtxa_rotate_y((rect.rot).y);
     mkb::mtxa_rotate_x((rect.rot).x);
@@ -130,13 +131,15 @@ static bool line_intersects(const Vec& lineStart, const Vec& lineEnd, const mkb:
 }
 
 // Copy paste from ghidra of did_ball_enter_goal with slight changes to calculate s_framesave
-void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-                    mkb::byte* out_goal_flags) {
+void find_framesave(mkb::Ball *ball,
+                    int *out_stage_goal_idx,
+                    int *out_itemgroup_id,
+                    mkb::byte *out_goal_flags) {
     int itemgroup_goal_idx;
-    mkb::StagedefGoal* goal;
+    mkb::StagedefGoal *goal;
     mkb::dword itemgroup_idx;
     int stage_goal_idx;
-    mkb::StagedefColiHeader* itemgroup;
+    mkb::StagedefColiHeader *itemgroup;
     mkb::Rect goal_trigger;
     mkb::PhysicsBall physicsball;
 
@@ -183,8 +186,8 @@ void find_framesave(mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup
 void init() {
     patch::hook_function(
         s_goal_tramp, &mkb::did_ball_enter_goal,
-        [](mkb::Ball* ball, int* out_stage_goal_idx, int* out_itemgroup_id,
-           mkb::byte* out_goal_flags) {
+        [](mkb::Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id,
+           mkb::byte *out_goal_flags) {
             bool result =
                 s_goal_tramp.dest(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
             if (result) {
@@ -209,6 +212,8 @@ bool was_run_valid(bool mods_allowed) {
     return (!s_used_mods || mods_allowed) && !s_has_paused && !s_loaded_savestate && s_entered_goal;
 }
 
-u32 get_framesave() { return s_framesave; }
+u32 get_framesave() {
+    return s_framesave;
+}
 
 }  // namespace validate

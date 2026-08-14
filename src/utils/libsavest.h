@@ -8,7 +8,7 @@
 namespace libsavest {
 
 class SaveState {
- public:
+   public:
     enum class SaveResult {
         Ok,
         ErrorMainMode,
@@ -37,11 +37,13 @@ class SaveState {
     LoadResult load();
     bool isEmpty();
     void clear();
+    u32 timestamp();
 
- private:
+   private:
     u32 m_flags = 0;
     s32 m_stage_id = -1;
     u8 m_character = 0;
+    u32 m_timestamp = 0;
     memstore::MemStore m_store;
     u8 m_pause_menu_sprite_status = 0;
     mkb::Sprite m_pause_menu_sprite;
@@ -53,6 +55,7 @@ class SaveState {
 };
 
 void init();  // Global initialization for savestates
+void tick();  // Must be called every frame; drives the global savestate timestamp
 bool state_loaded_this_frame();
 bool savestates_enabled();
 

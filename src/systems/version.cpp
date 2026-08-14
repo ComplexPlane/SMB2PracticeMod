@@ -17,7 +17,7 @@ void init() {
     }
 }
 
-s32 compare(const SemVer& v1, const SemVer& v2) {
+s32 compare(const SemVer &v1, const SemVer &v2) {
     if (v1.major < v2.major) return -1;
     if (v1.major > v2.major) return 1;
     if (v1.minor < v2.minor) return -1;
@@ -28,7 +28,7 @@ s32 compare(const SemVer& v1, const SemVer& v2) {
     return 0;
 }
 
-s32 compare(const PracmodVersion& v1, const PracmodVersion& v2) {
+s32 compare(const PracmodVersion &v1, const PracmodVersion &v2) {
     s32 semver_compare = compare(v1.semver, v2.semver);
     if (semver_compare != 0) return semver_compare;
 
@@ -43,6 +43,8 @@ s32 compare(const PracmodVersion& v1, const PracmodVersion& v2) {
     return 0;
 }
 
-const char* get_version_str() { return s_version_str; }
+const char *get_version_str() {
+    return s_version_str;
+}
 
 }  // namespace version

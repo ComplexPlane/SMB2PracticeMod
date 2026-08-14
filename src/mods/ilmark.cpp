@@ -48,16 +48,16 @@ bool is_ilmark_enabled() {
     if (mkb::main_mode != mkb::MD_GAME) return false;
 
     if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkPractice)) return false;
+        if (!pref::get(pref::Pref::IlMarkPractice)) return false;
     } else if (mkb::main_game_mode == mkb::STORY_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkStory)) return false;
+        if (!pref::get(pref::Pref::IlMarkStory)) return false;
     } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-        if (!pref::get(pref::BoolPref::IlMarkChallenge)) return false;
+        if (!pref::get(pref::Pref::IlMarkChallenge)) return false;
     } else {
         return false;
     }
 
-    if (s_is_romhack && !pref::get(pref::BoolPref::IlMarkRomhacks)) {
+    if (s_is_romhack && !pref::get(pref::Pref::IlMarkRomhacks)) {
         return false;
     }
 
@@ -99,7 +99,10 @@ void disp() {
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
     // mkb::textdraw_set_font_style(mkb::STYLE_BOLD);
 
-    mkb::textdraw_print(const_cast<char*>(version::get_version_str()));
+    // Include the git commit hash after the version, e.g. "1.1.0 0123abcd-d"
+    char mark[48];
+    mkb::sprintf(mark, "%s %s", version::get_version_str(), GIT_HASH);
+    mkb::textdraw_print(mark);
 }
 
 }  // namespace ilmark

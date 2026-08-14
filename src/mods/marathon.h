@@ -4,4 +4,4 @@ namespace marathon {
 
 void tick();
 
-} // namespace marathon
+}  // namespace marathon

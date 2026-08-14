@@ -15,7 +15,9 @@ static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
 static s32 s_pause_timer;
 
-void init() { s_retrace_count = mkb::VIGetRetraceCount(); }
+void init() {
+    s_retrace_count = mkb::VIGetRetraceCount();
+}
 
 // Need to do logic in disp() so that we can know the game state _after_ the frame has processed
 void disp() {
@@ -56,11 +58,11 @@ void disp() {
 
     u32 row = 1;
 
-    if (pref::get(pref::BoolPref::TimerShowRTA) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
         timerdisp::draw_timer(s_rta_timer, "RTA:", row++, draw::WHITE, true);
     }
 
-    if (pref::get(pref::BoolPref::TimerShowPause) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
         timerdisp::draw_timer(s_pause_timer, "PAU:", row++, draw::WHITE, true);
     }
 
@@ -76,17 +78,17 @@ void disp() {
 
     u32 framesave = validate::get_framesave();
 
-    if (pref::get(pref::BoolPref::TimerShowSubtick) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
         timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
                                       draw::WHITE, true, framesave, false);
     }
 
-    if (pref::get(pref::BoolPref::TimerShowFramesave) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
         timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
     }
 }
 
-void save_state(memstore::MemStore* store) {
+void save_state(memstore::MemStore *store) {
     store->do_region(&s_retrace_count, sizeof(s_retrace_count));
     store->do_region(&s_prev_retrace_count, sizeof(s_prev_retrace_count));
     store->do_region(&s_rta_timer, sizeof(s_rta_timer));

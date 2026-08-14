@@ -52,24 +52,24 @@ static patch::Tramp<decltype(&mkb::smd_game_play_tick)> s_smd_game_play_tick_tra
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
-    patch::write_branch_bl(reinterpret_cast<void*>(0x80270704),
-                           reinterpret_cast<void*>(start_main_loop_assembly));
+    patch::write_branch_bl(relutil::relocate_addr(0x80270704),
+                           reinterpret_cast<void *>(start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
     // Only needs to be applied to the US version
-    patch::write_nop(reinterpret_cast<void*>(0x80033E9C));
+    patch::write_nop(relutil::relocate_addr(0x80033E9C));
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
-    patch::write_nop(reinterpret_cast<void*>(0x80299f54));
+    patch::write_nop(relutil::relocate_addr(0x80299f54));
     // Nop this pausemenu screenshot call so we can call it when we want to
-    patch::write_nop(reinterpret_cast<void*>(0x80270aac));
+    patch::write_nop(relutil::relocate_addr(0x80270aac));
 
     // Titlescreen patches
-    mkb::strcpy(reinterpret_cast<char*>(0x8047f4ec), "SMB2 PRACTICE MOD");
-    patch::write_branch(reinterpret_cast<void*>(0x8032ad0c),
-                        reinterpret_cast<void*>(main::custom_titlescreen_text_color));
+    mkb::strcpy(reinterpret_cast<char *>(relutil::relocate_addr(0x8047f4ec)), "SMB2 PRACTICE MOD");
+    patch::write_branch(relutil::relocate_addr(0x8032ad0c),
+                        reinterpret_cast<void *>(main::custom_titlescreen_text_color));
 }
 
 void init() {
@@ -103,7 +103,7 @@ void init() {
     scratch::init();
     validate::init();
 
-    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus* statuses) {
+    patch::hook_function(s_PADRead_tramp, mkb::PADRead, [](mkb::PADStatus *statuses) {
         u32 ret = s_PADRead_tramp.dest(statuses);
 
         // Dpad can modify effective stick input, shown by input display
@@ -177,11 +177,12 @@ void init() {
 
     // Hook for mkb::load_additional_rel
     patch::hook_function(
-        s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader* rel_buffer, void* bss_buffer) {
+        s_OSLink_tramp, mkb::OSLink, [](mkb::OSModuleHeader *rel_buffer, void *bss_buffer) {
             bool ret = s_OSLink_tramp.dest(rel_buffer, bss_buffer);
 
             // Main game init functions
-            if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::MainGame) {
+            if (static_cast<relutil::ModuleId::Type>(rel_buffer->info.id) ==
+                relutil::ModuleId::MainGame) {
                 patch::hook_function(s_smd_game_ready_init_tramp, mkb::smd_game_ready_init, []() {
                     stage_edits::smd_game_ready_init();
                     ballcolor::switch_monkey();
@@ -208,7 +209,7 @@ void init() {
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
 void tick() {
-    if (pref::get(pref::BoolPref::DebugMode)) {
+    if (pref::get(pref::Pref::DebugMode)) {
         mkb::dip_switches |= mkb::DIP_DEBUG | mkb::DIP_DISP;
     } else {
         mkb::dip_switches &= ~(mkb::DIP_DEBUG | mkb::DIP_DISP);

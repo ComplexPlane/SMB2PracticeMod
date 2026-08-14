@@ -1,8 +1,8 @@
 #pragma once
 
 #include "mkb/mkb.h"
-constexpr char* LOG_PREFIX = "[pracmod] ";
-constexpr char* LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
+constexpr char *LOG_PREFIX = "[pracmod] ";
+constexpr char *LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
 
 #define LEN(array) (sizeof(array) / sizeof((array)[0]))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -10,7 +10,7 @@ constexpr char* LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
 #define CLAMP(x, min, max) (MIN((max), MAX((min), (x))))
 #define RGBA(r, g, b, a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
 #define ABS(x) ((x) < 0 ? (-x) : (x))
-#define STREQ(x, y) (mkb::strcmp(const_cast<char*>(x), const_cast<char*>(y)) == 0)
+#define STREQ(x, y) (mkb::strcmp(const_cast<char *>(x), const_cast<char *>(y)) == 0)
 
 /*
  * Vector macros which may have existed in the original source in some form.
@@ -24,9 +24,9 @@ constexpr char* LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
 #define VEC_ZERO (Vec{0, 0, 0})
 
 // Fancy logging - note that this is less space-efficient than just calling mkb::OSReport
-#define LOG(msg, ...)                                       \
-    {                                                       \
-        mkb::printf(const_cast<char*>(LOG_PREFIX));         \
-        mkb::printf(const_cast<char*>(msg), ##__VA_ARGS__); \
-        mkb::printf("\n");                                  \
+#define LOG(msg, ...)                                        \
+    {                                                        \
+        mkb::printf(const_cast<char *>(LOG_PREFIX));         \
+        mkb::printf(const_cast<char *>(msg), ##__VA_ARGS__); \
+        mkb::printf("\n");                                   \
     }

@@ -26,11 +26,11 @@ static u32 s_seg_time;
 
 static patch::Tramp<decltype(&mkb::g_reset_cm_course)> s_reset_cm_course_tramp;
 
-static mkb::CourseCommand* s_overwritten_entry;
+static mkb::CourseCommand *s_overwritten_entry;
 static mkb::CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
 
-static u32 s_pbs[13];
+static u32 s_pbs[14];
 
 // static void debug_print_course(mkb::CourseCommand *course, u32 entry_count)
 //{
@@ -49,7 +49,7 @@ static u32 s_pbs[13];
 /**
  * Create a new course in an existing one by inserting a COURSE_CMD_END entry
  */
-static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u32 stage_count) {
+static void gen_course(mkb::CourseCommand *course, u32 start_course_stage_num, u32 stage_count) {
     s32 start_entry_idx = -1;
     s32 end_entry_idx = -1;
 
@@ -73,8 +73,8 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
     }
 
     // Check if we found stage indices
-    MOD_ASSERT(start_entry_idx > -1);
-    MOD_ASSERT(end_entry_idx > -1);
+    ASSERT(start_entry_idx > -1);
+    ASSERT(end_entry_idx > -1);
 
     // Write new course end marker
     s_overwritten_entry = &course[end_entry_idx];
@@ -88,12 +88,12 @@ static void gen_course(mkb::CourseCommand* course, u32 start_course_stage_num, u
     mkb::g_another_stage_id = first_stage_id;
 
     // Make up "previous" stage for "current" stage
-    mkb::CmStage& curr_stage = mkb::cm_player_progress[0].curr_stage;
+    mkb::CmStage &curr_stage = mkb::cm_player_progress[0].curr_stage;
     curr_stage.stage_course_num = start_course_stage_num - 1;
     curr_stage.stage_id = first_stage_id - 1;
 
     // Next stage for player is the first one we want to start on
-    mkb::CmStage& next_stage = mkb::cm_player_progress[0].next_stages[0];
+    mkb::CmStage &next_stage = mkb::cm_player_progress[0].next_stages[0];
     next_stage.stage_course_num = start_course_stage_num;
     next_stage.stage_id = first_stage_id;
 }
@@ -119,8 +119,8 @@ static void state_load_menu() {
     s_state = State::EnterCm;
 }
 
-static const mkb::ApeCharacter s_ape_charas[] = {mkb::APE_AIAI, mkb::APE_MEEMEE, mkb::APE_BABY,
-                                                 mkb::APE_GONGON};
+static const mkb::ApeCharacter s_ape_charas[] = {mkb::CHARA_AIAI, mkb::CHARA_MEEMEE,
+                                                 mkb::CHARA_BABY, mkb::CHARA_GONGON};
 
 static void state_enter_cm() {
     mkb::num_players = 1;
@@ -153,12 +153,12 @@ static void check_exit_seg() {
 static void state_seg_active() {
     // Set character
     if (mkb::sub_mode_request == mkb::SMD_GAME_READY_INIT) {
-        Chara ch = static_cast<Chara>(pref::get(pref::U8Pref::CmChara));
+        Chara ch = static_cast<Chara>(pref::get(pref::Pref::CmChara));
         mkb::ApeCharacter real_chara;
         if (ch == Chara::Random) {
             real_chara = s_ape_charas[mkb::rand() % 4];
         } else {
-            real_chara = s_ape_charas[pref::get(pref::U8Pref::CmChara)];
+            real_chara = s_ape_charas[pref::get(pref::Pref::CmChara)];
         }
         mkb::active_monkey_id[0] = real_chara;
     }
@@ -167,7 +167,7 @@ static void state_seg_active() {
     if (s_overwritten_opcode != mkb::COURSE_CMD_END) {
         for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
             if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-            mkb::Sprite& sprite = mkb::sprites[i];
+            mkb::Sprite &sprite = mkb::sprites[i];
             if (sprite.tick_func == mkb::sprite_final_stage_tick) {
                 mkb::sprite_pool_info.status_list[i] = 0;
                 break;
@@ -218,7 +218,7 @@ void state_seg_complete() {
 }
 
 void init_seg() {
-    mkb::CourseCommand* course = nullptr;
+    mkb::CourseCommand *course = nullptr;
     u32 start_course_stage_num = 0;
     mkb::mode_flags &= ~(mkb::MF_G_PLAYING_MASTER_COURSE | mkb::MF_PLAYING_EXTRA_COURSE |
                          mkb::MF_PLAYING_MASTER_NOEX_COURSE | mkb::MF_PLAYING_MASTER_EX_COURSE);
@@ -338,7 +338,7 @@ void init() {
     });
 
     // Set PBs to maximum time
-    for (u32& s_pb : s_pbs) {
+    for (u32 &s_pb : s_pbs) {
         s_pb = 0xFFFFFFFF;
     }
 }
@@ -356,7 +356,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get(pref::BoolPref::CmTimer) || freecam::should_hide_hud()) return;
+    if (!pref::get(pref::Pref::CmTimer) || freecam::should_hide_hud()) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);

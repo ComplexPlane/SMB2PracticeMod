@@ -21,38 +21,42 @@ enum class WidgetType {
     InputSelect,
     HideableGroupWidget,
     Custom,
+    RgbPreview,
 };
 
 struct TextWidget {
-    const char* label;            // For static text
-    const char* (*label_func)();  // For dynamic text
+    const char *label;            // For static text
+    const char *(*label_func)();  // For dynamic text
 };
 
 struct ColoredTextWidget {
-    const char* label;
-    mkb::GXColor color;
+    const char *label;
+    mkb::GXColor color_left;   // Gradient start color
+    mkb::GXColor color_right;  // Gradient end color
+    u16 offset_x;              // Character offset from line start
+    bool overlap;              // Draw on top of the previous line instead of a new line
 };
 
 // Just a different color TextWidget
 struct HeaderWidget {
-    const char* label;
+    const char *label;
 };
 
 struct CheckboxWidget {
-    const char* label;
-    pref::BoolPref pref;
+    const char *label;
+    pref::Pref pref;
 };
 
 // For the rare cases a checkbox doesn't correspond to a preference
 struct GetSetCheckboxWidget {
-    const char* label;
+    const char *label;
     bool (*get)();
     void (*set)(bool);
 };
 
 struct MenuWidget {
-    const char* label;
-    struct Widget* widgets;
+    const char *label;
+    struct Widget *widgets;
     u32 num_widgets;
     // It's too convenient to store currently selected menu entry in the widget itself,
     // even if it violates the otherwise immutable nature of the menu definition
@@ -60,15 +64,15 @@ struct MenuWidget {
 };
 
 struct FloatViewWidget {
-    const char* label;
+    const char *label;
     f32 (*get)();
 };
 
 struct ChooseWidget {
-    const char* label;
-    const char** choices;
+    const char *label;
+    const char **choices;
     u16 num_choices;
-    pref::U8Pref pref;
+    pref::Pref pref;
 };
 
 namespace ButtonFlags {
@@ -79,23 +83,25 @@ enum {
 }
 
 struct ButtonWidget {
-    const char* label;
+    const char *label;
     void (*push)();  // Runs when pushed. Can be null
     u32 flags;
 };
 
 // Pretty limited for now
 struct IntEditWidget {
-    const char* label;
-    pref::U8Pref pref;
-    u8 min;
-    u8 max;
+    const char *label;
+    pref::Pref pref;
+    s16 min;
+    s16 max;
+    // Formats the value into a buffer; if null, the value displays as decimal
+    void (*format)(s16 value, char *buf);
 };
 
 // even more limited for now
 struct FloatEditWidget {
-    const char* label;
-    pref::U8Pref pref;
+    const char *label;
+    pref::Pref pref;
     u32 precision;  // denominator, 100
     u8 min;
     u8 max;
@@ -104,8 +110,8 @@ struct FloatEditWidget {
 };
 
 struct InputSelectWidget {
-    const char* label;
-    pref::U8Pref pref;
+    const char *label;
+    pref::Pref pref;
     bool required_chord;  // must be a 2 button bind if true
     bool can_unbind;
 };
@@ -113,13 +119,20 @@ struct InputSelectWidget {
 enum class HideableType : u8 { U8Hideable, BoolHideable };
 
 struct HideableGroupWidget {
-    struct Widget* widgets;
+    struct Widget *widgets;
     u32 num_widgets;
     bool (*show_if)();  // show if function returns true
 };
 
 struct CustomWidget {
     void (*draw)();
+};
+
+// Shows a live color swatch next to RGB IntEdit widgets
+struct RgbPreviewWidget {
+    pref::Pref r_pref;
+    pref::Pref g_pref;
+    pref::Pref b_pref;
 };
 
 struct Widget {
@@ -139,6 +152,7 @@ struct Widget {
         InputSelectWidget input_select;
         HideableGroupWidget hideable_group;
         CustomWidget custom;
+        RgbPreviewWidget rgb_preview;
     };
 };
 

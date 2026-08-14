@@ -33,23 +33,23 @@ static mkb::PADStatus s_original_inputs[4];
 
 static u8 s_dir_down_time[8];
 
-void get_merged_stick(StickState& out) {
+void get_merged_stick(StickState &out) {
     out = {.x = s_analog_state.stick_x, .y = s_analog_state.stick_y};
 }
 
-void get_merged_raw_stick(StickState& out) {
+void get_merged_raw_stick(StickState &out) {
     out = {.x = s_analog_state.raw_stick_x, .y = s_analog_state.raw_stick_y};
 }
 
-void get_merged_substick(StickState& out) {
+void get_merged_substick(StickState &out) {
     out = {.x = s_analog_state.substick_x, .y = s_analog_state.substick_y};
 }
 
-void get_merged_triggers(TriggerState& out) {
+void get_merged_triggers(TriggerState &out) {
     out = {.l = s_analog_state.trigger_l, .r = s_analog_state.trigger_r};
 }
 
-void on_PADRead(mkb::PADStatus* statuses) {
+void on_PADRead(mkb::PADStatus *statuses) {
     mkb::memcpy(s_original_inputs, statuses, sizeof(s_original_inputs));
 }
 
@@ -81,7 +81,9 @@ bool analog_released(mkb::PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
-static bool any_input_down() { return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw; }
+static bool any_input_down() {
+    return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
+}
 
 static bool any_input_pressed() {
     return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
@@ -173,7 +175,8 @@ bool button_chord_pressed(mkb::PadDigitalInput btn1, mkb::PadDigitalInput btn2, 
            (button_pressed(btn1, priority) && button_down(btn2, priority));
 }
 
-bool analog_chord_pressed(mkb::PadDigitalInput analog1, mkb::PadDigitalInput analog2,
+bool analog_chord_pressed(mkb::PadDigitalInput analog1,
+                          mkb::PadDigitalInput analog2,
                           bool priority) {
     return (analog_down(analog1, priority) && analog_pressed(analog2, priority)) ||
            (analog_pressed(analog1, priority) && analog_down(analog2, priority));
@@ -252,13 +255,21 @@ bool dir_repeat(Dir dir, bool priority) {
            (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
-void reset_dir_repeat() { mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time)); }
+void reset_dir_repeat() {
+    mkb::memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
+}
 
-bool konami_pressed() { return s_konami_progress == 11; }
+bool konami_pressed() {
+    return s_konami_progress == 11;
+}
 
-void set_exclusive_mode(bool enabled) { s_exclusive_mode_request = enabled; }
+void set_exclusive_mode(bool enabled) {
+    s_exclusive_mode_request = enabled;
+}
 
-bool get_exclusive_mode() { return s_exclusive_mode; }
+bool get_exclusive_mode() {
+    return s_exclusive_mode;
+}
 
 void on_frame_start() {
     if (s_exclusive_mode) {
@@ -302,7 +313,7 @@ void tick() {
     } else {
         // update analog state
         for (u32 i = 0; i < LEN(mkb::pad_status_groups); i++) {
-            mkb::PADStatus& status = mkb::pad_status_groups[i].raw;
+            mkb::PADStatus &status = mkb::pad_status_groups[i].raw;
             if (s_original_inputs[i].err == mkb::PAD_ERR_NONE) {
                 s_analog_state.raw_stick_x += s_original_inputs[i].stickX;
                 s_analog_state.raw_stick_y += s_original_inputs[i].stickY;

@@ -20,15 +20,15 @@ enum class WriteState {
 };
 
 struct WriteParams {
-    const char* file_name;
-    const void* buf;
+    const char *file_name;
+    const void *buf;
     u32 buf_size;
     void (*callback)(mkb::CARDResult);
 };
 
 // We need a 40KB(!) buffer just for the privilege of accessing memory cards, this sucks!
 // Reminder we only have ~550KB to work with for the entire mod, including savestates
-static void* s_card_work_area;
+static void *s_card_work_area;
 static mkb::CARDFileInfo s_card_file_info;
 
 static WriteState s_state = WriteState::Idle;
@@ -45,7 +45,7 @@ static char s_orig_gamecode[6];
  */
 
 static void set_fake_gamecode() {
-    mkb::memcpy(mkb::DVD_GAME_NAME, (void*)"GM2E8P", sizeof(s_orig_gamecode));
+    mkb::memcpy(mkb::DVD_GAME_NAME, (void *)"GM2E8P", sizeof(s_orig_gamecode));
     mkb::DCFlushRange(mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
 }
 
@@ -54,7 +54,7 @@ static void restore_original_gamecode() {
     mkb::DCFlushRange(mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
 }
 
-static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf) {
+static mkb::CARDResult read_file_internal(const char *file_name, void **out_buf) {
     mkb::CARDResult res = mkb::CARD_RESULT_READY;
 
     // Probe card
@@ -75,7 +75,7 @@ static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf)
     }
 
     // Open file
-    res = mkb::CARDOpen(0, const_cast<char*>(file_name), &s_card_file_info);
+    res = mkb::CARDOpen(0, const_cast<char *>(file_name), &s_card_file_info);
     if (res != mkb::CARD_RESULT_READY) {
         mkb::CARDUnmount(0);
         return res;
@@ -90,7 +90,7 @@ static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf)
     }
 
     u32 buf_size = (stat.length + mkb::CARD_READ_SIZE - 1) & ~(mkb::CARD_READ_SIZE - 1);
-    void* buf = heap::alloc(buf_size);
+    void *buf = heap::alloc(buf_size);
     if (buf == nullptr) {
         // Not quite the right error (we're out of memory, not out of card space)
         mkb::CARDUnmount(0);
@@ -111,14 +111,16 @@ static mkb::CARDResult read_file_internal(const char* file_name, void** out_buf)
     return mkb::CARD_RESULT_READY;
 }
 
-mkb::CARDResult read_file(const char* file_name, void** out_buf) {
+mkb::CARDResult read_file(const char *file_name, void **out_buf) {
     set_fake_gamecode();
     mkb::CARDResult res = read_file_internal(file_name, out_buf);
     restore_original_gamecode();
     return res;
 }
 
-void write_file(const char* file_name, const void* buf, u32 buf_size,
+void write_file(const char *file_name,
+                const void *buf,
+                u32 buf_size,
                 void (*callback)(mkb::CARDResult)) {
     s_write_request.emplace(WriteParams{file_name, buf, buf_size, callback});
 }
@@ -190,7 +192,7 @@ static void tick_state_machine() {
             }
 
             // Try to open the file
-            res = mkb::CARDOpen(0, const_cast<char*>(s_write_params.file_name), &s_card_file_info);
+            res = mkb::CARDOpen(0, const_cast<char *>(s_write_params.file_name), &s_card_file_info);
             if (res == mkb::CARD_RESULT_READY) {
                 // Check if file is too small
                 mkb::CARDStat stat;
@@ -205,14 +207,14 @@ static void tick_state_machine() {
 
                 } else {
                     // Card opened successfully, proceed directly to writing
-                    mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(s_write_params.buf),
+                    mkb::CARDWriteAsync(&s_card_file_info, const_cast<void *>(s_write_params.buf),
                                         s_write_size, 0, nullptr);
                     s_state = WriteState::Write;
                 }
 
             } else if (res == mkb::CARD_RESULT_NOFILE) {
                 // Create new file
-                mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name), s_write_size,
+                mkb::CARDCreateAsync(0, const_cast<char *>(s_write_params.file_name), s_write_size,
                                      &s_card_file_info, nullptr);
                 s_state = WriteState::Create;
 
@@ -233,7 +235,7 @@ static void tick_state_machine() {
                 break;
             }
 
-            mkb::CARDWriteAsync(&s_card_file_info, const_cast<void*>(s_write_params.buf),
+            mkb::CARDWriteAsync(&s_card_file_info, const_cast<void *>(s_write_params.buf),
                                 s_write_size, 0, nullptr);
             s_state = WriteState::Write;
             break;
@@ -248,7 +250,7 @@ static void tick_state_machine() {
                 finish_write(res);
                 break;
             }
-            mkb::CARDCreateAsync(0, const_cast<char*>(s_write_params.file_name), s_write_size,
+            mkb::CARDCreateAsync(0, const_cast<char *>(s_write_params.file_name), s_write_size,
                                  &s_card_file_info, nullptr);
             s_state = WriteState::Create;
             break;
