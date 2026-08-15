@@ -683,18 +683,45 @@ void draw_menu_widgets(MenuWidget *menu) {
     }
 }
 
-static void draw_breadcrumbs() {
+template <typename F>
+static u32 draw_breadcrumbs_from(u32 start, F draw_fn) {
     const char *ARROW_STR = " \x1c ";
+    mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
 
     u32 x = MARGIN + PAD;
-    for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
+    if (start > 0) {
+        for (u32 i = 0; i < 3; i++) {
+            draw::debug_text(x, MARGIN + PAD, grey, ".");
+            x += 6;
+        }
+
+        draw_fn(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
+        x += mkb::strlen(const_cast<char *>(ARROW_STR)) * draw::DEBUG_CHAR_WIDTH;
+    }
+
+    for (u32 i = start; i <= s_menu_stack_ptr; i++) {
         MenuWidget *menu = s_menu_stack[i];
-        mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
-        draw::debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
+        draw_fn(x, MARGIN + PAD, i == s_menu_stack_ptr ? draw::PURPLE : grey, menu->label);
         x += mkb::strlen(const_cast<char *>(menu->label)) * draw::DEBUG_CHAR_WIDTH;
+
         if (i != s_menu_stack_ptr) {
-            draw::debug_text(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
+            draw_fn(x, MARGIN + PAD, draw::BLUE, ARROW_STR);
             x += mkb::strlen(const_cast<char *>(ARROW_STR)) * draw::DEBUG_CHAR_WIDTH;
+        }
+    }
+    return x;
+}
+
+static void draw_breadcrumbs() {
+    for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
+        // Calculate breadcrumb width to see if it would overflow
+        u32 final_x = draw_breadcrumbs_from(i, [](u32, u32, mkb::GXColor, const char *) {});
+        if (final_x <= SCREEN_WIDTH - MARGIN - PAD) {
+            draw_breadcrumbs_from(
+                i, [](u32 x, u32 y, mkb::GXColor color, const char *text) {
+                    draw::debug_text(x, y, color, "%s", text);
+                });
+            break;
         }
     }
 
