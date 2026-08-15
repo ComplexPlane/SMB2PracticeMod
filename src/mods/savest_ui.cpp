@@ -36,8 +36,8 @@ static bool is_either_trigger_held() {
 
 static s32 find_next_empty() {
     for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
-        s32 slot_idx = (s_active_state_slot + static_cast<s32>(i)) %
-                       static_cast<s32>(savest::SLOT_COUNT);
+        s32 slot_idx =
+            (s_active_state_slot + static_cast<s32>(i)) % static_cast<s32>(savest::SLOT_COUNT);
         if (savest::is_empty(slot_idx)) {
             return slot_idx;
         }
@@ -216,9 +216,6 @@ static LoadReason get_load_reason(s32 cstick_dir) {
 
 void tick() {
     if (!savest::is_enabled()) return;
-
-    // Must tick savestates every frame
-    savest::tick();
 
     if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;

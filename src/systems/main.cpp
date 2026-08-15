@@ -86,6 +86,7 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     cardio::tick();
     unlock::tick();
     iw::tick();
+    savest::tick();
     savest_ui::tick();
     menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
     fallout::tick();
