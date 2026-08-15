@@ -3,15 +3,12 @@
 #include "mkb/mkb.h"
 
 #include "systems/binds.h"
-#include "systems/heap.h"
 #include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
 #include "utils/macro_utils.h"
-#include "utils/memstore.h"
-#include "utils/patch.h"
+#include "utils/savest.h"
 
 namespace savest_ui {
 
@@ -27,7 +24,6 @@ enum class LoadReason {
     NoLoad,
 };
 
-static libsavest::SaveState s_states[8];
 static s32 s_active_state_slot;
 
 static bool s_created_state_last_frame;
@@ -39,10 +35,10 @@ static bool is_either_trigger_held() {
 }
 
 static s32 find_next_empty() {
-    for (u32 i = 0; i < LEN(s_states); i++) {
-        s32 slot_idx =
-            (s_active_state_slot + static_cast<s32>(i)) % static_cast<s32>(LEN(s_states));
-        if (s_states[slot_idx].isEmpty()) {
+    for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
+        s32 slot_idx = (s_active_state_slot + static_cast<s32>(i)) %
+                       static_cast<s32>(savest::SLOT_COUNT);
+        if (savest::is_empty(slot_idx)) {
             return slot_idx;
         }
     }
@@ -66,8 +62,8 @@ static s32 pick_save_slot() {
             }
 
             u32 oldest_idx = 0;
-            for (u32 i = 0; i < LEN(s_states); i++) {
-                if (s_states[i].timestamp() < s_states[oldest_idx].timestamp()) {
+            for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
+                if (savest::get_timestamp(i) < savest::get_timestamp(oldest_idx)) {
                     oldest_idx = i;
                 }
             }
@@ -85,41 +81,40 @@ static void save_slot() {
         draw::notify(draw::RED, "Cannot Create Savestate: No Slots Left");
         return;
     }
-    auto &state = s_states[slot_idx];
 
-    using SaveResult = libsavest::SaveState::SaveResult;
-    switch (state.save()) {
+    using SaveResult = savest::SaveResult;
+    switch (savest::save(slot_idx)) {
         case SaveResult::Ok: {
             break;
         }
-        case SaveResult::ErrorMainMode: {
+        case SaveResult::ErrMainMode: {
             UNREACHABLE();
         }
-        case SaveResult::ErrorPostFallout: {
+        case SaveResult::ErrPostFallout: {
             draw::notify(draw::RED, "Cannot Create Savestate After Fallout");
             return;
         }
-        case SaveResult::ErrorPostGoal: {
+        case SaveResult::ErrPostGoal: {
             draw::notify(draw::RED, "Cannot Create Savestate After Goal");
             return;
         }
-        case SaveResult::ErrorDuringRetry: {
+        case SaveResult::ErrDuringRetry: {
             draw::notify(draw::RED, "Cannot Create Savestate During Retry");
             return;
         }
-        case SaveResult::ErrorPostTimeout: {
+        case SaveResult::ErrPostTimeout: {
             draw::notify(draw::RED, "Cannot Create Savestate After Timeout");
             return;
         }
-        case SaveResult::ErrorSubMode: {
+        case SaveResult::ErrSubMode: {
             draw::notify(draw::RED, "Cannot Create Savestate Here");
             return;
         }
-        case SaveResult::ErrorViewStage: {
+        case SaveResult::ErrViewStage: {
             draw::notify(draw::RED, "Cannot Create Savestate in View Stage");
             return;
         }
-        case SaveResult::ErrorInsufficientMemory: {
+        case SaveResult::ErrInsufficientMemory: {
             draw::notify(draw::RED, "Cannot Create Savestate: Not Enough Memory");
             return;
         }
@@ -137,23 +132,21 @@ static void save_slot() {
 }
 
 static void clear_slot() {
-    auto &state = s_states[s_active_state_slot];
-    state.clear();
+    savest::clear(s_active_state_slot);
     draw::notify(draw::BLUE, "Slot %d Cleared", s_active_state_slot + 1);
 }
 
 static void clear_all_slots() {
-    for (u32 i = 0; i < LEN(s_states); i++) {
-        s_states[i].clear();
+    for (u32 i = 0; i < savest::SLOT_COUNT; i++) {
+        savest::clear(i);
     }
     s_active_state_slot = 0;
     draw::notify(draw::BLUE, "All Slots Cleared");
 }
 
 static void load_slot(LoadReason load_reason) {
-    auto &state = s_states[s_active_state_slot];
-    using LoadResult = libsavest::SaveState::LoadResult;
-    LoadResult result = state.load();
+    using LoadResult = savest::LoadResult;
+    LoadResult result = savest::load(s_active_state_slot);
 
     // Implicit loads happen silently
     if (load_reason != LoadReason::Explicit) return;
@@ -163,35 +156,35 @@ static void load_slot(LoadReason load_reason) {
             draw::notify(draw::BLUE, "Slot %d Loaded", s_active_state_slot + 1);
             break;
         }
-        case LoadResult::ErrorMainMode: {
+        case LoadResult::ErrMainMode: {
             UNREACHABLE();
         }
-        case LoadResult::ErrorSubMode: {
+        case LoadResult::ErrSubMode: {
             draw::notify(draw::RED, "Cannot Load Savestate Here");
             break;
         }
-        case LoadResult::ErrorTimeOver: {
+        case LoadResult::ErrTimeOver: {
             draw::notify(draw::RED, "Cannot Load Savestate After Time Over");
             break;
         }
-        case LoadResult::ErrorEmpty: {
+        case LoadResult::ErrEmpty: {
             draw::notify(draw::RED, "Slot %d Empty", s_active_state_slot + 1);
             break;
         }
-        case LoadResult::ErrorWrongStage: {
+        case LoadResult::ErrWrongStage: {
             draw::notify(draw::RED, "Slot %d Wrong Stage", s_active_state_slot + 1);
             break;
         }
-        case LoadResult::ErrorWrongMonkey: {
+        case LoadResult::ErrWrongMonkey: {
             // Thank you StevenCW for finding this marvelous bug
             draw::notify(draw::RED, "Slot %d Wrong Monkey", s_active_state_slot + 1);
             break;
         }
-        case LoadResult::ErrorViewStage: {
+        case LoadResult::ErrViewStage: {
             draw::notify(draw::RED, "Cannot Load Savestate in View Stage");
             break;
         }
-        case LoadResult::ErrorPausedAndNonGameplaySubmode: {
+        case LoadResult::ErrPausedAndNonGameplaySubmode: {
             draw::notify(draw::RED, "Cannot Load Savestate, Please Unpause");
             break;
         }
@@ -222,15 +215,10 @@ static LoadReason get_load_reason(s32 cstick_dir) {
 }
 
 void tick() {
-    // Must be called every frame to drive the savestate timestamp
-    libsavest::tick();
-
-    if (!libsavest::savestates_enabled()) return;
+    if (!savest::is_enabled()) return;
 
     // Must tick savestates every frame
-    for (u32 i = 0; i < LEN(s_states); i++) {
-        s_states[i].tick();
-    }
+    savest::tick();
 
     if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;

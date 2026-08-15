@@ -9,9 +9,9 @@
 #include "systems/pref.h"
 #include "systems/version.h"
 #include "utils/draw.h"
-#include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/savest.h"
 
 namespace ilmark {
 
@@ -39,7 +39,7 @@ void tick() {
         s_valid_run = false;
     }
 
-    if (libsavest::state_loaded_this_frame()) {
+    if (savest::get_last_action() == savest::Action::Load) {
         s_valid_run = false;
     }
 }

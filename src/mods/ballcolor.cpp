@@ -38,8 +38,6 @@ static u32 s_rainbow = 0;  // tick for rainbow animation
 static mkb::GXColor s_default_color;
 static mkb::GXColor s_current_color;
 
-static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
-
 mkb::GXColor get_current_color() {
     return s_current_color;
 }
@@ -86,14 +84,16 @@ void switch_monkey() {
     }
 }
 
+static patch::Tramp<mkb::load_stagedef> s_load_stagedef_tramp([](u32 stage_id) {
+    s_load_stagedef_tramp.chain(stage_id);
+    switch_monkey();
+});
+
 void init() {
     s_default_color =
         *reinterpret_cast<mkb::GXColor *>(relutil::relocate_addr(0x80472a34));  // default color
 
-    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
-        s_load_stagedef_tramp.dest(stage_id);
-        switch_monkey();
-    });
+    s_load_stagedef_tramp.hook();
 }
 
 void tick() {

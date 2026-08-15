@@ -441,8 +441,6 @@ void Tetris::draw_tetrad(s32 x, s32 y, Tetrad tetrad, s32 rotation) {
     }
 }
 
-static patch::Tramp<decltype(&mkb::sprite_go_disp)> s_sprite_go_disp_tramp;
-
 namespace ilmark {
 bool is_ilmark_enabled();
 }
@@ -496,6 +494,8 @@ static void sprite_go_disp_hook(mkb::Sprite *sprite) {
         mkb::textdraw_put_char((i == 0) ? 0x47 : 0x4F);
     }
 }
+
+static patch::Tramp<mkb::sprite_go_disp> s_sprite_go_disp_tramp(sprite_go_disp_hook);
 
 void Tetris::draw_tetrad_queue() {
     constexpr s32 STARTX = 370;
@@ -614,7 +614,7 @@ void Tetris::init() {
     m_high_score = 0;
     new_game();
 
-    patch::hook_function(s_sprite_go_disp_tramp, mkb::sprite_go_disp, sprite_go_disp_hook);
+    s_sprite_go_disp_tramp.hook();
 }
 
 Tetris &Tetris::get_instance() {

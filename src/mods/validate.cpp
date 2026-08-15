@@ -4,10 +4,10 @@
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/libsavest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
+#include "utils/savest.h"
 
 namespace validate {
 
@@ -18,8 +18,6 @@ static bool s_entered_goal;
 static bool s_used_mods;
 static bool s_has_paused;
 static bool s_loaded_savestate;
-
-static patch::Tramp<decltype(&mkb::did_ball_enter_goal)> s_goal_tramp;
 
 static constexpr pref::Pref INVALID_BOOL_PREFS[] = {
     pref::Pref::DisableFalloutVolumes,
@@ -56,7 +54,7 @@ void validate_run() {
     }
 
     // Track savestates
-    if (libsavest::state_loaded_this_frame()) s_loaded_savestate = true;
+    if (savest::get_last_action() == savest::Action::Load) s_loaded_savestate = true;
 
     // Using dpad controls is disallowed
     bool dpad_down =
@@ -183,20 +181,20 @@ void find_framesave(mkb::Ball *ball,
     } while (true);
 }
 
+static patch::Tramp<mkb::did_ball_enter_goal> s_goal_tramp(
+    [](mkb::Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id, mkb::byte *out_goal_flags) {
+        bool result =
+            s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+        if (result) {
+            // determine framesave percentage
+            find_framesave(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
+            s_entered_goal = result;
+        }
+        return result;
+    });
+
 void init() {
-    patch::hook_function(
-        s_goal_tramp, &mkb::did_ball_enter_goal,
-        [](mkb::Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id,
-           mkb::byte *out_goal_flags) {
-            bool result =
-                s_goal_tramp.dest(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
-            if (result) {
-                // determine framesave percentage
-                find_framesave(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
-                s_entered_goal = result;
-            }
-            return result;
-        });
+    s_goal_tramp.hook();
 }
 
 void tick() {

@@ -62,8 +62,6 @@ static s32 map_range(s32 value, s32 from_start, s32 from_end, s32 to_start, s32 
     return static_cast<s32>(static_cast<f32>(to_start) + (value_scaled * to_span) / from_span);
 }
 
-static patch::Tramp<decltype(&mkb::create_speed_sprites)> s_create_speed_sprites_tramp;
-
 static u32 s_rainbow;
 
 static mkb::GXColor get_gradient_color(Vec2d pt,
@@ -161,9 +159,12 @@ static void set_sprite_visible(bool visible) {
     }
 }
 
+static patch::Tramp<mkb::create_speed_sprites> s_create_speed_sprites_tramp([](f32 x, f32 y) {
+    s_create_speed_sprites_tramp.chain(x + 5, y);
+});
+
 void init() {
-    patch::hook_function(s_create_speed_sprites_tramp, mkb::create_speed_sprites,
-                         [](f32 x, f32 y) { s_create_speed_sprites_tramp.dest(x + 5, y); });
+    s_create_speed_sprites_tramp.hook();
 }
 
 void tick() {

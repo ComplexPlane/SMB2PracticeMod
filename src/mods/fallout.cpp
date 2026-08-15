@@ -22,63 +22,63 @@ enum class TimerType {
     CountUpwards,
 };
 
-static patch::Tramp<decltype(&mkb::did_ball_fallout)> s_did_ball_fallout_tramp;
-static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
-
 static u32 s_timeover_condition = 0x2c000000;  // Timeover at 0.00
 static u32 s_timer_increment = 0x3803ffff;     // Add -1 to timer each frame
 static bool s_toggled_freecam = false;
 
-void init() {
-    // stop fallouts
-    patch::hook_function(s_did_ball_fallout_tramp, mkb::did_ball_fallout, [](mkb::Ball *ball) {
-        mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.dest(ball);
-        bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
-        bool volumes_disabled = pref::get(pref::Pref::DisableFalloutVolumes);
+// stop fallouts
+static patch::Tramp<mkb::did_ball_fallout> s_did_ball_fallout_tramp([](mkb::Ball *ball) {
+    mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
+    bool below_fallout = ball->pos.y < mkb::stagedef->fallout->y;
+    bool volumes_disabled = pref::get(pref::Pref::DisableFalloutVolumes);
 
-        switch (FalloutPlaneType(pref::get(pref::Pref::FalloutPlaneType))) {
-            case FalloutPlaneType::Normal: {
-                if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(below_fallout);
-                } else {
-                    return static_cast<mkb::BOOL32>(orig_result);
-                }
-                break;
+    switch (FalloutPlaneType(pref::get(pref::Pref::FalloutPlaneType))) {
+        case FalloutPlaneType::Normal: {
+            if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(below_fallout);
+            } else {
+                return static_cast<mkb::BOOL32>(orig_result);
             }
-            case FalloutPlaneType::Disabled: {
-                if (below_fallout) {
-                    return static_cast<mkb::BOOL32>(false);
-                } else if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(false);
-                }
-                break;
-            }
-            case FalloutPlaneType::Bouncy: {
-                if (below_fallout) {
-                    ball->vel.y = ABS(ball->vel.y) * 1.05;
-                    return static_cast<mkb::BOOL32>(false);
-                } else if (volumes_disabled) {
-                    return static_cast<mkb::BOOL32>(false);
-                }
-                break;
-            }
+            break;
         }
+        case FalloutPlaneType::Disabled: {
+            if (below_fallout) {
+                return static_cast<mkb::BOOL32>(false);
+            } else if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(false);
+            }
+            break;
+        }
+        case FalloutPlaneType::Bouncy: {
+            if (below_fallout) {
+                ball->vel.y = ABS(ball->vel.y) * 1.05;
+                return static_cast<mkb::BOOL32>(false);
+            } else if (volumes_disabled) {
+                return static_cast<mkb::BOOL32>(false);
+            }
+            break;
+        }
+    }
 
-        return orig_result;
-    });
+    return orig_result;
+});
 
-    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
-        // Set the current default values before loading the stagedef
-        patch::write_word(relutil::relocate_addr(0x80297548), s_timeover_condition);
-        patch::write_word(relutil::relocate_addr(0x80297534), s_timer_increment);
-        s_load_stagedef_tramp.dest(stage_id);
-        // Stardust's custom code sets the timers after loading the stagedef, this will run
-        // afterwards and collect those timer defaults
-        // For non-Stardust packs, this will simply collect the default values again (and not affect
-        // anything)
-        s_timeover_condition = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548));
-        s_timer_increment = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297534));
-    });
+static patch::Tramp<mkb::load_stagedef> s_load_stagedef_tramp([](u32 stage_id) {
+    // Set the current default values before loading the stagedef
+    patch::write_word(relutil::relocate_addr(0x80297548), s_timeover_condition);
+    patch::write_word(relutil::relocate_addr(0x80297534), s_timer_increment);
+    s_load_stagedef_tramp.chain(stage_id);
+    // Stardust's custom code sets the timers after loading the stagedef, this will run
+    // afterwards and collect those timer defaults
+    // For non-Stardust packs, this will simply collect the default values again (and not affect
+    // anything)
+    s_timeover_condition = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297548));
+    s_timer_increment = *reinterpret_cast<u32 *>(relutil::relocate_addr(0x80297534));
+});
+
+void init() {
+    s_did_ball_fallout_tramp.hook();
+    s_load_stagedef_tramp.hook();
 }
 
 void freeze_timer() {

@@ -15,8 +15,6 @@ static ActiveMode s_current_mode = ActiveMode::None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
-static patch::Tramp<decltype(&mkb::load_stagedef)> s_load_stagedef_tramp;
-
 void select_new_goal() {
     s_new_goal = true;
 }
@@ -125,12 +123,14 @@ void smd_game_ready_init() {
     s_new_goal = false;
 }
 
+static patch::Tramp<mkb::load_stagedef> s_load_stagedef_tramp([](u32 stage_id) {
+    s_load_stagedef_tramp.chain(stage_id);
+    s_current_mode = ActiveMode(pref::get(pref::Pref::StageEditVariant));
+    set_mode(s_current_mode);
+});
+
 void init() {
-    patch::hook_function(s_load_stagedef_tramp, mkb::load_stagedef, [](u32 stage_id) {
-        s_load_stagedef_tramp.dest(stage_id);
-        s_current_mode = ActiveMode(pref::get(pref::Pref::StageEditVariant));
-        set_mode(s_current_mode);
-    });
+    s_load_stagedef_tramp.hook();
 }
 
 void tick() {

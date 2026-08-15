@@ -88,12 +88,12 @@ void disp() {
     }
 }
 
-void save_state(memstore::MemStore *store) {
-    store->do_region(&s_retrace_count, sizeof(s_retrace_count));
-    store->do_region(&s_prev_retrace_count, sizeof(s_prev_retrace_count));
-    store->do_region(&s_rta_timer, sizeof(s_rta_timer));
-    store->do_region(&s_pause_timer, sizeof(s_pause_timer));
-    if (store->get_mode() == memstore::Mode::LOAD) {
+void save_state(store::Store *store, store::StoreFunc func) {
+    func(store, &s_retrace_count, sizeof(s_retrace_count));
+    func(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
+    func(store, &s_rta_timer, sizeof(s_rta_timer));
+    func(store, &s_pause_timer, sizeof(s_pause_timer));
+    if (func == store::load) {
         // This might not be completely consistently correct
         u32 count = mkb::VIGetRetraceCount();
         s_prev_retrace_count = count - 1;

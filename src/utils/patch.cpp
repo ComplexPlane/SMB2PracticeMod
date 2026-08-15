@@ -47,14 +47,14 @@ u32 write_nop(void *ptr) {
     return write_word(ptr, 0x60000000);
 }
 
-void hook_function_internal(void *func, void *dest) {
+void hook_function_replace(void *func, void *dest) {
     // Branch directly to the destination function from the original function,
     // leaving no option to call the original function
     u32 *instructions = static_cast<u32 *>(func);
     write_branch(&instructions[0], dest);
 }
 
-void hook_function_internal(void *func, void *dest, u32 *tramp_instrs, void **tramp_dest) {
+void hook_function_tramp(void *func, void *dest, u32 *tramp_instrs, void **tramp_dest) {
     u32 *func_instrs = static_cast<u32 *>(func);
 
     constexpr u32 B_OPCODE_MASK = 0xFC000000;
