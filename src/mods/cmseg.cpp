@@ -424,7 +424,7 @@ void disp() {
             color = draw::GOLD;
         else
             color = draw::WHITE;
-        timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, color, false);
+        timerdisp::draw_timer_right_side(static_cast<s32>(s_seg_time), "SEG:", 0, color, false);
     }
 }
 
