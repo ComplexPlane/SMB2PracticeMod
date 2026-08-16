@@ -38,6 +38,7 @@
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
 #include "mods/storyreset.h"
+#include "mods/storytimer.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
 
@@ -90,6 +91,7 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     unlock::tick();
     iw::tick();
     storyreset::tick();
+    storytimer::tick();
     deathcounter::tick();
     savest::tick();
     savest_ui::tick();
@@ -132,6 +134,7 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     draw::predraw();
     timer::disp();
     iw::disp();
+    storytimer::disp();
     deathcounter::disp();
     ilbattle::disp();
     cmseg::disp();
@@ -166,6 +169,7 @@ static patch::Tramp<mkb::OSLink> s_OSLink_tramp([](mkb::OSModuleHeader *rel_buff
         s_smd_game_ready_init_tramp.hook();
         s_smd_game_play_tick_tramp.hook();
         jump::patch_minimap();
+        storytimer::init_main_game();
     }
     // Sel_ngc init functions
     // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {
