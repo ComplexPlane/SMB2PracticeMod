@@ -580,9 +580,12 @@ int main(int argc, char **argv)
                       relocationOffset + fixedRelocationsSize);
     std::copy(headerBuffer.begin(), headerBuffer.end(), outputBuffer.begin());
 
+    if (error) {
+        return EXIT_FAILURE;
+    }
+
     // Write final REL file
     std::ofstream outputStream(relFilename, std::ios::binary);
     outputStream.write(reinterpret_cast<const char *>(outputBuffer.data()), outputBuffer.size());
-
-    return error ? 1 : 0;
+    return EXIT_SUCCESS;
 }
