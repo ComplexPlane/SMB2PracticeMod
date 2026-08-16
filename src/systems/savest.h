@@ -36,6 +36,11 @@ enum class Action {
     Save,
 };
 
+struct History {
+    Action curr_frame_action;
+    Action prev_frame_action;
+};
+
 void init();
 void tick();
 
@@ -46,8 +51,10 @@ bool is_empty(u32 slot);
 u32 get_timestamp(u32 slot);
 
 bool is_enabled();
-Action get_last_action();
-bool last_action_was_load();
-bool last_action_was_save();
+History get_history();
+Action get_curr_frame_action();
+bool state_changed_gameplay();
+bool interacted_with_state();
+bool loaded_state();
 
 }  // namespace savest
