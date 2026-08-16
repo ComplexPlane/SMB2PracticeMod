@@ -1024,6 +1024,88 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
+// put my stuff here
+
+static const char *FULLGAME_TIMER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+    "End of run",
+};
+
+static const char *SEGMENT_TIMER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+};
+
+static Widget s_loadless_timers_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Fullgame Timer",
+                .choices = FULLGAME_TIMER_OPTIONS,
+                .num_choices = LEN(FULLGAME_TIMER_OPTIONS),
+                .pref = pref::Pref::FullgameTimerOptions,
+            },
+    },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Segment Timer",
+                .choices = SEGMENT_TIMER_OPTIONS,
+                .num_choices = LEN(SEGMENT_TIMER_OPTIONS),
+                .pref = pref::Pref::SegmentTimerOptions,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Show Run Breakdown",
+                .pref = pref::Pref::ShowRunBreakdown,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Hide Reset Message",
+                .pref = pref::Pref::HideRunResetMessage,
+            },
+    },
+};
+
+static const char *DEATH_COUNTER_OPTIONS[] = {
+    "Don't show",
+    "Always show",
+    "Between worlds",
+    "End of run",
+};
+
+static Widget s_deathcounter_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Death Counter",
+                .choices = DEATH_COUNTER_OPTIONS,
+                .num_choices = LEN(DEATH_COUNTER_OPTIONS),
+                .pref = pref::Pref::DeathCounterDisplayOptions,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                .label = "Count Stage 1 Deaths",
+                .pref = pref::Pref::CountFirstStageDeaths,
+            },
+    },
+};
+
 static Widget s_timers_widgets[] = {
     {.type = WidgetType::Header, .header = {"Realtime Timers"}},
     {
@@ -1061,7 +1143,7 @@ static Widget s_timers_widgets[] = {
             },
     },
     {.type = WidgetType::Separator},
-    {.type = WidgetType::Header, .header = {"Segment Timers"}},
+    {.type = WidgetType::Header, .header = {"Segment & Loadless Timers"}},
     {
         .type = WidgetType::Checkbox,
         .checkbox =
@@ -1077,6 +1159,10 @@ static Widget s_timers_widgets[] = {
                 .label = "CM Segments (SEG)",
                 .pref = pref::Pref::CmTimer,
             },
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Loadless Timers", s_loadless_timers_widgets, LEN(s_loadless_timers_widgets)},
     },
 };
 
@@ -1389,6 +1475,8 @@ static Widget s_savestate_widgets[] = {
     },
 };
 
+static const char *MENU_ACCEL_OPTIONS[] = {"Disabled", "Always enabled", "Only in story"};
+
 static Widget s_tools_widgets[] = {
     {
         .type = WidgetType::Button,
@@ -1447,6 +1535,16 @@ static Widget s_tools_widgets[] = {
                 .pref = pref::Pref::DebugMode,
             },
     },
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Menu Acceleration",
+                .choices = MENU_ACCEL_OPTIONS,
+                .num_choices = LEN(MENU_ACCEL_OPTIONS),
+                .pref = pref::Pref::MenuAcceleration,
+            },
+    },
 };
 
 static Widget s_reset_ilmark_widgets[] = {
@@ -1474,6 +1572,8 @@ static Widget s_reset_ilmark_widgets[] = {
     },
 };
 
+const char *IL_MARK_STORY_OPTIONS[] = {"Off", "Always", "Run End"};
+
 static Widget s_il_mark_widgets[] = {
     {
         .type = WidgetType::Header,
@@ -1497,10 +1597,12 @@ static Widget s_il_mark_widgets[] = {
             },
     },
     {
-        .type = WidgetType::Checkbox,
-        .checkbox =
+        .type = WidgetType::Choose,
+        .choose =
             {
                 .label = "Story Mode",
+                .choices = IL_MARK_STORY_OPTIONS,
+                .num_choices = LEN(IL_MARK_STORY_OPTIONS),
                 .pref = pref::Pref::IlMarkStory,
             },
     },
@@ -1539,6 +1641,10 @@ static Widget s_displays_widgets[] = {
     {
         .type = WidgetType::Menu,
         .menu = {"Timers", s_timers_widgets, LEN(s_timers_widgets)},
+    },
+    {
+        .type = WidgetType::Menu,
+        .menu = {"Death Counter", s_deathcounter_widgets, LEN(s_deathcounter_widgets)},
     },
     {
         .type = WidgetType::Menu,
