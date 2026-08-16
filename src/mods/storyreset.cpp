@@ -149,7 +149,7 @@ void display_reset_run_message() {
     if (pref::get(pref::Pref::HideRunResetMessage)) {
         return;
     }
-
+    // TODO: is all this really necessary?
     // If the hide run reset message pref is off, we still want to be "minimal" with displaying it
     // So, we only display a reset message if:
     // (1) it's a less obvious reset trigger (eg not go to story)

@@ -74,7 +74,9 @@ bool should_count_as_normal_death() {
         (mode::is_spin_in_init(mkb::sub_mode) && s_can_incr_death_counter);
     bool left_stage_without_clearing =
         mode::is_stage_exit_submode(mkb::sub_mode) && s_can_incr_death_counter;
-    bool died = mode::is_death_init(mkb::sub_mode);
+    // Need to also check the flag for death init submodes in case we fall out and let the animation
+    // play out (ie we enter 2 "death init" submodes before resuming gameplay)
+    bool died = mode::is_death_init(mkb::sub_mode) && s_can_incr_death_counter;
     return retried_without_clearing || left_stage_without_clearing || died;
 }
 
