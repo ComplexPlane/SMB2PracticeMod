@@ -25,9 +25,6 @@ static bool s_goal_flag_exit_game;    // Unset outside of exit game and game sce
 static bool s_goal_flag_last_stage;  // Unset on spin in, gameplay pre tape break, and game scenario
                                      // main
 
-// static patch::Tramp<decltype(&mkb::did_ball_enter_goal)> s_goal_tramp;
-// static patch::Tramp<decltype(&mkb::mode_tick)> s_mode_tick_tramp;
-
 u8 get_frames_until_goal_submode() {
     return s_frames_until_goal_submode;
 }
@@ -85,25 +82,6 @@ static patch::Tramp<mkb::did_ball_enter_goal> s_goal_tramp(
         return orig_result;
     });
 
-// When entering the goal, set our flags to true and start the frames until goal submode timer
-/* bool did_ball_enter_goal_hook(mkb::Ball *ball,
-                              int *out_stage_goal_idx,
-                              int *out_itemgroup_id,
-                              mkb::byte *out_goal_flags) {
-    bool result = s_goal_tramp.dest(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
-
-    if (result) {
-        set_goal_flags();
-        s_frames_until_goal_submode = TIME_BETWEEN_TAPE_BREAK_AND_GOAL_SUBMODE;
-    }
-    // We don't need to check if we're paused because this function doesn't
-    // get run while paused
-    if (s_frames_until_goal_submode != 0) {
-        s_frames_until_goal_submode -= 1;
-    }
-    return result;
-} */
-
 // We also need to handle properly zeroing the timer and  unsetting our flags in the appropriate
 // submodes
 
@@ -147,18 +125,7 @@ static patch::Tramp<mkb::mode_tick> s_mode_tick_tramp([]() {
     unset_goal_flags();
 });
 
-/* void mode_tick_hook() {
-    s_mode_tick_tramp.dest();
-    // Run this after the game updates the submode
-    // This ensures that our flags that should get unset during a submode switch don't get delayed
-    // by a frame
-    reset_tape_break_counter();
-    unset_goal_flags();
-} */
-
 void init() {
-    // patch::hook_function(s_goal_tramp, &mkb::did_ball_enter_goal, did_ball_enter_goal_hook);
-    // patch::hook_function(s_mode_tick_tramp, mkb::mode_tick, mode_tick_hook);
     s_goal_tramp.hook();
     s_mode_tick_tramp.hook();
 }

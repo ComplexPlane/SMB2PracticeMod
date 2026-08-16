@@ -295,6 +295,7 @@ bool should_not_display_timer_at_all() {
     // The only time we can ever display the timer outside of story mode is
     // when we fully exit game and the timer is still running
     if (!mode::is_main_game_mode_story(mkb::main_game_mode)) {
+        // return get_loadless_time() == 0;
         return !is_run_active();
     }
     // If in story, hide the timer if freecamming (if the pref is on)
@@ -333,11 +334,6 @@ void disp() {
                           "Int:", 60 * savest::interacted_with_state(), true, draw::WHITE);
 }
 
-// for easier timer testing
-// static patch::Tramp<decltype(&mkb::fade_screen_to_color)> s_fade_screen_to_color_tramp;
-/* static patch::Tramp<decltype(&mkb::g_handle_storymode_stageselect_state)>
-    s_g_handle_storymode_stageselect_state_tramp; */
-
 static patch::Tramp<mkb::g_handle_storymode_stageselect_state>
     s_g_handle_storymode_stageselect_state_tramp([]() {
         s_g_handle_storymode_stageselect_state_tramp.chain();
@@ -345,17 +341,6 @@ static patch::Tramp<mkb::g_handle_storymode_stageselect_state>
     });
 
 void init_main_game() {
-    /* patch::hook_function(s_fade_screen_to_color_tramp, mkb::fade_screen_to_color,
-                         [](mkb::uint flags, u32 color, mkb::uint frames) {
-                             // don't run for testing purposes
-                             // s_fade_screen_to_color_tramp.dest(flags, color, frames);
-                         }); */
-    /* patch::hook_function(s_g_handle_storymode_stageselect_state_tramp,
-                         mkb::g_handle_storymode_stageselect_state, []() {
-                             s_g_handle_storymode_stageselect_state_tramp.dest();
-                             update_timers_on_10_ball_screen(mkb::g_storymode_stageselect_state);
-                             // update_run_status();
-                         }); */
     s_g_handle_storymode_stageselect_state_tramp.hook();
 }
 
