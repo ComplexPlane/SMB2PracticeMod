@@ -69,11 +69,10 @@ bool is_gameplay_exact() {
 // When entering the goal, set our flags to true and start the frames until goal submode timer
 static patch::Tramp<mkb::did_ball_enter_goal> s_goal_tramp(
     [](mkb::Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id, mkb::byte *out_goal_flags) {
-        // mkb::BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
-        bool result =
+        bool orig_result =
             s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
 
-        if (result) {
+        if (orig_result) {
             set_goal_flags();
             s_frames_until_goal_submode = TIME_BETWEEN_TAPE_BREAK_AND_GOAL_SUBMODE;
         }
@@ -83,7 +82,7 @@ static patch::Tramp<mkb::did_ball_enter_goal> s_goal_tramp(
             s_frames_until_goal_submode -= 1;
         }
 
-        return result;
+        return orig_result;
     });
 
 // When entering the goal, set our flags to true and start the frames until goal submode timer
@@ -117,7 +116,7 @@ void reset_tape_break_counter() {
     // will be 0
     // libsavest::state_loaded_this_frame()
     // TODO: test that updating this didn't break anything!
-    if (mode::is_stage_exit_init(mkb::sub_mode) || savest::last_action_was_load() ||
+    if (mode::is_stage_exit_init(mkb::sub_mode) || savest::interacted_with_state() ||
         mode::is_spin_in_init(mkb::sub_mode)) {
         s_frames_until_goal_submode = 0;
     }
