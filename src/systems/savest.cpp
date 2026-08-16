@@ -24,7 +24,7 @@ struct SaveState {
     u32 flags;
     u32 timestamp;
     s32 stage_id;
-    u32 character;
+    u8 character;
     store::Store store;
     u8 pause_menu_sprite_status;
     mkb::Sprite pause_menu_sprite;
@@ -287,7 +287,8 @@ SaveResult save(u32 slot) {
     pass_over_regions(&state->store, store::save);
     handle_pause_menu_save(state);
     state->stage_id = mkb::current_stage_id;
-    state->character = mkb::active_monkey_id[mkb::curr_player_idx];
+    // using mkb::selected_characters instead of mkb::active_monkey_id works with gotostory
+    state->character = mkb::selected_characters[mkb::curr_player_idx];
     state->flags |= Flag_IsPresent;
     state->timestamp = s_timestamp;
 
