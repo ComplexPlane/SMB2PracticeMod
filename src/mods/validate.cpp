@@ -4,10 +4,10 @@
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/savest.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
-#include "systems/savest.h"
 
 namespace validate {
 
@@ -54,7 +54,9 @@ void validate_run() {
     }
 
     // Track savestates
-    if (savest::get_last_action() == savest::Action::Load) s_loaded_savestate = true;
+    // savest::get_last_action() == savest::Action::Load
+    // savest::interacted_with_state()
+    if (savest::state_changed_gameplay()) s_loaded_savestate = true;
 
     // Using dpad controls is disallowed
     bool dpad_down =
