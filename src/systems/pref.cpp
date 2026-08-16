@@ -99,6 +99,13 @@ static const Pref PREF_IDS[] = {
     Pref::InputDispGradientStart,
     Pref::InputDispGradientEnd,
     Pref::RgbFormat,
+    Pref::FullgameTimerOptions,
+    Pref::SegmentTimerOptions,
+    Pref::ShowRunBreakdown,
+    Pref::HideRunResetMessage,
+    Pref::DeathCounterDisplayOptions,
+    Pref::CountFirstStageDeaths,
+    Pref::MenuAcceleration,
 };
 
 struct DefaultPref {
@@ -131,6 +138,8 @@ static const DefaultPref DEFAULT_PREFS[] = {
     {Pref::CustomPhysicsDisp, 1},
     {Pref::SavestateClearAllBind, 255},
     {Pref::InputDispGradientEnd, 100},
+    {Pref::HideRunResetMessage, 1},
+    {Pref::CountFirstStageDeaths, 1},
 };
 
 //
