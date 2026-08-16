@@ -33,15 +33,15 @@ bl is_iw_complete
 cmpwi r3, 1
 bne iw_not_complete
 // Jump to "Exit game" handler
-lis r4, 0x8027
-ori r4, r4, 0x48cc
+lis r4, stage_select_menu_exit_handler@ha
+ori r4, r4, stage_select_menu_exit_handler@l
 mtlr r4
 b end_stage_select_menu_hook
 
 // Resume "Stage select" handler
 iw_not_complete:
-lis r4, 0x8027
-ori r4, r4, 0x4808
+lis r4, stage_select_menu_resume@ha
+ori r4, r4, stage_select_menu_resume@l
 mtlr r4
 li r21, 6 // Replaced instruction was "li r0, 6"
 
@@ -104,13 +104,13 @@ bne dont_modify_text
 
 // Check if we're trying to draw the "Stage select" string
 lwzx r3, r25, r21 // Load pointer to string like in replaced instruction
-lis r4, 0x8047
-ori r4, r4, 0xf02c
+lis r4, PAUSEMENU_STAGE_SELECT_STRING@ha
+ori r4, r4, PAUSEMENU_STAGE_SELECT_STRING@l
 cmpw r3, r4
 bne dont_modify_text
 
 // Replace pointer with pointer to our custom text
-lis r23, FINISH_IW_MSG@h
+lis r23, FINISH_IW_MSG@ha
 ori r23, r23, FINISH_IW_MSG@l
 b end_pause_menu_text_hook
 
@@ -120,8 +120,8 @@ lwzx r23, r25, r21 // Analog of replaced instruction
 
 end_pause_menu_text_hook:
 // Resume to 0x8032a870
-lis r3, 0x8032
-ori r3, r3, 0xa870
+lis r3, pause_menu_text_hook_resume@ha
+ori r3, r3, pause_menu_text_hook_resume@l
 mtctr r3
 mr r12, r31
 mr r11, r30
@@ -153,29 +153,26 @@ bctr
 is_iw_complete:
 
 // Check that we're not in Practice Mode
-lis r3, 0x805d
-ori r3, r3, 0x4914
-lwz r4, 0x0 (r3)
+lis r3, in_practice_mode@ha
+lwz r4, in_practice_mode@l(r3)
 cmpwi r4, 1
 beq No
 
 // Check if we're doing an IW
-lis r3, currently_playing_iw@h
-ori r3, r3, currently_playing_iw@l
-lwz r4, 0x0 (r3)
+lis r3, currently_playing_iw@ha
+lwz r4, currently_playing_iw@l(r3)
 cmpwi r4, 0
 beq No
 
 // Check if 9 stages in world complete
 
 // Get current world number
-lis r3, 0x8054
-ori r3, r3, 0xdbb8
-lhz r4, 0x4 (r3)
+lis r3, scen_info+4@ha
+lhz r4, scen_info+4@l(r3)
 
 // Get current number of stages beaten in world from world number
-lis r5, 0x805d
-ori r5, r5, 0x4b08
+lis r5, sm_state@ha
+ori r5, r5, sm_state@l
 mulli r4, r4, 56
 add r5, r5, r4
 lhz r6, 0x2 (r5)
@@ -183,17 +180,15 @@ cmpwi r6, 9
 bne No
 
 // Check if current stage complete
-lis r3, 0x8054
-ori r3, r3, 0xdc83
-lbz r4, 0x0 (r3)
+lis r3, stage_complete@ha
+lbz r4, stage_complete@l(r3)
 cmpwi r4, 1
 bne No
 
 // Check if we're in the Scenario submode (aka, level select menu is open)
 // Need to check this because the level completion flag carries over to this menu from the previous stage
-lis r3, 0x8054
-ori r3, r3, 0xdc34 // Submode
-lwz r4, 0x0 (r3)
+lis r3, sub_mode@ha
+lwz r4, sub_mode@l(r3)
 cmpwi r4, 87
 beq No
 cmpwi r4, 88

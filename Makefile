@@ -122,6 +122,9 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
 # For REL linking
 export LDFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.ld)))
 export MAPFILE		:= $(CURDIR)/src/mkb/mkb2.$(REGION).lst
+# Symbols added by this mod, kept separate so re-exporting the map above
+# does not clobber them. Concatenated with the map before elf2rel runs.
+export EXTMAPFILE	:= $(CURDIR)/src/mkb/mkb2.$(REGION).ext.lst
 export BANNERFILE	:= $(CURDIR)/images/banner_us.raw
 export ICONFILE		:= $(CURDIR)/images/icon_us.raw
 
@@ -161,7 +164,7 @@ DEPENDS	:=	$(OFILES:.o=.d)
 # main targets
 #---------------------------------------------------------------------------------
 $(OUTPUT).gci: $(OUTPUT).rel $(BANNERFILE) $(ICONFILE) gcipack
-$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) elf2rel
+$(OUTPUT).rel: $(OUTPUT).elf $(MAPFILE) $(EXTMAPFILE) elf2rel
 $(OUTPUT).elf: $(LDFILES) $(OFILES)
 
 $(OFILES_SOURCES) : $(HFILES)
@@ -173,7 +176,8 @@ menu_defn.o: force_git_hash
 # REL linking
 %.rel: %.elf
 	@echo elf2rel ... $(notdir $@)
-	@$(ELF2REL) $< $(MAPFILE) $@ 101 2
+	@{ cat $(MAPFILE); echo; cat $(EXTMAPFILE); } > combined.lst
+	@$(ELF2REL) $< combined.lst $@ 101 2
 	
 %.gci: %.rel
 	@echo gcipack ... $(notdir $@)

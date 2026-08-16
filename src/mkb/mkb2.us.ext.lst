@@ -1,0 +1,15 @@
+// Symbols not present in the vanilla mkb2.us.lst, used by this mod's assembly code.
+// This file is concatenated with mkb2.us.lst before being passed to elf2rel,
+// so re-exporting mkb2.us.lst does not clobber these entries.
+//
+// Section bases (vanilla US): text=0x80270100 data=0x80444160 bss=0x8054C8E0
+
+// Addresses within main_loop.rel text which assembly hooks resume execution at
+1,1,00004708:stage_select_menu_resume
+1,1,000047CC:stage_select_menu_exit_handler
+1,1,0003EBA8:debug_text_color_hook_resume
+1,1,000BA770:pause_menu_text_hook_resume
+1,1,000BAC3C:titlescreen_text_color_hook_resume
+
+// Data symbols
+1,5,0003B38C:titlescreen_press_start_string
