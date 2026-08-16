@@ -4,6 +4,7 @@
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
+#include "systems/goal.h"
 #include "systems/heap.h"
 #include "systems/menu_defn.h"
 #include "systems/menu_impl.h"
@@ -183,6 +184,7 @@ void init() {
     physics::init();
     iw::init();
     savest::init();
+    goal::init();
     timer::init();
     inputdisp::init();
     cmseg::init();
