@@ -124,7 +124,7 @@ void disp() {
         mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw ||
         freecam::should_hide_hud())
         return;
-    timerdisp::draw_timer(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
+    timerdisp::draw_timer_right_side(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
 }
 
 }  // namespace iw

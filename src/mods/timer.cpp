@@ -59,11 +59,11 @@ void disp() {
     u32 row = 1;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(s_rta_timer, "RTA:", row++, draw::WHITE, true);
+        timerdisp::draw_timer_right_side(s_rta_timer, "RTA:", row++, draw::WHITE, true);
     }
 
     if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(s_pause_timer, "PAU:", row++, draw::WHITE, true);
+        timerdisp::draw_timer_right_side(s_pause_timer, "PAU:", row++, draw::WHITE, true);
     }
 
     switch (mkb::sub_mode) {
