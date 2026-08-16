@@ -103,6 +103,13 @@ enum class Pref : u8 {
     InputDispGradientStart = 90,
     InputDispGradientEnd = 91,
     RgbFormat = 92,
+    FullgameTimerOptions = 93,
+    SegmentTimerOptions = 94,
+    ShowRunBreakdown = 95,
+    HideRunResetMessage = 96,
+    DeathCounterDisplayOptions = 97,
+    CountFirstStageDeaths = 98,
+    MenuAcceleration = 99,
 };
 
 void init();
