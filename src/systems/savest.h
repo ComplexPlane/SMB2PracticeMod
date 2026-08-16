@@ -47,5 +47,7 @@ u32 get_timestamp(u32 slot);
 
 bool is_enabled();
 Action get_last_action();
+bool last_action_was_load();
+bool last_action_was_save();
 
 }  // namespace savest

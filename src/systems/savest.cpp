@@ -396,4 +396,12 @@ Action get_last_action() {
     return s_last_action;
 }
 
+bool last_action_was_load() {
+    return s_last_action == Action::Load;
+}
+
+bool last_action_was_save() {
+    return s_last_action == Action::Save;
+}
+
 }  // namespace savest
