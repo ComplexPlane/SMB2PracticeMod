@@ -1,0 +1,168 @@
+#include "deathcounter.h"
+
+#include "../mkb/mkb.h"
+
+#include "../systems/goal.h"
+#include "../systems/pref.h"
+#include "../systems/savest.h"
+#include "../utils/draw.h"
+#include "../utils/macro_utils.h"
+#include "../utils/mode.h"
+#include "../utils/patch.h"
+#include "../utils/timerdisp.h"  // for testing
+#include "freecam.h"
+#include "storyreset.h"
+
+namespace deathcounter {
+
+constexpr u16 COUNTER_DISPLAY_Y_POS = 56;
+constexpr u16 COUNTER_DISPLAY_X_POS = 18;
+constexpr u16 COUNTER_NUMBER_X_POS = COUNTER_DISPLAY_X_POS + 7 * draw::DEBUG_CHAR_WIDTH;
+
+constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
+
+static u32 s_world_death_count[WORLD_COUNT] = {};
+// Flag to determine when we should/shouldn't increment the death counter
+static bool s_can_incr_death_counter = false;
+
+u32 get_total_death_count() {
+    u32 total = 0;
+    for (u16 k = 0; k < WORLD_COUNT; k++) {
+        total += s_world_death_count[k];
+    }
+    return total;
+}
+
+u32 get_world_death_count(u16 world_idx) {
+    u16 clamped_idx = MIN(world_idx, WORLD_COUNT - 1);  // clamp for safety
+    return s_world_death_count[clamped_idx];
+}
+
+void increment_world_death_counter() {
+    // Check the pref for count first stage deaths and if we're on the first stage
+    if (!pref::get(pref::Pref::CountFirstStageDeaths) &&
+        mode::get_storymode_total_clear_count() == 0) {
+        return;
+    }
+    s_world_death_count[mkb::scen_info.world] += 1;  // death counter for the current world
+    s_can_incr_death_counter = false;
+}
+
+void reset_flag() {
+    s_can_incr_death_counter = false;
+}
+
+void reset_death_counters() {
+    for (u16 k = 0; k < WORLD_COUNT; k++) {
+        s_world_death_count[k] = 0;
+    }
+    reset_flag();
+}
+
+// When we're done holding the savestate button/when gameplay resumes
+void update_flag_on_state_release() {
+    // goal::is_gameplay_exact() && !libsavest::state_loaded_this_frame()
+    if (goal::is_gameplay_exact() && !savest::interacted_with_state()) {  // PLACEHOLDER
+        // As soon as we're done holding the load state button (or just any time we're controlling
+        // the monkey on the stage), we're allowed to die
+        s_can_incr_death_counter = true;
+    }
+}
+
+bool should_count_as_normal_death() {
+    bool retried_without_clearing =
+        (mode::is_spin_in_init(mkb::sub_mode) && s_can_incr_death_counter);
+    bool left_stage_without_clearing =
+        mode::is_stage_exit_submode(mkb::sub_mode) && s_can_incr_death_counter;
+    bool died = mode::is_death_init(mkb::sub_mode);
+    return retried_without_clearing || left_stage_without_clearing || died;
+}
+
+bool should_count_as_savestate_death() {
+    // return libsavest::state_loaded_this_frame() && s_can_incr_death_counter;
+    return savest::loaded_state() && s_can_incr_death_counter;
+}
+
+void count_deaths() {
+    if (goal::is_postgoal_exact()) {
+        s_can_incr_death_counter = false;
+    }
+
+    if (should_count_as_normal_death()) {
+        increment_world_death_counter();
+    }
+
+    if (should_count_as_savestate_death()) {
+        increment_world_death_counter();
+    }
+}
+
+void tick() {
+    if (storyreset::should_reset_run()) {
+        reset_death_counters();
+    }
+
+    // Whenever entering a new stage, reset our flag
+    if (mode::is_spin_in_first_init(mkb::sub_mode)) {
+        reset_flag();
+    }
+
+    count_deaths();
+    update_flag_on_state_release();
+}
+
+bool should_display_death_counter() {
+    u8 pref = pref::get(pref::Pref::DeathCounterDisplayOptions);
+
+    using DeathCounterOptions = storyreset::StoryDisplayOptions;
+
+    switch (DeathCounterOptions(pref)) {
+        case DeathCounterOptions::AlwaysShow:
+            return true;
+        case DeathCounterOptions::BetweenWorlds:
+            return goal::is_between_worlds();
+        case DeathCounterOptions::EndOfRun:
+            return goal::is_run_complete();
+        case DeathCounterOptions::DontShow:
+            return false;
+    }
+
+    // Unreachable, silence compiler warning?
+    return false;
+}
+
+bool should_not_display_counter_at_all() {
+    if (!mode::is_main_game_mode_story(mkb::main_game_mode)) {
+        // If we're in the menus outside of a story mode run due to an accidental exit game, we
+        // still want to be able to display the counter if we haven't reset it yet
+        return !storyreset::is_run_active();
+    }
+    return freecam::should_hide_hud();
+}
+
+void disp() {
+    if (should_not_display_counter_at_all()) {
+        return;
+    }
+
+    if (should_display_death_counter()) {
+        draw::debug_text(COUNTER_DISPLAY_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "Deaths:");
+        draw::debug_text(COUNTER_NUMBER_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "%d",
+                         get_total_death_count());
+    }
+
+    /* u8 pos;
+    if (should_display_death_counter()) {
+        pos = 2;
+    } else {
+        pos = 0;
+    }
+    timerdisp::draw_timer(COUNTER_DISPLAY_X_POS, 1 + pos, 44,
+                          "Dbg:", 60 * storyreset::is_run_active(), true, draw::WHITE);
+    timerdisp::draw_timer(COUNTER_DISPLAY_X_POS, 2 + pos, 44, "Sub:", 60 * mkb::sub_mode, true,
+                          draw::WHITE);
+    timerdisp::draw_timer(COUNTER_DISPLAY_X_POS, 3 + pos, 44,
+                          "Gol:", 60 * goal::is_postgoal_exact(), true, draw::WHITE); */
+}
+
+}  // namespace deathcounter
