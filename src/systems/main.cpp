@@ -32,6 +32,7 @@
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
+#include "mods/menu_accel.h"
 #include "mods/physics.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
@@ -102,6 +103,7 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     inputdisp::tick();
     gotostory::tick();
     cmseg::tick();
+    menu_accel::tick();
     banans::tick();
     marathon::tick();
     ballcolor::tick();
