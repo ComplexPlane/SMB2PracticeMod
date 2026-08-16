@@ -4,13 +4,9 @@
 
 namespace gotostory {
 
-enum class State {
-    Default,
-    LoadMenuReq,
-    LoadStoryReq,
-};
-
 static State s_state = State::Default;
+
+State get_gotostory_state() { return s_state; }
 
 void load_storymode() {
     if (mkb::main_mode == mkb::MD_SEL) {
