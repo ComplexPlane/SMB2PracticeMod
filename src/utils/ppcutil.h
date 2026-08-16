@@ -15,10 +15,24 @@
     (0x38000000 + (((u32)(dest_register)) << 21) + ((u16)value))
 #define PPC_INSTR_LIS(dest_register, value) \
     (0x3C000000 + (((u32)(dest_register)) << 21) + ((u16)value))
+#define PPC_INSTR_ORI(dest_register, value)                                               \
+    ((0b011000 << 26) + (((u32)(dest_register)) << 21) + (((u32)(dest_register)) << 16) + \
+     ((u16)value))
 
 #define PPC_INSTR_NOP() (0x60000000)
 
-// TODO: PPC_INSR_CMPWI
+#define PPC_INSTR_CMPWI(rA, imm) (0x2C000000u + ((u32)(rA) << 16) + (u16)(imm))
+
+#define PPC_INSTR_SUBI(dest_register, src_register, value)                      \
+    (0x38000000u + ((u32)(dest_register) << 21) + ((u32)(src_register) << 16) + \
+     (u16)(-(s16)(value)))
+
+#define PPC_INSTR_RLWINM(dest_register, src_register, shift_amt, mask_begin, mask_end, rc) \
+    ((0b010101 << 26) + ((u32)src_register << 21) + ((u32)dest_register << 16) +           \
+     ((u32)shift_amt << 11) + ((u32)mask_begin << 6) + ((u32)mask_end << 1) + ((u32)rc))
+
+#define PPC_INSTR_SUBFIC(dest_register, src_register, simm) \
+    ((0b001000 << 26) + ((u32)dest_register << 21) + ((u32)src_register << 16) + (int16_t)simm)
 
 #define PPC_R0 0
 #define PPC_R1 1
