@@ -50,7 +50,7 @@ void tick() {
     // savest::get_last_action() == savest::Action::Load
     // savest::interacted_with_state()
     if (savest::state_changed_gameplay()) {
-        // why do we need this if validate_attempt() gets run in mkb::smd_game_play_tick?
+        // TODO: why do we need this if validate_attempt() gets run in mkb::smd_game_play_tick?
         s_valid_run = false;
     }
 }
@@ -65,10 +65,10 @@ bool show_in_story() {
             return !storyreset::all_loadless_timer_prefs_off() && goal::is_run_complete();
         case StoryIlMarkSettings::AlwaysInStory:
             return true;
+        default:
+            // Unreachable
+            return false;
     }
-
-    // Unreachable
-    return true;
 }
 
 bool is_ilmark_enabled() {

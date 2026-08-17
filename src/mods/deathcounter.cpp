@@ -62,7 +62,7 @@ void reset_death_counters() {
 // When we're done holding the savestate button/when gameplay resumes
 void update_flag_on_state_release() {
     // goal::is_gameplay_exact() && !libsavest::state_loaded_this_frame()
-    if (goal::is_gameplay_exact() && !savest::interacted_with_state()) {  // PLACEHOLDER
+    if (goal::is_gameplay_exact() && !savest::interacted_with_state()) {
         // As soon as we're done holding the load state button (or just any time we're controlling
         // the monkey on the stage), we're allowed to die
         s_can_incr_death_counter = true;
@@ -71,7 +71,7 @@ void update_flag_on_state_release() {
 
 bool should_count_as_normal_death() {
     bool retried_without_clearing =
-        (mode::is_spin_in_init(mkb::sub_mode) && s_can_incr_death_counter);
+        mode::is_spin_in_init(mkb::sub_mode) && s_can_incr_death_counter;
     bool left_stage_without_clearing =
         mode::is_stage_exit_submode(mkb::sub_mode) && s_can_incr_death_counter;
     // Need to also check the flag for death init submodes in case we fall out and let the animation
@@ -90,11 +90,7 @@ void count_deaths() {
         s_can_incr_death_counter = false;
     }
 
-    if (should_count_as_normal_death()) {
-        increment_world_death_counter();
-    }
-
-    if (should_count_as_savestate_death()) {
+    if (should_count_as_normal_death() || should_count_as_savestate_death()) {
         increment_world_death_counter();
     }
 }
@@ -127,10 +123,10 @@ bool should_display_death_counter() {
             return goal::is_run_complete();
         case DeathCounterOptions::DontShow:
             return false;
+        default:
+            // Unreachable
+            return false;
     }
-
-    // Unreachable, silence compiler warning?
-    return false;
 }
 
 bool should_not_display_counter_at_all() {
