@@ -91,12 +91,12 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     cardio::tick();
     unlock::tick();
     iw::tick();
-    storyreset::tick();
-    storytimer::tick();
-    deathcounter::tick();
     savest::tick();
     savest_ui::tick();
     menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
+    storyreset::tick();
+    deathcounter::tick();
+    storytimer::tick();
     fallout::tick();
     jump::tick();     // (edits physics preset)
     physics::tick();  // anything editing physics presets must run before physics::tick()
@@ -136,8 +136,8 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     draw::predraw();
     timer::disp();
     iw::disp();
-    storytimer::disp();
     deathcounter::disp();
+    storytimer::disp();
     Tetris::get_instance().disp();
     ilbattle::disp();
     cmseg::disp();

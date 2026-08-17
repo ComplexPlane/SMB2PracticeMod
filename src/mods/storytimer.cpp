@@ -284,9 +284,9 @@ void draw_breakdown_screen() {
         u32 world_deaths = deathcounter::get_world_death_count(idx);
 
         timerdisp::format_time_to_buffer(split_buf[idx], get_split_timer_for_world(idx),
-                                         timerdisp::TimeFormatType::MINUTES_ALWAYS_LEADING_ZERO);
+                                         timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
         timerdisp::format_time_to_buffer(seg_buf[idx], s_timer_group[idx].segment,
-                                         timerdisp::TimeFormatType::MINUTES_ALWAYS_LEADING_ZERO);
+                                         timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
         mkb::sprintf(row_info_buf[idx], "W%d:%s (%s) (%d)", idx + 1, split_buf[idx], seg_buf[idx],
                      world_deaths);
 

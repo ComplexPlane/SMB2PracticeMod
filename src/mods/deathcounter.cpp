@@ -81,7 +81,6 @@ bool should_count_as_normal_death() {
 }
 
 bool should_count_as_savestate_death() {
-    // return libsavest::state_loaded_this_frame() && s_can_incr_death_counter;
     return savest::loaded_state() && s_can_incr_death_counter;
 }
 
