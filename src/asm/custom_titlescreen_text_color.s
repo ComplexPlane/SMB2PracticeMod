@@ -4,8 +4,8 @@
 custom_titlescreen_text_color:
 
 // Load original address of "PRESS START/PAUSE" string
-lis r5, titlescreen_press_start_string@ha
-ori r5, r5, titlescreen_press_start_string@l
+lis r5, 0x8047
+ori r5, r5, 0xf4ec
 
 // Calculate the index of the current character
 sub r6, r30, r5
@@ -23,7 +23,7 @@ ori r6, r6, 0xff00
 
 end:
 stw r6, 0x8(sp)
-lis r5, titlescreen_text_color_hook_resume@ha
-ori r5, r5, titlescreen_text_color_hook_resume@l
+lis r5, 0x8032
+ori r5, r5, 0xad3c
 mtctr r5
 bctr
