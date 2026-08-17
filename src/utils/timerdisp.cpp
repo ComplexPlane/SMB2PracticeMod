@@ -73,7 +73,7 @@ s32 row_number_to_vertical_pos(u32 row_num) {
     return Y + 16 * row_num;
 }
 
-void draw_timer(u32 pos_x,
+void draw_timer(s32 pos_x,
                 u32 row,
                 u32 text_offset,
                 const char *prefix,

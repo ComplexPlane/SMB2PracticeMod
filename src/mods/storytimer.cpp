@@ -17,25 +17,25 @@
 
 namespace storytimer {
 
-constexpr u16 FULLGAME_TIMER_LOCATION_X = 18 + 24;
+constexpr s16 FULLGAME_TIMER_LOCATION_X = 18 + 24;
 constexpr u16 FULLGAME_TIMER_TEXT_OFFSET = 5 * draw::DEBUG_CHAR_WIDTH;
-constexpr u16 SEGMENT_TIMER_LOCATION_X = 30 + 24;
+constexpr s16 SEGMENT_TIMER_LOCATION_X = 30 + 24;
 constexpr u16 SEGMENT_TIMER_TEXT_OFFSET = 4 * draw::DEBUG_CHAR_WIDTH;
-constexpr u16 BREAKDOWN_ROW_LOCATION_X = 42 + 24;
-constexpr u16 TOTALS_ROW_LOCATION_X = 18;
+constexpr s16 BREAKDOWN_ROW_LOCATION_X = 42 + 24;
+constexpr s16 TOTALS_ROW_LOCATION_X = 18;
 constexpr u16 STARTING_ROW = 2;
 
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
 constexpr u16 STAGES_PER_WORLD = mode::STAGES_PER_WORLD;
 
-static TimerGroup s_timer_group[WORLD_COUNT];  // timer info for each world
+static WorldTimer s_world_timer[WORLD_COUNT];  // timer info for each world
 
 // --- some getters that other files can use (if needed) ---
 
-TimerGroup get_world_timer_info(u16 world_idx) {
+WorldTimer get_world_timer_info(u16 world_idx) {
     // clamp for safety so we don't access outside the bounds of the array
     u16 clamped_idx = MIN(world_idx, WORLD_COUNT - 1);
-    return s_timer_group[clamped_idx];
+    return s_world_timer[clamped_idx];
 }
 
 // Used to calculate our split times for the breakdown screen; also gives us a
@@ -44,9 +44,9 @@ u32 get_split_timer_for_world(u16 world_idx) {
     u16 clamped_idx = MIN(world_idx, WORLD_COUNT - 1);
     u32 prev_world_sum = 0;
     for (u16 k = 0; k < clamped_idx; k++) {
-        prev_world_sum += s_timer_group[k].full_world;
+        prev_world_sum += s_world_timer[k].full_world;
     }
-    return prev_world_sum + s_timer_group[clamped_idx].segment;
+    return prev_world_sum + s_world_timer[clamped_idx].segment;
 }
 
 u32 get_loadless_time() {
@@ -62,7 +62,7 @@ bool is_run_active() {
 void reset_timer() {
     if (get_loadless_time() != 0) {
         for (u16 k = 0; k < WORLD_COUNT; k++) {
-            s_timer_group[k] = {};
+            s_world_timer[k] = {};
         }
         storyreset::reset_active_run_info();
         storyreset::display_reset_run_message();
@@ -79,8 +79,8 @@ void update_timers_on_10_ball_screen(mkb::StoryModeStageSelectState state) {
         if (mkb::scen_info.world == k) {  // World (k+1)'s timer
             if (mode::is_on_10_ball_spin_in(state) || mode::is_idle_on_10_ball_screen(state) ||
                 mode::has_selected_stage_on_10_ball_screen_init(state)) {
-                s_timer_group[k].full_world += 1;
-                s_timer_group[k].segment = s_timer_group[k].full_world;
+                s_world_timer[k].full_world += 1;
+                s_world_timer[k].segment = s_world_timer[k].full_world;
             }
         }
     }
@@ -91,8 +91,8 @@ void update_timers_while_paused_on_10_ball_screen() {
     for (u16 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {
             if (mode::is_on_10_ball_screen(mkb::sub_mode, mkb::scen_info) && mode::is_paused()) {
-                s_timer_group[k].full_world += 1;
-                s_timer_group[k].segment = s_timer_group[k].full_world;
+                s_world_timer[k].full_world += 1;
+                s_world_timer[k].segment = s_world_timer[k].full_world;
             }
         }
     }
@@ -104,24 +104,24 @@ void update_timers_on_stage() {
     for (u16 k = 0; k < WORLD_COUNT; k++) {
         if (mkb::scen_info.world == k) {  // World (k+1)'s timer
             if (mode::is_on_stage(mkb::sub_mode) || mode::is_story_exit_game(mkb::sub_mode)) {
-                s_timer_group[k].full_world += 1;
+                s_world_timer[k].full_world += 1;
 
                 // Increment the segment timer until tape breek on the last stage of the world
                 if (!goal::is_between_worlds()) {
-                    s_timer_group[k].segment = s_timer_group[k].full_world;
+                    s_world_timer[k].segment = s_world_timer[k].full_world;
                 }
             }
         }
     }
 }
 
-// for if we fully exit game by accident
+// For if we fully exit game by accident
 void update_timers_on_menus() {
     if ((mode::is_sel_ngc(mkb::sub_mode) || mode::is_storymode_file_screen_main(mkb::scen_info)) &&
         is_run_active()) {
         u8 active_world_idx = storyreset::get_active_world();
-        s_timer_group[active_world_idx].full_world += 1;
-        s_timer_group[active_world_idx].segment = s_timer_group[active_world_idx].full_world;
+        s_world_timer[active_world_idx].full_world += 1;
+        s_world_timer[active_world_idx].segment = s_world_timer[active_world_idx].full_world;
     }
 }
 
@@ -256,7 +256,7 @@ void draw_timers() {
 
     if (should_display_timer(TimerType::Segment)) {
         timerdisp::draw_timer(seg_info.pos_x, seg_info.row, seg_info.text_offset,
-                              "Seg:", s_timer_group[world_idx].segment, false, draw::WHITE);
+                              "Seg:", s_world_timer[world_idx].segment, false, draw::WHITE);
     }
 }
 
@@ -285,7 +285,7 @@ void draw_breakdown_screen() {
 
         timerdisp::format_time_to_buffer(split_buf[idx], get_split_timer_for_world(idx),
                                          timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
-        timerdisp::format_time_to_buffer(seg_buf[idx], s_timer_group[idx].segment,
+        timerdisp::format_time_to_buffer(seg_buf[idx], s_world_timer[idx].segment,
                                          timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
         mkb::sprintf(row_info_buf[idx], "W%d:%s (%s) (%d)", idx + 1, split_buf[idx], seg_buf[idx],
                      world_deaths);

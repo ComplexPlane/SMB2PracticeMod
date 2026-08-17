@@ -1051,6 +1051,7 @@ static Widget s_loadless_timers_widgets[] = {
         .type = WidgetType::Checkbox,
         .checkbox =
             {
+                // Applies to both loadless timer and deathcounter (they share the same pref)
                 .label = "Hide Reset Message",
                 .pref = pref::Pref::HideRunResetMessage,
             },
@@ -1081,6 +1082,15 @@ static Widget s_deathcounter_widgets[] = {
             {
                 .label = "Count Stage 1 Deaths",
                 .pref = pref::Pref::CountFirstStageDeaths,
+            },
+    },
+    {
+        .type = WidgetType::Checkbox,
+        .checkbox =
+            {
+                // Applies to both loadless timer and deathcounter (they share the same pref)
+                .label = "Hide Reset Message",
+                .pref = pref::Pref::HideRunResetMessage,
             },
     },
 };
