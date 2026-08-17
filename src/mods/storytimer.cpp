@@ -22,6 +22,7 @@ constexpr u16 FULLGAME_TIMER_TEXT_OFFSET = 5 * draw::DEBUG_CHAR_WIDTH;
 constexpr u16 SEGMENT_TIMER_LOCATION_X = 30 + 24;
 constexpr u16 SEGMENT_TIMER_TEXT_OFFSET = 4 * draw::DEBUG_CHAR_WIDTH;
 constexpr u16 BREAKDOWN_ROW_LOCATION_X = 42 + 24;
+constexpr u16 TOTALS_ROW_LOCATION_X = 18;
 constexpr u16 STARTING_ROW = 2;
 
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
@@ -185,51 +186,52 @@ bool should_display_timer(TimerType type) {
             }
         case TimerOptions::DontShow:
             return false;
+        default:
+            // Unreachable
+            return false;
     }
-
-    // Unreachable
-    return false;
 }
 
 // Doing this for now until a better display setup is figured out
-u16 get_timer_y_pos(TimerType type) {  // maybe rename to get_timer_row()?
-    u16 y_pos = STARTING_ROW;
+u16 get_timer_row(TimerType type) {
+    u16 row = STARTING_ROW;
     bool is_displaying_death_counter = deathcounter::should_display_death_counter();
 
     if (type == TimerType::Fullgame) {
         if (is_displaying_death_counter) {
-            y_pos++;
+            row++;
         }
     } else {  // Segment timer
         if (should_display_timer(TimerType::Fullgame)) {
-            y_pos++;
+            row++;
         }
         if (is_displaying_death_counter) {
-            y_pos++;
+            row++;
         }
     }
 
-    return y_pos;
+    return row;
 }
 
 // Bundle up the info timerdisp::draw_timer uses into a struct for convenience
 struct TimerDisplayInfo {
     u16 pos_x;
-    u16 pos_y;
+    u16 row;
     u16 text_offset;
 };
 
 TimerDisplayInfo get_timer_display_info(TimerType type) {
     if (type == TimerType::Fullgame) {
-        return {FULLGAME_TIMER_LOCATION_X, get_timer_y_pos(type), FULLGAME_TIMER_TEXT_OFFSET};
+        return {FULLGAME_TIMER_LOCATION_X, get_timer_row(type), FULLGAME_TIMER_TEXT_OFFSET};
     } else {
-        return {SEGMENT_TIMER_LOCATION_X, get_timer_y_pos(type), SEGMENT_TIMER_TEXT_OFFSET};
+        return {SEGMENT_TIMER_LOCATION_X, get_timer_row(type), SEGMENT_TIMER_TEXT_OFFSET};
     }
 }
 
 u16 get_current_segment_idx() {
-    // mkb::scen_info.world gets reset to 0 on the file screen, so the only case we ever need to
-    // worry about is if we fully exit game and are on the file screen with the timer still running
+    // mkb::scen_info.world gets reset to 0 on the file screen, so if we accidentally exit game to
+    // the menus, the only case where we can't use mkb::scen_info.world is when we are on the file
+    // screen with the timer still running
     if (mode::is_storymode_file_screen_main(mkb::scen_info) && get_loadless_time() != 0) {
         // The world we were on before exit-gaming
         return storyreset::get_active_world();
@@ -245,32 +247,33 @@ void draw_timers() {
     u32 loadless_time = get_loadless_time();
 
     if (should_display_timer(TimerType::Fullgame)) {
-        timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.pos_y, fullgame_info.text_offset,
+        timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.row, fullgame_info.text_offset,
                               "Time:", loadless_time, false, draw::WHITE);
     }
 
-    u16 world_idx =
-        get_current_segment_idx();  // index of the current world (between 0 and 9 inclusive)
+    u16 world_idx = get_current_segment_idx();  // index of the current world
     TimerDisplayInfo seg_info = get_timer_display_info(TimerType::Segment);
 
     if (should_display_timer(TimerType::Segment)) {
-        timerdisp::draw_timer(seg_info.pos_x, seg_info.pos_y, seg_info.text_offset,
+        timerdisp::draw_timer(seg_info.pos_x, seg_info.row, seg_info.text_offset,
                               "Seg:", s_timer_group[world_idx].segment, false, draw::WHITE);
     }
 }
 
-// We only use this function for 0 <= row <= 9
+// We only use this function for 0 <= row <= 10
 Vec2d get_breakdown_row_position(u16 row) {
-    u16 starting_row = get_timer_y_pos(TimerType::Segment);
+    u16 starting_row = get_timer_row(TimerType::Segment);
     float pos_y = timerdisp::row_number_to_vertical_pos(starting_row + row);
     if (row < WORLD_COUNT - 1) {
         return {BREAKDOWN_ROW_LOCATION_X, pos_y};
-    } else {  // "W10" takes up more space than "Wk" for "1 <= k <= 9"
-        return {SEGMENT_TIMER_LOCATION_X, pos_y};
+    } else if (row == WORLD_COUNT - 1) {  // "W10" takes up more space than "Wk" for "1 <= k <= 9"
+        return {BREAKDOWN_ROW_LOCATION_X - draw::DEBUG_CHAR_WIDTH, pos_y};
+    } else {  // For the totals row
+        return {TOTALS_ROW_LOCATION_X, pos_y};
     }
 }
 
-void draw_breakdown_screen() {  // TODO: totals row?
+void draw_breakdown_screen() {
     // Format: "Wk: split k-1 time (segment k-1 time) (world k deaths)"
     char split_buf[WORLD_COUNT][32] = {};
     char seg_buf[WORLD_COUNT][32] = {};
@@ -289,6 +292,14 @@ void draw_breakdown_screen() {  // TODO: totals row?
 
         draw::debug_text(pos.x, pos.y, draw::WHITE, "%s", row_info_buf[idx]);
     }
+
+    // For the totals row
+    char totals_row_buf[32] = {};
+    Vec2d totals_row_pos = get_breakdown_row_position(WORLD_COUNT);
+    u32 total_deaths = deathcounter::get_total_death_count();
+
+    mkb::sprintf(totals_row_buf, "Totals:%s (%d)", split_buf[WORLD_COUNT - 1], total_deaths);
+    draw::debug_text(totals_row_pos.x, totals_row_pos.y, draw::WHITE, "%s", totals_row_buf);
 }
 
 bool should_not_display_timer_at_all() {
@@ -304,7 +315,7 @@ bool should_not_display_timer_at_all() {
 
 void disp() {
     if (should_not_display_timer_at_all()) {
-        // return; // testing, remember to uncomment
+        return;  // testing, remember to uncomment
     }
 
     draw_timers();
@@ -316,22 +327,20 @@ void disp() {
     // u32 val = patch::view_word(reinterpret_cast<void *>(0x8090dbd0));
     // u32 new_val = val & 0x0000ffff;
 
-    u16 pos_y = get_timer_y_pos(TimerType::Segment);
+    /* u16 pos_y = get_timer_row(TimerType::Segment);
 
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 1, SEGMENT_TIMER_TEXT_OFFSET,
                           "Fra:", 60 * goal::get_frames_until_goal_submode(), true, draw::WHITE);
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 2, SEGMENT_TIMER_TEXT_OFFSET,
                           "Pxt:", 60 * goal::is_postgoal_exact(), true, draw::WHITE);
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 3, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Cur:", 60 * static_cast<int>(savest::get_history().curr_frame_action),
-                          true, draw::WHITE);
+                          "Btw:", 60 * goal::is_between_worlds(), true, draw::WHITE);
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 4, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Prv:", 60 * static_cast<int>(savest::get_history().prev_frame_action),
-                          true, draw::WHITE);
+                          "Sub:", 60 * mkb::sub_mode, true, draw::WHITE);
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 5, SEGMENT_TIMER_TEXT_OFFSET,
-                          "gp:", 60 * savest::state_changed_gameplay(), true, draw::WHITE);
+                          "Ext:", 60 * goal::get_goal_flag_exit_game(), true, draw::WHITE);
     timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 6, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Int:", 60 * savest::interacted_with_state(), true, draw::WHITE);
+                          "Lst:", 60 * goal::get_goal_flag_last_stage(), true, draw::WHITE); */
 }
 
 static patch::Tramp<mkb::g_handle_storymode_stageselect_state>
