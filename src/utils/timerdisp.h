@@ -13,13 +13,15 @@ struct TimeComp {
 };
 
 enum class TimeFormatType {
-    SECONDS_ONLY,                 // ss.cc
-    HOURS_ALWAYS,                 // h:mm:ss.cc or 0:mm:ss.cc
-    MINUTES_ALWAYS_LEADING_ZERO,  // 0m:ss.cc or mm:ss.cc if <1 hour, h:mm:ss.cc otherwise
-    MINIMAL_LEADING,       // ss.cc if < 1 min, m:ss.cc if < 10 min, mm:ss.cc if > 10 min, < 1h,
-                           // h:mm:ss.cc otherwise
-    ALWAYS_LEAD_NON_HOURS  // mm:ss.cc if < 1 hour, ss.cc if < 1 min
+    SecondsOnly,               // ss.cc
+    HoursAlways,               // h:mm:ss.cc or 0:mm:ss.cc
+    MinutesAlwaysLeadingZero,  // 0m:ss.cc or mm:ss.cc if <1 hour, h:mm:ss.cc otherwise
+    MinimalLeading,            // ss.cc if < 1 min, m:ss.cc if < 10 min, mm:ss.cc if > 10 min, < 1h,
+                               // h:mm:ss.cc otherwise
+    AlwaysLeadNonHours         // mm:ss.cc if < 1 hour, ss.cc if < 1 min
 };
+
+void format_time_to_buffer(char *buffer, u32 frames, TimeFormatType format_type);
 
 s32 row_number_to_vertical_pos(u32 row_num);
 void draw_timer(u32 pos_x,
@@ -42,8 +44,5 @@ void draw_subtick_timer(s32 frames,
                         u32 framesave,
                         bool extra_precision);
 void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color);
-
-TimeComp format_time(u32 time);
-void format_time_to_buffer(char *buffer, u32 time, TimeFormatType format_type);
 
 }  // namespace timerdisp
