@@ -24,7 +24,7 @@ enum class TimeFormatType {
 void format_time_to_buffer(char *buffer, u32 frames, TimeFormatType format_type);
 
 s32 row_number_to_vertical_pos(u32 row_num);
-void draw_timer(u32 pos_x,
+void draw_timer(s32 pos_x,
                 u32 row,
                 u32 text_offset,
                 const char *prefix,
