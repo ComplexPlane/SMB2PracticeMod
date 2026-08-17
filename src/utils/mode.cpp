@@ -251,6 +251,10 @@ bool is_storymode_file_screen_main(mkb::ScenInfo scen_info) {
     return (scen_info.mode == mkb::DMD_SCEN_LOADGAME_MAIN);
 }
 
+bool is_storymode_file_screen(mkb::ScenInfo scen_info) {
+    return is_storymode_file_screen_init(scen_info) || is_storymode_file_screen_main(scen_info);
+}
+
 bool is_storymode_name_entry_init(mkb::ScenInfo scen_info) {
     // For some reason causes crashes when you check this during the file screen init
     return scen_info.mode == mkb::DMD_SCEN_ENTRY_INIT;
