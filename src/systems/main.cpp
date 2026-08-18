@@ -9,12 +9,11 @@
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/savest.h"
 #include "systems/version.h"
 #include "utils/draw.h"
-#include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
-#include "systems/savest.h"
 
 #include "mods/ballcolor.h"
 #include "mods/banans.h"
@@ -55,6 +54,8 @@ static void perform_assembly_patches() {
 
     // Nop the conditional that guards `draw_debugtext`, enabling it even when debug mode is
     // disabled
+    // Note that this hook is stil necessary even though we're using `textdraw_...()` for drawing
+    // text
     patch::write_nop(relutil::relocate_addr(0x80299f54));
     // Nop this pausemenu screenshot call so we can call it when we want to
     patch::write_nop(relutil::relocate_addr(0x80270aac));

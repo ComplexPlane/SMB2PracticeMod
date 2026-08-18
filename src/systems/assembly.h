@@ -8,7 +8,6 @@ extern "C" {
 
 // Assembly overwrite functions
 void custom_titlescreen_text_color();
-void full_debug_text_color();
 
 // main.cpp
 void start_main_loop_assembly();

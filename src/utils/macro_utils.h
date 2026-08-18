@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mkb/mkb.h"
 constexpr char *LOG_PREFIX = "[pracmod] ";
 constexpr char *LOG_PREFIX_LINE = "[pracmod] At %s:%d: ";
 

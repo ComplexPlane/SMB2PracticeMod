@@ -6243,8 +6243,8 @@ extern "C" {
     extern undefined4 active_sprite_draw_req_count;
     extern undefined4 g_smth_with_sprite_draw_reqs_widescreen;
     extern struct TplBuffer * bmp_com_tpl;
-    extern undefined4 g_smth_with_widescreen;
-    extern undefined2 g_global_widescreen_translation_x;
+    extern undefined4 has_last_widescreen_scale;
+    extern undefined2 last_widescreen_scale_pivot_x;
     extern struct SpriteDrawRequest sprite_draw_req_buffer[640];
     extern u32 g_profile_timer_start_times[9];
     extern undefined4 g_something_with_perf_profiling;
@@ -9446,6 +9446,8 @@ extern "C" {
     int get_story_mode_stage_id(int world_idx, int world_stage_idx);
     int get_story_mode_stage_difficulty(int world, int stage);
     uint is_storymode_stage_beaten(int world, int world_stage);
+    BOOL32 g_is_storymode_stage_unlocked(int world, int world_stage);
+    void unlock_storymode_stage(int world, int world_stage);
     void init_sm_state(int world, int param_2);
     void clear_unlocked_storymode_stages(void);
     void g_save_storymode_unlock_entries(void);
@@ -9605,8 +9607,8 @@ extern "C" {
     void g_smth_with_screen_fading(void);
     void fade_screen_to_color(uint flags, u32 color, uint frames);
     undefined4 draw_sprite_draw_request(struct SpriteDrawRequest * request);
-    void g_scale_sprite_for_widescreen(uint param_1);
-    void g_reset_sprite_mtx_for_widescreen(void);
+    void set_ui_widescreen_scale_mtx(uint pivot_x);
+    void reset_ui_widescreen_scale_mtx(void);
     void g_something_loading_fonts(void);
     void g_load_specific_font(Font32  font);
     void g_draw_sprite_draw_request_unbuffered(struct SpriteDrawRequest * request);

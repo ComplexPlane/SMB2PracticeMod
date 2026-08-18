@@ -369,6 +369,7 @@ void disp() {
     if (!pref::get(pref::Pref::InputDisp) || freecam::should_hide_hud() || in_replay) return;
 
     Vec2d center = pref::get(pref::Pref::InputDispLocation) ? Vec2d{430, 60} : Vec2d{534, 60};
+    mkb::set_ui_widescreen_scale_mtx(center.x);
     f32 scale = 0.6f;
 
     pad::StickState raw_stick, stick;
@@ -380,6 +381,8 @@ void disp() {
 
     draw_notch_indicators(stick, center, scale);
     draw_raw_stick_inputs(raw_stick, stick);
+
+    mkb::reset_ui_widescreen_scale_mtx();
 }
 
 }  // namespace inputdisp

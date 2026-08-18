@@ -21,8 +21,6 @@ static mkb::GXColor s_notify_color;
 static NotifyDuration s_notify_duration = NotifyDuration::Short;
 
 void init() {
-    patch::write_branch(relutil::relocate_addr(0x802aeca4),
-                        reinterpret_cast<void *>(main::full_debug_text_color));
 }
 
 void predraw() {
@@ -32,6 +30,8 @@ void predraw() {
     // debugtext-drawing-related funcs
     mkb::GXColor tev1_color = {0, 0, 0, 0};
     mkb::GXSetTevColor(mkb::GX_TEVREG1, tev1_color);
+
+    unset_vertex_color_pipeline();
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
@@ -54,23 +54,12 @@ void rect(float x1, float y1, float x2, float y2, mkb::GXColor color) {
     mkb::GXTexCoord2f32(0, 1);
 }
 
-void debug_text_palette() {
-    for (char c = 0; c != 0x80; c++) {
-        s32 x = c % 16 * DEBUG_CHAR_WIDTH;
-        s32 y = c / 16 * DEBUG_CHAR_WIDTH;
-        mkb::draw_debugtext_char_en(x, y, c, c * 2);
-    }
-}
-
 static void debug_text_buf(s32 x, s32 y, mkb::GXColor color, const char *buf) {
-    main::debug_text_color = color;
-    for (s32 i = 0; buf[i] != '\0'; i++) {
-        // Don't draw spaces, since they seem to draw a small line on the bottom of the cell
-        if (buf[i] != ' ') {
-            mkb::draw_debugtext_char_en(x + i * DEBUG_CHAR_WIDTH, y, buf[i], 0);
-        }
-    }
-    main::debug_text_color = {};
+    mkb::textdraw_reset();
+    mkb::textdraw_set_font(mkb::FONT_ASC_12x12);
+    mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
+    mkb::textdraw_set_pos(x, y);
+    mkb::textdraw_print((char *)buf);
 }
 
 static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char *format, va_list args) {

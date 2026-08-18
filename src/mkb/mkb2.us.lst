@@ -5600,9 +5600,9 @@
 1,1,000A4D5C:FUN_8023ecfc
 1,1,000A4DA4:FUN_8023ed44
 1,1,000A4E14:is_storymode_stage_beaten
-1,1,000A4E68:FUN_8023ee08
+1,1,000A4E68:g_is_storymode_stage_unlocked
 1,1,000A4F58:FUN_8023eef8
-1,1,000A4FF4:FUN_8023ef94
+1,1,000A4FF4:unlock_storymode_stage
 1,1,000A505C:FUN_8023effc
 1,1,000A5080:FUN_8023f020
 1,1,000A50F8:init_sm_state
@@ -5878,8 +5878,8 @@
 1,1,000B3008:draw_sprite_draw_request
 1,1,000B3648:prt_8024d5e8_f3434af
 1,1,000B3C14:FUN_8024dbb4
-1,1,000B3C60:g_scale_sprite_for_widescreen
-1,1,000B3D84:g_reset_sprite_mtx_for_widescreen
+1,1,000B3C60:set_ui_widescreen_scale_mtx
+1,1,000B3D84:reset_ui_widescreen_scale_mtx
 1,1,000B3E14:g_something_loading_fonts
 1,1,000B3EF8:g_load_specific_font
 1,1,000B4160:g_draw_sprite_draw_request_unbuffered
@@ -9037,8 +9037,8 @@
 1,6,00007A0C:active_sprite_draw_req_count
 1,6,00007A10:g_smth_with_sprite_draw_reqs_widescreen
 1,6,00007A40:bmp_com_tpl
-1,6,00009644:g_smth_with_widescreen
-1,6,00009648:g_global_widescreen_translation_x
+1,6,00009644:has_last_widescreen_scale
+1,6,00009648:last_widescreen_scale_pivot_x
 1,6,00009654:sprite_draw_req_buffer
 1,6,00015E60:g_profile_timer_start_times
 1,6,00015E84:g_something_with_perf_profiling

@@ -717,10 +717,9 @@ static void draw_breadcrumbs() {
         // Calculate breadcrumb width to see if it would overflow
         u32 final_x = draw_breadcrumbs_from(i, [](u32, u32, mkb::GXColor, const char *) {});
         if (final_x <= SCREEN_WIDTH - MARGIN - PAD) {
-            draw_breadcrumbs_from(
-                i, [](u32 x, u32 y, mkb::GXColor color, const char *text) {
-                    draw::debug_text(x, y, color, "%s", text);
-                });
+            draw_breadcrumbs_from(i, [](u32 x, u32 y, mkb::GXColor color, const char *text) {
+                draw::debug_text(x, y, color, "%s", text);
+            });
             break;
         }
     }
@@ -732,6 +731,9 @@ static void draw_breadcrumbs() {
 
 void disp() {
     if (!s_visible) return;
+
+    mkb::set_ui_widescreen_scale_mtx(SCREEN_WIDTH / 2);
+
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
     draw::rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
                {0x00, 0x00, 0x00, 0xe0});
@@ -744,6 +746,8 @@ void disp() {
     if (selected != nullptr) {
         draw_help(*selected);
     }
+
+    mkb::reset_ui_widescreen_scale_mtx();
 }
 
 bool is_visible() {

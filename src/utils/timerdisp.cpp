@@ -12,6 +12,8 @@ static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
 
 void draw_timer(s32 frames, const char *prefix, u32 row, mkb::GXColor color, bool show_seconds) {
+    mkb::set_ui_widescreen_scale_mtx(320);
+
     bool positive = frames >= 0;
     if (!positive) frames = -frames;
     const char *sign = positive ? "" : "-";
@@ -37,6 +39,8 @@ void draw_timer(s32 frames, const char *prefix, u32 row, mkb::GXColor color, boo
         draw::debug_text(X, y, color, prefix);
         draw::debug_text(X + 48, y, color, "%s%02d.%02d", sign, total_seconds, centiseconds);
     }
+
+    mkb::reset_ui_widescreen_scale_mtx();
 }
 
 void draw_subtick_timer(s32 frames,
@@ -46,6 +50,8 @@ void draw_subtick_timer(s32 frames,
                         bool show_minutes,
                         u32 framesave,
                         bool extra_precision) {
+    mkb::set_ui_widescreen_scale_mtx(320);
+
     bool positive = frames >= 0;
     if (!positive) frames = -frames;
     const char *sign = positive ? "" : "-";
@@ -65,12 +71,18 @@ void draw_subtick_timer(s32 frames,
     } else {
         draw::debug_text(X + 48, y, color, "%s%02d.%03d", sign, total_seconds, milliseconds);
     }
+
+    mkb::reset_ui_widescreen_scale_mtx();
 }
 
 void draw_percentage(s32 fsave, const char *prefix, u32 row, mkb::GXColor color) {
+    mkb::set_ui_widescreen_scale_mtx(320);
+
     s32 y = Y + row * 16;
     draw::debug_text(X, y, color, prefix);
     draw::debug_text(X + 48, y, color, "%2d%", fsave);
+
+    mkb::set_ui_widescreen_scale_mtx(0);
 }
 
 }  // namespace timerdisp
