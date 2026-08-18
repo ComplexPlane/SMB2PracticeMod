@@ -11,7 +11,7 @@ static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
 
-void draw_timer(s32 frames, const char *prefix, u32 row, mkb::GXColor color, bool show_seconds) {
+void draw_timer(s32 frames, const char *prefix, u32 row, GXColor color, bool show_seconds) {
     mkb::set_ui_widescreen_scale_mtx(320);
 
     bool positive = frames >= 0;
@@ -46,7 +46,7 @@ void draw_timer(s32 frames, const char *prefix, u32 row, mkb::GXColor color, boo
 void draw_subtick_timer(s32 frames,
                         const char *prefix,
                         u32 row,
-                        mkb::GXColor color,
+                        GXColor color,
                         bool show_minutes,
                         u32 framesave,
                         bool extra_precision) {
@@ -75,7 +75,7 @@ void draw_subtick_timer(s32 frames,
     mkb::reset_ui_widescreen_scale_mtx();
 }
 
-void draw_percentage(s32 fsave, const char *prefix, u32 row, mkb::GXColor color) {
+void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
     mkb::set_ui_widescreen_scale_mtx(320);
 
     s32 y = Y + row * 16;

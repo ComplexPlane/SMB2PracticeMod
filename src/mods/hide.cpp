@@ -37,12 +37,12 @@ static patch::Tramp<mkb::g_draw_bg> s_draw_bg_tramp([]() {
 
 static patch::Tramp<mkb::g_set_clear_color> s_clear_tramp([]() {
     if (should_hide_bg()) {
-        mkb::GXColor backup_color = mkb::g_some_theme_color;
+        GXColor backup_color = mkb::g_some_theme_color;
         u8 backup_override_r = mkb::g_override_clear_r;
         u8 backup_override_g = mkb::g_override_clear_g;
         u8 backup_override_b = mkb::g_override_clear_b;
 
-        mkb::g_some_theme_color = mkb::GXColor{0, 0, 0, 0xff};
+        mkb::g_some_theme_color = GXColor{0, 0, 0, 0xff};
         mkb::g_override_clear_r = 0;
         mkb::g_override_clear_g = 0;
         mkb::g_override_clear_b = 0;

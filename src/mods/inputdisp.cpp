@@ -22,14 +22,14 @@ enum class InputDispColorType {
 };
 
 struct Gradient {
-    mkb::GXColor color1;
-    mkb::GXColor color2;
+    GXColor color1;
+    GXColor color2;
     s16 rotation;
     f32 start;
     f32 end;
 };
 
-static Gradient gradient_from_color(mkb::GXColor color) {
+static Gradient gradient_from_color(GXColor color) {
     return Gradient{
         .color1 = color,
         .color2 = color,
@@ -45,8 +45,8 @@ static Vec2d sin_cos(s16 angle) {
     return Vec2d{sin_cos[0], sin_cos[1]};
 }
 
-static mkb::GXColor lerp_colors(f32 t, mkb::GXColor c1, mkb::GXColor c2) {
-    return mkb::GXColor{
+static GXColor lerp_colors(f32 t, GXColor c1, GXColor c2) {
+    return GXColor{
         .r = static_cast<u8>((1.f - t) * c1.r + t * c2.r),
         .g = static_cast<u8>((1.f - t) * c1.g + t * c2.g),
         .b = static_cast<u8>((1.f - t) * c1.b + t * c2.b),
@@ -64,10 +64,7 @@ static s32 map_range(s32 value, s32 from_start, s32 from_end, s32 to_start, s32 
 
 static u32 s_rainbow;
 
-static mkb::GXColor get_gradient_color(Vec2d pt,
-                                       Vec2d origin,
-                                       f32 radius,
-                                       const Gradient &gradient) {
+static GXColor get_gradient_color(Vec2d pt, Vec2d origin, f32 radius, const Gradient &gradient) {
     Vec2d delta = {pt.x - origin.x, pt.y - origin.y};
     Vec2d normal = sin_cos(gradient.rotation);
     f32 dot = delta.x * normal.x + delta.y * normal.y;
@@ -90,7 +87,7 @@ static void draw_ring(u32 pts,
 
     auto write_vertex = [&](f32 x, f32 y) {
         mkb::GXPosition3f32(x, y, z);
-        mkb::GXColor color = get_gradient_color(Vec2d{x, y}, center, outer_radius, gradient);
+        GXColor color = get_gradient_color(Vec2d{x, y}, center, outer_radius, gradient);
         mkb::GXColor4u8(color.r, color.g, color.b, color.a);
     };
 
@@ -116,7 +113,7 @@ static void draw_ring(u32 pts,
     }
 }
 
-static void draw_circle(u32 pts, Vec2d center, f32 radius, mkb::GXColor color) {
+static void draw_circle(u32 pts, Vec2d center, f32 radius, GXColor color) {
     draw::bind_white_texture_obj();
 
     mkb::GXSetTevColor(mkb::GX_TEVREG0, color);
@@ -207,7 +204,7 @@ static bool get_notch_pos(const pad::StickState &stick_inputs, Vec2d *out_pos) {
     return notch_found;
 }
 
-static const mkb::GXColor s_color_map[] = {
+static const GXColor s_color_map[] = {
     draw::PURPLE,              // Purple
     draw::RED,                 // Red
     draw::ORANGE,              // Orange
@@ -233,13 +230,13 @@ static Gradient get_gradient() {
             });
         }
         case InputDispColorType::RgbGradient: {
-            mkb::GXColor color1 = {
+            GXColor color1 = {
                 .r = static_cast<u8>(pref::get(pref::Pref::InputDispRed)),
                 .g = static_cast<u8>(pref::get(pref::Pref::InputDispGreen)),
                 .b = static_cast<u8>(pref::get(pref::Pref::InputDispBlue)),
                 .a = 0xff,
             };
-            mkb::GXColor color2 = {
+            GXColor color2 = {
                 .r = static_cast<u8>(pref::get(pref::Pref::InputDispGradientColor2Red)),
                 .g = static_cast<u8>(pref::get(pref::Pref::InputDispGradientColor2Green)),
                 .b = static_cast<u8>(pref::get(pref::Pref::InputDispGradientColor2Blue)),
@@ -261,7 +258,7 @@ static Gradient get_gradient() {
             return gradient_from_color(draw::num_to_rainbow(s_rainbow));
         }
         case InputDispColorType::MatchBall: {
-            mkb::GXColor current = ballcolor::get_current_color();
+            GXColor current = ballcolor::get_current_color();
             current.a = 0xff;
             return gradient_from_color(current);
         }

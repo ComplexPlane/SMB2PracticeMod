@@ -419,7 +419,7 @@ void disp() {
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);
-        mkb::GXColor color;
+        GXColor color;
         if (s_state == State::SegComplete && s_pbs[seg] == s_seg_time)
             color = draw::GOLD;
         else

@@ -28,8 +28,8 @@ static constexpr s32 LINE_HEIGHT = 20;
 
 static constexpr s32 L_R_BIND = 64;  // bind id for an L+R bind
 
-static const mkb::GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
-static const mkb::GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
+static const GXColor FOCUSED_COLOR = draw::LIGHT_GREEN;
+static const GXColor UNFOCUSED_COLOR = draw::LIGHT_PURPLE;
 
 static bool s_visible;
 static u32 s_cursor_frame = 0;
@@ -314,13 +314,13 @@ void tick() {
     handle_widget_bind();
 }
 
-static mkb::GXColor lerp_colors(mkb::GXColor color1, mkb::GXColor color2, f32 t) {
+static GXColor lerp_colors(GXColor color1, GXColor color2, f32 t) {
     f32 r = (1.f - t) * color1.r + t * color2.r;
     f32 g = (1.f - t) * color1.g + t * color2.g;
     f32 b = (1.f - t) * color1.b + t * color2.b;
     f32 a = (1.f - t) * color1.a + t * color2.a;
 
-    mkb::GXColor ret;
+    GXColor ret;
     ret.r = CLAMP(r, 0, 255);
     ret.g = CLAMP(g, 0, 255);
     ret.b = CLAMP(b, 0, 255);
@@ -443,7 +443,7 @@ void draw_widget(Widget &widget,
                  u32 selected_idx,
                  u32 *selectable_idx,
                  u32 *y,
-                 mkb::GXColor lerped_color) {
+                 GXColor lerped_color) {
     switch (widget.type) {
         case WidgetType::HideableGroupWidget: {
             if (widget.hideable_group.show_if()) {
@@ -471,7 +471,7 @@ void draw_widget(Widget &widget,
             u32 len = mkb::strlen(const_cast<char *>(colored_text.label));
             for (u32 i = 0; i < len; i++) {
                 f32 t = len > 1 ? static_cast<f32>(i) / static_cast<f32>(len - 1) : 0.f;
-                mkb::GXColor color =
+                GXColor color =
                     draw::lerp_colors(t, colored_text.color_left, colored_text.color_right);
                 char ch[2] = {colored_text.label[i], '\0'};
                 draw::debug_text(
@@ -631,7 +631,7 @@ void draw_widget(Widget &widget,
                                  selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                                  "  %s", widget.input_select.label);
             }
-            mkb::GXColor bind_color =
+            GXColor bind_color =
                 selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
             if (s_binding == BindingState::Active && selected_idx == *selectable_idx) {
                 bind_color = draw::GOLD;
@@ -650,7 +650,7 @@ void draw_widget(Widget &widget,
             break;
         }
         case WidgetType::RgbPreview: {
-            mkb::GXColor color = {
+            GXColor color = {
                 .r = static_cast<u8>(pref::get(widget.rgb_preview.r_pref)),
                 .g = static_cast<u8>(pref::get(widget.rgb_preview.g_pref)),
                 .b = static_cast<u8>(pref::get(widget.rgb_preview.b_pref)),
@@ -670,7 +670,7 @@ void draw_menu_widgets(MenuWidget *menu) {
     u32 y = MARGIN + PAD + 2.f * LINE_HEIGHT;
     u32 selectable_idx = 0;
 
-    mkb::GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
+    GXColor lerped_color = lerp_colors(FOCUSED_COLOR, UNFOCUSED_COLOR, sin_lerp(40));
 
     for (u32 i = 0; i < menu->num_widgets; i++) {
         Widget &widget = menu->widgets[i];
@@ -681,7 +681,7 @@ void draw_menu_widgets(MenuWidget *menu) {
 template <typename F>
 static u32 draw_breadcrumbs_from(u32 start, F draw_fn) {
     const char *ARROW_STR = " \x1c ";
-    mkb::GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
+    GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
 
     u32 x = MARGIN + PAD;
     if (start > 0) {
@@ -710,9 +710,9 @@ static u32 draw_breadcrumbs_from(u32 start, F draw_fn) {
 static void draw_breadcrumbs() {
     for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
         // Calculate breadcrumb width to see if it would overflow
-        u32 final_x = draw_breadcrumbs_from(i, [](u32, u32, mkb::GXColor, const char *) {});
+        u32 final_x = draw_breadcrumbs_from(i, [](u32, u32, GXColor, const char *) {});
         if (final_x <= SCREEN_WIDTH - MARGIN - PAD) {
-            draw_breadcrumbs_from(i, [](u32 x, u32 y, mkb::GXColor color, const char *text) {
+            draw_breadcrumbs_from(i, [](u32 x, u32 y, GXColor color, const char *text) {
                 draw::debug_text(x, y, color, "%s", text);
             });
             break;

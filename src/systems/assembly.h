@@ -18,7 +18,7 @@ void tick();
 
 // Full color to draw debug text in, if not zero
 // Normally, the debug text drawing function uses a single byte for the color in the form RRGGBBAA
-extern mkb::GXColor debug_text_color;
+extern GXColor debug_text_color;
 
 // IwMenu
 extern u32 currently_playing_iw;

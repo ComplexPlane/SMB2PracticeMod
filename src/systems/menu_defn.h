@@ -31,8 +31,8 @@ struct TextWidget {
 
 struct ColoredTextWidget {
     const char *label;
-    mkb::GXColor color_left;   // Gradient start color
-    mkb::GXColor color_right;  // Gradient end color
+    GXColor color_left;   // Gradient start color
+    GXColor color_right;  // Gradient end color
     u16 offset_x;              // Character offset from line start
     bool overlap;              // Draw on top of the previous line instead of a new line
 };

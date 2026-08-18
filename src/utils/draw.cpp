@@ -17,7 +17,7 @@ constexpr s32 NOTIFY_FADE_DURATION = 20;
 
 static char s_notify_msg_buf[80];
 static s32 s_notify_frame_counter;
-static mkb::GXColor s_notify_color;
+static GXColor s_notify_color;
 static NotifyDuration s_notify_duration = NotifyDuration::Short;
 
 void init() {
@@ -28,14 +28,14 @@ void predraw() {
 
     // Seems necessary to avoid discoloration / lighting interference when using
     // debugtext-drawing-related funcs
-    mkb::GXColor tev1_color = {0, 0, 0, 0};
+    GXColor tev1_color = {0, 0, 0, 0};
     mkb::GXSetTevColor(mkb::GX_TEVREG1, tev1_color);
 
     unset_vertex_color_pipeline();
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-void rect(float x1, float y1, float x2, float y2, mkb::GXColor color) {
+void rect(float x1, float y1, float x2, float y2, GXColor color) {
     draw::bind_white_texture_obj();
 
     // Specify the color of the rectangle
@@ -54,7 +54,7 @@ void rect(float x1, float y1, float x2, float y2, mkb::GXColor color) {
     mkb::GXTexCoord2f32(0, 1);
 }
 
-static void debug_text_buf(s32 x, s32 y, mkb::GXColor color, const char *buf) {
+static void debug_text_buf(s32 x, s32 y, GXColor color, const char *buf) {
     mkb::textdraw_reset();
     mkb::textdraw_set_font(mkb::FONT_ASC_12x12);
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
@@ -62,7 +62,7 @@ static void debug_text_buf(s32 x, s32 y, mkb::GXColor color, const char *buf) {
     mkb::textdraw_print((char *)buf);
 }
 
-static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char *format, va_list args) {
+static void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_list args) {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
@@ -70,7 +70,7 @@ static void debug_text_v(s32 x, s32 y, mkb::GXColor color, const char *format, v
     debug_text_buf(x, y, color, buf);
 }
 
-void debug_text(s32 x, s32 y, mkb::GXColor color, const char *format, ...) {
+void debug_text(s32 x, s32 y, GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
     debug_text_v(x, y, color, format, args);
@@ -91,10 +91,10 @@ void heart() {
 
 static constexpr u8 LOW_COLOR = 0x41;
 static constexpr u8 HIGH_COLOR = 0xf5;
-mkb::GXColor num_to_rainbow(int num) {
+GXColor num_to_rainbow(int num) {
     int state = num / 180;
     int loc = num % 180;
-    mkb::GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
+    GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
     switch (state) {
         case 0: {  // R-G^B
             color.r = HIGH_COLOR;
@@ -130,8 +130,8 @@ mkb::GXColor num_to_rainbow(int num) {
     return color;
 }
 
-mkb::GXColor lerp_colors(f32 t, mkb::GXColor c1, mkb::GXColor c2) {
-    mkb::GXColor color = {
+GXColor lerp_colors(f32 t, GXColor c1, GXColor c2) {
+    GXColor color = {
         static_cast<u8>((1.0f - t) * c1.r + t * c2.r),
         static_cast<u8>((1.0f - t) * c1.g + t * c2.g),
         static_cast<u8>((1.0f - t) * c1.b + t * c2.b),
@@ -155,7 +155,7 @@ void disp() {
     s32 notify_len = mkb::strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
     s32 draw_y = 426;
-    mkb::GXColor color = s_notify_color;
+    GXColor color = s_notify_color;
 
     s32 duration =
         s_notify_duration == NotifyDuration::Long ? NOTIFY_DURATION_LONG : NOTIFY_DURATION_SHORT;
@@ -171,7 +171,7 @@ void disp() {
     }
 }
 
-void notify(mkb::GXColor color, NotifyDuration duration, const char *format, ...) {
+void notify(GXColor color, NotifyDuration duration, const char *format, ...) {
     va_list args;
     va_start(args, format);
     mkb::vsprintf(s_notify_msg_buf, const_cast<char *>(format), args);
@@ -182,7 +182,7 @@ void notify(mkb::GXColor color, NotifyDuration duration, const char *format, ...
     s_notify_duration = duration;
 }
 
-void notify(mkb::GXColor color, const char *format, ...) {
+void notify(GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
     mkb::vsprintf(s_notify_msg_buf, const_cast<char *>(format), args);
