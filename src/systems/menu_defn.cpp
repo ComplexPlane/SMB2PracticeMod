@@ -23,7 +23,6 @@
 namespace menu_defn {
 
 static char s_version_str[36];
-static char s_git_commit_str[] = "  Git commit:      " GIT_HASH;
 
 static void int_edit_rgb_format(s16 value, char *buf) {
     if (pref::get(pref::Pref::RgbFormat) == 1) {
@@ -720,11 +719,33 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {s_version_str},
+        .text = {"  Current version:"},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = s_version_str,
+                .color_left = draw::LIGHT_GRAY,
+                .color_right = draw::LIGHT_GRAY,
+                .offset_x = 19,
+                .overlap = true,
+            },
     },
     {
         .type = WidgetType::Text,
-        .text = {s_git_commit_str},
+        .text = {"  Git commit:      "},
+    },
+    {
+        .type = WidgetType::ColoredText,
+        .colored_text =
+            {
+                .label = GIT_HASH,
+                .color_left = draw::LIGHT_GRAY,
+                .color_right = draw::LIGHT_GRAY,
+                .offset_x = 19,
+                .overlap = true,
+            },
     },
     {
         .type = WidgetType::Separator,
@@ -2026,7 +2047,7 @@ MenuWidget root_menu = {
 };
 
 void init() {
-    mkb::sprintf(s_version_str, "  Current version: v%s", version::get_version_str());
+    mkb::sprintf(s_version_str, "v%s", version::get_version_str());
 }
 
 }  // namespace menu_defn
