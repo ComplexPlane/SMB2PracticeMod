@@ -61,7 +61,6 @@ bool dir_down(Dir dir, bool priority = false);     // Only works for cardinal di
 bool dir_pressed(Dir dir, bool priority = false);  // Only works for cardinal directions
 bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal directions
 void reset_dir_repeat();
-bool konami_pressed();
 
 void get_merged_raw_stick(StickState &out);  // stick before game makes alterations
 void get_merged_stick(StickState &out);

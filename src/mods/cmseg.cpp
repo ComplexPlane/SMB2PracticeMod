@@ -6,8 +6,13 @@
 #include "systems/log.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
+#include "utils/macro_utils.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
+
+namespace ilmark {
+bool is_ilmark_enabled();
+}
 
 namespace cmseg {
 
@@ -334,6 +339,58 @@ static patch::Tramp<mkb::g_reset_cm_course> s_reset_cm_course_tramp([]() {
     if (s_state == State::SegActive) init_seg();
 });
 
+static void sprite_go_disp_hook(mkb::Sprite *sprite) {
+    int i;
+    int t;
+    int x_offset;
+    int y_offset;
+    float x_add;
+    float y_add;
+    float phi_f30_2;
+
+    t = sprite->para1 - sprite->g_counter;
+    mkb::textdraw_reset();
+    mkb::textdraw_set_font(sprite->font);
+    mkb::textdraw_set_depth(sprite->depth);
+    mkb::textdraw_set_flags(sprite->g_flags1);
+    mkb::textdraw_set_alpha(sprite->alpha);
+    mkb::textdraw_set_mul_color(
+        RGBA(sprite->mult_color.red, sprite->mult_color.green, sprite->mult_color.blue, 0));
+    mkb::textdraw_set_add_color(
+        RGBA(sprite->add_color.red, sprite->add_color.green, sprite->add_color.blue, 0));
+    mkb::textdraw_set_scale(1.5f * sprite->width, 1.5f * sprite->height);
+    x_offset = 1.5f * (36.0f * sprite->width);
+    y_offset = 1.5f * (32.0f * sprite->height);
+
+    for (i = 0; i < 2; i++) {
+        if (t < 15) {
+            phi_f30_2 = (i == 0) ? -320.0f : 320.0f;
+            x_add = phi_f30_2 * mkb::math_sin((0xF - t) * 0x444);
+            y_add = 0.0f;
+        } else if (t < 30) {
+            x_add = 0.0f;
+            y_add = 0.0f;
+        } else if (t < 45) {
+            x_add = 0.0f;
+            y_add = 0.0f;
+        } else {
+            float x_fudge = 0;
+            if (ilmark::is_ilmark_enabled()) {
+                x_fudge = (t - 45) / 15.f * 5;
+            }
+            x_add = i == 0 ? -x_fudge : x_fudge;
+            phi_f30_2 = (i == 0) ? -240.0f : 240.0f;
+            y_add = phi_f30_2 * mkb::math_sin((0xF - sprite->g_counter) * 0x444);
+        }
+        mkb::textdraw_set_pos(
+            (sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
+            (sprite->pos.y + y_add) - y_offset);
+        mkb::textdraw_put_char((i == 0) ? 0x47 : 0x4F);
+    }
+}
+
+static patch::Tramp<mkb::sprite_go_disp> s_sprite_go_disp_tramp(sprite_go_disp_hook);
+
 void init() {
     s_reset_cm_course_tramp.hook();
 
@@ -341,6 +398,8 @@ void init() {
     for (u32 &s_pb : s_pbs) {
         s_pb = 0xFFFFFFFF;
     }
+
+    s_sprite_go_disp_tramp.hook();
 }
 
 void tick() {

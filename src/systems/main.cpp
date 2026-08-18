@@ -35,7 +35,6 @@
 #include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
-#include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
 
@@ -128,7 +127,6 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     draw::predraw();
     timer::disp();
     iw::disp();
-    Tetris::get_instance().disp();
     ilbattle::disp();
     cmseg::disp();
     inputdisp::disp();
@@ -182,7 +180,6 @@ void init() {
     pref::init();
     unlock::init();
     draw::init();
-    Tetris::get_instance().init();
     physics::init();
     iw::init();
     savest::init();
