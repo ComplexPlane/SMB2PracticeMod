@@ -96,14 +96,14 @@ bool should_reset_run() {
            should_reset_completed_run();
 }
 
-// TODO: reset run if selecting active file and active file has 0 stages cleared?
-
 void tick() {
     if (mode::is_main_game_mode_story(mkb::main_game_mode) &&
         mode::is_story_exit_game_init(mkb::sub_mode)) {
         record_run_status();
     }
 }
+
+// --- stuff for handling displaying the run reset message ---
 
 bool all_loadless_timer_prefs_off() {
     StoryDisplayOptions fullgame_pref =
@@ -136,12 +136,8 @@ bool displaying_on_menus_during_accidental_exit_game() {
            death_counter_pref == StoryDisplayOptions::AlwaysShow;
 }
 
-bool run_active_but_not_displaying_on_menus() {
-    return !displaying_on_menus_during_accidental_exit_game() &&
-           !(all_loadless_timer_prefs_off() && death_counter_pref_off());
-}
-
 bool is_silent_reset_type() {
+    // ie, any reset that's not triggered by gotostory or on the menu after completing a run
     return should_reset_on_file_screen() || is_on_wrong_menu();
 }
 
@@ -149,15 +145,16 @@ void display_reset_run_message() {
     if (pref::get(pref::Pref::HideRunResetMessage)) {
         return;
     }
-    // TODO: is all this really necessary?
+
     // If the hide run reset message pref is off, we still want to be "minimal" with displaying it
     // So, we only display a reset message if:
-    // (1) it's a less obvious reset trigger (eg not go to story)
-    // (2) at least one timer/death counter pref is on (don't bother displaying a reset message if
-    // everything is turned off)
-    // (3) the player has "always show" turned on for at least one of the timers/death counter. The
-    // idea here is if always show is turned on and if the timer gets zero-ed, it's obvious that the
-    // run was reset and no message needs to be displayed
+    // (1) it's a less obvious reset trigger (ie not go to story, or if we've already completed the
+    // run)
+    // (2) at least one timer/death counter pref is on (don't bother displaying a reset message
+    // if everything is turned off)
+    // (3) the player has "always show" turned on for at least one of
+    // the timers/death counter. The idea here is if always show is turned on and if the timer gets
+    // zero-ed, it's obvious that the run was reset and no message needs to be displayed
 
     if (!is_silent_reset_type()) {
         return;
@@ -173,14 +170,5 @@ void display_reset_run_message() {
 
     draw::notify(draw::WHITE, "Run Was Reset");
 }
-
-/* if ((!is_silent_reset_type() || !run_active_but_not_displaying_on_menus())) {
-        return;
-    } */
-
-// && death_counter_pref_off()
-/* if (all_loadless_timer_prefs_off()) {
-    return;
-} */
 
 }  // namespace storyreset
