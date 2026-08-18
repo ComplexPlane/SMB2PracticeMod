@@ -54,9 +54,9 @@ void validate_run() {
     }
 
     // Track savestates
-    // savest::get_last_action() == savest::Action::Load
     // savest::interacted_with_state()
-    if (savest::state_changed_gameplay()) s_loaded_savestate = true;
+    // savest::state_changed_gameplay()
+    if (savest::interacted_with_state()) s_loaded_savestate = true;
 
     // Using dpad controls is disallowed
     bool dpad_down =
