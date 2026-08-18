@@ -103,9 +103,6 @@ enum class Pref : u8 {
     InputDispGradientStart = 90,
     InputDispGradientEnd = 91,
     RgbFormat = 92,
-    Debug1 = 93,
-    Debug2 = 94,
-    Debug3 = 95,
 };
 
 void init();

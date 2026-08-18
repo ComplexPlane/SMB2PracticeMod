@@ -23,7 +23,7 @@ static BindingState s_binding = BindingState::Inactive;
 static constexpr s32 SCREEN_WIDTH = 640;
 static constexpr s32 SCREEN_HEIGHT = 480;
 static constexpr s32 MARGIN = 20;
-static constexpr s32 PAD = 8;
+static constexpr s32 PAD = 10;
 static constexpr s32 LINE_HEIGHT = 20;
 
 static constexpr s32 L_R_BIND = 64;  // bind id for an L+R bind
@@ -347,7 +347,7 @@ static void draw_selectable_highlight(float y) {
 static constexpr s32 BLOCK_WIDTH = 150;
 static constexpr s32 START = MARGIN + 35;
 static constexpr s32 BUTTON_START = -83;
-static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 52;
+static constexpr s32 Y_HEIGHT = SCREEN_HEIGHT - MARGIN - 22;
 static constexpr s32 HALF_SPACE = 12;
 
 static void draw_help_layout() {
@@ -437,11 +437,6 @@ static void draw_help(const Widget &widget) {
             break;
         }
     }
-}
-
-// Do not ask why we need this...
-f32 real_y(f32 y) {
-    return y * 1.072 - 3.0;
 }
 
 void draw_widget(Widget &widget,
@@ -662,8 +657,8 @@ void draw_widget(Widget &widget,
                 .a = 0xff,
             };
             f32 x1 = 400.f;
-            f32 y1 = real_y(static_cast<f32>(*y) + 4.f);
-            f32 y2 = real_y(static_cast<f32>(*y) + 54.f);
+            f32 y1 = static_cast<f32>(*y) + 1.f;
+            f32 y2 = static_cast<f32>(*y) + 51.f;
             f32 x2 = x1 + (y2 - y1);
             draw::rect(x1, y1, x2, y2, color);
             break;

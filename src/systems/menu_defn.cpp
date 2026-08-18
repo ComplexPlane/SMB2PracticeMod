@@ -1990,34 +1990,6 @@ static Widget s_pracmod_settings_widgets[] = {
         .menu = {"Restore Defaults", s_reset_prefs_widgets, LEN(s_reset_prefs_widgets)},
     },
     {.type = WidgetType::Separator},
-
-    {.type = WidgetType::IntEdit,
-     .int_edit =
-         {
-             .label = "Debug1",
-             .pref = pref::Pref::Debug1,
-             .min = -200,
-             .max = 200,
-             .format = int_edit_percent_format,
-         }},
-    {.type = WidgetType::IntEdit,
-     .int_edit =
-         {
-             .label = "Debug2",
-             .pref = pref::Pref::Debug2,
-             .min = -200,
-             .max = 200,
-             .format = int_edit_percent_format,
-         }},
-    {.type = WidgetType::IntEdit,
-     .int_edit =
-         {
-             .label = "Debug3",
-             .pref = pref::Pref::Debug3,
-             .min = -200,
-             .max = 200,
-             .format = int_edit_percent_format,
-         }},
 };
 
 static Widget s_root_widgets[] = {
