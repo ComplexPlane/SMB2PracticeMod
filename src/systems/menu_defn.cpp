@@ -719,7 +719,7 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType::Text,
-        .text = {"  Current version:"},
+        .text = {"  Version:        "},
     },
     {
         .type = WidgetType::ColoredText,
@@ -758,7 +758,7 @@ static Widget s_about_widgets[] = {
         .type = WidgetType::ColoredText,
         .colored_text =
             {
-                .label = " github.com/ComplexPlane/SMB2PracticeMod/releases",
+                .label = "  https://github.com/ComplexPlane/SMB2PracticeMod",
                 .color_left = draw::BLUE,
                 .color_right = draw::BLUE,
             },
