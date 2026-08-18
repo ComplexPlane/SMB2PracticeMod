@@ -47,10 +47,9 @@ void tick() {
         s_valid_run = false;
     }
 
-    // savest::get_last_action() == savest::Action::Load
     // savest::interacted_with_state()
-    if (savest::state_changed_gameplay()) {
-        // TODO: why do we need this if validate_attempt() gets run in mkb::smd_game_play_tick?
+    // savest::state_changed_gameplay()
+    if (savest::interacted_with_state()) {
         s_valid_run = false;
     }
 }
