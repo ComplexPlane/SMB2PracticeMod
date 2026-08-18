@@ -83,7 +83,7 @@ void heart() {
     mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
     mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
     mkb::textdraw_set_scale(0.75, 0.60);
-    mkb::textdraw_set_pos(187, 104);
+    mkb::textdraw_set_pos(188, 103);
     mkb::textdraw_set_mul_color(RGBA(255, 66, 118, 0xff));
 
     char text[] = {static_cast<char>(0x84), static_cast<char>(0xD6), '\0'};
