@@ -4,3 +4,4 @@
 - Testing
 <!-- - New hook api -->
 - Add merged-heaps support to assembly patches (bleh)
+- Add widescreen support to misc. text draw calls
