@@ -3,9 +3,7 @@
 #include "../mkb/mkb.h"
 
 #include "../systems/goal.h"
-#include "../systems/pad.h"  // for testing
 #include "../systems/pref.h"
-#include "../systems/savest.h"  // for testing
 #include "../utils/draw.h"
 #include "../utils/macro_utils.h"
 #include "../utils/mode.h"
@@ -274,9 +272,9 @@ Vec2d get_breakdown_row_position(u16 row) {
 }
 
 void draw_breakdown_screen() {
-    // Format: "Wk: split k-1 time (segment k-1 time) (world k deaths)"
-    char split_buf[WORLD_COUNT][32] = {};
-    char seg_buf[WORLD_COUNT][32] = {};
+    // Format: "Wk: world k split time (world k segment time) (world k deaths)"
+    char split_buf[WORLD_COUNT][16] = {};
+    char seg_buf[WORLD_COUNT][16] = {};
     char row_info_buf[WORLD_COUNT][32] = {};
 
     for (u16 idx = 0; idx < WORLD_COUNT; idx++) {
@@ -323,24 +321,6 @@ void disp() {
     if (pref::get(pref::Pref::ShowRunBreakdown) && goal::is_run_complete()) {
         draw_breakdown_screen();
     }
-
-    // u32 val = patch::view_word(reinterpret_cast<void *>(0x8090dbd0));
-    // u32 new_val = val & 0x0000ffff;
-
-    /* u16 pos_y = get_timer_row(TimerType::Segment);
-
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 1, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Fra:", 60 * goal::get_frames_until_goal_submode(), true, draw::WHITE);
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 2, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Pxt:", 60 * goal::is_postgoal_exact(), true, draw::WHITE);
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 3, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Btw:", 60 * goal::is_between_worlds(), true, draw::WHITE);
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 4, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Sub:", 60 * mkb::sub_mode, true, draw::WHITE);
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 5, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Ext:", 60 * goal::get_goal_flag_exit_game(), true, draw::WHITE);
-    timerdisp::draw_timer(SEGMENT_TIMER_LOCATION_X, pos_y + 6, SEGMENT_TIMER_TEXT_OFFSET,
-                          "Lst:", 60 * goal::get_goal_flag_last_stage(), true, draw::WHITE); */
 }
 
 static patch::Tramp<mkb::g_handle_storymode_stageselect_state>
