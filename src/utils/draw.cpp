@@ -5,6 +5,7 @@
 #include "mkb/mkb.h"
 
 #include "macro_utils.h"
+#include "mkb/mkb2_ghidra.h"
 #include "patch.h"
 #include "relutil.h"
 #include "systems/assembly.h"
@@ -82,7 +83,7 @@ void heart() {
     mkb::textdraw_set_font(mkb::FONT_JAP_24x24_2);
     mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
     mkb::textdraw_set_scale(0.75, 0.60);
-    mkb::textdraw_set_pos(187, 108);
+    mkb::textdraw_set_pos(187, 104);
     mkb::textdraw_set_mul_color(RGBA(255, 66, 118, 0xff));
 
     char text[] = {static_cast<char>(0x84), static_cast<char>(0xD6), '\0'};
@@ -138,17 +139,6 @@ GXColor lerp_colors(f32 t, GXColor c1, GXColor c2) {
         0xff,
     };
     return color;
-}
-
-void tm() {
-    mkb::textdraw_reset();
-    mkb::textdraw_set_font(mkb::FONT32_ASC_16x16);
-    mkb::textdraw_set_alignment(mkb::ALIGN_UPPER_LEFT);
-    mkb::textdraw_set_scale(0.5, 0.5);
-    mkb::textdraw_set_pos(250, 167);
-    mkb::textdraw_set_mul_color(RGBA(0xef, 0xa7, 0x2c, 0xff));
-
-    mkb::textdraw_print(const_cast<char *>("TM"));
 }
 
 void disp() {
