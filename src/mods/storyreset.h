@@ -4,19 +4,16 @@
 
 namespace storyreset {
 
-// Does it make more sense to move this enum class to pref.h?
-// We need this enum class in storyreset.cpp, but we also need it in both deathcounter.cpp and
-// storytimer.cpp
+// The fullgame loadless timer and death counter share the same display options. The loadless
+// segment timer options are a subset of this enum class (which consist of everything here except an
+// EndOfRun setting), and the segment timer options show up in the same order in the menu as the
+// corresponding fullgame one, so we don't need to make a separate enum class for it
 enum class StoryDisplayOptions {
     DontShow,
     AlwaysShow,
     BetweenWorlds,
     EndOfRun,
 };
-// The fullgame loadless timer and death counter share the same display options. The loadless
-// segment timer options are a subset of this enum class (everything except an EndOfRun setting),
-// and the segment timer options show up in the same order in the menu as the corresponding fullgame
-// one, so we don't need to make a separate enum class for it
 
 bool is_run_active();
 void set_run_active_status(bool is_active);
