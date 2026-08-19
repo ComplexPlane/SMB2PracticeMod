@@ -2,11 +2,11 @@
 
 A Super Monkey Ball 2 mod with various tools, UI displays, customization options, and fun gameplay variants. It supports vanilla SMB2 and most custom level packs (Gaiden, Stardust, etc).
 
-![Dual Screenshots](doc/dual-screenshot.png)
+![Dual Screenshots](docs/dual-screenshot.png)
 
 # Install
 
-To install SMB2 Practice Mod on **Wii console**, follow the [Wii Setup Guide](doc/wii-setup-guide.md). For **Dolphin Emulator**, follow the [Dolphin Setup Guide](doc/dolphin-setup-guide.md).
+To install SMB2 Practice Mod on **Wii console**, follow the [Wii Setup Guide](docs/wii-setup-guide.md). For **Dolphin Emulator**, follow the [Dolphin Setup Guide](docs/dolphin-setup-guide.md).
 
 Press L+R at the same time on your controller to toggle the in-game menu.
 
