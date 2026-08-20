@@ -20,6 +20,7 @@ constexpr u16 COUNTER_NUMBER_X_POS = COUNTER_DISPLAY_X_POS + 7 * draw::DEBUG_CHA
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
 
 static u32 s_world_death_count[WORLD_COUNT] = {};
+static savest::Action s_previous_frame_action = savest::Action::None;
 // Flag to determine when we should/shouldn't increment the death counter
 static bool s_can_incr_death_counter = false;
 
@@ -57,10 +58,14 @@ void reset_death_counters() {
     reset_flag();
 }
 
+bool loaded_state() {
+    return savest::get_last_action() == savest::Action::Load &&
+           s_previous_frame_action == savest::Action::None;
+}
+
 // When we're done holding the savestate button/when gameplay resumes
 void update_flag_on_state_release() {
-    // goal::is_gameplay_exact() && !libsavest::state_loaded_this_frame()
-    if (goal::is_gameplay_exact() && !savest::interacted_with_state()) {
+    if (goal::is_gameplay_exact() && savest::get_last_action() == savest::Action::None) {
         // As soon as we're done holding the load state button (or just any time we're controlling
         // the monkey on the stage), we're allowed to die
         s_can_incr_death_counter = true;
@@ -79,7 +84,7 @@ bool should_count_as_normal_death() {
 }
 
 bool should_count_as_savestate_death() {
-    return savest::loaded_state() && s_can_incr_death_counter;
+    return loaded_state() && s_can_incr_death_counter;
 }
 
 void count_deaths() {
@@ -102,8 +107,11 @@ void tick() {
         reset_flag();
     }
 
-    count_deaths();
     update_flag_on_state_release();
+    count_deaths();
+
+    // Only after we're done doing death checks for this frame do we update s_previous_frame_action
+    s_previous_frame_action = savest::get_last_action();
 }
 
 bool should_display_death_counter() {

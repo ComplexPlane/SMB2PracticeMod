@@ -92,8 +92,8 @@ void reset_tape_break_counter() {
     // Because of the run order notes mentioned earlier, this always runs after savest_ui's tick,
     // which means that at the end of any frame where we load a state, s_frames_until_goal_submode
     // will be 0
-    if (mode::is_stage_exit_init(mkb::sub_mode) || savest::interacted_with_state() ||
-        mode::is_spin_in_init(mkb::sub_mode)) {
+    if (mode::is_stage_exit_init(mkb::sub_mode) ||
+        savest::get_last_action() != savest::Action::None || mode::is_spin_in_init(mkb::sub_mode)) {
         s_frames_until_goal_submode = 0;
     }
 }

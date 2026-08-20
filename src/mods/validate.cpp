@@ -54,9 +54,9 @@ void validate_run() {
     }
 
     // Track savestates
-    // savest::interacted_with_state()
-    // savest::state_changed_gameplay()
-    if (savest::interacted_with_state()) s_loaded_savestate = true;
+    // checking that the action is not None doesn't allow 1f tap state creations (as opposed to
+    // checking the action isn't Load)
+    if (savest::get_last_action() != savest::Action::None) s_loaded_savestate = true;
 
     // Using dpad controls is disallowed
     bool dpad_down =

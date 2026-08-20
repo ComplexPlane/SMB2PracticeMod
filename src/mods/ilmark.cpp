@@ -47,9 +47,7 @@ void tick() {
         s_valid_run = false;
     }
 
-    // savest::interacted_with_state()
-    // savest::state_changed_gameplay()
-    if (savest::interacted_with_state()) {
+    if (savest::get_last_action() != savest::Action::None) {
         s_valid_run = false;
     }
 }
