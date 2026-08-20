@@ -59,6 +59,7 @@ static void debug_text_buf(s32 x, s32 y, GXColor color, const char *buf) {
     mkb::textdraw_reset();
     mkb::textdraw_set_font(mkb::FONT_ASC_12x12);
     mkb::textdraw_set_mul_color(RGBA(color.r, color.g, color.b, color.a));
+    mkb::textdraw_set_alpha((f32)color.a / 255.f);
     mkb::textdraw_set_pos(x, y);
     mkb::textdraw_print((char *)buf);
 }
@@ -144,7 +145,7 @@ GXColor lerp_colors(f32 t, GXColor c1, GXColor c2) {
 void disp() {
     s32 notify_len = mkb::strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DEBUG_CHAR_WIDTH - 12;
-    s32 draw_y = 426;
+    s32 draw_y = 454;
     GXColor color = s_notify_color;
 
     s32 duration =
