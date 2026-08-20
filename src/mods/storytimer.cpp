@@ -1,17 +1,17 @@
 #include "storytimer.h"
 
-#include "../mkb/mkb.h"
+#include "mkb/mkb.h"
 
-#include "../systems/goal.h"
-#include "../systems/pref.h"
-#include "../utils/draw.h"
-#include "../utils/macro_utils.h"
-#include "../utils/mode.h"
-#include "../utils/patch.h"
-#include "../utils/timerdisp.h"
 #include "deathcounter.h"
 #include "freecam.h"
 #include "storyreset.h"
+#include "systems/goal.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
+#include "utils/mode.h"
+#include "utils/patch.h"
+#include "utils/timerdisp.h"
 
 namespace storytimer {
 
@@ -281,10 +281,10 @@ void draw_breakdown_screen() {
         Vec2d pos = get_breakdown_row_position(idx);
         u32 world_deaths = deathcounter::get_world_death_count(idx);
 
-        timerdisp::format_time_to_buffer(split_buf[idx], get_split_timer_for_world(idx),
-                                         timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
-        timerdisp::format_time_to_buffer(seg_buf[idx], s_world_timer[idx].segment,
-                                         timerdisp::TimeFormatType::MinutesAlwaysLeadingZero);
+        timerdisp::format_time(split_buf[idx], get_split_timer_for_world(idx),
+                               timerdisp::TimeFormat::MinutesAlwaysLeadingZero);
+        timerdisp::format_time(seg_buf[idx], s_world_timer[idx].segment,
+                               timerdisp::TimeFormat::MinutesAlwaysLeadingZero);
         mkb::sprintf(row_info_buf[idx], "W%d:%s (%s) (%d)", idx + 1, split_buf[idx], seg_buf[idx],
                      world_deaths);
 

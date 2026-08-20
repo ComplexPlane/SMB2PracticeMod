@@ -1,10 +1,10 @@
 #include "storyreset.h"
 
-#include "../systems/goal.h"
-#include "../systems/pref.h"
-#include "../utils/draw.h"
-#include "../utils/mode.h"
 #include "gotostory.h"
+#include "systems/goal.h"
+#include "systems/pref.h"
+#include "utils/draw.h"
+#include "utils/mode.h"
 
 namespace storyreset {
 

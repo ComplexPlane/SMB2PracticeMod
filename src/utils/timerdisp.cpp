@@ -1,6 +1,6 @@
 #include "timerdisp.h"
 
-#include "../utils/draw.h"
+#include "utils/draw.h"
 
 namespace timerdisp {
 
@@ -19,21 +19,21 @@ TimeComp get_time_components(u32 frames) {
     return {time_hours, time_minutes, time_seconds, time_centiseconds};
 }
 
-void format_time_to_buffer(char *buffer, u32 frames, TimeFormatType format_type) {
+void format_time(char *buffer, u32 frames, TimeFormat format_type) {
     TimeComp time = get_time_components(frames);
 
     switch (format_type) {
-        case TimeFormatType::SecondsOnly: {
+        case TimeFormat::SecondsOnly: {
             u32 total_seconds = frames / SECOND_FRAMES;
             mkb::sprintf(buffer, "%d.%02d", total_seconds, time.centiseconds);
             break;
         }
-        case TimeFormatType::HoursAlways: {
+        case TimeFormat::HoursAlways: {
             mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
                          time.centiseconds);
             break;
         }
-        case TimeFormatType::MinutesAlwaysLeadingZero: {
+        case TimeFormat::MinutesAlwaysLeadingZero: {
             if (time.hours > 0) {
                 mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
                              time.centiseconds);
@@ -43,7 +43,7 @@ void format_time_to_buffer(char *buffer, u32 frames, TimeFormatType format_type)
             }
             break;
         }
-        case TimeFormatType::MinimalLeading: {
+        case TimeFormat::MinimalLeading: {
             if (time.hours > 0) {
                 mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
                              time.centiseconds);
@@ -54,7 +54,7 @@ void format_time_to_buffer(char *buffer, u32 frames, TimeFormatType format_type)
             }
             break;
         }
-        case TimeFormatType::AlwaysLeadNonHours: {
+        case TimeFormat::AlwaysLeadNonHours: {
             if (time.hours > 0) {
                 mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
                              time.centiseconds);
@@ -89,9 +89,9 @@ void draw_timer(s32 pos_x,
 
     char buf[16] = {};
     if (!show_seconds) {
-        format_time_to_buffer(buf, frames, TimeFormatType::AlwaysLeadNonHours);
+        format_time(buf, frames, TimeFormat::AlwaysLeadNonHours);
     } else {
-        format_time_to_buffer(buf, frames, TimeFormatType::SecondsOnly);
+        format_time(buf, frames, TimeFormat::SecondsOnly);
     }
 
     draw::debug_text(pos_x, pos_y, color, prefix);

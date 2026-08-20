@@ -1024,19 +1024,17 @@ static Widget s_cm_seg_widgets[] = {
     },
 };
 
-// put my stuff here
-
 static const char *FULLGAME_TIMER_OPTIONS[] = {
-    "Don't show",
-    "Always show",
-    "Between worlds",
-    "End of run",
+    "Don't Show",
+    "Always Show",
+    "Between Worlds",
+    "End of Run",
 };
 
 static const char *SEGMENT_TIMER_OPTIONS[] = {
-    "Don't show",
-    "Always show",
-    "Between worlds",
+    "Don't Show",
+    "Always Show",
+    "Between Worlds",
 };
 
 static Widget s_loadless_timers_widgets[] = {
@@ -1080,10 +1078,10 @@ static Widget s_loadless_timers_widgets[] = {
 };
 
 static const char *DEATH_COUNTER_OPTIONS[] = {
-    "Don't show",
-    "Always show",
-    "Between worlds",
-    "End of run",
+    "Don't Show",
+    "Always Show",
+    "Between Worlds",
+    "End of Run",
 };
 
 static Widget s_deathcounter_widgets[] = {
@@ -1485,7 +1483,7 @@ static Widget s_savestate_widgets[] = {
     },
 };
 
-static const char *MENU_ACCEL_OPTIONS[] = {"Disabled", "Always enabled", "Only in story"};
+static const char *MENU_ACCEL_OPTIONS[] = {"Disabled", "Always Enabled", "Only in Story"};
 
 static Widget s_tools_widgets[] = {
     {

@@ -1,12 +1,18 @@
 #include "menu_accel.h"
 
-#include "../systems/pref.h"
-#include "../utils/mode.h"
-#include "../utils/patch.h"
-#include "../utils/ppcutil.h"
-#include "../utils/relutil.h"
+#include "systems/pref.h"
+#include "utils/mode.h"
+#include "utils/patch.h"
+#include "utils/ppcutil.h"
+#include "utils/relutil.h"
 
 namespace menu_accel {
+
+enum class MenuAccelOptions {
+    Disabled,
+    AlwaysEnabled,
+    OnlyInStory,
+};
 
 void accelerate_pause_menu() {
     // nop the instructions that check for R held down to accelerate the menu

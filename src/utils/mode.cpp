@@ -1,7 +1,7 @@
 #include "mode.h"
 
 // #include "../internal/relutil.h"
-#include "../mkb/mkb.h"
+#include "mkb/mkb.h"
 
 namespace mode {
 

@@ -1,16 +1,15 @@
 #include "deathcounter.h"
 
-#include "../mkb/mkb.h"
+#include "mkb/mkb.h"
 
-#include "../systems/goal.h"
-#include "../systems/pref.h"
-#include "../systems/savest.h"
-#include "../utils/draw.h"
-#include "../utils/macro_utils.h"
-#include "../utils/mode.h"
-#include "../utils/patch.h"
 #include "freecam.h"
 #include "storyreset.h"
+#include "systems/goal.h"
+#include "systems/pref.h"
+#include "systems/savest.h"
+#include "utils/draw.h"
+#include "utils/macro_utils.h"
+#include "utils/mode.h"
 
 namespace deathcounter {
 

@@ -1,9 +1,9 @@
 #include "goal.h"
 
-#include "../mkb/mkb.h"
-#include "../systems/savest.h"
-#include "../utils/mode.h"
-#include "../utils/patch.h"
+#include "mkb/mkb.h"
+#include "systems/savest.h"
+#include "utils/mode.h"
+#include "utils/patch.h"
 
 namespace goal {
 
