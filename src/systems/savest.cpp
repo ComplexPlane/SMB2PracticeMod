@@ -32,7 +32,7 @@ struct SaveState {
 
 u32 s_timestamp;
 SaveState s_states[SLOT_COUNT];
-History s_history;
+Action s_last_action;
 
 //
 // Hooks
@@ -50,7 +50,7 @@ static patch::Tramp<mkb::set_minimap_mode> s_set_minimap_mode_tramp([](mkb::Mini
 
 // Prevent sound effects from playing while loading states
 static patch::Tramp<mkb::call_SoundReqID_arg_0> s_soundreq_tramp([](u32 id) {
-    if (s_history.curr_frame_action != Action::Load) {
+    if (s_last_action != Action::Load) {
         s_soundreq_tramp.chain(id);
     }
 });
@@ -292,7 +292,7 @@ SaveResult save(u32 slot) {
     state->flags |= Flag_IsPresent;
     state->timestamp = s_timestamp;
 
-    s_history.curr_frame_action = Action::Save;
+    s_last_action = Action::Save;
 
     return SaveResult::Ok;
 }
@@ -351,7 +351,7 @@ LoadResult load(u32 slot) {
     }
 
     state->timestamp = s_timestamp;
-    s_history.curr_frame_action = Action::Load;
+    s_last_action = Action::Load;
 
     return LoadResult::Ok;
 }
@@ -378,9 +378,7 @@ u32 get_timestamp(u32 slot) {
 }
 
 void tick() {
-    // Rotate history
-    s_history.prev_frame_action = s_history.curr_frame_action;
-    s_history.curr_frame_action = Action::None;
+    s_last_action = Action::None;
 
     s_timestamp++;
 
@@ -395,32 +393,8 @@ bool is_enabled() {
     return pref::get(pref::Pref::Savestates) && !pref::get(pref::Pref::Freecam);
 }
 
-History get_history() {
-    return s_history;
-}
-
-Action get_curr_frame_action() {
-    return s_history.curr_frame_action;
-}
-
-bool state_changed_gameplay() {
-    return s_history.curr_frame_action == Action::Load;
-}
-
-// Note: checking s_history.curr_frame_action == Action::Load is different from
-// interacted_with_state()
-// With the former, pressing the create state button for 1 frame won't be detected
-
-bool interacted_with_state() {
-    // Returns true if we created a state this frame, or if we continue to hold the create state
-    // button, or if we load state
-    return s_history.curr_frame_action != Action::None;
-}
-
-bool loaded_state() {
-    // Won't return true if we create a state, only if we load one
-    return s_history.curr_frame_action == Action::Load &&
-           s_history.prev_frame_action == Action::None;
+Action get_last_action() {
+    return s_last_action;
 }
 
 }  // namespace savest
