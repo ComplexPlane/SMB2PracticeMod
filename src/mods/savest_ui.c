@@ -19,14 +19,14 @@ static bool s_created_state_last_frame;
 static bool s_frame_advance_mode;
 
 static bool is_either_trigger_held() {
-    return pad_analog_down(mkb_PAI_LTRIG, false) || pad_analog_down(mkb_PAI_RTRIG, false);
+    return Pad_AnalogDown(mkb_PAI_LTRIG, false) || Pad_AnalogDown(mkb_PAI_RTRIG, false);
 }
 
 void savest_ui_tick() {
-    if (!savest_is_enabled()) return;
+    if (!SS_IsEnabled()) return;
 
     // Must tick savestates every frame
-    savest_tick();
+    SS_Tick();
 
     if (!is_either_trigger_held()) {
         s_frame_advance_mode = false;
@@ -36,19 +36,19 @@ void savest_ui_tick() {
     if (mkb_main_mode != mkb_MD_GAME) return;
 
     // Change the savestate slot with C stick
-    s32 cstick_dir = pad_get_cstick_dir(false);
+    s32 cstick_dir = Pad_GetCStickDir(false);
     if (cstick_dir != PadDir_None) {
         s_active_state_slot = cstick_dir;
         draw_notify(COLOR_WHITE, "Slot %d Selected", cstick_dir + 1);
     }
 
-    if (pad_button_pressed(mkb_PAD_BUTTON_X, false)) {
-        if (!savest_is_empty(s_active_state_slot) && pref_get(Pref_SavestateDisableOverwrite)) {
+    if (Pad_ButtonPressed(mkb_PAD_BUTTON_X, false)) {
+        if (!SS_IsEmpty(s_active_state_slot) && pref_get(Pref_SavestateDisableOverwrite)) {
             draw_notify(COLOR_RED, "Slot %d Full", s_active_state_slot + 1);
             return;
         }
 
-        switch (savest_save(s_active_state_slot)) {
+        switch (SS_Save(s_active_state_slot)) {
         case SS_SaveResult_Ok: {
             break;
         }
@@ -98,12 +98,12 @@ void savest_ui_tick() {
         s_created_state_last_frame = true;
 
     } else if (binds_bind_pressed(pref_get(Pref_SavestateClearBind), false)) {
-        savest_clear(s_active_state_slot);
+        SS_Clear(s_active_state_slot);
         draw_notify(COLOR_BLUE, "Slot %d Cleared", s_active_state_slot + 1);
-    } else if (pad_button_down(mkb_PAD_BUTTON_Y, false) ||
-               (pad_button_down(mkb_PAD_BUTTON_X, false) && s_created_state_last_frame) ||
+    } else if (Pad_ButtonDown(mkb_PAD_BUTTON_Y, false) ||
+               (Pad_ButtonDown(mkb_PAD_BUTTON_X, false) && s_created_state_last_frame) ||
                s_frame_advance_mode || (is_either_trigger_held() && cstick_dir != PadDir_None)) {
-        switch (savest_load(s_active_state_slot)) {
+        switch (SS_Load(s_active_state_slot)) {
         case SS_LoadResult_Ok: {
             break;
         }

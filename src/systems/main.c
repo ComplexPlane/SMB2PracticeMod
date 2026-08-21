@@ -39,7 +39,6 @@
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
 #include "mods/storytimer.h"
-#include "mods/tetris.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
 
@@ -79,7 +78,7 @@ static void process_inputs() {
 
     // These run after all controller inputs have been processed on the current frame,
     // to ensure lowest input delay
-    pad_tick();
+    Pad_Tick();
     binds_tick();
     cardio_tick();
     unlock_tick();
@@ -125,7 +124,6 @@ static void draw_debug_text_hook() {
     iw_disp();
     storytimer_disp();
     deathcounter_disp();
-    tetris_disp();
     ilbattle_disp();
     cmseg_disp();
     inputdisp_disp();
@@ -171,10 +169,9 @@ void main_init() {
     pref_init();
     unlock_init();
     draw_init();
-    tetris_init();
     physics_init();
     iw_init();
-    savest_init();
+    SS_Init();
     timer_init();
     inputdisp_init();
     cmseg_init();
@@ -206,5 +203,5 @@ void main_tick() {
     } else {
         mkb_dip_switches &= ~(mkb_DIP_DEBUG | mkb_DIP_DISP);
     }
-    pad_on_frame_start();
+    Pad_OnFrameStart();
 }

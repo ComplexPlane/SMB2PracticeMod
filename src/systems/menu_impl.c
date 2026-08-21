@@ -43,7 +43,7 @@ static void push_menu(MenuWidget *menu) {
     s_menu_stack_ptr++;
     s_menu_stack[s_menu_stack_ptr] = menu;
     s_cursor_frame = 0;
-    pad_reset_dir_repeat();
+    Pad_ResetDirRepeat();
 }
 
 static void pop_menu() {
@@ -53,7 +53,7 @@ static void pop_menu() {
         s_menu_stack_ptr--;
     }
     s_cursor_frame = 0;
-    pad_reset_dir_repeat();
+    Pad_ResetDirRepeat();
 }
 
 static bool is_widget_selectable(WidgetType type) {
@@ -107,11 +107,11 @@ static void handle_widget_bind() {
     Widget *selected = get_selected_widget(menu->widgets, menu->num_widgets, &curr_idx, target_idx);
     if (selected == NULL) return;
 
-    bool a_pressed = pad_button_pressed(mkb_PAD_BUTTON_A, true);
-    bool x_pressed = pad_button_pressed(mkb_PAD_BUTTON_X, true);
-    bool y_pressed = pad_button_pressed(mkb_PAD_BUTTON_Y, true);
-    bool a_repeat = pad_button_repeat(mkb_PAD_BUTTON_A, true);
-    bool y_repeat = pad_button_repeat(mkb_PAD_BUTTON_Y, true);
+    bool a_pressed = Pad_ButtonPressed(mkb_PAD_BUTTON_A, true);
+    bool x_pressed = Pad_ButtonPressed(mkb_PAD_BUTTON_X, true);
+    bool y_pressed = Pad_ButtonPressed(mkb_PAD_BUTTON_Y, true);
+    bool a_repeat = Pad_ButtonRepeat(mkb_PAD_BUTTON_A, true);
+    bool y_repeat = Pad_ButtonRepeat(mkb_PAD_BUTTON_Y, true);
 
     // slow down scroll
     if (s_edit_tick > 0) {
@@ -202,18 +202,18 @@ static void handle_widget_bind() {
             max = float_edit->max;
         }
 
-        if (pad_button_released(mkb_PAD_BUTTON_A, true) && s_edit_tick > 0) {
+        if (Pad_ButtonReleased(mkb_PAD_BUTTON_A, true) && s_edit_tick > 0) {
             s_edit_tick = 0;
-        } else if (pad_button_released(mkb_PAD_BUTTON_Y, true) && s_edit_tick < 0) {
+        } else if (Pad_ButtonReleased(mkb_PAD_BUTTON_Y, true) && s_edit_tick < 0) {
             s_edit_tick = 0;
         }
 
         if (x_pressed) {
             next = pref_get_default(edit_pref);
-        } else if (a_repeat && !pad_button_down(mkb_PAD_BUTTON_Y, true)) {
+        } else if (a_repeat && !Pad_ButtonDown(mkb_PAD_BUTTON_Y, true)) {
             s_edit_tick += 5;
             next += (s_edit_tick / 5);
-        } else if (y_repeat && !pad_button_down(mkb_PAD_BUTTON_A, true)) {
+        } else if (y_repeat && !Pad_ButtonDown(mkb_PAD_BUTTON_A, true)) {
             s_edit_tick -= 5;
             next += (s_edit_tick / 5);
         }
@@ -226,7 +226,7 @@ static void handle_widget_bind() {
     }
     case WidgetType_InputSelect: {
         InputSelectWidget *input_select = &selected->input_select;
-        if (s_binding == BindingState_Requested && pad_button_released(mkb_PAD_BUTTON_A, true)) {
+        if (s_binding == BindingState_Requested && Pad_ButtonReleased(mkb_PAD_BUTTON_A, true)) {
             s_binding = BindingState_Active;
         } else if (s_binding == BindingState_Active) {
             // set new bind
@@ -270,22 +270,22 @@ void menu_impl_tick() {
     bool toggle = binds_bind_pressed(pref_get(Pref_MenuBind), true);
     if (toggle) {
         s_visible ^= toggle;
-    } else if (pad_button_pressed(mkb_PAD_BUTTON_B, true)) {
+    } else if (Pad_ButtonPressed(mkb_PAD_BUTTON_B, true)) {
         pop_menu();
     }
     bool just_opened = s_visible && toggle;
     if (just_opened) {
-        pad_reset_dir_repeat();
+        Pad_ResetDirRepeat();
         s_cursor_frame = 0;
     }
 
-    pad_set_exclusive_mode(s_visible);
+    Pad_SetExclusiveMode(s_visible);
 
     if (!s_visible) {
         // Default binding is L+R, but this lets you know the current binding in case you forget
         // what you changed it to
         u8 input = pref_get(Pref_MenuBind);
-        if (pad_button_chord_pressed(mkb_PAD_TRIGGER_L, mkb_PAD_TRIGGER_R, true) &&
+        if (Pad_ButtonChordPressed(mkb_PAD_TRIGGER_L, mkb_PAD_TRIGGER_R, true) &&
             input != L_R_BIND) {
             char buf[25];
             binds_get_bind_str(input, buf);
@@ -297,7 +297,7 @@ void menu_impl_tick() {
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
 
     // Update selected menu item
-    s32 dir_delta = pad_dir_repeat(PadDir_Down, true) - pad_dir_repeat(PadDir_Up, true);
+    s32 dir_delta = Pad_DirRepeat(PadDir_Down, true) - Pad_DirRepeat(PadDir_Up, true);
     u32 selectable = get_selectable_widget_count(menu->widgets, menu->num_widgets);
     menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
 

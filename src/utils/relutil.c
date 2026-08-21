@@ -28,11 +28,10 @@ typedef struct {
     OSRel *offset;
 } __attribute__((packed)) OSImportInfo;
 
-typedef struct OSModuleHeader OSModuleHeader;
-struct OSModuleHeader {
+typedef struct OSModuleHeader {
     u32 id;
-    OSModuleHeader *next;
-    OSModuleHeader *prev;
+    struct OSModuleHeader *next;
+    struct OSModuleHeader *prev;
     u32 numSections;
     OSSectionInfo *sectionInfoOffset;
     char *nameOffset;
@@ -52,7 +51,7 @@ struct OSModuleHeader {
     u32 align;
     u32 bssAlign;
     u32 fixSize;
-} __attribute__((packed));
+} __attribute__((packed)) OSModuleHeader;
 
 static Region s_vanilla_regions[] = {
     {RelId_Dol, (void *)(0x80000000), 0x199F84, false},

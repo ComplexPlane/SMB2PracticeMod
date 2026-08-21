@@ -28,13 +28,13 @@ typedef enum {
     SS_LoadResult_ErrPausedAndNonGameplaySubmode,
 } SS_LoadResult;
 
-void savest_init();
-void savest_tick();
+void SS_Init();
+void SS_Tick();
 
-SS_SaveResult savest_save(u32 slot);
-SS_LoadResult savest_load(u32 slot);
-void savest_clear(u32 slot);
-bool savest_is_empty(u32 slot);
+SS_SaveResult SS_Save(u32 slot);
+SS_LoadResult SS_Load(u32 slot);
+void SS_Clear(u32 slot);
+bool SS_IsEmpty(u32 slot);
 
-bool savest_was_state_loaded_this_frame();
-bool savest_is_enabled();
+bool SS_WasStateLoadedThisFrame();
+bool SS_IsEnabled();

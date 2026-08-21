@@ -270,7 +270,7 @@ static void track_invalid_pauses() {
     if (mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN && paused_now && s_paused_frame == 0) {
         s_paused_frame = mkb_mode_info.stage_time_frames_remaining;
     } else if ((mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN && paused_now) ||
-               savest_was_state_loaded_this_frame()) {
+               SS_WasStateLoadedThisFrame()) {
         s_valid_run = false;
     }
 }

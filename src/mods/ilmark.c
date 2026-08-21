@@ -56,13 +56,13 @@ void ilmark_tick() {
             }
         }
         // Loading savestates is disallowed
-        if (savest_was_state_loaded_this_frame()) s_valid_run = false;
+        if (SS_WasStateLoadedThisFrame()) s_valid_run = false;
 
         // Using dpad controls is disallowed
-        bool dpad_down = pad_button_down(mkb_PAD_BUTTON_DOWN, false) ||
-                         pad_button_down(mkb_PAD_BUTTON_LEFT, false) ||
-                         pad_button_down(mkb_PAD_BUTTON_RIGHT, false) ||
-                         pad_button_down(mkb_PAD_BUTTON_UP, false);
+        bool dpad_down = Pad_ButtonDown(mkb_PAD_BUTTON_DOWN, false) ||
+                         Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) ||
+                         Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false) ||
+                         Pad_ButtonDown(mkb_PAD_BUTTON_UP, false);
         if (pref_get(Pref_DpadControls) && dpad_down) s_valid_run = false;
 
         // Opening the mod menu is disallowed

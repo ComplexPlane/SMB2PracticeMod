@@ -26,15 +26,15 @@ static u32 s_prev_retrace_count;
 static void handle_iw_selection() {
     if (mkb_scen_info.mode != 5) return;
 
-    if (pad_analog_down(mkb_PAI_LSTICK_LEFT, false) || pad_analog_down(mkb_PAI_LSTICK_RIGHT, false))
+    if (Pad_AnalogDown(mkb_PAI_LSTICK_LEFT, false) || Pad_AnalogDown(mkb_PAI_LSTICK_RIGHT, false))
         return;
-    if (pad_button_down(mkb_PAD_BUTTON_LEFT, false) || pad_button_down(mkb_PAD_BUTTON_RIGHT, false))
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) || Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false))
         return;
 
-    bool lstick_up = pad_analog_pressed(mkb_PAI_LSTICK_UP, false);
-    bool lstick_down = pad_analog_pressed(mkb_PAI_LSTICK_DOWN, false);
-    bool dpad_up = pad_button_pressed(mkb_PAD_BUTTON_UP, false);
-    bool dpad_down = pad_button_pressed(mkb_PAD_BUTTON_DOWN, false);
+    bool lstick_up = Pad_AnalogPressed(mkb_PAI_LSTICK_UP, false);
+    bool lstick_down = Pad_AnalogPressed(mkb_PAI_LSTICK_DOWN, false);
+    bool dpad_up = Pad_ButtonPressed(mkb_PAD_BUTTON_UP, false);
+    bool dpad_down = Pad_ButtonPressed(mkb_PAD_BUTTON_DOWN, false);
 
     s32 dir = lstick_up || dpad_up ? +1 : (lstick_down || dpad_down ? -1 : 0);
     mkb_StoryModeSaveFile *story_save = &mkb_storymode_save_files[mkb_selected_story_file_idx];

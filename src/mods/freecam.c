@@ -51,8 +51,8 @@ static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
     float substick_y = mkb_pad_status_groups[0].raw.substickY / 60.f;
     float trigger_left = mkb_pad_status_groups[0].raw.triggerLeft / 128.f;
     float trigger_right = mkb_pad_status_groups[0].raw.triggerRight / 128.f;
-    bool fast = pad_button_down(mkb_PAD_BUTTON_Y, false);
-    bool slow = pad_button_down(mkb_PAD_BUTTON_X, false);
+    bool fast = Pad_ButtonDown(mkb_PAD_BUTTON_Y, false);
+    bool slow = Pad_ButtonDown(mkb_PAD_BUTTON_X, false);
 
     float speed_mult = fast ? pref_get(Pref_FreecamSpeedMult) : 1;
     speed_mult = slow ? 0.15 : speed_mult;
@@ -137,11 +137,11 @@ void freecam_tick() {
         // Adjust turbo speed multiplier
         int speed_mult = pref_get(Pref_FreecamSpeedMult);
         bool input_made = false;
-        if (pad_button_repeat(mkb_PAD_BUTTON_DOWN, false)) {
+        if (Pad_ButtonRepeat(mkb_PAD_BUTTON_DOWN, false)) {
             speed_mult--;
             input_made = true;
         }
-        if (pad_button_repeat(mkb_PAD_BUTTON_UP, false)) {
+        if (Pad_ButtonRepeat(mkb_PAD_BUTTON_UP, false)) {
             speed_mult++;
             input_made = true;
         }

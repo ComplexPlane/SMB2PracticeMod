@@ -37,7 +37,7 @@ static void get_merged_stick_inputs(MergedStickInputs *outInputs) {
     // Accumulate stick inputs from all controllers since we don't always
     // know which player is active, like in menus
     // TODO account for d-pad control setting
-    if (!pad_get_exclusive_mode()) {
+    if (!Pad_GetExclusiveMode()) {
         for (s32 i = 0; i < 4; i++) {
             if (s_raw_inputs[i].err == mkb_PAD_ERR_NONE) {
                 outInputs->rawX += s_raw_inputs[i].stickX;
@@ -242,28 +242,28 @@ static void draw_stick(const MergedStickInputs *stick_inputs, const Vec2d *cente
 }
 
 static void draw_buttons(const Vec2d *center, f32 scale) {
-    if (pad_button_down(mkb_PAD_BUTTON_START, false)) {
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_START, false)) {
         draw_debug_text(center->x + 65 * scale, center->y - 45 * scale, COLOR_WHITE, "Start");
     }
-    if (pad_button_down(mkb_PAD_BUTTON_A, false)) {
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_A, false)) {
         draw_debug_text(center->x + 65 * scale, center->y - 25 * scale, COLOR_GREEN, "A");
     }
-    if (pad_button_down(mkb_PAD_BUTTON_B, false)) {
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_B, false)) {
         draw_debug_text(center->x + 90 * scale, center->y - 25 * scale, COLOR_RED, "B");
     }
-    if (pad_button_down(mkb_PAD_BUTTON_X, false)) {
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_X, false)) {
         draw_debug_text(center->x + 65 * scale, center->y - 05 * scale, COLOR_WHITE, "X");
     }
-    if (pad_button_down(mkb_PAD_BUTTON_Y, false)) {
+    if (Pad_ButtonDown(mkb_PAD_BUTTON_Y, false)) {
         draw_debug_text(center->x + 90 * scale, center->y - 05 * scale, COLOR_WHITE, "Y");
     }
-    if (pad_button_down(mkb_PAD_TRIGGER_L, false)) {
+    if (Pad_ButtonDown(mkb_PAD_TRIGGER_L, false)) {
         draw_debug_text(center->x + 65 * scale, center->y + 15 * scale, COLOR_WHITE, "L");
     }
-    if (pad_button_down(mkb_PAD_TRIGGER_R, false)) {
+    if (Pad_ButtonDown(mkb_PAD_TRIGGER_R, false)) {
         draw_debug_text(center->x + 90 * scale, center->y + 15 * scale, COLOR_WHITE, "R");
     }
-    if (pad_button_down(mkb_PAD_TRIGGER_Z, false)) {
+    if (Pad_ButtonDown(mkb_PAD_TRIGGER_Z, false)) {
         draw_debug_text(center->x + 115 * scale, center->y + 15 * scale, COLOR_BLUE, "Z");
     }
 }

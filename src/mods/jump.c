@@ -79,7 +79,7 @@ static void jumping() {
     bool paused_now = *(u32 *)(0x805BC474) & 8;  // TODO actually give this a name
     if ((mkb_sub_mode == mkb_SMD_GAME_READY_MAIN || mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN) &&
         !paused_now) {
-        if (pad_button_pressed(mkb_PAD_BUTTON_B, false)) {
+        if (Pad_ButtonPressed(mkb_PAD_BUTTON_B, false)) {
             mkb_toggle_minimap_zoom();
         }
     }
@@ -93,7 +93,7 @@ static void jumping() {
 
     mkb_Ball *ball = &mkb_balls[mkb_curr_player_idx];
 
-    bool jump_pressed = pad_button_pressed(mkb_PAD_BUTTON_A, false);
+    bool jump_pressed = Pad_ButtonPressed(mkb_PAD_BUTTON_A, false);
     bool ground_touched = ball->phys_flags & mkb_PHYS_ON_GROUND;
 
     if (jump_pressed) {
@@ -106,11 +106,11 @@ static void jumping() {
     bool before = ground_touched && s_ticks_since_jump_input > -1 && s_ticks_since_jump_input < 3;
     bool after = jump_pressed && s_ticks_since_ground > -1 && s_ticks_since_ground < 7;
     bool go_buffered_press =
-        mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT && pad_button_down(mkb_PAD_BUTTON_A, false);
+        mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT && Pad_ButtonDown(mkb_PAD_BUTTON_A, false);
 
     if (before || after || go_buffered_press) s_jumping = true;
 
-    if (pad_button_released(mkb_PAD_BUTTON_A, false)) {
+    if (Pad_ButtonReleased(mkb_PAD_BUTTON_A, false)) {
         s_jumping = false;
         s_jump_frames = 0;
         s_ticks_since_jump = 0;

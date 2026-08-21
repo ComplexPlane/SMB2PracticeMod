@@ -5,8 +5,6 @@
 static constexpr u32 DIR_REPEAT_PERIOD = 3;
 static constexpr u32 DIR_REPEAT_WAIT = 14;
 
-static s32 s_konami_progress;
-static bool s_konami_input_prev_tick;
 static bool s_exclusive_mode;
 static bool s_exclusive_mode_request;
 
@@ -17,132 +15,51 @@ static mkb_PadStatusGroup s_pad_status_groups[4];
 
 static u8 s_dir_down_time[8];
 
-bool pad_button_down(mkb_PadDigitalInput digital_input, bool priority) {
+bool Pad_ButtonDown(mkb_PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && (s_merged_digital_inputs.raw & digital_input);
 }
 
-bool pad_button_pressed(mkb_PadDigitalInput digital_input, bool priority) {
+bool Pad_ButtonPressed(mkb_PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.pressed & digital_input;
 }
 
-bool pad_button_released(mkb_PadDigitalInput digital_input, bool priority) {
+bool Pad_ButtonReleased(mkb_PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.released & digital_input;
 }
 
-bool pad_button_repeat(mkb_PadDigitalInput digital_input, bool priority) {
+bool Pad_ButtonRepeat(mkb_PadDigitalInput digital_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_digital_inputs.repeated & digital_input;
 }
 
-bool pad_analog_down(mkb_PadAnalogInput analog_input, bool priority) {
+bool Pad_AnalogDown(mkb_PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.raw & analog_input;
 }
 
-bool pad_analog_pressed(mkb_PadAnalogInput analog_input, bool priority) {
+bool Pad_AnalogPressed(mkb_PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.pressed & analog_input;
 }
 
-bool pad_analog_released(mkb_PadAnalogInput analog_input, bool priority) {
+bool Pad_AnalogReleased(mkb_PadAnalogInput analog_input, bool priority) {
     return (!s_exclusive_mode || priority) && s_merged_analog_inputs.released & analog_input;
 }
 
-static bool any_input_down() {
-    return s_merged_analog_inputs.raw | s_merged_digital_inputs.raw;
+bool Pad_ButtonChordPressed(mkb_PadDigitalInput btn1, mkb_PadDigitalInput btn2, bool priority) {
+    return (Pad_ButtonDown(btn1, priority) && Pad_ButtonPressed(btn2, priority)) ||
+           (Pad_ButtonPressed(btn1, priority) && Pad_ButtonDown(btn2, priority));
 }
 
-static bool any_input_pressed() {
-    return s_merged_analog_inputs.pressed | s_merged_digital_inputs.pressed;
+bool Pad_AnalogChordPressed(mkb_PadDigitalInput analog1,
+                            mkb_PadDigitalInput analog2,
+                            bool priority) {
+    return (Pad_AnalogDown(analog1, priority) && Pad_AnalogPressed(analog2, priority)) ||
+           (Pad_AnalogPressed(analog1, priority) && Pad_AnalogDown(analog2, priority));
 }
 
-static void update_konami() {
-    if (s_konami_progress >= 11) {
-        s_konami_progress = 0;
-    }
-
-    if (s_konami_input_prev_tick && any_input_down()) return;
-
-    if (!any_input_pressed()) {
-        s_konami_input_prev_tick = false;
-        return;
-    }
-
-    s_konami_input_prev_tick = true;
-    switch (s_konami_progress) {
-    case 0:
-    case 1:
-        if (pad_dir_pressed(PadDir_Up, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 2:
-    case 3:
-        if (pad_dir_pressed(PadDir_Down, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 4:
-    case 6:
-        if (pad_dir_pressed(PadDir_Left, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 5:
-    case 7:
-        if (pad_dir_pressed(PadDir_Right, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 8:
-        if (pad_button_pressed(mkb_PAD_BUTTON_B, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 9:
-        if (pad_button_pressed(mkb_PAD_BUTTON_A, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    case 10:
-        if (pad_button_pressed(mkb_PAD_BUTTON_START, true)) {
-            s_konami_progress++;
-        } else {
-            s_konami_progress = 0;
-        }
-        break;
-    default:
-        s_konami_progress = 0;
-        break;
-    }
-}
-
-bool pad_button_chord_pressed(mkb_PadDigitalInput btn1, mkb_PadDigitalInput btn2, bool priority) {
-    return (pad_button_down(btn1, priority) && pad_button_pressed(btn2, priority)) ||
-           (pad_button_pressed(btn1, priority) && pad_button_down(btn2, priority));
-}
-
-bool pad_analog_chord_pressed(mkb_PadDigitalInput analog1,
-                              mkb_PadDigitalInput analog2,
-                              bool priority) {
-    return (pad_analog_down(analog1, priority) && pad_analog_pressed(analog2, priority)) ||
-           (pad_analog_pressed(analog1, priority) && pad_analog_down(analog2, priority));
-}
-
-PadDir pad_get_cstick_dir(bool priority) {
-    bool left = pad_analog_down(mkb_PAI_CSTICK_LEFT, priority);
-    bool right = pad_analog_down(mkb_PAI_CSTICK_RIGHT, priority);
-    bool up = pad_analog_down(mkb_PAI_CSTICK_UP, priority);
-    bool down = pad_analog_down(mkb_PAI_CSTICK_DOWN, priority);
+PadDir Pad_GetCStickDir(bool priority) {
+    bool left = Pad_AnalogDown(mkb_PAI_CSTICK_LEFT, priority);
+    bool right = Pad_AnalogDown(mkb_PAI_CSTICK_RIGHT, priority);
+    bool up = Pad_AnalogDown(mkb_PAI_CSTICK_UP, priority);
+    bool down = Pad_AnalogDown(mkb_PAI_CSTICK_DOWN, priority);
 
     if (up && left) return PadDir_UpLeft;
     if (up && right) return PadDir_UpRight;
@@ -155,23 +72,23 @@ PadDir pad_get_cstick_dir(bool priority) {
     return PadDir_None;
 }
 
-bool pad_dir_down(PadDir dir, bool priority) {
+bool Pad_DirDown(PadDir dir, bool priority) {
     switch (dir) {
     case PadDir_Up: {
-        return pad_button_down(mkb_PAD_BUTTON_UP, priority) ||
-               pad_analog_down(mkb_PAI_LSTICK_UP, priority);
+        return Pad_ButtonDown(mkb_PAD_BUTTON_UP, priority) ||
+               Pad_AnalogDown(mkb_PAI_LSTICK_UP, priority);
     }
     case PadDir_Left: {
-        return pad_button_down(mkb_PAD_BUTTON_LEFT, priority) ||
-               pad_analog_down(mkb_PAI_LSTICK_LEFT, priority);
+        return Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, priority) ||
+               Pad_AnalogDown(mkb_PAI_LSTICK_LEFT, priority);
     }
     case PadDir_Right: {
-        return pad_button_down(mkb_PAD_BUTTON_RIGHT, priority) ||
-               pad_analog_down(mkb_PAI_LSTICK_RIGHT, priority);
+        return Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, priority) ||
+               Pad_AnalogDown(mkb_PAI_LSTICK_RIGHT, priority);
     }
     case PadDir_Down: {
-        return pad_button_down(mkb_PAD_BUTTON_DOWN, priority) ||
-               pad_analog_down(mkb_PAI_LSTICK_DOWN, priority);
+        return Pad_ButtonDown(mkb_PAD_BUTTON_DOWN, priority) ||
+               Pad_AnalogDown(mkb_PAI_LSTICK_DOWN, priority);
     }
     default: {
         return false;
@@ -179,23 +96,23 @@ bool pad_dir_down(PadDir dir, bool priority) {
     }
 }
 
-bool pad_dir_pressed(PadDir dir, bool priority) {
+bool Pad_DirPressed(PadDir dir, bool priority) {
     switch (dir) {
     case PadDir_Up: {
-        return pad_button_pressed(mkb_PAD_BUTTON_UP, priority) ||
-               pad_analog_pressed(mkb_PAI_LSTICK_UP, priority);
+        return Pad_ButtonPressed(mkb_PAD_BUTTON_UP, priority) ||
+               Pad_AnalogPressed(mkb_PAI_LSTICK_UP, priority);
     }
     case PadDir_Left: {
-        return pad_button_pressed(mkb_PAD_BUTTON_LEFT, priority) ||
-               pad_analog_pressed(mkb_PAI_LSTICK_LEFT, priority);
+        return Pad_ButtonPressed(mkb_PAD_BUTTON_LEFT, priority) ||
+               Pad_AnalogPressed(mkb_PAI_LSTICK_LEFT, priority);
     }
     case PadDir_Right: {
-        return pad_button_pressed(mkb_PAD_BUTTON_RIGHT, priority) ||
-               pad_analog_pressed(mkb_PAI_LSTICK_RIGHT, priority);
+        return Pad_ButtonPressed(mkb_PAD_BUTTON_RIGHT, priority) ||
+               Pad_AnalogPressed(mkb_PAI_LSTICK_RIGHT, priority);
     }
     case PadDir_Down: {
-        return pad_button_pressed(mkb_PAD_BUTTON_DOWN, priority) ||
-               pad_analog_pressed(mkb_PAI_LSTICK_DOWN, priority);
+        return Pad_ButtonPressed(mkb_PAD_BUTTON_DOWN, priority) ||
+               Pad_AnalogPressed(mkb_PAI_LSTICK_DOWN, priority);
     }
     default: {
         return false;
@@ -203,31 +120,27 @@ bool pad_dir_pressed(PadDir dir, bool priority) {
     }
 }
 
-bool pad_dir_repeat(PadDir dir, bool priority) {
+bool Pad_DirRepeat(PadDir dir, bool priority) {
     if (s_exclusive_mode && !priority) return false;
 
     u32 t = s_dir_down_time[dir];
-    return pad_dir_pressed(dir, priority) ||
+    return Pad_DirPressed(dir, priority) ||
            (t >= DIR_REPEAT_WAIT && ((t - DIR_REPEAT_WAIT) % DIR_REPEAT_PERIOD) == 0);
 }
 
-void pad_reset_dir_repeat() {
+void Pad_ResetDirRepeat() {
     mkb_memset(s_dir_down_time, 0, sizeof(s_dir_down_time));
 }
 
-bool pad_konami_pressed() {
-    return s_konami_progress == 11;
-}
-
-void pad_set_exclusive_mode(bool enabled) {
+void Pad_SetExclusiveMode(bool enabled) {
     s_exclusive_mode_request = enabled;
 }
 
-bool pad_get_exclusive_mode() {
+bool Pad_GetExclusiveMode() {
     return s_exclusive_mode;
 }
 
-void pad_on_frame_start() {
+void Pad_OnFrameStart() {
     if (s_exclusive_mode) {
         // Restore previous controller inputs so new inputs can be computed correctly by the
         // game
@@ -243,7 +156,7 @@ void pad_on_frame_start() {
 
 static void update_dir_times() {
     for (u32 dir = 0; dir < 8; dir++) {
-        if (pad_dir_down(dir, true)) {
+        if (Pad_DirDown(dir, true)) {
             s_dir_down_time[dir]++;
             if (s_dir_down_time[dir] == 120) {
                 s_dir_down_time[dir] = 120 - DIR_REPEAT_PERIOD;
@@ -254,7 +167,7 @@ static void update_dir_times() {
     }
 }
 
-void pad_tick() {
+void Pad_Tick() {
     s_merged_analog_inputs = mkb_merged_analog_inputs;
     s_merged_digital_inputs = mkb_merged_digital_inputs;
     mkb_memcpy(s_pad_status_groups, mkb_pad_status_groups, sizeof(mkb_pad_status_groups));
@@ -268,6 +181,5 @@ void pad_tick() {
         mkb_memset(mkb_analog_inputs, 0, sizeof(mkb_analog_inputs));
     }
 
-    update_konami();
     update_dir_times();
 }

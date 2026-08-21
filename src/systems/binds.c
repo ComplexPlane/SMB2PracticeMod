@@ -28,7 +28,7 @@ static u8 s_num_prev_held = 0;
 
 static void get_button_values() {
     for (u8 i = 0; i < LEN(s_pressed); i++) {
-        s_pressed[i] = pad_button_down(INPUT_LIST[i], true);
+        s_pressed[i] = Pad_ButtonDown(INPUT_LIST[i], true);
     }
 }
 
@@ -139,9 +139,9 @@ bool binds_bind_pressed(u8 bind_id, bool priority) {
     mkb_PadDigitalInput input2 = INPUT_LIST[get_input2(bind_id)];
 
     if (input1 == input2) {
-        return pad_button_pressed(input1, priority);
+        return Pad_ButtonPressed(input1, priority);
     } else {
-        return pad_button_chord_pressed(input1, input2, priority);
+        return Pad_ButtonChordPressed(input1, input2, priority);
     }
 }
 
@@ -151,8 +151,8 @@ bool binds_bind_down(u8 bind_id, bool priority) {
     mkb_PadDigitalInput input2 = INPUT_LIST[get_input2(bind_id)];
 
     if (input1 == input2) {
-        return pad_button_down(input1, priority);
+        return Pad_ButtonDown(input1, priority);
     } else {
-        return pad_button_down(input1, priority) && pad_button_down(input2, priority);
+        return Pad_ButtonDown(input1, priority) && Pad_ButtonDown(input2, priority);
     }
 }

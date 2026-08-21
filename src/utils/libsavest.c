@@ -40,7 +40,7 @@ TRAMP(s_set_minimap_mode_tramp, mkb_set_minimap_mode, set_minimap_mode);
 TRAMP(s_soundreq_tramp, mkb_call_SoundReqID_arg_0, soundreq);
 
 static void set_minimap_mode(mkb_MinimapMode mode) {
-    if (!savest_is_enabled() ||
+    if (!SS_IsEnabled() ||
         !(mkb_main_mode == mkb_MD_GAME && mkb_main_game_mode == mkb_PRACTICE_MODE &&
           mode == mkb_MINIMAP_SHRINK)) {
         s_set_minimap_mode_tramp.chain(mode);
@@ -53,7 +53,7 @@ static void soundreq(u32 id) {
     }
 }
 
-void savest_init() {
+void SS_Init() {
     // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
     // This way the minimap is unaffected when loading savestates after goal/fallout
     HOOK_TRAMP(s_set_minimap_mode_tramp);
@@ -62,7 +62,7 @@ void savest_init() {
     HOOK_TRAMP(s_soundreq_tramp);
 }
 
-bool savest_was_state_loaded_this_frame() {
+bool SS_WasStateLoadedThisFrame() {
     return s_state_loaded_this_frame;
 }
 
@@ -246,7 +246,7 @@ static bool handle_load_state_from_nonplay_submode(SaveState *s) {
     return true;
 }
 
-SS_SaveResult savest_save(u32 slot) {
+SS_SaveResult SS_Save(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState *state = &s_states[slot];
@@ -278,7 +278,7 @@ SS_SaveResult savest_save(u32 slot) {
         return SS_SaveResult_ErrViewStage;
     }
 
-    savest_clear(slot);
+    SS_Clear(slot);
     pass_over_regions(&state->store, store_compute_size);
     state->store.buf = heap_alloc(state->store.size);
     if (state->store.buf == nullptr) {
@@ -294,7 +294,7 @@ SS_SaveResult savest_save(u32 slot) {
     return SS_SaveResult_Ok;
 }
 
-SS_LoadResult savest_load(u32 slot) {
+SS_LoadResult SS_Load(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState *state = &s_states[slot];
@@ -349,7 +349,7 @@ SS_LoadResult savest_load(u32 slot) {
     return SS_LoadResult_Ok;
 }
 
-void savest_clear(u32 slot) {
+void SS_Clear(u32 slot) {
     ASSERT(slot < LEN(s_states));
 
     SaveState *state = &s_states[slot];
@@ -359,20 +359,20 @@ void savest_clear(u32 slot) {
     *state = (SaveState){};
 }
 
-bool savest_is_empty(u32 slot) {
+bool SS_IsEmpty(u32 slot) {
     ASSERT(slot < LEN(s_states));
     return !(s_states[slot].flags & SS_Flag_IsPresent);
 }
 
-void savest_tick() {
+void SS_Tick() {
     s_state_loaded_this_frame = false;
     for (u32 i = 0; i < LEN(s_states); i++) {
         if (s_states[i].flags & SS_Flag_ReloadState) {
-            savest_load(i);  // Ignore result, spooky!
+            SS_Load(i);  // Ignore result, spooky!
         }
     }
 }
 
-bool savest_is_enabled() {
+bool SS_IsEnabled() {
     return pref_get(Pref_Savestates) && !pref_get(Pref_Freecam);
 }

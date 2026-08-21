@@ -162,7 +162,7 @@ void storytimer_tick() {
     // this code is used to halt the timer once the screen becomes completely white when stage
     // selecting out of a level
     if (mkb_pausemenu_type == mkb_PMT_STORY_PLAY && mkb_g_current_focused_pause_menu_entry == 4 &&
-        pad_button_pressed(mkb_PAD_BUTTON_A, false) == true && s_is_postgoal == true) {
+        Pad_ButtonPressed(mkb_PAD_BUTTON_A, false) == true && s_is_postgoal == true) {
         // stage select is on line 4 of the pause menu (top line is line 0)
         s_start_STAGE_FADE_OUT_TIMEr = true;
     } else if (mkb_g_storymode_stageselect_state == mkb_STAGE_SELECT_INTRO_SEQUENCE) {
@@ -503,7 +503,7 @@ void storytimer_disp() {
 
         */
     }
-    if (pad_button_pressed(mkb_PAD_BUTTON_A, false) == true) {
+    if (Pad_ButtonPressed(mkb_PAD_BUTTON_A, false) == true) {
         s_dummy_2 = 1;
     } else {
         s_dummy_2 = 0;
