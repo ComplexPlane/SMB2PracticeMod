@@ -28,15 +28,15 @@ bool freecam_enabled() {
         mkb_sub_mode != mkb_SMD_GAME_SCENARIO_INIT && mkb_sub_mode != mkb_SMD_GAME_SCENARIO_MAIN &&
         mkb_sub_mode != mkb_SMD_GAME_SCENARIO_RETURN && mkb_sub_mode != mkb_SMD_ADV_TITLE_INIT &&
         mkb_sub_mode != mkb_SMD_ADV_TITLE_MAIN && mkb_sub_mode != mkb_SMD_ADV_TITLE_REINIT;
-    return pref_get(Pref_Freecam) && correct_main_mode && correct_sub_mode;
+    return Pref_Get(Pref_Freecam) && correct_main_mode && correct_sub_mode;
 }
 
 bool freecam_should_freeze_timer() {
-    return freecam_enabled() && pref_get(Pref_FreecamFreezeTimer);
+    return freecam_enabled() && Pref_Get(Pref_FreecamFreezeTimer);
 }
 
 bool freecam_should_hide_hud() {
-    return freecam_enabled() && pref_get(Pref_FreecamHideHud);
+    return freecam_enabled() && Pref_Get(Pref_FreecamHideHud);
 }
 
 static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
@@ -54,12 +54,12 @@ static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
     bool fast = Pad_ButtonDown(mkb_PAD_BUTTON_Y, false);
     bool slow = Pad_ButtonDown(mkb_PAD_BUTTON_X, false);
 
-    float speed_mult = fast ? pref_get(Pref_FreecamSpeedMult) : 1;
+    float speed_mult = fast ? Pref_Get(Pref_FreecamSpeedMult) : 1;
     speed_mult = slow ? 0.15 : speed_mult;
 
     // New rotation
-    bool invert_yaw = pref_get(Pref_FreecamInvertYaw);
-    bool invert_pitch = pref_get(Pref_FreecamInvertPitch);
+    bool invert_yaw = Pref_Get(Pref_FreecamInvertYaw);
+    bool invert_pitch = Pref_Get(Pref_FreecamInvertPitch);
     s_rot.x -= substick_y * 300 * (invert_pitch ? -1 : 1);
     s_rot.y += substick_x * 490 * (invert_yaw ? -1 : 1);
     s_rot.z = 0;
@@ -125,9 +125,9 @@ void freecam_tick() {
     }
 
     // Optionally toggle freecam with Z
-    if (binds_bind_pressed(pref_get(Pref_FreecamToggleBind), false)) {
-        pref_set(Pref_Freecam, !pref_get(Pref_Freecam));
-        pref_save();
+    if (Binds_Pressed(Pref_Get(Pref_FreecamToggleBind), false)) {
+        Pref_Set(Pref_Freecam, !Pref_Get(Pref_Freecam));
+        Prev_Save();
     }
 
     s_flags &= ~Flags_EnabledThisTick;
@@ -135,7 +135,7 @@ void freecam_tick() {
         s_flags |= Flags_EnabledThisTick;
 
         // Adjust turbo speed multiplier
-        int speed_mult = pref_get(Pref_FreecamSpeedMult);
+        int speed_mult = Pref_Get(Pref_FreecamSpeedMult);
         bool input_made = false;
         if (Pad_ButtonRepeat(mkb_PAD_BUTTON_DOWN, false)) {
             speed_mult--;
@@ -147,9 +147,9 @@ void freecam_tick() {
         }
         speed_mult = CLAMP(speed_mult, freecam_TURBO_SPEED_MIN, freecam_TURBO_SPEED_MAX);
         if (input_made) {
-            draw_notify(COLOR_WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
-            pref_set(Pref_FreecamSpeedMult, speed_mult);
-            pref_save();
+            Draw_Notify(COLOR_WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
+            Pref_Set(Pref_FreecamSpeedMult, speed_mult);
+            Prev_Save();
         }
     }
 }

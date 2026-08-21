@@ -4,7 +4,7 @@
 #include "utils/macro_utils.h"
 
 void dpad_on_PADRead(mkb_PADStatus *statuses) {
-    if (!pref_get(Pref_DpadControls)) return;
+    if (!Pref_Get(Pref_DpadControls)) return;
 
     for (u32 i = 0; i < 4; i++) {
         mkb_PADStatus *status = &statuses[i];

@@ -149,8 +149,8 @@ void inputdisp_on_PADRead(mkb_PADStatus *statuses) {
 
 void inputdisp_tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
-    set_sprite_visible(!pref_get(Pref_InputDisp) || (pref_get(Pref_InputDispCenterLocation) &&
-                                                     !pref_get(Pref_InputDispRawStickInputs)));
+    set_sprite_visible(!Pref_Get(Pref_InputDisp) || (Pref_Get(Pref_InputDispCenterLocation) &&
+                                                     !Pref_Get(Pref_InputDispRawStickInputs)));
 }
 
 static bool get_notch_pos(const MergedStickInputs *stick_inputs, Vec2d *out_pos) {
@@ -198,21 +198,21 @@ static const GXColor s_color_map[] = {
 };
 
 static GXColor get_color() {
-    InputDispColorType color_pref = (InputDispColorType)(pref_get(Pref_InputDispColorType));
+    InputDispColorType color_pref = (InputDispColorType)(Pref_Get(Pref_InputDispColorType));
     switch (color_pref) {
     case InputDispColorType_Default: {
-        return s_color_map[pref_get(Pref_InputDispColor)];
+        return s_color_map[Pref_Get(Pref_InputDispColor)];
     }
     case InputDispColorType_RGB: {
         return (GXColor){
-            .r = pref_get(Pref_InputDispRed),
-            .g = pref_get(Pref_InputDispGreen),
-            .b = pref_get(Pref_InputDispBlue),
+            .r = Pref_Get(Pref_InputDispRed),
+            .g = Pref_Get(Pref_InputDispGreen),
+            .b = Pref_Get(Pref_InputDispBlue),
             .a = 0xff,
         };
     }
     case InputDispColorType_Rainbow: {
-        return draw_num_to_rainbow(s_rainbow);
+        return Draw_NumToRainbow(s_rainbow);
     }
     case InputDispColorType_MatchBall: {
         GXColor current = ballcolor_get_current_color();
@@ -243,35 +243,35 @@ static void draw_stick(const MergedStickInputs *stick_inputs, const Vec2d *cente
 
 static void draw_buttons(const Vec2d *center, f32 scale) {
     if (Pad_ButtonDown(mkb_PAD_BUTTON_START, false)) {
-        draw_debug_text(center->x + 65 * scale, center->y - 45 * scale, COLOR_WHITE, "Start");
+        Draw_DebugText(center->x + 65 * scale, center->y - 45 * scale, COLOR_WHITE, "Start");
     }
     if (Pad_ButtonDown(mkb_PAD_BUTTON_A, false)) {
-        draw_debug_text(center->x + 65 * scale, center->y - 25 * scale, COLOR_GREEN, "A");
+        Draw_DebugText(center->x + 65 * scale, center->y - 25 * scale, COLOR_GREEN, "A");
     }
     if (Pad_ButtonDown(mkb_PAD_BUTTON_B, false)) {
-        draw_debug_text(center->x + 90 * scale, center->y - 25 * scale, COLOR_RED, "B");
+        Draw_DebugText(center->x + 90 * scale, center->y - 25 * scale, COLOR_RED, "B");
     }
     if (Pad_ButtonDown(mkb_PAD_BUTTON_X, false)) {
-        draw_debug_text(center->x + 65 * scale, center->y - 05 * scale, COLOR_WHITE, "X");
+        Draw_DebugText(center->x + 65 * scale, center->y - 05 * scale, COLOR_WHITE, "X");
     }
     if (Pad_ButtonDown(mkb_PAD_BUTTON_Y, false)) {
-        draw_debug_text(center->x + 90 * scale, center->y - 05 * scale, COLOR_WHITE, "Y");
+        Draw_DebugText(center->x + 90 * scale, center->y - 05 * scale, COLOR_WHITE, "Y");
     }
     if (Pad_ButtonDown(mkb_PAD_TRIGGER_L, false)) {
-        draw_debug_text(center->x + 65 * scale, center->y + 15 * scale, COLOR_WHITE, "L");
+        Draw_DebugText(center->x + 65 * scale, center->y + 15 * scale, COLOR_WHITE, "L");
     }
     if (Pad_ButtonDown(mkb_PAD_TRIGGER_R, false)) {
-        draw_debug_text(center->x + 90 * scale, center->y + 15 * scale, COLOR_WHITE, "R");
+        Draw_DebugText(center->x + 90 * scale, center->y + 15 * scale, COLOR_WHITE, "R");
     }
     if (Pad_ButtonDown(mkb_PAD_TRIGGER_Z, false)) {
-        draw_debug_text(center->x + 115 * scale, center->y + 15 * scale, COLOR_BLUE, "Z");
+        Draw_DebugText(center->x + 115 * scale, center->y + 15 * scale, COLOR_BLUE, "Z");
     }
 }
 
 static void draw_notch_indicators(const MergedStickInputs *stick_inputs,
                                   const Vec2d *center,
                                   f32 scale) {
-    if (!pref_get(Pref_InputDispNotchIndicators)) return;
+    if (!Pref_Get(Pref_InputDispNotchIndicators)) return;
 
     Vec2d notch_norm = {0};
     if (get_notch_pos(stick_inputs, &notch_norm)) {
@@ -284,17 +284,17 @@ static void draw_notch_indicators(const MergedStickInputs *stick_inputs,
 }
 
 static void draw_raw_stick_inputs(const MergedStickInputs *stick_inputs) {
-    if (!pref_get(Pref_InputDispRawStickInputs)) return;
+    if (!Pref_Get(Pref_InputDispRawStickInputs)) return;
 
     Vec2d center = {
-        .x = pref_get(Pref_InputDispCenterLocation) ? 540.f : 390.f,
+        .x = Pref_Get(Pref_InputDispCenterLocation) ? 540.f : 390.f,
         .y = 28.f,
     };
 
-    draw_debug_text(center.x, center.y + 0 * 14, COLOR_WHITE, "rX: %d", stick_inputs->rawX);
-    draw_debug_text(center.x, center.y + 1 * 14, COLOR_WHITE, "rY: %d", stick_inputs->rawY);
-    draw_debug_text(center.x, center.y + 2 * 14, COLOR_WHITE, "gX: %d", stick_inputs->gameX);
-    draw_debug_text(center.x, center.y + 3 * 14, COLOR_WHITE, "gY: %d", stick_inputs->gameY);
+    Draw_DebugText(center.x, center.y + 0 * 14, COLOR_WHITE, "rX: %d", stick_inputs->rawX);
+    Draw_DebugText(center.x, center.y + 1 * 14, COLOR_WHITE, "rY: %d", stick_inputs->rawY);
+    Draw_DebugText(center.x, center.y + 2 * 14, COLOR_WHITE, "gX: %d", stick_inputs->gameX);
+    Draw_DebugText(center.x, center.y + 3 * 14, COLOR_WHITE, "gY: %d", stick_inputs->gameY);
 }
 
 void inputdisp_disp() {
@@ -306,9 +306,9 @@ void inputdisp_disp() {
         mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_LOAD_MAIN ||
         mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_INIT || mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_MAIN;
 
-    if (!pref_get(Pref_InputDisp) || freecam_should_hide_hud() || in_replay) return;
+    if (!Pref_Get(Pref_InputDisp) || freecam_should_hide_hud() || in_replay) return;
 
-    Vec2d center = pref_get(Pref_InputDispCenterLocation) ? (Vec2d){430, 60} : (Vec2d){534, 60};
+    Vec2d center = Pref_Get(Pref_InputDispCenterLocation) ? (Vec2d){430, 60} : (Vec2d){534, 60};
     f32 scale = 0.6f;
 
     MergedStickInputs stick_inputs;

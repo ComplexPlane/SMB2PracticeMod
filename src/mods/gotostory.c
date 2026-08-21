@@ -10,7 +10,7 @@ typedef enum {
 
 static State s_state;
 
-void gotostory_load_storymode() {
+void GoToStory_LoadStoryMode() {
     s_state = mkb_main_mode == mkb_MD_SEL ? State_LoadStoryReq : State_LoadMenuReq;
 }
 
@@ -21,7 +21,7 @@ static void reset_screenfade_state() {
     mkb_g_screenfading2 = 0x0000001b;
 }
 
-void gotostory_tick() {
+void GoToStory_Tick() {
     if (s_state == State_LoadMenuReq) {
         mkb_g_some_other_flags &= ~mkb_OF_GAME_PAUSED;
         mkb_main_mode_request = mkb_MD_SEL;

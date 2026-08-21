@@ -1,54 +1,77 @@
 #pragma once
 
+#include "utils/base.h"
+
 /*
- * Macros for more readable PPC instructions.
+ * Static inline functions and enums for more readable PPC instructions.
  * Credits to CraftedCart for writing these
  */
 
-#define PPC_INSTR_B(target) (0x48000000 + (((u32)(target)) & 0x3FFFFFF))
-#define PPC_INSTR_BA(target) (0x48000002 + (((u32)(target)) & 0x3FFFFFF))
-#define PPC_INSTR_BL(target) (0x48000001 + (((u32)(target)) & 0x3FFFFFF))
-#define PPC_INSTR_BLA(target) (0x48000003 + (((u32)(target)) & 0x3FFFFFF))
-#define PPC_INSTR_BLR() (0x4E800020)
+typedef enum {
+    PPC_R0 = 0,
+    PPC_R1 = 1,
+    PPC_R2 = 2,
+    PPC_R3 = 3,
+    PPC_R4 = 4,
+    PPC_R5 = 5,
+    PPC_R6 = 6,
+    PPC_R7 = 7,
+    PPC_R8 = 8,
+    PPC_R9 = 9,
+    PPC_R10 = 10,
+    PPC_R11 = 11,
+    PPC_R12 = 12,
+    PPC_R13 = 13,
+    PPC_R14 = 14,
+    PPC_R15 = 15,
+    PPC_R16 = 16,
+    PPC_R17 = 17,
+    PPC_R18 = 18,
+    PPC_R19 = 19,
+    PPC_R20 = 20,
+    PPC_R21 = 21,
+    PPC_R22 = 22,
+    PPC_R23 = 23,
+    PPC_R24 = 24,
+    PPC_R25 = 25,
+    PPC_R26 = 26,
+    PPC_R27 = 27,
+    PPC_R28 = 28,
+    PPC_R29 = 29,
+    PPC_R30 = 30,
+    PPC_R31 = 31,
+} PPC_Register;
 
-#define PPC_INSTR_LI(dest_register, value) \
-    (0x38000000 + (((u32)(dest_register)) << 21) + ((u16)value))
-#define PPC_INSTR_LIS(dest_register, value) \
-    (0x3C000000 + (((u32)(dest_register)) << 21) + ((u16)value))
+static inline u32 PPC_InstrB(u32 target) {
+    return 0x48000000 + (target & 0x3FFFFFF);
+}
 
-#define PPC_INSTR_NOP() (0x60000000)
+static inline u32 PPC_InstrBA(u32 target) {
+    return 0x48000002 + (target & 0x3FFFFFF);
+}
+
+static inline u32 PPC_InstrBL(u32 target) {
+    return 0x48000001 + (target & 0x3FFFFFF);
+}
+
+static inline u32 PPC_InstrBLA(u32 target) {
+    return 0x48000003 + (target & 0x3FFFFFF);
+}
+
+static inline u32 PPC_InstrBLR(void) {
+    return 0x4E800020;
+}
+
+static inline u32 PPC_InstrLI(PPC_Register dest_register, u16 value) {
+    return 0x38000000 + (((u32)dest_register) << 21) + value;
+}
+
+static inline u32 PPC_InstrLIS(PPC_Register dest_register, u16 value) {
+    return 0x3C000000 + (((u32)dest_register) << 21) + value;
+}
+
+static inline u32 PPC_InstrNOP(void) {
+    return 0x60000000;
+}
 
 // TODO: PPC_INSR_CMPWI
-
-#define PPC_R0 0
-#define PPC_R1 1
-#define PPC_R2 2
-#define PPC_R3 3
-#define PPC_R4 4
-#define PPC_R5 5
-#define PPC_R6 6
-#define PPC_R7 7
-#define PPC_R8 8
-#define PPC_R9 9
-#define PPC_R10 10
-#define PPC_R11 11
-#define PPC_R12 12
-#define PPC_R13 13
-#define PPC_R14 14
-#define PPC_R15 15
-#define PPC_R16 16
-#define PPC_R17 17
-#define PPC_R18 18
-#define PPC_R19 19
-#define PPC_R20 20
-#define PPC_R21 21
-#define PPC_R22 22
-#define PPC_R23 23
-#define PPC_R24 24
-#define PPC_R25 25
-#define PPC_R26 26
-#define PPC_R27 27
-#define PPC_R28 28
-#define PPC_R29 29
-#define PPC_R30 30
-#define PPC_R31 31

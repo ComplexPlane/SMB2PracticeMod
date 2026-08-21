@@ -127,12 +127,12 @@ static void handle_widget_bind() {
     case WidgetType_Checkbox: {
         CheckboxWidget *checkbox = &selected->checkbox;
         if (a_pressed || y_pressed) {
-            pref_set(checkbox->pref, !pref_get(checkbox->pref));
-            pref_save();
+            Pref_Set(checkbox->pref, !Pref_Get(checkbox->pref));
+            Prev_Save();
         }
         if (x_pressed) {
-            pref_set(checkbox->pref, pref_get_default(checkbox->pref));
-            pref_save();
+            Pref_Set(checkbox->pref, Pref_GetDefault(checkbox->pref));
+            Prev_Save();
         }
         break;
     }
@@ -152,19 +152,19 @@ static void handle_widget_bind() {
     case WidgetType_Choose: {
         ChooseWidget *choose = &selected->choose;
         if (a_pressed) {
-            u8 new_value = ((u32)(pref_get(choose->pref)) + 1) % choose->num_choices;
-            pref_set(choose->pref, new_value);
-            pref_save();
+            u8 new_value = ((u32)(Pref_Get(choose->pref)) + 1) % choose->num_choices;
+            Pref_Set(choose->pref, new_value);
+            Prev_Save();
         }
         if (y_pressed) {
             u8 new_value =
-                ((u32)(pref_get(choose->pref)) + choose->num_choices - 1) % choose->num_choices;
-            pref_set(choose->pref, new_value);
-            pref_save();
+                ((u32)(Pref_Get(choose->pref)) + choose->num_choices - 1) % choose->num_choices;
+            Pref_Set(choose->pref, new_value);
+            Prev_Save();
         }
         if (x_pressed) {
-            pref_set(choose->pref, pref_get_default(choose->pref));
-            pref_save();
+            Pref_Set(choose->pref, Pref_GetDefault(choose->pref));
+            Prev_Save();
         }
         break;
     }
@@ -190,13 +190,13 @@ static void handle_widget_bind() {
         u8 min, max;
         if (selected->type == WidgetType_IntEdit) {
             IntEditWidget *int_edit = &selected->int_edit;
-            next = pref_get(int_edit->pref);
+            next = Pref_Get(int_edit->pref);
             edit_pref = int_edit->pref;
             min = int_edit->min;
             max = int_edit->max;
         } else {
             FloatEditWidget *float_edit = &selected->float_edit;
-            next = pref_get(float_edit->pref);
+            next = Pref_Get(float_edit->pref);
             edit_pref = float_edit->pref;
             min = float_edit->min;
             max = float_edit->max;
@@ -209,7 +209,7 @@ static void handle_widget_bind() {
         }
 
         if (x_pressed) {
-            next = pref_get_default(edit_pref);
+            next = Pref_GetDefault(edit_pref);
         } else if (a_repeat && !Pad_ButtonDown(mkb_PAD_BUTTON_Y, true)) {
             s_edit_tick += 5;
             next += (s_edit_tick / 5);
@@ -218,9 +218,9 @@ static void handle_widget_bind() {
             next += (s_edit_tick / 5);
         }
         next = CLAMP(next, min, max);
-        if (next != pref_get(edit_pref)) {
-            pref_set(edit_pref, next);
-            pref_save();
+        if (next != Pref_Get(edit_pref)) {
+            Pref_Set(edit_pref, next);
+            Prev_Save();
         }
         break;
     }
@@ -230,13 +230,13 @@ static void handle_widget_bind() {
             s_binding = BindingState_Active;
         } else if (s_binding == BindingState_Active) {
             // set new bind
-            binds_EncodingType type = binds_get_encoding_type();
-            if (type == binds_EncodingType_Invalid ||
-                (type == binds_EncodingType_SinglePress && input_select->required_chord))
+            Binds_Encoding type = Binds_EncodingType();
+            if (type == Binds_Encoding_Invalid ||
+                (type == Binds_Encoding_SinglePress && input_select->required_chord))
                 return;
-            u8 value = binds_get_current_encoding();
-            pref_set(input_select->pref, value);
-            pref_save();
+            u8 value = Binds_GetCurrentEncoding();
+            Pref_Set(input_select->pref, value);
+            Prev_Save();
             s_binding = BindingState_Inactive;
         } else if (a_pressed) {
             // enter rebind mode
@@ -244,12 +244,12 @@ static void handle_widget_bind() {
         } else if (y_pressed) {
             // unbind
             if (!input_select->can_unbind) return;
-            pref_set(input_select->pref, 255);
-            pref_save();
+            Pref_Set(input_select->pref, 255);
+            Prev_Save();
         } else if (x_pressed) {
             // reset default bind
-            pref_set(input_select->pref, pref_get_default(input_select->pref));
-            pref_save();
+            Pref_Set(input_select->pref, Pref_GetDefault(input_select->pref));
+            Prev_Save();
         }
         break;
     }
@@ -267,7 +267,7 @@ void menu_impl_tick() {
 
     // TODO save settings on close
     // TODO save menu position as settings
-    bool toggle = binds_bind_pressed(pref_get(Pref_MenuBind), true);
+    bool toggle = Binds_Pressed(Pref_Get(Pref_MenuBind), true);
     if (toggle) {
         s_visible ^= toggle;
     } else if (Pad_ButtonPressed(mkb_PAD_BUTTON_B, true)) {
@@ -284,12 +284,12 @@ void menu_impl_tick() {
     if (!s_visible) {
         // Default binding is L+R, but this lets you know the current binding in case you forget
         // what you changed it to
-        u8 input = pref_get(Pref_MenuBind);
+        u8 input = Pref_Get(Pref_MenuBind);
         if (Pad_ButtonChordPressed(mkb_PAD_TRIGGER_L, mkb_PAD_TRIGGER_R, true) &&
             input != L_R_BIND) {
             char buf[25];
-            binds_get_bind_str(input, buf);
-            draw_notify(COLOR_RED, "Use %s to toggle menu", buf);
+            Binds_ToStr(input, buf);
+            Draw_Notify(COLOR_RED, "Use %s to toggle menu", buf);
         }
         return;
     }
@@ -337,7 +337,7 @@ static void draw_selectable_highlight(float y) {
     // draw_rect(MARGIN, new_y, SCREEN_WIDTH - MARGIN, (new_y + LINE_HEIGHT), {0, 0, 0, 0xFF});
 
     // Draw selection arrow
-    draw_debug_text(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
+    Draw_DebugText(MARGIN + PAD + 2, y, FOCUSED_COLOR, "\x1c");
 }
 
 static const s32 BLOCK_WIDTH = 150;
@@ -348,12 +348,12 @@ static const s32 HALF_SPACE = 12;
 
 static void draw_help_layout() {
     // draw seperator
-    draw_rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
+    Draw_Rect(MARGIN, SCREEN_HEIGHT - MARGIN - 34, SCREEN_WIDTH - MARGIN,
               SCREEN_HEIGHT - MARGIN - 30, COLOR_GRAY);
     // draw b: back
-    draw_debug_text(START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_LIGHT_RED, "B");
-    draw_debug_text(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-    draw_debug_text(BUTTON_START + 4 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Back");
+    Draw_DebugText(START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_LIGHT_RED, "B");
+    Draw_DebugText(BUTTON_START + 4 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+    Draw_DebugText(BUTTON_START + 4 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Back");
 }
 
 static void draw_help(const Widget *widget) {
@@ -361,69 +361,66 @@ static void draw_help(const Widget *widget) {
     switch (widget->type) {
     case WidgetType_Checkbox:
     case WidgetType_GetSetCheckbox: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Toggle");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                       "Toggle");
         break;
     }
     case WidgetType_Menu: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Open");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Open");
         break;
     }
     case WidgetType_Button: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Activate");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                       "Activate");
         break;
     }
     case WidgetType_Choose: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Next");
-        draw_debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
-        draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Previous");
-        draw_debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Reset");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Next");
+        Draw_DebugText(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
+        Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                       "Previous");
+        Draw_DebugText(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Reset");
         break;
     }
     case WidgetType_IntEdit:
     case WidgetType_FloatEdit: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Increase");
-        draw_debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
-        draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Decrease");
-        draw_debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Reset");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                       "Increase");
+        Draw_DebugText(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
+        Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                       "Decrease");
+        Draw_DebugText(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Reset");
         break;
     }
     case WidgetType_InputSelect: {
-        draw_debug_text(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Bind");
+        Draw_DebugText(START, Y_HEIGHT, COLOR_LIGHT_GREEN, "A");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 1 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Bind");
         if (widget->input_select.can_unbind) {
-            draw_debug_text(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
-            draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-            draw_debug_text(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                            "Unbind");
+            Draw_DebugText(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
+            Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+            Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                           "Unbind");
         }
-        draw_debug_text(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-        draw_debug_text(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
-                        "Reset");
+        Draw_DebugText(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
+        Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE, "Reset");
         break;
     }
     default: {
@@ -448,17 +445,17 @@ static void draw_widget(Widget *widget,
         break;
     }
     case WidgetType_Header: {
-        draw_debug_text(MARGIN + PAD, *y, COLOR_ORANGE, widget->header.label);
+        Draw_DebugText(MARGIN + PAD, *y, COLOR_ORANGE, widget->header.label);
         *y += LINE_HEIGHT;
         break;
     }
     case WidgetType_Text: {
-        draw_debug_text(MARGIN + PAD, *y, COLOR_WHITE, widget->text.label);
+        Draw_DebugText(MARGIN + PAD, *y, COLOR_WHITE, widget->text.label);
         *y += LINE_HEIGHT;
         break;
     }
     case WidgetType_ColoredText: {
-        draw_debug_text(MARGIN + PAD, *y, widget->colored_text.color, widget->colored_text.label);
+        Draw_DebugText(MARGIN + PAD, *y, widget->colored_text.color, widget->colored_text.label);
         *y += LINE_HEIGHT;
         break;
     }
@@ -468,7 +465,7 @@ static void draw_widget(Widget *widget,
         bool value = false;
         if (widget->type == WidgetType_Checkbox) {
             label = widget->checkbox.label;
-            value = pref_get(widget->checkbox.pref);
+            value = Pref_Get(widget->checkbox.pref);
         } else {
             label = widget->get_set_checkbox.label;
             value = widget->get_set_checkbox.get();
@@ -477,12 +474,12 @@ static void draw_widget(Widget *widget,
         if (selected_idx == *selectable_idx) {
             draw_selectable_highlight(*y);
         }
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        label);
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                        "                         %s", value ? "On" : "Off");
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       label);
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                       "                         %s", value ? "On" : "Off");
 
         *y += LINE_HEIGHT;
         (*selectable_idx)++;
@@ -496,14 +493,14 @@ static void draw_widget(Widget *widget,
         if (selected_idx == *selectable_idx) {
             draw_selectable_highlight(*y);
         }
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        widget->menu.label);
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       widget->menu.label);
 
         // Draw "..." with dots closer together
         for (s32 i = 0; i < 3; i++) {
-            draw_debug_text(MARGIN + PAD + 25 * DRAW_DEBUG_CHAR_WIDTH + i * 6, *y,
-                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, ".");
+            Draw_DebugText(MARGIN + PAD + 25 * DRAW_DEBUG_CHAR_WIDTH + i * 6, *y,
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, ".");
         }
 
         (*selectable_idx)++;
@@ -511,9 +508,9 @@ static void draw_widget(Widget *widget,
         break;
     }
     case WidgetType_FloatView: {
-        draw_debug_text(MARGIN + PAD, *y, COLOR_WHITE, "%s", widget->float_view.label);
-        draw_debug_text(MARGIN + PAD, *y, COLOR_GREEN, "                         %.3Ef",
-                        widget->float_view.get());
+        Draw_DebugText(MARGIN + PAD, *y, COLOR_WHITE, "%s", widget->float_view.label);
+        Draw_DebugText(MARGIN + PAD, *y, COLOR_GREEN, "                         %.3Ef",
+                       widget->float_view.get());
         *y += LINE_HEIGHT;
         break;
     }
@@ -521,13 +518,13 @@ static void draw_widget(Widget *widget,
         if (selected_idx == *selectable_idx) {
             draw_selectable_highlight(*y);
         }
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        widget->choose.label);
-        draw_debug_text(
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       widget->choose.label);
+        Draw_DebugText(
             MARGIN + PAD, *y, selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-            "                         (%d/%d) %s", pref_get(widget->choose.pref) + 1,
-            widget->choose.num_choices, widget->choose.choices[pref_get(widget->choose.pref)]);
+            "                         (%d/%d) %s", Pref_Get(widget->choose.pref) + 1,
+            widget->choose.num_choices, widget->choose.choices[Pref_Get(widget->choose.pref)]);
 
         *y += LINE_HEIGHT;
         (*selectable_idx)++;
@@ -537,9 +534,9 @@ static void draw_widget(Widget *widget,
         if (selected_idx == *selectable_idx) {
             draw_selectable_highlight(*y);
         }
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        widget->button.label);
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       widget->button.label);
 
         *y += LINE_HEIGHT;
         (*selectable_idx)++;
@@ -549,12 +546,12 @@ static void draw_widget(Widget *widget,
         if (selected_idx == *selectable_idx) {
             draw_selectable_highlight(*y);
         }
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        widget->int_edit.label);
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                        "                         %d", pref_get(widget->int_edit.pref));
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       widget->int_edit.label);
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                       "                         %d", Pref_Get(widget->int_edit.pref));
 
         *y += LINE_HEIGHT;
         (*selectable_idx)++;
@@ -565,23 +562,23 @@ static void draw_widget(Widget *widget,
             draw_selectable_highlight(*y);
         }
 
-        float display = ((float)(pref_get(widget->float_edit.pref) + widget->float_edit.floor) /
+        float display = ((float)(Pref_Get(widget->float_edit.pref) + widget->float_edit.floor) /
                          (float)widget->float_edit.precision);
 
-        draw_debug_text(MARGIN + PAD, *y,
-                        selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
-                        widget->float_edit.label);
+        Draw_DebugText(MARGIN + PAD, *y,
+                       selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                       widget->float_edit.label);
         switch (widget->float_edit.decimals) {
         case 2: {
-            draw_debug_text(MARGIN + PAD, *y,
-                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                            "                         %0.2f", display);
+            Draw_DebugText(MARGIN + PAD, *y,
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                           "                         %0.2f", display);
             break;
         }
         default: {
-            draw_debug_text(MARGIN + PAD, *y,
-                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                            "                         %0.3f", display);
+            Draw_DebugText(MARGIN + PAD, *y,
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                           "                         %0.3f", display);
             break;
         }
         }
@@ -595,20 +592,20 @@ static void draw_widget(Widget *widget,
             draw_selectable_highlight(*y);
         }
         if (s_binding == BindingState_Active && selected_idx == *selectable_idx) {
-            draw_debug_text(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s", widget->input_select.label);
+            Draw_DebugText(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s", widget->input_select.label);
         } else {
-            draw_debug_text(MARGIN + PAD, *y,
-                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                            "  %s", widget->input_select.label);
+            Draw_DebugText(MARGIN + PAD, *y,
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->input_select.label);
         }
         GXColor bind_color = selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
         if (s_binding == BindingState_Active && selected_idx == *selectable_idx) {
             bind_color = COLOR_GOLD;
         }
-        u8 input = pref_get(widget->input_select.pref);
+        u8 input = Pref_Get(widget->input_select.pref);
         char buf[25];
-        binds_get_bind_str(input, buf);
-        draw_debug_text(MARGIN + PAD, *y, bind_color, "                         %s", buf);
+        Binds_ToStr(input, buf);
+        Draw_DebugText(MARGIN + PAD, *y, bind_color, "                         %s", buf);
 
         *y += LINE_HEIGHT;
         (*selectable_idx)++;
@@ -640,23 +637,23 @@ static void draw_breadcrumbs() {
     for (u32 i = 0; i <= s_menu_stack_ptr; i++) {
         MenuWidget *menu = s_menu_stack[i];
         GXColor grey = {0xE0, 0xE0, 0xE0, 0xFF};
-        draw_debug_text(x, MARGIN + PAD, i == s_menu_stack_ptr ? COLOR_PURPLE : grey, menu->label);
+        Draw_DebugText(x, MARGIN + PAD, i == s_menu_stack_ptr ? COLOR_PURPLE : grey, menu->label);
         x += mkb_strlen((char *)menu->label) * DRAW_DEBUG_CHAR_WIDTH;
         if (i != s_menu_stack_ptr) {
-            draw_debug_text(x, MARGIN + PAD, COLOR_BLUE, ARROW_STR);
+            Draw_DebugText(x, MARGIN + PAD, COLOR_BLUE, ARROW_STR);
             x += mkb_strlen((char *)ARROW_STR) * DRAW_DEBUG_CHAR_WIDTH;
         }
     }
 
     // Draw line under breadcrumbs. You can draw lines directly with GX but I couldn't get it
     // working
-    draw_rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, COLOR_GRAY);
+    Draw_Rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, COLOR_GRAY);
 }
 
 void menu_impl_disp() {
     if (!s_visible) return;
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
-    draw_rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
+    Draw_Rect(MARGIN, MARGIN, SCREEN_WIDTH - MARGIN, SCREEN_HEIGHT - MARGIN,
               (GXColor){0x00, 0x00, 0x00, 0xe0});
     draw_breadcrumbs();
     draw_menu_widgets(menu);

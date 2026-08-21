@@ -346,7 +346,7 @@ void storytimer_disp() {
     }
 
     // move the positions of the fullgame and segment timers if the death counter is on
-    if (pref_get(Pref_ShowDeathCounter) == true) {
+    if (Pref_Get(Pref_ShowDeathCounter) == true) {
         s_fullgame_timer_location_y = 3;
     } else {
         s_fullgame_timer_location_y = 2;
@@ -355,15 +355,15 @@ void storytimer_disp() {
     // if the fullgame timer and death counter is off but the segment timer is on, move the segment
     // timer to the top line; if either the fullgame timer or death counter are on but not both are
     // on, move it to the 2nd line, if all 3 are enabled, put it on the 3rd line
-    if (s_display_story_timer == false && pref_get(Pref_ShowDeathCounter) == false) {
+    if (s_display_story_timer == false && Pref_Get(Pref_ShowDeathCounter) == false) {
         s_segment_timer_location_y = 2;
-    } else if (s_display_story_timer == false || pref_get(Pref_ShowDeathCounter) == false) {
+    } else if (s_display_story_timer == false || Pref_Get(Pref_ShowDeathCounter) == false) {
         s_segment_timer_location_y = 3;
     } else {
         s_segment_timer_location_y = 4;
     }
 
-    switch ((TimerOptions)(pref_get(Pref_FullgameTimerOptions))) {
+    switch ((TimerOptions)(Pref_Get(Pref_FullgameTimerOptions))) {
     case TimerOptions_AlwaysShow:
         s_display_story_timer = true;
         break;
@@ -392,7 +392,7 @@ void storytimer_disp() {
                              false, COLOR_WHITE);
     }
 
-    switch ((TimerOptions)(pref_get(Pref_SegmentTimerOptions))) {
+    switch ((TimerOptions)(Pref_Get(Pref_SegmentTimerOptions))) {
     case TimerOptions_AlwaysShow:
         for (s32 k = 1; k < 11; k++) {
             if (s_is_on_world[k] == true && s_is_run_complete == false) {
@@ -420,7 +420,7 @@ void storytimer_disp() {
 
     // if the segment timer is enabled in any capacity, show all 10 split times + iw times after the
     // tape is broken on the last stage
-    if ((TimerOptions)(pref_get(Pref_SegmentTimerOptions)) != TimerOptions_DontShow) {
+    if ((TimerOptions)(Pref_Get(Pref_SegmentTimerOptions)) != TimerOptions_DontShow) {
         if (s_is_run_complete == true) {
             // I'm so sorry :(
             // I don't know how to get the text to show "Wk" where k ranges in a for loop
@@ -460,12 +460,12 @@ void storytimer_disp() {
 
     // show warning on the name entry screen if no timers are on (if the toggle for the warning is
     // turned on)
-    if (pref_get(Pref_StoryTimerWarning) == true &&
-        (TimerOptions)(pref_get(Pref_FullgameTimerOptions)) == TimerOptions_DontShow &&
-        (TimerOptions)(pref_get(Pref_SegmentTimerOptions)) == TimerOptions_DontShow &&
+    if (Pref_Get(Pref_StoryTimerWarning) == true &&
+        (TimerOptions)(Pref_Get(Pref_FullgameTimerOptions)) == TimerOptions_DontShow &&
+        (TimerOptions)(Pref_Get(Pref_SegmentTimerOptions)) == TimerOptions_DontShow &&
         mkb_scen_info.mode == 21) {
         // mkb_scen_info.mode 21 is the name entry screen, not sure if it has a name in ghidra
-        draw_debug_text(460, 425, COLOR_RED, "Timer Not On!");
+        Draw_DebugText(460, 425, COLOR_RED, "Timer Not On!");
     }
 
     // debugging
@@ -515,7 +515,7 @@ void storytimer_disp() {
     }
     */
 
-    if ((TimerOptions)(pref_get(Pref_FullgameTimerOptions)) == TimerOptions_AlwaysShow) {
+    if ((TimerOptions)(Pref_Get(Pref_FullgameTimerOptions)) == TimerOptions_AlwaysShow) {
         timerdisp_draw_timer(380, 0, 44, "dbg:", (s32)(60 * s_completed_stages), 1, false, true,
                              COLOR_WHITE);
         timerdisp_draw_timer(380, 1, 44, "dbg:", (s32)(60 * mkb_get_world_unbeaten_stage_count(0)),

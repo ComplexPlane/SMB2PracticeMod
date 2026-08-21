@@ -2,15 +2,15 @@
 
 #include "utils/base.h"
 
-typedef enum binds_EncodingType {
-    binds_EncodingType_SinglePress,
-    binds_EncodingType_ChordPress,
-    binds_EncodingType_Invalid,
-} binds_EncodingType;
-bool binds_bind_pressed(u8 bind_id, bool priority);
-bool binds_bind_down(u8 bind_id, bool priority);
-binds_EncodingType binds_get_encoding_type();
-u8 binds_get_current_encoding();
-void binds_get_bind_str(u8 bind_id, char *buf);
-void binds_init();
-void binds_tick();
+typedef enum {
+    Binds_Encoding_SinglePress,
+    Binds_Encoding_ChordPress,
+    Binds_Encoding_Invalid,
+} Binds_Encoding;
+bool Binds_Pressed(u8 bind_id, bool priority);
+bool Binds_Down(u8 bind_id, bool priority);
+Binds_Encoding Binds_EncodingType();
+u8 Binds_GetCurrentEncoding();
+void Binds_ToStr(u8 bind_id, char *buf);
+void Binds_Init();
+void Binds_Tick();

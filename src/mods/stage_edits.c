@@ -111,10 +111,10 @@ static void set_mode(ActiveMode mode) {
 }
 
 static void ready_init_hook() {
-    ActiveMode next_mode = (ActiveMode)(pref_get(Pref_StageEditVariant));
+    ActiveMode next_mode = (ActiveMode)(Pref_Get(Pref_StageEditVariant));
     if (s_current_mode != next_mode) {
         undo_mode(s_current_mode);
-        s_current_mode = (ActiveMode)(pref_get(Pref_StageEditVariant));
+        s_current_mode = (ActiveMode)(Pref_Get(Pref_StageEditVariant));
         set_mode(s_current_mode);
     } else if (s_current_mode == ActiveMode_Reverse && s_new_goal) {
         undo_mode(ActiveMode_Reverse);
@@ -135,7 +135,7 @@ void stage_edits_init() {
 
 static void load_stagedef_hook(u32 stage_id) {
     s_load_stagedef_tramp.chain(stage_id);
-    s_current_mode = (ActiveMode)pref_get(Pref_StageEditVariant);
+    s_current_mode = (ActiveMode)Pref_Get(Pref_StageEditVariant);
     set_mode(s_current_mode);
 }
 

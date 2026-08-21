@@ -1,7 +1,7 @@
 #pragma once
 
-void ilmark_disable_invalidating_settings();
-void ilmark_init();
-void ilmark_tick();
-void ilmark_disp();
-bool ilmark_is_ilmark_enabled();
+void ILMark_DisableInvalidatingSettings();
+void ILMark_Init();
+void ILMark_Tick();
+void ILMark_Disp();
+bool ILMark_IsEnabled();

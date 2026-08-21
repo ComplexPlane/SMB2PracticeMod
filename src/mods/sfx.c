@@ -15,13 +15,13 @@ static s32 soft_stream_start(u32 looping_state, mkb_BgmTrack bgm_id, u32 param_3
 }
 
 static void sound_req(u32 sfx_idx) {
-    if (!(pref_get(Pref_MuteTimerDing) && sfx_idx == 0x0003d806)) {
+    if (!(Pref_Get(Pref_MuteTimerDing) && sfx_idx == 0x0003d806)) {
         s_sound_req_tramp.chain(sfx_idx);
     }
 }
 
 void sfx_init() {
-    if (pref_get(Pref_MuteBgm)) HOOK_TRAMP(s_soft_stream_start_tramp);
+    if (Pref_Get(Pref_MuteBgm)) HOOK_TRAMP(s_soft_stream_start_tramp);
     HOOK_TRAMP(s_sound_req_tramp);
 }
 

@@ -374,5 +374,5 @@ void SS_Tick() {
 }
 
 bool SS_IsEnabled() {
-    return pref_get(Pref_Savestates) && !pref_get(Pref_Freecam);
+    return Pref_Get(Pref_Savestates) && !Pref_Get(Pref_Freecam);
 }

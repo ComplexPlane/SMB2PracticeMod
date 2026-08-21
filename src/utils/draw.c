@@ -12,11 +12,11 @@ static char s_notify_msg_buf[80];
 static s32 s_notify_frame_counter;
 static GXColor s_notify_color;
 
-void draw_init() {
+void Draw_Init() {
     patch_write_branch((void *)(0x802aeca4), (void *)(asm_full_debug_text_color));
 }
 
-void draw_predraw() {
+void Draw_PreDraw() {
     mkb_GXSetZMode_cached(mkb_GX_TRUE, mkb_GX_ALWAYS, mkb_GX_FALSE);
 
     // Seems necessary to avoid discoloration / lighting interference when using
@@ -26,7 +26,7 @@ void draw_predraw() {
 }
 
 // Based on `draw_debugtext_window_bg()` and assumes some GX setup around this point
-void draw_rect(float x1, float y1, float x2, float y2, GXColor color) {
+void Draw_Rect(float x1, float y1, float x2, float y2, GXColor color) {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
@@ -66,7 +66,7 @@ static void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_lis
     debug_text_buf(x, y, color, buf);
 }
 
-void draw_debug_text(s32 x, s32 y, GXColor color, const char *format, ...) {
+void Draw_DebugText(s32 x, s32 y, GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
     debug_text_v(x, y, color, format, args);
@@ -79,7 +79,7 @@ static Vec2d heart_verts[] = {
     {116, 22.5},     {103.25, 13.88}, {88.63, 12.63}, {77.88, 16.25}, {65.25, 29.25},
 };
 
-void draw_heart() {
+void Draw_Heart() {
     // "Blank" texture object which seems to let us set a color and draw a poly with it idk??
     mkb_GXTexObj *texobj = (mkb_GXTexObj *)(0x807ad0e0);
     mkb_GXLoadTexObj_cached(texobj, mkb_GX_TEXMAP0);
@@ -117,7 +117,7 @@ void draw_heart() {
 static constexpr u8 LOW_COLOR = 0x41;
 static constexpr u8 HIGH_COLOR = 0xf5;
 
-GXColor draw_num_to_rainbow(int num) {
+GXColor Draw_NumToRainbow(int num) {
     int state = num / 180;
     int loc = num % 180;
     GXColor color = {LOW_COLOR, LOW_COLOR, LOW_COLOR, 0xff};
@@ -156,7 +156,7 @@ GXColor draw_num_to_rainbow(int num) {
     return color;
 }
 
-void draw_disp() {
+void Draw_Disp() {
     s32 notify_len = mkb_strlen(s_notify_msg_buf);
     s32 draw_x = 640 - notify_len * DRAW_DEBUG_CHAR_WIDTH - 12;
     s32 draw_y = 426;
@@ -165,13 +165,13 @@ void draw_disp() {
     if (s_notify_frame_counter > 40) {
         color.a = 0xff - (s_notify_frame_counter - 40) * 0xff / 20;
     }
-    draw_debug_text(draw_x, draw_y, color, s_notify_msg_buf);
+    Draw_DebugText(draw_x, draw_y, color, s_notify_msg_buf);
 
     s_notify_frame_counter++;
     if (s_notify_frame_counter > 60) s_notify_frame_counter = 60;
 }
 
-void draw_notify(GXColor color, const char *format, ...) {
+void Draw_Notify(GXColor color, const char *format, ...) {
     va_list args;
     va_start(args, format);
     mkb_vsprintf(s_notify_msg_buf, (char *)format, args);

@@ -100,7 +100,7 @@ static void wait_for_apply() {
 }
 
 void marathon_tick() {
-    if (pref_get(Pref_Marathon)) {
+    if (Pref_Get(Pref_Marathon)) {
         if (s_state == MarathonState_WaitForGoal) {
             wait_for_goal();
         } else if (s_state == MarathonState_StoringVel) {

@@ -94,9 +94,9 @@ typedef enum Pref : u16 {
     Pref_ShowDeathCounter = 80,
 } Pref;
 
-void pref_init();
-void pref_save();
-u8 pref_get(Pref pref);
-void pref_set(Pref pref, u8 value);
-void pref_set_defaults();
-u8 pref_get_default(Pref pref);
+void Pref_Init();
+void Prev_Save();
+u8 Pref_Get(Pref pref);
+void Pref_Set(Pref pref, u8 value);
+void Pref_SetDefaults();
+u8 Pref_GetDefault(Pref pref);

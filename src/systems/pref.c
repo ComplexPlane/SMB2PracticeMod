@@ -179,8 +179,8 @@ static void pref_struct_to_card_buf() {
 
 static const char *PREF_FILENAME = "apmp";
 
-void pref_init() {
-    pref_set_defaults();
+void Pref_Init() {
+    Pref_SetDefaults();
 
     FileHeader *header = nullptr;
     mkb_CARDResult result = cardio_read_file(PREF_FILENAME, (void **)(&header));
@@ -188,43 +188,43 @@ void pref_init() {
         card_buf_to_pref_struct(header);
         heap_free(header);
     } else if (result != mkb_CARD_RESULT_NOFILE) {
-        draw_notify(COLOR_RED, "Error loading settings from Card A, setting defaults");
+        Draw_Notify(COLOR_RED, "Error loading settings from Card A, setting defaults");
     }
 }
 
 static void pref_save_callback(mkb_CARDResult res) {
     if (res != mkb_CARD_RESULT_READY) {
         if (res == mkb_CARD_RESULT_NOENT || res == mkb_CARD_RESULT_INSSPACE) {
-            draw_notify(COLOR_RED, "Cannot Save Settings: Card A Full");
+            Draw_Notify(COLOR_RED, "Cannot Save Settings: Card A Full");
         } else {
-            draw_notify(COLOR_RED, "Cannot Save Settings: Card A Unknown Error");
+            Draw_Notify(COLOR_RED, "Cannot Save Settings: Card A Unknown Error");
         }
     }
 }
 
-void pref_save() {
+void Prev_Save() {
     pref_struct_to_card_buf();
     cardio_write_file(PREF_FILENAME, s_card_buf, sizeof(s_card_buf), pref_save_callback);
 }
 
-u8 pref_get(Pref pref) {
+u8 Pref_Get(Pref pref) {
     ASSERT(pref < LEN(s_pref_state));
     return s_pref_state[pref];
 }
 
-void pref_set(Pref pref, u8 value) {
+void Pref_Set(Pref pref, u8 value) {
     ASSERT(pref < LEN(s_pref_state));
     s_pref_state[pref] = value;
 }
 
-void pref_set_defaults() {
+void Pref_SetDefaults() {
     mkb_memset(&s_pref_state, 0, sizeof(s_pref_state));
     for (u32 i = 0; i < LEN(DEFAULT_PREFS); i++) {
-        pref_set(DEFAULT_PREFS[i].pref, DEFAULT_PREFS[i].value);
+        Pref_Set(DEFAULT_PREFS[i].pref, DEFAULT_PREFS[i].value);
     }
 }
 
-u8 pref_get_default(Pref pref) {
+u8 Pref_GetDefault(Pref pref) {
     for (u32 i = 0; i < LEN(DEFAULT_PREFS); i++) {
         if (DEFAULT_PREFS[i].pref == pref) return DEFAULT_PREFS[i].value;
     }

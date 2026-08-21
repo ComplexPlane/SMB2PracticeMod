@@ -6,7 +6,7 @@
 static bool s_prev_enabled;
 
 void banans_tick() {
-    bool enabled = pref_get(Pref_BananaCounter9999);
+    bool enabled = Pref_Get(Pref_BananaCounter9999);
     if (enabled == s_prev_enabled) return;
 
     s_prev_enabled = enabled;

@@ -1,4 +1,4 @@
 #pragma once
 
-void gotostory_tick();
-void gotostory_load_storymode();
+void GoToStory_Tick();
+void GoToStory_LoadStoryMode();

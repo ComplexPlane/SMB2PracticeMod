@@ -39,68 +39,68 @@ void timerdisp_draw_timer(u32 pos_x,
     if (show_second_argument == true) {
         if (hours_1 > 0) {
             if (hours_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d:%02d:%02d.%02d (%s%d:%02d:%02d.%02d)", sign,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d:%02d:%02d.%02d (%s%d:%02d:%02d.%02d)", sign,
                                 hours_1, minutes_1, seconds_1, centiseconds_1, sign, hours_2,
                                 minutes_2, seconds_2, centiseconds_2);
             } else if (minutes_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d:%02d:%02d.%02d (%s%02d:%02d.%02d)", sign,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d:%02d:%02d.%02d (%s%02d:%02d.%02d)", sign,
                                 hours_1, minutes_1, seconds_1, centiseconds_1, sign, minutes_2,
                                 seconds_2, centiseconds_2);
             } else {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d:%02d:%02d.%02d (%s%02d.%02d)", sign, hours_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d:%02d:%02d.%02d (%s%02d.%02d)", sign, hours_1,
                                 minutes_1, seconds_1, centiseconds_1, sign, seconds_2,
                                 centiseconds_2);
             }
         } else if (minutes_1 > 0) {
             if (hours_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%02d:%02d.%02d (%s%d:%02d:%02d.%02d)", sign,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%02d:%02d.%02d (%s%d:%02d:%02d.%02d)", sign,
                                 minutes_1, seconds_1, centiseconds_1, sign, hours_2, minutes_2,
                                 seconds_2, centiseconds_2);
             } else if (minutes_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%02d:%02d.%02d (%s%02d:%02d.%02d)", sign, minutes_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%02d:%02d.%02d (%s%02d:%02d.%02d)", sign, minutes_1,
                                 seconds_1, centiseconds_1, sign, minutes_2, seconds_2,
                                 centiseconds_2);
             } else {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%02d:%02d.%02d (%s%02d.%02d)", sign, minutes_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%02d:%02d.%02d (%s%02d.%02d)", sign, minutes_1,
                                 seconds_1, centiseconds_1, sign, seconds_2, centiseconds_2);
             }
 
         } else {
             if (hours_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d.%02d (%s%d:%02d:%02d.%02d)", sign, seconds_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d.%02d (%s%d:%02d:%02d.%02d)", sign, seconds_1,
                                 centiseconds_1, sign, hours_2, minutes_2, seconds_2,
                                 centiseconds_2);
             } else if (minutes_2 > 0) {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d.%02d (%s%d:%02d.%02d)", sign, seconds_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d.%02d (%s%d:%02d.%02d)", sign, seconds_1,
                                 centiseconds_1, sign, minutes_2, seconds_2, centiseconds_2);
             } else {
-                draw_debug_text(A, b, color, prefix);
-                draw_debug_text(a, b, color, "%s%d.%02d (%s%d.%02d)", sign, seconds_1,
+                Draw_DebugText(A, b, color, prefix);
+                Draw_DebugText(a, b, color, "%s%d.%02d (%s%d.%02d)", sign, seconds_1,
                                 centiseconds_1, sign, seconds_2, centiseconds_2);
             }
         }
     } else {
         if (hours_1 > 0 && !show_seconds_only) {
-            draw_debug_text(A, b, color, prefix);
-            draw_debug_text(a, b, color, "%s%d:%02d:%02d.%02d", sign, hours_1, minutes_1, seconds_1,
+            Draw_DebugText(A, b, color, prefix);
+            Draw_DebugText(a, b, color, "%s%d:%02d:%02d.%02d", sign, hours_1, minutes_1, seconds_1,
                             centiseconds_1);
         } else if (minutes_1 > 0 && !show_seconds_only) {
-            draw_debug_text(A, b, color, prefix);
-            draw_debug_text(a, b, color, "%s%02d:%02d.%02d", sign, minutes_1, seconds_1,
+            Draw_DebugText(A, b, color, prefix);
+            Draw_DebugText(a, b, color, "%s%02d:%02d.%02d", sign, minutes_1, seconds_1,
                             centiseconds_1);
         } else {
             u32 total_seconds_1 =
                 seconds_1 + (minutes_1 * MINUTE_FRAMES + hours_1 * HOUR_FRAMES) / SECOND_FRAMES;
-            draw_debug_text(A, b, color, prefix);
-            draw_debug_text(a, b, color, "%s%02d.%02d", sign, total_seconds_1, centiseconds_1);
+            Draw_DebugText(A, b, color, prefix);
+            Draw_DebugText(a, b, color, "%s%02d.%02d", sign, total_seconds_1, centiseconds_1);
         }
     }
 }
@@ -125,16 +125,16 @@ void timerdisp_draw_subtick_timer(s32 frames,
     s32 y = Y + row * 16;
 
     u32 total_seconds = seconds + (minutes * MINUTE_FRAMES + hours * HOUR_FRAMES) / SECOND_FRAMES;
-    draw_debug_text(X, y, color, prefix);
+    Draw_DebugText(X, y, color, prefix);
     if (extra_precision) {
-        draw_debug_text(X + 48, y, color, "%s%02d.%04d", sign, total_seconds, extra);
+        Draw_DebugText(X + 48, y, color, "%s%02d.%04d", sign, total_seconds, extra);
     } else {
-        draw_debug_text(X + 48, y, color, "%s%02d.%03d", sign, total_seconds, milliseconds);
+        Draw_DebugText(X + 48, y, color, "%s%02d.%03d", sign, total_seconds, milliseconds);
     }
 }
 
 void timerdisp_draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
     s32 y = Y + row * 16;
-    draw_debug_text(X, y, color, prefix);
-    draw_debug_text(X + 48, y, color, "%2d%", fsave);
+    Draw_DebugText(X, y, color, prefix);
+    Draw_DebugText(X + 48, y, color, "%2d%", fsave);
 }

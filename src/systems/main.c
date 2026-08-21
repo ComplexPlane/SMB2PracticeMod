@@ -79,26 +79,26 @@ static void process_inputs() {
     // These run after all controller inputs have been processed on the current frame,
     // to ensure lowest input delay
     Pad_Tick();
-    binds_tick();
+    Binds_Tick();
     cardio_tick();
-    unlock_tick();
+    Unlock_Tick();
     fallout_tick();
     physics_tick();
     iw_tick();
     storytimer_tick();
     deathcounter_tick();
-    savest_ui_tick();
+    SSUI_Tick();
     menu_impl_tick();
     jump_tick();
     inputdisp_tick();
-    gotostory_tick();
+    GoToStory_Tick();
     cmseg_tick();
     banans_tick();
     marathon_tick();
     ballcolor_tick();
     freecam_tick();
     ilbattle_tick();
-    ilmark_tick();
+    ILMark_Tick();
     camera_tick();
     stage_edits_tick();
     scratch_tick();
@@ -119,7 +119,7 @@ static void draw_debug_text_hook() {
                                       mkb_current_render_mode->efbHeight, mkb_GX_TF_RGB5A3);
     }
 
-    draw_predraw();
+    Draw_PreDraw();
     timer_disp();
     iw_disp();
     storytimer_disp();
@@ -128,8 +128,8 @@ static void draw_debug_text_hook() {
     cmseg_disp();
     inputdisp_disp();
     menu_impl_disp();
-    draw_disp();
-    ilmark_disp();
+    Draw_Disp();
+    ILMark_Disp();
     scratch_disp();
 }
 
@@ -166,9 +166,9 @@ void main_init() {
 
     heap_init();
     cardio_init();
-    pref_init();
-    unlock_init();
-    draw_init();
+    Pref_Init();
+    Unlock_Init();
+    Draw_Init();
     physics_init();
     iw_init();
     SS_Init();
@@ -180,7 +180,7 @@ void main_init() {
     menu_init();
     freecam_init();
     hide_init();
-    ilmark_init();
+    ILMark_Init();
     camera_init();
     fallout_init();
     stage_edits_init();
@@ -198,7 +198,7 @@ void main_init() {
  * controller inputs have been read and processed however, to ensure the lowest input delay.
  */
 void main_tick() {
-    if (pref_get(Pref_DebugMode)) {
+    if (Pref_Get(Pref_DebugMode)) {
         mkb_dip_switches |= mkb_DIP_DEBUG | mkb_DIP_DISP;
     } else {
         mkb_dip_switches &= ~(mkb_DIP_DEBUG | mkb_DIP_DISP);

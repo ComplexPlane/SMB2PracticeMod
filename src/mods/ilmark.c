@@ -28,20 +28,20 @@ static const Pref INVALID_PREFS[] = {
     Pref_FalloutPlaneType,
 };
 
-void ilmark_disable_invalidating_settings() {
+void ILMark_DisableInvalidatingSettings() {
     for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
-        pref_set(INVALID_PREFS[i], pref_get_default(INVALID_PREFS[i]));
+        Pref_Set(INVALID_PREFS[i], Pref_GetDefault(INVALID_PREFS[i]));
     }
-    pref_save();
+    Prev_Save();
 }
 
-void ilmark_init() {
+void ILMark_Init() {
     char gamecode[7] = {};
     mkb_memcpy(gamecode, mkb_DVD_GAME_NAME, 6);
     s_is_romhack = mkb_strcmp(gamecode, "GM2E8P") != 0;
 }
 
-void ilmark_tick() {
+void ILMark_Tick() {
     if (mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT) {
         s_valid_run = true;
         s_paused_frame = 0;
@@ -63,14 +63,14 @@ void ilmark_tick() {
                          Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) ||
                          Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false) ||
                          Pad_ButtonDown(mkb_PAD_BUTTON_UP, false);
-        if (pref_get(Pref_DpadControls) && dpad_down) s_valid_run = false;
+        if (Pref_Get(Pref_DpadControls) && dpad_down) s_valid_run = false;
 
         // Opening the mod menu is disallowed
         if (menu_impl_is_visible()) s_valid_run = false;
 
         // Invalid prefs are enabled
         for (u8 i = 0; i < LEN(INVALID_PREFS); i++) {
-            if (pref_get(INVALID_PREFS[i]) != pref_get_default(INVALID_PREFS[i])) {
+            if (Pref_Get(INVALID_PREFS[i]) != Pref_GetDefault(INVALID_PREFS[i])) {
                 s_valid_run = false;
             }
         }
@@ -79,28 +79,28 @@ void ilmark_tick() {
     }
 }
 
-bool ilmark_is_ilmark_enabled() {
+bool ILMark_IsEnabled() {
     if (mkb_main_mode != mkb_MD_GAME) return false;
 
     if (mkb_main_game_mode == mkb_PRACTICE_MODE) {
-        if (!pref_get(Pref_IlMarkPractice)) return false;
+        if (!Pref_Get(Pref_IlMarkPractice)) return false;
     } else if (mkb_main_game_mode == mkb_STORY_MODE) {
-        if (!pref_get(Pref_IlMarkStory)) return false;
+        if (!Pref_Get(Pref_IlMarkStory)) return false;
     } else if (mkb_main_game_mode == mkb_CHALLENGE_MODE) {
-        if (!pref_get(Pref_IlMarkChallenge)) return false;
+        if (!Pref_Get(Pref_IlMarkChallenge)) return false;
     } else {
         return false;
     }
 
-    if (s_is_romhack && !pref_get(Pref_IlMarkRomhacks)) {
+    if (s_is_romhack && !Pref_Get(Pref_IlMarkRomhacks)) {
         return false;
     }
 
     return true;
 }
 
-void ilmark_disp() {
-    if (!ilmark_is_ilmark_enabled() || freecam_should_hide_hud()) return;
+void ILMark_Disp() {
+    if (!ILMark_IsEnabled() || freecam_should_hide_hud()) return;
 
     bool in_show_submode = mkb_sub_mode == mkb_SMD_GAME_GOAL_INIT ||
                            mkb_sub_mode == mkb_SMD_GAME_GOAL_MAIN ||

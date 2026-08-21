@@ -1,5 +1,5 @@
 #pragma once
 
-void unlock_init();
-void unlock_tick();
-void unlock_unlock_everything();
+void Unlock_Init();
+void Unlock_Tick();
+void Unlock_Everything();

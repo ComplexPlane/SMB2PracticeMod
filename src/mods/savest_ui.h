@@ -1,3 +1,3 @@
 #pragma once
 
-void savest_ui_tick();
+void SSUI_Tick();

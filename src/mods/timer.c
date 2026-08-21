@@ -170,11 +170,11 @@ void timer_disp() {
 
     u32 row = 1;
 
-    if (pref_get(Pref_TimerShowRTA) && !freecam_should_hide_hud()) {
+    if (Pref_Get(Pref_TimerShowRTA) && !freecam_should_hide_hud()) {
         timerdisp_draw_timer(380, row++, 44, "RTA:", s_rta_timer, 0, false, true, COLOR_WHITE);
     }
 
-    if (pref_get(Pref_TimerShowPause) && !freecam_should_hide_hud()) {
+    if (Pref_Get(Pref_TimerShowPause) && !freecam_should_hide_hud()) {
         timerdisp_draw_timer(380, row++, 44, "PAU:", s_pause_timer, 0, false, true, COLOR_WHITE);
     }
 
@@ -188,19 +188,19 @@ void timer_disp() {
         return;
     }
 
-    if (pref_get(Pref_TimerShowSubtick) && !freecam_should_hide_hud()) {
+    if (Pref_Get(Pref_TimerShowSubtick) && !freecam_should_hide_hud()) {
         timerdisp_draw_subtick_timer(mkb_mode_info.stage_time_frames_remaining, "SUB:", row++,
                                      COLOR_WHITE, true, s_framesave, false);
     }
 
-    if (pref_get(Pref_TimerShowUnrounded) && !freecam_should_hide_hud()) {
+    if (Pref_Get(Pref_TimerShowUnrounded) && !freecam_should_hide_hud()) {
         timerdisp_draw_subtick_timer(mkb_mode_info.stage_time_frames_remaining, "CUR:", row++,
                                      COLOR_WHITE, true, 0, false);
         timerdisp_draw_subtick_timer(mkb_mode_info.stage_time_frames_remaining + 1, "NXT:", row++,
                                      COLOR_WHITE, true, 0, false);
     }
 
-    if (pref_get(Pref_TimerShowFramesave) && !freecam_should_hide_hud()) {
+    if (Pref_Get(Pref_TimerShowFramesave) && !freecam_should_hide_hud()) {
         timerdisp_draw_percentage(s_framesave, "FSV:", row++, COLOR_WHITE);
     }
 }

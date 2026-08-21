@@ -20,30 +20,29 @@ constexpr GXColor COLOR_GOLD = {0xFF, 0xD7, 0x00, 0xFF};
 constexpr GXColor COLOR_GRAY = {0x70, 0x70, 0x70, 0xFF};
 
 // Call once during mod initialization
-void draw_init();
+void Draw_Init();
 
 // Call once per frame in the mkb 2d drawing hook
-void draw_disp();
+void Draw_Disp();
 
 // Call once per frame in the mkb 2d drawing hook before all other disp functions of other things
-void draw_predraw();
+void Draw_PreDraw();
 
 /*
  * Functions which draw immediately
  */
 
-void draw_rect(float x1, float y1, float x2, float y2, GXColor color);
-void draw_debug_text_palette();
-void draw_debug_text(s32 x, s32 y, GXColor color, const char *format, ...);
-void draw_heart();
+void Draw_Rect(float x1, float y1, float x2, float y2, GXColor color);
+void Draw_DebugText(s32 x, s32 y, GXColor color, const char *format, ...);
+void Draw_Heart();
 
 // allows a color to cycle through a rainbow animation, have num value be...
 // num = (num + gradient_speed) % 1080;
-GXColor draw_num_to_rainbow(int num);
+GXColor Draw_NumToRainbow(int num);
 
 /*
  * Functions which cause drawing during disp() and don't necessarily need to be called each frame
  */
 
 // Show a notification in the bottom-right of the screen which fades out after a short period
-void draw_notify(GXColor color, const char *format, ...);
+void Draw_Notify(GXColor color, const char *format, ...);

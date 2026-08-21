@@ -117,7 +117,7 @@ void iw_tick() {
 }
 
 void iw_disp() {
-    if (!pref_get(Pref_IwTimer) || mkb_main_mode != mkb_MD_GAME ||
+    if (!Pref_Get(Pref_IwTimer) || mkb_main_mode != mkb_MD_GAME ||
         mkb_main_game_mode != mkb_STORY_MODE || !asm_currently_playing_iw ||
         freecam_should_hide_hud())
         return;

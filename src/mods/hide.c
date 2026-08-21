@@ -38,7 +38,7 @@ static void draw_effects_hook();
 TRAMP(s_draw_effects_tramp, mkb_g_draw_effects, draw_effects_hook);
 
 static bool should_hide_bg() {
-    return pref_get(Pref_HideBg) && mkb_main_mode != mkb_MD_ADV;
+    return Pref_Get(Pref_HideBg) && mkb_main_mode != mkb_MD_ADV;
 }
 
 static void avdisp_set_fog_color_hook(u8 r, u8 g, u8 b) {
@@ -86,7 +86,7 @@ static void clear_hook() {
 }
 static void draw_sprite_hook(mkb_Sprite *sprite) {
     // Hide every sprite except the pause menu
-    bool hide_hud = pref_get(Pref_HideHud);
+    bool hide_hud = Pref_Get(Pref_HideHud);
     bool freecam_hide = freecam_should_hide_hud();
     bool correct_mode = mkb_main_mode == mkb_MD_GAME;
     bool is_pausemenu_sprite = sprite->disp_func == mkb_sprite_pausemenu_disp;
@@ -95,34 +95,34 @@ static void draw_sprite_hook(mkb_Sprite *sprite) {
     }
 }
 static void draw_minimap_hook() {
-    bool hide_hud = pref_get(Pref_HideHud);
+    bool hide_hud = Pref_Get(Pref_HideHud);
     bool freecam_hide = freecam_should_hide_hud();
     if (!(hide_hud || freecam_hide)) {
         s_draw_minimap_tramp.chain();
     }
 }
 static void draw_stage_hook() {
-    if (!pref_get(Pref_HideStage)) {
+    if (!Pref_Get(Pref_HideStage)) {
         s_draw_stage_tramp.chain();
     }
 }
 static void draw_ball_hook() {
-    if (!pref_get(Pref_HideBall)) {
+    if (!Pref_Get(Pref_HideBall)) {
         s_draw_ball_tramp.chain();
     }
 }
 static void draw_items_hook() {
-    if (!pref_get(Pref_HideItems)) {
+    if (!Pref_Get(Pref_HideItems)) {
         s_draw_items_tramp.chain();
     }
 }
 static void draw_stobjs_hook() {
-    if (!pref_get(Pref_HideStobjs)) {
+    if (!Pref_Get(Pref_HideStobjs)) {
         s_draw_stobjs_tramp.chain();
     }
 }
 static void draw_effects_hook() {
-    if (!pref_get(Pref_HideEffects)) {
+    if (!Pref_Get(Pref_HideEffects)) {
         s_draw_effects_tramp.chain();
     }
 }

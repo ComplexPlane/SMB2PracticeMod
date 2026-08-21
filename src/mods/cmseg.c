@@ -153,12 +153,12 @@ static void check_exit_seg() {
 static void state_seg_active() {
     // Set character
     if (mkb_sub_mode_request == mkb_SMD_GAME_READY_INIT) {
-        u8 ch = pref_get(Pref_CmChara);
+        u8 ch = Pref_Get(Pref_CmChara);
         mkb_ApeCharacter real_chara;
         if (ch == 4) {
             real_chara = s_ape_charas[mkb_rand() % 4];
         } else {
-            real_chara = s_ape_charas[pref_get(Pref_CmChara)];
+            real_chara = s_ape_charas[Pref_Get(Pref_CmChara)];
         }
         mkb_active_monkey_id[0] = real_chara;
     }
@@ -352,7 +352,7 @@ void cmseg_tick() {
 }
 
 void cmseg_disp() {
-    if (!pref_get(Pref_CmTimer) || freecam_should_hide_hud()) return;
+    if (!Pref_Get(Pref_CmTimer) || freecam_should_hide_hud()) return;
 
     if (s_state == State_SegActive || s_state == State_SegComplete) {
         u32 seg = (u32)(s_seg_request);

@@ -186,7 +186,7 @@ void jump_tick() {
     //        }
     //    }
 
-    bool enabled = pref_get(Pref_JumpMod);
+    bool enabled = Pref_Get(Pref_JumpMod);
     if (enabled != s_prev_enabled) {
         s_prev_enabled = enabled;
         if (enabled) {

@@ -22,7 +22,7 @@ static bool s_pressed[12];
 static u8 s_prev_pressed[2] = {INVALID, INVALID};
 // current bind encoded to u8
 static u8 s_encoding = 0;
-static binds_EncodingType s_encoding_type = binds_EncodingType_Invalid;
+static Binds_Encoding s_encoding_type = Binds_Encoding_Invalid;
 // number of buttons held on the previous frame
 static u8 s_num_prev_held = 0;
 
@@ -39,20 +39,20 @@ static bool is_num_pressed(u8 num) {
     return false;
 }
 
-static void encode_bind(binds_EncodingType type) {
+static void encode_bind(Binds_Encoding type) {
     s_encoding_type = type;
     switch (type) {
-    case binds_EncodingType_Invalid: {
+    case Binds_Encoding_Invalid: {
         break;
     }
-    case binds_EncodingType_SinglePress: {
+    case Binds_Encoding_SinglePress: {
         u8 encoding = 0;
         encoding += s_prev_pressed[0];
         encoding += s_prev_pressed[0] * 12;
         s_encoding = encoding;
         break;
     }
-    case binds_EncodingType_ChordPress: {
+    case Binds_Encoding_ChordPress: {
         u8 encoding = 0;
         if (s_prev_pressed[0] < s_prev_pressed[1]) {
             encoding += s_prev_pressed[0];
@@ -67,10 +67,10 @@ static void encode_bind(binds_EncodingType type) {
     }
 }
 
-void binds_init() {
+void Binds_Init() {
 }
 
-void binds_tick() {
+void Binds_Tick() {
     get_button_values();
 
     u8 pressed_count = 0;
@@ -87,13 +87,13 @@ void binds_tick() {
 
     if (pressed_count < 2 && s_num_prev_held == 2) {
         // was pressing 2, bind a chord
-        encode_bind(binds_EncodingType_ChordPress);
+        encode_bind(Binds_Encoding_ChordPress);
     } else if (pressed_count < 1 && s_num_prev_held == 1) {
         // was pressing 1, bind a single input
-        encode_bind(binds_EncodingType_SinglePress);
+        encode_bind(Binds_Encoding_SinglePress);
     } else {
         // invalidate inputs
-        encode_bind(binds_EncodingType_Invalid);
+        encode_bind(Binds_Encoding_Invalid);
     }
 
     s_num_prev_held = pressed_count;
@@ -101,14 +101,14 @@ void binds_tick() {
     s_prev_pressed[1] = current_pressed[1];
 }
 
-u8 binds_get_current_encoding() {
-    if (s_encoding_type == binds_EncodingType_Invalid) {
+u8 Binds_GetCurrentEncoding() {
+    if (s_encoding_type == Binds_Encoding_Invalid) {
         return INVALID;
     }
     return s_encoding;
 }
 
-binds_EncodingType binds_get_encoding_type() {
+Binds_Encoding Binds_EncodingType() {
     return s_encoding_type;
 }
 
@@ -121,7 +121,7 @@ static u8 get_input2(u8 bind_id) {
 }
 
 // buf needs to be big enough for longest possible combo (dpad-left+dpad-right)
-void binds_get_bind_str(u8 bind_id, char *buf) {
+void Binds_ToStr(u8 bind_id, char *buf) {
     u8 i1 = get_input1(bind_id);
     u8 i2 = get_input2(bind_id);
     if (bind_id == INVALID) {
@@ -133,7 +133,7 @@ void binds_get_bind_str(u8 bind_id, char *buf) {
     }
 }
 
-bool binds_bind_pressed(u8 bind_id, bool priority) {
+bool Binds_Pressed(u8 bind_id, bool priority) {
     if (bind_id == INVALID) return false;
     mkb_PadDigitalInput input1 = INPUT_LIST[get_input1(bind_id)];
     mkb_PadDigitalInput input2 = INPUT_LIST[get_input2(bind_id)];
@@ -145,7 +145,7 @@ bool binds_bind_pressed(u8 bind_id, bool priority) {
     }
 }
 
-bool binds_bind_down(u8 bind_id, bool priority) {
+bool Binds_Down(u8 bind_id, bool priority) {
     if (bind_id == INVALID) return false;
     mkb_PadDigitalInput input1 = INPUT_LIST[get_input1(bind_id)];
     mkb_PadDigitalInput input2 = INPUT_LIST[get_input2(bind_id)];

@@ -49,7 +49,7 @@ void ballcolor_init() {
 }
 
 void ballcolor_tick() {
-    BallColorType ball_type = (BallColorType)(pref_get(Pref_BallColorType));
+    BallColorType ball_type = (BallColorType)(Pref_Get(Pref_BallColorType));
 
     // dont change color if in story mode menu
     if (mkb_main_mode != mkb_MD_GAME ||
@@ -65,16 +65,16 @@ void ballcolor_tick() {
     switch (ball_type) {
     case BallColorType_Preset: {
         *(GXColor *)(0x80472a34) = s_default_color;  // reset default color
-        u8 color_id = convert_to_ball_color_id(pref_get(Pref_BallColor));
+        u8 color_id = convert_to_ball_color_id(Pref_Get(Pref_BallColor));
         mkb_balls[mkb_curr_player_idx].g_ball_color_index = color_id;
         s_current_color = ((GXColor *)0x80472a28)[color_id];
         break;
     }
     case BallColorType_RGB: {
         mkb_balls[mkb_curr_player_idx].g_ball_color_index = convert_to_ball_color_id(0);
-        u8 red = pref_get(Pref_BallRed);
-        u8 green = pref_get(Pref_BallGreen);
-        u8 blue = pref_get(Pref_BallBlue);
+        u8 red = Pref_Get(Pref_BallRed);
+        u8 green = Pref_Get(Pref_BallGreen);
+        u8 blue = Pref_Get(Pref_BallBlue);
         s_current_color = (GXColor){red, green, blue, 0};
         *(GXColor *)(0x80472a34) = s_current_color;
         break;
@@ -86,7 +86,7 @@ void ballcolor_tick() {
         if (!paused_now) {
             s_rainbow = (s_rainbow + 3) % 1080;
         }
-        s_current_color = draw_num_to_rainbow(s_rainbow);
+        s_current_color = Draw_NumToRainbow(s_rainbow);
         *(GXColor *)(0x80472a34) = s_current_color;
         break;
     }
@@ -105,11 +105,11 @@ void ballcolor_tick() {
     }
     }
 
-    ClothingType clothing_type = (ClothingType)(pref_get(Pref_ApeColorType));
+    ClothingType clothing_type = (ClothingType)(Pref_Get(Pref_ApeColorType));
 
     switch (clothing_type) {
     case ClothingType_Preset: {
-        ape->color_index = convert_to_ape_color_id(pref_get(Pref_ApeColor));
+        ape->color_index = convert_to_ape_color_id(Pref_Get(Pref_ApeColor));
         break;
     }
     case ClothingType_Random: {

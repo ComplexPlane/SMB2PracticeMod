@@ -20,14 +20,14 @@ static void moon_gravity() {
 void physics_tick() {
     mkb_ball_friction = s_orig_friction;
     mkb_ball_restitution = s_orig_restitution;
-    if (!pref_get(Pref_UseCustomPhysics)) return;
+    if (!Pref_Get(Pref_UseCustomPhysics)) return;
 
-    if (pref_get(Pref_Moon)) moon_gravity();
-    if (pref_get(Pref_Friction) != 110) {
-        mkb_ball_friction = ((float)pref_get(Pref_Friction) - 100) / 1000.0;
+    if (Pref_Get(Pref_Moon)) moon_gravity();
+    if (Pref_Get(Pref_Friction) != 110) {
+        mkb_ball_friction = ((float)Pref_Get(Pref_Friction) - 100) / 1000.0;
     }
-    if (pref_get(Pref_Restitution) != 150) {
-        mkb_ball_restitution = ((float)pref_get(Pref_Restitution) - 100) / 100.0;
+    if (Pref_Get(Pref_Restitution) != 150) {
+        mkb_ball_restitution = ((float)Pref_Get(Pref_Restitution) - 100) / 100.0;
     }
 }
 

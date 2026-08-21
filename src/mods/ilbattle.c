@@ -62,21 +62,21 @@ static bool s_score_buzzer = false;
 static void old_buzzer_display(u32 start_y) {
     s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED, "EPIC BUZZER BEATER B)");
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 5)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 2 * CHEIGHT, COLOR_ORANGE,
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 2 * CHEIGHT, COLOR_ORANGE,
                         "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 10)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, COLOR_GOLD,
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, COLOR_GOLD,
                         "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 15)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 4 * CHEIGHT, COLOR_GREEN,
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 4 * CHEIGHT, COLOR_GREEN,
                         "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 20)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, COLOR_BLUE,
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, COLOR_BLUE,
                         "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 25)
-        draw_debug_text(X - 12 * CWIDTH, start_y + 6 * CHEIGHT, COLOR_BRIGHT_PURPLE,
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 6 * CHEIGHT, COLOR_BRIGHT_PURPLE,
                         "EPIC BUZZER BEATER B)");
 }
 
@@ -93,66 +93,66 @@ static void battle_display(GXColor text_color) {
 
     u32 current_y = Y;
 
-    GXColor time_color = s_time_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
-    GXColor score_color = s_score_buzzer ? draw_num_to_rainbow(s_rainbow) : text_color;
+    GXColor time_color = s_time_buzzer ? Draw_NumToRainbow(s_rainbow) : text_color;
+    GXColor score_color = s_score_buzzer ? Draw_NumToRainbow(s_rainbow) : text_color;
 
-    draw_debug_text(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
+    Draw_DebugText(X - 12 * CWIDTH, Y, text_color, "ELAPSED:");
     if (battle_hours > 0) {
-        draw_debug_text(X - 6, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
+        Draw_DebugText(X - 6, Y, text_color, "%d:%02d:%02d", battle_hours, battle_minutes,
                         battle_seconds);
     } else {
-        draw_debug_text(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
+        Draw_DebugText(X - 6, Y, text_color, "%02d:%02d", battle_minutes, battle_seconds);
     }
 
-    if (pref_get(Pref_IlBattleShowTime)) {
+    if (Pref_Get(Pref_IlBattleShowTime)) {
         current_y += CHEIGHT;
-        draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
-        if (pref_get(Pref_IlBattleTieCount) && s_best_frames_ties > 0) {
-            draw_debug_text(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
+        Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "BEST TIME:");
+        if (Pref_Get(Pref_IlBattleTieCount) && s_best_frames_ties > 0) {
+            Draw_DebugText(X - 6, current_y, time_color, "%d.%02d (%d)", best_seconds,
                             best_centiseconds, s_best_frames_ties + 1);
         } else {
-            draw_debug_text(X - 6, current_y, time_color, "%d.%02d", best_seconds,
+            Draw_DebugText(X - 6, current_y, time_color, "%d.%02d", best_seconds,
                             best_centiseconds);
         }
     }
-    if (pref_get(Pref_IlBattleShowScore)) {
+    if (Pref_Get(Pref_IlBattleShowScore)) {
         current_y += CHEIGHT;
-        draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
-        if (pref_get(Pref_IlBattleTieCount) && s_best_score_ties > 0) {
-            draw_debug_text(X - 6, current_y, score_color, "%d (%d)", s_best_score,
+        Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "BEST SCORE:");
+        if (Pref_Get(Pref_IlBattleTieCount) && s_best_score_ties > 0) {
+            Draw_DebugText(X - 6, current_y, score_color, "%d (%d)", s_best_score,
                             s_best_score_ties + 1);
         } else {
-            draw_debug_text(X - 6, current_y, score_color, "%d", s_best_score);
+            Draw_DebugText(X - 6, current_y, score_color, "%d", s_best_score);
         }
 
         // breakdown
-        u8 breakdown_value = pref_get(Pref_IlBattleBreakdown);
+        u8 breakdown_value = Pref_Get(Pref_IlBattleBreakdown);
         if (breakdown_value == 1) {
             // minimal
             current_y += CHEIGHT;
-            draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
-            draw_debug_text(X - 6, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
+            Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "BREAKDOWN:");
+            Draw_DebugText(X - 6, current_y, text_color, "%d.%02d [%d]", best_score_seconds,
                             best_score_centiseconds, s_best_score_bananas);
         } else if (breakdown_value == 2) {
             // full
             current_y += CHEIGHT;
-            draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "  BANANAS:");
-            draw_debug_text(X - 6, current_y, text_color, "%d", s_best_score_bananas);
+            Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "  BANANAS:");
+            Draw_DebugText(X - 6, current_y, text_color, "%d", s_best_score_bananas);
             current_y += CHEIGHT;
-            draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "  TIMER:");
-            draw_debug_text(X - 6, current_y, text_color, "%d.%02d", best_score_seconds,
+            Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "  TIMER:");
+            Draw_DebugText(X - 6, current_y, text_color, "%d.%02d", best_score_seconds,
                             best_score_centiseconds);
         }
     }
-    if (pref_get(Pref_IlBattleAttemptCount)) {
+    if (Pref_Get(Pref_IlBattleAttemptCount)) {
         current_y += CHEIGHT;
-        draw_debug_text(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
-        draw_debug_text(X - 6, current_y, text_color, "%d", s_attempts);
+        Draw_DebugText(X - 12 * CWIDTH, current_y, text_color, "ATTEMPTS:");
+        Draw_DebugText(X - 6, current_y, text_color, "%d", s_attempts);
     }
 
-    if (pref_get(Pref_IlBattleBuzzerOld) &&
-        ((s_time_buzzer && pref_get(Pref_IlBattleShowTime)) ||
-         (s_score_buzzer && pref_get(Pref_IlBattleShowScore)))) {
+    if (Pref_Get(Pref_IlBattleBuzzerOld) &&
+        ((s_time_buzzer && Pref_Get(Pref_IlBattleShowTime)) ||
+         (s_score_buzzer && Pref_Get(Pref_IlBattleShowScore)))) {
         old_buzzer_display(current_y + CHEIGHT);
     }
 }
@@ -191,7 +191,7 @@ void clear_display() {
     s_attempts = 0;
     s_time_buzzer = false;
     s_score_buzzer = false;
-    s_battle_length = convert_battle_length((IlBattleLength)(pref_get(Pref_IlBattleLength)));
+    s_battle_length = convert_battle_length((IlBattleLength)(Pref_Get(Pref_IlBattleLength)));
 }
 
 void ilbattle_new_battle() {
@@ -209,7 +209,7 @@ static void track_first_retry() {
 }
 
 static void run_battle_timer() {
-    if ((IlBattleLength)(pref_get(Pref_IlBattleLength)) == IlBattleLength_Endless) {
+    if ((IlBattleLength)(Pref_Get(Pref_IlBattleLength)) == IlBattleLength_Endless) {
         // timer is endless
         s_battle_frames++;
     } else if (s_battle_frames < s_battle_length) {
@@ -315,7 +315,7 @@ static void track_final_attempt() {
 }
 
 void ilbattle_tick() {
-    if (!pref_get(Pref_IlBattleDisplay)) {
+    if (!Pref_Get(Pref_IlBattleDisplay)) {
         clear_display();
         s_state = IlBattleState_NotReady;
     }
@@ -376,7 +376,7 @@ void ilbattle_tick() {
 
     // Resets battles when Dpad Down is pressed
     if (mkb_main_mode == mkb_MD_GAME &&
-        binds_bind_pressed(pref_get(Pref_IlBattleReadyBind), false)) {
+        Binds_Pressed(Pref_Get(Pref_IlBattleReadyBind), false)) {
         ilbattle_new_battle();
     }
 }
@@ -387,22 +387,22 @@ void ilbattle_disp() {
         return;
     }
 
-    if (!pref_get(Pref_IlBattleDisplay)) return;
+    if (!Pref_Get(Pref_IlBattleDisplay)) return;
 
     switch (s_state) {
     case IlBattleState_NotReady: {
         if (mkb_main_mode != mkb_MD_GAME) return;
-        u8 input = pref_get(Pref_IlBattleReadyBind);
+        u8 input = Pref_Get(Pref_IlBattleReadyBind);
         char buf[25];
-        binds_get_bind_str(input, buf);
-        draw_debug_text(X - 12 * CWIDTH, Y, COLOR_LIGHT_PURPLE, "NOT READY");
-        draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_LIGHT_PURPLE, "%s to ready", buf);
+        Binds_ToStr(input, buf);
+        Draw_DebugText(X - 12 * CWIDTH, Y, COLOR_LIGHT_PURPLE, "NOT READY");
+        Draw_DebugText(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_LIGHT_PURPLE, "%s to ready", buf);
         break;
     }
     case IlBattleState_WaitForFirstRetry: {
         if (mkb_main_mode == mkb_MD_GAME) {
-            draw_debug_text(X - 12 * CWIDTH, Y, COLOR_GOLD, "READY");
-            draw_debug_text(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_GOLD, "Retry to begin");
+            Draw_DebugText(X - 12 * CWIDTH, Y, COLOR_GOLD, "READY");
+            Draw_DebugText(X - 12 * CWIDTH, Y + CHEIGHT, COLOR_GOLD, "Retry to begin");
         }
         break;
     }
@@ -410,14 +410,14 @@ void ilbattle_disp() {
     case IlBattleState_BuzzerBeater: {
         if (s_main_mode_play_timer > 0 && s_battle_stage_id != mkb_current_stage_id &&
             mkb_main_mode == mkb_MD_GAME) {
-            draw_debug_text(X - 12 * CWIDTH, Y, COLOR_RED, "WRONG STAGE");
+            Draw_DebugText(X - 12 * CWIDTH, Y, COLOR_RED, "WRONG STAGE");
         } else {
             battle_display(COLOR_LIGHT_GREEN);
         }
         break;
     }
     case IlBattleState_BuzzerBeaterPostgoal: {
-        if (pref_get(Pref_IlBattleShowScore)) {
+        if (Pref_Get(Pref_IlBattleShowScore)) {
             battle_display(COLOR_LIGHT_GREEN);
         } else {
             battle_display(COLOR_LIGHT_PURPLE);

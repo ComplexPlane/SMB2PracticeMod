@@ -30,9 +30,9 @@ void deathcounter_tick() {
 void deathcounter_disp() {
     if ((mkb_main_game_mode != mkb_STORY_MODE && mkb_sub_mode != mkb_SMD_AUTHOR_PLAY_INIT &&
          mkb_sub_mode != mkb_SMD_AUTHOR_PLAY_MAIN) ||
-        freecam_should_hide_hud() || !pref_get(Pref_ShowDeathCounter)) {
+        freecam_should_hide_hud() || !Pref_Get(Pref_ShowDeathCounter)) {
         return;
     }
-    draw_debug_text(18, 56, COLOR_WHITE, "Deaths: ");
-    draw_debug_text(98, 56, COLOR_WHITE, "%d", s_death_count);
+    Draw_DebugText(18, 56, COLOR_WHITE, "Deaths: ");
+    Draw_DebugText(98, 56, COLOR_WHITE, "%d", s_death_count);
 }

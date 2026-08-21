@@ -20,20 +20,20 @@ static void do_unlock() {
     mkb_g_some_gift_menu_flags |= 8;
 }
 
-void unlock_init() {
+void Unlock_Init() {
     char gamecode[7] = {};
     mkb_memcpy(gamecode, mkb_DVD_GAME_NAME, 6);
     if (mkb_strcmp(gamecode, (char *)"GM2E8P") == 0) {
-        if (pref_get(Pref_UnlockVanilla)) s_flags |= Flag_ShouldUnlock;
-    } else if (pref_get(Pref_UnlockRomhacks)) {
+        if (Pref_Get(Pref_UnlockVanilla)) s_flags |= Flag_ShouldUnlock;
+    } else if (Pref_Get(Pref_UnlockRomhacks)) {
         s_flags |= Flag_ShouldUnlock;
     }
 }
 
-void unlock_tick() {
+void Unlock_Tick() {
     if (s_flags & Flag_ShouldUnlock) do_unlock();
 }
 
-void unlock_unlock_everything() {
+void Unlock_Everything() {
     s_flags |= Flag_ShouldUnlock;
 }

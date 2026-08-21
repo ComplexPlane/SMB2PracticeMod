@@ -82,10 +82,10 @@ static Widget s_input_hex[] = {
 };
 
 static bool inputdisp_uses_preset_color() {
-    return pref_get(Pref_InputDispColorType) == 0;
+    return Pref_Get(Pref_InputDispColorType) == 0;
 }
 static bool inputdisp_uses_rgb_color() {
-    return pref_get(Pref_InputDispColorType) == 1;
+    return Pref_Get(Pref_InputDispColorType) == 1;
 }
 
 static Widget s_inputdisp_subwidgets[] = {
@@ -144,7 +144,7 @@ static Widget s_inputdisp_subwidgets[] = {
 };
 
 static bool inputdisp_is_enabled() {
-    return pref_get(Pref_InputDisp);
+    return Pref_Get(Pref_InputDisp);
 }
 
 static Widget s_inputdisp_widgets[] = {
@@ -244,13 +244,13 @@ static Widget s_hex_widgets[] = {
 };
 
 static bool ball_uses_preset_color() {
-    return pref_get(Pref_BallColorType) == 0;
+    return Pref_Get(Pref_BallColorType) == 0;
 }
 static bool ball_uses_rgb_color() {
-    return pref_get(Pref_BallColorType) == 1;
+    return Pref_Get(Pref_BallColorType) == 1;
 }
 static bool ape_uses_preset_color() {
-    return pref_get(Pref_ApeColorType) == 0;
+    return Pref_Get(Pref_ApeColorType) == 0;
 }
 
 static Widget s_ball_color_widgets[] = {
@@ -339,7 +339,7 @@ static Widget s_il_battle_score_widgets[] = {
 };
 
 static bool il_battle_score_is_shown() {
-    return pref_get(Pref_IlBattleShowScore);
+    return Pref_Get(Pref_IlBattleShowScore);
 }
 
 static Widget s_il_battle_subwidgets[] = {
@@ -416,7 +416,7 @@ static Widget s_il_battle_subwidgets[] = {
 };
 
 static bool il_battle_display_is_enabled() {
-    return pref_get(Pref_IlBattleDisplay);
+    return Pref_Get(Pref_IlBattleDisplay);
 }
 
 static Widget s_il_battle_widgets[] = {
@@ -527,7 +527,7 @@ static Widget s_about_widgets[] = {
     },
     {
         .type = WidgetType_Custom,
-        .custom = {draw_heart},
+        .custom = {Draw_Heart},
     },
     {
         .type = WidgetType_Text,
@@ -1014,7 +1014,7 @@ static Widget s_unlock_confirm_widgets[] = {
         .button =
             {
                 .label = "Confirm",
-                .push = unlock_unlock_everything,
+                .push = Unlock_Everything,
                 .flags = ButtonFlag_GoBack,
             },
     },
@@ -1103,7 +1103,7 @@ static Widget s_freecam_subwidgets[] = {
 };
 
 static bool freecam_is_enabled() {
-    return pref_get(Pref_Freecam);
+    return Pref_Get(Pref_Freecam);
 }
 
 static Widget s_freecam_widgets[] = {
@@ -1252,7 +1252,7 @@ static Widget s_savestate_subwidgets[] = {
 };
 
 static bool savestates_are_enabled() {
-    return pref_get(Pref_Savestates);
+    return Pref_Get(Pref_Savestates);
 }
 
 static Widget s_savestate_widgets[] = {
@@ -1281,7 +1281,7 @@ static Widget s_tools_widgets[] = {
         .button =
             {
                 .label = "Go To Story Mode",
-                .push = gotostory_load_storymode,
+                .push = GoToStory_LoadStoryMode,
                 .flags = ButtonFlag_CloseMenu,
             },
     },
@@ -1336,7 +1336,7 @@ static Widget s_tools_widgets[] = {
 };
 
 static void disable_il_invalidating_settings() {
-    ilmark_disable_invalidating_settings();
+    ILMark_DisableInvalidatingSettings();
 }
 
 static Widget s_il_mark_widgets[] = {
@@ -1465,7 +1465,7 @@ static Widget s_enabled_physics_widgets[] = {
 };
 
 static bool custom_physics_is_enabled() {
-    return pref_get(Pref_UseCustomPhysics);
+    return Pref_Get(Pref_UseCustomPhysics);
 }
 
 static Widget s_physics_widgets[] = {
@@ -1507,7 +1507,7 @@ static Widget s_reverse_goal_widgets[] = {
 };
 
 static bool reverse_mode_is_selected() {
-    return pref_get(Pref_StageEditVariant) == 3;
+    return Pref_Get(Pref_StageEditVariant) == 3;
 }
 
 static Widget s_stage_edit_widgets[] = {
@@ -1601,8 +1601,8 @@ static Widget s_gameplay_mods_widgets[] = {
 };
 
 static void restore_default_preferences() {
-    pref_set_defaults();
-    pref_save();
+    Pref_SetDefaults();
+    Prev_Save();
 }
 
 static Widget s_reset_prefs_widgets[] = {
