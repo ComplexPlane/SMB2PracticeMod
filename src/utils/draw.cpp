@@ -63,7 +63,7 @@ static void debug_text_buf(s32 x, s32 y, GXColor color, const char *buf) {
     mkb::textdraw_print((char *)buf);
 }
 
-static void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_list args) {
+void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_list args) {
     // Shouldn't be able to print a string to the screen longer than this
     // Be careful not to overflow! MKB2 doesn't have vsnprintf
     static char buf[80];
