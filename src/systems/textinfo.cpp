@@ -179,7 +179,14 @@ void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...) {
 // aligns the time according to get_slot_timer_x_pos; the prefix gets automatically moved to the
 // left depending on string length
 void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format) {
-    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+    s32 num_x = get_slot_timer_x_pos(slot);
+    u32 prefix_len = mkb::strlen(prefix);
+    s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
+
+    char time_buf[16] = {};
+    timerdisp::format_signed_time(time_buf, frames, format);
+    draw_main(slot, x, color, "%s%s", prefix, time_buf);
+    /* for (u16 k = 0; k < LEN(s_slot_list); k++) {
         if (s_slot_list[k] == slot) {
             bool positive = frames >= 0;
             if (!positive) frames = -frames;
@@ -199,7 +206,24 @@ void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::T
 
             s_active_row[k]++;
         }
-    }
+    } */
+}
+
+void draw_subtick_timer(Slot slot,
+                        GXColor color,
+                        char *prefix,
+                        s32 frames,
+                        u32 framesave,
+                        bool extra_precision) {
+    s32 num_x = get_slot_timer_x_pos(slot);
+    u32 prefix_len = mkb::strlen(prefix);
+    s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
+
+    char time_buf[16] = {};
+    timerdisp::format_subtick_time(time_buf, frames, framesave, extra_precision);
+
+    // draw_main(slot, x, color, "%s%s%s", prefix, sign, time_buf);  // this crashes???
+    draw_main(slot, x, color, "%s%s", prefix, time_buf);  // but this doesn't???
 }
 
 u16 get_slot_starting_row(Slot slot) {
