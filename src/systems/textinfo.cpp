@@ -26,8 +26,10 @@ constexpr QueueObject EMPTY_QUEUE_OBJECT = {EMPTY_GROUP, nullptr};
 // static QueueObject s_text_queue[] = {[0 ... MAX_QUEUE_LENGTH] = EMPTY_QUEUE_OBJECT};
 
 constexpr u16 STARTING_ROW = 2;
+// constexpr u16 STARTING_ROW_LIST[LEN(s_slot_list)] = {2, 0};
 static QueueObject s_text_queue[MAX_QUEUE_LENGTH];
-static u16 s_active_row[LEN(s_slot_list)] = {STARTING_ROW, STARTING_ROW};
+// static u16 s_active_row[LEN(s_slot_list)] = {STARTING_ROW, STARTING_ROW};
+static u16 s_active_row[LEN(s_slot_list)] = {};
 
 void initialize_queue() {  // I guess
     for (u8 k = 0; k < MAX_QUEUE_LENGTH; k++) {
@@ -174,11 +176,15 @@ void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...) {
     }
 }
 
-// aligns the time according to get_slot_timer_x_pos, the prefix gets automatically moved to the
+// aligns the time according to get_slot_timer_x_pos; the prefix gets automatically moved to the
 // left depending on string length
-void draw_timer(Slot slot, GXColor color, char *prefix, u32 frames, timerdisp::TimeFormat format) {
+void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format) {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         if (s_slot_list[k] == slot) {
+            bool positive = frames >= 0;
+            if (!positive) frames = -frames;
+            const char *sign = positive ? "" : "-";
+
             s32 x = get_slot_timer_x_pos(slot);
             s32 y = timerdisp::row_number_to_vertical_pos(s_active_row[k]);
 
@@ -189,16 +195,28 @@ void draw_timer(Slot slot, GXColor color, char *prefix, u32 frames, timerdisp::T
             s32 text_x = x - prefix_len * draw::DEBUG_CHAR_WIDTH;
 
             draw::debug_text(text_x, y, color, prefix);
-            draw::debug_text(x, y, color, time_buf);
+            draw::debug_text(x, y, color, "%s%s", sign, time_buf);
 
             s_active_row[k]++;
         }
     }
 }
 
+u16 get_slot_starting_row(Slot slot) {
+    switch (slot) {
+        case Slot::Left:
+            return 2;
+        case Slot::Right:
+            return 0;
+        default:
+            return 0;
+    }
+}
+
 void reset_active_rows() {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
-        s_active_row[k] = STARTING_ROW;
+        // s_active_row[k] = STARTING_ROW;
+        s_active_row[k] = get_slot_starting_row(s_slot_list[k]);
     }
 }
 

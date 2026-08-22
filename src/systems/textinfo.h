@@ -37,7 +37,7 @@ s32 get_slot_timer_x_pos(Slot slot);
 
 void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...);
 void draw(Slot slot, GXColor color, char *format, ...);
-void draw_timer(Slot slot, GXColor color, char *prefix, u32 frames, timerdisp::TimeFormat format);
+void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format);
 
 void init();
 void tick();
