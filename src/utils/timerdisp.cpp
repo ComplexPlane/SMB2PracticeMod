@@ -66,6 +66,9 @@ void format_time(char *buffer, u32 frames, TimeFormat format) {
             }
             break;
         }
+        case TimeFormat::Unformatted: {
+            mkb::sprintf(buffer, "%d", frames);
+        }
     }
 }
 

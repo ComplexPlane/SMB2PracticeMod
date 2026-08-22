@@ -22,7 +22,8 @@ enum class TimeFormat {
     MinutesAlwaysLeadingZero,  // 0m:ss.cc or mm:ss.cc if <1 hour, h:mm:ss.cc otherwise
     MinimalLeading,            // ss.cc if < 1 min, m:ss.cc if < 10 min, mm:ss.cc if > 10 min, < 1h,
                                // h:mm:ss.cc otherwise
-    AlwaysLeadNonHours         // mm:ss.cc if < 1 hour, ss.cc if < 1 min
+    AlwaysLeadNonHours,        // mm:ss.cc if < 1 hour, ss.cc if < 1 min
+    Unformatted
 };
 
 void format_time(char *buffer, u32 frames, TimeFormat format);
