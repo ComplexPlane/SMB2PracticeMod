@@ -25,7 +25,9 @@ constexpr QueueObject EMPTY_QUEUE_OBJECT = {EMPTY_GROUP, nullptr};
 
 // static QueueObject s_text_queue[] = {[0 ... MAX_QUEUE_LENGTH] = EMPTY_QUEUE_OBJECT};
 
+constexpr u16 STARTING_ROW = 2;
 static QueueObject s_text_queue[MAX_QUEUE_LENGTH];
+static u16 s_active_row[LEN(s_slot_list)] = {STARTING_ROW, STARTING_ROW};
 
 void initialize_queue() {  // I guess
     for (u8 k = 0; k < MAX_QUEUE_LENGTH; k++) {
@@ -62,9 +64,21 @@ DisplayGroup module_to_display_group(Module module) {
 s32 get_slot_x_pos(Slot slot) {
     switch (slot) {
         case Slot::Left:
-            return 0;
+            return 18;
         case Slot::Right:
+            return 378;
+        default:
             return 0;
+    }
+}
+
+// Where the numbers get lined up
+s32 get_slot_timer_x_pos(Slot slot) {
+    switch (slot) {
+        case Slot::Left:
+            return 102;
+        case Slot::Right:
+            return 378 + 4 * draw::DEBUG_CHAR_WIDTH;
         default:
             return 0;
     }
@@ -126,11 +140,75 @@ void draw_displays() {
     }
 }
 
+// --- new stuff ---
+
+// Slot slot, GXColor color, char *format, ...
+
+void draw(Slot slot, GXColor color, char *format, ...) {
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        if (s_slot_list[k] == slot) {
+            s32 x = get_slot_x_pos(slot);
+            s32 y = timerdisp::row_number_to_vertical_pos(s_active_row[k]);
+
+            draw::debug_text(x, y, color, format);
+
+            s_active_row[k]++;
+        }
+    }
+}
+
+// We use "Slot" to determine which set of timers/text rows to stack our current text row under
+// Each mod might need to use a slightly different x position, though; see storytimer.cpp for
+// instance
+// The breakdown row x position depends on the row number since we want to align things based on the
+// numbers and not the left hand side of the text
+void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...) {
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        if (s_slot_list[k] == slot) {
+            s32 y = timerdisp::row_number_to_vertical_pos(s_active_row[k]);
+
+            draw::debug_text(pos_x, y, color, format);
+
+            s_active_row[k]++;
+        }
+    }
+}
+
+// aligns the time according to get_slot_timer_x_pos, the prefix gets automatically moved to the
+// left depending on string length
+void draw_timer(Slot slot, GXColor color, char *prefix, u32 frames, timerdisp::TimeFormat format) {
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        if (s_slot_list[k] == slot) {
+            s32 x = get_slot_timer_x_pos(slot);
+            s32 y = timerdisp::row_number_to_vertical_pos(s_active_row[k]);
+
+            char time_buf[16] = {};
+            timerdisp::format_time(time_buf, frames, format);
+
+            u32 prefix_len = mkb::strlen(prefix);
+            s32 text_x = x - prefix_len * draw::DEBUG_CHAR_WIDTH;
+
+            draw::debug_text(text_x, y, color, prefix);
+            draw::debug_text(x, y, color, time_buf);
+
+            s_active_row[k]++;
+        }
+    }
+}
+
+void reset_active_rows() {
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        s_active_row[k] = STARTING_ROW;
+    }
+}
+
 void init() {
 }
 void tick() {
 }
 void disp() {
+    // textinfo's disp() runs after all other disp() functions
+    reset_active_rows();
 }
 
 }  // namespace textinfo

@@ -11,6 +11,7 @@
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/savest.h"
+#include "systems/textinfo.h"
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
@@ -146,6 +147,7 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     ilmark::disp();
     physics::disp();
     scratch::disp();
+    textinfo::disp();
 });
 
 static patch::Tramp<mkb::smd_game_ready_init> s_smd_game_ready_init_tramp([]() {
