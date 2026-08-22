@@ -57,7 +57,7 @@ void disp() {
         }
     }
 
-    u32 row = 1;
+    // u32 row = 1;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
         // timerdisp::draw_timer_right_side(s_rta_timer, "RTA:", row++, draw::WHITE, true);
@@ -84,12 +84,18 @@ void disp() {
     u32 framesave = validate::get_framesave();
 
     if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                      draw::WHITE, true, framesave, false);
+        /* timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
+                                      draw::WHITE, true, framesave, false); */
+        textinfo::draw_subtick_timer(textinfo::Slot::Right, draw::WHITE,
+                                     "SUB:", mkb::mode_info.stage_time_frames_remaining, framesave,
+                                     false);
     }
 
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
+        // timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
+        s32 num_x = textinfo::get_slot_timer_x_pos(textinfo::Slot::Right);
+        s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;
+        textinfo::draw_main(textinfo::Slot::Right, x, draw::WHITE, "FSV:%2d%", framesave);
     }
 }
 
