@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdarg.h>
 #include "mkb/mkb.h"
 #include "utils/timerdisp.h"
 
@@ -11,7 +12,27 @@ enum class Slot {
     Right,
 };
 
+enum class Module {
+    RtaTimer,
+    IwTimer,
+    CmSeg,
+    FrameSave,
+    IlBattle,
+    DeathCounter,
+    LoadlessTimer,
+};
+
 s32 get_slot_timer_x_pos(Slot slot);
+s32 module_and_slot_to_timer_x_pos(Module module, Slot slot);
+
+void draw(Module module, Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...);
+void draw_aligned(Module module, Slot slot, GXColor color, char *format, ...);
+void draw_timer_main(Module module,
+                     Slot slot,
+                     GXColor color,
+                     char *prefix,
+                     s32 frames,
+                     timerdisp::TimeFormat format);
 
 void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...);
 void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format);
