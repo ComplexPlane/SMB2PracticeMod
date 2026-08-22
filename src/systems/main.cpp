@@ -135,12 +135,13 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     }
 
     draw::predraw();
-    timer::disp();
+    // timer::disp();
     iw::disp();
     deathcounter::disp();
     storytimer::disp();
     ilbattle::disp();
     cmseg::disp();
+    timer::disp();
     inputdisp::disp();
     menu_impl::disp();
     draw::disp();

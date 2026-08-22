@@ -4,6 +4,7 @@
 #include "mods/freecam.h"
 #include "mods/validate.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
@@ -59,11 +60,15 @@ void disp() {
     u32 row = 1;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer_right_side(s_rta_timer, "RTA:", row++, draw::WHITE, true);
+        // timerdisp::draw_timer_right_side(s_rta_timer, "RTA:", row++, draw::WHITE, true);
+        textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
+                             timerdisp::TimeFormat::SecondsOnly);
     }
 
     if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer_right_side(s_pause_timer, "PAU:", row++, draw::WHITE, true);
+        // timerdisp::draw_timer_right_side(s_pause_timer, "PAU:", row++, draw::WHITE, true);
+        textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
+                             timerdisp::TimeFormat::SecondsOnly);
     }
 
     switch (mkb::sub_mode) {
