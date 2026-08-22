@@ -7,6 +7,7 @@
 #include "systems/goal.h"
 #include "systems/pref.h"
 #include "systems/savest.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/mode.h"
@@ -149,9 +150,11 @@ void disp() {
     }
 
     if (should_display_death_counter()) {
-        draw::debug_text(COUNTER_DISPLAY_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "Deaths:");
+        /* draw::debug_text(COUNTER_DISPLAY_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "Deaths:");
         draw::debug_text(COUNTER_NUMBER_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "%d",
-                         get_total_death_count());
+                         get_total_death_count()); */
+        textinfo::draw_main(textinfo::Slot::Left, COUNTER_DISPLAY_X_POS, draw::WHITE, "Deaths:%d",
+                            get_total_death_count());
     }
 }
 

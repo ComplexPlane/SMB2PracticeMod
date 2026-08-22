@@ -7,6 +7,7 @@
 #include "storyreset.h"
 #include "systems/goal.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/mode.h"
@@ -241,20 +242,28 @@ u16 get_current_segment_idx() {
 }
 
 void draw_timers() {
-    TimerDisplayInfo fullgame_info = get_timer_display_info(TimerType::Fullgame);
-    u32 loadless_time = get_loadless_time();
+    // TimerDisplayInfo fullgame_info = get_timer_display_info(TimerType::Fullgame);
+    // u32 loadless_time = get_loadless_time();
 
     if (should_display_timer(TimerType::Fullgame)) {
-        timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.row, fullgame_info.text_offset,
-                              "Time:", loadless_time, false, draw::WHITE);
+        /* timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.row, fullgame_info.text_offset,
+                              "Time:", loadless_time, false, draw::WHITE); */
+        // textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Time: %d", get_loadless_time());
+        textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE, "Time:", get_loadless_time(),
+                             timerdisp::TimeFormat::AlwaysLeadNonHours);
     }
 
     u16 world_idx = get_current_segment_idx();  // index of the current world
-    TimerDisplayInfo seg_info = get_timer_display_info(TimerType::Segment);
+    // TimerDisplayInfo seg_info = get_timer_display_info(TimerType::Segment);
 
     if (should_display_timer(TimerType::Segment)) {
-        timerdisp::draw_timer(seg_info.pos_x, seg_info.row, seg_info.text_offset,
-                              "Seg:", s_world_timer[world_idx].segment, false, draw::WHITE);
+        /*  timerdisp::draw_timer(seg_info.pos_x, seg_info.row, seg_info.text_offset,
+                               "Seg:", s_world_timer[world_idx].segment, false, draw::WHITE); */
+        /* textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Seg: %d",
+                       s_world_timer[world_idx].segment); */
+        textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE,
+                             "Seg:", s_world_timer[world_idx].segment,
+                             timerdisp::TimeFormat::AlwaysLeadNonHours);
     }
 }
 
@@ -288,7 +297,9 @@ void draw_breakdown_screen() {
         mkb::sprintf(row_info_buf[idx], "W%d:%s (%s) (%d)", idx + 1, split_buf[idx], seg_buf[idx],
                      world_deaths);
 
-        draw::debug_text(pos.x, pos.y, draw::WHITE, "%s", row_info_buf[idx]);
+        // draw::debug_text(pos.x, pos.y, draw::WHITE, "%s", row_info_buf[idx]);
+        // textinfo::draw(textinfo::Slot::Left, draw::WHITE, row_info_buf[idx]);
+        textinfo::draw_main(textinfo::Slot::Left, pos.x, draw::WHITE, row_info_buf[idx]);
     }
 
     // For the totals row
