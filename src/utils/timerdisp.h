@@ -1,8 +1,12 @@
 #pragma once
 
 #include "mkb/mkb.h"
+#include "utils/draw.h"
 
 namespace timerdisp {
+
+// Where numbers on the right side get aligned (not their prefixes!)
+constexpr s32 RIGHT_SIDE_TIMER_ALIGN_X = 378 + 4 * draw::DEBUG_CHAR_WIDTH;
 
 // TimeComp = "Time Components"
 struct TimeComp {
@@ -21,7 +25,9 @@ enum class TimeFormat {
     AlwaysLeadNonHours         // mm:ss.cc if < 1 hour, ss.cc if < 1 min
 };
 
-void format_time(char *buffer, u32 frames, TimeFormat format_type);
+void format_time(char *buffer, u32 frames, TimeFormat format);
+void format_signed_time(char *buffer, s32 frames, TimeFormat format);
+void format_subtick_time(char *buffer, s32 frames, u32 framesave, bool extra_precision);
 
 s32 row_number_to_vertical_pos(u32 row_num);
 void draw_timer(s32 pos_x,
