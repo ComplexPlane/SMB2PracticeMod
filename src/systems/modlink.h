@@ -24,4 +24,4 @@ typedef struct ModLink {
 /**
  * Returns shared ModLink struct, or nullptr if not loaded (magic doesn't match)
  */
-ModLink *modlink_get();
+ModLink *ModLink_Get();

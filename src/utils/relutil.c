@@ -54,16 +54,16 @@ typedef struct OSModuleHeader {
 } __attribute__((packed)) OSModuleHeader;
 
 static Region s_vanilla_regions[] = {
-    {RelId_Dol, (void *)(0x80000000), 0x199F84, false},
-    {RelId_MainLoop, (void *)(0x80270100), 0x2DC7CC, false},
-    {RelId_MainLoop, (void *)(0x8054C8E0), 0xDDA4C, true},
-    {RelId_MainGame, (void *)(0x808F3FE0), 0x8B484, false},
-    {RelId_MainGame, (void *)(0x8097F4A0), 0x65F0, true},
-    {RelId_SelNgc, (void *)(0x808F3FE0), 0x55C87, false},
-    {RelId_SelNgc, (void *)(0x80949CA0), 0x8BD4, true},
+    {Rel_Dol, (void *)(0x80000000), 0x199F84, false},
+    {Rel_MainLoop, (void *)(0x80270100), 0x2DC7CC, false},
+    {Rel_MainLoop, (void *)(0x8054C8E0), 0xDDA4C, true},
+    {Rel_MainGame, (void *)(0x808F3FE0), 0x8B484, false},
+    {Rel_MainGame, (void *)(0x8097F4A0), 0x65F0, true},
+    {Rel_SelNgc, (void *)(0x808F3FE0), 0x55C87, false},
+    {Rel_SelNgc, (void *)(0x80949CA0), 0x8BD4, true},
 };
 
-void *rel_compute_mainloop_reldata_boundary(void *start) {
+void *Rel_ComputeMainLoopRelDataBoundary(void *start) {
     OSModuleHeader *module = *(OSModuleHeader **)(0x800030C8);
     for (u32 imp_idx = 0; imp_idx * sizeof(OSImportInfo) < module->impSize; imp_idx++) {
         OSImportInfo *imp = &module->impOffset[imp_idx];
@@ -95,14 +95,14 @@ static OSModuleHeader *find_loaded_rel(RelId id) {
     return nullptr;
 }
 
-void *rel_relocate_addr(u32 vanilla_addr) {
+void *Rel_RelocateAddr(u32 vanilla_addr) {
     for (u32 region_idx = 0; region_idx < LEN(s_vanilla_regions); region_idx++) {
         Region *region = &s_vanilla_regions[region_idx];
 
         u32 region_addr = (u32)(region->vanilla_ptr);
         if (vanilla_addr >= region_addr && vanilla_addr < (region_addr + region->size)) {
             // Vanilla pointer can be treated as absolute address
-            if (region->id == RelId_Dol) {
+            if (region->id == Rel_Dol) {
                 return (void *)(vanilla_addr);
             }
 
@@ -111,9 +111,9 @@ void *rel_relocate_addr(u32 vanilla_addr) {
             if (module != nullptr) {
                 u32 live_addr;
                 if (region->is_bss) {
-                    if (region->id == RelId_MainLoop) {
+                    if (region->id == Rel_MainLoop) {
                         live_addr = (u32)(mkb_mainloop_rel_buffer_info.bss_buffer);
-                    } else if (region->id == RelId_MainGame || region->id == RelId_SelNgc) {
+                    } else if (region->id == Rel_MainGame || region->id == Rel_SelNgc) {
                         live_addr = (u32)(mkb_additional_rel_buffer_info.bss_buffer);
                     } else {
                         // Sorry, we don't know where the BSS for that REL is

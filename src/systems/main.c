@@ -147,7 +147,7 @@ static bool os_link(mkb_OSModuleHeader *rel_buffer, void *bss_buffer) {
     bool ret = s_os_link_tramp.chain(rel_buffer, bss_buffer);
 
     // Main game init functions
-    if (rel_buffer->info.id == RelId_MainGame) {
+    if (rel_buffer->info.id == Rel_MainGame) {
         stage_edits_main_game_init();
     }
     // Sel_ngc init functions

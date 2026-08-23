@@ -43,7 +43,7 @@ static mkb_ChunkInfo *find_chunk_in_list(mkb_ChunkInfo *list, mkb_ChunkInfo *chu
 
 static void make_heap() {
     u32 start = mkb_OSRoundUp32B(*(u32 *)(0x8000452C));
-    void *end_ptr = rel_compute_mainloop_reldata_boundary((void *)start);  // TODO precompute?
+    void *end_ptr = Rel_ComputeMainLoopRelDataBoundary((void *)start);  // TODO precompute?
     u32 end = mkb_OSRoundDown32B((u32)(end_ptr));
     u32 size = end - start;
 
@@ -187,8 +187,8 @@ void Heap_CheckIntegrity() {
 
 void Heap_Init() {
     // Use Workshop Mod's heap if it's loaded, otherwise make our own
-    if (modlink_get() != nullptr) {
-        s_heap_info = modlink_get()->heap_info;
+    if (ModLink_Get() != nullptr) {
+        s_heap_info = ModLink_Get()->heap_info;
     } else {
         s_heap_info = &s_local_heap_info;
         make_heap();
