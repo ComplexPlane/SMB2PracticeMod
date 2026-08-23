@@ -63,12 +63,12 @@ void disp() {
     using Format = timerdisp::TimeFormat;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        textinfo::draw_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
+        textinfo::draw_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
                              Format::SecondsOnly);
     }
 
     if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        textinfo::draw_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
+        textinfo::draw_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
                              Format::SecondsOnly);
     }
 
@@ -85,14 +85,14 @@ void disp() {
     u32 framesave = validate::get_framesave();
 
     if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
-        textinfo::draw_subtick_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
+        textinfo::draw_subtick_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "SUB:", s_rta_timer,
                                      framesave, false);
     }
 
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        s32 num_x = textinfo::module_and_slot_to_x_alignment(Mod::RtaTimer, Slot::Right);
+        s32 num_x = textinfo::module_and_slot_to_x_alignment(Mod::StageTimer, Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;
-        textinfo::draw(Mod::RtaTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
+        textinfo::draw(Mod::StageTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
     }
 }
 

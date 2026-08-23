@@ -16,14 +16,6 @@
 
 namespace storytimer {
 
-constexpr s16 FULLGAME_TIMER_LOCATION_X = 18 + 24;
-constexpr u16 FULLGAME_TIMER_TEXT_OFFSET = 5 * draw::DEBUG_CHAR_WIDTH;
-constexpr s16 SEGMENT_TIMER_LOCATION_X = 30 + 24;
-constexpr u16 SEGMENT_TIMER_TEXT_OFFSET = 4 * draw::DEBUG_CHAR_WIDTH;
-constexpr s16 BREAKDOWN_ROW_LOCATION_X = 42 + 24;
-constexpr s16 TOTALS_ROW_LOCATION_X = 18;
-constexpr u16 STARTING_ROW = 2;
-
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
 constexpr u16 STAGES_PER_WORLD = mode::STAGES_PER_WORLD;
 

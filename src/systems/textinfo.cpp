@@ -40,20 +40,8 @@ s32 module_and_slot_to_x_alignment(Module module, Slot slot) {
         case Module::IlBattle:
             // IL Battle needs different number alignment from loadless timer/death counter
             return 160 - 6;
-        case Module::DeathCounter:
-            return get_slot_x_alignment(Slot::Left);
-        case Module::LoadlessTimer:
-            return get_slot_x_alignment(Slot::Left);
-        case Module::IwTimer:
-            return get_slot_x_alignment(Slot::Right);
-        case Module::CmSeg:
-            return get_slot_x_alignment(Slot::Right);
-        case Module::RtaTimer:
-            return get_slot_x_alignment(Slot::Right);
-        case Module::FrameSave:
-            return get_slot_x_alignment(Slot::Right);
         default:
-            return 0;
+            return get_slot_x_alignment(slot);
     }
 }
 
@@ -73,22 +61,10 @@ u16 get_slot_min_row(Slot slot) {
 // don't have any modules currently that need to do this though)
 u16 module_and_slot_to_min_row(Module module, Slot slot) {
     switch (module) {
-        case Module::IlBattle:
-            return get_slot_min_row(Slot::Left);
-        case Module::DeathCounter:
-            return get_slot_min_row(Slot::Left);
-        case Module::LoadlessTimer:
-            return get_slot_min_row(Slot::Left);
-        case Module::IwTimer:
-            return get_slot_min_row(Slot::Right);
-        case Module::CmSeg:
-            return get_slot_min_row(Slot::Right);
-        case Module::RtaTimer:
-            return 2;
-        case Module::FrameSave:
+        case Module::StageTimer:
             return 2;
         default:
-            return 0;
+            return get_slot_min_row(slot);
     }
 }
 

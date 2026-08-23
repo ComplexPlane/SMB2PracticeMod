@@ -13,10 +13,9 @@ enum class Slot {
 };
 
 enum class Module {
-    RtaTimer,
+    StageTimer,  // Includes RTA/Pause timer + framesave stuff
     IwTimer,
     CmSeg,
-    FrameSave,
     IlBattle,
     DeathCounter,
     LoadlessTimer,
