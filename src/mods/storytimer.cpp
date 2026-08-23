@@ -201,7 +201,7 @@ bool should_display_timer(TimerType type) {
 }
 
 // Doing this for now until a better display setup is figured out
-u16 get_timer_row(TimerType type) {
+/* u16 get_timer_row(TimerType type) {
     u16 row = STARTING_ROW;
     bool is_displaying_death_counter = deathcounter::should_display_death_counter();
 
@@ -234,7 +234,7 @@ TimerDisplayInfo get_timer_display_info(TimerType type) {
     } else {
         return {SEGMENT_TIMER_LOCATION_X, get_timer_row(type), SEGMENT_TIMER_TEXT_OFFSET};
     }
-}
+} */
 
 u16 get_current_segment_idx() {
     // mkb::scen_info.world gets reset to 0 on the file screen, so if we accidentally exit game to
@@ -279,8 +279,9 @@ void draw_timers() {
 }
 
 // We only use this function for 0 <= row <= 10
-Vec2d get_breakdown_row_position(u16 row) {
-    u16 starting_row = get_timer_row(TimerType::Segment);
+/* Vec2d get_breakdown_row_position(u16 row) {
+    // u16 starting_row = get_timer_row(TimerType::Segment);
+    u16 starting_row = 0;  // placeholder
     float pos_y = timerdisp::row_number_to_vertical_pos(starting_row + row);
     if (row < WORLD_COUNT - 1) {
         return {BREAKDOWN_ROW_LOCATION_X, pos_y};
@@ -289,38 +290,49 @@ Vec2d get_breakdown_row_position(u16 row) {
     } else {  // For the totals row
         return {TOTALS_ROW_LOCATION_X, pos_y};
     }
+} */
+
+// We only use this function for 0 <= row <= 10
+s32 get_breakdown_row_x_pos(u16 row) {
+    s32 num_x_pos = textinfo::module_and_slot_to_x_alignment(Mod::LoadlessTimer, Slot::Left);
+    if (row < WORLD_COUNT - 1) {  // "Wk:" is 3 characters long if 1 <= k <= 9
+        return num_x_pos - 3 * draw::DEBUG_CHAR_WIDTH;
+    } else if (row == WORLD_COUNT - 1) {  // "W10:" is 4 characters long
+        return num_x_pos - 4 * draw::DEBUG_CHAR_WIDTH;
+    } else {  // "Totals:" is 7 characters long
+        return num_x_pos - 7 * draw::DEBUG_CHAR_WIDTH;
+    }
 }
 
 void draw_breakdown_screen() {
     // Format: "Wk: world k split time (world k segment time) (world k deaths)"
-    char split_buf[WORLD_COUNT][16] = {};
-    char seg_buf[WORLD_COUNT][16] = {};
-    char row_info_buf[WORLD_COUNT][32] = {};
+    char split_buf[16] = {};
+    char seg_buf[16] = {};
+    char row_info_buf[32] = {};
 
     for (u16 idx = 0; idx < WORLD_COUNT; idx++) {
-        Vec2d pos = get_breakdown_row_position(idx);
+        // Vec2d pos = get_breakdown_row_position(idx);
+        s32 pos_x = get_breakdown_row_x_pos(idx);
         u32 world_deaths = deathcounter::get_world_death_count(idx);
 
-        timerdisp::format_time(split_buf[idx], get_split_timer_for_world(idx),
-                               timerdisp::TimeFormat::MinutesAlwaysLeadingZero);
-        timerdisp::format_time(seg_buf[idx], s_world_timer[idx].segment,
-                               timerdisp::TimeFormat::MinutesAlwaysLeadingZero);
-        mkb::sprintf(row_info_buf[idx], "W%d:%s (%s) (%d)", idx + 1, split_buf[idx], seg_buf[idx],
-                     world_deaths);
+        timerdisp::format_time(split_buf, get_split_timer_for_world(idx),
+                               Format::MinutesAlwaysLeadingZero);
+        timerdisp::format_time(seg_buf, s_world_timer[idx].segment,
+                               Format::MinutesAlwaysLeadingZero);
+        mkb::sprintf(row_info_buf, "W%d:%s (%s) (%d)", idx + 1, split_buf, seg_buf, world_deaths);
 
-        // draw::debug_text(pos.x, pos.y, draw::WHITE, "%s", row_info_buf[idx]);
-        // textinfo::draw(textinfo::Slot::Left, draw::WHITE, row_info_buf[idx]);
-        // textinfo::draw_main(textinfo::Slot::Left, pos.x, draw::WHITE, row_info_buf[idx]);
-        textinfo::draw(Mod::LoadlessTimer, Slot::Left, pos.x, draw::WHITE, true, row_info_buf[idx]);
+        textinfo::draw(Mod::LoadlessTimer, Slot::Left, pos_x, draw::WHITE, true, row_info_buf);
     }
 
     // For the totals row
-    char totals_row_buf[32] = {};
-    Vec2d totals_row_pos = get_breakdown_row_position(WORLD_COUNT);
+    // Vec2d totals_row_pos = get_breakdown_row_position(WORLD_COUNT);
+    s32 totals_x_pos = get_breakdown_row_x_pos(WORLD_COUNT);
     u32 total_deaths = deathcounter::get_total_death_count();
 
-    mkb::sprintf(totals_row_buf, "Totals:%s (%d)", split_buf[WORLD_COUNT - 1], total_deaths);
-    draw::debug_text(totals_row_pos.x, totals_row_pos.y, draw::WHITE, "%s", totals_row_buf);
+    char total_time_buf[16] = {};
+    timerdisp::format_time(total_time_buf, get_loadless_time(), Format::MinutesAlwaysLeadingZero);
+    textinfo::draw(Mod::LoadlessTimer, Slot::Left, totals_x_pos, draw::WHITE, true,
+                   "Totals:%s (%d)", total_time_buf, total_deaths);
 }
 
 bool should_not_display_timer_at_all() {
@@ -336,7 +348,7 @@ bool should_not_display_timer_at_all() {
 
 void disp() {
     if (should_not_display_timer_at_all()) {
-        return;  // testing, remember to uncomment
+        return;
     }
 
     draw_timers();
