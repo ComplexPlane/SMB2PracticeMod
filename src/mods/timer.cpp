@@ -90,7 +90,7 @@ void disp() {
     }
 
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        s32 num_x = textinfo::get_slot_timer_x_pos(Slot::Right);
+        s32 num_x = textinfo::module_and_slot_to_x_alignment(Mod::RtaTimer, Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;
         textinfo::draw(Mod::RtaTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
     }

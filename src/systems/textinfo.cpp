@@ -16,13 +16,15 @@ static const Slot s_slot_list[]{
 
 static u16 s_active_row[LEN(s_slot_list)] = {};
 
+// "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
+// stacked on top of each other
 // In addition to the generic text drawing functions, it's useful to be able to line up our displays
 // by numbers
 // Each module may have slightly different requirements for this alignment
 
 // Where the numbers get lined up (this acts as the "default" number alignment per slot, but this
 // can be overridden on a per-mod basis)
-s32 get_slot_timer_x_pos(Slot slot) {
+s32 get_slot_x_alignment(Slot slot) {
     switch (slot) {
         case Slot::Left:
             return 102;
@@ -33,23 +35,23 @@ s32 get_slot_timer_x_pos(Slot slot) {
     }
 }
 
-s32 module_and_slot_to_timer_x_pos(Module module, Slot slot) {
+s32 module_and_slot_to_x_alignment(Module module, Slot slot) {
     switch (module) {
         case Module::IlBattle:
             // IL Battle needs different number alignment from loadless timer/death counter
             return 160 - 6;
         case Module::DeathCounter:
-            return get_slot_timer_x_pos(Slot::Left);
+            return get_slot_x_alignment(Slot::Left);
         case Module::LoadlessTimer:
-            return get_slot_timer_x_pos(Slot::Left);
+            return get_slot_x_alignment(Slot::Left);
         case Module::IwTimer:
-            return get_slot_timer_x_pos(Slot::Right);
+            return get_slot_x_alignment(Slot::Right);
         case Module::CmSeg:
-            return get_slot_timer_x_pos(Slot::Right);
+            return get_slot_x_alignment(Slot::Right);
         case Module::RtaTimer:
-            return get_slot_timer_x_pos(Slot::Right);
+            return get_slot_x_alignment(Slot::Right);
         case Module::FrameSave:
-            return get_slot_timer_x_pos(Slot::Right);
+            return get_slot_x_alignment(Slot::Right);
         default:
             return 0;
     }
@@ -61,7 +63,7 @@ u16 get_slot_min_row(Slot slot) {
         case Slot::Left:
             return 2;
         case Slot::Right:
-            return 0;
+            return 1;
         default:
             return 0;
     }
@@ -134,21 +136,23 @@ void draw(Module module, Slot slot, s32 pos_x, GXColor color, bool incr_row, cha
     va_end(args);
 }
 
-// When we want to align according to module_and_slot_to_timer_x_pos()
+// When we want to align according to module_and_slot_to_x_alignment()
 void draw_aligned(Module module, Slot slot, GXColor color, char *format, ...) {
     va_list args;
     va_start(args, format);
-    draw_v(module, slot, module_and_slot_to_timer_x_pos(module, slot), color, true, format, args);
+    draw_v(module, slot, module_and_slot_to_x_alignment(module, slot), color, true, format, args);
     va_end(args);
 }
 
+// Aligns the time according to get_slot_x_alignment; the prefix gets automatically moved to the
+// left depending on string length
 void draw_timer(Module module,
                 Slot slot,
                 GXColor color,
                 char *prefix,
                 s32 frames,
                 timerdisp::TimeFormat format) {
-    s32 num_x = module_and_slot_to_timer_x_pos(module, slot);
+    s32 num_x = module_and_slot_to_x_alignment(module, slot);
     u32 prefix_len = mkb::strlen(prefix);
     s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
 
@@ -157,50 +161,6 @@ void draw_timer(Module module,
     draw(module, slot, x, color, true, "%s%s", prefix, time_buf);
 }
 
-// We use "Slot" to determine which set of timers/text rows to stack our current text row under
-// Each mod might need to use a slightly different x position, though; see storytimer.cpp for
-// instance
-// The breakdown row x position depends on the row number since we want to align things based on the
-// numbers and not the left hand side of the text
-// TODO: rename to just draw()
-/* void draw_main(Slot slot, s32 pos_x, GXColor color, char *format, ...) {
-    for (u16 k = 0; k < LEN(s_slot_list); k++) {
-        if (s_slot_list[k] == slot) {
-            s32 y = timerdisp::row_number_to_vertical_pos(s_active_row[k]);
-
-            draw::debug_text(pos_x, y, color, format);
-
-            s_active_row[k]++;
-        }
-    }
-} */
-
-// Aligns the time according to get_slot_timer_x_pos; the prefix gets automatically moved to the
-// left depending on string length
-/* void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format)
-{ s32 num_x = get_slot_timer_x_pos(slot); u32 prefix_len = mkb::strlen(prefix); s32 x = num_x -
-prefix_len * draw::DEBUG_CHAR_WIDTH;
-
-    char time_buf[16] = {};
-    timerdisp::format_signed_time(time_buf, frames, format);
-    draw_main(slot, x, color, "%s%s", prefix, time_buf);
-} */
-
-/* void draw_subtick_timer(Slot slot,
-                        GXColor color,
-                        char *prefix,
-                        s32 frames,
-                        u32 framesave,
-                        bool extra_precision) {
-    s32 num_x = get_slot_timer_x_pos(slot);
-    u32 prefix_len = mkb::strlen(prefix);
-    s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
-
-    char time_buf[16] = {};
-    timerdisp::format_subtick_time(time_buf, frames, framesave, extra_precision);
-    // draw_main(slot, x, color, "%s%s", prefix, time_buf);
-} */
-
 void draw_subtick_timer(Module module,
                         Slot slot,
                         GXColor color,
@@ -208,7 +168,7 @@ void draw_subtick_timer(Module module,
                         s32 frames,
                         u32 framesave,
                         bool extra_precision) {
-    s32 num_x = get_slot_timer_x_pos(slot);
+    s32 num_x = module_and_slot_to_x_alignment(module, slot);
     u32 prefix_len = mkb::strlen(prefix);
     s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
 

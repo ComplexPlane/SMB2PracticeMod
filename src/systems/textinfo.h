@@ -22,8 +22,8 @@ enum class Module {
     LoadlessTimer,
 };
 
-s32 get_slot_timer_x_pos(Slot slot);
-s32 module_and_slot_to_timer_x_pos(Module module, Slot slot);
+s32 get_slot_x_alignment(Slot slot);
+s32 module_and_slot_to_x_alignment(Module module, Slot slot);
 
 void draw(Module module, Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...);
 void draw_aligned(Module module, Slot slot, GXColor color, char *format, ...);
