@@ -25,8 +25,7 @@ static u32 s_prev_retrace_count;
 static void handle_iw_selection() {
     if (mkb_scen_info.mode != 5) return;
 
-    if (Pad_AnalogDown(mkb_PAI_LSTICK_LEFT, false) ||
-        Pad_AnalogDown(mkb_PAI_LSTICK_RIGHT, false))
+    if (Pad_AnalogDown(mkb_PAI_LSTICK_LEFT, false) || Pad_AnalogDown(mkb_PAI_LSTICK_RIGHT, false))
         return;
     if (Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) || Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false))
         return;
@@ -92,8 +91,8 @@ static void handle_iw_timer() {
 }
 
 void IW_Init() {
-    Patch_WriteBranch(Rel_RelocateAddr(0x80274804), (void *)(asm_stage_select_menu_hook));
-    Patch_WriteBranch(Rel_RelocateAddr(0x8032a86c), (void *)(asm_pause_menu_text_hook));
+    Patch_WriteB(Rel_RelocateAddr(0x80274804), (void *)(asm_stage_select_menu_hook));
+    Patch_WriteB(Rel_RelocateAddr(0x8032a86c), (void *)(asm_pause_menu_text_hook));
 }
 
 void IW_Tick() {
@@ -107,7 +106,8 @@ void IW_Tick() {
     handle_iw_selection();
     set_save_file_info();
 
-    u8 file_idx = mkb_scen_info.mode == 5 ? mkb_selected_story_file_idx : mkb_scen_info.save_file_idx;
+    u8 file_idx =
+        mkb_scen_info.mode == 5 ? mkb_selected_story_file_idx : mkb_scen_info.save_file_idx;
 
     // Maybe not the best way to detect if we're playing an IW but it works
     asm_currently_playing_iw = s_iw_files & (1 << file_idx);

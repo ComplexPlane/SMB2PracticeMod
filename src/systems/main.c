@@ -41,7 +41,7 @@
 static void perform_assembly_patches() {
     // Inject the run function at the start of the main game loop
     // Hooked after Workshop Mod's tick()
-    Patch_WriteBranchBL(Rel_RelocateAddr(0x80270704), (void *)(asm_start_main_loop_assembly));
+    Patch_WriteBL(Rel_RelocateAddr(0x80270704), (void *)(asm_start_main_loop_assembly));
 
     /* Remove OSReport call ``PERF : event is still open for CPU!``
     since it reports every frame, and thus clutters the console */
@@ -58,7 +58,7 @@ static void perform_assembly_patches() {
 
     // Titlescreen patches
     mkb_strcpy((char *)Rel_RelocateAddr(0x8047f4ec), "SMB2 PRACTICE MOD");
-    Patch_WriteBranch(Rel_RelocateAddr(0x8032ad0c),
+    Patch_WriteB(Rel_RelocateAddr(0x8032ad0c),
                        (void *)(asm_custom_titlescreen_text_color));
 }
 

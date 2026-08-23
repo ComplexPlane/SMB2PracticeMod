@@ -126,7 +126,7 @@ static void event_camera_tick_hook() {
 }
 
 void Freecam_Init() {
-    Patch_WriteBranchBL(Rel_RelocateAddr(0x8028353c), (void *)(call_camera_func_hook));
+    Patch_WriteBL(Rel_RelocateAddr(0x8028353c), (void *)(call_camera_func_hook));
 
     HOOK_TRAMP(s_event_camera_tick_tramp);
 }

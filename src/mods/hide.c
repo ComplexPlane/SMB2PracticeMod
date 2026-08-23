@@ -152,8 +152,8 @@ static void init_hide_bg() {
     HOOK_TRAMP(s_clear_tramp);
 
     // Black fog
-    Patch_WriteBranchBL(Rel_RelocateAddr(0x80352e58), (void *)(avdisp_set_fog_color_hook));
-    Patch_WriteBranchBL(Rel_RelocateAddr(0x80352eac), (void *)(nl2ngc_set_fog_color_hook));
+    Patch_WriteBL(Rel_RelocateAddr(0x80352e58), (void *)(avdisp_set_fog_color_hook));
+    Patch_WriteBL(Rel_RelocateAddr(0x80352eac), (void *)(nl2ngc_set_fog_color_hook));
 }
 
 static void init_hide_hud() {
