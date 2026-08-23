@@ -32,7 +32,6 @@
 #include "mods/marathon.h"
 #include "mods/physics.h"
 #include "mods/savest_ui.h"
-#include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
 #include "mods/timer.h"
@@ -110,7 +109,6 @@ static void process_inputs_hook() {
     Camera_Tick();
     StageEdits_Tick();
     Validate_Tick();
-    Scratch_Tick();
     // Pref runs last to track the prefs from the previous frame
     Pref_Tick();
 }
@@ -144,7 +142,6 @@ static void draw_debug_text_hook() {
     Draw_Disp();
     ILMark_Disp();
     Physics_Disp();
-    Scratch_Disp();
 }
 
 static void smd_game_ready_init_hook();
@@ -216,7 +213,6 @@ void Main_Init() {
     Camera_Init();
     Fallout_Init();
     StageEdits_Init();
-    Scratch_Init();
     Validate_Init();
 
     HOOK_TRAMP(s_pad_read_tramp);
