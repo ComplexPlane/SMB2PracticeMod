@@ -1,14 +1,12 @@
 #pragma once
 
-namespace freecam {
+enum {
+    freecam_TURBO_SPEED_MIN = 2,
+    freecam_TURBO_SPEED_MAX = 200,
+};
 
-constexpr int TURBO_SPEED_MIN = 2;
-constexpr int TURBO_SPEED_MAX = 200;
-
-void init();
-void tick();
-bool enabled();
-bool should_freeze_timer();
-bool should_hide_hud();
-
-}  // namespace freecam
+void freecam_init();
+void freecam_tick();
+bool freecam_enabled();
+bool freecam_should_freeze_timer();
+bool freecam_should_hide_hud();

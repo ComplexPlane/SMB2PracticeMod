@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils/base.h"
+
 /*
  * Macros for more readable PPC instructions.
  * Credits to CraftedCart for writing these

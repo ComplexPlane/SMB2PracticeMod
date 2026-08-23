@@ -1,12 +1,8 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace stage_edits {
-
-void smd_game_ready_init();
-void init();
-void tick();
-void select_new_goal();
-
-}  // namespace stage_edits
+void stage_edits_smd_game_ready_init();
+void stage_edits_init();
+void stage_edits_tick();
+void stage_edits_select_new_goal();

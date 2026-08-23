@@ -58,13 +58,12 @@ endif
 # -Wno-write-strings because some GC SDK functions take non-const char *,
 # and Ghidra can't represent const char * anyhow
 # -fmacro-prefix-map makes __FILE__ macro use filepaths relative to the source dir
-CFLAGS		= -nostdlib -ffreestanding -ffunction-sections -fdata-sections -g -Os \
-			  -Wall -Wno-write-strings -Wno-address-of-packed-member \
-			  -Werror -Wshadow -Wimplicit-fallthrough \
+COMMON_FLAGS := -nostdlib -ffreestanding -ffunction-sections -fdata-sections \
+			  -g -Os -Wall -Wno-write-strings -Wno-address-of-packed-member \
 			  -fmacro-prefix-map=$(abspath $(CURDIR)/../src)=. -DGIT_HASH=\"$(GIT_HASH)\" \
 			  $(MACHDEP) $(INCLUDE)
-CXXFLAGS	= -fno-exceptions -fno-rtti -std=c++20 $(CFLAGS)
-ASFLAGS     = -mregnames # Don't require % in front of register names
+CFLAGS		:= $(COMMON_FLAGS) -std=c23 -Werror -Wshadow -Wimplicit-fallthrough
+ASFLAGS     := -mregnames # Don't require % in front of register names
 
 LDFLAGS		= -r -e _prolog -u _prolog -u _epilog -u _unresolved -Wl,--gc-sections -nostdlib -g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 
@@ -99,22 +98,17 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 # automatically build a list of object files for our project
 #---------------------------------------------------------------------------------
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 
 #---------------------------------------------------------------------------------
-# use CXX for linking C++ projects, CC for standard C
+# use CC for linking
 #---------------------------------------------------------------------------------
-ifeq ($(strip $(CPPFILES)),)
-	export LD	:=	$(CC)
-else
-	export LD	:=	$(CXX)
-endif
+export LD	:=	$(CC)
 
 export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
-export OFILES_SOURCES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
+export OFILES_SOURCES := $(CFILES:.c=.o) $(sFILES:.s=.o) $(SFILES:.S=.o)
 export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
 export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES)))
@@ -173,8 +167,7 @@ menu_defn.o: force_git_hash
 # REL linking
 %.rel: %.elf
 	@echo elf2rel ... $(notdir $@)
-	@$(ELF2REL) $< $(MAPFILE) $@ 101 2
-	
+	@$(ELF2REL) $< $(MAPFILE) $@ 101 2 mkb_	
 %.gci: %.rel
 	@echo gcipack ... $(notdir $@)
 	@$(GCIPACK) $< "rel" "Super Monkey Ball 2" "SMB2 Practice Mod" $(BANNERFILE) $(ICONFILE) GM2E8P

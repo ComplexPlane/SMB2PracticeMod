@@ -1,8 +1,4 @@
 #pragma once
 
-namespace jump {
-
-void tick();
-void patch_minimap();
-
-}  // namespace jump
+void jump_tick();
+void jump_patch_minimap();

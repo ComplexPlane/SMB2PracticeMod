@@ -1,23 +1,19 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace physics {
+typedef enum PhysicsPreset {
+    PhysicsPreset_Default = 0,
+    PhysicsPreset_LightBall = 1,
+    PhysicsPreset_NoFriction = 2,
+    PhysicsPreset_HeavyBall = 3,
+    PhysicsPreset_BouncyBall = 4,
+    PhysicsPreset_StickyBall = 5,
+    PhysicsPreset_HighFriction = 6,
+    PhysicsPreset_JumpPhysics = 7,
+} PhysicsPreset;
 
-enum class PhysicsPreset {
-    Default = 0,
-    LightBall = 1,
-    NoFriction = 2,
-    HeavyBall = 3,
-    BouncyBall = 4,
-    StickyBall = 5,
-    HighFriction = 6,
-    JumpPhysics = 7,
-};
-
-bool using_custom_physics();
-void init();
-void tick();
-void disp();
-
-}  // namespace physics
+bool physics_using_custom_physics();
+void physics_init();
+void physics_tick();
+void physics_disp();

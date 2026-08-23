@@ -1,7 +1,3 @@
 #pragma once
 
-namespace marathon {
-
-void tick();
-
-}  // namespace marathon
+void marathon_tick();

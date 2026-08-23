@@ -1,15 +1,11 @@
 #pragma once
 
-#include "mkb/mkb.h"
-
-namespace validate {
+#include "utils/base.h"
 
 void validate_run();
-bool was_run_valid(bool mods_allowed);
-void disable_invalidating_settings();
-u32 get_framesave();
+bool validate_was_run_valid(bool mods_allowed);
+void validate_disable_invalidating_settings();
+u32 validate_get_framesave();
 
-void init();
-void tick();
-
-}  // namespace validate
+void validate_init();
+void validate_tick();

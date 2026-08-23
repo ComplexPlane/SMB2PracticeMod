@@ -1,9 +1,5 @@
 #pragma once
 
-namespace iw {
-
-void init();
-void tick();
-void disp();
-
-}  // namespace iw
+void iw_init();
+void iw_tick();
+void iw_disp();

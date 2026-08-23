@@ -1,15 +1,13 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace log {
-void mod_assert(const char *file, s32 line, bool exp);
-}
+void log_mod_assert(const char *file, s32 line, bool exp);
 
-#define ASSERT(exp) (log::mod_assert(__FILE__, __LINE__, (exp)))
-#define UNREACHABLE()                                                                   \
-    ({                                                                                  \
-        mkb::OSPanic((char *)__FILE__, __LINE__, (char *)("Invalid codepath reached")); \
-        while (true) {                                                                  \
-        }                                                                               \
+#define ASSERT(exp) (log_mod_assert(__FILE__, __LINE__, (exp)))
+#define UNREACHABLE()                                                                    \
+    ({                                                                                   \
+        mkb_OSPanic((char *)__FILE__, __LINE__, (char *)("Invalid codepath reached"));   \
+        while (true) {                                                                   \
+        }                                                                                \
     })

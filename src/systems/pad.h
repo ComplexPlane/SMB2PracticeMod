@@ -1,70 +1,67 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace pad {
+typedef enum PadDir {
+    PadDir_Up,
+    PadDir_UpRight,
+    PadDir_Right,
+    PadDir_DownRight,
+    PadDir_Down,
+    PadDir_DownLeft,
+    PadDir_Left,
+    PadDir_UpLeft,
+    PadDir_None = -1,
+} PadDir;
 
-enum Dir {
-    DIR_UP,
-    DIR_UPRIGHT,
-    DIR_RIGHT,
-    DIR_DOWNRIGHT,
-    DIR_DOWN,
-    DIR_DOWNLEFT,
-    DIR_LEFT,
-    DIR_UPLEFT,
-    DIR_NONE = -1,
-};
-
-struct StickState {
+typedef struct Pad_StickState {
     s32 x;
     s32 y;
-};
+} Pad_StickState;
 
-struct TriggerState {
+typedef struct Pad_TriggerState {
     s32 l;
     s32 r;
+} Pad_TriggerState;
+
+enum {
+    pad_MAX_STICK = 60,
+    pad_MAX_TRIGGER = 128,
 };
 
-static constexpr int MAX_STICK = 60;
-static constexpr int MAX_TRIGGER = 128;
-
-void init();
 // Tick functions to be run at different points in the game loop
-void on_frame_start();
-void tick();  // Run this after controller inputs are read and processed by the game
-void on_PADRead(mkb::PADStatus *statuses);
+void Pad_OnFrameStart();
+void Pad_Tick();  // Run this after controller inputs are read and processed by the game
+void Pad_OnPADRead(mkb_PADStatus *statuses);
 
 // In exclusive mode, inputs only register
 // when passing `true` to the optional second argument of the input checking functions,
 // meanwhile the game sees zero inputs.
-void set_exclusive_mode(bool enabled);
-bool get_exclusive_mode();
+void Pad_SetExclusiveMode(bool enabled);
+bool Pad_GetExclusiveMode();
 
 // Simple wrappers about internal MKB2 bitfields. Represents OR-ed inputs of all controllers.
 
-// Accept a mkb::PadDigitalInput
-bool button_down(u16 digital_input, bool priority = false);
-bool button_pressed(u16 digital_input, bool priority = false);
-bool button_released(u16 digital_input, bool priority = false);
-bool button_repeat(mkb::PadDigitalInput digital_input, bool priority = false);
-bool button_chord_pressed(u16 btn1, u16 btn2, bool priority = false);
+// Accept a mkb_PadDigitalInput
+bool Pad_ButtonDown(u16 digital_input, bool priority);
+bool Pad_ButtonPressed(u16 digital_input, bool priority);
+bool Pad_ButtonReleased(u16 digital_input, bool priority);
+bool Pad_ButtonRepeat(mkb_PadDigitalInput digital_input, bool priority);
+bool Pad_ButtonChordPressed(u16 btn1, u16 btn2, bool priority);
 
-// Accept a mkb::PadAnalogInput
-bool analog_down(u16 analog_input, bool priority = false);
-bool analog_pressed(u16 analog_input, bool priority = false);
-bool analog_released(u16 analog_input, bool priority = false);
-bool analog_chord_pressed(u16 analog1, u16 analog2, bool priority = false);
+// Accept a mkb_PadAnalogInput
+bool Pad_AnalogDown(u16 analog_input, bool priority);
+bool Pad_AnalogPressed(u16 analog_input, bool priority);
+bool Pad_AnalogReleased(u16 analog_input, bool priority);
+bool Pad_AnalogChordPressed(u16 analog1, u16 analog2, bool priority);
 
-s32 get_cstick_dir(bool priority = false);
-bool dir_down(Dir dir, bool priority = false);     // Only works for cardinal directions
-bool dir_pressed(Dir dir, bool priority = false);  // Only works for cardinal directions
-bool dir_repeat(Dir dir, bool priority = false);   // Only works for cardinal directions
-void reset_dir_repeat();
+s32 Pad_GetCStickDir(bool priority);
+bool Pad_DirDown(PadDir dir, bool priority);     // Only works for cardinal directions
+bool Pad_DirPressed(PadDir dir, bool priority);  // Only works for cardinal directions
+bool Pad_DirRepeat(PadDir dir, bool priority);   // Only works for cardinal directions
+void Pad_ResetDirRepeat();
 
-void get_merged_raw_stick(StickState &out);  // stick before game makes alterations
-void get_merged_stick(StickState &out);
-void get_merged_substick(StickState &out);
-void get_merged_triggers(TriggerState &out);
-
-}  // namespace pad
+void Pad_GetMergedRawStick(Pad_StickState *out);  // stick before game makes alterations
+void Pad_GetMergedStick(Pad_StickState *out);
+void Pad_GetMergedSubstick(Pad_StickState *out);
+void Pad_GetMergedTriggers(Pad_TriggerState *out);

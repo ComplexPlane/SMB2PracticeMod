@@ -1,13 +1,9 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace ilbattle {
+constexpr u32 ilbattle_NUM_LENGTHS = 4;
 
-static constexpr u32 NUM_LENGTHS = 4;
-
-void validate_attempt();
-void tick();
-void disp();
-
-}  // namespace ilbattle
+void ilbattle_validate_attempt();
+void ilbattle_tick();
+void ilbattle_disp();

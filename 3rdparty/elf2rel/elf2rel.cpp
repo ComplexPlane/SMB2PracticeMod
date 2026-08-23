@@ -146,8 +146,8 @@ const std::vector<std::string> cRelSectionMask = {
 
 int main(int argc, char **argv)
 {
-    if (argc < 6) {
-        fprintf(stderr, "Usage: <input-file> <symbol-file> <output-file> <rel-id> <rel-version>\n");
+    if (argc != 7) {
+        fprintf(stderr, "Usage: %s <input-file> <symbol-file> <output-file> <rel-id> <rel-version> <strip-prefix>\n", argv[0]);
         return 1;
     }
     const std::string elfFilename{argv[1]};
@@ -155,6 +155,7 @@ int main(int argc, char **argv)
     const std::string relFilename{argv[3]};
     const int moduleID = std::stoi(argv[4]);
     const int relVersion = std::stoi(argv[5]);
+    const std::string stripPrefix{argv[6]};
 
     bool error = false;
 
@@ -369,6 +370,19 @@ int main(int argc, char **argv)
                 {
                     // Symbol is unknown, check if it's an external known symbol
                     auto it = externalSymbolMap.find(symbolName);
+                    if (it == externalSymbolMap.end() && !symbolName.starts_with(stripPrefix))
+                    {
+                        fprintf(stderr,
+                                "External symbol '%s' does not start with required prefix '%s'\n",
+                                symbolName.c_str(),
+                                stripPrefix.c_str());
+                        error = true;
+                        continue;
+                    }
+                    if (it == externalSymbolMap.end())
+                    {
+                        it = externalSymbolMap.find(symbolName.substr(stripPrefix.size()));
+                    }
                     if (it != externalSymbolMap.end())
                     {
                         // Known external!

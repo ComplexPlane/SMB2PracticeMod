@@ -1,19 +1,15 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace store {
-
-struct Store {
+typedef struct Store {
     void *buf;
     u32 pos;
     u32 size;
-};
+} Store;
 
 typedef void (*StoreFunc)(Store *store, void *ptr, u32 size);
 
-void compute_size(Store *store, void *ptr, u32 size);
-void save(Store *store, void *ptr, u32 size);
-void load(Store *store, void *ptr, u32 size);
-
-}  // namespace store
+void store_compute_size(Store *store, void *ptr, u32 size);
+void store_save(Store *store, void *ptr, u32 size);
+void store_load(Store *store, void *ptr, u32 size);

@@ -1,25 +1,9 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace inputdisp {
+constexpr u32 INPUTDISP_NUM_COLORS = 8;
 
-enum class Color {
-    Purple,
-    Red,
-    Orange,
-    Yellow,
-    Green,
-    Blue,
-    Pink,
-    Black,
-};
-
-static constexpr u32 NUM_COLORS = 8;
-
-void init();
-void on_PADRead(mkb::PADStatus *statuses);
-void tick();
-void disp();
-
-}  // namespace inputdisp
+void InputDisp_Init();
+void InputDisp_Tick();
+void InputDisp_Disp();

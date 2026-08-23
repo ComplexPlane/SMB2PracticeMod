@@ -1,51 +1,47 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace savest {
+enum { SS_SLOT_COUNT = 8 };
 
-constexpr u32 SLOT_COUNT = 8;
+typedef enum {
+    SS_SaveResult_Ok,
+    SS_SaveResult_ErrMainMode,
+    SS_SaveResult_ErrPostFallout,
+    SS_SaveResult_ErrPostGoal,
+    SS_SaveResult_ErrDuringRetry,
+    SS_SaveResult_ErrPostTimeout,
+    SS_SaveResult_ErrSubMode,
+    SS_SaveResult_ErrViewStage,
+    SS_SaveResult_ErrInsufficientMemory,
+} SS_SaveResult;
 
-enum class SaveResult {
-    Ok,
-    ErrMainMode,
-    ErrPostFallout,
-    ErrPostGoal,
-    ErrDuringRetry,
-    ErrPostTimeout,
-    ErrSubMode,
-    ErrViewStage,
-    ErrInsufficientMemory,
-};
+typedef enum {
+    SS_LoadResult_Ok,
+    SS_LoadResult_ErrMainMode,
+    SS_LoadResult_ErrSubMode,
+    SS_LoadResult_ErrTimeOver,
+    SS_LoadResult_ErrEmpty,
+    SS_LoadResult_ErrWrongStage,
+    SS_LoadResult_ErrWrongMonkey,
+    SS_LoadResult_ErrViewStage,
+    SS_LoadResult_ErrPausedAndNonGameplaySubmode,
+} SS_LoadResult;
 
-enum class LoadResult {
-    Ok,
-    ErrMainMode,
-    ErrSubMode,
-    ErrTimeOver,
-    ErrEmpty,
-    ErrWrongStage,
-    ErrWrongMonkey,
-    ErrViewStage,
-    ErrPausedAndNonGameplaySubmode,
-};
+typedef enum {
+    SS_Action_None,
+    SS_Action_Load,
+    SS_Action_Save,
+} SS_Action;
 
-enum class Action {
-    None,
-    Load,
-    Save,
-};
+void SS_Init();
+void SS_Tick();
 
-void init();
-void tick();
+SS_SaveResult SS_Save(u32 slot);
+SS_LoadResult SS_Load(u32 slot);
+void SS_Clear(u32 slot);
+bool SS_IsEmpty(u32 slot);
+u32 SS_GetTimestamp(u32 slot);
 
-SaveResult save(u32 slot);
-LoadResult load(u32 slot);
-void clear(u32 slot);
-bool is_empty(u32 slot);
-u32 get_timestamp(u32 slot);
-
-bool is_enabled();
-Action get_last_action();
-
-}  // namespace savest
+bool SS_IsEnabled();
+SS_Action SS_GetLastAction();

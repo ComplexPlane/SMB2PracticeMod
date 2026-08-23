@@ -1,30 +1,25 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace version {
-
-// Do NOT edit this, it's used directly in the modlink format
-struct SemVer {
+typedef struct SemVer {
     u16 major;
     u16 minor;
     u16 patch;
-};
+} SemVer;
 
-struct PracmodVersion {
+typedef struct PracmodVersion {
     SemVer semver;
     u16 release_cand;
-};
+} PracmodVersion;
 
 extern const PracmodVersion PRACMOD_VERSION;
 
-void init();
-s32 compare(const SemVer &v1, const SemVer &v2);
-s32 compare(const PracmodVersion &v1, const PracmodVersion &v2);
-const char *get_version_str();
+void version_init();
+s32 semver_compare(const SemVer *v1, const SemVer *v2);
+s32 pracmod_version_compare(const PracmodVersion *v1, const PracmodVersion *v2);
+const char *version_get_str();
 
 #ifndef GIT_HASH
 #define GIT_HASH "<unknown>"
 #endif
-
-}  // namespace version

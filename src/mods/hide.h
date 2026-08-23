@@ -1,7 +1,3 @@
 #pragma once
 
-namespace hide {
-
-void init();
-
-}
+void hide_init();

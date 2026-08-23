@@ -1,40 +1,36 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace cmseg {
+typedef enum CM_Seg {
+    CM_Seg_Beginner1,
+    CM_Seg_BeginnerExtra,
 
-enum class Seg {
-    Beginner1,
-    BeginnerExtra,
+    CM_Seg_Advanced1,
+    CM_Seg_Advanced11,
+    CM_Seg_Advanced21,
+    CM_Seg_AdvancedExtra,
 
-    Advanced1,
-    Advanced11,
-    Advanced21,
-    AdvancedExtra,
+    CM_Seg_Expert1,
+    CM_Seg_Expert11,
+    CM_Seg_Expert21,
+    CM_Seg_Expert31,
+    CM_Seg_Expert41,
+    CM_Seg_ExpertExtra,
 
-    Expert1,
-    Expert11,
-    Expert21,
-    Expert31,
-    Expert41,
-    ExpertExtra,
+    CM_Seg_Master1,
+    CM_Seg_MasterExtra,
+} CM_Seg;
 
-    Master1,
-    MasterExtra,
-};
+typedef enum CM_Chara {
+    CM_Chara_AiAi,
+    CM_Chara_MeeMee,
+    CM_Chara_Baby,
+    CM_Chara_GonGon,
+    CM_Chara_Random,
+} CM_Chara;
 
-enum class Chara {
-    AiAi,
-    MeeMee,
-    Baby,
-    GonGon,
-    Random,
-};
-
-void init();
-void tick();
-void disp();
-void request_cm_seg(Seg seg);
-
-}  // namespace cmseg
+void CM_Init();
+void CM_Tick();
+void CM_Disp();
+void CM_RequestSeg(CM_Seg seg);

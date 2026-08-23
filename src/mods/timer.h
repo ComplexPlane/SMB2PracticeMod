@@ -2,10 +2,6 @@
 
 #include "utils/memstore.h"
 
-namespace timer {
-
-void init();
-void disp();
-void save_state(store::Store *store, store::StoreFunc func);
-
-}  // namespace timer
+void Timer_Init();
+void Timer_Disp();
+void Timer_SaveState(Store *store, StoreFunc func);

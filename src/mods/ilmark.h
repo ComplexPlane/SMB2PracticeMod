@@ -1,10 +1,7 @@
 #pragma once
 
-namespace ilmark {
-
-void validate_attempt();
-void init();
-void tick();
-void disp();
-
-}  // namespace ilmark
+void ILMark_ValidateAttempt();
+void ILMark_Init();
+void ILMark_Tick();
+void ILMark_Disp();
+bool ILMark_IsEnabled();

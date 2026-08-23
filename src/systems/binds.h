@@ -1,23 +1,19 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace binds {
+typedef enum {
+    Binds_Encoding_SinglePress,
+    Binds_Encoding_ChordPress,
+    Binds_Encoding_Invalid,
+} Binds_Encoding;
 
-enum class EncodingType {
-    SinglePress,
-    ChordPress,
-    Invalid,
-};
+bool Binds_Pressed(u8 bind_id, bool priority);
+bool Binds_Down(u8 bind_id, bool priority);
 
-bool bind_pressed(u8 bind_id, bool priority = false);
-bool bind_down(u8 bind_id, bool priority = false);
+Binds_Encoding Binds_GetEncodingType();
+u8 Binds_GetCurrentEncoding();
+void Binds_ToStr(u8 bind_id, char *buf);
 
-EncodingType get_encoding_type();
-u8 get_current_encoding();
-void get_bind_str(u8 bind_id, char *buf);
-
-void init();
-void tick();
-
-}  // namespace binds
+void Binds_Init();
+void Binds_Tick();

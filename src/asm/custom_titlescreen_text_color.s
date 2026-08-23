@@ -1,7 +1,7 @@
-.global custom_titlescreen_text_color
+.global asm_custom_titlescreen_text_color
 
 // Hooked at 0x8032ad0c GC
-custom_titlescreen_text_color:
+asm_custom_titlescreen_text_color:
 
 // Load original address of "PRESS START/PAUSE" string
 lis r5, 0x8047

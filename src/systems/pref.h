@@ -2,117 +2,113 @@
 
 // Mod user preferences, backed by memory card save file
 
-#include "mkb/mkb.h"
-
-namespace pref {
+#include "utils/base.h"
 
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
-enum class Pref : u8 {
-    Savestates = 1,
-    InputDisp = 2,
-    InputDispLocation = 3,
-    TimerShowRTA = 4,
-    CmChara = 5,
-    InputDispColor = 6,
-    InputDispNotchIndicators = 7,
-    IwTimer = 8,
-    CmTimer = 9,
-    JumpMod = 10,
-    BananaCounter9999 = 11,
-    DpadControls = 12,
-    DebugMode = 13,
+typedef enum Pref : u8 {
+    Pref_Savestates = 1,
+    Pref_InputDisp = 2,
+    Pref_InputDispLocation = 3,
+    Pref_TimerShowRTA = 4,
+    Pref_CmChara = 5,
+    Pref_InputDispColor = 6,
+    Pref_InputDispNotchIndicators = 7,
+    Pref_IwTimer = 8,
+    Pref_CmTimer = 9,
+    Pref_JumpMod = 10,
+    Pref_BananaCounter9999 = 11,
+    Pref_DpadControls = 12,
+    Pref_DebugMode = 13,
     // Do not reuse 14, it belonged to old timer freezing BoolPref
-    MuteBgm = 15,
-    MuteTimerDing = 16,
-    InputDispRawStickInputs = 17,
-    Freecam = 18,
-    BallColor = 19,
-    ApeColor = 20,
-    Marathon = 21,
+    Pref_MuteBgm = 15,
+    Pref_MuteTimerDing = 16,
+    Pref_InputDispRawStickInputs = 17,
+    Pref_Freecam = 18,
+    Pref_BallColor = 19,
+    Pref_ApeColor = 20,
+    Pref_Marathon = 21,
     // Do not reuse 22, it belonged to old Moon Gravity BoolPref
-    IlBattleDisplay = 23,
-    IlBattleLength = 24,
+    Pref_IlBattleDisplay = 23,
+    Pref_IlBattleLength = 24,
     // Do not reuse 25, it belonged to old IL Battle Score Breakdown BoolPref
-    IlMarkPractice = 26,
-    IlMarkStory = 27,
-    IlMarkChallenge = 28,
-    HideBg = 29,
-    UnlockVanilla = 30,
-    UnlockRomhacks = 31,
-    FreecamInvertYaw = 32,
-    FreecamInvertPitch = 33,
-    FreecamToggleWithZ = 34,
-    FreecamSpeedMult = 35,
-    FreecamFreezeTimer = 36,
-    FreecamHideHud = 37,
-    HideHud = 38,
-    HideStage = 39,
-    HideBall = 40,
-    HideItems = 41,
-    HideStobjs = 42,
-    HideEffects = 43,
-    IlMarkRomhacks = 44,
-    Camera = 45,
-    BallRed = 46,
-    BallGreen = 47,
-    BallBlue = 48,
-    BallColorType = 49,
-    ApeColorType = 50,
-    InputDispColorType = 51,
-    InputDispRed = 52,
-    InputDispGreen = 53,
-    InputDispBlue = 54,
-    TimerType = 55,
-    DisableFalloutVolumes = 56,
-    FalloutPlaneType = 57,
-    IlBattleShowTime = 58,
-    IlBattleShowScore = 59,
-    IlBattleBuzzerOld = 60,
-    IlBattleBreakdown = 61,
-    PhysicsPreset = 62,
+    Pref_IlMarkPractice = 26,
+    Pref_IlMarkStory = 27,
+    Pref_IlMarkChallenge = 28,
+    Pref_HideBg = 29,
+    Pref_UnlockVanilla = 30,
+    Pref_UnlockRomhacks = 31,
+    Pref_FreecamInvertYaw = 32,
+    Pref_FreecamInvertPitch = 33,
+    Pref_FreecamToggleWithZ = 34,
+    Pref_FreecamSpeedMult = 35,
+    Pref_FreecamFreezeTimer = 36,
+    Pref_FreecamHideHud = 37,
+    Pref_HideHud = 38,
+    Pref_HideStage = 39,
+    Pref_HideBall = 40,
+    Pref_HideItems = 41,
+    Pref_HideStobjs = 42,
+    Pref_HideEffects = 43,
+    Pref_IlMarkRomhacks = 44,
+    Pref_Camera = 45,
+    Pref_BallRed = 46,
+    Pref_BallGreen = 47,
+    Pref_BallBlue = 48,
+    Pref_BallColorType = 49,
+    Pref_ApeColorType = 50,
+    Pref_InputDispColorType = 51,
+    Pref_InputDispRed = 52,
+    Pref_InputDispGreen = 53,
+    Pref_InputDispBlue = 54,
+    Pref_TimerType = 55,
+    Pref_DisableFalloutVolumes = 56,
+    Pref_FalloutPlaneType = 57,
+    Pref_IlBattleShowTime = 58,
+    Pref_IlBattleShowScore = 59,
+    Pref_IlBattleBuzzerOld = 60,
+    Pref_IlBattleBreakdown = 61,
+    Pref_PhysicsPreset = 62,
     // 63 belonged to physics friction which was only used in beta playtesting
     // 64 belonged to physics restitution which was only used in beta playtesting
     // 65 belonged to SavestateDisableOverwrite
-    MenuBind = 66,
-    IlBattleReadyBind = 67,
-    FreecamToggleBind = 68,
-    SavestateClearBind = 69,
-    IlBattleTieCount = 70,
-    IlBattleAttemptCount = 71,
-    TimerShowSubtick = 72,
-    TimerShowFramesave = 73,
+    Pref_MenuBind = 66,
+    Pref_IlBattleReadyBind = 67,
+    Pref_FreecamToggleBind = 68,
+    Pref_SavestateClearBind = 69,
+    Pref_IlBattleTieCount = 70,
+    Pref_IlBattleAttemptCount = 71,
+    Pref_TimerShowSubtick = 72,
+    Pref_TimerShowFramesave = 73,
     // 74 was used for a boolean timer option that only existed in a beta version.
     // Many people playtested that beta, so it may be best to not reuse until
     // a future update
-    TimerShowPause = 75,
-    StageEditVariant = 76,
-    JumpChangePhysics = 77,
-    JumpAllowWalljumps = 78,
-    JumpCount = 79,
+    Pref_TimerShowPause = 75,
+    Pref_StageEditVariant = 76,
+    Pref_JumpChangePhysics = 77,
+    Pref_JumpAllowWalljumps = 78,
+    Pref_JumpCount = 79,
     // 80 belonged to physics weight which was only used in beta playtesting
-    MonkeyType = 81,
-    JumpProfile = 82,
-    CustomPhysicsDisp = 83,
-    SavestateSaveTo = 84,
-    SavestateClearAllBind = 85,
-    InputDispGradientColor2Red = 86,
-    InputDispGradientColor2Green = 87,
-    InputDispGradientColor2Blue = 88,
-    InputDispGradientRotation = 89,
-    InputDispGradientStart = 90,
-    InputDispGradientEnd = 91,
-    RgbFormat = 92,
-};
+    Pref_MonkeyType = 81,
+    Pref_JumpProfile = 82,
+    Pref_CustomPhysicsDisp = 83,
+    Pref_SavestateSaveTo = 84,
+    Pref_SavestateClearAllBind = 85,
+    Pref_InputDispGradientColor2Red = 86,
+    Pref_InputDispGradientColor2Green = 87,
+    Pref_InputDispGradientColor2Blue = 88,
+    Pref_InputDispGradientRotation = 89,
+    Pref_InputDispGradientStart = 90,
+    Pref_InputDispGradientEnd = 91,
+    Pref_RgbFormat = 92,
+} Pref;
 
-void init();
-void tick();
-void save();
+void Pref_Init();
+void Pref_Tick();
+void Pref_Save();
 
-s16 get(Pref pref);
-void set(Pref pref, s16 value);
-bool did_change(Pref pref);
-s16 get_default(Pref pref);
-void reset_all_defaults();
-
-}  // namespace pref
+s16 Pref_Get(Pref pref);
+void Pref_Set(Pref pref, s16 value);
+bool Pref_DidChange(Pref pref);
+s16 Pref_GetDefault(Pref pref);
+void Pref_ResetAllDefaults();

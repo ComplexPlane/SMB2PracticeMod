@@ -1,141 +1,140 @@
 #pragma once
 
-#include "mkb/mkb.h"
-#include "pref.h"
+#include "systems/pref.h"
+#include "utils/base.h"
 
-namespace menu_defn {
+typedef enum WidgetType {
+    WidgetType_Text,
+    WidgetType_ColoredText,
+    WidgetType_Header,
+    WidgetType_Checkbox,
+    WidgetType_GetSetCheckbox,
+    WidgetType_Separator,
+    WidgetType_Menu,
+    WidgetType_FloatView,
+    WidgetType_Choose,
+    WidgetType_Button,
+    WidgetType_IntEdit,
+    WidgetType_FloatEdit,
+    WidgetType_InputSelect,
+    WidgetType_HideableGroupWidget,
+    WidgetType_Custom,
+    WidgetType_RgbPreview,
+} WidgetType;
 
-enum class WidgetType {
-    Text,
-    ColoredText,
-    Header,
-    Checkbox,
-    GetSetCheckbox,
-    Separator,
-    Menu,
-    FloatView,
-    Choose,
-    Button,
-    IntEdit,
-    FloatEdit,
-    InputSelect,
-    HideableGroupWidget,
-    Custom,
-    RgbPreview,
-};
-
-struct TextWidget {
+typedef struct TextWidget {
     const char *label;            // For static text
     const char *(*label_func)();  // For dynamic text
-};
+} TextWidget;
 
-struct ColoredTextWidget {
+typedef struct ColoredTextWidget {
     const char *label;
     GXColor color_left;   // Gradient start color
     GXColor color_right;  // Gradient end color
-    u16 offset_x;              // Character offset from line start
-    bool overlap;              // Draw on top of the previous line instead of a new line
-};
+    u16 offset_x;         // Character offset from line start
+    bool overlap;         // Draw on top of the previous line instead of a new line
+} ColoredTextWidget;
 
 // Just a different color TextWidget
-struct HeaderWidget {
+typedef struct HeaderWidget {
     const char *label;
-};
+} HeaderWidget;
 
-struct CheckboxWidget {
+typedef struct CheckboxWidget {
     const char *label;
-    pref::Pref pref;
-};
+    Pref pref;
+} CheckboxWidget;
 
 // For the rare cases a checkbox doesn't correspond to a preference
-struct GetSetCheckboxWidget {
+typedef struct GetSetCheckboxWidget {
     const char *label;
     bool (*get)();
     void (*set)(bool);
-};
+} GetSetCheckboxWidget;
 
-struct MenuWidget {
+typedef struct MenuWidget {
     const char *label;
     struct Widget *widgets;
     u32 num_widgets;
     // It's too convenient to store currently selected menu entry in the widget itself,
     // even if it violates the otherwise immutable nature of the menu definition
     u32 selected_idx;
-};
+} MenuWidget;
 
-struct FloatViewWidget {
+typedef struct FloatViewWidget {
     const char *label;
     f32 (*get)();
-};
+} FloatViewWidget;
 
-struct ChooseWidget {
+typedef struct ChooseWidget {
     const char *label;
     const char **choices;
     u16 num_choices;
-    pref::Pref pref;
-};
+    Pref pref;
+} ChooseWidget;
 
-namespace ButtonFlags {
-enum {
-    CloseMenu = 1 << 0,  // Close menu after pushed
-    GoBack = 1 << 1,     // Go back to parent menu after pushed
-};
-}
+typedef enum ButtonFlag {
+    ButtonFlag_CloseMenu = 1 << 0,  // Close menu after pushed
+    ButtonFlag_GoBack = 1 << 1,     // Go back to parent menu after pushed
+} ButtonFlag;
 
-struct ButtonWidget {
+typedef struct ButtonWidget {
     const char *label;
     void (*push)();  // Runs when pushed. Can be null
     u32 flags;
-};
+} ButtonWidget;
 
 // Pretty limited for now
-struct IntEditWidget {
+typedef struct IntEditWidget {
     const char *label;
-    pref::Pref pref;
+    Pref pref;
     s16 min;
     s16 max;
     // Formats the value into a buffer; if null, the value displays as decimal
     void (*format)(s16 value, char *buf);
-};
+} IntEditWidget;
 
 // even more limited for now
-struct FloatEditWidget {
+typedef struct FloatEditWidget {
     const char *label;
-    pref::Pref pref;
+    Pref pref;
     u32 precision;  // denominator, 100
     u8 min;
     u8 max;
     s32 floor;
     u8 decimals;
-};
+} FloatEditWidget;
 
-struct InputSelectWidget {
+typedef struct InputSelectWidget {
     const char *label;
-    pref::Pref pref;
+    Pref pref;
     bool required_chord;  // must be a 2 button bind if true
     bool can_unbind;
-};
+} InputSelectWidget;
 
-enum class HideableType : u8 { U8Hideable, BoolHideable };
+typedef enum HideableType : u8 {
+    HideableType_U8Hideable,
+    HideableType_BoolHideable,
+} HideableType;
 
-struct HideableGroupWidget {
+typedef struct HideableGroupWidget {
     struct Widget *widgets;
     u32 num_widgets;
     bool (*show_if)();  // show if function returns true
-};
+} HideableGroupWidget;
 
-struct CustomWidget {
+typedef struct CustomWidget {
     void (*draw)();
-};
+} CustomWidget;
 
 // Shows a live color swatch next to RGB IntEdit widgets
-struct RgbPreviewWidget {
-    pref::Pref r_pref;
-    pref::Pref g_pref;
-    pref::Pref b_pref;
-};
+typedef struct RgbPreviewWidget {
+    Pref r_pref;
+    Pref g_pref;
+    Pref b_pref;
+} RgbPreviewWidget;
 
-struct Widget {
+typedef struct Widget {
     WidgetType type;
     union {
         TextWidget text;
@@ -154,10 +153,8 @@ struct Widget {
         CustomWidget custom;
         RgbPreviewWidget rgb_preview;
     };
-};
+} Widget;
 
-extern MenuWidget root_menu;
+extern MenuWidget menu_root;
 
-void init();
-
-}  // namespace menu_defn
+void menu_init();

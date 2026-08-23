@@ -1,9 +1,5 @@
 #pragma once
 
-namespace menu_impl {
-
-void tick();
-void disp();
-bool is_visible();
-
-}  // namespace menu_impl
+void menu_impl_tick();
+void menu_impl_disp();
+bool menu_impl_is_visible();

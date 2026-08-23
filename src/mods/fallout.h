@@ -1,10 +1,5 @@
 #pragma once
 
-#include "mkb/mkb.h"
-
-namespace fallout {
-void init();
-void tick();
-void disp();
-
-}  // namespace fallout
+void fallout_init();
+void fallout_tick();
+void fallout_disp();

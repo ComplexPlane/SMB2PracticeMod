@@ -1,9 +1,5 @@
 #pragma once
 
-namespace unlock {
-
-void init();
-void tick();
-void unlock_everything();
-
-}  // namespace unlock
+void Unlock_Init();
+void Unlock_Tick();
+void Unlock_Everything();

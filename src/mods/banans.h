@@ -1,7 +1,3 @@
 #pragma once
 
-namespace banans {
-
-void tick();
-
-}  // namespace banans
+void banans_tick();

@@ -1,14 +1,10 @@
 #pragma once
 
-#include "mkb/mkb.h"
+#include "utils/base.h"
 
-namespace heap {
-
-void init();
-void *alloc(u32 size);
-bool free(void *ptr);
-void check_integrity();
-u32 get_free_space();
-u32 get_total_space();
-
-}  // namespace heap
+void Heap_Init();
+void *Heap_Alloc(u32 size);
+bool Heap_Free(void *ptr);
+void Heap_CheckIntegrity();
+u32 Heap_GetFreeSpace();
+u32 Heap_GetTotalSpace();
