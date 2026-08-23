@@ -71,7 +71,7 @@ static u32 pad_read_hook(mkb_PADStatus *statuses) {
     // Dpad can modify effective stick input, shown by input display
     Dpad_OnPADRead(statuses);
     // pad collects original inputs before they are modified by the game
-    Pad_OnPADRead(statuses);
+    Pad_OnPadRead(statuses);
 
     return ret;
 }

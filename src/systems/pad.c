@@ -44,7 +44,7 @@ void Pad_GetMergedTriggers(Pad_TriggerState *out) {
     *out = (Pad_TriggerState){.l = s_analog_state.trigger_l, .r = s_analog_state.trigger_r};
 }
 
-void Pad_OnPADRead(mkb_PADStatus *statuses) {
+void Pad_OnPadRead(mkb_PADStatus *statuses) {
     mkb_memcpy(s_original_inputs, statuses, sizeof(s_original_inputs));
 }
 
