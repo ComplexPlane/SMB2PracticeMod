@@ -2,6 +2,6 @@
 
 #include "utils/memstore.h"
 
-void timer_init();
-void timer_disp();
-void timer_save_state(Store *store, StoreFunc func);
+void Timer_Init();
+void Timer_Disp();
+void Timer_SaveState(Store *store, StoreFunc func);

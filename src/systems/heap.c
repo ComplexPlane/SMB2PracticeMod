@@ -57,7 +57,7 @@ static void make_heap() {
     s_heap_info->first_used = nullptr;
 }
 
-void *heap_alloc(u32 size) {
+void *Heap_Alloc(u32 size) {
     // Enlarge size to the smallest possible chunk size
     u32 new_size = size + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo));
     new_size = mkb_OSRoundUp32B(new_size);
@@ -117,7 +117,7 @@ void *heap_alloc(u32 size) {
     return allocated_memory;
 }
 
-bool heap_free(void *ptr) {
+bool Heap_Free(void *ptr) {
     u32 ptr_raw = (u32)(ptr);
 
     u32 header_size = mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo));
@@ -138,7 +138,7 @@ bool heap_free(void *ptr) {
     return true;
 }
 
-u32 heap_get_free_space() {
+u32 Heap_GetFreeSpace() {
     u32 space = 0;
     for (mkb_ChunkInfo *chunk = s_heap_info->first_free; chunk; chunk = chunk->next) {
         space += chunk->size - 32;  // Don't count the ChunkInfo
@@ -146,11 +146,11 @@ u32 heap_get_free_space() {
     return space;
 }
 
-u32 heap_get_total_space() {
+u32 Heap_GetTotalSpace() {
     return s_heap_info->capacity;
 }
 
-void heap_check_integrity() {
+void Heap_CheckIntegrity() {
     bool valid = true;
 
     mkb_ChunkInfo *current_chunk = nullptr;
@@ -185,7 +185,7 @@ void heap_check_integrity() {
     }
 }
 
-void heap_init() {
+void Heap_Init() {
     // Use Workshop Mod's heap if it's loaded, otherwise make our own
     if (modlink_get() != nullptr) {
         s_heap_info = modlink_get()->heap_info;

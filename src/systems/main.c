@@ -80,7 +80,7 @@ static void process_inputs() {
     // to ensure lowest input delay
     Pad_Tick();
     Binds_Tick();
-    cardio_tick();
+    Card_Tick();
     Unlock_Tick();
     fallout_tick();
     physics_tick();
@@ -90,9 +90,9 @@ static void process_inputs() {
     SSUI_Tick();
     menu_impl_tick();
     jump_tick();
-    inputdisp_tick();
+    InputDisp_Tick();
     GoToStory_Tick();
-    cmseg_tick();
+    CM_Tick();
     banans_tick();
     marathon_tick();
     ballcolor_tick();
@@ -120,13 +120,13 @@ static void draw_debug_text_hook() {
     }
 
     Draw_PreDraw();
-    timer_disp();
+    Timer_Disp();
     iw_disp();
     storytimer_disp();
     deathcounter_disp();
     ilbattle_disp();
-    cmseg_disp();
-    inputdisp_disp();
+    CM_Disp();
+    InputDisp_Disp();
     menu_impl_disp();
     Draw_Disp();
     ILMark_Disp();
@@ -138,7 +138,7 @@ static u32 pad_read(mkb_PADStatus *statuses) {
 
     // Dpad can modify effective stick input, shown by input display
     dpad_on_PADRead(statuses);
-    inputdisp_on_PADRead(statuses);
+    InputDisp_OnPadRead(statuses);
 
     return ret;
 }
@@ -164,17 +164,17 @@ void main_init() {
 
     perform_assembly_patches();
 
-    heap_init();
-    cardio_init();
+    Heap_Init();
+    Card_Init();
     Pref_Init();
     Unlock_Init();
     Draw_Init();
     physics_init();
     iw_init();
     SS_Init();
-    timer_init();
-    inputdisp_init();
-    cmseg_init();
+    Timer_Init();
+    InputDisp_Init();
+    CM_Init();
     ballcolor_init();
     sfx_init();
     menu_init();

@@ -76,7 +76,7 @@ static mkb_CARDResult read_file_internal(const char *file_name, void **out_buf) 
     }
 
     u32 buf_size = (stat.length + mkb_CARD_READ_SIZE - 1) & ~(mkb_CARD_READ_SIZE - 1);
-    void *buf = heap_alloc(buf_size);
+    void *buf = Heap_Alloc(buf_size);
     if (buf == nullptr) {
         // Not quite the right error (we're out of memory, not out of card space)
         mkb_CARDUnmount(0);
@@ -88,7 +88,7 @@ static mkb_CARDResult read_file_internal(const char *file_name, void **out_buf) 
         res = mkb_CARDGetResultCode(0);
     } while (res == mkb_CARD_RESULT_BUSY);
     if (res != mkb_CARD_RESULT_READY) {
-        heap_free(buf);
+        Heap_Free(buf);
         mkb_CARDUnmount(0);
         return res;
     }
@@ -97,14 +97,14 @@ static mkb_CARDResult read_file_internal(const char *file_name, void **out_buf) 
     return mkb_CARD_RESULT_READY;
 }
 
-mkb_CARDResult cardio_read_file(const char *file_name, void **out_buf) {
+mkb_CARDResult Card_ReadFile(const char *file_name, void **out_buf) {
     set_fake_gamecode();
     mkb_CARDResult res = read_file_internal(file_name, out_buf);
     restore_original_gamecode();
     return res;
 }
 
-void cardio_write_file(const char *file_name,
+void Card_WriteFile(const char *file_name,
                        const void *buf,
                        u32 buf_size,
                        void (*callback)(mkb_CARDResult)) {
@@ -116,7 +116,7 @@ void cardio_write_file(const char *file_name,
     };
 }
 
-void cardio_init() {
+void Card_Init() {
     mkb_memcpy(s_orig_gamecode, mkb_DVD_GAME_NAME, sizeof(s_orig_gamecode));
 }
 
@@ -127,7 +127,7 @@ static void finish_write(mkb_CARDResult res) {
     restore_original_gamecode();
 }
 
-void cardio_tick() {
+void Card_Tick() {
     mkb_CARDResult res;
 
     switch (s_state) {

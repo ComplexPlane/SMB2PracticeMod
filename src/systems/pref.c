@@ -183,10 +183,10 @@ void Pref_Init() {
     Pref_SetDefaults();
 
     FileHeader *header = nullptr;
-    mkb_CARDResult result = cardio_read_file(PREF_FILENAME, (void **)(&header));
+    mkb_CARDResult result = Card_ReadFile(PREF_FILENAME, (void **)(&header));
     if (result == mkb_CARD_RESULT_READY) {
         card_buf_to_pref_struct(header);
-        heap_free(header);
+        Heap_Free(header);
     } else if (result != mkb_CARD_RESULT_NOFILE) {
         Draw_Notify(COLOR_RED, "Error loading settings from Card A, setting defaults");
     }
@@ -204,7 +204,7 @@ static void pref_save_callback(mkb_CARDResult res) {
 
 void Prev_Save() {
     pref_struct_to_card_buf();
-    cardio_write_file(PREF_FILENAME, s_card_buf, sizeof(s_card_buf), pref_save_callback);
+    Card_WriteFile(PREF_FILENAME, s_card_buf, sizeof(s_card_buf), pref_save_callback);
 }
 
 u8 Pref_Get(Pref pref) {

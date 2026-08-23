@@ -139,15 +139,15 @@ static void create_speed_sprites_hook(f32 x, f32 y) {
     s_create_speed_sprites_tramp.chain(x + 5, y);
 }
 
-void inputdisp_init() {
+void InputDisp_Init() {
     HOOK_TRAMP(s_create_speed_sprites_tramp);
 }
 
-void inputdisp_on_PADRead(mkb_PADStatus *statuses) {
+void InputDisp_OnPadRead(mkb_PADStatus *statuses) {
     mkb_memcpy(s_raw_inputs, statuses, sizeof(s_raw_inputs));
 }
 
-void inputdisp_tick() {
+void InputDisp_Tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
     set_sprite_visible(!Pref_Get(Pref_InputDisp) || (Pref_Get(Pref_InputDispCenterLocation) &&
                                                      !Pref_Get(Pref_InputDispRawStickInputs)));
@@ -297,7 +297,7 @@ static void draw_raw_stick_inputs(const MergedStickInputs *stick_inputs) {
     Draw_DebugText(center.x, center.y + 3 * 14, COLOR_WHITE, "gY: %d", stick_inputs->gameY);
 }
 
-void inputdisp_disp() {
+void InputDisp_Disp() {
     bool in_replay =
         mkb_sub_mode == mkb_SMD_OPTION_REPLAY_INIT || mkb_sub_mode == mkb_SMD_OPTION_REPLAY_MAIN ||
         mkb_sub_mode == mkb_SMD_OPTION_REPLAY_PLAY_INIT ||

@@ -138,7 +138,7 @@ static void pass_over_regions(Store *s, StoreFunc f) {
     }
 
     // RTA timer
-    timer_save_state(s, f);
+    Timer_SaveState(s, f);
 }
 
 static void handle_pause_menu_save(SaveState *state) {
@@ -280,7 +280,7 @@ SS_SaveResult SS_Save(u32 slot) {
 
     SS_Clear(slot);
     pass_over_regions(&state->store, store_compute_size);
-    state->store.buf = heap_alloc(state->store.size);
+    state->store.buf = Heap_Alloc(state->store.size);
     if (state->store.buf == nullptr) {
         return SS_SaveResult_ErrInsufficientMemory;
     }
@@ -354,7 +354,7 @@ void SS_Clear(u32 slot) {
 
     SaveState *state = &s_states[slot];
     if (state->store.buf != nullptr) {
-        heap_free(state->store.buf);
+        Heap_Free(state->store.buf);
     }
     *state = (SaveState){};
 }

@@ -126,13 +126,13 @@ static bool did_ball_enter_goal(mkb_Ball *ball,
     return result;
 }
 
-void timer_init() {
+void Timer_Init() {
     s_retrace_count = mkb_VIGetRetraceCount();
     HOOK_TRAMP(s_goal_tramp);
 }
 
 // Need to do logic in disp() so that we can know the game state _after_ the frame has processed
-void timer_disp() {
+void Timer_Disp() {
     if (mkb_main_mode != mkb_MD_GAME) return;
 
     switch (mkb_sub_mode) {
@@ -205,7 +205,7 @@ void timer_disp() {
     }
 }
 
-void timer_save_state(Store *store, StoreFunc func) {
+void Timer_SaveState(Store *store, StoreFunc func) {
     func(store, &s_retrace_count, sizeof(s_retrace_count));
     func(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
     func(store, &s_rta_timer, sizeof(s_rta_timer));

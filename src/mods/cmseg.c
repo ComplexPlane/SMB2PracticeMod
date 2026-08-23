@@ -19,7 +19,7 @@ typedef enum {
 } State;
 
 static State s_state = State_Default;
-static cmseg_Seg s_seg_request;
+static CM_Seg s_seg_request;
 static u32 s_start_time;
 static u32 s_seg_time;
 
@@ -222,82 +222,82 @@ void init_seg() {
     mkb_mode_flags &= ~(mkb_MF_G_PLAYING_MASTER_COURSE | mkb_MF_PLAYING_EXTRA_COURSE |
                         mkb_MF_PLAYING_MASTER_NOEX_COURSE | mkb_MF_PLAYING_MASTER_EX_COURSE);
     switch (s_seg_request) {
-    case cmseg_Seg_Beginner1: {
+    case CM_Seg_Beginner1: {
         mkb_curr_difficulty = mkb_DIFF_BEGINNER;
         course = mkb_cm_courses[0];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_BeginnerExtra: {
+    case CM_Seg_BeginnerExtra: {
         mkb_curr_difficulty = mkb_DIFF_BEGINNER;
         mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
         course = mkb_cm_courses[3];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_Advanced1: {
+    case CM_Seg_Advanced1: {
         mkb_curr_difficulty = mkb_DIFF_ADVANCED;
         course = mkb_cm_courses[1];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_Advanced11: {
+    case CM_Seg_Advanced11: {
         mkb_curr_difficulty = mkb_DIFF_ADVANCED;
         course = mkb_cm_courses[1];
         start_course_stage_num = 11;
         break;
     }
-    case cmseg_Seg_Advanced21: {
+    case CM_Seg_Advanced21: {
         mkb_curr_difficulty = mkb_DIFF_ADVANCED;
         course = mkb_cm_courses[1];
         start_course_stage_num = 21;
         break;
     }
-    case cmseg_Seg_AdvancedExtra: {
+    case CM_Seg_AdvancedExtra: {
         mkb_curr_difficulty = mkb_DIFF_ADVANCED;
         mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
         course = mkb_cm_courses[4];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_Expert1: {
+    case CM_Seg_Expert1: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         course = mkb_cm_courses[2];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_Expert11: {
+    case CM_Seg_Expert11: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         course = mkb_cm_courses[2];
         start_course_stage_num = 11;
         break;
     }
-    case cmseg_Seg_Expert21: {
+    case CM_Seg_Expert21: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         course = mkb_cm_courses[2];
         start_course_stage_num = 21;
         break;
     }
-    case cmseg_Seg_Expert31: {
+    case CM_Seg_Expert31: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         course = mkb_cm_courses[2];
         start_course_stage_num = 31;
         break;
     }
-    case cmseg_Seg_Expert41: {
+    case CM_Seg_Expert41: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         course = mkb_cm_courses[2];
         start_course_stage_num = 41;
         break;
     }
-    case cmseg_Seg_ExpertExtra: {
+    case CM_Seg_ExpertExtra: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE;
         course = mkb_cm_courses[5];
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_Master1: {
+    case CM_Seg_Master1: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         mkb_mode_flags |= mkb_MF_PLAYING_EXTRA_COURSE | mkb_MF_G_PLAYING_MASTER_COURSE |
                           mkb_MF_PLAYING_MASTER_NOEX_COURSE;
@@ -305,7 +305,7 @@ void init_seg() {
         start_course_stage_num = 1;
         break;
     }
-    case cmseg_Seg_MasterExtra: {
+    case CM_Seg_MasterExtra: {
         mkb_curr_difficulty = mkb_DIFF_EXPERT;
         // Magic set of flags used in Master Extra,
         // can't be bothered to reverse all of them
@@ -318,7 +318,7 @@ void init_seg() {
     gen_course(course, start_course_stage_num, 10);
 }
 
-void cmseg_request_cm_seg(cmseg_Seg seg) {
+void CM_RequestSeg(CM_Seg seg) {
     s_seg_request = seg;
     if (s_state == State_SegActive || s_state == State_SegComplete) {
         restore_overwritten_state();
@@ -330,7 +330,7 @@ void cmseg_request_cm_seg(cmseg_Seg seg) {
     }
 }
 
-void cmseg_init() {
+void CM_Init() {
     HOOK_TRAMP(s_reset_cm_course_tramp);
 
     // Set PBs to maximum time
@@ -339,7 +339,7 @@ void cmseg_init() {
     }
 }
 
-void cmseg_tick() {
+void CM_Tick() {
     if (s_state == State_LoadMenu) {
         state_load_menu();
     } else if (s_state == State_EnterCm) {
@@ -351,7 +351,7 @@ void cmseg_tick() {
     }
 }
 
-void cmseg_disp() {
+void CM_Disp() {
     if (!Pref_Get(Pref_CmTimer) || freecam_should_hide_hud()) return;
 
     if (s_state == State_SegActive || s_state == State_SegComplete) {

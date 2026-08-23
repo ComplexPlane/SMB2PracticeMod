@@ -24,7 +24,7 @@ static char s_version_str[36];
 static const char *INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
-static_assert(LEN(INPUTDISP_COLORS) == inputdisp_NUM_COLORS);
+static_assert(LEN(INPUTDISP_COLORS) == INPUTDISP_NUM_COLORS);
 
 static const char *CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
@@ -556,10 +556,10 @@ static Widget s_about_widgets[] = {
 static const char *CHARA_CHOICES[] = {"AiAi", "MeeMee", "Baby", "GonGon", "Random"};
 
 static void start_beginner_1_10_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Beginner1);
+    CM_RequestSeg(CM_Seg_Beginner1);
 }
 static void start_beginner_extra_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_BeginnerExtra);
+    CM_RequestSeg(CM_Seg_BeginnerExtra);
 }
 
 static Widget s_cm_beg_widgets[] = {
@@ -584,16 +584,16 @@ static Widget s_cm_beg_widgets[] = {
 };
 
 static void start_advanced_1_10_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Advanced1);
+    CM_RequestSeg(CM_Seg_Advanced1);
 }
 static void start_advanced_11_20_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Advanced11);
+    CM_RequestSeg(CM_Seg_Advanced11);
 }
 static void start_advanced_21_30_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Advanced21);
+    CM_RequestSeg(CM_Seg_Advanced21);
 }
 static void start_advanced_extra_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_AdvancedExtra);
+    CM_RequestSeg(CM_Seg_AdvancedExtra);
 }
 
 static Widget s_cm_adv_widgets[] = {
@@ -636,22 +636,22 @@ static Widget s_cm_adv_widgets[] = {
 };
 
 static void start_expert_1_10_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Expert1);
+    CM_RequestSeg(CM_Seg_Expert1);
 }
 static void start_expert_11_20_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Expert11);
+    CM_RequestSeg(CM_Seg_Expert11);
 }
 static void start_expert_21_30_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Expert21);
+    CM_RequestSeg(CM_Seg_Expert21);
 }
 static void start_expert_31_40_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Expert31);
+    CM_RequestSeg(CM_Seg_Expert31);
 }
 static void start_expert_41_50_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Expert41);
+    CM_RequestSeg(CM_Seg_Expert41);
 }
 static void start_expert_extra_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_ExpertExtra);
+    CM_RequestSeg(CM_Seg_ExpertExtra);
 }
 
 static Widget s_cm_exp_widgets[] = {
@@ -712,10 +712,10 @@ static Widget s_cm_exp_widgets[] = {
 };
 
 static void start_master_1_10_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_Master1);
+    CM_RequestSeg(CM_Seg_Master1);
 }
 static void start_master_extra_segment() {
-    cmseg_request_cm_seg(cmseg_Seg_MasterExtra);
+    CM_RequestSeg(CM_Seg_MasterExtra);
 }
 
 static Widget s_cm_mas_widgets[] = {
