@@ -14,10 +14,6 @@
 
 namespace deathcounter {
 
-constexpr u16 COUNTER_DISPLAY_Y_POS = 56;
-constexpr u16 COUNTER_DISPLAY_X_POS = 18;
-constexpr u16 COUNTER_NUMBER_X_POS = COUNTER_DISPLAY_X_POS + 7 * draw::DEBUG_CHAR_WIDTH;
-
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
 
 static u32 s_world_death_count[WORLD_COUNT] = {};
@@ -154,11 +150,6 @@ void disp() {
     }
 
     if (should_display_death_counter()) {
-        /* draw::debug_text(COUNTER_DISPLAY_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "Deaths:");
-        draw::debug_text(COUNTER_NUMBER_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "%d",
-                         get_total_death_count()); */
-        /* textinfo::draw_main(textinfo::Slot::Left, COUNTER_DISPLAY_X_POS, draw::WHITE,
-           "Deaths:%d", get_total_death_count()); */
         // Technically not a timer, but we can still use this function without specifying any
         // special formatting
         textinfo::draw_timer(Mod::DeathCounter, Slot::Left, draw::WHITE,

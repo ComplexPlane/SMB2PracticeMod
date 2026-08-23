@@ -6,7 +6,7 @@
 namespace timerdisp {
 
 // Where numbers on the right side get aligned (not their prefixes!)
-constexpr s32 RIGHT_SIDE_TIMER_ALIGN_X = 378 + 4 * draw::DEBUG_CHAR_WIDTH;
+// constexpr s32 RIGHT_SIDE_TIMER_ALIGN_X = 378 + 4 * draw::DEBUG_CHAR_WIDTH;
 
 // TimeComp = "Time Components"
 struct TimeComp {
@@ -30,8 +30,9 @@ void format_time(char *buffer, u32 frames, TimeFormat format);
 void format_signed_time(char *buffer, s32 frames, TimeFormat format);
 void format_subtick_time(char *buffer, s32 frames, u32 framesave, bool extra_precision);
 
-s32 row_number_to_vertical_pos(u32 row_num);
-void draw_timer(s32 pos_x,
+s32 row_number_to_vertical_pos(s32 row_num);
+
+/* void draw_timer(s32 pos_x,
                 u32 row,
                 u32 text_offset,
                 const char *prefix,
@@ -50,6 +51,6 @@ void draw_subtick_timer(s32 frames,
                         bool show_minutes,
                         u32 framesave,
                         bool extra_precision);
-void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color);
+void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color); */
 
 }  // namespace timerdisp

@@ -19,7 +19,7 @@ static u16 s_active_row[LEN(s_slot_list)] = {};
 // "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
 // stacked on top of each other
 // In addition to the generic text drawing functions, it's useful to be able to line up our displays
-// by numbers
+// by numbers (this situation covers a toooooon of special cases)
 // Each module may have slightly different requirements for this alignment
 
 // Where the numbers get lined up (this acts as the "default" number alignment per slot, but this

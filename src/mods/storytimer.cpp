@@ -200,42 +200,6 @@ bool should_display_timer(TimerType type) {
     }
 }
 
-// Doing this for now until a better display setup is figured out
-/* u16 get_timer_row(TimerType type) {
-    u16 row = STARTING_ROW;
-    bool is_displaying_death_counter = deathcounter::should_display_death_counter();
-
-    if (type == TimerType::Fullgame) {
-        if (is_displaying_death_counter) {
-            row++;
-        }
-    } else {  // Segment timer
-        if (should_display_timer(TimerType::Fullgame)) {
-            row++;
-        }
-        if (is_displaying_death_counter) {
-            row++;
-        }
-    }
-
-    return row;
-}
-
-// Bundle up the info timerdisp::draw_timer uses into a struct for convenience
-struct TimerDisplayInfo {
-    u16 pos_x;
-    u16 row;
-    u16 text_offset;
-};
-
-TimerDisplayInfo get_timer_display_info(TimerType type) {
-    if (type == TimerType::Fullgame) {
-        return {FULLGAME_TIMER_LOCATION_X, get_timer_row(type), FULLGAME_TIMER_TEXT_OFFSET};
-    } else {
-        return {SEGMENT_TIMER_LOCATION_X, get_timer_row(type), SEGMENT_TIMER_TEXT_OFFSET};
-    }
-} */
-
 u16 get_current_segment_idx() {
     // mkb::scen_info.world gets reset to 0 on the file screen, so if we accidentally exit game to
     // the menus, the only case where we can't use mkb::scen_info.world is when we are on the file
@@ -251,46 +215,15 @@ u16 get_current_segment_idx() {
 }
 
 void draw_timers() {
-    // TimerDisplayInfo fullgame_info = get_timer_display_info(TimerType::Fullgame);
-    // u32 loadless_time = get_loadless_time();
-
     if (should_display_timer(TimerType::Fullgame)) {
-        /* timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.row, fullgame_info.text_offset,
-                              "Time:", loadless_time, false, draw::WHITE); */
-        // textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Time: %d", get_loadless_time());
-        /* textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE, "Time:", get_loadless_time(),
-                             timerdisp::TimeFormat::AlwaysLeadNonHours); */
         draw_timer("Time:", get_loadless_time(), Format::AlwaysLeadNonHours);
     }
 
     u16 world_idx = get_current_segment_idx();  // index of the current world
-    // TimerDisplayInfo seg_info = get_timer_display_info(TimerType::Segment);
-
     if (should_display_timer(TimerType::Segment)) {
-        /*  timerdisp::draw_timer(seg_info.pos_x, seg_info.row, seg_info.text_offset,
-                               "Seg:", s_world_timer[world_idx].segment, false, draw::WHITE); */
-        /* textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Seg: %d",
-                       s_world_timer[world_idx].segment); */
-        /* textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE,
-                             "Seg:", s_world_timer[world_idx].segment,
-                             timerdisp::TimeFormat::AlwaysLeadNonHours); */
         draw_timer("Seg:", s_world_timer[world_idx].segment, Format::AlwaysLeadNonHours);
     }
 }
-
-// We only use this function for 0 <= row <= 10
-/* Vec2d get_breakdown_row_position(u16 row) {
-    // u16 starting_row = get_timer_row(TimerType::Segment);
-    u16 starting_row = 0;  // placeholder
-    float pos_y = timerdisp::row_number_to_vertical_pos(starting_row + row);
-    if (row < WORLD_COUNT - 1) {
-        return {BREAKDOWN_ROW_LOCATION_X, pos_y};
-    } else if (row == WORLD_COUNT - 1) {  // "W10" takes up more space than "Wk" for "1 <= k <= 9"
-        return {BREAKDOWN_ROW_LOCATION_X - draw::DEBUG_CHAR_WIDTH, pos_y};
-    } else {  // For the totals row
-        return {TOTALS_ROW_LOCATION_X, pos_y};
-    }
-} */
 
 // We only use this function for 0 <= row <= 10
 s32 get_breakdown_row_x_pos(u16 row) {
@@ -311,7 +244,6 @@ void draw_breakdown_screen() {
     char row_info_buf[32] = {};
 
     for (u16 idx = 0; idx < WORLD_COUNT; idx++) {
-        // Vec2d pos = get_breakdown_row_position(idx);
         s32 pos_x = get_breakdown_row_x_pos(idx);
         u32 world_deaths = deathcounter::get_world_death_count(idx);
 
@@ -325,7 +257,6 @@ void draw_breakdown_screen() {
     }
 
     // For the totals row
-    // Vec2d totals_row_pos = get_breakdown_row_position(WORLD_COUNT);
     s32 totals_x_pos = get_breakdown_row_x_pos(WORLD_COUNT);
     u32 total_deaths = deathcounter::get_total_death_count();
 
