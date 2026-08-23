@@ -29,6 +29,10 @@ constexpr u16 STAGES_PER_WORLD = mode::STAGES_PER_WORLD;
 
 static WorldTimer s_world_timer[WORLD_COUNT];  // timer info for each world
 
+using Mod = textinfo::Module;
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
+
 // --- some getters that other files can use (if needed) ---
 
 WorldTimer get_world_timer_info(u16 world_idx) {
@@ -145,6 +149,11 @@ void tick() {
 
 // --- display stuff ---
 
+// Special case of textinfo::draw_timer() useful for us
+void draw_timer(char *prefix, u32 frames, Format format) {
+    textinfo::draw_timer(Mod::LoadlessTimer, Slot::Left, draw::WHITE, prefix, frames, format);
+}
+
 // The run breakdown screen replaces the segment timer at the end of the run
 // if the pref for it is on
 bool should_display_timer(TimerType type) {
@@ -249,8 +258,9 @@ void draw_timers() {
         /* timerdisp::draw_timer(fullgame_info.pos_x, fullgame_info.row, fullgame_info.text_offset,
                               "Time:", loadless_time, false, draw::WHITE); */
         // textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Time: %d", get_loadless_time());
-        textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE, "Time:", get_loadless_time(),
-                             timerdisp::TimeFormat::AlwaysLeadNonHours);
+        /* textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE, "Time:", get_loadless_time(),
+                             timerdisp::TimeFormat::AlwaysLeadNonHours); */
+        draw_timer("Time:", get_loadless_time(), Format::AlwaysLeadNonHours);
     }
 
     u16 world_idx = get_current_segment_idx();  // index of the current world
@@ -261,9 +271,10 @@ void draw_timers() {
                                "Seg:", s_world_timer[world_idx].segment, false, draw::WHITE); */
         /* textinfo::draw(textinfo::Slot::Left, draw::WHITE, "Seg: %d",
                        s_world_timer[world_idx].segment); */
-        textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE,
+        /* textinfo::draw_timer(textinfo::Slot::Left, draw::WHITE,
                              "Seg:", s_world_timer[world_idx].segment,
-                             timerdisp::TimeFormat::AlwaysLeadNonHours);
+                             timerdisp::TimeFormat::AlwaysLeadNonHours); */
+        draw_timer("Seg:", s_world_timer[world_idx].segment, Format::AlwaysLeadNonHours);
     }
 }
 
@@ -299,7 +310,8 @@ void draw_breakdown_screen() {
 
         // draw::debug_text(pos.x, pos.y, draw::WHITE, "%s", row_info_buf[idx]);
         // textinfo::draw(textinfo::Slot::Left, draw::WHITE, row_info_buf[idx]);
-        textinfo::draw_main(textinfo::Slot::Left, pos.x, draw::WHITE, row_info_buf[idx]);
+        // textinfo::draw_main(textinfo::Slot::Left, pos.x, draw::WHITE, row_info_buf[idx]);
+        textinfo::draw(Mod::LoadlessTimer, Slot::Left, pos.x, draw::WHITE, true, row_info_buf[idx]);
     }
 
     // For the totals row

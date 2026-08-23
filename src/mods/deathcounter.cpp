@@ -25,6 +25,10 @@ static savest::Action s_previous_frame_action = savest::Action::None;
 // Flag to determine when we should/shouldn't increment the death counter
 static bool s_can_incr_death_counter = false;
 
+using Mod = textinfo::Module;
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
+
 u32 get_total_death_count() {
     u32 total = 0;
     for (u16 k = 0; k < WORLD_COUNT; k++) {
@@ -153,8 +157,12 @@ void disp() {
         /* draw::debug_text(COUNTER_DISPLAY_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "Deaths:");
         draw::debug_text(COUNTER_NUMBER_X_POS, COUNTER_DISPLAY_Y_POS, draw::WHITE, "%d",
                          get_total_death_count()); */
-        textinfo::draw_main(textinfo::Slot::Left, COUNTER_DISPLAY_X_POS, draw::WHITE, "Deaths:%d",
-                            get_total_death_count());
+        /* textinfo::draw_main(textinfo::Slot::Left, COUNTER_DISPLAY_X_POS, draw::WHITE,
+           "Deaths:%d", get_total_death_count()); */
+        // Technically not a timer, but we can still use this function without specifying any
+        // special formatting
+        textinfo::draw_timer(Mod::DeathCounter, Slot::Left, draw::WHITE,
+                             "Deaths:", get_total_death_count(), Format::Unformatted);
     }
 }
 

@@ -101,7 +101,7 @@ void draw_battle_breakdown_text(GXColor color, char *text) {
 // Special formatting like "time [bananas]"" is handled on a per-case basis, however
 void draw_battle_num(GXColor color, u32 num, Format format) {
     // No prefix specified since IL Battle uses custom spacing between its prefixes and times
-    textinfo::draw_timer_main(Mod::IlBattle, Slot::Left, color, "", num, format);
+    textinfo::draw_timer(Mod::IlBattle, Slot::Left, color, "", num, format);
 }
 
 // pre cleanup

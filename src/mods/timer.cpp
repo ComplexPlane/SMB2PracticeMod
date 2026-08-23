@@ -58,17 +58,18 @@ void disp() {
     }
 
     // u32 row = 1;
+    using Mod = textinfo::Module;
+    using Slot = textinfo::Slot;
+    using Format = timerdisp::TimeFormat;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        // timerdisp::draw_timer_right_side(s_rta_timer, "RTA:", row++, draw::WHITE, true);
-        textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
-                             timerdisp::TimeFormat::SecondsOnly);
+        textinfo::draw_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
+                             Format::SecondsOnly);
     }
 
     if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        // timerdisp::draw_timer_right_side(s_pause_timer, "PAU:", row++, draw::WHITE, true);
-        textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
-                             timerdisp::TimeFormat::SecondsOnly);
+        textinfo::draw_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
+                             Format::SecondsOnly);
     }
 
     switch (mkb::sub_mode) {
@@ -84,18 +85,14 @@ void disp() {
     u32 framesave = validate::get_framesave();
 
     if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
-        /* timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                      draw::WHITE, true, framesave, false); */
-        textinfo::draw_subtick_timer(textinfo::Slot::Right, draw::WHITE,
-                                     "SUB:", mkb::mode_info.stage_time_frames_remaining, framesave,
-                                     false);
+        textinfo::draw_subtick_timer(Mod::RtaTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
+                                     framesave, false);
     }
 
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        // timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
-        s32 num_x = textinfo::get_slot_timer_x_pos(textinfo::Slot::Right);
+        s32 num_x = textinfo::get_slot_timer_x_pos(Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;
-        textinfo::draw_main(textinfo::Slot::Right, x, draw::WHITE, "FSV:%2d%", framesave);
+        textinfo::draw(Mod::RtaTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
     }
 }
 
