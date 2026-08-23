@@ -229,8 +229,7 @@ static bool handle_load_state_from_nonplay_submode(SaveState *s) {
         return true;
 
     // Loading a state while paused in a non-gameplay mode causes issues for some reason
-    bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) &
-                      8;  // TODO actually give this a name
+    bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) & 8;  // TODO actually give this a name
     if (paused_now) {
         return false;
     }
@@ -258,7 +257,8 @@ SS_SaveResult SS_Save(u32 slot) {
     }
 
     if (mkb_sub_mode != mkb_SMD_GAME_PLAY_MAIN || mkb_sub_mode_request != mkb_SMD_INVALID) {
-        if (mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT || mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN) {
+        if (mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT ||
+            mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN) {
             return SS_SaveResult_ErrPostFallout;
         }
         if (mkb_sub_mode == mkb_SMD_GAME_GOAL_INIT || mkb_sub_mode == mkb_SMD_GAME_GOAL_MAIN) {

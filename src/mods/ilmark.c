@@ -27,8 +27,7 @@ void ILMark_ValidateAttempt() {
 
 void ILMark_Tick() {
     if (mkb_sub_mode != mkb_SMD_GAME_PLAY_MAIN && mkb_sub_mode != mkb_SMD_GAME_GOAL_INIT &&
-        mkb_sub_mode != mkb_SMD_GAME_GOAL_MAIN &&
-        mkb_sub_mode != mkb_SMD_GAME_GOAL_REPLAY_INIT &&
+        mkb_sub_mode != mkb_SMD_GAME_GOAL_MAIN && mkb_sub_mode != mkb_SMD_GAME_GOAL_REPLAY_INIT &&
         mkb_sub_mode != mkb_SMD_GAME_GOAL_REPLAY_MAIN &&
         mkb_sub_mode != mkb_SMD_GAME_BONUS_CLEAR_INIT &&
         mkb_sub_mode != mkb_SMD_GAME_BONUS_CLEAR_MAIN) {

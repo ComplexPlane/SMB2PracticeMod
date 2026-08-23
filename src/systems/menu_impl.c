@@ -9,7 +9,7 @@
 #include "utils/macro_utils.h"
 
 typedef enum {
-    BindingState_Inactive,  // not currently binding
+    BindingState_Inactive,   // not currently binding
     BindingState_Requested,  // will bind as soon as all buttons are released
     BindingState_Active,     // currently binding
 } BindingState;
@@ -61,7 +61,9 @@ static bool is_widget_selectable(WidgetType type) {
            type == WidgetType_InputSelect;
 }
 
-static Widget *get_selected_widget(Widget *widgets, u32 num_widgets, s32 *curr_idx,
+static Widget *get_selected_widget(Widget *widgets,
+                                   u32 num_widgets,
+                                   s32 *curr_idx,
                                    s32 target_idx) {
     for (u32 i = 0; i < num_widgets; i++) {
         if (is_widget_selectable(widgets[i].type)) {
@@ -87,8 +89,7 @@ static u32 get_selectable_widget_count(Widget *widgets, u32 num_widgets) {
         Widget child = widgets[i];
         if (is_widget_selectable(child.type)) {
             selectable++;
-        } else if (child.type == WidgetType_HideableGroupWidget &&
-                   child.hideable_group.show_if()) {
+        } else if (child.type == WidgetType_HideableGroupWidget && child.hideable_group.show_if()) {
             selectable += get_selectable_widget_count(child.hideable_group.widgets,
                                                       child.hideable_group.num_widgets);
         }
@@ -153,8 +154,8 @@ static void handle_widget_bind() {
                 Pref_Save();
             }
             if (y_pressed) {
-                u8 new_value = ((u32)Pref_Get(choose->pref) + choose->num_choices - 1) %
-                               choose->num_choices;
+                u8 new_value =
+                    ((u32)Pref_Get(choose->pref) + choose->num_choices - 1) % choose->num_choices;
                 Pref_Set(choose->pref, new_value);
                 Pref_Save();
             }
@@ -222,8 +223,7 @@ static void handle_widget_bind() {
         }
         case WidgetType_InputSelect: {
             InputSelectWidget *input_select = &selected->input_select;
-            if (s_binding == BindingState_Requested &&
-                Pad_ButtonReleased(mkb_PAD_BUTTON_A, true)) {
+            if (s_binding == BindingState_Requested && Pad_ButtonReleased(mkb_PAD_BUTTON_A, true)) {
                 s_binding = BindingState_Active;
             } else if (s_binding == BindingState_Active) {
                 // set new bind
@@ -295,8 +295,7 @@ void MenuImpl_Tick() {
     MenuWidget *menu = s_menu_stack[s_menu_stack_ptr];
 
     // Update selected menu item
-    s32 dir_delta =
-        Pad_DirRepeat(PadDir_Down, true) - Pad_DirRepeat(PadDir_Up, true);
+    s32 dir_delta = Pad_DirRepeat(PadDir_Down, true) - Pad_DirRepeat(PadDir_Up, true);
     u32 selectable = get_selectable_widget_count(menu->widgets, menu->num_widgets);
     menu->selected_idx = (menu->selected_idx + dir_delta + selectable) % selectable;
 
@@ -419,8 +418,8 @@ static void draw_help(const Widget *widget) {
             if (widget->input_select.can_unbind) {
                 Draw_DebugText(START + 1 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "Y");
                 Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
-                Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT,
-                               COLOR_WHITE, "Unbind");
+                Draw_DebugText(BUTTON_START + 2 * BLOCK_WIDTH + HALF_SPACE, Y_HEIGHT, COLOR_WHITE,
+                               "Unbind");
             }
             Draw_DebugText(START + 2 * BLOCK_WIDTH, Y_HEIGHT, COLOR_GRAY, "X");
             Draw_DebugText(BUTTON_START + 3 * BLOCK_WIDTH, Y_HEIGHT, COLOR_WHITE, ":");
@@ -434,7 +433,10 @@ static void draw_help(const Widget *widget) {
     }
 }
 
-static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u32 *y,
+static void draw_widget(Widget *widget,
+                        u32 selected_idx,
+                        u32 *selectable_idx,
+                        u32 *y,
                         GXColor lerped_color) {
     switch (widget->type) {
         case WidgetType_HideableGroupWidget: {
@@ -489,8 +491,8 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 draw_selectable_highlight(*y);
             }
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", label);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           label);
             Draw_DebugText(MARGIN + PAD, *y,
                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                            "                         %s", value ? "On" : "Off");
@@ -508,8 +510,8 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 draw_selectable_highlight(*y);
             }
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", widget->menu.label);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->menu.label);
 
             // Draw "..." with dots closer together
             for (s32 i = 0; i < 3; i++) {
@@ -534,13 +536,12 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 draw_selectable_highlight(*y);
             }
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", widget->choose.label);
-            Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "                         (%d/%d) %s",
-                           Pref_Get(widget->choose.pref) + 1, widget->choose.num_choices,
-                           widget->choose.choices[Pref_Get(widget->choose.pref)]);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->choose.label);
+            Draw_DebugText(
+                MARGIN + PAD, *y, selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
+                "                         (%d/%d) %s", Pref_Get(widget->choose.pref) + 1,
+                widget->choose.num_choices, widget->choose.choices[Pref_Get(widget->choose.pref)]);
 
             *y += LINE_HEIGHT;
             (*selectable_idx)++;
@@ -551,8 +552,8 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 draw_selectable_highlight(*y);
             }
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", widget->button.label);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->button.label);
 
             *y += LINE_HEIGHT;
             (*selectable_idx)++;
@@ -569,8 +570,8 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 mkb_sprintf(value_buf, "%d", (int)Pref_Get(widget->int_edit.pref));
             }
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", widget->int_edit.label);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->int_edit.label);
             Draw_DebugText(MARGIN + PAD, *y,
                            selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                            "                         %s", value_buf);
@@ -588,8 +589,8 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                              (float)widget->float_edit.precision);
 
             Draw_DebugText(MARGIN + PAD, *y,
-                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
-                           "  %s", widget->float_edit.label);
+                           selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR, "  %s",
+                           widget->float_edit.label);
             switch (widget->float_edit.decimals) {
                 case 2: {
                     Draw_DebugText(MARGIN + PAD, *y,
@@ -614,15 +615,13 @@ static void draw_widget(Widget *widget, u32 selected_idx, u32 *selectable_idx, u
                 draw_selectable_highlight(*y);
             }
             if (s_binding == BindingState_Active && selected_idx == *selectable_idx) {
-                Draw_DebugText(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s",
-                               widget->input_select.label);
+                Draw_DebugText(MARGIN + PAD, *y, FOCUSED_COLOR, "  %s", widget->input_select.label);
             } else {
                 Draw_DebugText(MARGIN + PAD, *y,
                                selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR,
                                "  %s", widget->input_select.label);
             }
-            GXColor bind_color =
-                selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
+            GXColor bind_color = selected_idx == *selectable_idx ? lerped_color : UNFOCUSED_COLOR;
             if (s_binding == BindingState_Active && selected_idx == *selectable_idx) {
                 bind_color = COLOR_GOLD;
             }

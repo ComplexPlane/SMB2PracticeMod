@@ -58,8 +58,7 @@ static void perform_assembly_patches() {
 
     // Titlescreen patches
     mkb_strcpy((char *)Rel_RelocateAddr(0x8047f4ec), "SMB2 PRACTICE MOD");
-    Patch_WriteB(Rel_RelocateAddr(0x8032ad0c),
-                       (void *)(asm_custom_titlescreen_text_color));
+    Patch_WriteB(Rel_RelocateAddr(0x8032ad0c), (void *)(asm_custom_titlescreen_text_color));
 }
 
 static u32 pad_read_hook(mkb_PADStatus *statuses);

@@ -21,14 +21,12 @@ static bool in_correct_mode() {
     bool correct_main_mode = mkb_main_mode == mkb_MD_GAME || mkb_main_mode == mkb_MD_ADV ||
                              mkb_main_mode == mkb_MD_MINI || mkb_main_mode == mkb_MD_AUTHOR ||
                              mkb_main_mode == mkb_MD_EXOPT;
-    bool correct_sub_mode = mkb_sub_mode != mkb_SMD_GAME_SCENARIO_INIT &&
-                            mkb_sub_mode != mkb_SMD_GAME_SCENARIO_MAIN &&
-                            mkb_sub_mode != mkb_SMD_GAME_SCENARIO_RETURN &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_INIT &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_MAIN &&
-                            mkb_sub_mode != mkb_SMD_ADV_TITLE_REINIT &&
-                            mkb_sub_mode != mkb_SMD_EXOPT_REPLAY_LOAD_INIT &&
-                            mkb_sub_mode != mkb_SMD_EXOPT_REPLAY_LOAD_MAIN;
+    bool correct_sub_mode =
+        mkb_sub_mode != mkb_SMD_GAME_SCENARIO_INIT && mkb_sub_mode != mkb_SMD_GAME_SCENARIO_MAIN &&
+        mkb_sub_mode != mkb_SMD_GAME_SCENARIO_RETURN && mkb_sub_mode != mkb_SMD_ADV_TITLE_INIT &&
+        mkb_sub_mode != mkb_SMD_ADV_TITLE_MAIN && mkb_sub_mode != mkb_SMD_ADV_TITLE_REINIT &&
+        mkb_sub_mode != mkb_SMD_EXOPT_REPLAY_LOAD_INIT &&
+        mkb_sub_mode != mkb_SMD_EXOPT_REPLAY_LOAD_MAIN;
     return correct_main_mode && correct_sub_mode;
 }
 bool Freecam_Enabled() {

@@ -112,8 +112,7 @@ void *Heap_Alloc(u32 size) {
     s_heap_info->first_used = heap_add_chunk_to_front(s_heap_info->first_used, temp_chunk);
 
     // Add the header size to the chunk
-    void *allocated_memory =
-        (void *)((u32)temp_chunk + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo)));
+    void *allocated_memory = (void *)((u32)temp_chunk + mkb_OSRoundUp32B(sizeof(mkb_ChunkInfo)));
 
     mkb_memset(allocated_memory, 0, size);
     return allocated_memory;

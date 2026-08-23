@@ -97,9 +97,9 @@ void BallColor_Tick() {
     BallColorType ball_type = (BallColorType)Pref_Get(Pref_BallColorType);
 
     // dont change color if in story mode menu
-    if (mkb_main_mode != mkb_MD_GAME || (mkb_sub_mode == mkb_SMD_GAME_SCENARIO_INIT ||
-                                         mkb_sub_mode == mkb_SMD_GAME_SCENARIO_MAIN ||
-                                         mkb_sub_mode == mkb_SMD_GAME_SCENARIO_RETURN)) {
+    if (mkb_main_mode != mkb_MD_GAME ||
+        (mkb_sub_mode == mkb_SMD_GAME_SCENARIO_INIT || mkb_sub_mode == mkb_SMD_GAME_SCENARIO_MAIN ||
+         mkb_sub_mode == mkb_SMD_GAME_SCENARIO_RETURN)) {
         *(GXColor *)Rel_RelocateAddr(0x80472a34) = s_default_color;
         return;
     }
@@ -109,12 +109,10 @@ void BallColor_Tick() {
 
     switch (ball_type) {
         case BallColorType_Preset: {
-            *(GXColor *)Rel_RelocateAddr(0x80472a34) =
-                s_default_color;  // reset default color
+            *(GXColor *)Rel_RelocateAddr(0x80472a34) = s_default_color;  // reset default color
             u8 color_id = convert_to_ball_color_id(Pref_Get(Pref_BallColor));
             mkb_balls[mkb_curr_player_idx].g_ball_color_index = color_id;
-            s_current_color =
-                ((GXColor *)Rel_RelocateAddr(0x80472a28))[color_id];
+            s_current_color = ((GXColor *)Rel_RelocateAddr(0x80472a28))[color_id];
             break;
         }
         case BallColorType_RGB: {

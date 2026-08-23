@@ -3,8 +3,8 @@
 #include "mods/freecam.h"
 #include "mods/validate.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
 #include "utils/base.h"
+#include "utils/draw.h"
 #include "utils/timerdisp.h"
 
 static u32 s_retrace_count;
@@ -77,7 +77,7 @@ void Timer_Disp() {
 
     if (Pref_Get(Pref_TimerShowSubtick) && !Freecam_ShouldHideHud()) {
         TimerDisp_DrawSubtickTimer(mkb_mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                     COLOR_WHITE, true, framesave, false);
+                                   COLOR_WHITE, true, framesave, false);
     }
 
     if (Pref_Get(Pref_TimerShowFramesave) && !Freecam_ShouldHideHud()) {

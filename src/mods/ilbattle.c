@@ -5,8 +5,8 @@
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
-#include "utils/draw.h"
 #include "systems/savest.h"
+#include "utils/draw.h"
 #include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
@@ -62,20 +62,17 @@ static bool s_score_buzzer = false;
 static void old_buzzer_display(u32 start_y) {
     s_buzzer_message_count = (s_buzzer_message_count + 1) % 30;
     if (s_buzzer_message_count >= 0)
-        Draw_DebugText(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED,
-                       "EPIC BUZZER BEATER B)");
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 1 * CHEIGHT, COLOR_RED, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 5)
         Draw_DebugText(X - 12 * CWIDTH, start_y + 2 * CHEIGHT, COLOR_ORANGE,
                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 10)
-        Draw_DebugText(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, COLOR_GOLD,
-                       "EPIC BUZZER BEATER B)");
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 3 * CHEIGHT, COLOR_GOLD, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 15)
         Draw_DebugText(X - 12 * CWIDTH, start_y + 4 * CHEIGHT, COLOR_GREEN,
                        "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 20)
-        Draw_DebugText(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, COLOR_BLUE,
-                       "EPIC BUZZER BEATER B)");
+        Draw_DebugText(X - 12 * CWIDTH, start_y + 5 * CHEIGHT, COLOR_BLUE, "EPIC BUZZER BEATER B)");
     if (s_buzzer_message_count >= 25)
         Draw_DebugText(X - 12 * CWIDTH, start_y + 6 * CHEIGHT, COLOR_BRIGHT_PURPLE,
                        "EPIC BUZZER BEATER B)");
@@ -160,7 +157,7 @@ static void battle_display(GXColor text_color) {
 
 static u32 score_calc(u32 score) {
     u32 igt_score = mkb_mode_info.stage_time_frames_remaining * 100 / 60;  // Score from timer
-    u32 goal_bonus = 0;                                                     // Blue goal (no bonus)
+    u32 goal_bonus = 0;                                                    // Blue goal (no bonus)
     if (mkb_mode_info.entered_goal_type == 1) {
         goal_bonus = 10000;  // Green goal bonus
     } else if (mkb_mode_info.entered_goal_type == 2) {
@@ -286,8 +283,7 @@ static void final_attempt() {
     bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) & 8;
     // End battle if: Paused, Fallout, or Time Over
     if (paused_now || mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT ||
-        mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN ||
-        mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT ||
+        mkb_sub_mode == mkb_SMD_GAME_RINGOUT_MAIN || mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT ||
         mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_MAIN) {
         s_state = IlBattleState_BattleDone;
     }
@@ -362,8 +358,7 @@ void ILBattle_Tick() {
     }
 
     // Resets battles when Dpad Down is pressed
-    if (mkb_main_mode == mkb_MD_GAME &&
-        Binds_Pressed(Pref_Get(Pref_IlBattleReadyBind), false)) {
+    if (mkb_main_mode == mkb_MD_GAME && Binds_Pressed(Pref_Get(Pref_IlBattleReadyBind), false)) {
         new_battle();
     }
 }

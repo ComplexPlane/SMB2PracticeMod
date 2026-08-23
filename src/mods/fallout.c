@@ -45,18 +45,18 @@ static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball) {
         }
         case FalloutPlaneType_Disabled: {
             if (below_fallout) {
-                return (mkb_BOOL32)false;
+                return (mkb_BOOL32) false;
             } else if (volumes_disabled) {
-                return (mkb_BOOL32)false;
+                return (mkb_BOOL32) false;
             }
             break;
         }
         case FalloutPlaneType_Bouncy: {
             if (below_fallout) {
                 ball->vel.y = ABS(ball->vel.y) * 1.05;
-                return (mkb_BOOL32)false;
+                return (mkb_BOOL32) false;
             } else if (volumes_disabled) {
-                return (mkb_BOOL32)false;
+                return (mkb_BOOL32) false;
             }
             break;
         }

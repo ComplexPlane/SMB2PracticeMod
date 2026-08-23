@@ -10,11 +10,11 @@
         u32 instrs[2];         \
     } name = {.src = (&s), .override = (&d)}
 
-#define HOOK_TRAMP(tramp)                                                                         \
-    ({                                                                                            \
-        typeof(&(tramp)) _tramp_ = (&(tramp));                                                    \
+#define HOOK_TRAMP(tramp)                                                                          \
+    ({                                                                                             \
+        typeof(&(tramp)) _tramp_ = (&(tramp));                                                     \
         Patch__HookFunctionTramp((void *)_tramp_->src, (void *)_tramp_->override, _tramp_->instrs, \
-                                (void **)&_tramp_->chain);                                        \
+                                 (void **)&_tramp_->chain);                                        \
     })
 
 // These return the overwritten word

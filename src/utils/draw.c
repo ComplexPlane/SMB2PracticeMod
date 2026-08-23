@@ -141,8 +141,8 @@ void Draw_Disp() {
     s32 draw_y = 454;
     GXColor color = s_notify_color;
 
-    s32 duration =
-        s_notify_duration == Draw_NotifyDuration_Long ? NOTIFY_DURATION_LONG : NOTIFY_DURATION_SHORT;
+    s32 duration = s_notify_duration == Draw_NotifyDuration_Long ? NOTIFY_DURATION_LONG
+                                                                 : NOTIFY_DURATION_SHORT;
 
     if (s_notify_frame_counter > duration) {
         color.a = 0xff - (s_notify_frame_counter - duration) * 0xff / NOTIFY_FADE_DURATION;
@@ -155,8 +155,7 @@ void Draw_Disp() {
     }
 }
 
-void Draw_NotifyWithDuration(GXColor color, Draw_NotifyDuration duration, const char *format,
-                             ...) {
+void Draw_NotifyWithDuration(GXColor color, Draw_NotifyDuration duration, const char *format, ...) {
     va_list args;
     va_start(args, format);
     mkb_vsprintf(s_notify_msg_buf, (char *)format, args);
@@ -200,12 +199,12 @@ void Draw_SetVertexColorPipeline() {
                                 (mkb_GXTexCoordID)mkb_GX_TEXMAP_NULL, mkb_GX_COLOR0A0);
     mkb_GXSetTevColorIn_cached(mkb_GX_TEVSTAGE0, mkb_GX_CC_ZERO, mkb_GX_CC_ZERO, mkb_GX_CC_ZERO,
                                mkb_GX_CC_RASC);
-    mkb_GXSetTevColorOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO,
-                               mkb_GX_CS_SCALE_1, 1, mkb_GX_TEVPREV);
+    mkb_GXSetTevColorOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO, mkb_GX_CS_SCALE_1,
+                               1, mkb_GX_TEVPREV);
     mkb_GXSetTevAlphaIn_cached(mkb_GX_TEVSTAGE0, mkb_GX_CA_ZERO, mkb_GX_CA_ZERO, mkb_GX_CA_ZERO,
                                mkb_GX_CA_RASA);
-    mkb_GXSetTevAlphaOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO,
-                               mkb_GX_CS_SCALE_1, 1, mkb_GX_TEVPREV);
+    mkb_GXSetTevAlphaOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO, mkb_GX_CS_SCALE_1,
+                               1, mkb_GX_TEVPREV);
 }
 
 void Draw_UnsetVertexColorPipeline() {
@@ -215,17 +214,16 @@ void Draw_UnsetVertexColorPipeline() {
     mkb_GXSetNumTevStages_cached(1);
     mkb_GXSetNumIndStages_cached(0);
     mkb_g_GXSetTevIndirect_zero_if_different(mkb_GX_TEVSTAGE0);
-    mkb_GXSetTexCoordGen2_cached(mkb_GX_TEXCOORD0, mkb_GX_TG_MTX2x4, mkb_GX_TG_TEX0, 0x3c, 0,
-                                 0x7d);
+    mkb_GXSetTexCoordGen2_cached(mkb_GX_TEXCOORD0, mkb_GX_TG_MTX2x4, mkb_GX_TG_TEX0, 0x3c, 0, 0x7d);
     mkb_g_GXSetTevOrder_wrapper(mkb_GX_TEVSTAGE0, mkb_GX_TEXCOORD0, mkb_GX_TEXCOORD0,
                                 mkb_GX_COLOR_NULL);
     mkb_GXSetTevSwapMode_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_SWAP0, mkb_GX_TEV_SWAP0);
     mkb_GXSetTevColorIn_cached(mkb_GX_TEVSTAGE0, mkb_GX_CC_ZERO, mkb_GX_CC_C0, mkb_GX_CC_TEXC,
                                mkb_GX_CC_C1);
-    mkb_GXSetTevColorOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO,
-                               mkb_GX_CS_SCALE_1, 1, mkb_GX_TEVPREV);
+    mkb_GXSetTevColorOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO, mkb_GX_CS_SCALE_1,
+                               1, mkb_GX_TEVPREV);
     mkb_GXSetTevAlphaIn_cached(mkb_GX_TEVSTAGE0, mkb_GX_CA_ZERO, mkb_GX_CA_A0, mkb_GX_CA_TEXA,
                                mkb_GX_CA_A1);
-    mkb_GXSetTevAlphaOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO,
-                               mkb_GX_CS_SCALE_1, 1, mkb_GX_TEVPREV);
+    mkb_GXSetTevAlphaOp_cached(mkb_GX_TEVSTAGE0, mkb_GX_TEV_ADD, mkb_GX_TB_ZERO, mkb_GX_CS_SCALE_1,
+                               1, mkb_GX_TEVPREV);
 }

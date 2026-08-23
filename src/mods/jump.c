@@ -129,8 +129,7 @@ static void jumping() {
         s_ticks_since_jump_input++;
     }
 
-    bool valid_location =
-        normal_vec.y < WALLJUMP_NORMAL || Pref_Get(Pref_JumpAllowWalljumps);
+    bool valid_location = normal_vec.y < WALLJUMP_NORMAL || Pref_Get(Pref_JumpAllowWalljumps);
     // Track Ground Touched
     if (ground_touched && valid_location) {
         s_ticks_since_ground = 0;
@@ -151,9 +150,9 @@ static void jumping() {
         ground_touched && s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
     bool coyote_late = s_ticks_since_ground < LATE_BUFFER_LENGTH && a_pressed;
     // check extra jump count
-    bool aerial_jumped = (s_aerial_jumps > 0 ||
-                          (MaxJumpCount)Pref_Get(Pref_JumpCount) == MaxJumpCount_Infinite) &&
-                         a_pressed;
+    bool aerial_jumped =
+        (s_aerial_jumps > 0 || (MaxJumpCount)Pref_Get(Pref_JumpCount) == MaxJumpCount_Infinite) &&
+        a_pressed;
     bool start_jump = mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT &&
                       s_ticks_since_jump_input < EARLY_BUFFER_LENGTH && a_down;
 

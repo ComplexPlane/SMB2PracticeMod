@@ -9,8 +9,11 @@ static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
 
-void TimerDisp_DrawTimer(s32 frames, const char *prefix, u32 row, GXColor color,
-                          bool show_seconds) {
+void TimerDisp_DrawTimer(s32 frames,
+                         const char *prefix,
+                         u32 row,
+                         GXColor color,
+                         bool show_seconds) {
     mkb_set_ui_widescreen_scale_mtx(320);
 
     bool positive = frames >= 0;
@@ -42,12 +45,12 @@ void TimerDisp_DrawTimer(s32 frames, const char *prefix, u32 row, GXColor color,
 }
 
 void TimerDisp_DrawSubtickTimer(s32 frames,
-                                  const char *prefix,
-                                  u32 row,
-                                  GXColor color,
-                                  bool show_minutes,
-                                  u32 framesave,
-                                  bool extra_precision) {
+                                const char *prefix,
+                                u32 row,
+                                GXColor color,
+                                bool show_minutes,
+                                u32 framesave,
+                                bool extra_precision) {
     mkb_set_ui_widescreen_scale_mtx(320);
 
     bool positive = frames >= 0;

@@ -72,14 +72,20 @@ static GXColor get_gradient_color(Vec2d pt, Vec2d origin, f32 radius, const Grad
 }
 
 // Requires the vertex color GX pipeline to be configured
-static void write_ring_vertex(f32 x, f32 y, Vec2d center, f32 outer_radius,
+static void write_ring_vertex(f32 x,
+                              f32 y,
+                              Vec2d center,
+                              f32 outer_radius,
                               const Gradient *gradient) {
     mkb_GXPosition3f32(x, y, -1.0f / 128.0f);
     GXColor color = get_gradient_color((Vec2d){x, y}, center, outer_radius, gradient);
     mkb_GXColor4u8(color.r, color.g, color.b, color.a);
 }
 
-static void draw_ring(u32 pts, Vec2d center, f32 inner_radius, f32 outer_radius,
+static void draw_ring(u32 pts,
+                      Vec2d center,
+                      f32 inner_radius,
+                      f32 outer_radius,
                       const Gradient *gradient) {
     mkb_GXBegin(mkb_GX_QUADS, mkb_GX_VTXFMT5, pts * 4);
 
@@ -162,9 +168,8 @@ void InputDisp_Init() {
 
 void InputDisp_Tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
-    set_sprite_visible(!Pref_Get(Pref_InputDisp) ||
-                       (Pref_Get(Pref_InputDispLocation) &&
-                        !Pref_Get(Pref_InputDispRawStickInputs)));
+    set_sprite_visible(!Pref_Get(Pref_InputDisp) || (Pref_Get(Pref_InputDispLocation) &&
+                                                     !Pref_Get(Pref_InputDispRawStickInputs)));
 }
 
 static bool get_notch_pos(const Pad_StickState *stick_inputs, Vec2d *out_pos) {
@@ -201,14 +206,14 @@ static bool get_notch_pos(const Pad_StickState *stick_inputs, Vec2d *out_pos) {
 }
 
 static const GXColor s_color_map[] = {
-    COLOR_PURPLE,                         // Purple
-    COLOR_RED,                            // Red
-    COLOR_ORANGE,                         // Orange
+    COLOR_PURPLE,              // Purple
+    COLOR_RED,                 // Red
+    COLOR_ORANGE,              // Orange
     {0xfd, 0xfb, 0x78, 0xff},  // Yellow
     {0x78, 0xfd, 0x85, 0xff},  // Green
     {0x78, 0xca, 0xfd, 0xff},  // Blue
-    COLOR_PINK,                           // Pink
-    COLOR_BLACK,                          // Black
+    COLOR_PINK,                // Pink
+    COLOR_BLACK,               // Black
 };
 
 static Gradient get_gradient() {
@@ -322,7 +327,8 @@ static void draw_buttons(const Vec2d *center, f32 scale) {
     }
 }
 
-static void draw_notch_indicators(const Pad_StickState *stick_inputs, const Vec2d *center,
+static void draw_notch_indicators(const Pad_StickState *stick_inputs,
+                                  const Vec2d *center,
                                   f32 scale) {
     if (!Pref_Get(Pref_InputDispNotchIndicators)) return;
 

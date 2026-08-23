@@ -115,8 +115,8 @@ static void state_load_menu() {
     s_state = State_EnterCm;
 }
 
-static const mkb_ApeCharacter s_ape_charas[] = {mkb_CHARA_AIAI, mkb_CHARA_MEEMEE,
-                                                mkb_CHARA_BABY, mkb_CHARA_GONGON};
+static const mkb_ApeCharacter s_ape_charas[] = {mkb_CHARA_AIAI, mkb_CHARA_MEEMEE, mkb_CHARA_BABY,
+                                                mkb_CHARA_GONGON};
 
 static void state_enter_cm() {
     mkb_num_players = 1;
@@ -185,8 +185,7 @@ static void state_seg_active() {
 
 static void state_seg_complete() {
     // If the final stage of the segment is a bonus stage, do a custom transition back to main menu
-    if (mkb_mode_info.cm_stage_id == -1 &&
-        mkb_mode_info.ball_mode & mkb_BALLMODE_ON_BONUS_STAGE) {
+    if (mkb_mode_info.cm_stage_id == -1 && mkb_mode_info.ball_mode & mkb_BALLMODE_ON_BONUS_STAGE) {
         if (mkb_sub_mode == mkb_SMD_GAME_RINGOUT_INIT ||
             mkb_sub_mode == mkb_SMD_GAME_TIMEOVER_INIT) {
             mkb_sub_mode_frame_counter += 120;
@@ -383,9 +382,8 @@ static void sprite_go_disp_hook(mkb_Sprite *sprite) {
             phi_f30_2 = (i == 0) ? -240.0f : 240.0f;
             y_add = phi_f30_2 * mkb_math_sin((0xF - sprite->g_counter) * 0x444);
         }
-        mkb_textdraw_set_pos(
-            (sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
-            (sprite->pos.y + y_add) - y_offset);
+        mkb_textdraw_set_pos((sprite->pos.x + x_add) - x_offset + ((i == 0) ? -x_offset : x_offset),
+                             (sprite->pos.y + y_add) - y_offset);
         mkb_textdraw_put_char((i == 0) ? 0x47 : 0x4F);
     }
 }

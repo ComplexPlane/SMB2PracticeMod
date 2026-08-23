@@ -4,9 +4,9 @@
 #include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/savest.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
-#include "systems/savest.h"
 
 typedef enum {
     SaveTo_Selected,

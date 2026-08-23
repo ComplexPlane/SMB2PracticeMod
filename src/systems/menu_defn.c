@@ -687,35 +687,39 @@ static void rumble_set_3(bool enable) {
 static Widget s_rumble_widgets[] = {
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 1 Rumble",
-            .get = rumble_get_0,
-            .set = rumble_set_0,
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 1 Rumble",
+                .get = rumble_get_0,
+                .set = rumble_set_0,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 2 Rumble",
-            .get = rumble_get_1,
-            .set = rumble_set_1,
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 2 Rumble",
+                .get = rumble_get_1,
+                .set = rumble_set_1,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 3 Rumble",
-            .get = rumble_get_2,
-            .set = rumble_set_2,
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 3 Rumble",
+                .get = rumble_get_2,
+                .set = rumble_set_2,
+            },
     },
     {
         .type = WidgetType_GetSetCheckbox,
-        .get_set_checkbox = {
-            .label = "Controller 4 Rumble",
-            .get = rumble_get_3,
-            .set = rumble_set_3,
-        },
+        .get_set_checkbox =
+            {
+                .label = "Controller 4 Rumble",
+                .get = rumble_get_3,
+                .set = rumble_set_3,
+            },
     },
 };
 
@@ -1673,10 +1677,8 @@ static const char *PHYSICS_PRESETS[] = {"Default",       "Light Ball",      "No 
 static Widget s_lightball[] = {{.type = WidgetType_Text, .text = {"  Weight: 1.00 -> 0.95"}}};
 static Widget s_nofriction[] = {{.type = WidgetType_Text, .text = {"  Friction: 0.010 -> 0.000"}}};
 static Widget s_heavyball[] = {{.type = WidgetType_Text, .text = {"  Weight: 1.00 -> 1.05"}}};
-static Widget s_bouncyball[] = {
-    {.type = WidgetType_Text, .text = {"  Restitution: 0.50 -> 1.20"}}};
-static Widget s_stickyball[] = {
-    {.type = WidgetType_Text, .text = {"  Restitution: 0.50 -> 0.01"}}};
+static Widget s_bouncyball[] = {{.type = WidgetType_Text, .text = {"  Restitution: 0.50 -> 1.20"}}};
+static Widget s_stickyball[] = {{.type = WidgetType_Text, .text = {"  Restitution: 0.50 -> 0.01"}}};
 static Widget s_high_friction[] = {
     {.type = WidgetType_Text, .text = {"  Friction: 0.010 -> 0.020"}},
 };

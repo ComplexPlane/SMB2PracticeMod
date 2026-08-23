@@ -31,7 +31,7 @@ static WriteState s_state = WriteState_Idle;
 static WriteParams s_write_params;  // Current params
 static WriteParams s_write_request;
 static bool s_write_request_valid;  // Params for use for next write
-static u32 s_write_size;  // Sector size of memory card A which we read when probing it
+static u32 s_write_size;            // Sector size of memory card A which we read when probing it
 
 static char s_orig_gamecode[6];
 
@@ -205,8 +205,8 @@ static void tick_state_machine() {
 
                 } else {
                     // Card opened successfully, proceed directly to writing
-                    mkb_CARDWriteAsync(&s_card_file_info, (void *)s_write_params.buf,
-                                       s_write_size, 0, nullptr);
+                    mkb_CARDWriteAsync(&s_card_file_info, (void *)s_write_params.buf, s_write_size,
+                                       0, nullptr);
                     s_state = WriteState_Write;
                 }
 

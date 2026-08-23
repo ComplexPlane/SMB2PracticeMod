@@ -81,7 +81,8 @@ bool Pad_ButtonChordPressed(mkb_PadDigitalInput btn1, mkb_PadDigitalInput btn2, 
            (Pad_ButtonPressed(btn1, priority) && Pad_ButtonDown(btn2, priority));
 }
 
-bool Pad_AnalogChordPressed(mkb_PadDigitalInput analog1, mkb_PadDigitalInput analog2,
+bool Pad_AnalogChordPressed(mkb_PadDigitalInput analog1,
+                            mkb_PadDigitalInput analog2,
                             bool priority) {
     return (Pad_AnalogDown(analog1, priority) && Pad_AnalogPressed(analog2, priority)) ||
            (Pad_AnalogPressed(analog1, priority) && Pad_AnalogDown(analog2, priority));

@@ -56,8 +56,7 @@ GXColor Draw_NumToRainbow(int num);
  */
 
 // Show a notification in the bottom-right of the screen which fades out after a short period
-void Draw_NotifyWithDuration(GXColor color, Draw_NotifyDuration duration, const char *format,
-                             ...);
+void Draw_NotifyWithDuration(GXColor color, Draw_NotifyDuration duration, const char *format, ...);
 void Draw_Notify(GXColor color, const char *format, ...);
 
 void Draw_BindWhiteTextureObj();

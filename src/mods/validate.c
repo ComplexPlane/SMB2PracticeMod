@@ -55,10 +55,9 @@ void Validate_Run() {
     if (SS_GetLastAction() == SS_Action_Load) s_loaded_savestate = true;
 
     // Using dpad controls is disallowed
-    bool dpad_down = Pad_ButtonDown(mkb_PAD_BUTTON_DOWN, false) ||
-                     Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) ||
-                     Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false) ||
-                     Pad_ButtonDown(mkb_PAD_BUTTON_UP, false);
+    bool dpad_down =
+        Pad_ButtonDown(mkb_PAD_BUTTON_DOWN, false) || Pad_ButtonDown(mkb_PAD_BUTTON_LEFT, false) ||
+        Pad_ButtonDown(mkb_PAD_BUTTON_RIGHT, false) || Pad_ButtonDown(mkb_PAD_BUTTON_UP, false);
     if (Pref_Get(Pref_DpadControls) && dpad_down) s_used_mods = true;
 
     // Opening the mod menu is disallowed
@@ -179,13 +178,17 @@ static void find_framesave(mkb_Ball *ball,
     } while (true);
 }
 
-static bool did_ball_enter_goal_hook(mkb_Ball *ball, int *out_stage_goal_idx, int *out_itemgroup_id,
+static bool did_ball_enter_goal_hook(mkb_Ball *ball,
+                                     int *out_stage_goal_idx,
+                                     int *out_itemgroup_id,
                                      byte *out_goal_flags);
 
 TRAMP(s_goal_tramp, mkb_did_ball_enter_goal, did_ball_enter_goal_hook);
 
-static bool did_ball_enter_goal_hook(mkb_Ball *ball, int *out_stage_goal_idx,
-                                     int *out_itemgroup_id, byte *out_goal_flags) {
+static bool did_ball_enter_goal_hook(mkb_Ball *ball,
+                                     int *out_stage_goal_idx,
+                                     int *out_itemgroup_id,
+                                     byte *out_goal_flags) {
     bool result = s_goal_tramp.chain(ball, out_stage_goal_idx, out_itemgroup_id, out_goal_flags);
     if (result) {
         // determine framesave percentage
