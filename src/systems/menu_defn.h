@@ -3,7 +3,7 @@
 #include "systems/pref.h"
 #include "utils/base.h"
 
-typedef enum WidgetType {
+typedef enum {
     WidgetType_Text,
     WidgetType_ColoredText,
     WidgetType_Header,
@@ -22,12 +22,12 @@ typedef enum WidgetType {
     WidgetType_RgbPreview,
 } WidgetType;
 
-typedef struct TextWidget {
+typedef struct {
     const char *label;            // For static text
     const char *(*label_func)();  // For dynamic text
 } TextWidget;
 
-typedef struct ColoredTextWidget {
+typedef struct {
     const char *label;
     GXColor color_left;   // Gradient start color
     GXColor color_right;  // Gradient end color
@@ -36,23 +36,23 @@ typedef struct ColoredTextWidget {
 } ColoredTextWidget;
 
 // Just a different color TextWidget
-typedef struct HeaderWidget {
+typedef struct {
     const char *label;
 } HeaderWidget;
 
-typedef struct CheckboxWidget {
+typedef struct {
     const char *label;
     Pref pref;
 } CheckboxWidget;
 
 // For the rare cases a checkbox doesn't correspond to a preference
-typedef struct GetSetCheckboxWidget {
+typedef struct {
     const char *label;
     bool (*get)();
     void (*set)(bool);
 } GetSetCheckboxWidget;
 
-typedef struct MenuWidget {
+typedef struct {
     const char *label;
     struct Widget *widgets;
     u32 num_widgets;
@@ -61,31 +61,31 @@ typedef struct MenuWidget {
     u32 selected_idx;
 } MenuWidget;
 
-typedef struct FloatViewWidget {
+typedef struct {
     const char *label;
     f32 (*get)();
 } FloatViewWidget;
 
-typedef struct ChooseWidget {
+typedef struct {
     const char *label;
     const char **choices;
     u16 num_choices;
     Pref pref;
 } ChooseWidget;
 
-typedef enum ButtonFlag {
+typedef enum {
     ButtonFlag_CloseMenu = 1 << 0,  // Close menu after pushed
     ButtonFlag_GoBack = 1 << 1,     // Go back to parent menu after pushed
 } ButtonFlag;
 
-typedef struct ButtonWidget {
+typedef struct {
     const char *label;
     void (*push)();  // Runs when pushed. Can be null
     u32 flags;
 } ButtonWidget;
 
 // Pretty limited for now
-typedef struct IntEditWidget {
+typedef struct {
     const char *label;
     Pref pref;
     s16 min;
@@ -95,7 +95,7 @@ typedef struct IntEditWidget {
 } IntEditWidget;
 
 // even more limited for now
-typedef struct FloatEditWidget {
+typedef struct {
     const char *label;
     Pref pref;
     u32 precision;  // denominator, 100
@@ -105,35 +105,36 @@ typedef struct FloatEditWidget {
     u8 decimals;
 } FloatEditWidget;
 
-typedef struct InputSelectWidget {
+typedef struct {
     const char *label;
     Pref pref;
     bool required_chord;  // must be a 2 button bind if true
     bool can_unbind;
 } InputSelectWidget;
 
-typedef enum HideableType : u8 {
+typedef enum : u8 {
     HideableType_U8Hideable,
     HideableType_BoolHideable,
 } HideableType;
 
-typedef struct HideableGroupWidget {
+typedef struct {
     struct Widget *widgets;
     u32 num_widgets;
     bool (*show_if)();  // show if function returns true
 } HideableGroupWidget;
 
-typedef struct CustomWidget {
+typedef struct {
     void (*draw)();
 } CustomWidget;
 
 // Shows a live color swatch next to RGB IntEdit widgets
-typedef struct RgbPreviewWidget {
+typedef struct {
     Pref r_pref;
     Pref g_pref;
     Pref b_pref;
 } RgbPreviewWidget;
 
+// Needs a struct tag so MenuWidget/HideableGroupWidget can refer to it before it's defined
 typedef struct Widget {
     WidgetType type;
     union {
@@ -157,4 +158,4 @@ typedef struct Widget {
 
 extern MenuWidget menu_root;
 
-void menu_init();
+void MenuDefn_Init();

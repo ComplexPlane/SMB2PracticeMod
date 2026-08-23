@@ -21,7 +21,7 @@ void ILMark_Init() {
 }
 
 void ILMark_ValidateAttempt() {
-    if (!validate_was_run_valid(false)) return;
+    if (!Validate_WasRunValid(false)) return;
     s_valid_run = true;
 }
 
@@ -61,7 +61,7 @@ bool ILMark_IsEnabled() {
 }
 
 void ILMark_Disp() {
-    if (!ILMark_IsEnabled() || freecam_should_hide_hud()) return;
+    if (!ILMark_IsEnabled() || Freecam_ShouldHideHud()) return;
 
     bool in_show_submode = mkb_sub_mode == mkb_SMD_GAME_GOAL_INIT ||
                            mkb_sub_mode == mkb_SMD_GAME_GOAL_MAIN ||
@@ -97,6 +97,6 @@ void ILMark_Disp() {
 
     // Include the git commit hash after the version, e.g. "1.1.0 0123abcd-d"
     char mark[48];
-    mkb_sprintf(mark, "%s %s", version_get_str(), GIT_HASH);
+    mkb_sprintf(mark, "%s %s", Version_GetStr(), GIT_HASH);
     mkb_textdraw_print(mark);
 }

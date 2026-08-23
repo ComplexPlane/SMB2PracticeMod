@@ -6,4 +6,4 @@
 
 #include "utils/base.h"
 
-void dpad_on_PADRead(mkb_PADStatus *statuses);
+void Dpad_OnPADRead(mkb_PADStatus *statuses);

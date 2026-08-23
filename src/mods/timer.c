@@ -55,12 +55,12 @@ void Timer_Disp() {
 
     u32 row = 1;
 
-    if (Pref_Get(Pref_TimerShowRTA) && !freecam_should_hide_hud()) {
-        timerdisp_draw_timer(s_rta_timer, "RTA:", row++, COLOR_WHITE, true);
+    if (Pref_Get(Pref_TimerShowRTA) && !Freecam_ShouldHideHud()) {
+        TimerDisp_DrawTimer(s_rta_timer, "RTA:", row++, COLOR_WHITE, true);
     }
 
-    if (Pref_Get(Pref_TimerShowPause) && !freecam_should_hide_hud()) {
-        timerdisp_draw_timer(s_pause_timer, "PAU:", row++, COLOR_WHITE, true);
+    if (Pref_Get(Pref_TimerShowPause) && !Freecam_ShouldHideHud()) {
+        TimerDisp_DrawTimer(s_pause_timer, "PAU:", row++, COLOR_WHITE, true);
     }
 
     switch (mkb_sub_mode) {
@@ -73,15 +73,15 @@ void Timer_Disp() {
             return;
     }
 
-    u32 framesave = validate_get_framesave();
+    u32 framesave = Validate_GetFramesave();
 
-    if (Pref_Get(Pref_TimerShowSubtick) && !freecam_should_hide_hud()) {
-        timerdisp_draw_subtick_timer(mkb_mode_info.stage_time_frames_remaining, "SUB:", row++,
+    if (Pref_Get(Pref_TimerShowSubtick) && !Freecam_ShouldHideHud()) {
+        TimerDisp_DrawSubtickTimer(mkb_mode_info.stage_time_frames_remaining, "SUB:", row++,
                                      COLOR_WHITE, true, framesave, false);
     }
 
-    if (Pref_Get(Pref_TimerShowFramesave) && !freecam_should_hide_hud()) {
-        timerdisp_draw_percentage(framesave, "FSV:", row++, COLOR_WHITE);
+    if (Pref_Get(Pref_TimerShowFramesave) && !Freecam_ShouldHideHud()) {
+        TimerDisp_DrawPercentage(framesave, "FSV:", row++, COLOR_WHITE);
     }
 }
 
@@ -90,7 +90,7 @@ void Timer_SaveState(Store *store, StoreFunc func) {
     func(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
     func(store, &s_rta_timer, sizeof(s_rta_timer));
     func(store, &s_pause_timer, sizeof(s_pause_timer));
-    if (func == store_load) {
+    if (func == Store_Load) {
         // This might not be completely consistently correct
         u32 count = mkb_VIGetRetraceCount();
         s_prev_retrace_count = count - 1;

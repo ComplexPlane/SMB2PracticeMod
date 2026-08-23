@@ -10,7 +10,7 @@
 #include "utils/relutil.h"
 #include "utils/timerdisp.h"
 
-typedef enum IlBattleState {
+typedef enum {
     IlBattleState_NotReady,
     IlBattleState_WaitForFirstRetry,     // Mod is enabled but first retry hasn't occurred
     IlBattleState_BattleRunning,         // Battle is running
@@ -19,7 +19,7 @@ typedef enum IlBattleState {
     IlBattleState_BattleDone,            // Final attempt is over, show times in blue
 } IlBattleState;
 
-typedef enum IlBattleLength {
+typedef enum {
     IlBattleLength_FiveMinutes = 0,
     IlBattleLength_SevenMinutes = 1,
     IlBattleLength_TenMinutes = 2,
@@ -256,8 +256,8 @@ static void update_best() {
     }
 }
 
-void ilbattle_validate_attempt() {
-    if (!validate_was_run_valid(true)) return;
+void ILBattle_ValidateAttempt() {
+    if (!Validate_WasRunValid(true)) return;
 
     bool on_incorrect_stage = s_main_mode_play_timer > 0 &&
                               s_battle_stage_id != mkb_current_stage_id &&
@@ -305,7 +305,7 @@ static void track_postgoal() {
     }
 }
 
-void ilbattle_tick() {
+void ILBattle_Tick() {
     if (!Pref_Get(Pref_IlBattleDisplay)) {
         clear_display();
         s_state = IlBattleState_NotReady;
@@ -368,13 +368,13 @@ void ilbattle_tick() {
     }
 }
 
-void ilbattle_disp() {
+void ILBattle_Disp() {
     if (mkb_main_mode == mkb_MD_GAME &&
         (mkb_main_game_mode == mkb_STORY_MODE || mkb_main_game_mode == mkb_CHALLENGE_MODE)) {
         return;
     }
 
-    if (!Pref_Get(Pref_IlBattleDisplay) || freecam_should_hide_hud()) return;
+    if (!Pref_Get(Pref_IlBattleDisplay) || Freecam_ShouldHideHud()) return;
 
     switch (s_state) {
         case IlBattleState_NotReady: {

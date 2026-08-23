@@ -1,5 +1,5 @@
 #pragma once
 
-void fallout_init();
-void fallout_tick();
-void fallout_disp();
+void Fallout_Init();
+void Fallout_Tick();
+void Fallout_Disp();

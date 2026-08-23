@@ -6,7 +6,7 @@
 #include "utils/draw.h"
 
 // Corresponds to CARD call we're waiting for
-typedef enum WriteState {
+typedef enum {
     WriteState_Idle,
     WriteState_Probe,
     WriteState_Mount,
@@ -15,7 +15,7 @@ typedef enum WriteState {
     WriteState_Write,
 } WriteState;
 
-typedef struct WriteParams {
+typedef struct {
     const char *file_name;
     const void *buf;
     u32 buf_size;

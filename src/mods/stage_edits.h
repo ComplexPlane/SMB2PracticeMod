@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-void stage_edits_smd_game_ready_init();
-void stage_edits_init();
-void stage_edits_tick();
-void stage_edits_select_new_goal();
+void StageEdits_SmdGameReadyInit();
+void StageEdits_Init();
+void StageEdits_Tick();
+void StageEdits_SelectNewGoal();

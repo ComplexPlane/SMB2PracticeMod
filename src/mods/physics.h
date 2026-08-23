@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-typedef enum PhysicsPreset {
+typedef enum {
     PhysicsPreset_Default = 0,
     PhysicsPreset_LightBall = 1,
     PhysicsPreset_NoFriction = 2,
@@ -13,7 +13,7 @@ typedef enum PhysicsPreset {
     PhysicsPreset_JumpPhysics = 7,
 } PhysicsPreset;
 
-bool physics_using_custom_physics();
-void physics_init();
-void physics_tick();
-void physics_disp();
+bool Physics_UsingCustomPhysics();
+void Physics_Init();
+void Physics_Tick();
+void Physics_Disp();

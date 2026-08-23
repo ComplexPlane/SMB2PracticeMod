@@ -97,7 +97,7 @@ static const Pref PREF_IDS[] = {
     Pref_RgbFormat,
 };
 
-typedef struct DefaultPref {
+typedef struct {
     Pref pref;
     s16 value;
 } DefaultPref;
@@ -135,7 +135,7 @@ static const DefaultPref DEFAULT_PREFS[] = {
 
 static constexpr u32 MAX_PREFS = 100;
 
-typedef struct FileHeader {
+typedef struct {
     char magic[4];  // "APMP"
     u16 semver_major;
     u16 semver_minor;
@@ -143,7 +143,7 @@ typedef struct FileHeader {
     u16 num_prefs;
 } __attribute__((__packed__)) FileHeader;
 
-typedef struct IdEntry {
+typedef struct {
     u16 id;
     u16 data;  // Either the preference value itself (if <= 2 bytes), or offset into buffer
                // prefs, etc

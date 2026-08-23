@@ -1,5 +1,5 @@
 #pragma once
 
-void iw_init();
-void iw_tick();
-void iw_disp();
+void IW_Init();
+void IW_Tick();
+void IW_Disp();

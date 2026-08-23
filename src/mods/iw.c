@@ -91,12 +91,12 @@ static void handle_iw_timer() {
     s_prev_retrace_count = retrace_count;
 }
 
-void iw_init() {
-    patch_write_branch(Rel_RelocateAddr(0x80274804), (void *)(asm_stage_select_menu_hook));
-    patch_write_branch(Rel_RelocateAddr(0x8032a86c), (void *)(asm_pause_menu_text_hook));
+void IW_Init() {
+    Patch_WriteBranch(Rel_RelocateAddr(0x80274804), (void *)(asm_stage_select_menu_hook));
+    Patch_WriteBranch(Rel_RelocateAddr(0x8032a86c), (void *)(asm_pause_menu_text_hook));
 }
 
-void iw_tick() {
+void IW_Tick() {
     asm_currently_playing_iw = false;
     if (mkb_main_mode != mkb_MD_GAME || mkb_main_game_mode != mkb_STORY_MODE) return;
 
@@ -115,10 +115,10 @@ void iw_tick() {
     handle_iw_timer();
 }
 
-void iw_disp() {
+void IW_Disp() {
     if (!Pref_Get(Pref_IwTimer) || mkb_main_mode != mkb_MD_GAME ||
         mkb_main_game_mode != mkb_STORY_MODE || !asm_currently_playing_iw ||
-        freecam_should_hide_hud())
+        Freecam_ShouldHideHud())
         return;
-    timerdisp_draw_timer((s32)s_iw_time, "IW:", 0, COLOR_WHITE, false);
+    TimerDisp_DrawTimer((s32)s_iw_time, "IW:", 0, COLOR_WHITE, false);
 }

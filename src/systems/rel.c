@@ -4,7 +4,7 @@
 
 void _prolog() {
     // Run mod init function
-    main_init();
+    Main_Init();
 }
 
 void _epilog() {

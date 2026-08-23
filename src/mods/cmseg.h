@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-typedef enum CM_Seg {
+typedef enum {
     CM_Seg_Beginner1,
     CM_Seg_BeginnerExtra,
 
@@ -22,7 +22,7 @@ typedef enum CM_Seg {
     CM_Seg_MasterExtra,
 } CM_Seg;
 
-typedef enum CM_Chara {
+typedef enum {
     CM_Chara_AiAi,
     CM_Chara_MeeMee,
     CM_Chara_Baby,

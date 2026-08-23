@@ -7,19 +7,19 @@
 #include "utils/patch.h"
 #include "utils/relutil.h"
 
-typedef enum BallColorType {
+typedef enum {
     BallColorType_Preset = 0,
     BallColorType_RGB = 1,
     BallColorType_Rainbow = 2,
     BallColorType_Random = 3,
 } BallColorType;
 
-typedef enum ClothingType {
+typedef enum {
     ClothingType_Preset = 0,
     ClothingType_Random = 1,
 } ClothingType;
 
-typedef enum MonkeyType {
+typedef enum {
     MonkeyType_Default = 0,
     MonkeyType_Aiai = 1,
     MonkeyType_Meemee = 2,
@@ -32,7 +32,7 @@ static u32 s_rainbow = 0;  // tick for rainbow animation
 static GXColor s_default_color;
 static GXColor s_current_color;
 
-GXColor ballcolor_get_current_color() {
+GXColor BallColor_GetCurrentColor() {
     return s_current_color;
 }
 
@@ -50,7 +50,7 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
     return color_choice - 1;
 }
 
-void ballcolor_switch_monkey() {
+void BallColor_SwitchMonkey() {
     switch ((MonkeyType)Pref_Get(Pref_MonkeyType)) {
         case MonkeyType_Default: {
             break;
@@ -84,16 +84,16 @@ TRAMP(s_load_stagedef_tramp, mkb_load_stagedef, load_stagedef_hook);
 
 static void load_stagedef_hook(u32 stage_id) {
     s_load_stagedef_tramp.chain(stage_id);
-    ballcolor_switch_monkey();
+    BallColor_SwitchMonkey();
 }
 
-void ballcolor_init() {
+void BallColor_Init() {
     s_default_color = *(GXColor *)Rel_RelocateAddr(0x80472a34);  // default color
 
     HOOK_TRAMP(s_load_stagedef_tramp);
 }
 
-void ballcolor_tick() {
+void BallColor_Tick() {
     BallColorType ball_type = (BallColorType)Pref_Get(Pref_BallColorType);
 
     // dont change color if in story mode menu

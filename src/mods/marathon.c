@@ -3,7 +3,7 @@
 #include "systems/pref.h"
 #include "utils/base.h"
 
-typedef enum MarathonState {
+typedef enum {
     MarathonState_WaitForGoal,         // No velocity is stored
     MarathonState_StoringVel,          // Goal was just passed, vel will be stored next frame
     MarathonState_WaitForFirstApply,   // Vel stored, waiting to be applied (but not stored, so we
@@ -92,7 +92,7 @@ static void wait_for_apply() {
     }
 }
 
-void marathon_tick() {
+void Marathon_Tick() {
     if (Pref_Get(Pref_Marathon)) {
         if (s_state == MarathonState_WaitForGoal) {
             wait_for_goal();

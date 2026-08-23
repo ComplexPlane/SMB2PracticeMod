@@ -1,4 +1,4 @@
 #pragma once
 
-void camera_init();
-void camera_tick();
+void Camera_Init();
+void Camera_Tick();

@@ -31,16 +31,16 @@ static bool in_correct_mode() {
                             mkb_sub_mode != mkb_SMD_EXOPT_REPLAY_LOAD_MAIN;
     return correct_main_mode && correct_sub_mode;
 }
-bool freecam_enabled() {
+bool Freecam_Enabled() {
     return Pref_Get(Pref_Freecam) && in_correct_mode();
 }
 
-bool freecam_should_freeze_timer() {
-    return freecam_enabled() && Pref_Get(Pref_FreecamFreezeTimer);
+bool Freecam_ShouldFreezeTimer() {
+    return Freecam_Enabled() && Pref_Get(Pref_FreecamFreezeTimer);
 }
 
-bool freecam_should_hide_hud() {
-    return freecam_enabled() && Pref_Get(Pref_FreecamHideHud);
+bool Freecam_ShouldHideHud() {
+    return Freecam_Enabled() && Pref_Get(Pref_FreecamHideHud);
 }
 
 static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
@@ -55,12 +55,12 @@ static void update_cam(mkb_Camera *camera, mkb_Ball *ball) {
     Pad_GetMergedSubstick(&substick);
     Pad_GetMergedTriggers(&trigger);
 
-    float stick_x = stick.x / (float)pad_MAX_STICK;
-    float stick_y = stick.y / (float)pad_MAX_STICK;
-    float substick_x = substick.x / (float)pad_MAX_STICK;
-    float substick_y = substick.y / (float)pad_MAX_STICK;
-    float trigger_left = trigger.l / (float)pad_MAX_TRIGGER;
-    float trigger_right = trigger.r / (float)pad_MAX_TRIGGER;
+    float stick_x = stick.x / (float)Pad_MAX_STICK;
+    float stick_y = stick.y / (float)Pad_MAX_STICK;
+    float substick_x = substick.x / (float)Pad_MAX_STICK;
+    float substick_y = substick.y / (float)Pad_MAX_STICK;
+    float trigger_left = trigger.l / (float)Pad_MAX_TRIGGER;
+    float trigger_right = trigger.r / (float)Pad_MAX_TRIGGER;
     bool fast = Pad_ButtonDown(mkb_PAD_BUTTON_Y, false);
     bool slow = Pad_ButtonDown(mkb_PAD_BUTTON_X, false);
 
@@ -116,7 +116,7 @@ static void event_camera_tick_hook();
 TRAMP(s_event_camera_tick_tramp, mkb_event_camera_tick, event_camera_tick_hook);
 
 static void event_camera_tick_hook() {
-    if (freecam_enabled()) {
+    if (Freecam_Enabled()) {
         for (u32 i = 0; i < LEN(mkb_world_infos); i++) {
             mkb_world_infos[i].stage_tilt_x = 0;
             mkb_world_infos[i].stage_tilt_z = 0;
@@ -125,13 +125,13 @@ static void event_camera_tick_hook() {
     s_event_camera_tick_tramp.chain();
 }
 
-void freecam_init() {
-    patch_write_branch_bl(Rel_RelocateAddr(0x8028353c), (void *)(call_camera_func_hook));
+void Freecam_Init() {
+    Patch_WriteBranchBL(Rel_RelocateAddr(0x8028353c), (void *)(call_camera_func_hook));
 
     HOOK_TRAMP(s_event_camera_tick_tramp);
 }
 
-void freecam_tick() {
+void Freecam_Tick() {
     // Compute enabled on previous tick
     s_flags &= ~Flags_EnabledPrevTick;
     if (s_flags & Flags_EnabledThisTick) {
@@ -145,7 +145,7 @@ void freecam_tick() {
     }
 
     s_flags &= ~Flags_EnabledThisTick;
-    if (freecam_enabled()) {
+    if (Freecam_Enabled()) {
         s_flags |= Flags_EnabledThisTick;
 
         // Adjust turbo speed multiplier
@@ -159,7 +159,7 @@ void freecam_tick() {
             speed_mult++;
             input_made = true;
         }
-        speed_mult = CLAMP(speed_mult, freecam_TURBO_SPEED_MIN, freecam_TURBO_SPEED_MAX);
+        speed_mult = CLAMP(speed_mult, Freecam_TURBO_SPEED_MIN, Freecam_TURBO_SPEED_MAX);
         if (input_made) {
             Draw_Notify(COLOR_WHITE, "Freecam Turbo Speed Factor: %dX", speed_mult);
             Pref_Set(Pref_FreecamSpeedMult, speed_mult);

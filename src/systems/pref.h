@@ -6,7 +6,7 @@
 
 // Unique ID assigned to each preference. The ID assigned to a preference must never change, nor may
 // they be reused, to ensure backwards compatibility!
-typedef enum Pref : u8 {
+typedef enum : u8 {
     Pref_Savestates = 1,
     Pref_InputDisp = 2,
     Pref_InputDispLocation = 3,

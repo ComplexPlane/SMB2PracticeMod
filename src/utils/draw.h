@@ -22,7 +22,7 @@ constexpr GXColor COLOR_GOLD = {0xFF, 0xD7, 0x00, 0xFF};
 constexpr GXColor COLOR_GRAY = {0x70, 0x70, 0x70, 0xFF};
 constexpr GXColor COLOR_LIGHT_GRAY = {0xA0, 0xA0, 0xA0, 0xFF};
 
-typedef enum Draw_NotifyDuration {
+typedef enum {
     Draw_NotifyDuration_Short,
     Draw_NotifyDuration_Long,
 } Draw_NotifyDuration;

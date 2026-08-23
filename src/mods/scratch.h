@@ -1,5 +1,5 @@
 #pragma once
 
-void scratch_init();
-void scratch_tick();
-void scratch_disp();
+void Scratch_Init();
+void Scratch_Tick();
+void Scratch_Disp();

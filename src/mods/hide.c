@@ -72,7 +72,7 @@ TRAMP(s_draw_sprite_tramp, mkb_draw_sprite, draw_sprite_hook);
 static void draw_sprite_hook(mkb_Sprite *sprite) {
     // Hide every sprite except the pause menu
     bool hide_hud = Pref_Get(Pref_HideHud);
-    bool freecam_hide = freecam_should_hide_hud();
+    bool freecam_hide = Freecam_ShouldHideHud();
     bool correct_mode = mkb_main_mode == mkb_MD_GAME;
     bool is_pausemenu_sprite = sprite->disp_func == mkb_sprite_pausemenu_disp;
     if (!((hide_hud || freecam_hide) && correct_mode && !is_pausemenu_sprite)) {
@@ -86,7 +86,7 @@ TRAMP(s_draw_minimap_tramp, mkb_g_draw_minimap, draw_minimap_hook);
 
 static void draw_minimap_hook() {
     bool hide_hud = Pref_Get(Pref_HideHud);
-    bool freecam_hide = freecam_should_hide_hud();
+    bool freecam_hide = Freecam_ShouldHideHud();
     if (!(hide_hud || freecam_hide)) {
         s_draw_minimap_tramp.chain();
     }
@@ -152,8 +152,8 @@ static void init_hide_bg() {
     HOOK_TRAMP(s_clear_tramp);
 
     // Black fog
-    patch_write_branch_bl(Rel_RelocateAddr(0x80352e58), (void *)(avdisp_set_fog_color_hook));
-    patch_write_branch_bl(Rel_RelocateAddr(0x80352eac), (void *)(nl2ngc_set_fog_color_hook));
+    Patch_WriteBranchBL(Rel_RelocateAddr(0x80352e58), (void *)(avdisp_set_fog_color_hook));
+    Patch_WriteBranchBL(Rel_RelocateAddr(0x80352eac), (void *)(nl2ngc_set_fog_color_hook));
 }
 
 static void init_hide_hud() {
@@ -169,7 +169,7 @@ static void init_hide_misc() {
     HOOK_TRAMP(s_draw_effects_tramp);
 }
 
-void hide_init() {
+void Hide_Init() {
     init_hide_bg();
     init_hide_hud();
     init_hide_misc();

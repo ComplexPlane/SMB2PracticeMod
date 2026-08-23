@@ -9,7 +9,7 @@ static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
 
-void timerdisp_draw_timer(s32 frames, const char *prefix, u32 row, GXColor color,
+void TimerDisp_DrawTimer(s32 frames, const char *prefix, u32 row, GXColor color,
                           bool show_seconds) {
     mkb_set_ui_widescreen_scale_mtx(320);
 
@@ -41,7 +41,7 @@ void timerdisp_draw_timer(s32 frames, const char *prefix, u32 row, GXColor color
     mkb_reset_ui_widescreen_scale_mtx();
 }
 
-void timerdisp_draw_subtick_timer(s32 frames,
+void TimerDisp_DrawSubtickTimer(s32 frames,
                                   const char *prefix,
                                   u32 row,
                                   GXColor color,
@@ -73,7 +73,7 @@ void timerdisp_draw_subtick_timer(s32 frames,
     mkb_reset_ui_widescreen_scale_mtx();
 }
 
-void timerdisp_draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
+void TimerDisp_DrawPercentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
     mkb_set_ui_widescreen_scale_mtx(320);
 
     s32 y = Y + row * 16;

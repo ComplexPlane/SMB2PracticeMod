@@ -9,7 +9,7 @@
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
 
-typedef enum InputDispColorType {
+typedef enum {
     InputDispColorType_Default = 0,
     InputDispColorType_RgbSolid = 1,
     InputDispColorType_RgbGradient = 2,
@@ -17,7 +17,7 @@ typedef enum InputDispColorType {
     InputDispColorType_MatchBall = 4,
 } InputDispColorType;
 
-typedef struct Gradient {
+typedef struct {
     GXColor color1;
     GXColor color2;
     s16 rotation;
@@ -171,28 +171,28 @@ static bool get_notch_pos(const Pad_StickState *stick_inputs, Vec2d *out_pos) {
     constexpr f32 DIAG = 0.7071067811865476f;  // sin(pi/4) or sqrt(2)/2
     bool notch_found = false;
 
-    if (stick_inputs->x == 0 && stick_inputs->y == pad_MAX_STICK) {
+    if (stick_inputs->x == 0 && stick_inputs->y == Pad_MAX_STICK) {
         *out_pos = (Vec2d){0, 1};
         notch_found = true;
-    } else if (stick_inputs->x == 0 && stick_inputs->y == -pad_MAX_STICK) {
+    } else if (stick_inputs->x == 0 && stick_inputs->y == -Pad_MAX_STICK) {
         *out_pos = (Vec2d){0, -1};
         notch_found = true;
-    } else if (stick_inputs->x == pad_MAX_STICK && stick_inputs->y == 0) {
+    } else if (stick_inputs->x == Pad_MAX_STICK && stick_inputs->y == 0) {
         *out_pos = (Vec2d){1, 0};
         notch_found = true;
-    } else if (stick_inputs->x == -pad_MAX_STICK && stick_inputs->y == 0) {
+    } else if (stick_inputs->x == -Pad_MAX_STICK && stick_inputs->y == 0) {
         *out_pos = (Vec2d){-1, 0};
         notch_found = true;
-    } else if (stick_inputs->x == pad_MAX_STICK && stick_inputs->y == pad_MAX_STICK) {
+    } else if (stick_inputs->x == Pad_MAX_STICK && stick_inputs->y == Pad_MAX_STICK) {
         *out_pos = (Vec2d){DIAG, DIAG};
         notch_found = true;
-    } else if (stick_inputs->x == pad_MAX_STICK && stick_inputs->y == -pad_MAX_STICK) {
+    } else if (stick_inputs->x == Pad_MAX_STICK && stick_inputs->y == -Pad_MAX_STICK) {
         *out_pos = (Vec2d){DIAG, -DIAG};
         notch_found = true;
-    } else if (stick_inputs->x == -pad_MAX_STICK && stick_inputs->y == pad_MAX_STICK) {
+    } else if (stick_inputs->x == -Pad_MAX_STICK && stick_inputs->y == Pad_MAX_STICK) {
         *out_pos = (Vec2d){-DIAG, DIAG};
         notch_found = true;
-    } else if (stick_inputs->x == -pad_MAX_STICK && stick_inputs->y == -pad_MAX_STICK) {
+    } else if (stick_inputs->x == -Pad_MAX_STICK && stick_inputs->y == -Pad_MAX_STICK) {
         *out_pos = (Vec2d){-DIAG, -DIAG};
         notch_found = true;
     }
@@ -254,7 +254,7 @@ static Gradient get_gradient() {
             return gradient_from_color(Draw_NumToRainbow(s_rainbow));
         }
         case InputDispColorType_MatchBall: {
-            GXColor current = ballcolor_get_current_color();
+            GXColor current = BallColor_GetCurrentColor();
             current.a = 0xff;
             return gradient_from_color(current);
         }
@@ -359,7 +359,7 @@ void InputDisp_Disp() {
                      mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_INIT ||
                      mkb_sub_mode == mkb_SMD_EXOPT_REPLAY_MAIN;
 
-    if (!Pref_Get(Pref_InputDisp) || freecam_should_hide_hud() || in_replay) return;
+    if (!Pref_Get(Pref_InputDisp) || Freecam_ShouldHideHud() || in_replay) return;
 
     Vec2d center = Pref_Get(Pref_InputDispLocation) ? (Vec2d){430, 60} : (Vec2d){534, 60};
     mkb_set_ui_widescreen_scale_mtx(center.x);

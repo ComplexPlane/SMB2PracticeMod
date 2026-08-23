@@ -3,25 +3,43 @@
 #include "macro_utils.h"
 
 // Start of a loaded DOL, REL, or REL BSS
-typedef struct Region {
+typedef struct {
     RelId id;
     void *vanilla_ptr;
     u32 size;
     bool is_bss;
 } Region;
 
+typedef struct {
+    void *addr;
+    u32 len;
+} OSSectionInfo;
+
+typedef struct {
+    u16 offset;
+    u8 type;
+    u8 section;
+    u32 addend;
+} __attribute__((packed)) OSRel;
+
+typedef struct {
+    u32 id;
+    OSRel *offset;
+} __attribute__((packed)) OSImportInfo;
+
+// Needs a struct tag to refer to itself
 typedef struct OSModuleHeader {
     u32 id;
     struct OSModuleHeader *next;
     struct OSModuleHeader *prev;
     u32 numSections;
-    struct OSSectionInfo *sectionInfoOffset;
+    OSSectionInfo *sectionInfoOffset;
     char *nameOffset;
     u32 nameSize;
     u32 version;
     u32 bssSize;
-    struct OSRel *relOffset;
-    struct OSImportInfo *impOffset;
+    OSRel *relOffset;
+    OSImportInfo *impOffset;
     u32 impSize;
     u8 prologSection;
     u8 epilogSection;
@@ -34,23 +52,6 @@ typedef struct OSModuleHeader {
     u32 bssAlign;
     u32 fixSize;
 } __attribute__((packed)) OSModuleHeader;
-
-typedef struct OSSectionInfo {
-    void *addr;
-    u32 len;
-} OSSectionInfo;
-
-typedef struct OSRel {
-    u16 offset;
-    u8 type;
-    u8 section;
-    u32 addend;
-} __attribute__((packed)) OSRel;
-
-typedef struct OSImportInfo {
-    u32 id;
-    OSRel *offset;
-} __attribute__((packed)) OSImportInfo;
 
 static Region s_vanilla_regions[] = {
     {Rel_Dol, (void *)0x80000000, 0x199F84, false},

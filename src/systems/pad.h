@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-typedef enum PadDir {
+typedef enum {
     PadDir_Up,
     PadDir_UpRight,
     PadDir_Right,
@@ -14,19 +14,19 @@ typedef enum PadDir {
     PadDir_None = -1,
 } PadDir;
 
-typedef struct Pad_StickState {
+typedef struct {
     s32 x;
     s32 y;
 } Pad_StickState;
 
-typedef struct Pad_TriggerState {
+typedef struct {
     s32 l;
     s32 r;
 } Pad_TriggerState;
 
 enum {
-    pad_MAX_STICK = 60,
-    pad_MAX_TRIGGER = 128,
+    Pad_MAX_STICK = 60,
+    Pad_MAX_TRIGGER = 128,
 };
 
 // Tick functions to be run at different points in the game loop

@@ -1,3 +1,3 @@
 #pragma once
 
-void sfx_init();
+void Sfx_Init();

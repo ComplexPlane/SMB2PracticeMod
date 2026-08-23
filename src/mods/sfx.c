@@ -25,7 +25,7 @@ static void call_sound_req_hook(u32 g_sfx_idx) {
     }
 }
 
-void sfx_init() {
+void Sfx_Init() {
     // Only hook if the preference is initially set, so we don't affect background music until game
     // is rebooted
     if (Pref_Get(Pref_MuteBgm)) {

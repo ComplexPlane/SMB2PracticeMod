@@ -1,3 +1,3 @@
 #pragma once
 
-void hide_init();
+void Hide_Init();

@@ -2,7 +2,7 @@
 
 #include "utils/macro_utils.h"
 
-typedef struct AnalogState {
+typedef struct {
     s32 raw_stick_x;
     s32 raw_stick_y;
     s32 stick_x;
@@ -230,12 +230,12 @@ void Pad_Tick() {
         }
         s_analog_state.raw_stick_x = CLAMP(s_analog_state.raw_stick_x, -128, 127);
         s_analog_state.raw_stick_y = CLAMP(s_analog_state.raw_stick_y, -128, 127);
-        s_analog_state.stick_x = CLAMP(s_analog_state.stick_x, -pad_MAX_STICK, pad_MAX_STICK);
-        s_analog_state.stick_y = CLAMP(s_analog_state.stick_y, -pad_MAX_STICK, pad_MAX_STICK);
-        s_analog_state.substick_x = CLAMP(s_analog_state.substick_x, -pad_MAX_STICK, pad_MAX_STICK);
-        s_analog_state.substick_y = CLAMP(s_analog_state.substick_y, -pad_MAX_STICK, pad_MAX_STICK);
-        s_analog_state.trigger_l = CLAMP(s_analog_state.trigger_l, 0, pad_MAX_TRIGGER);
-        s_analog_state.trigger_r = CLAMP(s_analog_state.trigger_r, 0, pad_MAX_TRIGGER);
+        s_analog_state.stick_x = CLAMP(s_analog_state.stick_x, -Pad_MAX_STICK, Pad_MAX_STICK);
+        s_analog_state.stick_y = CLAMP(s_analog_state.stick_y, -Pad_MAX_STICK, Pad_MAX_STICK);
+        s_analog_state.substick_x = CLAMP(s_analog_state.substick_x, -Pad_MAX_STICK, Pad_MAX_STICK);
+        s_analog_state.substick_y = CLAMP(s_analog_state.substick_y, -Pad_MAX_STICK, Pad_MAX_STICK);
+        s_analog_state.trigger_l = CLAMP(s_analog_state.trigger_l, 0, Pad_MAX_TRIGGER);
+        s_analog_state.trigger_r = CLAMP(s_analog_state.trigger_r, 0, Pad_MAX_TRIGGER);
     }
 
     update_dir_times();

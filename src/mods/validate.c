@@ -31,7 +31,7 @@ static const Pref INVALID_U8_PREFS[] = {
     Pref_StageEditVariant,
 };
 
-void validate_disable_invalidating_settings() {
+void Validate_DisableInvalidatingSettings() {
     // set all bool prefs to default
     for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
         Pref_Set(INVALID_BOOL_PREFS[i], Pref_GetDefault(INVALID_BOOL_PREFS[i]));
@@ -44,7 +44,7 @@ void validate_disable_invalidating_settings() {
     Pref_Save();
 }
 
-void validate_run() {
+void Validate_Run() {
     // Track pauses
     bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) & 8;
     if (paused_now && !s_entered_goal) {
@@ -62,10 +62,10 @@ void validate_run() {
     if (Pref_Get(Pref_DpadControls) && dpad_down) s_used_mods = true;
 
     // Opening the mod menu is disallowed
-    if (menu_impl_is_visible()) s_used_mods = true;
+    if (MenuImpl_IsVisible()) s_used_mods = true;
 
     // Physics must be default or custom (with all default values)
-    if (physics_using_custom_physics()) s_used_mods = true;
+    if (Physics_UsingCustomPhysics()) s_used_mods = true;
 
     // Invalid bool prefs are enabled
     for (u8 i = 0; i < LEN(INVALID_BOOL_PREFS); i++) {
@@ -195,11 +195,11 @@ static bool did_ball_enter_goal_hook(mkb_Ball *ball, int *out_stage_goal_idx,
     return result;
 }
 
-void validate_init() {
+void Validate_Init() {
     HOOK_TRAMP(s_goal_tramp);
 }
 
-void validate_tick() {
+void Validate_Tick() {
     if (mkb_sub_mode == mkb_SMD_GAME_PLAY_INIT) {
         s_entered_goal = false;
         s_used_mods = false;
@@ -208,10 +208,10 @@ void validate_tick() {
     }
 }
 
-bool validate_was_run_valid(bool mods_allowed) {
+bool Validate_WasRunValid(bool mods_allowed) {
     return (!s_used_mods || mods_allowed) && !s_has_paused && !s_loaded_savestate && s_entered_goal;
 }
 
-u32 validate_get_framesave() {
+u32 Validate_GetFramesave() {
     return s_framesave;
 }

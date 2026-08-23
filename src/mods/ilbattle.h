@@ -2,8 +2,8 @@
 
 #include "utils/base.h"
 
-constexpr u32 ilbattle_NUM_LENGTHS = 4;
+constexpr u32 ILBattle_NUM_LENGTHS = 4;
 
-void ilbattle_validate_attempt();
-void ilbattle_tick();
-void ilbattle_disp();
+void ILBattle_ValidateAttempt();
+void ILBattle_Tick();
+void ILBattle_Disp();

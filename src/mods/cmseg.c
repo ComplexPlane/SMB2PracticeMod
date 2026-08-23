@@ -9,7 +9,7 @@
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
 
-typedef enum State {
+typedef enum {
     State_Default,
     State_LoadMenu,
     State_EnterCm,
@@ -414,7 +414,7 @@ void CM_Tick() {
 }
 
 void CM_Disp() {
-    if (!Pref_Get(Pref_CmTimer) || freecam_should_hide_hud()) return;
+    if (!Pref_Get(Pref_CmTimer) || Freecam_ShouldHideHud()) return;
 
     if (s_state == State_SegActive || s_state == State_SegComplete) {
         u32 seg = (u32)s_seg_request;
@@ -423,6 +423,6 @@ void CM_Disp() {
             color = COLOR_GOLD;
         else
             color = COLOR_WHITE;
-        timerdisp_draw_timer((s32)s_seg_time, "SEG:", 0, color, false);
+        TimerDisp_DrawTimer((s32)s_seg_time, "SEG:", 0, color, false);
     }
 }

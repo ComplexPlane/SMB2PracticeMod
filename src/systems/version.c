@@ -4,7 +4,7 @@ const PracmodVersion PRACMOD_VERSION = {{1, 1, 0}, 1};
 
 static char s_version_str[16];
 
-void version_init() {
+void Version_Init() {
     if (PRACMOD_VERSION.release_cand > 0) {
         mkb_sprintf(s_version_str, "%d.%d.%d-beta%d", PRACMOD_VERSION.semver.major,
                     PRACMOD_VERSION.semver.minor, PRACMOD_VERSION.semver.patch,
@@ -15,7 +15,7 @@ void version_init() {
     }
 }
 
-s32 semver_compare(const SemVer *v1, const SemVer *v2) {
+s32 Version_CompareSemVer(const SemVer *v1, const SemVer *v2) {
     if (v1->major < v2->major) return -1;
     if (v1->major > v2->major) return 1;
     if (v1->minor < v2->minor) return -1;
@@ -26,8 +26,8 @@ s32 semver_compare(const SemVer *v1, const SemVer *v2) {
     return 0;
 }
 
-s32 pracmod_version_compare(const PracmodVersion *v1, const PracmodVersion *v2) {
-    s32 semver_result = semver_compare(&v1->semver, &v2->semver);
+s32 Version_Compare(const PracmodVersion *v1, const PracmodVersion *v2) {
+    s32 semver_result = Version_CompareSemVer(&v1->semver, &v2->semver);
     if (semver_result != 0) return semver_result;
 
     // RC of 0 means real release, always considered to be newer than a RC version
@@ -41,6 +41,6 @@ s32 pracmod_version_compare(const PracmodVersion *v1, const PracmodVersion *v2) 
     return 0;
 }
 
-const char *version_get_str() {
+const char *Version_GetStr() {
     return s_version_str;
 }

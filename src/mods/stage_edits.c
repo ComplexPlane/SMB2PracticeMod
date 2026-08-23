@@ -3,7 +3,7 @@
 #include "systems/pref.h"
 #include "utils/patch.h"
 
-typedef enum ActiveMode {
+typedef enum {
     ActiveMode_None = 0,
     ActiveMode_Golden = 1,
     ActiveMode_Dark = 2,
@@ -14,7 +14,7 @@ static ActiveMode s_current_mode = ActiveMode_None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
-void stage_edits_select_new_goal() {
+void StageEdits_SelectNewGoal() {
     s_new_goal = true;
 }
 
@@ -108,7 +108,7 @@ static void set_mode(ActiveMode mode) {
     }
 }
 
-void stage_edits_smd_game_ready_init() {
+void StageEdits_SmdGameReadyInit() {
     ActiveMode next_mode = (ActiveMode)Pref_Get(Pref_StageEditVariant);
     if (s_current_mode != next_mode) {
         undo_mode(s_current_mode);
@@ -132,11 +132,11 @@ static void load_stagedef_hook(u32 stage_id) {
     set_mode(s_current_mode);
 }
 
-void stage_edits_init() {
+void StageEdits_Init() {
     HOOK_TRAMP(s_load_stagedef_tramp);
 }
 
-void stage_edits_tick() {
+void StageEdits_Tick() {
     switch (s_current_mode) {
         case ActiveMode_None: {
             break;

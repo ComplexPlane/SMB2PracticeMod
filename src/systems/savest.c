@@ -17,7 +17,7 @@ enum Flag {
     Flag_ReloadState = 1 << 1,
 };
 
-typedef struct SaveState {
+typedef struct {
     u32 flags;
     u32 timestamp;
     s32 stage_id;
@@ -279,13 +279,13 @@ SS_SaveResult SS_Save(u32 slot) {
     }
 
     SS_Clear(slot);
-    pass_over_regions(&state->store, store_compute_size);
+    pass_over_regions(&state->store, Store_ComputeSize);
     state->store.buf = Heap_Alloc(state->store.size);
     if (state->store.buf == nullptr) {
         return SS_SaveResult_ErrInsufficientMemory;
     }
 
-    pass_over_regions(&state->store, store_save);
+    pass_over_regions(&state->store, Store_Save);
     handle_pause_menu_save(state);
     state->stage_id = mkb_current_stage_id;
     state->character = mkb_active_monkey_id[mkb_curr_player_idx];
@@ -339,7 +339,7 @@ SS_LoadResult SS_Load(u32 slot) {
     handle_pause_menu_load(state);
 
     state->store.pos = 0;
-    pass_over_regions(&state->store, store_load);
+    pass_over_regions(&state->store, Store_Load);
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 

@@ -8,13 +8,13 @@
 #include "utils/macro_utils.h"
 #include "systems/savest.h"
 
-typedef enum SaveTo {
+typedef enum {
     SaveTo_Selected,
     SaveTo_NextEmpty,
     SaveTo_NextEmptyThenOldest,
 } SaveTo;
 
-typedef enum LoadReason {
+typedef enum {
     LoadReason_Explicit,
     LoadReason_Implicit,
     LoadReason_NoLoad,

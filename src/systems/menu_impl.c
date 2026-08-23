@@ -8,7 +8,7 @@
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 
-typedef enum BindingState {
+typedef enum {
     BindingState_Inactive,  // not currently binding
     BindingState_Requested,  // will bind as soon as all buttons are released
     BindingState_Active,     // currently binding
@@ -256,7 +256,7 @@ static void handle_widget_bind() {
     }
 }
 
-void menu_impl_tick() {
+void MenuImpl_Tick() {
     if (s_binding == BindingState_Active) {
         handle_widget_bind();
         return;
@@ -722,7 +722,7 @@ static void draw_breadcrumbs() {
     Draw_Rect(MARGIN, MARGIN + 30, SCREEN_WIDTH - MARGIN, MARGIN + 34, COLOR_GRAY);
 }
 
-void menu_impl_disp() {
+void MenuImpl_Disp() {
     if (!s_visible) return;
 
     mkb_set_ui_widescreen_scale_mtx(SCREEN_WIDTH / 2);
@@ -743,6 +743,6 @@ void menu_impl_disp() {
     mkb_reset_ui_widescreen_scale_mtx();
 }
 
-bool menu_impl_is_visible() {
+bool MenuImpl_IsVisible() {
     return s_visible;
 }

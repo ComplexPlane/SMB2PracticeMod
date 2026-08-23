@@ -1,3 +1,3 @@
 #pragma once
 
-void banans_tick();
+void Banans_Tick();

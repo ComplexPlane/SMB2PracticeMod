@@ -1,8 +1,8 @@
 #include "mods/scratch.h"
 
-void scratch_init() {
+void Scratch_Init() {
 }
-void scratch_tick() {
+void Scratch_Tick() {
 }
-void scratch_disp() {
+void Scratch_Disp() {
 }

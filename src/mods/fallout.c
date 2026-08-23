@@ -7,13 +7,13 @@
 #include "utils/patch.h"
 #include "utils/relutil.h"
 
-typedef enum FalloutPlaneType {
+typedef enum {
     FalloutPlaneType_Normal,
     FalloutPlaneType_Disabled,
     FalloutPlaneType_Bouncy,
 } FalloutPlaneType;
 
-typedef enum TimerType {
+typedef enum {
     TimerType_Default,
     TimerType_FreezeInstantly,
     TimerType_FreezeAtZero,
@@ -71,8 +71,8 @@ TRAMP(s_load_stagedef_tramp, mkb_load_stagedef, load_stagedef_hook);
 
 static void load_stagedef_hook(u32 stage_id) {
     // Set the current default values before loading the stagedef
-    patch_write_word(Rel_RelocateAddr(0x80297548), s_timeover_condition);
-    patch_write_word(Rel_RelocateAddr(0x80297534), s_timer_increment);
+    Patch_WriteWord(Rel_RelocateAddr(0x80297548), s_timeover_condition);
+    Patch_WriteWord(Rel_RelocateAddr(0x80297534), s_timer_increment);
     s_load_stagedef_tramp.chain(stage_id);
     // Stardust's custom code sets the timers after loading the stagedef, this will run
     // afterwards and collect those timer defaults
@@ -82,14 +82,14 @@ static void load_stagedef_hook(u32 stage_id) {
     s_timer_increment = *(u32 *)Rel_RelocateAddr(0x80297534);
 }
 
-void fallout_init() {
+void Fallout_Init() {
     HOOK_TRAMP(s_did_ball_fallout_tramp);
     HOOK_TRAMP(s_load_stagedef_tramp);
 }
 
 static void freeze_timer() {
     TimerType type = (TimerType)Pref_Get(Pref_TimerType);
-    if (freecam_should_freeze_timer()) {
+    if (Freecam_ShouldFreezeTimer()) {
         type = TimerType_FreezeInstantly;
         s_toggled_freecam = true;
     }
@@ -98,30 +98,30 @@ static void freeze_timer() {
         case TimerType_Default: {
             if (Pref_DidChange(Pref_TimerType) || s_toggled_freecam) {
                 // time over at 0 frames
-                patch_write_word(Rel_RelocateAddr(0x80297548), s_timeover_condition);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297548), s_timeover_condition);
                 // add -1 to timer each frame
-                patch_write_word(Rel_RelocateAddr(0x80297534), s_timer_increment);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297534), s_timer_increment);
                 s_toggled_freecam = false;
             }
             break;
         }
         case TimerType_FreezeInstantly: {
             // time over at -60 frames (for leniency when switching modes)
-            patch_write_word(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
+            Patch_WriteWord(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
             // add 0 to timer each frame (timer doesnt move)
-            patch_write_word(Rel_RelocateAddr(0x80297534), 0x38030000);
+            Patch_WriteWord(Rel_RelocateAddr(0x80297534), 0x38030000);
             break;
         }
         case TimerType_FreezeAtZero: {
             // time over at -60 frames (so timer is able to stop at 0.00)
-            patch_write_word(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
+            Patch_WriteWord(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
 
             if (mkb_mode_info.stage_time_frames_remaining <= 0) {
                 // when timer hits 0, add 0 to timer each frame
-                patch_write_word(Rel_RelocateAddr(0x80297534), 0x38030000);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297534), 0x38030000);
             } else {
                 // timer is ticking normally, add -1 to timer each frame
-                patch_write_word(Rel_RelocateAddr(0x80297534), 0x3803ffff);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297534), 0x3803ffff);
             }
             break;
         }
@@ -130,23 +130,23 @@ static void freeze_timer() {
                 mkb_mode_info.stage_time_frames_remaining = 0;
             }
             // time over at -60 frames (so timer is able to stop at 0.00)
-            patch_write_word(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
+            Patch_WriteWord(Rel_RelocateAddr(0x80297548), 0x2c00ffa0);
 
             // getting close to signed integer overflow, freeze timer to prevent time-over
             if (mkb_mode_info.stage_time_frames_remaining >= 32400) {
                 // add 0 to timer each frame
-                patch_write_word(Rel_RelocateAddr(0x80297534), 0x38030000);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297534), 0x38030000);
             } else {
                 // timer is ticking normally, add +1 to timer each frame
-                patch_write_word(Rel_RelocateAddr(0x80297534), 0x38030001);
+                Patch_WriteWord(Rel_RelocateAddr(0x80297534), 0x38030001);
             }
             break;
         }
     }
 }
 
-void fallout_tick() {
+void Fallout_Tick() {
     freeze_timer();
 }
-void fallout_disp() {
+void Fallout_Disp() {
 }

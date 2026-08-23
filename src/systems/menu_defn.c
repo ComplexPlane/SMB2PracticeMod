@@ -36,7 +36,7 @@ static void int_edit_percent_format(s16 value, char *buf) {
 static const char *INPUTDISP_COLORS[] = {
     "Purple", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Black",
 };
-static_assert(LEN(INPUTDISP_COLORS) == INPUTDISP_NUM_COLORS);
+static_assert(LEN(INPUTDISP_COLORS) == InputDisp_NUM_COLORS);
 
 static const char *CAMERA_OPTIONS[] = {"Default", "Force SMB2", "Force SMB1"};
 
@@ -73,8 +73,8 @@ static Widget s_input_hex[] = {
             {
                 .label = "Red Value",
                 .pref = Pref_InputDispRed,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -84,8 +84,8 @@ static Widget s_input_hex[] = {
             {
                 .label = "Green Value",
                 .pref = Pref_InputDispGreen,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -95,8 +95,8 @@ static Widget s_input_hex[] = {
             {
                 .label = "Blue Value",
                 .pref = Pref_InputDispBlue,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -118,8 +118,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 1 Red",
                 .pref = Pref_InputDispRed,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -129,8 +129,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 1 Green",
                 .pref = Pref_InputDispGreen,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -140,8 +140,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 1 Blue",
                 .pref = Pref_InputDispBlue,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -160,8 +160,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 2 Red",
                 .pref = Pref_InputDispGradientColor2Red,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -171,8 +171,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 2 Green",
                 .pref = Pref_InputDispGradientColor2Green,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -182,8 +182,8 @@ static Widget s_input_gradient[] = {
             {
                 .label = "Gradient Color 2 Blue",
                 .pref = Pref_InputDispGradientColor2Blue,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -330,7 +330,7 @@ static Widget s_inputdisp_widgets[] = {
 static const char *BALL_COLORS[] = {
     "Default", "Red", "Blue", "Yellow", "Green", "Teal", "Pink", "Black", "White",
 };
-static_assert(LEN(BALL_COLORS) == ballcolor_NUM_COLORS);
+static_assert(LEN(BALL_COLORS) == BallColor_NUM_COLORS);
 
 static const char *BALL_COLOR_TYPES[] = {
     "Preset",
@@ -386,8 +386,8 @@ static Widget s_hex_widgets[] = {
             {
                 .label = "Red Value",
                 .pref = Pref_BallRed,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -397,8 +397,8 @@ static Widget s_hex_widgets[] = {
             {
                 .label = "Green Value",
                 .pref = Pref_BallGreen,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -408,8 +408,8 @@ static Widget s_hex_widgets[] = {
             {
                 .label = "Blue Value",
                 .pref = Pref_BallBlue,
-                .min = ballcolor_COLOR_MIN,
-                .max = ballcolor_COLOR_MAX,
+                .min = BallColor_COLOR_MIN,
+                .max = BallColor_COLOR_MAX,
                 .format = int_edit_rgb_format,
             },
     },
@@ -516,7 +516,7 @@ static const char *SCORE_BREAKDOWN_OPTIONS[] = {
     "Minimal",
     "Full",
 };
-static_assert(LEN(IL_BATTLE_LENGTHS) == ilbattle_NUM_LENGTHS);
+static_assert(LEN(IL_BATTLE_LENGTHS) == ILBattle_NUM_LENGTHS);
 
 static Widget s_il_battle_score_widgets[] = {
     {
@@ -1323,8 +1323,8 @@ static Widget s_freecam_widgets[] = {
             {
                 .label = "Turbo Speed Factor",
                 .pref = Pref_FreecamSpeedMult,
-                .min = freecam_TURBO_SPEED_MIN,
-                .max = freecam_TURBO_SPEED_MAX,
+                .min = Freecam_TURBO_SPEED_MIN,
+                .max = Freecam_TURBO_SPEED_MAX,
             },
     },
     {
@@ -1576,7 +1576,7 @@ static Widget s_reset_ilmark_widgets[] = {
         .button =
             {
                 .label = "Confirm",
-                .push = validate_disable_invalidating_settings,
+                .push = Validate_DisableInvalidatingSettings,
                 .flags = ButtonFlag_GoBack,
             },
     },
@@ -1806,7 +1806,7 @@ static Widget s_physics_widgets[] = {
 static const char *STAGE_EDIT_VARIANTS[] = {"None", "Golden Banana", "Dark Banana", "Reverse Mode"};
 
 static void push_select_new_goal() {
-    stage_edits_select_new_goal();
+    StageEdits_SelectNewGoal();
 }
 
 static bool show_if_stage_edit_reverse() {
@@ -2176,6 +2176,6 @@ MenuWidget menu_root = {
     .num_widgets = LEN(s_root_widgets),
 };
 
-void menu_init() {
-    mkb_sprintf(s_version_str, "v%s", version_get_str());
+void MenuDefn_Init() {
+    mkb_sprintf(s_version_str, "v%s", Version_GetStr());
 }

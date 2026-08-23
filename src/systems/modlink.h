@@ -4,14 +4,14 @@
 #include "utils/base.h"
 
 // Struct read by additional SMB2 mods like the Practice Mod, to load themselves after Workshop Mod
-typedef struct ModLinkPart2 {
+typedef struct {
     // As of ModLink v1.1.0: pointer to WSMod's ~40KiB memory card work area buffer
     // If not nullptr, SMB2PracticeMod will use this buffer instead of allocating its own
     void *card_work_area;
 } ModLinkPart2;
 
 // Struct read by additional SMB2 mods like the Practice Mod, to load themselves after Workshop Mod
-typedef struct ModLink {
+typedef struct {
     u32 magic;  // 0xFEEDC0DE
 
     // ModLink format version.

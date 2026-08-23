@@ -1,4 +1,4 @@
 #pragma once
 
-void main_init();
-void main_tick();
+void Main_Init();
+void Main_Tick();

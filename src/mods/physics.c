@@ -9,11 +9,11 @@
 static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
-bool physics_using_custom_physics() {
+bool Physics_UsingCustomPhysics() {
     return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) != PhysicsPreset_Default;
 }
 
-void physics_init() {
+void Physics_Init() {
     s_orig_friction = mkb_ball_friction;
     s_orig_restitution = mkb_ball_restitution;
 }
@@ -70,17 +70,17 @@ static void change_physics() {
     }
 }
 
-void physics_tick() {
+void Physics_Tick() {
     change_physics();
 }
 
-void physics_disp() {
+void Physics_Disp() {
     if (mkb_sub_mode != mkb_SMD_GAME_READY_INIT && mkb_sub_mode != mkb_SMD_GAME_READY_MAIN &&
         mkb_sub_mode != mkb_SMD_GAME_PLAY_INIT && mkb_sub_mode != mkb_SMD_GAME_PLAY_MAIN)
         return;
 
-    if (physics_using_custom_physics() && Pref_Get(Pref_CustomPhysicsDisp) &&
-        !freecam_should_hide_hud()) {
+    if (Physics_UsingCustomPhysics() && Pref_Get(Pref_CustomPhysicsDisp) &&
+        !Freecam_ShouldHideHud()) {
         mkb_textdraw_reset();
         mkb_textdraw_set_font(mkb_FONT32_ASC_8x16);
         u32 x = 634;

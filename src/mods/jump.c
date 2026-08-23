@@ -9,13 +9,13 @@
 #include "utils/patch.h"
 #include "utils/relutil.h"
 
-typedef enum MaxJumpCount {
+typedef enum {
     MaxJumpCount_One = 0,
     MaxJumpCount_Two = 1,
     MaxJumpCount_Infinite = 2,
 } MaxJumpCount;
 
-typedef enum JumpState {
+typedef enum {
     JumpState_NotJumping = 0,
     JumpState_GroundedJump = 1,
     JumpState_AerialJump = 2,
@@ -46,7 +46,7 @@ static void reset() {
     s_aerial_jumps = 0;
 }
 
-void jump_patch_minimap() {
+void Jump_PatchMinimap() {
     // Patch out Minimap Toggle
     // Function is ran whenever minimap is enabled or whenever main_game.rel is loaded
     if (mkb_main_mode == mkb_MD_GAME && Pref_Get(Pref_JumpMod)) {
@@ -55,10 +55,10 @@ void jump_patch_minimap() {
 
         // Patch instructions if they aren't nop
         if (*patch1_loc != 0x60000000) {
-            s_patch1 = patch_write_nop(Rel_RelocateAddr(0x808f4d18));
+            s_patch1 = Patch_WriteNop(Rel_RelocateAddr(0x808f4d18));
         }
         if (*patch2_loc != 0x60000000) {
-            s_patch2 = patch_write_nop(Rel_RelocateAddr(0x808f5168));
+            s_patch2 = Patch_WriteNop(Rel_RelocateAddr(0x808f5168));
         }
     }
 }
@@ -66,13 +66,13 @@ void jump_patch_minimap() {
 static void restore_minimap() {
     if (mkb_main_mode == mkb_MD_GAME) {
         // These overwrites exist in main_game.rel which isn't always loaded
-        patch_write_word(Rel_RelocateAddr(0x808f4d18), s_patch1);
-        patch_write_word(Rel_RelocateAddr(0x808f5168), s_patch2);
+        Patch_WriteWord(Rel_RelocateAddr(0x808f4d18), s_patch1);
+        Patch_WriteWord(Rel_RelocateAddr(0x808f5168), s_patch2);
     }
 }
 
 static void enable() {
-    jump_patch_minimap();
+    Jump_PatchMinimap();
     if (Pref_Get(Pref_JumpChangePhysics)) {
         Pref_Set(Pref_PhysicsPreset, (u8)PhysicsPreset_JumpPhysics);
         Pref_Save();
@@ -262,7 +262,7 @@ static void classic_jumping() {
     }
 }
 
-void jump_tick() {
+void Jump_Tick() {
     bool enabled = Pref_Get(Pref_JumpMod);
     if (Pref_DidChange(Pref_JumpMod)) {
         if (enabled) {

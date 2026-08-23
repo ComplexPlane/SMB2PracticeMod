@@ -2,7 +2,7 @@
 
 #include "utils/base.h"
 
-typedef enum State {
+typedef enum {
     State_Default,
     State_LoadMenuReq,
     State_LoadStoryReq,
