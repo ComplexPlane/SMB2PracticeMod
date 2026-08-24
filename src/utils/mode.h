@@ -43,6 +43,11 @@ bool is_story_exit_game(mkb::SubMode submode);
 bool is_stage_exit_init(mkb::SubMode submode);
 bool is_stage_exit_submode(mkb::SubMode submode);
 
+// main game modes
+
+bool is_main_game_mode_story(mkb::MainGameMode main_game_mode);
+bool is_main_game_mode_challenge(mkb::MainGameMode main_game_mode);
+
 // 10 ball screen stuff
 
 bool is_on_10_ball_spin_in(mkb::StoryModeStageSelectState state);
@@ -54,8 +59,6 @@ bool is_on_10_ball_screen(mkb::SubMode sub_mode, mkb::ScenInfo scen_info);
 
 // Other storymode stuff
 
-bool is_main_game_mode_story(mkb::MainGameMode main_game_mode);
-
 bool is_storymode_file_screen_init(mkb::ScenInfo scen_info);
 bool is_storymode_file_screen_main(mkb::ScenInfo scen_info);
 bool is_storymode_name_entry_screen_main(mkb::ScenInfo scen_info);
@@ -66,8 +69,6 @@ bool is_story_cutscene(mkb::SubMode submode);
 
 u16 get_clear_count_for_world();
 u16 get_storymode_total_clear_count();
-// bool is_between_worlds(bool has_entered_goal);
-// bool is_run_complete(bool has_entered_goal);
 
 // misc utility
 

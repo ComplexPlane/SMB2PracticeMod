@@ -2,6 +2,7 @@
 
 // #include "../internal/relutil.h"
 #include "mkb/mkb.h"
+#include "mkb/mkb2_ghidra.h"
 
 namespace mode {
 
@@ -141,6 +142,16 @@ bool is_sel_ngc(mkb::SubMode submode) {
     return (submode == mkb::SMD_SEL_NGC_INIT || submode == mkb::SMD_SEL_NGC_MAIN);
 }
 
+// --- main game modes ---
+
+bool is_main_game_mode_story(mkb::MainGameMode main_game_mode) {
+    return main_game_mode == mkb::STORY_MODE;
+}
+
+bool is_main_game_mode_challenge(mkb::MainGameMode main_game_mode) {
+    return main_game_mode == mkb::CHALLENGE_MODE;
+}
+
 // --- story exit game submodes ---
 
 bool is_story_exit_game_init(mkb::SubMode submode) {
@@ -171,10 +182,6 @@ bool is_stage_exit_init(mkb::SubMode submode) {
 }
 
 // --- some story mode stuff ---
-
-bool is_main_game_mode_story(mkb::MainGameMode main_game_mode) {
-    return main_game_mode == mkb::STORY_MODE;
-}
 
 bool is_story_cutscene(mkb::SubMode submode) {
     return (submode == mkb::SMD_AUTHOR_PLAY_INIT || submode == mkb::SMD_AUTHOR_PLAY_MAIN ||

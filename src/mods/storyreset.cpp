@@ -80,6 +80,12 @@ bool is_on_wrong_menu() {
     return false;
 }
 
+// We also need this in case we use challenge mode segments to enter challenge mode without going
+// through the menus
+bool in_challenge_mode() {
+    return mode::is_main_game_mode_challenge(mkb::main_game_mode);
+}
+
 bool used_go_to_story() {
     return gotostory::get_gotostory_state() != gotostory::State::Default;
 }
@@ -93,7 +99,7 @@ bool should_reset_completed_run() {
 
 bool should_reset_run() {
     return should_reset_on_file_screen() || is_on_wrong_menu() || used_go_to_story() ||
-           should_reset_completed_run();
+           in_challenge_mode() || should_reset_completed_run();
 }
 
 void tick() {
