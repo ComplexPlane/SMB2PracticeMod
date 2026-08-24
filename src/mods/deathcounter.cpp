@@ -139,8 +139,9 @@ bool should_not_display_counter_at_all() {
         // If we're in the menus outside of a story mode run due to an accidental exit game, we
         // still want to be able to display the counter if we haven't reset it yet
         return !storyreset::is_run_active();
+    } else {
+        return false;
     }
-    return freecam::should_hide_hud();
 }
 
 void disp() {

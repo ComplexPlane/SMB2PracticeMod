@@ -5,6 +5,7 @@
 #include "systems/binds.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
@@ -168,6 +169,13 @@ void tick() {
             pref::set(pref::Pref::FreecamSpeedMult, speed_mult);
             pref::save();
         }
+    }
+
+    // Handle hiding all ui elements coming from textinfo
+    if (should_hide_hud()) {
+        textinfo::set_drawing_state(false);
+    } else {
+        textinfo::set_drawing_state(true);
     }
 }
 

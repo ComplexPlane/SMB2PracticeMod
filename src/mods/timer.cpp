@@ -60,11 +60,11 @@ void disp() {
     using Slot = textinfo::Slot;
     using Format = timerdisp::TimeFormat;
 
-    if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowRTA)) {
         textinfo::draw_timer(Slot::Right, draw::WHITE, "RTA:", s_rta_timer, Format::SecondsOnly);
     }
 
-    if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowPause)) {
         textinfo::draw_timer(Slot::Right, draw::WHITE, "PAU:", s_pause_timer, Format::SecondsOnly);
     }
 
@@ -80,12 +80,12 @@ void disp() {
 
     u32 framesave = validate::get_framesave();
 
-    if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowSubtick)) {
         textinfo::draw_subtick_timer(Slot::Right, draw::WHITE, "SUB:", s_rta_timer, framesave,
                                      false);
     }
 
-    if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
+    if (pref::get(pref::Pref::TimerShowFramesave)) {
         s32 num_x = textinfo::get_slot_x_alignment(Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;  // "FSV:" is 4 characters long
         textinfo::draw(Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);

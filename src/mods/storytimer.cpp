@@ -268,9 +268,9 @@ bool should_not_display_timer_at_all() {
     if (!mode::is_main_game_mode_story(mkb::main_game_mode)) {
         // return get_loadless_time() == 0;
         return !is_run_active();
+    } else {
+        return false;
     }
-    // If in story, hide the timer if freecamming (if the pref is on)
-    return freecam::should_hide_hud();
 }
 
 void disp() {

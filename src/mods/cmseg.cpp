@@ -416,7 +416,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get(pref::Pref::CmTimer) || freecam::should_hide_hud()) return;
+    if (!pref::get(pref::Pref::CmTimer)) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);

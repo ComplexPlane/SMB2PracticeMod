@@ -12,6 +12,8 @@ enum class Slot {
     Right,
 };
 
+void set_drawing_state(bool draw_elements);
+
 s32 get_slot_x_alignment(Slot slot);
 
 void draw_v(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, va_list args);
