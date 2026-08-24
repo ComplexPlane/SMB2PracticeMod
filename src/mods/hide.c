@@ -27,9 +27,7 @@ static void nl2ngc_set_fog_color_hook(u8 r, u8 g, u8 b) {
 }
 
 // BG
-static void draw_bg_hook();
-
-TRAMP(s_draw_bg_tramp, mkb_g_draw_bg, draw_bg_hook);
+TRAMP(s_draw_bg_tramp, mkb_g_draw_bg);
 
 static void draw_bg_hook() {
     if (!should_hide_bg()) {
@@ -37,9 +35,7 @@ static void draw_bg_hook() {
     }
 }
 
-static void set_clear_color_hook();
-
-TRAMP(s_clear_tramp, mkb_g_set_clear_color, set_clear_color_hook);
+TRAMP(s_clear_tramp, mkb_g_set_clear_color);
 
 static void set_clear_color_hook() {
     if (should_hide_bg()) {
@@ -65,9 +61,7 @@ static void set_clear_color_hook() {
 }
 
 // HUD
-static void draw_sprite_hook(mkb_Sprite *sprite);
-
-TRAMP(s_draw_sprite_tramp, mkb_draw_sprite, draw_sprite_hook);
+TRAMP(s_draw_sprite_tramp, mkb_draw_sprite);
 
 static void draw_sprite_hook(mkb_Sprite *sprite) {
     // Hide every sprite except the pause menu
@@ -80,9 +74,7 @@ static void draw_sprite_hook(mkb_Sprite *sprite) {
     }
 }
 
-static void draw_minimap_hook();
-
-TRAMP(s_draw_minimap_tramp, mkb_g_draw_minimap, draw_minimap_hook);
+TRAMP(s_draw_minimap_tramp, mkb_g_draw_minimap);
 
 static void draw_minimap_hook() {
     bool hide_hud = Pref_Get(Pref_HideHud);
@@ -93,9 +85,7 @@ static void draw_minimap_hook() {
 }
 
 // Stage
-static void draw_stage_hook();
-
-TRAMP(s_draw_stage_tramp, mkb_g_draw_stage, draw_stage_hook);
+TRAMP(s_draw_stage_tramp, mkb_g_draw_stage);
 
 static void draw_stage_hook() {
     if (!Pref_Get(Pref_HideStage)) {
@@ -104,9 +94,7 @@ static void draw_stage_hook() {
 }
 
 // Ball
-static void draw_ball_and_ape_hook();
-
-TRAMP(s_draw_ball_tramp, mkb_g_draw_ball_and_ape, draw_ball_and_ape_hook);
+TRAMP(s_draw_ball_tramp, mkb_g_draw_ball_and_ape);
 
 static void draw_ball_and_ape_hook() {
     if (!Pref_Get(Pref_HideBall)) {
@@ -115,9 +103,7 @@ static void draw_ball_and_ape_hook() {
 }
 
 // Items
-static void draw_items_hook();
-
-TRAMP(s_draw_items_tramp, mkb_draw_items, draw_items_hook);
+TRAMP(s_draw_items_tramp, mkb_draw_items);
 
 static void draw_items_hook() {
     if (!Pref_Get(Pref_HideItems)) {
@@ -126,9 +112,7 @@ static void draw_items_hook() {
 }
 
 // Stage objects
-static void draw_stobjs_hook();
-
-TRAMP(s_draw_stobjs_tramp, mkb_g_draw_stobjs, draw_stobjs_hook);
+TRAMP(s_draw_stobjs_tramp, mkb_g_draw_stobjs);
 
 static void draw_stobjs_hook() {
     if (!Pref_Get(Pref_HideStobjs)) {
@@ -137,9 +121,7 @@ static void draw_stobjs_hook() {
 }
 
 // Effects
-static void draw_effects_hook();
-
-TRAMP(s_draw_effects_tramp, mkb_g_draw_effects, draw_effects_hook);
+TRAMP(s_draw_effects_tramp, mkb_g_draw_effects);
 
 static void draw_effects_hook() {
     if (!Pref_Get(Pref_HideEffects)) {
@@ -148,8 +130,8 @@ static void draw_effects_hook() {
 }
 
 static void init_hide_bg() {
-    HOOK_TRAMP(s_draw_bg_tramp);
-    HOOK_TRAMP(s_clear_tramp);
+    HOOK_TRAMP(s_draw_bg_tramp, draw_bg_hook);
+    HOOK_TRAMP(s_clear_tramp, set_clear_color_hook);
 
     // Black fog
     Patch_WriteBL(Rel_RelocateAddr(0x80352e58), (void *)(avdisp_set_fog_color_hook));
@@ -157,16 +139,16 @@ static void init_hide_bg() {
 }
 
 static void init_hide_hud() {
-    HOOK_TRAMP(s_draw_sprite_tramp);
-    HOOK_TRAMP(s_draw_minimap_tramp);
+    HOOK_TRAMP(s_draw_sprite_tramp, draw_sprite_hook);
+    HOOK_TRAMP(s_draw_minimap_tramp, draw_minimap_hook);
 }
 
 static void init_hide_misc() {
-    HOOK_TRAMP(s_draw_stage_tramp);
-    HOOK_TRAMP(s_draw_ball_tramp);
-    HOOK_TRAMP(s_draw_items_tramp);
-    HOOK_TRAMP(s_draw_stobjs_tramp);
-    HOOK_TRAMP(s_draw_effects_tramp);
+    HOOK_TRAMP(s_draw_stage_tramp, draw_stage_hook);
+    HOOK_TRAMP(s_draw_ball_tramp, draw_ball_and_ape_hook);
+    HOOK_TRAMP(s_draw_items_tramp, draw_items_hook);
+    HOOK_TRAMP(s_draw_stobjs_tramp, draw_stobjs_hook);
+    HOOK_TRAMP(s_draw_effects_tramp, draw_effects_hook);
 }
 
 void Hide_Init() {

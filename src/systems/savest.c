@@ -37,9 +37,7 @@ static SS_Action s_last_action;
 
 // Hook set_minimap_mode() to prevent the minimap from being hidden on goal/fallout
 // This way the minimap is unaffected when loading savestates after goal/fallout
-static void set_minimap_mode_hook(mkb_MinimapMode mode);
-
-TRAMP(s_set_minimap_mode_tramp, mkb_set_minimap_mode, set_minimap_mode_hook);
+TRAMP(s_set_minimap_mode_tramp, mkb_set_minimap_mode);
 
 static void set_minimap_mode_hook(mkb_MinimapMode mode) {
     if (!SS_IsEnabled() ||
@@ -50,9 +48,7 @@ static void set_minimap_mode_hook(mkb_MinimapMode mode) {
 }
 
 // Prevent sound effects from playing while loading states
-static void soundreq_hook(u32 id);
-
-TRAMP(s_soundreq_tramp, mkb_call_SoundReqID_arg_0, soundreq_hook);
+TRAMP(s_soundreq_tramp, mkb_call_SoundReqID_arg_0);
 
 static void soundreq_hook(u32 id) {
     if (s_last_action != SS_Action_Load) {
@@ -61,8 +57,8 @@ static void soundreq_hook(u32 id) {
 }
 
 void SS_Init() {
-    HOOK_TRAMP(s_set_minimap_mode_tramp);
-    HOOK_TRAMP(s_soundreq_tramp);
+    HOOK_TRAMP(s_set_minimap_mode_tramp, set_minimap_mode_hook);
+    HOOK_TRAMP(s_soundreq_tramp, soundreq_hook);
 }
 
 // For all memory regions that involve just saving/loading to the same region...

@@ -109,9 +109,7 @@ static void call_camera_func_hook(mkb_Camera *camera, mkb_Ball *ball) {
     }
 }
 
-static void event_camera_tick_hook();
-
-TRAMP(s_event_camera_tick_tramp, mkb_event_camera_tick, event_camera_tick_hook);
+TRAMP(s_event_camera_tick_tramp, mkb_event_camera_tick);
 
 static void event_camera_tick_hook() {
     if (Freecam_Enabled()) {
@@ -126,7 +124,7 @@ static void event_camera_tick_hook() {
 void Freecam_Init() {
     Patch_WriteBL(Rel_RelocateAddr(0x8028353c), (void *)(call_camera_func_hook));
 
-    HOOK_TRAMP(s_event_camera_tick_tramp);
+    HOOK_TRAMP(s_event_camera_tick_tramp, event_camera_tick_hook);
 }
 
 void Freecam_Tick() {

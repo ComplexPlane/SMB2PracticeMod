@@ -178,12 +178,7 @@ static void find_framesave(mkb_Ball *ball,
     } while (true);
 }
 
-static bool did_ball_enter_goal_hook(mkb_Ball *ball,
-                                     int *out_stage_goal_idx,
-                                     int *out_itemgroup_id,
-                                     byte *out_goal_flags);
-
-TRAMP(s_goal_tramp, mkb_did_ball_enter_goal, did_ball_enter_goal_hook);
+TRAMP(s_goal_tramp, mkb_did_ball_enter_goal);
 
 static bool did_ball_enter_goal_hook(mkb_Ball *ball,
                                      int *out_stage_goal_idx,
@@ -199,7 +194,7 @@ static bool did_ball_enter_goal_hook(mkb_Ball *ball,
 }
 
 void Validate_Init() {
-    HOOK_TRAMP(s_goal_tramp);
+    HOOK_TRAMP(s_goal_tramp, did_ball_enter_goal_hook);
 }
 
 void Validate_Tick() {

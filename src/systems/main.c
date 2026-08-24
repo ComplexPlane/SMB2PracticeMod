@@ -61,9 +61,7 @@ static void perform_assembly_patches() {
     Patch_WriteB(Rel_RelocateAddr(0x8032ad0c), (void *)(asm_custom_titlescreen_text_color));
 }
 
-static u32 pad_read_hook(mkb_PADStatus *statuses);
-
-TRAMP(s_pad_read_tramp, mkb_PADRead, pad_read_hook);
+TRAMP(s_pad_read_tramp, mkb_PADRead);
 
 static u32 pad_read_hook(mkb_PADStatus *statuses) {
     u32 ret = s_pad_read_tramp.chain(statuses);
@@ -76,9 +74,7 @@ static u32 pad_read_hook(mkb_PADStatus *statuses) {
     return ret;
 }
 
-static void process_inputs_hook();
-
-TRAMP(s_process_inputs_tramp, mkb_process_inputs, process_inputs_hook);
+TRAMP(s_process_inputs_tramp, mkb_process_inputs);
 
 static void process_inputs_hook() {
     s_process_inputs_tramp.chain();
@@ -112,9 +108,7 @@ static void process_inputs_hook() {
     Pref_Tick();
 }
 
-static void draw_debug_text_hook();
-
-TRAMP(s_draw_debug_text_tramp, mkb_draw_debugtext, draw_debug_text_hook);
+TRAMP(s_draw_debug_text_tramp, mkb_draw_debugtext);
 
 static void draw_debug_text_hook() {
     // Drawing hook for UI elements.
@@ -143,9 +137,7 @@ static void draw_debug_text_hook() {
     Physics_Disp();
 }
 
-static void smd_game_ready_init_hook();
-
-TRAMP(s_smd_game_ready_init_tramp, mkb_smd_game_ready_init, smd_game_ready_init_hook);
+TRAMP(s_smd_game_ready_init_tramp, mkb_smd_game_ready_init);
 
 static void smd_game_ready_init_hook() {
     StageEdits_SmdGameReadyInit();
@@ -153,9 +145,7 @@ static void smd_game_ready_init_hook() {
     s_smd_game_ready_init_tramp.chain();
 }
 
-static void smd_game_play_tick_hook();
-
-TRAMP(s_smd_game_play_tick_tramp, mkb_smd_game_play_tick, smd_game_play_tick_hook);
+TRAMP(s_smd_game_play_tick_tramp, mkb_smd_game_play_tick);
 
 static void smd_game_play_tick_hook() {
     s_smd_game_play_tick_tramp.chain();
@@ -165,17 +155,15 @@ static void smd_game_play_tick_hook() {
 }
 
 // Hook for mkb_load_additional_rel
-static bool os_link_hook(mkb_OSModuleHeader *rel_buffer, void *bss_buffer);
-
-TRAMP(s_os_link_tramp, mkb_OSLink, os_link_hook);
+TRAMP(s_os_link_tramp, mkb_OSLink);
 
 static bool os_link_hook(mkb_OSModuleHeader *rel_buffer, void *bss_buffer) {
     bool ret = s_os_link_tramp.chain(rel_buffer, bss_buffer);
 
     // Main game init functions
     if ((RelId)rel_buffer->info.id == Rel_MainGame) {
-        HOOK_TRAMP(s_smd_game_ready_init_tramp);
-        HOOK_TRAMP(s_smd_game_play_tick_tramp);
+        HOOK_TRAMP(s_smd_game_ready_init_tramp, smd_game_ready_init_hook);
+        HOOK_TRAMP(s_smd_game_play_tick_tramp, smd_game_play_tick_hook);
         Jump_PatchMinimap();
     }
     // Sel_ngc init functions
@@ -214,10 +202,10 @@ void Main_Init() {
     StageEdits_Init();
     Validate_Init();
 
-    HOOK_TRAMP(s_pad_read_tramp);
-    HOOK_TRAMP(s_process_inputs_tramp);
-    HOOK_TRAMP(s_draw_debug_text_tramp);
-    HOOK_TRAMP(s_os_link_tramp);
+    HOOK_TRAMP(s_pad_read_tramp, pad_read_hook);
+    HOOK_TRAMP(s_process_inputs_tramp, process_inputs_hook);
+    HOOK_TRAMP(s_draw_debug_text_tramp, draw_debug_text_hook);
+    HOOK_TRAMP(s_os_link_tramp, os_link_hook);
 }
 
 /*

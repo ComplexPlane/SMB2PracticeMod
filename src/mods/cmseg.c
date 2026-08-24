@@ -326,18 +326,14 @@ void CM_RequestSeg(CM_Seg seg) {
     }
 }
 
-static void reset_cm_course_hook();
-
-TRAMP(s_reset_cm_course_tramp, mkb_g_reset_cm_course, reset_cm_course_hook);
+TRAMP(s_reset_cm_course_tramp, mkb_g_reset_cm_course);
 
 static void reset_cm_course_hook() {
     s_reset_cm_course_tramp.chain();
     if (s_state == State_SegActive) init_seg();
 }
 
-static void sprite_go_disp_hook(mkb_Sprite *sprite);
-
-TRAMP(s_sprite_go_disp_tramp, mkb_sprite_go_disp, sprite_go_disp_hook);
+TRAMP(s_sprite_go_disp_tramp, mkb_sprite_go_disp);
 
 static void sprite_go_disp_hook(mkb_Sprite *sprite) {
     int i;
@@ -389,14 +385,14 @@ static void sprite_go_disp_hook(mkb_Sprite *sprite) {
 }
 
 void CM_Init() {
-    HOOK_TRAMP(s_reset_cm_course_tramp);
+    HOOK_TRAMP(s_reset_cm_course_tramp, reset_cm_course_hook);
 
     // Set PBs to maximum time
     for (u32 i = 0; i < LEN(s_pbs); i++) {
         s_pbs[i] = 0xFFFFFFFF;
     }
 
-    HOOK_TRAMP(s_sprite_go_disp_tramp);
+    HOOK_TRAMP(s_sprite_go_disp_tramp, sprite_go_disp_hook);
 }
 
 void CM_Tick() {

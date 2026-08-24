@@ -25,9 +25,7 @@ static u32 s_timer_increment = 0x3803ffff;     // Add -1 to timer each frame
 static bool s_toggled_freecam = false;
 
 // stop fallouts
-static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball);
-
-TRAMP(s_did_ball_fallout_tramp, mkb_did_ball_fallout, did_ball_fallout_hook);
+TRAMP(s_did_ball_fallout_tramp, mkb_did_ball_fallout);
 
 static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball) {
     mkb_BOOL32 orig_result = s_did_ball_fallout_tramp.chain(ball);
@@ -65,9 +63,7 @@ static mkb_BOOL32 did_ball_fallout_hook(mkb_Ball *ball) {
     return orig_result;
 }
 
-static void load_stagedef_hook(u32 stage_id);
-
-TRAMP(s_load_stagedef_tramp, mkb_load_stagedef, load_stagedef_hook);
+TRAMP(s_load_stagedef_tramp, mkb_load_stagedef);
 
 static void load_stagedef_hook(u32 stage_id) {
     // Set the current default values before loading the stagedef
@@ -83,8 +79,8 @@ static void load_stagedef_hook(u32 stage_id) {
 }
 
 void Fallout_Init() {
-    HOOK_TRAMP(s_did_ball_fallout_tramp);
-    HOOK_TRAMP(s_load_stagedef_tramp);
+    HOOK_TRAMP(s_did_ball_fallout_tramp, did_ball_fallout_hook);
+    HOOK_TRAMP(s_load_stagedef_tramp, load_stagedef_hook);
 }
 
 static void freeze_timer() {

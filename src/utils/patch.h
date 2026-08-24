@@ -2,19 +2,19 @@
 
 #include "utils/base.h"
 
-#define TRAMP(name, s, d)      \
-    static struct {            \
-        typeof(&(s)) src;      \
-        typeof(&(s)) override; \
-        typeof(&(s)) chain;    \
-        u32 instrs[2];         \
-    } name = {.src = (&s), .override = (&d)}
+#define TRAMP(name, s)      \
+    static struct {         \
+        typeof(&(s)) src;   \
+        typeof(&(s)) chain; \
+        u32 instrs[2];      \
+    } name = {.src = (&s)}
 
-#define HOOK_TRAMP(tramp)                                                                          \
-    ({                                                                                             \
-        typeof(&(tramp)) _tramp_ = (&(tramp));                                                     \
-        Patch__HookFunctionTramp((void *)_tramp_->src, (void *)_tramp_->override, _tramp_->instrs, \
-                                 (void **)&_tramp_->chain);                                        \
+#define HOOK_TRAMP(tramp, override)                                                        \
+    ({                                                                                     \
+        typeof(&(tramp)) _tramp_ = (&(tramp));                                             \
+        typeof(_tramp_->src) _override_ = (&override);                                     \
+        Patch__HookFunctionTramp((void *)_tramp_->src, (void *)_override_, _tramp_->instrs, \
+                                 (void **)&_tramp_->chain);                                \
     })
 
 // These return the overwritten word

@@ -154,16 +154,14 @@ static void set_sprite_visible(bool visible) {
     }
 }
 
-static void create_speed_sprites_hook(f32 x, f32 y);
-
-TRAMP(s_create_speed_sprites_tramp, mkb_create_speed_sprites, create_speed_sprites_hook);
+TRAMP(s_create_speed_sprites_tramp, mkb_create_speed_sprites);
 
 static void create_speed_sprites_hook(f32 x, f32 y) {
     s_create_speed_sprites_tramp.chain(x + 5, y);
 }
 
 void InputDisp_Init() {
-    HOOK_TRAMP(s_create_speed_sprites_tramp);
+    HOOK_TRAMP(s_create_speed_sprites_tramp, create_speed_sprites_hook);
 }
 
 void InputDisp_Tick() {

@@ -78,9 +78,7 @@ void BallColor_SwitchMonkey() {
     }
 }
 
-static void load_stagedef_hook(u32 stage_id);
-
-TRAMP(s_load_stagedef_tramp, mkb_load_stagedef, load_stagedef_hook);
+TRAMP(s_load_stagedef_tramp, mkb_load_stagedef);
 
 static void load_stagedef_hook(u32 stage_id) {
     s_load_stagedef_tramp.chain(stage_id);
@@ -90,7 +88,7 @@ static void load_stagedef_hook(u32 stage_id) {
 void BallColor_Init() {
     s_default_color = *(GXColor *)Rel_RelocateAddr(0x80472a34);  // default color
 
-    HOOK_TRAMP(s_load_stagedef_tramp);
+    HOOK_TRAMP(s_load_stagedef_tramp, load_stagedef_hook);
 }
 
 void BallColor_Tick() {
