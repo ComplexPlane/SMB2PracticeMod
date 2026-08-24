@@ -3,7 +3,6 @@
 #include "mkb/mkb.h"
 #include "mods/freecam.h"
 #include "mods/physics.h"
-#include "mods/storyreset.h"
 #include "mods/validate.h"
 #include "systems/goal.h"
 #include "systems/menu_impl.h"
@@ -58,8 +57,8 @@ bool show_in_story() {
         case StoryIlMarkSettings::DontShow:
             return false;
         case StoryIlMarkSettings::AtRunEnd:
-            // show the mark if at least one timer related pref is on and if we've finished the run
-            return !storyreset::all_loadless_timer_prefs_off() && goal::is_run_complete();
+            // show the mark if we've finished the run
+            return goal::is_run_complete();
         case StoryIlMarkSettings::AlwaysInStory:
             return true;
         default:
