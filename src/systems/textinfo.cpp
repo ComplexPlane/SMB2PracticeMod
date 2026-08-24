@@ -6,8 +6,19 @@
 #include "../utils/draw.h"
 #include "../utils/macro_utils.h"
 #include "../utils/timerdisp.h"
+#include "systems/pad.h"
 
 namespace textinfo {
+
+// We can get away with making this buffer relatively small since (currently) only text that gets
+// drawn to the right side of the screen needs to be stored to the buffer and potentially moved
+// up/down
+constexpr u16 SLOT_BUF_COUNT = 1;  // number of slots whose draw calls get stored in a buffer
+constexpr u16 MAX_ROWS = 6;
+static char s_row_buf[SLOT_BUF_COUNT][MAX_ROWS][16] = {};
+static u16 s_slot_display_count[SLOT_BUF_COUNT] = {};
+
+static bool s_enable_drawing = true;
 
 static const Slot s_slot_list[]{
     Slot::Left,
@@ -15,6 +26,52 @@ static const Slot s_slot_list[]{
 };
 
 static u16 s_active_row[LEN(s_slot_list)] = {};
+
+struct TextData {
+    s32 pos_x;
+    u8 row;
+    GXColor color;
+    char *text;
+};
+
+static TextData s_text_data[SLOT_BUF_COUNT][MAX_ROWS];
+
+void init_text_data() {
+    for (u16 j = 0; j < SLOT_BUF_COUNT; j++) {
+        for (u16 k = 0; k < MAX_ROWS; k++) {
+            s_text_data[j][k].pos_x = 0;
+            s_text_data[j][k].row = 0;
+            s_text_data[j][k].color = draw::WHITE;
+            s_text_data[j][k].text = s_row_buf[j][k];
+        }
+    }
+}
+
+// For now this works if we want other mods to have the ability to globally stop text drawing from
+// happening
+void set_drawing_state(bool draw_elements) {
+    s_enable_drawing = draw_elements;
+}
+
+// We only need to potentially center text that gets drawn on the right side of the screen, so there
+// is no need to store things in other slots to the buffer
+bool store_slot_to_buf(Slot slot) {
+    switch (slot) {
+        case Slot::Right:
+            return true;
+        default:
+            return false;
+    }
+}
+
+s16 slot_to_buffer_idx(Slot slot) {
+    switch (slot) {
+        case Slot::Right:
+            return 0;
+        default:
+            return -1;
+    }
+}
 
 // "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
 // stacked on top of each other
@@ -51,7 +108,7 @@ u16 get_slot_min_row(Slot slot) {
         case Slot::Left:
             return 2;
         case Slot::Right:
-            return 1;
+            return 0;  // 1
         default:
             return 0;
     }
@@ -66,6 +123,127 @@ u16 module_and_slot_to_min_row(Module module, Slot slot) {
         default:
             return get_slot_min_row(slot);
     }
+}
+
+s32 get_modified_slot_y_pos(Slot slot, u16 row) {
+    if (store_slot_to_buf(slot) && slot == Slot::Right) {
+        u16 idx = slot_to_buffer_idx(slot);
+        if (s_slot_display_count[idx] < 3) {
+            return timerdisp::row_number_to_vertical_pos(row + 2);
+        }
+    }
+    return timerdisp::row_number_to_vertical_pos(row);
+}
+
+// Option to not incr row is only supported for slots that don't store stuff to a buffer
+void draw_main_v_new(Slot slot,
+                     s32 pos_x,
+                     GXColor color,
+                     bool incr_row,
+                     char *format,
+                     va_list args) {
+    if (!s_enable_drawing) {
+        return;
+    }
+
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        if (s_slot_list[k] == slot) {
+            u16 row = s_active_row[k];
+            if (store_slot_to_buf(slot)) {
+                // Store to buffer so we can draw and move the text later
+                u16 idx = slot_to_buffer_idx(slot);
+                // u16 row = s_slot_display_count[idx];
+                u16 text_idx = s_slot_display_count[idx];
+
+                mkb::vsprintf(s_row_buf[idx][row], format, args);
+                s_text_data[idx][text_idx].pos_x = pos_x;
+                s_text_data[idx][text_idx].row = row;
+                s_text_data[idx][text_idx].color = color;
+
+                s_slot_display_count[idx] += 1;
+
+                if (incr_row) {
+                    s_active_row[k] += 1;
+                }
+
+                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
+                    mkb::OSReport("Stored to buf. Idx: %d Row: %d \n", idx, row);
+                    mkb::OSReport(s_row_buf[idx][row]);
+                }
+            } else {
+                // If not storing this slot's draw calls to the buffer, draw instantly
+                // u16 row = s_active_row[k];
+                s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
+                draw::debug_text_v(pos_x, pos_y, color, format, args);
+                if (incr_row) {
+                    s_active_row[k] += 1;
+                }
+            }
+        }
+    }
+}
+
+// Responsible for drawing everything that got stored to a buffer (instead of the text rows that got
+// drawn instantly)
+void draw_from_buf() {
+    if (!s_enable_drawing) {
+        return;
+    }
+
+    for (u16 k = 0; k < LEN(s_slot_list); k++) {
+        if (store_slot_to_buf(s_slot_list[k])) {
+            u16 idx = slot_to_buffer_idx(s_slot_list[k]);
+            for (u16 j = 0; j < s_slot_display_count[idx]; j++) {
+                // u16 row = s_active_row[k];
+                // u16 row = j;
+                u16 row = s_text_data[idx][j].row;
+                s32 pos_y = get_modified_slot_y_pos(s_slot_list[k], row);
+                draw::debug_text(s_text_data[idx][row].pos_x, pos_y, s_text_data[idx][row].color,
+                                 s_text_data[idx][row].text);
+                // s_active_row[k] += 1;
+                if (pad::button_pressed(mkb::PAD_BUTTON_A)) {
+                    mkb::OSReport("Drawing. Active Row: %d Count: %d \n", row,
+                                  s_slot_display_count[idx]);
+                }
+            }
+        }
+    }
+}
+
+void draw_new(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    draw_main_v_new(slot, pos_x, color, incr_row, format, args);
+    va_end(args);
+}
+
+void draw_aligned_new(Slot slot, GXColor color, char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    draw_main_v_new(slot, get_slot_x_alignment(slot), color, true, format, args);
+    va_end(args);
+}
+
+void draw_timer_main_new(Slot slot,
+                         GXColor color,
+                         s32 pos_x,
+                         char *prefix,
+                         s32 frames,
+                         timerdisp::TimeFormat format) {
+    u32 prefix_len = mkb::strlen(prefix);
+    s32 x = pos_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
+
+    char time_buf[16] = {};
+    timerdisp::format_signed_time(time_buf, frames, format);
+    draw_new(slot, x, color, true, "%s%s", prefix, time_buf);
+}
+
+void draw_timer_new(Slot slot,
+                    GXColor color,
+                    char *prefix,
+                    s32 frames,
+                    timerdisp::TimeFormat format) {
+    draw_timer_main_new(slot, color, get_slot_x_alignment(slot), prefix, frames, format);
 }
 
 // The main text drawing function
@@ -157,10 +335,18 @@ void reset_active_rows() {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         s_active_row[k] = get_slot_min_row(s_slot_list[k]);
     }
+    for (u16 k = 0; k < SLOT_BUF_COUNT; k++) {
+        s_slot_display_count[k] = 0;
+    }
+}
+
+void init() {
+    init_text_data();
 }
 
 void disp() {
     // textinfo's disp() runs after all other disp() functions
+    draw_from_buf();
     reset_active_rows();
 }
 

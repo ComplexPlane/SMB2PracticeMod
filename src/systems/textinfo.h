@@ -41,6 +41,23 @@ void draw_subtick_timer(Module module,
                         u32 framesave,
                         bool extra_precision);
 
+// new stuff
+void draw_new(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...);
+void draw_aligned_new(Slot slot, GXColor color, char *format, ...);
+
+void draw_timer_main_new(Slot slot,
+                         GXColor color,
+                         s32 pos_x,
+                         char *prefix,
+                         s32 frames,
+                         timerdisp::TimeFormat format);
+void draw_timer_new(Slot slot,
+                    GXColor color,
+                    char *prefix,
+                    s32 frames,
+                    timerdisp::TimeFormat format);
+
+void init();
 void disp();
 
 }  // namespace textinfo

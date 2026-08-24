@@ -195,6 +195,7 @@ void init() {
     pref::init();
     unlock::init();
     draw::init();
+    textinfo::init();
     physics::init();
     iw::init();
     savest::init();
