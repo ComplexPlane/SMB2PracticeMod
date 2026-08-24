@@ -26,7 +26,6 @@ constexpr u16 STAGES_PER_WORLD = mode::STAGES_PER_WORLD;
 
 static WorldTimer s_world_timer[WORLD_COUNT];  // timer info for each world
 
-// using Mod = textinfo::Module;
 using Slot = textinfo::Slot;
 using Format = timerdisp::TimeFormat;
 
@@ -148,8 +147,7 @@ void tick() {
 
 // Special case of textinfo::draw_timer() useful for us
 void draw_timer(char *prefix, u32 frames, Format format) {
-    // textinfo::draw_timer(Mod::LoadlessTimer, Slot::Left, draw::WHITE, prefix, frames, format);
-    textinfo::draw_timer_new(Slot::Left, draw::WHITE, prefix, frames, format);
+    textinfo::draw_timer(Slot::Left, draw::WHITE, prefix, frames, format);
 }
 
 // The run breakdown screen replaces the segment timer at the end of the run
@@ -225,7 +223,6 @@ void draw_timers() {
 
 // We only use this function for 0 <= row <= 10
 s32 get_breakdown_row_x_pos(u16 row) {
-    // s32 num_x_pos = textinfo::module_and_slot_to_x_alignment(Mod::LoadlessTimer, Slot::Left);
     s32 num_x_pos = textinfo::get_slot_x_alignment(Slot::Left);
     if (row < WORLD_COUNT - 1) {  // "Wk:" is 3 characters long if 1 <= k <= 9
         return num_x_pos - 3 * draw::DEBUG_CHAR_WIDTH;
@@ -252,8 +249,7 @@ void draw_breakdown_screen() {
                                Format::MinutesAlwaysLeadingZero);
         mkb::sprintf(row_info_buf, "W%d:%s (%s) (%d)", idx + 1, split_buf, seg_buf, world_deaths);
 
-        // textinfo::draw(Mod::LoadlessTimer, Slot::Left, pos_x, draw::WHITE, true, row_info_buf);
-        textinfo::draw_new(Slot::Left, pos_x, draw::WHITE, true, row_info_buf);
+        textinfo::draw(Slot::Left, pos_x, draw::WHITE, true, row_info_buf);
     }
 
     // For the totals row
@@ -262,10 +258,8 @@ void draw_breakdown_screen() {
 
     char total_time_buf[16] = {};
     timerdisp::format_time(total_time_buf, get_loadless_time(), Format::MinutesAlwaysLeadingZero);
-    /* textinfo::draw(Mod::LoadlessTimer, Slot::Left, totals_x_pos, draw::WHITE, true,
-                   "Totals:%s (%d)", total_time_buf, total_deaths); */
-    textinfo::draw_new(Slot::Left, totals_x_pos, draw::WHITE, true, "Totals:%s (%d)",
-                       total_time_buf, total_deaths);
+    textinfo::draw(Slot::Left, totals_x_pos, draw::WHITE, true, "Totals:%s (%d)", total_time_buf,
+                   total_deaths);
 }
 
 bool should_not_display_timer_at_all() {

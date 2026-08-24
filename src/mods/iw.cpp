@@ -125,11 +125,8 @@ void disp() {
         mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw ||
         freecam::should_hide_hud())
         return;
-    /* textinfo::draw_timer(textinfo::Module::IwTimer, textinfo::Slot::Right, draw::WHITE,
-                         "IW:", static_cast<s32>(s_iw_time),
-                         timerdisp::TimeFormat::AlwaysLeadNonHours); */
-    textinfo::draw_timer_new(textinfo::Slot::Right, draw::WHITE, "IW:", static_cast<s32>(s_iw_time),
-                             timerdisp::TimeFormat::AlwaysLeadNonHours);
+    textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "IW:", static_cast<s32>(s_iw_time),
+                         timerdisp::TimeFormat::AlwaysLeadNonHours);
 }
 
 }  // namespace iw

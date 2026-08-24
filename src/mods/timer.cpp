@@ -57,22 +57,15 @@ void disp() {
         }
     }
 
-    // using Mod = textinfo::Module;
     using Slot = textinfo::Slot;
     using Format = timerdisp::TimeFormat;
 
     if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        /*  textinfo::draw_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
-                              Format::SecondsOnly); */
-        textinfo::draw_timer_new(Slot::Right, draw::WHITE, "RTA:", s_rta_timer,
-                                 Format::SecondsOnly);
+        textinfo::draw_timer(Slot::Right, draw::WHITE, "RTA:", s_rta_timer, Format::SecondsOnly);
     }
 
     if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        /* textinfo::draw_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
-                             Format::SecondsOnly); */
-        textinfo::draw_timer_new(Slot::Right, draw::WHITE, "PAU:", s_pause_timer,
-                                 Format::SecondsOnly);
+        textinfo::draw_timer(Slot::Right, draw::WHITE, "PAU:", s_pause_timer, Format::SecondsOnly);
     }
 
     switch (mkb::sub_mode) {
@@ -88,8 +81,6 @@ void disp() {
     u32 framesave = validate::get_framesave();
 
     if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
-        /* textinfo::draw_subtick_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "SUB:",
-           s_rta_timer, framesave, false); */
         textinfo::draw_subtick_timer(Slot::Right, draw::WHITE, "SUB:", s_rta_timer, framesave,
                                      false);
     }
@@ -97,9 +88,7 @@ void disp() {
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
         s32 num_x = textinfo::get_slot_x_alignment(Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;  // "FSV:" is 4 characters long
-        // textinfo::draw(Mod::StageTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%",
-        // framesave);
-        textinfo::draw_new(Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
+        textinfo::draw(Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
     }
 }
 

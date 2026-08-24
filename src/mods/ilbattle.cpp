@@ -66,13 +66,11 @@ static u32 s_rainbow = 0;
 static bool s_time_buzzer = false;
 static bool s_score_buzzer = false;
 
-// using Mod = textinfo::Module;
 using Slot = textinfo::Slot;
 using Format = timerdisp::TimeFormat;
 
 void draw_battle_text_main(s32 pos_x, GXColor color, bool incr_row, char *text) {
-    // textinfo::draw(Mod::IlBattle, Slot::Left, pos_x, color, incr_row, text);
-    textinfo::draw_new(Slot::Left, pos_x, color, incr_row, text);
+    textinfo::draw(Slot::Left, pos_x, color, incr_row, text);
 }
 
 void draw_buzzer_beater_row(GXColor color) {
@@ -100,22 +98,20 @@ void draw_battle_breakdown_text(GXColor color, char *text) {
 }
 
 // When we only want to display a single time or number (like attempt count)
-// Special formatting like "time [bananas]"" is handled on a per-case basis, however
+// Special formatting like "time [bananas]" is handled on a per-case basis
+// using the next function, however
 void draw_battle_num(GXColor color, u32 num, Format format) {
     // No prefix specified since IL Battle uses custom spacing between its prefixes and times
-    // textinfo::draw_timer(Mod::IlBattle, Slot::Left, color, "", num, format);
-    // textinfo::draw_timer_new(Slot::Left, color, "", num, format);
-    textinfo::draw_timer_main_new(Slot::Left, color, NUM_POS_X, "", num, format);
+    textinfo::draw_timer_main(Slot::Left, color, NUM_POS_X, "", num, format);
 }
 
 void draw_battle_text_right_aligned(GXColor color, char *format, ...) {
     va_list args;
     va_start(args, format);
-    textinfo::draw_main_v_new(Slot::Left, NUM_POS_X, color, true, format, args);
+    textinfo::draw_v(Slot::Left, NUM_POS_X, color, true, format, args);
     va_end(args);
 }
 
-// pre cleanup
 static void battle_display(GXColor text_color) {
     u32 current_y = Y;
 
@@ -131,10 +127,6 @@ static void battle_display(GXColor text_color) {
         if (pref::get(pref::Pref::IlBattleTieCount) && s_best_frames_ties > 0) {
             char time_buf[16] = {};
             timerdisp::format_time(time_buf, s_best_frames, Format::SecondsOnly);
-            /* textinfo::draw_aligned(Mod::IlBattle, Slot::Left, time_color, "%s (%d)", time_buf,
-                                   s_best_frames_ties + 1); */
-            /* textinfo::draw_aligned_new(Slot::Left, time_color, "%s (%d)", time_buf,
-                                       s_best_frames_ties + 1); */
             draw_battle_text_right_aligned(time_color, "%s (%d)", time_buf, s_best_frames_ties + 1);
         } else {
             draw_battle_num(text_color, s_best_frames, Format::SecondsOnly);
@@ -143,10 +135,6 @@ static void battle_display(GXColor text_color) {
     if (pref::get(pref::Pref::IlBattleShowScore)) {
         draw_battle_text(text_color, "BEST SCORE:");
         if (pref::get(pref::Pref::IlBattleTieCount) && s_best_score_ties > 0) {
-            /* textinfo::draw_aligned(Mod::IlBattle, Slot::Left, score_color, "%d (%d)",
-               s_best_score, s_best_score_ties + 1); */
-            /* textinfo::draw_aligned_new(Slot::Left, score_color, "%d (%d)", s_best_score,
-                                       s_best_score_ties + 1); */
             draw_battle_text_right_aligned(score_color, "%d (%d)", s_best_score,
                                            s_best_score_ties + 1);
         } else {
@@ -160,17 +148,10 @@ static void battle_display(GXColor text_color) {
             draw_battle_text(text_color, "BREAKDOWN:");
             char time_buf[16] = {};
             timerdisp::format_time(time_buf, s_best_score_frames, Format::SecondsOnly);
-            /* textinfo::draw_aligned(Mod::IlBattle, Slot::Left, text_color, "%s [%d]", time_buf,
-                                   s_best_score_bananas); */
-            /* textinfo::draw_aligned_new(Slot::Left, text_color, "%s [%d]", time_buf,
-                                       s_best_score_bananas); */
             draw_battle_text_right_aligned(text_color, "%s [%d]", time_buf, s_best_score_bananas);
         } else if (breakdown_value == 2) {
             // full
             draw_battle_breakdown_text(text_color, "BANANAS:");
-            /* textinfo::draw_aligned(Mod::IlBattle, Slot::Left, text_color, "%d",
-                                   s_best_score_bananas); */
-            // textinfo::draw_aligned_new(Slot::Left, text_color, "%d", s_best_score_bananas);
             draw_battle_text_right_aligned(text_color, "%d", s_best_score_bananas);
             draw_battle_breakdown_text(text_color, "TIMER:");
             draw_battle_num(text_color, s_best_score_frames, Format::SecondsOnly);
@@ -413,10 +394,7 @@ void disp() {
             char buf[25];
             binds::get_bind_str(input, buf);
             draw_battle_text_main(TEXT_POS_X, draw::LIGHT_PURPLE, true, "NOT READY");
-            /* textinfo::draw(Mod::IlBattle, Slot::Left, TEXT_POS_X, draw::LIGHT_PURPLE, true,
-                           "%s to ready", buf); */
-            textinfo::draw_new(Slot::Left, TEXT_POS_X, draw::LIGHT_PURPLE, true, "%s to ready",
-                               buf);
+            textinfo::draw(Slot::Left, TEXT_POS_X, draw::LIGHT_PURPLE, true, "%s to ready", buf);
             break;
         }
         case IlBattleState::WaitForFirstRetry: {

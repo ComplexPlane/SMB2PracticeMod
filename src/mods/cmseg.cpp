@@ -425,11 +425,8 @@ void disp() {
             color = draw::GOLD;
         else
             color = draw::WHITE;
-        /* textinfo::draw_timer(textinfo::Module::CmSeg, textinfo::Slot::Right, color,
-                             "SEG:", static_cast<s32>(s_seg_time),
-                             timerdisp::TimeFormat::AlwaysLeadNonHours); */
-        textinfo::draw_timer_new(textinfo::Slot::Right, color, "SEG:", static_cast<s32>(s_seg_time),
-                                 timerdisp::TimeFormat::AlwaysLeadNonHours);
+        textinfo::draw_timer(textinfo::Slot::Right, color, "SEG:", static_cast<s32>(s_seg_time),
+                             timerdisp::TimeFormat::AlwaysLeadNonHours);
     }
 }
 

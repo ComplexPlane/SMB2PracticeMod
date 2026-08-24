@@ -10,35 +10,39 @@
 
 namespace textinfo {
 
-// We can get away with making this buffer relatively small since (currently) only text that gets
-// drawn to the right side of the screen needs to be stored to the buffer and potentially moved
-// up/down
-constexpr u16 SLOT_BUF_COUNT = 1;  // number of slots whose draw calls get stored in a buffer
-constexpr u16 MAX_ROWS = 6;        // max number of text displays that can be stored to a buffer
-static char s_row_buf[SLOT_BUF_COUNT][MAX_ROWS][16] = {};
-static u16 s_slot_display_count[SLOT_BUF_COUNT] = {};  // maybe call it s_buffer_slot_display_count
-
-static bool s_enable_drawing = true;
+struct TextData {
+    s32 pos_x;
+    u8 row;
+    GXColor color;
+    char *text;  // always a ptr to s_row_buf
+};
 
 static const Slot s_slot_list[]{
     Slot::Left,
     Slot::Right,
 };
 
+// We can get away with using relatively few and small buffers since (currently) only text that gets
+// drawn to the right side of the screen needs to be stored to the buffer and potentially moved
+// up/down
+// We call any slot that stores its text to buffers a buffer slot
+
+// Number of slots whose draw calls get stored in a buffer
+constexpr u16 BUFFER_SLOT_COUNT = 1;
+// Max number of strings that each buffer slot can accept
+constexpr u16 BUFFER_SLOT_MAX_STRS = 6;
+static char s_row_buf[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS][16] = {};
+// How many strings are actually being displayed in each buffer slot
+static u16 s_buffer_slot_display_count[BUFFER_SLOT_COUNT] = {};
+// We bundle up relevant display parameters when writing things to the buffer
+static TextData s_text_data[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS];
+
 static u16 s_active_row[LEN(s_slot_list)] = {};
-
-struct TextData {
-    s32 pos_x;
-    u8 row;
-    GXColor color;
-    char *text;
-};
-
-static TextData s_text_data[SLOT_BUF_COUNT][MAX_ROWS];
+static bool s_enable_drawing = true;
 
 void init_text_data() {
-    for (u16 j = 0; j < SLOT_BUF_COUNT; j++) {
-        for (u16 k = 0; k < MAX_ROWS; k++) {
+    for (u16 j = 0; j < BUFFER_SLOT_COUNT; j++) {
+        for (u16 k = 0; k < BUFFER_SLOT_MAX_STRS; k++) {
             s_text_data[j][k].pos_x = 0;
             s_text_data[j][k].row = 0;
             s_text_data[j][k].color = draw::WHITE;
@@ -55,32 +59,25 @@ void set_drawing_state(bool draw_elements) {
 
 // We only need to potentially center text that gets drawn on the right side of the screen, so there
 // is no need to store things in other slots to the buffer
-bool store_slot_to_buf(Slot slot) {
-    switch (slot) {
-        case Slot::Right:
-            return true;
-        default:
-            return false;
-    }
-}
-
-s16 slot_to_buffer_idx(Slot slot) {
+s16 get_buffer_slot_idx(Slot slot) {
     switch (slot) {
         case Slot::Right:
             return 0;
         default:
+            // If not a buffer slot
             return -1;
     }
 }
 
+bool slot_is_buffer_slot(Slot slot) {
+    return get_buffer_slot_idx(slot) != -1;
+}
+
 // "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
 // stacked on top of each other
-// In addition to the generic text drawing functions, it's useful to be able to line up our displays
-// by numbers (this situation covers a toooooon of special cases)
-// Each module may have slightly different requirements for this alignment
 
-// Where the numbers get lined up (this acts as the "default" number alignment per slot, but this
-// can be overridden on a per-mod basis)
+// Where the numbers get lined up (this acts as the "default" number alignment per slot, but
+// individual mods can specify a different x-position in the relevant draw() calls if necessary)
 s32 get_slot_x_alignment(Slot slot) {
     switch (slot) {
         case Slot::Left:
@@ -92,17 +89,7 @@ s32 get_slot_x_alignment(Slot slot) {
     }
 }
 
-/* s32 module_and_slot_to_x_alignment(Module module, Slot slot) {
-    switch (module) {
-        case Module::IlBattle:
-            // IL Battle needs different number alignment from loadless timer/death counter
-            return 160 - 6;
-        default:
-            return get_slot_x_alignment(slot);
-    }
-} */
-
-// Per-slot minimum row number. Individual modules are allowed to have higher min rows, however
+// Per-slot minimum row number
 u16 get_slot_min_row(Slot slot) {
     switch (slot) {
         case Slot::Left:
@@ -114,34 +101,22 @@ u16 get_slot_min_row(Slot slot) {
     }
 }
 
-// Modules are allowed to draw to multiple slots, and can have different min rows for each slot (we
-// don't have any modules currently that need to do this though)
-/* u16 module_and_slot_to_min_row(Module module, Slot slot) {
-    switch (module) {
-        case Module::StageTimer:
-            return 2;
-        default:
-            return get_slot_min_row(slot);
-    }
-} */
-
 s32 get_modified_slot_y_pos(Slot slot, u16 row) {
-    if (store_slot_to_buf(slot) && slot == Slot::Right) {
-        u16 idx = slot_to_buffer_idx(slot);
-        if (s_slot_display_count[idx] < 3) {
+    if (slot_is_buffer_slot(slot) && slot == Slot::Right) {
+        u16 idx = get_buffer_slot_idx(slot);
+        if (s_buffer_slot_display_count[idx] < 3) {
             return timerdisp::row_number_to_vertical_pos(row + 2);
         }
     }
     return timerdisp::row_number_to_vertical_pos(row);
 }
 
-// Option to not incr row is only supported for slots that don't store stuff to a buffer
-void draw_main_v_new(Slot slot,
-                     s32 pos_x,
-                     GXColor color,
-                     bool incr_row,
-                     char *format,
-                     va_list args) {
+// The main text drawing function
+// We will almost always want to input true for the incr_row argument
+// However, in cases where we want to draw two (or more) pieces of text in the same slot and in
+// the same row with custom horizontal spacing, inputting false can be useful
+// This is used in ilbattle.cpp
+void draw_v(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, va_list args) {
     if (!s_enable_drawing) {
         return;
     }
@@ -149,23 +124,18 @@ void draw_main_v_new(Slot slot,
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         if (s_slot_list[k] == slot) {
             u16 row = s_active_row[k];
-            if (store_slot_to_buf(slot)) {
+            if (slot_is_buffer_slot(slot)) {
                 // Store to buffer so we can draw and move the text later
-                // idx = buffer slot index
-                u16 idx = slot_to_buffer_idx(slot);
-                // u16 row = s_slot_display_count[idx];
-                u16 text_idx = s_slot_display_count[idx];
+                u16 idx = get_buffer_slot_idx(slot);  // idx = buffer slot index
+                u16 text_idx = s_buffer_slot_display_count[idx];
 
-                mkb::vsprintf(s_row_buf[idx][row], format, args);
+                // We also store relevant display parameters (position, color)
+                mkb::vsprintf(s_row_buf[idx][text_idx], format, args);
                 s_text_data[idx][text_idx].pos_x = pos_x;
                 s_text_data[idx][text_idx].row = row;
                 s_text_data[idx][text_idx].color = color;
 
-                s_slot_display_count[idx] += 1;
-
-                if (incr_row) {
-                    s_active_row[k] += 1;
-                }
+                s_buffer_slot_display_count[idx] += 1;
 
                 if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
                     mkb::OSReport("Stored to buf. Idx: %d Row: %d \n", idx, row);
@@ -173,12 +143,12 @@ void draw_main_v_new(Slot slot,
                 }
             } else {
                 // If not storing this slot's draw calls to the buffer, draw instantly
-                // u16 row = s_active_row[k];
                 s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
                 draw::debug_text_v(pos_x, pos_y, color, format, args);
-                if (incr_row) {
-                    s_active_row[k] += 1;
-                }
+            }
+
+            if (incr_row) {
+                s_active_row[k] += 1;
             }
         }
     }
@@ -192,59 +162,55 @@ void draw_from_buf() {
     }
 
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
-        if (store_slot_to_buf(s_slot_list[k])) {
-            u16 idx = slot_to_buffer_idx(s_slot_list[k]);
-            for (u16 j = 0; j < s_slot_display_count[idx]; j++) {
-                // u16 row = s_active_row[k];
-                // u16 row = j;
+        if (slot_is_buffer_slot(s_slot_list[k])) {
+            u16 idx = get_buffer_slot_idx(s_slot_list[k]);
+            for (u16 j = 0; j < s_buffer_slot_display_count[idx]; j++) {
                 u16 row = s_text_data[idx][j].row;
                 s32 pos_y = get_modified_slot_y_pos(s_slot_list[k], row);
-                draw::debug_text(s_text_data[idx][row].pos_x, pos_y, s_text_data[idx][row].color,
-                                 s_text_data[idx][row].text);
-                // s_active_row[k] += 1;
+                draw::debug_text(s_text_data[idx][j].pos_x, pos_y, s_text_data[idx][j].color,
+                                 s_text_data[idx][j].text);
+
                 if (pad::button_pressed(mkb::PAD_BUTTON_A)) {
                     mkb::OSReport("Drawing. Active Row: %d Count: %d \n", row,
-                                  s_slot_display_count[idx]);
+                                  s_buffer_slot_display_count[idx]);
                 }
             }
         }
     }
 }
 
-void draw_new(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...) {
+void draw(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...) {
     va_list args;
     va_start(args, format);
-    draw_main_v_new(slot, pos_x, color, incr_row, format, args);
+    draw_v(slot, pos_x, color, incr_row, format, args);
     va_end(args);
 }
 
-void draw_aligned_new(Slot slot, GXColor color, char *format, ...) {
+void draw_aligned(Slot slot, GXColor color, char *format, ...) {
     va_list args;
     va_start(args, format);
-    draw_main_v_new(slot, get_slot_x_alignment(slot), color, true, format, args);
+    draw_v(slot, get_slot_x_alignment(slot), color, true, format, args);
     va_end(args);
 }
 
-void draw_timer_main_new(Slot slot,
-                         GXColor color,
-                         s32 pos_x,
-                         char *prefix,
-                         s32 frames,
-                         timerdisp::TimeFormat format) {
+// Aligns the time according to get_slot_x_alignment; the prefix gets automatically moved to the
+// left depending on string length
+void draw_timer_main(Slot slot,
+                     GXColor color,
+                     s32 pos_x,
+                     char *prefix,
+                     s32 frames,
+                     timerdisp::TimeFormat format) {
     u32 prefix_len = mkb::strlen(prefix);
     s32 x = pos_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
 
     char time_buf[16] = {};
     timerdisp::format_signed_time(time_buf, frames, format);
-    draw_new(slot, x, color, true, "%s%s", prefix, time_buf);
+    draw(slot, x, color, true, "%s%s", prefix, time_buf);
 }
 
-void draw_timer_new(Slot slot,
-                    GXColor color,
-                    char *prefix,
-                    s32 frames,
-                    timerdisp::TimeFormat format) {
-    draw_timer_main_new(slot, color, get_slot_x_alignment(slot), prefix, frames, format);
+void draw_timer(Slot slot, GXColor color, char *prefix, s32 frames, timerdisp::TimeFormat format) {
+    draw_timer_main(slot, color, get_slot_x_alignment(slot), prefix, frames, format);
 }
 
 void draw_subtick_timer_main(Slot slot,
@@ -259,7 +225,7 @@ void draw_subtick_timer_main(Slot slot,
 
     char time_buf[16] = {};
     timerdisp::format_subtick_time(time_buf, frames, framesave, extra_precision);
-    draw_new(slot, x, color, true, "%s%s", prefix, time_buf);
+    draw(slot, x, color, true, "%s%s", prefix, time_buf);
 }
 
 void draw_subtick_timer(Slot slot,
@@ -272,99 +238,12 @@ void draw_subtick_timer(Slot slot,
                             extra_precision);
 }
 
-// ---
-
-// The main text drawing function
-// We will almost always want to input true for the incr_row argument
-// However, in cases where we want to draw two (or more) pieces of text in the same slot and in
-// the same row with custom horizontal spacing, inputting false can be useful
-// This is used in ilbattle.cpp
-/* void draw_main_v(s32 min_row,
-                 Slot slot,
-                 s32 pos_x,
-                 GXColor color,
-                 bool incr_row,
-                 char *format,
-                 va_list args) {
-    for (u16 k = 0; k < LEN(s_slot_list); k++) {
-        if (s_slot_list[k] == slot) {
-            u16 row = MAX(min_row, s_active_row[k]);
-            s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
-
-            draw::debug_text_v(pos_x, pos_y, color, format, args);
-
-            if (incr_row) {
-                s_active_row[k] = row + 1;
-            }
-        }
-    }
-} */
-
-/* void draw_v(Module module,
-            Slot slot,
-            s32 pos_x,
-            GXColor color,
-            bool incr_row,
-            char *format,
-            va_list args) {
-    draw_main_v(module_and_slot_to_min_row(module, slot), slot, pos_x, color, incr_row, format,
-                args);
-}
-
-void draw(Module module, Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, ...) {
-    va_list args;
-    va_start(args, format);
-    draw_v(module, slot, pos_x, color, incr_row, format, args);
-    va_end(args);
-}
-
-// When we want to align according to module_and_slot_to_x_alignment()
-void draw_aligned(Module module, Slot slot, GXColor color, char *format, ...) {
-    va_list args;
-    va_start(args, format);
-    draw_v(module, slot, module_and_slot_to_x_alignment(module, slot), color, true, format, args);
-    va_end(args);
-} */
-
-// Aligns the time according to get_slot_x_alignment; the prefix gets automatically moved to the
-// left depending on string length
-/* void draw_timer(Module module,
-                Slot slot,
-                GXColor color,
-                char *prefix,
-                s32 frames,
-                timerdisp::TimeFormat format) {
-    s32 num_x = module_and_slot_to_x_alignment(module, slot);
-    u32 prefix_len = mkb::strlen(prefix);
-    s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
-
-    char time_buf[16] = {};
-    timerdisp::format_signed_time(time_buf, frames, format);
-    draw(module, slot, x, color, true, "%s%s", prefix, time_buf);
-}
-
-void draw_subtick_timer(Module module,
-                        Slot slot,
-                        GXColor color,
-                        char *prefix,
-                        s32 frames,
-                        u32 framesave,
-                        bool extra_precision) {
-    s32 num_x = module_and_slot_to_x_alignment(module, slot);
-    u32 prefix_len = mkb::strlen(prefix);
-    s32 x = num_x - prefix_len * draw::DEBUG_CHAR_WIDTH;
-
-    char time_buf[16] = {};
-    timerdisp::format_subtick_time(time_buf, frames, framesave, extra_precision);
-    draw(module, slot, x, color, true, "%s%s", prefix, time_buf);
-} */
-
 void reset_active_rows() {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         s_active_row[k] = get_slot_min_row(s_slot_list[k]);
     }
-    for (u16 k = 0; k < SLOT_BUF_COUNT; k++) {
-        s_slot_display_count[k] = 0;
+    for (u16 k = 0; k < BUFFER_SLOT_COUNT; k++) {
+        s_buffer_slot_display_count[k] = 0;
     }
 }
 
