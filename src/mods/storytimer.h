@@ -4,11 +4,6 @@
 
 namespace storytimer {
 
-enum class TimerType {
-    Fullgame,
-    Segment,
-};
-
 struct WorldTimer {
     u32 segment;     // the time taken to complete a world up until tape break on the last stage
     u32 full_world;  // the time taken to complete a world until the fade to white on the last stage

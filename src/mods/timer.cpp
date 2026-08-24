@@ -57,7 +57,7 @@ void disp() {
         }
     }
 
-    using Mod = textinfo::Module;
+    // using Mod = textinfo::Module;
     using Slot = textinfo::Slot;
     using Format = timerdisp::TimeFormat;
 
@@ -90,10 +90,12 @@ void disp() {
     if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
         /* textinfo::draw_subtick_timer(Mod::StageTimer, Slot::Right, draw::WHITE, "SUB:",
            s_rta_timer, framesave, false); */
+        textinfo::draw_subtick_timer(Slot::Right, draw::WHITE, "SUB:", s_rta_timer, framesave,
+                                     false);
     }
 
     if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        s32 num_x = textinfo::module_and_slot_to_x_alignment(Mod::StageTimer, Slot::Right);
+        s32 num_x = textinfo::get_slot_x_alignment(Slot::Right);
         s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;  // "FSV:" is 4 characters long
         // textinfo::draw(Mod::StageTimer, Slot::Right, x, draw::WHITE, true, "FSV:%2d%",
         // framesave);
