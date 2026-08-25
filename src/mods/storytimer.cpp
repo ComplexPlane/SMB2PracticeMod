@@ -158,26 +158,18 @@ bool should_display_timer(TimerType type) {
         pref = pref::get(pref::Pref::SegmentTimerOptions);
     }
 
+    if (type == TimerType::Segment && pref::get(pref::Pref::ShowRunBreakdown) &&
+        goal::is_run_complete()) {
+        return false;
+    }
+
     using TimerOptions = storyreset::StoryDisplayOptions;
 
     switch (TimerOptions(pref)) {
         case TimerOptions::AlwaysShow:
-            if (type == TimerType::Fullgame) {
-                return true;
-            } else if (pref::get(pref::Pref::ShowRunBreakdown)) {
-                // type is segment timer + show breakdown on
-                return !goal::is_run_complete();
-            } else {  // type is segment timer + show breakdown off
-                return true;
-            }
+            return true;
         case TimerOptions::BetweenWorlds:
-            if (type == TimerType::Fullgame) {
-                return goal::is_between_worlds();
-            } else if (pref::get(pref::Pref::ShowRunBreakdown)) {
-                return goal::is_between_worlds() && !goal::is_run_complete();
-            } else {
-                return goal::is_between_worlds();
-            }
+            return goal::is_between_worlds();
         case TimerOptions::EndOfRun:
             if (type == TimerType::Fullgame) {
                 return goal::is_run_complete();

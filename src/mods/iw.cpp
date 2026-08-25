@@ -27,6 +27,9 @@ static u32 s_iw_files;  // Bitflag for which save files are IW save files
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
 
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
+
 static void handle_iw_selection() {
     if (mkb::scen_info.mode != 5) return;
 
@@ -124,8 +127,8 @@ void disp() {
     if (!pref::get(pref::Pref::IwTimer) || mkb::main_mode != mkb::MD_GAME ||
         mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw)
         return;
-    textinfo::draw_timer(textinfo::Slot::Right, draw::WHITE, "IW:", static_cast<s32>(s_iw_time),
-                         timerdisp::TimeFormat::AlwaysLeadNonHours);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "IW:", static_cast<s32>(s_iw_time),
+                         Format::AlwaysLeadNonHours);
 }
 
 }  // namespace iw

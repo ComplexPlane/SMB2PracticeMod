@@ -36,6 +36,9 @@ static s8 s_overwritten_starting_monkeys;
 
 static u32 s_pbs[14];
 
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
+
 // static void debug_print_course(mkb::CourseCommand *course, u32 entry_count)
 //{
 //     static const char *type_strs[] = {"COURSE_CMD_IF", "COURSE_CMD_THEN", "COURSE_CMD_INFO",
@@ -425,8 +428,8 @@ void disp() {
             color = draw::GOLD;
         else
             color = draw::WHITE;
-        textinfo::draw_timer(textinfo::Slot::Right, color, "SEG:", static_cast<s32>(s_seg_time),
-                             timerdisp::TimeFormat::AlwaysLeadNonHours);
+        textinfo::draw_timer(Slot::Right, color, "SEG:", static_cast<s32>(s_seg_time),
+                             Format::AlwaysLeadNonHours);
     }
 }
 

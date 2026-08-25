@@ -16,6 +16,9 @@ static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
 static s32 s_pause_timer;
 
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
+
 void init() {
     s_retrace_count = mkb::VIGetRetraceCount();
 }
@@ -56,9 +59,6 @@ void disp() {
             s_pause_timer++;
         }
     }
-
-    using Slot = textinfo::Slot;
-    using Format = timerdisp::TimeFormat;
 
     if (pref::get(pref::Pref::TimerShowRTA)) {
         textinfo::draw_timer(Slot::Right, draw::WHITE, "RTA:", s_rta_timer, Format::SecondsOnly);
