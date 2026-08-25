@@ -12,14 +12,14 @@
 #include "utils/patch.h"
 #include "utils/relutil.h"
 
-enum Flag {
+typedef enum {
     Flag_IsPresent = 1 << 0,
     // For when a state should be loaded on the subsequent frame
     Flag_ReloadState = 1 << 1,
-};
+} Flag;
 
 typedef struct {
-    u32 flags;
+    Flag flags;
     u32 timestamp;
     s32 stage_id;
     u32 character;
@@ -392,7 +392,7 @@ void SS_Clear(u32 slot) {
     if (state->store.buf != nullptr) {
         Heap_Free(state->store.buf);
     }
-    *state = (SaveState){0};
+    *state = (SaveState){};
     state->timestamp = s_timestamp;
 }
 
