@@ -3,14 +3,7 @@
 #include "systems/pref.h"
 #include "utils/patch.h"
 
-typedef enum {
-    ActiveMode_None = 0,
-    ActiveMode_Golden = 1,
-    ActiveMode_Dark = 2,
-    ActiveMode_Reverse = 3,
-} ActiveMode;
-
-static ActiveMode s_current_mode = ActiveMode_None;
+static ActiveMode s_current_mode = StageEdits_Mode_None;
 static u32 s_rev_goal_idx = 0;
 static bool s_new_goal = false;
 
@@ -20,20 +13,20 @@ void StageEdits_SelectNewGoal() {
 
 static void undo_mode(ActiveMode mode) {
     switch (mode) {
-        case ActiveMode_None: {
+        case StageEdits_Mode_None: {
             break;
         }
-        case ActiveMode_Golden: {
+        case StageEdits_Mode_Golden: {
             // disable goals somehow
             for (u32 i = 0; i < mkb_stagedef->goal_count; i++) {
                 mkb_stagedef->goal_list[i].position.y += 10000;
             }
             break;
         }
-        case ActiveMode_Dark: {
+        case StageEdits_Mode_Dark: {
             break;
         }
-        case ActiveMode_Reverse: {
+        case StageEdits_Mode_Reverse: {
             if (mkb_stagedef->goal_count < 1) return;
             float x = mkb_stagedef->start->position.x;
             float y = mkb_stagedef->start->position.y;
@@ -64,20 +57,20 @@ static void undo_mode(ActiveMode mode) {
 
 static void set_mode(ActiveMode mode) {
     switch (mode) {
-        case ActiveMode_None: {
+        case StageEdits_Mode_None: {
             break;
         }
-        case ActiveMode_Golden: {
+        case StageEdits_Mode_Golden: {
             // disable goals somehow
             for (u32 i = 0; i < mkb_stagedef->goal_count; i++) {
                 mkb_stagedef->goal_list[i].position.y -= 10000;
             }
             break;
         }
-        case ActiveMode_Dark: {
+        case StageEdits_Mode_Dark: {
             break;
         }
-        case ActiveMode_Reverse: {
+        case StageEdits_Mode_Reverse: {
             if (mkb_stagedef->goal_count < 1) return;
             s_rev_goal_idx %= mkb_stagedef->goal_count;
             // switch goal and start
@@ -114,10 +107,10 @@ void StageEdits_SmdGameReadyInit() {
         undo_mode(s_current_mode);
         s_current_mode = (ActiveMode)Pref_Get(Pref_StageEditVariant);
         set_mode(s_current_mode);
-    } else if (s_current_mode == ActiveMode_Reverse && s_new_goal) {
-        undo_mode(ActiveMode_Reverse);
+    } else if (s_current_mode == StageEdits_Mode_Reverse && s_new_goal) {
+        undo_mode(StageEdits_Mode_Reverse);
         s_rev_goal_idx++;
-        set_mode(ActiveMode_Reverse);
+        set_mode(StageEdits_Mode_Reverse);
     }
     s_new_goal = false;
 }
@@ -136,23 +129,23 @@ void StageEdits_Init() {
 
 void StageEdits_Tick() {
     switch (s_current_mode) {
-        case ActiveMode_None: {
+        case StageEdits_Mode_None: {
             break;
         }
-        case ActiveMode_Golden: {
+        case StageEdits_Mode_Golden: {
             if (mkb_mode_info.bananas_remaining == 0) {
                 mkb_mode_info.ball_mode |= 0x228;
             }
             break;
         }
-        case ActiveMode_Dark: {
+        case StageEdits_Mode_Dark: {
             if (mkb_stagedef != nullptr &&
                 mkb_mode_info.bananas_remaining != mkb_stagedef->banana_count) {
                 mkb_mode_info.ball_mode |= mkb_BALLMODE_FALLEN_OUT;
             }
             break;
         }
-        case ActiveMode_Reverse: {
+        case StageEdits_Mode_Reverse: {
             break;
         }
     }

@@ -1694,31 +1694,31 @@ static Widget s_jump_physics[] = {
 };
 
 static bool show_if_physics_light_ball() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_LightBall;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_LightBall;
 }
 
 static bool show_if_physics_no_friction() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_NoFriction;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_NoFriction;
 }
 
 static bool show_if_physics_heavy_ball() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_HeavyBall;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_HeavyBall;
 }
 
 static bool show_if_physics_bouncy_ball() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_BouncyBall;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_BouncyBall;
 }
 
 static bool show_if_physics_sticky_ball() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_StickyBall;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_StickyBall;
 }
 
 static bool show_if_physics_high_friction() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_HighFriction;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_HighFriction;
 }
 
 static bool show_if_physics_jump() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) == PhysicsPreset_JumpPhysics;
+    return Pref_Get(Pref_PhysicsPreset) == Physics_Preset_JumpPhysics;
 }
 
 static Widget s_physics_widgets[] = {
@@ -1812,7 +1812,7 @@ static void push_select_new_goal() {
 }
 
 static bool show_if_stage_edit_reverse() {
-    return Pref_Get(Pref_StageEditVariant) == 3;
+    return Pref_Get(Pref_StageEditVariant) == StageEdits_Mode_Reverse;
 }
 
 static Widget s_reverse_goal_widgets[] = {

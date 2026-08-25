@@ -74,7 +74,7 @@ static void restore_minimap() {
 static void enable() {
     Jump_PatchMinimap();
     if (Pref_Get(Pref_JumpChangePhysics)) {
-        Pref_Set(Pref_PhysicsPreset, (u8)PhysicsPreset_JumpPhysics);
+        Pref_Set(Pref_PhysicsPreset, (u8)Physics_Preset_JumpPhysics);
         Pref_Save();
     }
     reset();
@@ -83,7 +83,7 @@ static void enable() {
 static void disable() {
     restore_minimap();
     if (Pref_Get(Pref_JumpChangePhysics)) {
-        Pref_Set(Pref_PhysicsPreset, (u8)PhysicsPreset_Default);
+        Pref_Set(Pref_PhysicsPreset, (u8)Physics_Preset_Default);
         Pref_Save();
     }
 }
@@ -273,9 +273,9 @@ void Jump_Tick() {
     if (enabled) {
         if (Pref_DidChange(Pref_JumpChangePhysics)) {
             if (Pref_Get(Pref_JumpChangePhysics)) {
-                Pref_Set(Pref_PhysicsPreset, (u8)PhysicsPreset_JumpPhysics);
+                Pref_Set(Pref_PhysicsPreset, (u8)Physics_Preset_JumpPhysics);
             } else {
-                Pref_Set(Pref_PhysicsPreset, (u8)PhysicsPreset_Default);
+                Pref_Set(Pref_PhysicsPreset, (u8)Physics_Preset_Default);
             }
             Pref_Save();
         }

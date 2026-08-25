@@ -10,7 +10,7 @@ static f32 s_orig_friction;     // = 0.010
 static f32 s_orig_restitution;  // = 0.50
 
 bool Physics_UsingCustomPhysics() {
-    return (PhysicsPreset)Pref_Get(Pref_PhysicsPreset) != PhysicsPreset_Default;
+    return (Physics_Preset)Pref_Get(Pref_PhysicsPreset) != Physics_Preset_Default;
 }
 
 void Physics_Init() {
@@ -25,43 +25,43 @@ static void change_physics() {
     mkb_balls[mkb_curr_player_idx].restitution = s_orig_restitution;
 
     // update physics depending on preset
-    switch ((PhysicsPreset)Pref_Get(Pref_PhysicsPreset)) {
-        case PhysicsPreset_Default: {
+    switch ((Physics_Preset)Pref_Get(Pref_PhysicsPreset)) {
+        case Physics_Preset_Default: {
             break;
         }
-        case PhysicsPreset_LightBall: {
+        case Physics_Preset_LightBall: {
             bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) & 8;
             if (mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN && !paused_now) {
                 mkb_balls[mkb_curr_player_idx].vel.y += 0.005f;
             }
             break;
         }
-        case PhysicsPreset_NoFriction: {
+        case Physics_Preset_NoFriction: {
             mkb_ball_friction = 0.0f;
             break;
         }
-        case PhysicsPreset_HeavyBall: {
+        case Physics_Preset_HeavyBall: {
             bool paused_now = *(u32 *)Rel_RelocateAddr(0x805BC474) & 8;
             if (mkb_sub_mode == mkb_SMD_GAME_PLAY_MAIN && !paused_now) {
                 mkb_balls[mkb_curr_player_idx].vel.y -= 0.005f;
             }
             break;
         }
-        case PhysicsPreset_BouncyBall: {
+        case Physics_Preset_BouncyBall: {
             mkb_ball_restitution = 1.20f;
             mkb_balls[mkb_curr_player_idx].restitution = 1.20f;
             break;
         }
-        case PhysicsPreset_StickyBall: {
+        case Physics_Preset_StickyBall: {
             mkb_ball_restitution = 0.01f;
             mkb_balls[mkb_curr_player_idx].restitution = 0.01f;
             break;
         }
-        case PhysicsPreset_HighFriction: {
+        case Physics_Preset_HighFriction: {
             mkb_ball_friction = 0.020f;
             break;
         }
-        case PhysicsPreset_JumpPhysics: {
+        case Physics_Preset_JumpPhysics: {
             mkb_ball_friction = 0.015f;
             mkb_ball_restitution = 0.25f;
             mkb_balls[mkb_curr_player_idx].restitution = 0.25f;

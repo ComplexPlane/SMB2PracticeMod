@@ -3,15 +3,15 @@
 #include "utils/base.h"
 
 typedef enum {
-    PhysicsPreset_Default = 0,
-    PhysicsPreset_LightBall = 1,
-    PhysicsPreset_NoFriction = 2,
-    PhysicsPreset_HeavyBall = 3,
-    PhysicsPreset_BouncyBall = 4,
-    PhysicsPreset_StickyBall = 5,
-    PhysicsPreset_HighFriction = 6,
-    PhysicsPreset_JumpPhysics = 7,
-} PhysicsPreset;
+    Physics_Preset_Default = 0,
+    Physics_Preset_LightBall = 1,
+    Physics_Preset_NoFriction = 2,
+    Physics_Preset_HeavyBall = 3,
+    Physics_Preset_BouncyBall = 4,
+    Physics_Preset_StickyBall = 5,
+    Physics_Preset_HighFriction = 6,
+    Physics_Preset_JumpPhysics = 7,
+} Physics_Preset;
 
 bool Physics_UsingCustomPhysics();
 void Physics_Init();
