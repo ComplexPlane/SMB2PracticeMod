@@ -27,6 +27,7 @@
 #include "mods/freecam.h"
 #include "mods/gotostory.h"
 #include "mods/hide.h"
+#include "mods/hide_sprites.h"
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
@@ -99,6 +100,7 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     storyreset::tick();
     deathcounter::tick();
     storytimer::tick();
+    hide_sprites::tick();
     fallout::tick();
     jump::tick();     // (edits physics preset)
     physics::tick();  // anything editing physics presets must run before physics::tick()
