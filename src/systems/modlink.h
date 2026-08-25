@@ -5,11 +5,24 @@
 
 namespace modlink {
 
+// Which operation SaveStateFunc is being invoked for
+enum SaveStateFlag : u32 {
+    SaveStateFlag_CalcSize = 1 << 0,
+    SaveStateFlag_Save = 1 << 1,
+    SaveStateFlag_Load = 1 << 2,
+};
+
+typedef void (*SaveRegionFunc)(void *context, void *ptr, u32 size, u32 flags);
+typedef void (*SaveStateFunc)(void *context, SaveStateFlag flags, SaveRegionFunc region_func);
+
 // Struct read by additional SMB2 mods like the Practice Mod, to load themselves after Workshop Mod
 struct ModLinkPart2 {
     // As of ModLink v1.1.0: pointer to WSMod's ~40KiB memory card work area buffer
     // If not nullptr, SMB2PracticeMod will use this buffer instead of allocating its own
     void *card_work_area;
+
+    // As of ModLink v1.2.0: function to save, load, and calculate the size of savestates.
+    SaveStateFunc savestate_func;
 };
 
 // Struct read by additional SMB2 mods like the Practice Mod, to load themselves after Workshop Mod
@@ -45,9 +58,8 @@ struct ModLink {
     ModLinkPart2 *part2;
 } __attribute__((__packed__));
 
-/**
- * Returns shared ModLink struct, or nullptr if not loaded (magic doesn't match)
- */
-ModLink *get();
+void *get_card_work_area();
+mkb::HeapInfo *get_heap_info();
+void save_state(void *context, SaveStateFlag flags, SaveRegionFunc region_func);
 
 }  // namespace modlink

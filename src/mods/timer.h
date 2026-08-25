@@ -6,6 +6,6 @@ namespace timer {
 
 void init();
 void disp();
-void save_state(store::Store *store, store::StoreFunc func);
+void save_state(store::Store *store);
 
 }  // namespace timer

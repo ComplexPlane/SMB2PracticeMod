@@ -6,6 +6,7 @@
 #include "mods/timer.h"
 #include "systems/heap.h"
 #include "systems/log.h"
+#include "systems/modlink.h"
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
 #include "utils/memstore.h"
@@ -60,30 +61,56 @@ void init() {
     s_soundreq_tramp.hook();
 }
 
+static void wsmod_region_func(void *ctx, void *ptr, u32 size, u32 flags) {
+    store::do_pass(static_cast<store::Store *>(ctx), ptr, size);
+}
+
+static void pass_over_wsmod(store::Store *s) {
+    modlink::SaveStateFlag flags = static_cast<modlink::SaveStateFlag>(0);
+
+    switch (s->state) {
+        case store::State::CalcSize: {
+            flags = modlink::SaveStateFlag_CalcSize;
+            break;
+        }
+        case store::State::Save: {
+            flags = modlink::SaveStateFlag_Save;
+            break;
+        }
+        case store::State::Load: {
+            flags = modlink::SaveStateFlag_Load;
+            break;
+        }
+    }
+
+    modlink::save_state(s, flags, wsmod_region_func);
+}
+
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in
-static void pass_over_regions(store::Store *s, store::StoreFunc f) {
-    f(s, &mkb::balls[0], sizeof(mkb::balls[0]));
-    f(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
-    f(s, &mkb::mode_info.stage_time_frames_remaining,
-      sizeof(mkb::mode_info.stage_time_frames_remaining));
-    f(s, relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
-    f(s, relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
-    f(s, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
-    f(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
+static void pass_over_regions(store::Store *s) {
+    store::do_pass(s, &mkb::balls[0], sizeof(mkb::balls[0]));
+    store::do_pass(s, &mkb::sub_mode, sizeof(mkb::sub_mode));
+    store::do_pass(s, &mkb::mode_info.stage_time_frames_remaining,
+                   sizeof(mkb::mode_info.stage_time_frames_remaining));
+    store::do_pass(s, relutil::relocate_addr(0x8054E03C), 0xe0);  // Camera region
+    store::do_pass(s, relutil::relocate_addr(0x805BD830), 0x1c);  // Some physics region
+    store::do_pass(s, &mkb::mode_info.ball_mode, sizeof(mkb::mode_info.ball_mode));
+    store::do_pass(s, mkb::g_camera_standstill_counters, sizeof(mkb::g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
     mkb::Ape *ape = mkb::balls[0].ape;
-    f(s, ape, sizeof(*ape));  // Store entire ape struct for now
-    f(s, ape->g_some_ape_state->g_buf5,
-      0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
+    store::do_pass(s, ape, sizeof(*ape));  // Store entire ape struct for now
+    store::do_pass(s, ape->g_some_ape_state->g_buf5,
+                   0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we
+                            // need
 
     // Itemgroups
-    f(s, mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
+    store::do_pass(s, mkb::itemgroups, sizeof(mkb::Itemgroup) * mkb::stagedef->coli_header_count);
 
     // Bananas
-    f(s, &mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
+    store::do_pass(s, &mkb::items, sizeof(mkb::Item) * mkb::stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
     for (u32 i = 0; i < mkb::stobj_pool_info.upper_bound; i++) {
@@ -95,7 +122,7 @@ static void pass_over_regions(store::Store *s, store::StoreFunc f) {
             case mkb::STOBJ_GOALBAG_EXMASTER:
             case mkb::STOBJ_BUTTON:
             case mkb::STOBJ_JAMABAR: {
-                f(s, &mkb::stobjs[i], sizeof(mkb::stobjs[i]));
+                store::do_pass(s, &mkb::stobjs[i], sizeof(mkb::stobjs[i]));
                 break;
             }
             default:
@@ -106,17 +133,17 @@ static void pass_over_regions(store::Store *s, store::StoreFunc f) {
     // Seesaws
     for (u32 i = 0; i < mkb::stagedef->coli_header_count; i++) {
         if (mkb::stagedef->coli_header_list[i].anim_loop_type_and_seesaw == mkb::ANIM_SEESAW) {
-            f(s, mkb::itemgroups[i].seesaw_info->state, 12);
+            store::do_pass(s, mkb::itemgroups[i].seesaw_info->state, 12);
         }
     }
 
     // Goal tape and party ball-specific extra data
-    f(s, mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goal_count);
-    f(s, mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
+    store::do_pass(s, mkb::goaltapes, sizeof(mkb::GoalTape) * mkb::stagedef->goal_count);
+    store::do_pass(s, mkb::goalbags, sizeof(mkb::GoalBag) * mkb::stagedef->goal_count);
 
     // Pause menu
-    f(s, relutil::relocate_addr(0x8054DCA8), 56);  // Pause menu state
-    f(s, relutil::relocate_addr(0x805BC474), 4);   // Pause menu bitfield
+    store::do_pass(s, relutil::relocate_addr(0x8054DCA8), 56);  // Pause menu state
+    store::do_pass(s, relutil::relocate_addr(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
         if (mkb::sprite_pool_info.status_list[i] == 0) continue;
@@ -124,15 +151,18 @@ static void pass_over_regions(store::Store *s, store::StoreFunc f) {
 
         if (sprite->tick_func == mkb::sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
-            f(s, sprite, sizeof(*sprite));
+            store::do_pass(s, sprite, sizeof(*sprite));
         } else if (sprite->tick_func == mkb::sprite_score_tick) {
             // Score sprite's lerped score value
-            f(s, &sprite->fpara1, sizeof(sprite->fpara1));
+            store::do_pass(s, &sprite->fpara1, sizeof(sprite->fpara1));
         }
     }
 
     // RTA timer
-    timer::save_state(s, f);
+    timer::save_state(s);
+
+    // WSMod
+    pass_over_wsmod(s);
 }
 
 static void handle_pause_menu_save(SaveState *state) {
@@ -278,13 +308,15 @@ SaveResult save(u32 slot) {
     }
 
     clear(slot);
-    pass_over_regions(&state->store, store::compute_size);
+    pass_over_regions(&state->store);
     state->store.buf = heap::alloc(state->store.size);
     if (state->store.buf == nullptr) {
         return SaveResult::ErrInsufficientMemory;
     }
 
-    pass_over_regions(&state->store, store::save);
+    state->store.state = store::State::Save;
+    state->store.pos = 0;
+    pass_over_regions(&state->store);
     handle_pause_menu_save(state);
     state->stage_id = mkb::current_stage_id;
     state->character = mkb::active_monkey_id[mkb::curr_player_idx];
@@ -339,8 +371,9 @@ LoadResult load(u32 slot) {
     // paused
     handle_pause_menu_load(state);
 
+    state->store.state = store::State::Load;
     state->store.pos = 0;
-    pass_over_regions(&state->store, store::load);
+    pass_over_regions(&state->store);
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 

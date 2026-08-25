@@ -125,17 +125,10 @@ void write_file(const char *file_name,
     s_write_request.emplace(WriteParams{file_name, buf, buf_size, callback});
 }
 
-static bool connect_shared_work_area() {
-    if (modlink::get() == nullptr) return false;
-    if (modlink::get()->modlink_version.minor < 1) return false;
-    if (modlink::get()->part2->card_work_area == nullptr) return false;
-    s_card_work_area = modlink::get()->part2->card_work_area;
-    return true;
-}
-
 void init() {
     mkb::memcpy(s_orig_gamecode, mkb::DVD_GAME_NAME, sizeof(s_orig_gamecode));
-    if (!connect_shared_work_area()) {
+    s_card_work_area = modlink::get_card_work_area();
+    if (s_card_work_area == nullptr) {
         s_card_work_area = heap::alloc(mkb::CARD_WORKAREA_SIZE);
     }
 }
