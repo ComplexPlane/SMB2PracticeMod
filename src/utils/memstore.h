@@ -2,14 +2,16 @@
 
 #include "utils/base.h"
 
+typedef enum {
+    Store_State_CalcSize,
+    Store_State_Save,
+    Store_State_Load,
+} Store_State;
+
 typedef struct {
+    Store_State state;
     void *buf;
-    u32 pos;
-    u32 size;
+    u32 n;
 } Store;
 
-typedef void (*StoreFunc)(Store *store, void *ptr, u32 size);
-
-void Store_ComputeSize(Store *store, void *ptr, u32 size);
-void Store_Save(Store *store, void *ptr, u32 size);
-void Store_Load(Store *store, void *ptr, u32 size);
+void Store_DoPass(Store *store, void *ptr, u32 size);

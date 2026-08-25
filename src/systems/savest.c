@@ -62,57 +62,57 @@ void SS_Init() {
     HOOK_TRAMP(s_soundreq_tramp, soundreq_hook);
 }
 
-typedef struct {
-    Store *s;
-    StoreFunc f;
-} WsmodContext;
-
 static void wsmod_region_func(void *ctx, void *ptr, u32 size, u32 flags) {
-    WsmodContext *context = (WsmodContext *)ctx;
-    context->f(context->s, ptr, size);
+    Store *store = (Store *)ctx;
+    Store_DoPass(store, ptr, size);
 }
 
-static void pass_over_wsmod(Store *s, StoreFunc f) {
-    WsmodContext context = {.f = f, .s = s};
+static void pass_over_wsmod(Store *s) {
     ModLink_SaveStateFlag flags = 0;
-    // We might be better off storing the state in the Store struct instead of comparing function
-    // pointers...
-    if (f == Store_Save) {
-        flags = ModLink_SaveStateFlag_Save;
-    } else if (f == Store_Load) {
-        flags = ModLink_SaveStateFlag_Load;
-    } else if (f == Store_ComputeSize) {
-        flags = ModLink_SaveStateFlag_CalcSize;
-    } else {
-        UNREACHABLE();
+
+    switch (s->state) {
+        case Store_State_CalcSize: {
+            flags = ModLink_SaveStateFlag_CalcSize;
+            break;
+        }
+        case Store_State_Load: {
+            flags = ModLink_SaveStateFlag_Load;
+            break;
+        }
+        case Store_State_Save: {
+            flags = ModLink_SaveStateFlag_Save;
+            break;
+        }
     }
-    ModLink_SaveState(&context, flags, wsmod_region_func);
+
+    ModLink_SaveState(s, flags, wsmod_region_func);
 }
 
 // For all memory regions that involve just saving/loading to the same region...
 // Do a pass over them. This may involve preallocating a buffer to save them in, actually saving
 // them, or restoring them, depending on the mode `memStore` is in
-static void pass_over_regions(Store *s, StoreFunc f) {
-    f(s, &mkb_balls[0], sizeof(mkb_balls[0]));
-    f(s, &mkb_sub_mode, sizeof(mkb_sub_mode));
-    f(s, &mkb_mode_info.stage_time_frames_remaining,
-      sizeof(mkb_mode_info.stage_time_frames_remaining));
-    f(s, Rel_RelocateAddr(0x8054E03C), 0xe0);  // Camera region
-    f(s, Rel_RelocateAddr(0x805BD830), 0x1c);  // Some physics region
-    f(s, &mkb_mode_info.ball_mode, sizeof(mkb_mode_info.ball_mode));
-    f(s, mkb_g_camera_standstill_counters, sizeof(mkb_g_camera_standstill_counters));
+static void pass_over_regions(Store *s) {
+    Store_DoPass(s, &mkb_balls[0], sizeof(mkb_balls[0]));
+    Store_DoPass(s, &mkb_sub_mode, sizeof(mkb_sub_mode));
+    Store_DoPass(s, &mkb_mode_info.stage_time_frames_remaining,
+                 sizeof(mkb_mode_info.stage_time_frames_remaining));
+    Store_DoPass(s, Rel_RelocateAddr(0x8054E03C), 0xe0);  // Camera region
+    Store_DoPass(s, Rel_RelocateAddr(0x805BD830), 0x1c);  // Some physics region
+    Store_DoPass(s, &mkb_mode_info.ball_mode, sizeof(mkb_mode_info.ball_mode));
+    Store_DoPass(s, mkb_g_camera_standstill_counters, sizeof(mkb_g_camera_standstill_counters));
 
     // Ape state (goal is to only save stuff that affects physics)
     mkb_Ape *ape = mkb_balls[0].ape;
-    f(s, ape, sizeof(*ape));  // Store entire ape struct for now
-    f(s, ape->g_some_ape_state->g_buf5,
-      0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
+    Store_DoPass(s, ape, sizeof(*ape));  // Store entire ape struct for now
+    Store_DoPass(
+        s, ape->g_some_ape_state->g_buf5,
+        0x100);  // The full size of this buffer is ~10kb, but hopefully this is all we need
 
     // Itemgroups
-    f(s, mkb_itemgroups, sizeof(mkb_Itemgroup) * mkb_stagedef->coli_header_count);
+    Store_DoPass(s, mkb_itemgroups, sizeof(mkb_Itemgroup) * mkb_stagedef->coli_header_count);
 
     // Bananas
-    f(s, &mkb_items, sizeof(mkb_Item) * mkb_stagedef->banana_count);
+    Store_DoPass(s, &mkb_items, sizeof(mkb_Item) * mkb_stagedef->banana_count);
 
     // Goal tape, party ball, and button stage objects
     for (u32 i = 0; i < mkb_stobj_pool_info.upper_bound; i++) {
@@ -124,7 +124,7 @@ static void pass_over_regions(Store *s, StoreFunc f) {
             case mkb_STOBJ_GOALBAG_EXMASTER:
             case mkb_STOBJ_BUTTON:
             case mkb_STOBJ_JAMABAR: {
-                f(s, &mkb_stobjs[i], sizeof(mkb_stobjs[i]));
+                Store_DoPass(s, &mkb_stobjs[i], sizeof(mkb_stobjs[i]));
                 break;
             }
             default:
@@ -135,17 +135,17 @@ static void pass_over_regions(Store *s, StoreFunc f) {
     // Seesaws
     for (u32 i = 0; i < mkb_stagedef->coli_header_count; i++) {
         if (mkb_stagedef->coli_header_list[i].anim_loop_type_and_seesaw == mkb_ANIM_SEESAW) {
-            f(s, mkb_itemgroups[i].seesaw_info->state, 12);
+            Store_DoPass(s, mkb_itemgroups[i].seesaw_info->state, 12);
         }
     }
 
     // Goal tape and party ball-specific extra data
-    f(s, mkb_goaltapes, sizeof(mkb_GoalTape) * mkb_stagedef->goal_count);
-    f(s, mkb_goalbags, sizeof(mkb_GoalBag) * mkb_stagedef->goal_count);
+    Store_DoPass(s, mkb_goaltapes, sizeof(mkb_GoalTape) * mkb_stagedef->goal_count);
+    Store_DoPass(s, mkb_goalbags, sizeof(mkb_GoalBag) * mkb_stagedef->goal_count);
 
     // Pause menu
-    f(s, Rel_RelocateAddr(0x8054DCA8), 56);  // Pause menu state
-    f(s, Rel_RelocateAddr(0x805BC474), 4);   // Pause menu bitfield
+    Store_DoPass(s, Rel_RelocateAddr(0x8054DCA8), 56);  // Pause menu state
+    Store_DoPass(s, Rel_RelocateAddr(0x805BC474), 4);   // Pause menu bitfield
 
     for (u32 i = 0; i < mkb_sprite_pool_info.upper_bound; i++) {
         if (mkb_sprite_pool_info.status_list[i] == 0) continue;
@@ -153,18 +153,18 @@ static void pass_over_regions(Store *s, StoreFunc f) {
 
         if (sprite->tick_func == mkb_sprite_timer_ball_tick) {
             // Timer ball sprite (it'll probably always be in the same place in the sprite array)
-            f(s, sprite, sizeof(*sprite));
+            Store_DoPass(s, sprite, sizeof(*sprite));
         } else if (sprite->tick_func == mkb_sprite_score_tick) {
             // Score sprite's lerped score value
-            f(s, &sprite->fpara1, sizeof(sprite->fpara1));
+            Store_DoPass(s, &sprite->fpara1, sizeof(sprite->fpara1));
         }
     }
 
     // RTA timer
-    Timer_SaveState(s, f);
+    Timer_SaveState(s);
 
     // WSMod
-    pass_over_wsmod(s, f);
+    pass_over_wsmod(s);
 }
 
 static void handle_pause_menu_save(SaveState *state) {
@@ -306,13 +306,16 @@ SS_SaveResult SS_Save(u32 slot) {
     }
 
     SS_Clear(slot);
-    pass_over_regions(&state->store, Store_ComputeSize);
-    state->store.buf = Heap_Alloc(state->store.size);
+    pass_over_regions(&state->store);
+    state->store.buf = Heap_Alloc(state->store.n);
     if (state->store.buf == nullptr) {
         return SS_SaveResult_ErrInsufficientMemory;
     }
 
-    pass_over_regions(&state->store, Store_Save);
+    state->store.state = Store_State_Save;
+    state->store.n = 0;
+    pass_over_regions(&state->store);
+
     handle_pause_menu_save(state);
     state->stage_id = mkb_current_stage_id;
     state->character = mkb_active_monkey_id[mkb_curr_player_idx];
@@ -365,8 +368,9 @@ SS_LoadResult SS_Load(u32 slot) {
     // paused
     handle_pause_menu_load(state);
 
-    state->store.pos = 0;
-    pass_over_regions(&state->store, Store_Load);
+    state->store.state = Store_State_Load;
+    state->store.n = 0;
+    pass_over_regions(&state->store);
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();
 

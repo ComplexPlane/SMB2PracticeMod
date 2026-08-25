@@ -4,4 +4,4 @@
 
 void Timer_Init();
 void Timer_Disp();
-void Timer_SaveState(Store *store, StoreFunc func);
+void Timer_SaveState(Store *store);

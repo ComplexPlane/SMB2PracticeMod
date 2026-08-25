@@ -85,12 +85,12 @@ void Timer_Disp() {
     }
 }
 
-void Timer_SaveState(Store *store, StoreFunc func) {
-    func(store, &s_retrace_count, sizeof(s_retrace_count));
-    func(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
-    func(store, &s_rta_timer, sizeof(s_rta_timer));
-    func(store, &s_pause_timer, sizeof(s_pause_timer));
-    if (func == Store_Load) {
+void Timer_SaveState(Store *store) {
+    Store_DoPass(store, &s_retrace_count, sizeof(s_retrace_count));
+    Store_DoPass(store, &s_prev_retrace_count, sizeof(s_prev_retrace_count));
+    Store_DoPass(store, &s_rta_timer, sizeof(s_rta_timer));
+    Store_DoPass(store, &s_pause_timer, sizeof(s_pause_timer));
+    if (store->state == Store_State_Load) {
         // This might not be completely consistently correct
         u32 count = mkb_VIGetRetraceCount();
         s_prev_retrace_count = count - 1;
