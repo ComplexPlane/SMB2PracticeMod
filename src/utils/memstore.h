@@ -11,7 +11,8 @@ typedef enum {
 typedef struct {
     Store_State state;
     void *buf;
-    u32 n;
+    u32 pos;
+    u32 size;
 } Store;
 
 void Store_DoPass(Store *store, void *ptr, u32 size);

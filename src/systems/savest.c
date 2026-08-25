@@ -307,13 +307,13 @@ SS_SaveResult SS_Save(u32 slot) {
 
     SS_Clear(slot);
     pass_over_regions(&state->store);
-    state->store.buf = Heap_Alloc(state->store.n);
+    state->store.buf = Heap_Alloc(state->store.size);
     if (state->store.buf == nullptr) {
         return SS_SaveResult_ErrInsufficientMemory;
     }
 
     state->store.state = Store_State_Save;
-    state->store.n = 0;
+    state->store.pos = 0;
     pass_over_regions(&state->store);
 
     handle_pause_menu_save(state);
@@ -369,7 +369,7 @@ SS_LoadResult SS_Load(u32 slot) {
     handle_pause_menu_load(state);
 
     state->store.state = Store_State_Load;
-    state->store.n = 0;
+    state->store.pos = 0;
     pass_over_regions(&state->store);
     destruct_non_gameplay_sprites();
     destruct_distracting_effects();

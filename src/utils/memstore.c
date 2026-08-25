@@ -1,19 +1,22 @@
 #include "utils/memstore.h"
+#include "systems/log.h"
 
 void Store_DoPass(Store *store, void *ptr, u32 size) {
     switch (store->state) {
         case Store_State_CalcSize: {
-            store->n += size;
+            store->size += size;
             break;
         }
         case Store_State_Save: {
-            mkb_memcpy((u8 *)store->buf + store->n, ptr, size);
-            store->n += size;
+            ASSERT((store->pos + size) <= store->size);
+            mkb_memcpy((u8 *)store->buf + store->pos, ptr, size);
+            store->pos += size;
             break;
         }
         case Store_State_Load: {
-            mkb_memcpy(ptr, (u8 *)store->buf + store->n, size);
-            store->n += size;
+            ASSERT((store->pos + size) <= store->size);
+            mkb_memcpy(ptr, (u8 *)store->buf + store->pos, size);
+            store->pos += size;
             break;
         }
     }
