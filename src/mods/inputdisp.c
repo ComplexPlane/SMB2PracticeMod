@@ -263,8 +263,6 @@ static Gradient get_gradient() {
         }
     }
 
-    s16 poop = Pref_Get(4);
-
     // shouldn't reach
     ASSERT(false);
     return gradient_from_color((GXColor){0});

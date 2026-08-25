@@ -5,6 +5,7 @@
 #include "mods/timer.h"
 #include "systems/heap.h"
 #include "systems/log.h"
+#include "systems/modlink.h"
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
 #include "utils/memstore.h"
@@ -59,6 +60,33 @@ static void soundreq_hook(u32 id) {
 void SS_Init() {
     HOOK_TRAMP(s_set_minimap_mode_tramp, set_minimap_mode_hook);
     HOOK_TRAMP(s_soundreq_tramp, soundreq_hook);
+}
+
+typedef struct {
+    Store *s;
+    StoreFunc f;
+} WsmodContext;
+
+static void wsmod_region_func(void *ctx, void *ptr, u32 size, u32 flags) {
+    WsmodContext *context = (WsmodContext *)ctx;
+    context->f(context->s, ptr, size);
+}
+
+static void pass_over_wsmod(Store *s, StoreFunc f) {
+    WsmodContext context = {.f = f, .s = s};
+    ModLink_SaveStateFlag flags = 0;
+    // We might be better off storing the state in the Store struct instead of comparing function
+    // pointers...
+    if (f == Store_Save) {
+        flags = ModLink_SaveStateFlag_Save;
+    } else if (f == Store_Load) {
+        flags = ModLink_SaveStateFlag_Load;
+    } else if (f == Store_ComputeSize) {
+        flags = ModLink_SaveStateFlag_CalcSize;
+    } else {
+        UNREACHABLE();
+    }
+    ModLink_SaveState(&context, flags, wsmod_region_func);
 }
 
 // For all memory regions that involve just saving/loading to the same region...
@@ -134,6 +162,9 @@ static void pass_over_regions(Store *s, StoreFunc f) {
 
     // RTA timer
     Timer_SaveState(s, f);
+
+    // WSMod
+    pass_over_wsmod(s, f);
 }
 
 static void handle_pause_menu_save(SaveState *state) {

@@ -123,17 +123,10 @@ void Card_WriteFile(const char *file_name,
     s_write_request_valid = true;
 }
 
-static bool connect_shared_work_area() {
-    if (ModLink_Get() == nullptr) return false;
-    if (ModLink_Get()->modlink_version.minor < 1) return false;
-    if (ModLink_Get()->part2->card_work_area == nullptr) return false;
-    s_card_work_area = ModLink_Get()->part2->card_work_area;
-    return true;
-}
-
 void Card_Init() {
     mkb_memcpy(s_orig_gamecode, mkb_DVD_GAME_NAME, sizeof(s_orig_gamecode));
-    if (!connect_shared_work_area()) {
+    s_card_work_area = ModLink_GetCardWorkArea();
+    if (s_card_work_area == nullptr) {
         s_card_work_area = Heap_Alloc(mkb_CARD_WORKAREA_SIZE);
     }
 }

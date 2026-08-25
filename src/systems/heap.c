@@ -192,9 +192,8 @@ void Heap_CheckIntegrity() {
 
 void Heap_Init() {
     // Use Workshop Mod's heap if it's loaded, otherwise make our own
-    if (ModLink_Get() != nullptr) {
-        s_heap_info = ModLink_Get()->heap_info;
-    } else {
+    s_heap_info = ModLink_GetHeapInfo();
+    if (s_heap_info == nullptr) {
         s_heap_info = &s_local_heap_info;
         make_heap();
     }
