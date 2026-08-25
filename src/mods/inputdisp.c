@@ -10,12 +10,12 @@
 #include "utils/patch.h"
 
 typedef enum {
-    InputDispColorType_Default = 0,
-    InputDispColorType_RgbSolid = 1,
-    InputDispColorType_RgbGradient = 2,
-    InputDispColorType_Rainbow = 3,
-    InputDispColorType_MatchBall = 4,
-} InputDispColorType;
+    ColorType_Default = 0,
+    ColorType_RgbSolid = 1,
+    ColorType_RgbGradient = 2,
+    ColorType_Rainbow = 3,
+    ColorType_MatchBall = 4,
+} ColorType;
 
 typedef struct {
     GXColor color1;
@@ -215,12 +215,12 @@ static const GXColor s_color_map[] = {
 };
 
 static Gradient get_gradient() {
-    InputDispColorType color_pref = (InputDispColorType)Pref_Get(Pref_InputDispColorType);
+    ColorType color_pref = (ColorType)Pref_Get(Pref_InputDispColorType);
     switch (color_pref) {
-        case InputDispColorType_Default: {
+        case ColorType_Default: {
             return gradient_from_color(s_color_map[Pref_Get(Pref_InputDispColor)]);
         }
-        case InputDispColorType_RgbSolid: {
+        case ColorType_RgbSolid: {
             return gradient_from_color((GXColor){
                 .r = (u8)Pref_Get(Pref_InputDispRed),
                 .g = (u8)Pref_Get(Pref_InputDispGreen),
@@ -228,7 +228,7 @@ static Gradient get_gradient() {
                 .a = 0xff,
             });
         }
-        case InputDispColorType_RgbGradient: {
+        case ColorType_RgbGradient: {
             GXColor color1 = {
                 .r = (u8)Pref_Get(Pref_InputDispRed),
                 .g = (u8)Pref_Get(Pref_InputDispGreen),
@@ -253,15 +253,17 @@ static Gradient get_gradient() {
                 .end = end,
             };
         }
-        case InputDispColorType_Rainbow: {
+        case ColorType_Rainbow: {
             return gradient_from_color(Draw_NumToRainbow(s_rainbow));
         }
-        case InputDispColorType_MatchBall: {
+        case ColorType_MatchBall: {
             GXColor current = BallColor_GetCurrentColor();
             current.a = 0xff;
             return gradient_from_color(current);
         }
     }
+
+    s16 poop = Pref_Get(4);
 
     // shouldn't reach
     ASSERT(false);
