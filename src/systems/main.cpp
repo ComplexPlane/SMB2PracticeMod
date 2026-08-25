@@ -39,6 +39,7 @@
 #include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
+#include "mods/storybreakdown.h"
 #include "mods/storyreset.h"
 #include "mods/storytimer.h"
 #include "mods/timer.h"
@@ -139,16 +140,19 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     iw::disp();
     deathcounter::disp();
     storytimer::disp();
+    storybreakdown::disp();
     ilbattle::disp();
     cmseg::disp();
     timer::disp();
+    textinfo::disp();  // Everything using textinfo's draw functions must have their disp()
+                       // functions come before it
     inputdisp::disp();
     menu_impl::disp();
     draw::disp();
     ilmark::disp();
     physics::disp();
     scratch::disp();
-    textinfo::disp();
+    // textinfo::disp();
 });
 
 static patch::Tramp<mkb::smd_game_ready_init> s_smd_game_ready_init_tramp([]() {

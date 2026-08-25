@@ -13,6 +13,8 @@ WorldTimer get_world_timer_info(u16 world_idx);
 u32 get_split_timer_for_world(u16 world_idx);
 u32 get_loadless_time();
 
+bool should_not_display_timer_at_all();
+
 void init_main_game();
 void tick();
 void disp();
