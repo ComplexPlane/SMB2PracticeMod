@@ -2,7 +2,7 @@
 
 #include "mods/freecam.h"
 #include "mods/ilmark.h"
-#include "systems/log.h"
+#include "utils/log.h"
 #include "systems/pref.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"

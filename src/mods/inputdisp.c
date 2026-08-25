@@ -2,7 +2,7 @@
 
 #include "mods/ballcolor.h"
 #include "mods/freecam.h"
-#include "systems/log.h"
+#include "utils/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "utils/draw.h"

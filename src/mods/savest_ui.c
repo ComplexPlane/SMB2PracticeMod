@@ -1,7 +1,7 @@
 #include "mods/savest_ui.h"
 
 #include "systems/binds.h"
-#include "systems/log.h"
+#include "utils/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/savest.h"

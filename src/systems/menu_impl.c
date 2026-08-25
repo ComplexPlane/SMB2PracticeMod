@@ -1,7 +1,7 @@
 #include "systems/menu_impl.h"
 
 #include "systems/binds.h"
-#include "systems/log.h"
+#include "utils/log.h"
 #include "systems/menu_defn.h"
 #include "systems/pad.h"
 #include "systems/pref.h"

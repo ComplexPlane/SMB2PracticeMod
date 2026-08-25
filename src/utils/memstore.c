@@ -1,5 +1,5 @@
 #include "utils/memstore.h"
-#include "systems/log.h"
+#include "utils/log.h"
 
 void Store_DoPass(Store *store, void *ptr, u32 size) {
     switch (store->state) {

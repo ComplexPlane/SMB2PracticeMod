@@ -4,7 +4,7 @@
 
 #include "mods/timer.h"
 #include "systems/heap.h"
-#include "systems/log.h"
+#include "utils/log.h"
 #include "systems/modlink.h"
 #include "systems/pref.h"
 #include "utils/macro_utils.h"
