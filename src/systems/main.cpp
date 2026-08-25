@@ -137,6 +137,7 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
 
     draw::predraw();
     // timer::disp();
+    inputdisp::disp();
     iw::disp();
     deathcounter::disp();
     storytimer::disp();
@@ -146,7 +147,7 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     timer::disp();
     textinfo::disp();  // Everything using textinfo's draw functions must have their disp()
                        // functions come before it
-    inputdisp::disp();
+    // inputdisp::disp();
     menu_impl::disp();
     draw::disp();
     ilmark::disp();

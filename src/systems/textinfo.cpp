@@ -10,6 +10,13 @@
 
 namespace textinfo {
 
+// General Notes
+// (1) "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
+// stacked on top of each other
+// (2) Run order of disp() functions in main.cpp determines stacking order
+// (3) Every mod that uses textinfo should have their disp() function run before textinfo::disp() in
+// main
+
 struct TextData {
     s32 pos_x;
     u8 row;
@@ -30,7 +37,7 @@ static const Slot s_slot_list[]{
 // Number of slots whose draw calls get stored in a buffer
 constexpr u16 BUFFER_SLOT_COUNT = 1;
 // Max number of strings that each buffer slot can accept
-constexpr u16 BUFFER_SLOT_MAX_STRS = 6;
+constexpr u16 BUFFER_SLOT_MAX_STRS = 8;
 static char s_row_buf[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS][16] = {};
 // How many strings are actually being displayed in each buffer slot
 static u16 s_buffer_slot_display_count[BUFFER_SLOT_COUNT] = {};
@@ -39,6 +46,7 @@ static TextData s_text_data[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS];
 
 static u16 s_active_row[LEN(s_slot_list)] = {};
 static bool s_enable_drawing = true;
+static bool s_move_right_slot = false;
 
 void init_text_data() {
     for (u16 j = 0; j < BUFFER_SLOT_COUNT; j++) {
@@ -57,6 +65,10 @@ void set_drawing_state(bool draw_elements) {
     s_enable_drawing = draw_elements;
 }
 
+void move_right_side_text_farther_right(bool move_farther_right) {
+    s_move_right_slot = move_farther_right;
+}
+
 // We only need to potentially center text that gets drawn on the right side of the screen, so there
 // is no need to store things in other slots to the buffer
 s16 get_buffer_slot_idx(Slot slot) {
@@ -73,9 +85,6 @@ bool slot_is_buffer_slot(Slot slot) {
     return get_buffer_slot_idx(slot) != -1;
 }
 
-// "Slots" are used to determine stacking behavior, ie rows of text in the same slot will get
-// stacked on top of each other
-
 // Where the numbers get lined up (this acts as the "default" number alignment per slot, but
 // individual mods can specify a different x-position in the relevant draw() calls if necessary)
 s32 get_slot_x_alignment(Slot slot) {
@@ -83,7 +92,11 @@ s32 get_slot_x_alignment(Slot slot) {
         case Slot::Left:
             return 102;
         case Slot::Right:
-            return 378 + 4 * draw::DEBUG_CHAR_WIDTH;
+            if (!s_move_right_slot) {
+                return 378 + 4 * draw::DEBUG_CHAR_WIDTH;
+            } else {
+                return 540;
+            }
         default:
             return 0;
     }
@@ -136,11 +149,6 @@ void draw_v(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, va
                 s_text_data[idx][text_idx].color = color;
 
                 s_buffer_slot_display_count[idx] += 1;
-
-                if (pad::button_pressed(mkb::PAD_BUTTON_B)) {
-                    mkb::OSReport("Stored to buf. Idx: %d Row: %d \n", idx, row);
-                    mkb::OSReport(s_row_buf[idx][row]);
-                }
             } else {
                 // If not storing this slot's draw calls to the buffer, draw instantly
                 s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
@@ -169,11 +177,6 @@ void draw_from_buf() {
                 s32 pos_y = get_modified_slot_y_pos(s_slot_list[k], row);
                 draw::debug_text(s_text_data[idx][j].pos_x, pos_y, s_text_data[idx][j].color,
                                  s_text_data[idx][j].text);
-
-                if (pad::button_pressed(mkb::PAD_BUTTON_A)) {
-                    mkb::OSReport("Drawing. Active Row: %d Count: %d \n", row,
-                                  s_buffer_slot_display_count[idx]);
-                }
             }
         }
     }
@@ -238,6 +241,41 @@ void draw_subtick_timer(Slot slot,
                             extra_precision);
 }
 
+// Mods have the ability to decide if we should move the right side slot text farther right
+// (example: input display)
+// So, we need to hide the right side sprites if we're drawing text there
+void set_sprite_visible(bool visible) {
+    if (mkb::main_mode != mkb::MD_GAME) return;
+
+    // Hide distracting score sprites under the input display
+    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
+        if (mkb::sprite_pool_info.status_list[i] == 0) continue;
+
+        mkb::Sprite &sprite = mkb::sprites[i];
+        if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
+            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp || sprite.bmp == 0x502 ||
+            sprite.tick_func == mkb::sprite_banana_icon_tick ||
+            sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
+            sprite.tick_func == mkb::sprite_banana_count_tick ||
+            mkb::strcmp(sprite.text, ":") == 0 ||
+            sprite.disp_func == mkb::sprite_hud_player_num_disp) {
+            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f)) {
+                sprite.depth = -sprite.depth;
+            }
+        }
+    }
+}
+
+bool should_hide_right_side_sprites() {
+    u16 idx = get_buffer_slot_idx(Slot::Right);
+    // When some mod decides we should be moving the right slot farther right + displaying at least
+    // one row of text in the right slot
+    if (s_move_right_slot && s_buffer_slot_display_count[idx] != 0) {
+        return true;
+    }
+    return false;
+}
+
 void reset_active_rows() {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         s_active_row[k] = get_slot_min_row(s_slot_list[k]);
@@ -251,9 +289,17 @@ void init() {
     init_text_data();
 }
 
+// textinfo's disp() runs after all other disp() functions that use textinfo
 void disp() {
-    // textinfo's disp() runs after all other disp() functions
     draw_from_buf();
+
+    if (should_hide_right_side_sprites()) {
+        set_sprite_visible(false);
+    } else {
+        set_sprite_visible(true);
+    }
+
+    // This runs after all possible textinfo::draw() calls
     reset_active_rows();
 }
 

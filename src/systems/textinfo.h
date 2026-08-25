@@ -13,6 +13,7 @@ enum class Slot {
 };
 
 void set_drawing_state(bool draw_elements);
+void move_right_side_text_farther_right(bool move_farther_right);
 
 s32 get_slot_x_alignment(Slot slot);
 
@@ -33,6 +34,8 @@ void draw_subtick_timer(Slot slot,
                         s32 frames,
                         u32 framesave,
                         bool extra_precision);
+
+void set_sprite_visible(bool visible);
 
 void init();
 void disp();
