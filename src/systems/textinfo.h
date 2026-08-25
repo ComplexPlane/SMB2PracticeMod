@@ -35,8 +35,6 @@ void draw_subtick_timer(Slot slot,
                         u32 framesave,
                         bool extra_precision);
 
-void set_sprite_visible(bool visible);
-
 void init();
 void disp();
 

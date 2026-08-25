@@ -4,6 +4,7 @@
 
 #include "mods/ballcolor.h"
 #include "mods/freecam.h"
+#include "mods/hide_sprites.h"
 #include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -156,10 +157,10 @@ void tick() {
         textinfo::move_right_side_text_farther_right(false);
     }
 
-    if (input_disp_right_side) {
+    if (input_disp_right_side && pref::get(pref::Pref::InputDisp)) {
         // Any time we're drawing the input display on the right side, hide the monkey head/banana
         // counter sprites
-        textinfo::set_sprite_visible(false);
+        hide_sprites::hide_right_side_sprites();
     }
 }
 

@@ -6,6 +6,7 @@
 #include "../utils/draw.h"
 #include "../utils/macro_utils.h"
 #include "../utils/timerdisp.h"
+#include "mods/hide_sprites.h"
 #include "systems/pad.h"
 
 namespace textinfo {
@@ -37,7 +38,7 @@ static const Slot s_slot_list[]{
 // Number of slots whose draw calls get stored in a buffer
 constexpr u16 BUFFER_SLOT_COUNT = 1;
 // Max number of strings that each buffer slot can accept
-constexpr u16 BUFFER_SLOT_MAX_STRS = 8;
+constexpr u16 BUFFER_SLOT_MAX_STRS = 9;
 static char s_row_buf[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS][16] = {};
 // How many strings are actually being displayed in each buffer slot
 static u16 s_buffer_slot_display_count[BUFFER_SLOT_COUNT] = {};
@@ -47,6 +48,8 @@ static TextData s_text_data[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS];
 static u16 s_active_row[LEN(s_slot_list)] = {};
 static bool s_enable_drawing = true;
 static bool s_move_right_slot = false;
+
+using HideOptions = hide_sprites::RightSideUI;
 
 void init_text_data() {
     for (u16 j = 0; j < BUFFER_SLOT_COUNT; j++) {
@@ -105,12 +108,28 @@ s32 get_slot_x_alignment(Slot slot) {
 // Per-slot minimum row number
 u16 get_slot_min_row(Slot slot) {
     switch (slot) {
-        case Slot::Left:
+        case Slot::Left: {
             return 2;
-        case Slot::Right:
-            return 0;  // 1
-        default:
+        }
+        case Slot::Right: {
+            if (!hide_sprites::right_side_sprites_normally_visible()) {
+                // Monkey head/banana counter not visible, so don't shift text down
+                // This is important so that we don't shift our text rows on the menus/etc
+                return 0;
+            }
+
+            HideOptions option = HideOptions(pref::get(pref::Pref::RightSideUIHide));
+            if (s_move_right_slot && option == HideOptions::HideNone) {
+                return 6;
+            } else if (s_move_right_slot && option == HideOptions::HideMonkeyHead) {
+                return 2;
+            } else {
+                return 0;
+            }
+        }
+        default: {
             return 0;
+        }
     }
 }
 
@@ -118,7 +137,7 @@ s32 get_modified_slot_y_pos(Slot slot, u16 row) {
     if (slot_is_buffer_slot(slot) && slot == Slot::Right) {
         u16 idx = get_buffer_slot_idx(slot);
         if (s_buffer_slot_display_count[idx] < 3) {
-            return timerdisp::row_number_to_vertical_pos(row + 2);
+            // return timerdisp::row_number_to_vertical_pos(row + 2);
         }
     }
     return timerdisp::row_number_to_vertical_pos(row);
@@ -244,29 +263,8 @@ void draw_subtick_timer(Slot slot,
 // Mods have the ability to decide if we should move the right side slot text farther right
 // (example: input display)
 // So, we need to hide the right side sprites if we're drawing text there
-void set_sprite_visible(bool visible) {
-    if (mkb::main_mode != mkb::MD_GAME) return;
 
-    // Hide distracting score sprites under the input display
-    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
-        if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-
-        mkb::Sprite &sprite = mkb::sprites[i];
-        if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
-            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp || sprite.bmp == 0x502 ||
-            sprite.tick_func == mkb::sprite_banana_icon_tick ||
-            sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
-            sprite.tick_func == mkb::sprite_banana_count_tick ||
-            mkb::strcmp(sprite.text, ":") == 0 ||
-            sprite.disp_func == mkb::sprite_hud_player_num_disp) {
-            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f)) {
-                sprite.depth = -sprite.depth;
-            }
-        }
-    }
-}
-
-bool should_hide_right_side_sprites() {
+bool is_displaying_text_on_far_right() {
     u16 idx = get_buffer_slot_idx(Slot::Right);
     // When some mod decides we should be moving the right slot farther right + displaying at least
     // one row of text in the right slot
@@ -274,6 +272,19 @@ bool should_hide_right_side_sprites() {
         return true;
     }
     return false;
+}
+
+void handle_right_side_sprite_hiding() {
+    if (!is_displaying_text_on_far_right()) {
+        return;
+    }
+
+    HideOptions option = HideOptions(pref::get(pref::Pref::RightSideUIHide));
+    if (option == HideOptions::HideAll) {
+        hide_sprites::hide_right_side_sprites();
+    } else if (option == HideOptions::HideMonkeyHead) {
+        hide_sprites::hide_monkey_head();
+    }
 }
 
 void reset_active_rows() {
@@ -293,11 +304,7 @@ void init() {
 void disp() {
     draw_from_buf();
 
-    if (should_hide_right_side_sprites()) {
-        set_sprite_visible(false);
-    } else {
-        set_sprite_visible(true);
-    }
+    handle_right_side_sprite_hiding();
 
     // This runs after all possible textinfo::draw() calls
     reset_active_rows();
