@@ -1641,7 +1641,19 @@ static Widget s_il_mark_widgets[] = {
     },
 };
 
+const char *RIGHT_SIDE_UI_HIDING_OPTIONS[] = {"Hide All", "Hide Monkey Head", "Hide None"};
+
 static Widget s_displays_widgets[] = {
+    {
+        .type = WidgetType::Choose,
+        .choose =
+            {
+                .label = "Right Side UI",
+                .choices = RIGHT_SIDE_UI_HIDING_OPTIONS,
+                .num_choices = LEN(RIGHT_SIDE_UI_HIDING_OPTIONS),
+                .pref = pref::Pref::RightSideUIHide,
+            },
+    },
     {
         .type = WidgetType::Menu,
         .menu = {"Input Display", s_inputdisp_widgets, LEN(s_inputdisp_widgets)},

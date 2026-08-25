@@ -106,6 +106,7 @@ static const Pref PREF_IDS[] = {
     Pref::DeathCounterDisplayOptions,
     Pref::CountFirstStageDeaths,
     Pref::MenuAcceleration,
+    Pref::RightSideUIHide,
 };
 
 struct DefaultPref {
@@ -146,7 +147,7 @@ static const DefaultPref DEFAULT_PREFS[] = {
 // End preferences definition
 //
 
-static constexpr u32 MAX_PREFS = 100;
+static constexpr u32 MAX_PREFS = 101;
 
 struct FileHeader {
     char magic[4];  // "APMP"

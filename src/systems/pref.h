@@ -110,6 +110,7 @@ enum class Pref : u8 {
     DeathCounterDisplayOptions = 97,
     CountFirstStageDeaths = 98,
     MenuAcceleration = 99,
+    RightSideUIHide = 100,
 };
 
 void init();
