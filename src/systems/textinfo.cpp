@@ -49,7 +49,7 @@ static u16 s_active_row[LEN(s_slot_list)] = {};
 static bool s_enable_drawing = true;
 static bool s_move_right_slot = false;
 
-using HideOptions = hide_sprites::RightSideUI;
+using HideOptions = hide_sprites::RightSideUIHideOptions;
 
 void init_text_data() {
     for (u16 j = 0; j < BUFFER_SLOT_COUNT; j++) {

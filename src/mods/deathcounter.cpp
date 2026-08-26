@@ -2,7 +2,6 @@
 
 #include "mkb/mkb.h"
 
-#include "freecam.h"
 #include "storyreset.h"
 #include "systems/goal.h"
 #include "systems/pref.h"
@@ -44,7 +43,7 @@ void increment_world_death_counter() {
         return;
     }
     s_world_death_count[mkb::scen_info.world] += 1;  // death counter for the current world
-    s_can_incr_death_counter = false;
+    s_can_incr_death_counter = false;                // so we only increment once per death
 }
 
 void reset_flag() {

@@ -7,29 +7,17 @@ namespace hide_sprites {
 static bool s_is_showing_banana_counter = false;
 static bool s_is_showing_monkey_head = false;
 
-static void set_banana_counter_show_flag(bool show) {
-    s_is_showing_banana_counter = show;
-}
-
-static void set_monkey_head_show_flag(bool show) {
-    s_is_showing_monkey_head = show;
-}
-
-static void set_show_flags(bool show) {
-    set_banana_counter_show_flag(show);
-    set_monkey_head_show_flag(show);
-}
-
 void hide_banana_counter() {
-    set_banana_counter_show_flag(false);
+    s_is_showing_banana_counter = false;
 }
 
 void hide_monkey_head() {
-    set_monkey_head_show_flag(false);
+    s_is_showing_monkey_head = false;
 }
 
 void hide_right_side_sprites() {
-    set_show_flags(false);
+    hide_banana_counter();
+    hide_monkey_head();
 }
 
 bool right_side_sprites_normally_visible() {

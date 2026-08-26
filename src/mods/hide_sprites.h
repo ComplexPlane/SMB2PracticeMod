@@ -4,7 +4,7 @@
 
 namespace hide_sprites {
 
-enum class RightSideUI {
+enum class RightSideUIHideOptions {
     HideAll,
     HideMonkeyHead,
     HideNone,
