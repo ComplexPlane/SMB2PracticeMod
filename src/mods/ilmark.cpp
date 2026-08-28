@@ -4,16 +4,23 @@
 #include "mods/freecam.h"
 #include "mods/physics.h"
 #include "mods/validate.h"
+#include "systems/goal.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/savest.h"
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
-#include "systems/savest.h"
 
 namespace ilmark {
+
+enum class StoryIlMarkSettings {
+    DontShow,
+    AlwaysInStory,
+    AtRunEnd,
+};
 
 static bool s_valid_run = false;
 static bool s_is_romhack = false;
@@ -39,25 +46,42 @@ void tick() {
         s_valid_run = false;
     }
 
-    if (savest::get_last_action() == savest::Action::Load) {
+    if (savest::get_last_action() != savest::Action::None) {
         s_valid_run = false;
+    }
+}
+
+bool show_in_story() {
+    u8 story_pref = pref::get(pref::Pref::IlMarkStory);
+    switch (StoryIlMarkSettings(story_pref)) {
+        case StoryIlMarkSettings::DontShow:
+            return false;
+        case StoryIlMarkSettings::AtRunEnd:
+            // show the mark if we've finished the run
+            return goal::is_run_complete();
+        case StoryIlMarkSettings::AlwaysInStory:
+            return true;
+        default:
+            // Unreachable
+            return false;
     }
 }
 
 bool is_ilmark_enabled() {
     if (mkb::main_mode != mkb::MD_GAME) return false;
 
-    if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
-        if (!pref::get(pref::Pref::IlMarkPractice)) return false;
-    } else if (mkb::main_game_mode == mkb::STORY_MODE) {
-        if (!pref::get(pref::Pref::IlMarkStory)) return false;
-    } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
-        if (!pref::get(pref::Pref::IlMarkChallenge)) return false;
-    } else {
+    // If in a romhack and the pref is off, don't show any validation marks whatsoever
+    if (s_is_romhack && !pref::get(pref::Pref::IlMarkRomhacks)) {
         return false;
     }
 
-    if (s_is_romhack && !pref::get(pref::Pref::IlMarkRomhacks)) {
+    if (mkb::main_game_mode == mkb::PRACTICE_MODE) {
+        if (!pref::get(pref::Pref::IlMarkPractice)) return false;
+    } else if (mkb::main_game_mode == mkb::STORY_MODE) {
+        if (!show_in_story()) return false;
+    } else if (mkb::main_game_mode == mkb::CHALLENGE_MODE) {
+        if (!pref::get(pref::Pref::IlMarkChallenge)) return false;
+    } else {
         return false;
     }
 

@@ -2,6 +2,7 @@
 
 #include "mkb/mkb.h"
 
+#include "mkb/mkb2_ghidra.h"
 #include "systems/heap.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
@@ -56,6 +57,8 @@ static u8 convert_to_ape_color_id(u8 color_choice) {
     return color_choice - 1;
 }
 
+// Set both active_monkey_id and selected_characters so savestates work when we use gotostory even
+// if we haven't manually selected a monkey on the character select screen
 void switch_monkey() {
     switch (MonkeyType(pref::get(pref::Pref::MonkeyType))) {
         case MonkeyType::Default: {
@@ -63,22 +66,28 @@ void switch_monkey() {
         }
         case MonkeyType::Aiai: {
             mkb::active_monkey_id[mkb::curr_player_idx] = 0;
+            mkb::selected_characters[mkb::curr_player_idx] = 0;
             break;
         }
         case MonkeyType::Meemee: {
             mkb::active_monkey_id[mkb::curr_player_idx] = 1;
+            mkb::selected_characters[mkb::curr_player_idx] = 1;
             break;
         }
         case MonkeyType::Baby: {
             mkb::active_monkey_id[mkb::curr_player_idx] = 2;
+            mkb::selected_characters[mkb::curr_player_idx] = 2;
             break;
         }
         case MonkeyType::Gongon: {
             mkb::active_monkey_id[mkb::curr_player_idx] = 3;
+            mkb::selected_characters[mkb::curr_player_idx] = 3;
             break;
         }
         case MonkeyType::Random: {
-            mkb::active_monkey_id[mkb::curr_player_idx] = mkb::rand() % 4;
+            u8 monkey_id = mkb::rand() % 4;
+            mkb::active_monkey_id[mkb::curr_player_idx] = monkey_id;
+            mkb::selected_characters[mkb::curr_player_idx] = monkey_id;
             break;
         }
     }
@@ -150,8 +159,7 @@ void tick() {
                 u32 blue = CLAMP(((mkb::rand() % 256) + bonus_brightness), 0, 0xff);
                 s_current_color = {static_cast<u8>(red), static_cast<u8>(green),
                                    static_cast<u8>(blue), 0};
-                *reinterpret_cast<GXColor *>(relutil::relocate_addr(0x80472a34)) =
-                    s_current_color;
+                *reinterpret_cast<GXColor *>(relutil::relocate_addr(0x80472a34)) = s_current_color;
             }
             break;
         }

@@ -4,6 +4,7 @@
 #include "mods/freecam.h"
 #include "mods/validate.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
 #include "utils/timerdisp.h"
@@ -14,6 +15,9 @@ static u32 s_retrace_count;
 static u32 s_prev_retrace_count;
 static s32 s_rta_timer;
 static s32 s_pause_timer;
+
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
 
 void init() {
     s_retrace_count = mkb::VIGetRetraceCount();
@@ -56,14 +60,12 @@ void disp() {
         }
     }
 
-    u32 row = 1;
-
-    if (pref::get(pref::Pref::TimerShowRTA) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(s_rta_timer, "RTA:", row++, draw::WHITE, true);
+    if (pref::get(pref::Pref::TimerShowRTA)) {
+        textinfo::draw_timer(Slot::Right, draw::WHITE, "RTA:", s_rta_timer, Format::SecondsOnly);
     }
 
-    if (pref::get(pref::Pref::TimerShowPause) && !freecam::should_hide_hud()) {
-        timerdisp::draw_timer(s_pause_timer, "PAU:", row++, draw::WHITE, true);
+    if (pref::get(pref::Pref::TimerShowPause)) {
+        textinfo::draw_timer(Slot::Right, draw::WHITE, "PAU:", s_pause_timer, Format::SecondsOnly);
     }
 
     switch (mkb::sub_mode) {
@@ -78,13 +80,15 @@ void disp() {
 
     u32 framesave = validate::get_framesave();
 
-    if (pref::get(pref::Pref::TimerShowSubtick) && !freecam::should_hide_hud()) {
-        timerdisp::draw_subtick_timer(mkb::mode_info.stage_time_frames_remaining, "SUB:", row++,
-                                      draw::WHITE, true, framesave, false);
+    if (pref::get(pref::Pref::TimerShowSubtick)) {
+        textinfo::draw_subtick_timer(Slot::Right, draw::WHITE, "SUB:", s_rta_timer, framesave,
+                                     false);
     }
 
-    if (pref::get(pref::Pref::TimerShowFramesave) && !freecam::should_hide_hud()) {
-        timerdisp::draw_percentage(framesave, "FSV:", row++, draw::WHITE);
+    if (pref::get(pref::Pref::TimerShowFramesave)) {
+        s32 num_x = textinfo::get_slot_x_alignment(Slot::Right);
+        s32 x = num_x - 4 * draw::DEBUG_CHAR_WIDTH;  // "FSV:" is 4 characters long
+        textinfo::draw(Slot::Right, x, draw::WHITE, true, "FSV:%2d%", framesave);
     }
 }
 

@@ -4,12 +4,14 @@
 #include "systems/assembly.h"
 #include "systems/binds.h"
 #include "systems/cardio.h"
+#include "systems/goal.h"
 #include "systems/heap.h"
 #include "systems/menu_defn.h"
 #include "systems/menu_impl.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
 #include "systems/savest.h"
+#include "systems/textinfo.h"
 #include "systems/version.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
@@ -19,22 +21,28 @@
 #include "mods/banans.h"
 #include "mods/camera.h"
 #include "mods/cmseg.h"
+#include "mods/deathcounter.h"
 #include "mods/dpad.h"
 #include "mods/fallout.h"
 #include "mods/freecam.h"
 #include "mods/gotostory.h"
 #include "mods/hide.h"
+#include "mods/hide_sprites.h"
 #include "mods/ilbattle.h"
 #include "mods/ilmark.h"
 #include "mods/inputdisp.h"
 #include "mods/iw.h"
 #include "mods/jump.h"
 #include "mods/marathon.h"
+#include "mods/menu_accel.h"
 #include "mods/physics.h"
 #include "mods/savest_ui.h"
 #include "mods/scratch.h"
 #include "mods/sfx.h"
 #include "mods/stage_edits.h"
+#include "mods/storybreakdown.h"
+#include "mods/storyreset.h"
+#include "mods/storytimer.h"
 #include "mods/timer.h"
 #include "mods/unlock.h"
 
@@ -89,12 +97,17 @@ static patch::Tramp<mkb::process_inputs> s_process_inputs_tramp([]() {
     savest::tick();
     savest_ui::tick();
     menu_impl::tick();  // anything checking for pref changes should run after menu_impl::tick()
+    storyreset::tick();
+    deathcounter::tick();
+    storytimer::tick();
+    hide_sprites::tick();
     fallout::tick();
     jump::tick();     // (edits physics preset)
     physics::tick();  // anything editing physics presets must run before physics::tick()
     inputdisp::tick();
     gotostory::tick();
     cmseg::tick();
+    menu_accel::tick();
     banans::tick();
     marathon::tick();
     ballcolor::tick();
@@ -125,16 +138,24 @@ static patch::Tramp<mkb::draw_debugtext> s_draw_debug_text_tramp([]() {
     }
 
     draw::predraw();
-    timer::disp();
+    // timer::disp();
+    inputdisp::disp();
     iw::disp();
+    deathcounter::disp();
+    storytimer::disp();
+    storybreakdown::disp();
     ilbattle::disp();
     cmseg::disp();
-    inputdisp::disp();
+    timer::disp();
+    textinfo::disp();  // Everything using textinfo's draw functions must have their disp()
+                       // functions come before it
+    // inputdisp::disp();
     menu_impl::disp();
     draw::disp();
     ilmark::disp();
     physics::disp();
     scratch::disp();
+    // textinfo::disp();
 });
 
 static patch::Tramp<mkb::smd_game_ready_init> s_smd_game_ready_init_tramp([]() {
@@ -160,6 +181,7 @@ static patch::Tramp<mkb::OSLink> s_OSLink_tramp([](mkb::OSModuleHeader *rel_buff
         s_smd_game_ready_init_tramp.hook();
         s_smd_game_play_tick_tramp.hook();
         jump::patch_minimap();
+        storytimer::init_main_game();
     }
     // Sel_ngc init functions
     // else if (relutil::ModuleId(rel_buffer->info.id) == relutil::ModuleId::SelNgc) {
@@ -183,6 +205,7 @@ void init() {
     physics::init();
     iw::init();
     savest::init();
+    goal::init();
     timer::init();
     inputdisp::init();
     cmseg::init();

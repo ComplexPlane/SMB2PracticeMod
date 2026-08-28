@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdarg.h>
 #include "mkb/mkb.h"
 
 namespace draw {
@@ -37,6 +38,7 @@ void predraw();
 
 void rect(float x1, float y1, float x2, float y2, GXColor color);
 void debug_text_palette();
+void debug_text_v(s32 x, s32 y, GXColor color, const char *format, va_list args);
 void debug_text(s32 x, s32 y, GXColor color, const char *format, ...);
 void heart();
 void tm();

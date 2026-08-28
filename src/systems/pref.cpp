@@ -99,6 +99,14 @@ static const Pref PREF_IDS[] = {
     Pref::InputDispGradientStart,
     Pref::InputDispGradientEnd,
     Pref::RgbFormat,
+    Pref::FullgameTimerOptions,
+    Pref::SegmentTimerOptions,
+    Pref::ShowRunBreakdown,
+    Pref::HideRunResetMessage,
+    Pref::DeathCounterDisplayOptions,
+    Pref::CountFirstStageDeaths,
+    Pref::MenuAcceleration,
+    Pref::RightSideUIHide,
 };
 
 struct DefaultPref {
@@ -131,13 +139,15 @@ static const DefaultPref DEFAULT_PREFS[] = {
     {Pref::CustomPhysicsDisp, 1},
     {Pref::SavestateClearAllBind, 255},
     {Pref::InputDispGradientEnd, 100},
+    {Pref::HideRunResetMessage, 1},
+    {Pref::CountFirstStageDeaths, 1},
 };
 
 //
 // End preferences definition
 //
 
-static constexpr u32 MAX_PREFS = 100;
+static constexpr u32 MAX_PREFS = 101;
 
 struct FileHeader {
     char magic[4];  // "APMP"

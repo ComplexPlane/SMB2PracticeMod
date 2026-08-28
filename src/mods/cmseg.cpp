@@ -5,6 +5,7 @@
 #include "mods/freecam.h"
 #include "systems/log.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
@@ -34,6 +35,9 @@ static mkb::CourseCommandOpcode s_overwritten_opcode;
 static s8 s_overwritten_starting_monkeys;
 
 static u32 s_pbs[14];
+
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
 
 // static void debug_print_course(mkb::CourseCommand *course, u32 entry_count)
 //{
@@ -415,7 +419,7 @@ void tick() {
 }
 
 void disp() {
-    if (!pref::get(pref::Pref::CmTimer) || freecam::should_hide_hud()) return;
+    if (!pref::get(pref::Pref::CmTimer)) return;
 
     if (s_state == State::SegActive || s_state == State::SegComplete) {
         u32 seg = static_cast<u32>(s_seg_request);
@@ -424,7 +428,8 @@ void disp() {
             color = draw::GOLD;
         else
             color = draw::WHITE;
-        timerdisp::draw_timer(static_cast<s32>(s_seg_time), "SEG:", 0, color, false);
+        textinfo::draw_timer(Slot::Right, color, "SEG:", static_cast<s32>(s_seg_time),
+                             Format::AlwaysLeadNonHours);
     }
 }
 

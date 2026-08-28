@@ -4,12 +4,15 @@
 
 #include "mods/ballcolor.h"
 #include "mods/freecam.h"
+#include "mods/hide_sprites.h"
 #include "systems/log.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/macro_utils.h"
 #include "utils/patch.h"
+#include "utils/timerdisp.h"
 
 namespace inputdisp {
 
@@ -134,28 +137,6 @@ static void draw_circle(u32 pts, Vec2d center, f32 radius, GXColor color) {
     }
 }
 
-static void set_sprite_visible(bool visible) {
-    if (mkb::main_mode != mkb::MD_GAME) return;
-
-    // Hide distracting score sprites under the input display
-    for (u32 i = 0; i < mkb::sprite_pool_info.upper_bound; i++) {
-        if (mkb::sprite_pool_info.status_list[i] == 0) continue;
-
-        mkb::Sprite &sprite = mkb::sprites[i];
-        if (sprite.bmp == 0x503 || sprite.tick_func == mkb::sprite_monkey_counter_tick ||
-            sprite.disp_func == mkb::sprite_monkey_counter_icon_disp || sprite.bmp == 0x502 ||
-            sprite.tick_func == mkb::sprite_banana_icon_tick ||
-            sprite.tick_func == mkb::sprite_banana_icon_shadow_tick ||
-            sprite.tick_func == mkb::sprite_banana_count_tick ||
-            mkb::strcmp(sprite.text, ":") == 0 ||
-            sprite.disp_func == mkb::sprite_hud_player_num_disp) {
-            if ((visible && sprite.depth < 0.f) || (!visible && sprite.depth >= 0.f)) {
-                sprite.depth = -sprite.depth;
-            }
-        }
-    }
-}
-
 static patch::Tramp<mkb::create_speed_sprites> s_create_speed_sprites_tramp([](f32 x, f32 y) {
     s_create_speed_sprites_tramp.chain(x + 5, y);
 });
@@ -166,9 +147,21 @@ void init() {
 
 void tick() {
     s_rainbow = (s_rainbow + 3) % 1080;
-    set_sprite_visible(!pref::get(pref::Pref::InputDisp) ||
-                       (pref::get(pref::Pref::InputDispLocation) &&
-                        !pref::get(pref::Pref::InputDispRawStickInputs)));
+
+    bool input_disp_right_side = pref::get(pref::Pref::InputDispLocation) == 0;
+
+    if (pref::get(pref::Pref::InputDisp) && !input_disp_right_side) {
+        // On + center location
+        textinfo::move_right_side_text_farther_right(true);
+    } else {
+        textinfo::move_right_side_text_farther_right(false);
+    }
+
+    if (input_disp_right_side && pref::get(pref::Pref::InputDisp)) {
+        // Any time we're drawing the input display on the right side, hide the monkey head/banana
+        // counter sprites
+        hide_sprites::hide_right_side_sprites();
+    }
 }
 
 static bool get_notch_pos(const pad::StickState &stick_inputs, Vec2d *out_pos) {
@@ -344,15 +337,13 @@ static void draw_raw_stick_inputs(const pad::StickState &raw_stick_inputs,
                                   const pad::StickState &stick_inputs) {
     if (!pref::get(pref::Pref::InputDispRawStickInputs)) return;
 
-    Vec2d center = {
-        .x = pref::get(pref::Pref::InputDispLocation) ? 390.f : 540.f,
-        .y = 28.f,
-    };
+    using Slot = textinfo::Slot;
+    using Format = timerdisp::TimeFormat;
 
-    draw::debug_text(center.x, center.y + 0 * 14, draw::WHITE, "rX: %d", raw_stick_inputs.x);
-    draw::debug_text(center.x, center.y + 1 * 14, draw::WHITE, "rY: %d", raw_stick_inputs.y);
-    draw::debug_text(center.x, center.y + 2 * 14, draw::WHITE, "gX: %d", stick_inputs.x);
-    draw::debug_text(center.x, center.y + 3 * 14, draw::WHITE, "gY: %d", stick_inputs.y);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "rX:", raw_stick_inputs.x, Format::Unformatted);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "rY:", raw_stick_inputs.y, Format::Unformatted);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "gX:", stick_inputs.x, Format::Unformatted);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "gY:", stick_inputs.x, Format::Unformatted);
 }
 
 void disp() {

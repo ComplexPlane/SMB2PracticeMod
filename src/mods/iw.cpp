@@ -6,6 +6,7 @@
 #include "systems/assembly.h"
 #include "systems/pad.h"
 #include "systems/pref.h"
+#include "systems/textinfo.h"
 #include "utils/draw.h"
 #include "utils/patch.h"
 #include "utils/relutil.h"
@@ -25,6 +26,9 @@ static u32 s_iw_files;  // Bitflag for which save files are IW save files
 // IW timer stuff
 static u32 s_iw_time;
 static u32 s_prev_retrace_count;
+
+using Slot = textinfo::Slot;
+using Format = timerdisp::TimeFormat;
 
 static void handle_iw_selection() {
     if (mkb::scen_info.mode != 5) return;
@@ -121,10 +125,10 @@ void tick() {
 
 void disp() {
     if (!pref::get(pref::Pref::IwTimer) || mkb::main_mode != mkb::MD_GAME ||
-        mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw ||
-        freecam::should_hide_hud())
+        mkb::main_game_mode != mkb::STORY_MODE || !main::currently_playing_iw)
         return;
-    timerdisp::draw_timer(static_cast<s32>(s_iw_time), "IW:", 0, draw::WHITE, false);
+    textinfo::draw_timer(Slot::Right, draw::WHITE, "IW:", static_cast<s32>(s_iw_time),
+                         Format::AlwaysLeadNonHours);
 }
 
 }  // namespace iw

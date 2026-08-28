@@ -1,88 +1,105 @@
 #include "timerdisp.h"
 
-#include "utils/draw.h"
-
 namespace timerdisp {
 
 static constexpr u32 SECOND_FRAMES = 60;
 static constexpr u32 MINUTE_FRAMES = SECOND_FRAMES * 60;
 static constexpr u32 HOUR_FRAMES = MINUTE_FRAMES * 60;
 
-static constexpr s32 X = 378;
 static constexpr s32 Y = 24;
+static constexpr s32 ROW_HEIGHT = 16;
 
-void draw_timer(s32 frames, const char *prefix, u32 row, GXColor color, bool show_seconds) {
-    mkb::set_ui_widescreen_scale_mtx(320);
-
-    bool positive = frames >= 0;
-    if (!positive) frames = -frames;
-    const char *sign = positive ? "" : "-";
-
-    u32 hours = frames / HOUR_FRAMES;
-    u32 minutes = frames % HOUR_FRAMES / MINUTE_FRAMES;
-    u32 seconds = frames % MINUTE_FRAMES / SECOND_FRAMES;
-    u32 centiseconds = (frames % SECOND_FRAMES) * 100 / 60;
-
-    s32 y = Y + row * 16;
-
-    if (hours > 0 && !show_seconds) {
-        draw::debug_text(X, y, color, prefix);
-        draw::debug_text(X + 48, y, color, "%s%d:%02d:%02d.%02d", sign, hours, minutes, seconds,
-                         centiseconds);
-    } else if (minutes > 0 && !show_seconds) {
-        draw::debug_text(X, y, color, prefix);
-        draw::debug_text(X + 48, y, color, "%s%02d:%02d.%02d", sign, minutes, seconds,
-                         centiseconds);
-    } else {
-        u32 total_seconds =
-            seconds + (minutes * MINUTE_FRAMES + hours * HOUR_FRAMES) / SECOND_FRAMES;
-        draw::debug_text(X, y, color, prefix);
-        draw::debug_text(X + 48, y, color, "%s%02d.%02d", sign, total_seconds, centiseconds);
-    }
-
-    mkb::reset_ui_widescreen_scale_mtx();
+s32 row_number_to_vertical_pos(s32 row_num) {
+    return Y + ROW_HEIGHT * row_num;
 }
 
-void draw_subtick_timer(s32 frames,
-                        const char *prefix,
-                        u32 row,
-                        GXColor color,
-                        bool show_minutes,
-                        u32 framesave,
-                        bool extra_precision) {
-    mkb::set_ui_widescreen_scale_mtx(320);
+TimeComp get_time_components(u32 frames) {
+    u32 time_hours = frames / HOUR_FRAMES;
+    u32 time_minutes = frames % HOUR_FRAMES / MINUTE_FRAMES;
+    u32 time_seconds = frames % MINUTE_FRAMES / SECOND_FRAMES;
+    u32 time_centiseconds = (frames % SECOND_FRAMES) * 100 / 60;
+    return {time_hours, time_minutes, time_seconds, time_centiseconds};
+}
 
+void format_time(char *buffer, u32 frames, TimeFormat format) {
+    TimeComp time = get_time_components(frames);
+
+    switch (format) {
+        case TimeFormat::SecondsOnly: {
+            u32 total_seconds = frames / SECOND_FRAMES;
+            mkb::sprintf(buffer, "%d.%02d", total_seconds, time.centiseconds);
+            break;
+        }
+        case TimeFormat::HoursAlways: {
+            mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
+                         time.centiseconds);
+            break;
+        }
+        case TimeFormat::MinutesAlwaysLeadingZero: {
+            if (time.hours > 0) {
+                mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
+                             time.centiseconds);
+            } else {
+                mkb::sprintf(buffer, "%02d:%02d.%02d", time.minutes, time.seconds,
+                             time.centiseconds);
+            }
+            break;
+        }
+        case TimeFormat::MinimalLeading: {
+            if (time.hours > 0) {
+                mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
+                             time.centiseconds);
+            } else if (time.minutes > 0) {
+                mkb::sprintf(buffer, "%d:%02d.%02d", time.minutes, time.seconds, time.centiseconds);
+            } else {
+                mkb::sprintf(buffer, "%d.%02d", time.seconds, time.centiseconds);
+            }
+            break;
+        }
+        case TimeFormat::AlwaysLeadNonHours: {
+            if (time.hours > 0) {
+                mkb::sprintf(buffer, "%d:%02d:%02d.%02d", time.hours, time.minutes, time.seconds,
+                             time.centiseconds);
+            } else if (time.minutes > 0) {
+                mkb::sprintf(buffer, "%02d:%02d.%02d", time.minutes, time.seconds,
+                             time.centiseconds);
+            } else {
+                mkb::sprintf(buffer, "%02d.%02d", time.seconds, time.centiseconds);
+            }
+            break;
+        }
+        case TimeFormat::Unformatted: {
+            mkb::sprintf(buffer, "%d", frames);
+        }
+    }
+}
+
+void format_signed_time(char *buffer, s32 frames, TimeFormat format) {
     bool positive = frames >= 0;
     if (!positive) frames = -frames;
     const char *sign = positive ? "" : "-";
 
-    u32 hours = frames / HOUR_FRAMES;
-    u32 minutes = frames % HOUR_FRAMES / MINUTE_FRAMES;
-    u32 seconds = frames % MINUTE_FRAMES / SECOND_FRAMES;
-    u32 milliseconds = ((frames % SECOND_FRAMES) * 100 + framesave) / 6;  // 3 digit
-    u32 extra = (((frames % SECOND_FRAMES) * 100 + framesave) * 10) / 6;  // 4 digit
+    char time_buf[16] = {};
+    format_time(time_buf, frames, format);
 
-    s32 y = Y + row * 16;
+    mkb::sprintf(buffer, "%s%s", sign, time_buf);
+}
 
-    u32 total_seconds = seconds + (minutes * MINUTE_FRAMES + hours * HOUR_FRAMES) / SECOND_FRAMES;
-    draw::debug_text(X, y, color, prefix);
+void format_subtick_time(char *buffer, s32 frames, u32 framesave, bool extra_precision) {
+    bool positive = frames >= 0;
+    if (!positive) frames = -frames;
+    const char *sign = positive ? "" : "-";
+
+    TimeComp time = get_time_components(frames);
+    u32 total_seconds = frames / SECOND_FRAMES;
+    u32 milliseconds = time.centiseconds * 10 + framesave / 6;  // 3 digit
+    u32 extra = time.centiseconds * 100 + framesave * 10 / 6;   // 4 digit
+
     if (extra_precision) {
-        draw::debug_text(X + 48, y, color, "%s%02d.%04d", sign, total_seconds, extra);
+        mkb::sprintf(buffer, "%s%02d.%04d", sign, total_seconds, extra);
     } else {
-        draw::debug_text(X + 48, y, color, "%s%02d.%03d", sign, total_seconds, milliseconds);
+        mkb::sprintf(buffer, "%s%02d.%03d", sign, total_seconds, milliseconds);
     }
-
-    mkb::reset_ui_widescreen_scale_mtx();
-}
-
-void draw_percentage(s32 fsave, const char *prefix, u32 row, GXColor color) {
-    mkb::set_ui_widescreen_scale_mtx(320);
-
-    s32 y = Y + row * 16;
-    draw::debug_text(X, y, color, prefix);
-    draw::debug_text(X + 48, y, color, "%2d%", fsave);
-
-    mkb::set_ui_widescreen_scale_mtx(0);
 }
 
 }  // namespace timerdisp
