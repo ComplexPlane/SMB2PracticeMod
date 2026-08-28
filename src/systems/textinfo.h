@@ -7,9 +7,9 @@
 namespace textinfo {
 
 enum class Slot {
-    Unused,
     Left,
     Right,
+    Unused,
 };
 
 void set_drawing_state(bool draw_elements);
@@ -35,7 +35,6 @@ void draw_subtick_timer(Slot slot,
                         u32 framesave,
                         bool extra_precision);
 
-void init();
 void disp();
 
 }  // namespace textinfo

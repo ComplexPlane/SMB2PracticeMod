@@ -7,7 +7,6 @@
 #include "../utils/macro_utils.h"
 #include "../utils/timerdisp.h"
 #include "mods/hide_sprites.h"
-#include "systems/pad.h"
 
 namespace textinfo {
 
@@ -18,49 +17,19 @@ namespace textinfo {
 // (3) Every mod that uses textinfo should have their disp() function run before textinfo::disp() in
 // main
 
-struct TextData {
-    s32 pos_x;
-    u8 row;
-    GXColor color;
-    char *text;  // always a ptr to s_row_buf
-};
-
 static const Slot s_slot_list[]{
     Slot::Left,
     Slot::Right,
 };
 
-// We can get away with using relatively few and small buffers since (currently) only text that gets
-// drawn to the right side of the screen needs to be stored to the buffer and potentially moved
-// up/down
-// We call any slot that stores its text to buffers a buffer slot
-
-// Number of slots whose draw calls get stored in a buffer
-constexpr u16 BUFFER_SLOT_COUNT = 1;
-// Max number of strings that each buffer slot can accept
-constexpr u16 BUFFER_SLOT_MAX_STRS = 9;
-static char s_row_buf[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS][16] = {};
-// How many strings are actually being displayed in each buffer slot
-static u16 s_buffer_slot_display_count[BUFFER_SLOT_COUNT] = {};
-// We bundle up relevant display parameters when writing things to the buffer
-static TextData s_text_data[BUFFER_SLOT_COUNT][BUFFER_SLOT_MAX_STRS];
-
+// What row the current draw call will draw to (per slot)
 static u16 s_active_row[LEN(s_slot_list)] = {};
+// How many strings are actually being displayed in each slot
+static u16 s_display_count[LEN(s_slot_list)] = {};
 static bool s_enable_drawing = true;
 static bool s_move_right_slot = false;
 
 using HideOptions = hide_sprites::RightSideUIHideOptions;
-
-void init_text_data() {
-    for (u16 j = 0; j < BUFFER_SLOT_COUNT; j++) {
-        for (u16 k = 0; k < BUFFER_SLOT_MAX_STRS; k++) {
-            s_text_data[j][k].pos_x = 0;
-            s_text_data[j][k].row = 0;
-            s_text_data[j][k].color = draw::WHITE;
-            s_text_data[j][k].text = s_row_buf[j][k];
-        }
-    }
-}
 
 // For now this works if we want other mods to have the ability to globally stop text drawing from
 // happening
@@ -70,22 +39,6 @@ void set_drawing_state(bool draw_elements) {
 
 void move_right_side_text_farther_right(bool move_farther_right) {
     s_move_right_slot = move_farther_right;
-}
-
-// We only need to potentially center text that gets drawn on the right side of the screen, so there
-// is no need to store things in other slots to the buffer
-s16 get_buffer_slot_idx(Slot slot) {
-    switch (slot) {
-        case Slot::Right:
-            return 0;
-        default:
-            // If not a buffer slot
-            return -1;
-    }
-}
-
-bool slot_is_buffer_slot(Slot slot) {
-    return get_buffer_slot_idx(slot) != -1;
 }
 
 // Where the numbers get lined up (this acts as the "default" number alignment per slot, but
@@ -133,16 +86,6 @@ u16 get_slot_min_row(Slot slot) {
     }
 }
 
-s32 get_modified_slot_y_pos(Slot slot, u16 row) {
-    if (slot_is_buffer_slot(slot) && slot == Slot::Right) {
-        u16 idx = get_buffer_slot_idx(slot);
-        if (s_buffer_slot_display_count[idx] < 3) {
-            // return timerdisp::row_number_to_vertical_pos(row + 2);
-        }
-    }
-    return timerdisp::row_number_to_vertical_pos(row);
-}
-
 // The main text drawing function
 // We will almost always want to input true for the incr_row argument
 // However, in cases where we want to draw two (or more) pieces of text in the same slot and in
@@ -156,46 +99,13 @@ void draw_v(Slot slot, s32 pos_x, GXColor color, bool incr_row, char *format, va
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         if (s_slot_list[k] == slot) {
             u16 row = s_active_row[k];
-            if (slot_is_buffer_slot(slot)) {
-                // Store to buffer so we can draw and move the text later
-                u16 idx = get_buffer_slot_idx(slot);  // idx = buffer slot index
-                u16 text_idx = s_buffer_slot_display_count[idx];
+            s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
 
-                // We also store relevant display parameters (position, color)
-                mkb::vsprintf(s_row_buf[idx][text_idx], format, args);
-                s_text_data[idx][text_idx].pos_x = pos_x;
-                s_text_data[idx][text_idx].row = row;
-                s_text_data[idx][text_idx].color = color;
+            draw::debug_text_v(pos_x, pos_y, color, format, args);
 
-                s_buffer_slot_display_count[idx] += 1;
-            } else {
-                // If not storing this slot's draw calls to the buffer, draw instantly
-                s32 pos_y = timerdisp::row_number_to_vertical_pos(row);
-                draw::debug_text_v(pos_x, pos_y, color, format, args);
-            }
-
+            s_display_count[k] += 1;
             if (incr_row) {
                 s_active_row[k] += 1;
-            }
-        }
-    }
-}
-
-// Responsible for drawing everything that got stored to a buffer (instead of the text rows that got
-// drawn instantly)
-void draw_from_buf() {
-    if (!s_enable_drawing) {
-        return;
-    }
-
-    for (u16 k = 0; k < LEN(s_slot_list); k++) {
-        if (slot_is_buffer_slot(s_slot_list[k])) {
-            u16 idx = get_buffer_slot_idx(s_slot_list[k]);
-            for (u16 j = 0; j < s_buffer_slot_display_count[idx]; j++) {
-                u16 row = s_text_data[idx][j].row;
-                s32 pos_y = get_modified_slot_y_pos(s_slot_list[k], row);
-                draw::debug_text(s_text_data[idx][j].pos_x, pos_y, s_text_data[idx][j].color,
-                                 s_text_data[idx][j].text);
             }
         }
     }
@@ -264,11 +174,22 @@ void draw_subtick_timer(Slot slot,
 // (example: input display)
 // So, we need to hide the right side sprites if we're drawing text there
 
+s16 get_slot_idx(Slot slot) {
+    switch (slot) {
+        case Slot::Left:
+            return 0;
+        case Slot::Right:
+            return 1;
+        default:
+            return -1;
+    }
+}
+
 bool is_displaying_text_on_far_right() {
-    u16 idx = get_buffer_slot_idx(Slot::Right);
+    u16 idx = get_slot_idx(Slot::Right);
     // When some mod decides we should be moving the right slot farther right + displaying at least
     // one row of text in the right slot
-    if (s_move_right_slot && s_buffer_slot_display_count[idx] != 0) {
+    if (s_move_right_slot && s_display_count[idx] != 0) {
         return true;
     }
     return false;
@@ -290,20 +211,12 @@ void handle_right_side_sprite_hiding() {
 void reset_active_rows() {
     for (u16 k = 0; k < LEN(s_slot_list); k++) {
         s_active_row[k] = get_slot_min_row(s_slot_list[k]);
+        s_display_count[k] = 0;
     }
-    for (u16 k = 0; k < BUFFER_SLOT_COUNT; k++) {
-        s_buffer_slot_display_count[k] = 0;
-    }
-}
-
-void init() {
-    init_text_data();
 }
 
 // textinfo's disp() runs after all other disp() functions that use textinfo
 void disp() {
-    draw_from_buf();
-
     handle_right_side_sprite_hiding();
 
     // This runs after all possible textinfo::draw() calls
