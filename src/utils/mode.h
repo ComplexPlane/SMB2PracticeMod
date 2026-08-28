@@ -43,8 +43,9 @@ bool is_story_exit_game(mkb::SubMode submode);
 bool is_stage_exit_init(mkb::SubMode submode);
 bool is_stage_exit_submode(mkb::SubMode submode);
 
-// main game modes
+// main mode and main game modes
 
+bool is_main_mode_game(mkb::MainMode main_mode);
 bool is_main_game_mode_story(mkb::MainGameMode main_game_mode);
 bool is_main_game_mode_challenge(mkb::MainGameMode main_game_mode);
 

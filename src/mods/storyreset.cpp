@@ -83,7 +83,8 @@ bool is_on_wrong_menu() {
 // We also need this in case we use challenge mode segments to enter challenge mode without going
 // through the menus
 bool in_challenge_mode() {
-    return mode::is_main_game_mode_challenge(mkb::main_game_mode);
+    return mode::is_main_game_mode_challenge(mkb::main_game_mode) &&
+           mode::is_main_mode_game(mkb::main_mode);
 }
 
 bool used_go_to_story() {

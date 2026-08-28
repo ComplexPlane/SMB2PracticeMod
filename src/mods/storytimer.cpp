@@ -215,7 +215,6 @@ bool should_not_display_timer_at_all() {
     // The only time we can ever display the timer outside of story mode is
     // when we fully exit game and the timer is still running
     if (!mode::is_main_game_mode_story(mkb::main_game_mode)) {
-        // return get_loadless_time() == 0;
         return !is_run_active();
     } else {
         return false;

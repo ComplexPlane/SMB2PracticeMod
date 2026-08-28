@@ -142,7 +142,11 @@ bool is_sel_ngc(mkb::SubMode submode) {
     return (submode == mkb::SMD_SEL_NGC_INIT || submode == mkb::SMD_SEL_NGC_MAIN);
 }
 
-// --- main game modes ---
+// --- main mode and main game modes ---
+
+bool is_main_mode_game(mkb::MainMode main_mode) {
+    return main_mode == mkb::MD_GAME;
+}
 
 bool is_main_game_mode_story(mkb::MainGameMode main_game_mode) {
     return main_game_mode == mkb::STORY_MODE;

@@ -9,8 +9,6 @@ namespace goal {
 
 // Utility file that provides some functions that deal with and are based off of giving precise goal
 // checks (ie the moment we break the tape and not delayed like the goal submodes are)
-// This grew out of validate.cpp and was separated into its own file to avoid conflicting interests
-// Namely, this file should be very low in the include chain to allow as many other files to use it
 
 constexpr u16 WORLD_COUNT = mode::WORLD_COUNT;
 constexpr u16 STAGES_PER_WORLD = mode::STAGES_PER_WORLD;
