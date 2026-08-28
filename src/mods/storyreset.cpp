@@ -129,49 +129,19 @@ bool death_counter_pref_off() {
     return death_counter_pref == StoryDisplayOptions::DontShow;
 }
 
-// During an accidental full exit game to the menu mid-run, the only time a timer/death counter is
-// visible is if "always show" is turned on for that display
-bool displaying_on_menus_during_accidental_exit_game() {
-    StoryDisplayOptions fullgame_pref =
-        StoryDisplayOptions(pref::get(pref::Pref::FullgameTimerOptions));
-    StoryDisplayOptions segment_pref =
-        StoryDisplayOptions(pref::get(pref::Pref::SegmentTimerOptions));
-    StoryDisplayOptions death_counter_pref =
-        StoryDisplayOptions(pref::get(pref::Pref::DeathCounterDisplayOptions));
-    return fullgame_pref == StoryDisplayOptions::AlwaysShow ||
-           segment_pref == StoryDisplayOptions::AlwaysShow ||
-           death_counter_pref == StoryDisplayOptions::AlwaysShow;
-}
-
-bool is_silent_reset_type() {
-    // ie, any reset that's not triggered by gotostory or on the menu after completing a run
-    return should_reset_on_file_screen() || is_on_wrong_menu();
-}
-
 void display_reset_run_message() {
     if (pref::get(pref::Pref::HideRunResetMessage)) {
         return;
     }
 
-    // If the hide run reset message pref is off, we still want to be "minimal" with displaying it
-    // So, we only display a reset message if:
-    // (1) it's a less obvious reset trigger (ie not go to story, or if we've already completed the
-    // run)
-    // (2) at least one timer/death counter pref is on (don't bother displaying a reset message
-    // if everything is turned off)
-    // (3) the player has "always show" turned on for at least one of
-    // the timers/death counter. The idea here is if always show is turned on and if the timer gets
-    // zero-ed, it's obvious that the run was reset and no message needs to be displayed
-
-    if (!is_silent_reset_type()) {
+    // If a run is completed, no need to display a message if back on the menus
+    if (should_reset_completed_run()) {
         return;
     }
 
+    // If all timer/death counter related prefs are off, it's (probably) safe to assume the player
+    // isn't in a run/wouldn't want reset messages regardless of the hide reset message pref
     if (all_loadless_timer_prefs_off() && death_counter_pref_off()) {
-        return;
-    }
-
-    if (displaying_on_menus_during_accidental_exit_game()) {
         return;
     }
 
